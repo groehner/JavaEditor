@@ -1,0 +1,913 @@
+﻿
+Request 1. When I change shortcut in Java-Editor like below, I set "redo" in CTRL+Y, but every time I restart JE,or everytime I open a new java file, JE will always pop a alert "Shortcut Ctrl+Y existiert schon im Editor". I know this is a useful reminder, but...maybe it can be reminded only when the shortcut key is modified for the first time, instead of reminding every time open a file？
+/*********************************
+replaceEditor:Ctrl+Y
+with: Shift+Ctrl+Alt+Y
+
+replaceEditor:Shift+Ctrl+Z
+with: Ctrl+Y
+*********************************/
+
+Request 2. If it possible to add a project browser like Eclipse or other IDE? Although I know when some java file in one folder are treated as a project, but it is a little inconvenient. I try to use JE's Explorer instead, but it's just show one folder, not suitable for viewing projects with multiple levels of directories. Although I can manually navigate to the parent directory, But Explorer seems to take some time when it first start.
+
+Request 3. On the basis of the above request, if it possible to expand the scope of "Search declaration", such as search for files in the entire project path. I found JE now work well when all the related java file were opened, but the file closed cannot be located. And also, Eclipse can search reference, I think it's also a useful function.
+
+Request 4. If it possible to add a right-click menu to open the file in file-explorer. Maybe call this function "show in system explorer" is suitable.
+
+Request 5. In JE’s Explorer,  When I right-click a file and want to open it in a third-party text editor, I always got a alert "The file name, directory name, or volume label syntax is incorrect！", So I can only open it in JE by double-click. Maybe it is a bug?
+
+
+
+
+
+I still leave a suggestion: when creating the project file, wouldn't it be possible
+to generate the project settings there, with the creation of the binaries folder,
+library folder to be treated later at the time of execution?
+
+Debugger ohne Konsolenfenster
+
+
+
+
+
+In UKonfiguration:
+ procedure TEditStyleHookColor.UpdateColors;
+
+Dark Theme
+https://stackoverflow.com/questions/9906312/delphi-vcl-styles-tutorial-how-to-change-the-style-at-runtime/9906496
+https://delphiaball.co.uk/2014/10/22/adding-vcl-styles-runtime/
+https://theroadtodelphi.com/category/vcl-styles/
+C:\Users\roehner\AppData\Roaming\Notepad++\themes
+C:\Program Files (x86)\Embarcadero\Studio\19.0\Redist\styles\vcl
+
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  TStyleManager.TrySetStyle('Iceberg Classico');
+  Application.CreateForm(TMainForm, MainForm);
+  Application.Run;
+end
+
+
+Lazarus
+  {$IFNDEF POSIX}
+
+
+Technologisch ist das durchaus nachvollziehbar, aber was ist, wenn man den GUI-Designer und den Klasseneditor gar nicht braucht?
+Bzw. wenn ich das Verhalten richtig interpretiere, machen Sie doch beim Laden ohnehin eine Code-Analyse zum Einfügen der Kommentare an der richtigen Stelle - oder?
+
+
+
+UML-datei aus vielen geöffneten Dateien:
+  Dateiname auf die ersten 5 geöffneten Dateien beschränken.
+
+
+AppletViewer ist seit jdk 11 nicht mehr da
+als Alernative wird Java Web Start empfohlen
+
+DPI-Awareness
+
+Konvertierung nach Lazarus
+  - Consts -> lclstrconsts
+  - TlHelp32 -> JwaTlHelp32
+
+
+Debugging of Objects
+
+  hier debugging interaktion
+  function TComJava1.sendCommandAsynchron(command: string): String;
+
+   Debugger starten
+   function TComJava1.StartJava(Command: string): string;
+
+
+http://central.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.0.0/
+http://central.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.3.1/
+
+https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html
+
+
+javax.swing.JComboBox in packages ist kein Package
+
+
+
+
+bis 12.61 funktioniert Debugger Einzelschritt
+13.38 nach dem Debuggen schmiert der Javaeditor beim Schließen ab
+14.10 Bluescreen beim Einzelschritt bei allen PCs
+
+deaktiviertes Fenster kann den Fokus nicht erhalten:
+vermutlich möglich, falls UML-Fenster in OpenFiles geööfnet wird.
+
+
+Behandlung des Classpath
+  getClasspath  getClasspath(Package) vereinheitlichen
+
+http://www.dpunkt.de/java/
+
+Debugging von Applets - phony Error
+
+JSmooth .exe Wrapper
+
+
+
+ein paar kleinere Probleme möchte ich dennoch ansprechen. Mit der jetzigen Funktionalität kann ich aber sehr gut im Unterricht arbeiten.
+
+a) Weiterhin springt der Cursor an den Zeilenanfang, wenn man im Klasseneditor mehrere Interfaces mit Kommata eintragen will, die eine Klasse implementieren soll.
+
+b) Können Sie sich bitte mal die Verwendung des JColorChooser anschauen. 
+Das scheint nicht ganz zu funktionieren.
+
+c) In der Anwendung "Bahnhofallgemeiner" benutze ich Typparameter für Stapel und Element. In diesem Fall klappt die Codevervollständigung nicht. Was vielleicht in der Natur der Sache liegt...
+Andererseits klappt es bei Verwendung des JavaSystemStack wunderbar, so dass ich diese Variante vorziehen werde.
+
+d) Wählt man die Neuanordnung im UML-Fenster, so wächst die Anordnung nach unten rechts.
+     Könnte man vielleicht per Option oder alternierend einstellen, dass die Anordnung von "links nach rechts", "oben nach unten" oder wie bisher "von oben links nach unten rechts" dargestellt wird.
+
+- ich finde es etwas unschön, dass die Zoom-Option der Syntaxfenster sich verändert,
+wenn man zwischendrin das Formular anzeigen lässt. Klickt man sich also durch alle
+Reiter (z.B. GUI.java, GUI.jfm, Data.java) einmal durch, dann muss man jedes Mal
+wieder den Zoom der Syntaxfenster auf “Ganzen Bildschirm” stellen.
+
+
+http://www.torry.net/
+http://www.delphipages.com/
+http://www.vclcomponents.com/
+http://delphi.icm.edu.pl/
+http://www.delphisource.com/
+http://www.delphiabc.com/
+http://www.componentsource.com/index.html
+
+
+http://delphi.about.com/od/delphitips2009/qt/delphi-vista-registry-run-on-startup.htm
+
+UMessages verwaltet Informationen in TInteractives und in StringLists/ObjectList
+
+Ehrlich
+1) Erledigt bis auf geschachtelte Eigenschaften wie z. B. Font, Items bei Choice
+
+http://www.theabsolute.net/sware/delphivista.html
+
+Falls Sie sich langweilen sollten ;-) , könnte der JavaEditor noch mehrdimensionale Arrays korrekt unterstützen.
+Der Test-Code dafür könnte der folgende sein (in die main-Routine am Ende kopieren):
+
+    int[][] testArray2 = {{6,3,2,4},{1,5,4,3}};
+    InternalClass[][] internalArray2 = new InternalClass[23][12];
+    EineKlasse[][] extArray2 = new EineKlasse[12][2];
+   
+    len = testArray2[1].length;               // hier bietet der JE
+nichts an
+    len2 = internalArray2[2].length;      // hier bietet der JE nichts an
+    len3 = extArray2[3].length;              // hier bietet JE wieder
+die Objekt-Properties an
+   
+    System.out.println("len = "+len);
+    System.out.println("len2 = "+len2);
+    System.out.println("len3 = "+len3);
+
+Vielen Dank nochmal für das schöne Werkzeug!
+
+Viele Grüße
+Carsten Noeske
+
+
+------
+
+Jürgen Poloczek: Timerkomponente
+
+in diesem Zusammenhang: nicht-visuelle Komponenten. Diese können in "components" sicherlich eingebaut werden.
+
+
+TBJ1Shownames und TBAShowNames als Toolbuttons gelöscht.
+
+
+import-Anweisungen automatisch ergänzen
+
+Debugging funktioniert nicht, wenn in einem Applet ein Numberfield benutzt wird.
+-> Rechteproblem
+
+Bei der Code-Vervollständigung nach Prozeduren automatisch ; ergänzen.
+
+
+Lieber Herr Röhner,
+
+es scheint ein Problem des Java-Systems zu sein:
+
+Wenn ich im DOS-Fenster den Applet-Viewer aufrufe, passiert Folgendes:
+
+Microsoft Windows XP [Version 5.1.2600]
+(C) Copyright 1985-2001 Microsoft Corp.
+
+H:\>C:\Java\JDK\bin\appletviewer.exe "H:\Eigene Dateien\testlauf.html"
+
+H:\>C:\Java\JDK\bin\appletviewer.exe "\\bn-fas-02\s04005\Eigene Dateien\testlauf.html"
+Laden: Klasse testlauf.class nicht gefunden
+java.lang.ClassNotFoundException: testlauf.class
+         at
+sun.applet.AppletClassLoader.findClass(AppletClassLoader.java:211)
+         at java.lang.ClassLoader.loadClass(ClassLoader.java:307)
+         at
+sun.applet.AppletClassLoader.loadClass(AppletClassLoader.java:144)
+         at java.lang.ClassLoader.loadClass(ClassLoader.java:248)
+         at
+sun.applet.AppletClassLoader.loadCode(AppletClassLoader.java:662)
+         at sun.applet.AppletPanel.createApplet(AppletPanel.java:785)
+         at sun.applet.AppletPanel.runLoader(AppletPanel.java:714)
+         at sun.applet.AppletPanel.run(AppletPanel.java:368)
+         at java.lang.Thread.run(Thread.java:662)
+
+H:\>
+
+Der untere Teil ist dabei identisch mit der Fehlermeldung, die im Java-Editor angezeigt wird.
+Die beiden aufgerufenen Dateien sind dabei identisch; die erste Variante ist nur mithilfe der Zuordnung von "\\bn-fas-02\s04005" zum Laufwerk H:
+auf einen Windows-Pfad umgeleitet worden.
+
+Ein ähnliches Problem gibt es übrigens auch, wenn man anstelle des Applets ein Frame verwendet. Dann lautet die Fehlermeldung im Java-Editor:
+Starte \\bn-fas-02\s04005\Eigene Dateien\testlauf2.java
+
+"\\bn-fas-02\s04005\Eigene Dateien"
+CMD.EXE wurde mit dem oben angebenen Pfad als aktuellem Verzeichnis gestartet.
+UNC-Pfade werden nicht unterstützt.
+Stattdessen wird das Windows-Verzeichnis als aktuelles Verzeichnis gesetzt.
+
+Ich frage mich, ob man dann mit Java überhaupt mit UNC-Pfaden arbeiten kann.
+
+Viele Grüße
+
+Stefan Bartels
+
+
+constructor TComJava1.create;
+  ConnectID:= '';
+
+Debug-Modus
+  function TFMessages.AddInteractive(path: string): TSynEdit;
+    SE.ReadOnly:= false;
+
+procedure TExecuter.Execute(aForm: TFUMLForm; SE: TSynEdit);
+   DeleteFile(Pathname);
+   DeleteFile(ChangeFileExt(Pathname, '.class'));
+
+JE2Java
+  Application.ShowMainForm:= false;
+
+
+http://qc.embarcadero.com/wc/qcmain.aspx?d=37403
+http://cc.embarcadero.com/item/24282
+http://fivedots.coe.psu.ac.th/~ad/jg/javaArt1/onTheFlyArt1.pdf
+http://www.bestcode.com/html/tbcparser.html
+
+
+Download über proxy mit Anmeldedaten
+
+Raymond Meester
+  first run wizard, like documentation download
+  XMI export
+  tidey source
+  background colors like bluej
+
+1) Easy Deployment (One jar with all dependencies (http://one-jar.sourceforge.net/)
+
+2) Update and download editor as Java Webstart (With a choice to autodownload all packages (documentation, tools etc) at start)
+
+3) Example-Driven (Full working examples with documentation) --> See Autoit helpfile (http://www.autoitscript.com/autoit3/docs/. The autoit helpfile in the editor is interactive where you can start the example from with the documentation)
+
+4) Model-Driven
+
+    a) GUI Designer (like the current one, but with reversed engeneering)
+    b) Class Designer (like the current editor, but with a diagram view)
+    c) Structure Designer (For the application logic I use Structurizer  --> http://structorizer.fisch.lu/ )
+
+5) Single and Dual View Modes (Source (code), Design (models). See also attached screenshots.
+
+    a) The single view has two tabs one for the source and one for the models. In this mode only one item (the source or a specific model) can be viewed at the time.
+    b) The dual view has two screens side-by-side that correspond and synchronize with each other. The code and models mirror each other and are basically a view on the same 'code'. When for example a gui section is selected the gui designer is shown and when a method is selected the structure designer is shown.
+
+6) Round-Trip Engineering (for example UML lab) between model and code (http://www.uml-lab.com/en/uml-lab/).
+
+
+
+
+Erledigt ------------------------------------------------------------------------
+
+Oldenburg
+  Interaktives Java ala Python
+
+Ehrlich
+Hat man im UML-Quelltextbereich geschrieben, und wählt anschließend ein Objekt,
+um es mit DEL-Taste zu löschen, so bleibt der Fokus im Quelltextbereich und man löscht dort eine Zeile.
+
+Wird es de Möglichkeit der Quelltextvervollständigung geben?
+
+Weiterhin kann bei einem Applet mit Numberfield der Debuggermodus nicht benutzt werden. --> "Applet nicht initialisiert"
+
+
+Ehrlich
+1) Erledigt bis auf geschachtelte Eigenschaften wie z. B. Font, Items bei Choice
+
+2) Wählt man eine GUI-Komponente mit der Maus aus, um im Objektinspektor die Eigenschaften zu ändern,
+so bewegt sich häufig die Komponente mit der Maus mit (als wäre die linke Maustaste noch gedrückt)
+und verschiebt somit die Komponente, was etwas störend ist.
+
+JEditorPane.Paint: TWebBrowser intern erzeugen, Bild der Canvas auf Bild der SwingEditorPane kopieren?
+
+Problematik "Object ..." in Klasse String klären
+
+VISTA
+
+TOpenDialog im Vista-Look aber TSaveDialog ohne Encoding! Hierzu:
+http://akirabbq.spaces.live.com/blog/cns!CEB8A04DC43BCEE9!283.entry
+
+http://msdn.microsoft.com/en-us/library/bb530410.aspx
+http://video.codegear.com/pix/fhaglund/VistaUACandDelphi/
+
+
+var filename : string;
+
+   OpenSaveFileDialog(self,
+                      '',     // default extension for saving files
+                      '*.*',  // show all files
+                      extractfilepath(paramstr(0)), // use path of app
+                      'Open file',  // either opening a file or saving
+                      filename,  // the chosen filename is stored in this variable
+                      true, // true means file must exist
+                      true, // true to allow overwrite prompt
+                      false, // false to allow change dir
+                      true)  // true for open file, false for save
+
+----
+10.4h
+IMPORT
+
+In welcher Reihenfolge werden Klassen gesucht? hier wird eine benutzt:
+function TJavaParser.GetImportName(Typ: string): string;
+Sie machte bei Element naechstesElement Probleme.
+
+"import" ermöglicht nur die Kurzschreibweise für Klassen.
+Die Importe müssen über Classpath erreichbar sein!
+
+GetImportname in UJavaParser
+- in welcher Reihenfolge sucht Java Klassen?
+  * import
+  * classpath
+
+Höpping
+- java.util.Timer
+- javax.swing.Timer
+
+Dierolf
+Wenn man es mit automatischen import-Statements kompiliert werden auch in der N-Version als die ersten 2 Zeilen automatisch ergänzt:
+    import java.lang.String;
+    import org.w3c.dom.events.MouseEvent;
+und das Programm kompiliert nicht mehr fehlerfrei.
+Kommentiert man diese beiden Zeilen aus, werden Sie nicht mehr wieder neu ergänzt und das Programm kompiliert wieder.
+Das ist für mich ein sehr seltsames Verhalten.
+Vielleicht können Sie das bei sich nachvollziehen.
+
+
+10.4
+Problem der sich selbst löschende Buttons behoben.
+interner javac-compiler
+
+Done:
+  VistAltFixUnit
+
+10.3
+Suche in Datein beschleunigtn durch direktes Suchen in Zeilen statt mit SearchEngine
+Suchen nach Anmeldungen in *,php;*,inc in mitgliederentw/Anmdlung
+
+Objekte aus Vector/ArrayList anzeigen
+
+Klassenmodellierer bessere Interface-unterstützung
+
+
+10.0
+
+UML-Kopieren mit rekursiven Beziehungen
+
+Bartels - nicht nachvollziehbar
+einem Schüler von mir ist ein "witziger" Bug im Java-Editor aufgefallen:
+Wenn man eine JFM-Datei und eine JAVA-Datei geöffnet hat, das JFM-Register
+angeklickt hat und dann "Datei | Speichern unter..." wählt, erscheint auf
+dem Button, auf dem eigentlich "Speichern" stehen sollte, "Öffnen"!
+Bitte schicken Sie mir keine neue Version, das ist es nicht wert.
+Einfach nur vormerken für das nächste "richtige" Update.
+
+Schaller > erledigt
+Wenn man in der UML-Ansicht ist und zwei Klassen hat, die eine Komposition darstellen,
+dann erzeugt/verwaltet mir meine eines Objekt ja die dazugehörigen Objekte der anderen
+ Klassen. Dann erscheint in der Objektansicht nur der Hinweis Pointer. Könnte man dort
+ so etwas wie ein "Verfolgen" oder "Objekt anzeigen" einbauen. Dann würde dieses Objekt
+  angezeigt, so als ob ich es von Hand erzeugt hätte. Es kann ja dann einen beliebigen
+  Namen wie "Unbenannt1" oder so bekommen.
+Ansonsten kann man die Methoden des enthaltenen Objekts gar nicht aufrufen und auch
+keine Veränderungen beobachten.
+
+Hofmann: Wie compiliert und startet man Klassen aus einem Package?
+- http://www.math.uni-bayreuth.de/~rbaier/lectures/java_ws99_00/vorl_nachtrag/node6.html
+
+Ehrlich
+bei der aktuellen Arbeit mit dem JavaEditor sind mir zwei Dinge aufgefallen:
+
+Erledigt bis auf geschachtelte Eigenschaften wie z. B. Font
+1) Erzeugt man eine Komponente beispielsweise ein jProgressBar1) auf einem Formular und
+will dieses mit samt seinen Eigenschaften kopieren, so gelingt dies nur unbefriedigend.
+Die zweite Komponente hat zwar laut Objektinspektor scheinbar die selben Eigenschaftswerte
+(bis auf den Namen natürlich). allerdings sind diese Eigenschaften nicht in der *.java-Datei
+vermerkt und der Programmstart offentbart auch, dass die Eigenschaften andere
+(als vom Objektinspektor angezeigt) sind.
+Beispielsweise Orientation und Maximum werden nicht sauber übernommen.
+
+
+9.17
+Multiplizitäten,
+
+Ort und Richtung rekursiver Beziehungen
+
+
+
+
+9.16
+Compilieren ohne Restart!
+
+Mang
+  RTF + nummiert
+
+
+9.14q
+
+UML-Fenster mit zusätzliche Interaktiv-Fenster
+
+Walter Götz
+Prima fände ich es auch, wenn Sie einen JSpinner verbunden mit einem ChangeListener
+in den Javaeditor integrieren könnten. Für ein einfaches Ganzzahl-SpinnerNumberModel
+müsste das doch gehen.
+
+Walter Götz
+Außerdem wäre es ganz toll, wenn man über den Objektinspektor auch setPaintTicks(),
+setPaintLabels() und setMajorTicks() einstellen könnte.
+
+JSpinner ist gewünscht. Realisiert mit TSpinEdit
+
+
+Dierolf
+wäre es denkbar, dass man
+bei z.B.:
+      String name;
+      String.            nur die Klassenvariable/methoden (static) zur
+Auswahl anzeigt? <= da werden alle Methoden von String angezeigt, obwohl nicht sinnvoll
+      name.             bei einer Referenzvariable dagegen alle
+Variablen/Methoden? <= das klappt schon
+
+Dierolf
+ebenso bei einem Array:
+bei z.B.
+     String[] arrNamen = new String[20];
+     arrNamen.         nur die Konstante length macht hier Sinn <= da
+werden alle Methoden von String angezeigt
+     arrNamen[0].    alle Methoden des Typs String <= das klappt schon
+
+bei einem Array eines prim. Datentyps, wird gar nichts angezeigt.
+     int[] arri = new int[10];
+     arri. <== hier könnte doch length  angezeigt werden?
+
+TRegExpr in 9.14h als rtf-dokument
+
+PARSER
+  UJavaParser: aClass:= TClass.Create(Result.Owner); zu Ende machen
+
+  Für Parameter und lokale Variablen funktionierte keine Code-Vervollständigung,
+  weil diese noch nicht geparst wurden.
+
+  Parser findet in Schulz\Spedition.java fz[ als Token und i] als Token in der for-Schleife
+
+Jürgen Poloczek
+> Tatsächlich ist es so, dass ich mir über Installation und
+> Konfiguration im Uni-Kontext noch keine Gedanken gemacht habe. Für die
+> Schule gibt es die spezialisierte Installation mit INI-Dateien über
+> die der Administrator schulweit z. B. eine Turtle-Installation
+> bereitstellen kann.
+Na ja, es ist ein Netz wie viele andere auch, viele Programme sind lokal installiert.
+-----
+
+9.14k
+Interaktiv
+
+Interaktive Aktionen in einem neuen Meldungsfenster protokollieren
+dort einzelne oder alle Aktionen ausführbar machen
+so können nach JE-Neustart Objekte wieder hergestellt werden
+
+InOut.java integriert
+
+Folgen einer Änderung:
+uVista einbinden
+- Panel bleiben durchsichtig
+- Klassen und Objekte werden nicht in die Zwischenablage kopiert!
+
+--------------------
+
+  if ELDesigner.SelectedControls[0].ClassName = 'TPanel' then
+    TPanel(ELDesigner.SelectedControls[0]).ParentBackground:= false;
+
+When the Java is installed on Windows, it sets up a file association for .jar
+files to use javaw. javaw is the console-less command line interface for Windows.
+It sounds like this is your problem for console applications. You can change
+your Windows setup to use java instead of javaw, but it might be better to create
+a .bat file for users to run your console applications.
+
+9.14i
+Konstruktor initialisiert Attribute
+
+interaktiver Aufruf überschriebener Methoden
+
+bugfix Debugger
+
+Calling Instance Methods of a Superclass
+You can call instance methods defined in a superclass that have been overridden in
+the class to which the object belongs.
+The JNI provides a set of CallNonvirtual<type>Method functions for this purpose.
+To call instance methods from the superclass that defined them, you do the following:
+
+    * Obtain the method ID from the superclass using GetMethodID rather than GetStaticMethodID.
+    * Pass the object, superclass, method Id, and arguments to the family of nonvirtual
+    invocation functions: CallNonvirtualVoidMethod, CallNonvirtualBooleanMethod, and so on.
+
+It is rare that you will need to invoke the instance methods of a superclass.
+This facility is similar to calling a superclass method, such as f, in Java using the following construct:
+
+    super.f();
+
+9.14h
+
+Windows-Vista und Windows 7 Unterstützung
+
+bessere Update-Funktion
+
+Kühlewind: Öffnen von Klassen, die von Panel oder Canvas abgeleitet sind - erledigt
+Kühlewind: Codevervollständigung funktioniert nicht für für Oberklasse Roboter im
+Package javakarol.Roboter
+
+H. Breidt: Start /low <- das geht nicht, weil dann keine System.out.writeln's mehr kommen
+
+Popup-Menu für AWT
+
+Close schließt Java-Editor
+
+InnerClasses-Anzeige im UML-Mainwindow geht nicht
+  String.java
+  AbstractList.java
+  procedure TRtfdDiagram.InitFromModel;
+
+Dome-Modell     - erledigt
+- Quelltexte laden
+- UML für alle
+- erst CD erzeugen
+- dann Datenbank erzeugen
+- dann aufnehmen
+
+class-modeler für mehrere Klassen - erledigt
+Klassen-Editor für Interfaces - erledigt
+Klassen-Editor ohne java-Klassen im Hintergrund! - erledigt
+PlugIn-Schnittstelle - erledigt
+Link-Java Files mit allen Java-Formaten? Auswählbar! -erledigt
+Zoom in TEssConnectPanel? - Nein, nicht möglich, Zoom beschränkt sich auf Gesamtübersicht
+Sprachunabhängige Templates - erledigt
+Farben für php, inc-Dateien - erledigt
+Kontextmenü für UML-Verbindungen - erledigt
+
+class-Dateien öffnen und im UML-Fenster anzeigen - erledigt
+
+System-Klassen wie z.B. String im UML-Fenster benutzbar machen - erledigt
+
+Komplette Vererbungshierarchie optional zulassen - erledigt
+
+Tastenkürzel in Kontextmenüs?
+
+LastDelimiter statt while Schleife
+
+Konstanten könnte man anders als Attribute und Methoden darstellen
+
+Aufrufparameter für Startklasse?
+
+StringReplace in SysUtils statt Ersetze
+
+constructor TRtfdDiagram.Create(om: TObjectModel; Parent: TWinControl; Feedback : IEldeanFeedback = nil);
+begin
+  inherited Create(Om, Parent, Feedback);
+  Frame := TAFrameRtfdDiagram.Create(Parent, Self);
+  Frame.Parent := Parent;
+
+  // Panel is ActiveControl in MainForm    <----!!!!
+  Panel := TessConnectPanel.Create(Parent);
+
+ActiveControl:= MainModul.Diagram.GetPanel;
+
+pack and email/upload
+
+// Classloader und Threads
+http://forums.sun.com/thread.jspa?threadID=5338704
+http://www.javaworld.com/javaworld/jw-03-2000/jw-03-classload.html?page=1
+http://www.onjava.com/pub/a/onjava/2005/01/26/classloading.html?page=1
+
+unloading/loading classes
+von Stream laden
+
+jps visualgc und Konsorten
+java -Xchcek:jni
+
+Das Beispiel Kapitel 11, Adressbuch V3T erzeugt bei classload eine Exception,
+die derzeit mittels IgnoreConsole nicht angezeigt wird. Die Gründe müssen im
+Zusammenhang mit der Überarbeitung von loadClass ermittelt werden.
+
+UML-Klasseneditor auf Interfaces erweitern, die betreffende
+Registerkarte ist standardmäßig aber ausgeschaltet.
+
+Erzeugung von Objekten auch im Thread erledigen, wegen
+Fenster schließen beim Erzeugen z. B. eines Frame-Objekts
+Werte ändern läuft ohne Thread
+
+Exceptions in JNI abfangen - eigene Methoden dementsprechend prüfen
+  if FPenv^.ExceptionCheck(FPenv) then
+      FPEnv^.ExceptionDescribe(FPenv);  // schreibt in System.out.err
+
+   Also note that you can not destroy the VM at least not if you are using the Sun VM.
+   Once your JNI code starts it once it will always exist.
+
+http://developersoven.blogspot.com/2007/02/leveraging-vistas-uac-with-delphi-part_27.html
+http://coding.derkeiler.com/Archive/Delphi/borland.public.delphi.nativeapi/2004-06/0002.html
+
+Optional vom System geerbte Methoden anzeigen
+
+-----
+
+Property.java wird nicht geparst
+
+Lange jar-Files abkürzen durch
+SET JAR=E:\jdks\ext\jalopy\jalopy-console-0.1-1.5rc3\lib
+%JAR%\getopt.jar;%JAR%\jaolpy.jar...
+E:\jdks\ext\jalopy\jalopy-console-0.1-1.5rc3\lib\getopt.jar;E:\jdks\ext\jalopy\jalopy-console-0.1-1.5rc3\lib\jalopy.jar;E:\jdks\ext\jalopy\jalopy-console-0.1-1.5rc3\lib\jalopy-console.jar;E:\jdks\ext\jalopy\jalopy-console-0.1-1.5rc3\lib\log4j.jar
+
+-------------
+
+Neu layouten bei versteckten Boxen!
+Zoom im UML-Fenster?
+
+Solche Funktionen mittels Parser-Einsatz verbessern
+  function TFJava.IsGUI(JavaProgramm:string): Boolean;
+  function TFJava.IsJavaApplet(JavaProgramm: String): Boolean;
+
+Integration benutzerspezifischer Dokumentation hackelt daran,
+dass erzeugtes Format nicht ganz dem der API entspricht.
+
+SynCompletionProposal geändert in Zeile 1586
+   NewLinesInWindow := (NewHeight-FHeightBuffer -BorderWidth) div FEffectiveItemHeight;
+
+  javap -s -p Database -> (LPerson;)V
+
+C:\users\roehner\AppData\Local\VirtualStore\Program Files\JavaEditor
+
+Reduzierung der jcl-Unterstützung
+Erweiterung des Java-Parsers
+
+
+Sammlung
+http://www.cryer.co.uk/brian/delphi/delphi_links.htm
+
+http://www.delphipraxis.net/post861149.html
+http://www.torry.net/    Komponenten!
+http://www.angusj.com/delphi/  drag/drop-components
+http://www.swissdelphicenter.ch/de/
+http://www.delphi-treff.de/tipps/?id=466
+http://www.delphi-treff.de/tutorials/vcl/vista/
+http://sunsite.informatik.rwth-aachen.de/delphi/
+http://www.vclcomponents.com/
+www.linguee.de
+
+VER140 - Delphi 6
+VER180 - Delphi 2006
+
+TBitBtn statt TButton bei Swing:
+  TBitBtn wird im Object-Inspector falsch erkannt
+  ELPropInsp: TELCustomPropertyInspector.GetEditorClass hier wird tkClass erkannt
+
+------------------------------------
+
+// JNI und Threads
+http://www.pacifier.com/~mmead/jni/delphi/JEDI/DOCS/delphi-jni-3.html
+
+Browser
+  Bearbeiten-Menü wackelt bei Aktivierung der URLS
+    das hat mit dem Timer zu tun
+    erledigt: MIEnabled wird nur gesetzt, falls Änderung nötig ist!
+    siehe UpdateStatus -> soll in andere Fenster übernommen werden.
+  Copy wird nicht mehr aktiviert wenn im Browser etwas markiert wird
+    wie soll über Markieren im Browser informiert werden?
+    -> ständiges Überprüfen mit Timer
+  Ein Fensterwechesel ist offenbar immer mit einem UpdateMenuItems verbunden
+  daher mal in TFFormular.Enter entfernt
+
+Suchen:
+  In Dateien... statt In Dateien suchen...
+  Ersetzen als neue Option im Dialog
+
+  CBSearchSelectedOnly ersetzt durch CBSearchSelectionOny -> Sprachdateien
+
+  Reguläre Suche bisher Murks
+  [GrepResults]
+  LNGClassNotTerminated:= 'Class at %d did not terminate properly';
+  LNGPatternTooLong:= 'Grep pattern too long. (> 500 characters)';
+  LNGInvalidGrepSearchCriteria:= 'Character immediately following: at %d is not a valid grep search criteria';
+  LNGSenselessEscape:= 'Escape character ("\") without a following character does not make sense';
+
+SVN-Formular prüfen, auf Sonne da dort subversion installiert ist
+
+Es werden benutzt
+  TValueListEditor in UObjectGenerator
+     FObjectGenerator.Formular wird benutzt, falls kein GUIDesigner verwendet wird
+  TELPropertyInspecotr in UObjectInspector
+
+ScaleBy(Screen.PixelsPerInch, DESIGN_RESOLUTION); siehe TextDiff
+-> wird Schriftgröße angepasst?
+unnötig, denn dafür gibt es
+  BorderIcons: bsSystemMenu
+  BorderStyle: bsDialog
+  Position: poDefault
+  PixelPerInch: 96
+  Scaled: true
+
+  PixelsPerInch := Screen.PixelsPerInch;
+  if PixelsPerInch <> 96 then begin
+    Width := LongInt(Width  * PixelsPerInch) div 96;
+    Height:= LongInt(Height * PixelsPerInch) div 96;
+  end;
+
+
+[Parameter]
+Caption=Start-Parameter
+LStartClass=Start-class
+LParameter=Parameter for
+RGStartoption=Startoptions
+RGStartoption.Items=Standard,"with console-window","without console-window"
+BSelect=Select
+
+
+Verwaltung der Debugger
+-> drei konfigurieren, Häckchen bei dem der ausgewählt wird
+
+
+März 2008
+Unicode-Synedit: http://mh-nexus.de/components.htm
+- Eingabe 20AC<Alt-Strg-U>
+- Eingabefenster
+- "Speichern als" mit Kodierung
+
+Unterstützung von Paketen
+
+public class ExcTest {
+  public static void main (String[] args) {
+      String t=null;
+      try {
+        t.toString();
+      }
+      catch (NullPointerException e) {
+        //  t.      liefert verfügbare Methoden der Klasse String  ok!
+        //  e.      liefert keine Methoden der Klasse NullPointerException
+                    //     Warum ???
+      }
+      D.bs("Ende");
+  }
+}
+
+Warum werden bei "e. " nicht die zur Verfügung stehenden Methoden angezeigt?
+Bei "t. " klappt das!
+
+--- Erledigt ----
+
+4.1.2008
+Erledigt: Versionsverwaltung  Subversion einbauen? SVN
+
+Beim Öffnen der Suche im Javabuch schließt sich der gesamte Editor.
+Workaround 
+
+Erledigt: Vergleichen von zwei Textdateien
+
+24.06.07 - mehrere UML-Fenster
+Wegen Internationalisierung muss die editor.htm auf #1, #2
+statt #jar #interpreter ... umgestellt werden
+
+13.05.07 - neue Sprachdateien
+MIRunToCursor
+MIGotoLine
+
+Beim Öffnen könnte man auch alle Dateierweiterungen
+anbieten, die der Java-editor unterstützt.
+
+Dateien / Fundstellen LNGOccurrences
+HTML als Text
+
+
+Option Start-Parameter: Als Konsole-Programm/Als GUI-Programm   erledigt
+
+Option Automatisches Öffnen des Meldungsfensters verhindern  erledigt
+
+Option: Abschalten des automatischen Speicherns   erledigt
+Tim Humernbrum
+
+Anzeigen generischer Datentypen im UML-Fenster: erledigt
+
+
+Erledigt 7.05
+Debugger: + für Objekte zum Aufklappen
+Anpassung des Caret bei Fehlermeldungen
+
+Erledigt:
+UML-Editor:  Variable Typ oder Typ Variable?
+Recherche zeigt: Variable: Typ ist richtig
+
+Erledigt:
+Sprachdateien beim Deinstall löschen
+
+Erledigt:
+Zusätzliche Gänsefüßchen bei RGApplet.Items nötig
+
+Erledigt:
+psapi.dll nur bei Bedarf installieren
+und zwar so, dass psapi.dll nicht mehr installiert wird.
+ABER: setup.exe erzeugt mit psapi.dll eine Fehlermeldung! 
+
+Erledigt:
+Sprache aus Install nach Installation übernehmen.
+
+Erledigt:
+Debuggen von Applets funktioniert derzeit nicht
+
+Erledigt:
+Untersuchung und Verbesserung von toWeb
+
+Erledigt:
+Beim Update muss es Optionen zum Aktualisieren der Sprachdatei[en] geben
+
+Erledigt:
+TFUpdate.GlobalFileExists ohne Proxy-Berücksichtigung
+
+Erledigt:
+Nach Aufruf des Klasseneditors bei leerer Datei blockiert manchmal die
+Anzeige des Editors.
+
+Erledigt: "Interpreter unabhängig" auch für den Appletviewer
+
+Erledigt: Color.red/Color.RED versionsabhängig gemacht
+
+Erledigt: verkürzte Anzeige von Pfaden in der Konfiguration
+
+Erledigt: zu kleine Fenster auf dem Notebook (8.4.06)
+
+Erledigt:
+Menübefehl Neu sollte Auswahl haben.
+
+Erledigt:
+Die Schüler haben mehrere Textfelder angelegt, die beim Pogrammstart
+einen leerem Inhalt haben sollten. Im Objektinspektor haben einige dabei
+dann statt des Feldes "text" versehentlich das Feld "name" gelöscht mit
+dem "Erfolg", dass daraufhin im Quellcode mehrere "Objekt-Leichen" ohne
+Namen existierten, die sich auch nach Neueingabe eines Namens nicht
+wieder reaktivieren ließen. Wenn es mehrere solcher Objekte gibt, kann
+man die praktisch auch nicht mehr per Hand reparieren, da hilft nur noch
+löschen...
+
+Erledigt
+Ctrl+Space für CodeCompletion funktioniert nicht
+
+Erledigt:
+Neue Klasse aus UML-Fenster
+
+Erledigt:
+Nachdem man einmal im Text "meinVector JSlider" nach JSlider gesucht hat,
+gibt es Probleme beim Beenden des Editors.
+
+Erledigt:
+Ist der Appletviewer gestartet und versucht man den JavaEditor zu beenden,
+dann gibt es Probleme.
+
+
+Jar erzeugen im package-format
+Beispiel: remasp
+
+im Ordner D:\EigeneDokumente\HKM Landesabitur\Registermaschine\remasp\srcroehner von remasp aufzurufen
+
+jar cvf mylib.jar controller/*.class Files/*.gif model/*.class view/*.class   Files/images/*.gif
+
+jar cvf mylib.jar remasp/*.class remasp/controller/*.class remasp/Files/*.gif remasp/model/*.class remasp/view/*.class   remasp/Files/images/*.gif
+
+
+E:\jdks\jdk1.8.0_92\bin\jar.exe -cfvm "D:\EigeneDokumente\HKM Landesabitur\Registermaschine\remasp\srcroehner\Remasp.jar"
+   C:\Users\roehner\AppData\Local\Temp\MANIFEST.MF remasp
+
+Die MANIFEST.MF-Datei wird falsch erzeugt, weil die Package-Angabe
+Main-Class: remasp.Remasp
+fehlt.
+
+Außerdem werden bei obigem Aufruf die java-Dateien mit aufgenommen.
+
+
