@@ -58,7 +58,7 @@ unit UDebugger;
 interface
 
 uses Windows, System.Classes, ComCtrls,
-     UQueue, UFrmEditor, UFrmSequencediagram, UUtils;
+     UQueue, UEditorForm, USequenceForm, UUtils;
 
 const
   // constants for sub-windows

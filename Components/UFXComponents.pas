@@ -238,7 +238,7 @@ type
 
 implementation
 
-uses SysUtils, UFrmBaseform, UFrmEditor, UImages, UUtils, TypInfo, JvGnugettext,
+uses SysUtils, UBaseForm, UEditorForm, UImages, UUtils, TypInfo, JvGnugettext,
      UStringRessources, UJava,
      UObjectInspector, UGuiForm, UConfiguration, ULink, UITypes;
 

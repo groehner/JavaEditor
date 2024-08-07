@@ -21,7 +21,7 @@ unit UCodeProvider;
 
 interface
 
-uses Classes, UFrmBaseform;
+uses Classes, UBaseForm;
 
 type
   { Enum specifying the reason OnCodeChange was called.}

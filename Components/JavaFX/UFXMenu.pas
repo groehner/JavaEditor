@@ -156,7 +156,7 @@ type
 implementation
 
 uses SysUtils, Graphics,
-     UGUIForm, UJava, UUtils, UJEComponents, UFrmEditor;
+     UGUIForm, UJava, UUtils, UJEComponents, UEditorForm;
 
 {--- TFXMenuBar ---------------------------------------------------------------}
 

@@ -3,7 +3,7 @@ unit UFileStructure;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, ComCtrls, Menus, UFrmBaseform, UDockForm,
+  Classes, Graphics, Controls, Forms, ComCtrls, Menus, UBaseForm, UDockForm,
   System.ImageList, Vcl.ImgList, Vcl.VirtualImageList, Vcl.BaseImageCollection,
   SVGIconImageCollection, TB2Item, SpTBXItem;
 
@@ -67,7 +67,7 @@ implementation
 {$R *.dfm}
 
 uses Windows, SysUtils, Messages, Math, Dialogs, SynEditTypes, JvGnugettext,
-     UJava, UFrmEditor, UFrmUMLdiagram, UConfiguration, UUtils, UGuiDesigner;
+     UJava, UEditorForm, UUMLForm, UConfiguration, UUtils, UGuiDesigner;
 
 constructor TInteger.create(aI: Integer);
 begin
@@ -143,7 +143,8 @@ begin
     TVFileStructure.FullExpand;
     TVFileStructure.HideSelection:= false;
     TVFileStructure.Items.EndUpdate;
-    Form.SetFocus;
+    if Form.CanFocus then
+      Form.SetFocus;
     FJava.Lock.Release;
   end;
 end;

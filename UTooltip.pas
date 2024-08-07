@@ -66,7 +66,7 @@ type
 
 implementation
 
-uses SysUtils, UJava, UConfiguration, UUtils, UFrmEditor;
+uses SysUtils, UJava, UConfiguration, UUtils, UEditorForm;
 
 {$R *.dfm}
 

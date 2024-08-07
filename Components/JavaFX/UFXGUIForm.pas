@@ -57,7 +57,7 @@ type
 implementation
 
 uses SysUtils, JvGnugettext, UStringRessources,
-     UConfiguration, UFrmEditor;
+     UConfiguration, UEditorForm;
 
 {--- TFXGuiForm ---------------------------------------------------------------}
 

@@ -58,7 +58,7 @@ implementation
 
 uses
   SysUtils, Graphics, Dialogs, Math,
-  JvGnugettext, UConfiguration, UUtils, UJava, UFrmEditor, UFrmBaseform;
+  JvGnugettext, UConfiguration, UUtils, UJava, UEditorForm, UBaseForm;
 
 {$R *.dfm}
 

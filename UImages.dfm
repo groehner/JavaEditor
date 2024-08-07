@@ -5258,6 +5258,18 @@ object DMImages: TDMImages
           ' 2h2M2 12h1M4 12h11M1 13h2M4 13h2M7 13h2M10 13h3M14 13h1" />'#13#10'<p' +
           'ath stroke="#00009a" d="M3 1h1M6 1h1M9 1h1M11 1h1M3 12h1M3 13h1M' +
           '6 13h1M9 13h1M13 13h1" />'#13#10'</svg>'#13#10
+      end
+      item
+        IconName = '94'
+        SVGText = 
+          '<svg viewBox="0 0 114 110" >'#13#10#13#10'<path stroke="#000000" stroke-wi' +
+          'dth="10" d="M8 80 h101.5'#13#10'  M70 60 l39 20  M70 100 l 39 -20'#13#10'  "' +
+          '/>  '#13#10#13#10'<path stroke="#000000" fill="#ff0" transform="matrix(.51' +
+          '317 0 0 .4885 -3.115 -.567)" style="fill:#ff0;stroke:#060603;str' +
+          'oke-opacity:1;stroke-width:10;stroke-miterlimit:4.0999999;stroke' +
+          '-dasharray:none" d="M53.009 54.872 64 13.9l10.991 40.97L64 13.90' +
+          '2l10.991 40.97 42.362-2.207L81.784 75.78l15.19 39.606L64 88.7l-3' +
+          '2.974 26.685 15.19-39.606-35.57-23.115z"/>'#13#10#13#10'</svg>'
       end>
     Left = 48
     Top = 24
@@ -6939,6 +6951,18 @@ object DMImages: TDMImages
           ' 2h2M2 12h1M4 12h11M1 13h2M4 13h2M7 13h2M10 13h3M14 13h1" />'#13#10'<p' +
           'ath stroke="#00009a" d="M3 1h1M6 1h1M9 1h1M11 1h1M3 12h1M3 13h1M' +
           '6 13h1M9 13h1M13 13h1" />'#13#10'</svg>'#13#10
+      end
+      item
+        IconName = '94'
+        SVGText = 
+          '<svg viewBox="0 0 114 110" >'#13#10#13#10'<path stroke="#f0f0f0" stroke-wi' +
+          'dth="10" d="M8 80 h101.5'#13#10'  M70 60 l39 20  M70 100 l 39 -20'#13#10'  "' +
+          '/>  '#13#10#13#10'<path stroke="#eoeoeo" fill="#ff0" transform="matrix(.51' +
+          '317 0 0 .4885 -3.115 -.567)" style="fill:#ff0;stroke:#f0f0f0;str' +
+          'oke-opacity:1;stroke-width:10;stroke-miterlimit:4.0999999;stroke' +
+          '-dasharray:none" d="M53.009 54.872 64 13.9l10.991 40.97L64 13.90' +
+          '2l10.991 40.97 42.362-2.207L81.784 75.78l15.19 39.606L64 88.7l-3' +
+          '2.974 26.685 15.19-39.606-35.57-23.115z"/>'#13#10#13#10'</svg>'
       end>
     Left = 160
     Top = 24

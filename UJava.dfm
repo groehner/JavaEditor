@@ -5,8 +5,8 @@ object FJava: TFJava
   HelpType = htKeyword
   VertScrollBar.Visible = False
   Caption = 'Java-Editor'
-  ClientHeight = 509
-  ClientWidth = 871
+  ClientHeight = 508
+  ClientWidth = 867
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -26,8 +26,8 @@ object FJava: TFJava
   TextHeight = 15
   object HSplitter: TSplitter
     Left = 0
-    Top = 505
-    Width = 871
+    Top = 504
+    Width = 867
     Height = 3
     Cursor = crVSplit
     Align = alBottom
@@ -40,9 +40,9 @@ object FJava: TFJava
     ExplicitWidth = 858
   end
   object VSplitter: TSplitter
-    Left = 868
+    Left = 864
     Top = 78
-    Height = 427
+    Height = 426
     Align = alRight
     Color = clActiveCaption
     ParentColor = False
@@ -53,8 +53,8 @@ object FJava: TFJava
   end
   object BottomDockPanel: TPanel
     Left = 0
-    Top = 508
-    Width = 871
+    Top = 507
+    Width = 867
     Height = 1
     Align = alBottom
     DockSite = True
@@ -65,14 +65,14 @@ object FJava: TFJava
     OnGetSiteInfo = BottomDockPanelGetSiteInfo
     OnStartDock = BottomDockPanelStartDock
     OnUnDock = BottomDockPanelUnDock
-    ExplicitTop = 507
-    ExplicitWidth = 867
+    ExplicitTop = 506
+    ExplicitWidth = 863
   end
   object RightDockPanel: TPanel
-    Left = 871
+    Left = 867
     Top = 78
     Width = 0
-    Height = 427
+    Height = 426
     Align = alRight
     DockSite = True
     DragKind = dkDock
@@ -81,23 +81,23 @@ object FJava: TFJava
     OnDockOver = RightDockPanelDockOver
     OnGetSiteInfo = RightDockPanelGetSiteInfo
     OnUnDock = RightDockPanelUnDock
-    ExplicitLeft = 867
-    ExplicitHeight = 426
+    ExplicitLeft = 863
+    ExplicitHeight = 425
   end
   object MainPanel: TPanel
     Left = 0
     Top = 78
-    Width = 868
-    Height = 427
+    Width = 864
+    Height = 426
     Align = alClient
     TabOrder = 2
-    ExplicitWidth = 864
-    ExplicitHeight = 426
+    ExplicitWidth = 860
+    ExplicitHeight = 425
   end
   object TBXDockTop: TSpTBXDockablePanel
     Left = 0
     Top = 0
-    Width = 871
+    Width = 867
     Height = 78
     Align = alTop
     DockMode = dmCannotFloatOrChangeDocks
@@ -109,16 +109,17 @@ object FJava: TFJava
     Options.TitleBarMaxSize = 0
     ShowCaption = False
     ShowCaptionWhenDocked = False
+    ExplicitWidth = 871
     object ControlBar: TSpTBXPanel
       Left = 0
       Top = 21
-      Width = 871
+      Width = 867
       Height = 57
       Caption = 'ControlBar'
       Align = alClient
       Constraints.MaxHeight = 59
       TabOrder = 1
-      ExplicitWidth = 867
+      ExplicitWidth = 624
       object DebugToolbar: TSpTBXToolbar
         Left = 3
         Top = 28
@@ -2448,7 +2449,7 @@ object FJava: TFJava
     object MainMenu: TSpTBXToolbar
       Left = 0
       Top = 0
-      Width = 871
+      Width = 867
       Height = 21
       Align = alTop
       Images = vilMenuLight
@@ -2457,7 +2458,7 @@ object FJava: TFJava
       TabOrder = 2
       Customizable = False
       MenuBar = True
-      ExplicitWidth = 867
+      ExplicitWidth = 863
       object MIFile: TSpTBXSubmenuItem
         Caption = '&File'
         object MINew: TSpTBXSubmenuItem
@@ -2999,6 +3000,12 @@ object FJava: TFJava
           ImageIndex = 73
           ImageName = '73'
           OnClick = MIRefreshClick
+        end
+        object MIRecognizeAssociations: TSpTBXItem
+          Caption = 'Recognize assoziations'
+          ImageIndex = 94
+          ImageName = '94'
+          OnClick = MIRecognizeAssociationsClick
         end
         object MIDiagramFromOpenFiles: TSpTBXItem
           Caption = 'Diagram from open files'
@@ -5897,6 +5904,11 @@ object FJava: TFJava
         CollectionIndex = 93
         CollectionName = '93'
         Name = '93'
+      end
+      item
+        CollectionIndex = 94
+        CollectionName = '94'
+        Name = '94'
       end>
     ImageCollection = DMImages.icMenuLight
     Left = 424
@@ -6373,6 +6385,11 @@ object FJava: TFJava
         CollectionIndex = 93
         CollectionName = '93'
         Name = '93'
+      end
+      item
+        CollectionIndex = 94
+        CollectionName = '94'
+        Name = '94'
       end>
     ImageCollection = DMImages.icMenuDark
     Left = 536

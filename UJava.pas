@@ -14,8 +14,8 @@ uses
   Buttons, ExtCtrls, Menus, ComCtrls, SyncObjs,
   Generics.Collections, JvTabbar, VirtualTrees,
   SynEdit, SynEditSearch, SynCompletionProposal, USynEditEx, UDockForm,
-  UFrmEditor, UFrmBaseform, UFrmUMLdiagram, UFrmStructogram,
-  UFrmSequencediagram, UFrmBrowser, UGUIForm, Vcl.DdeMan, Vcl.ToolWin,
+  UEditorForm, UBaseForm, UUMLForm, UStructogramform,
+  USequenceForm, UBrowserForm, UGUIForm, Vcl.DdeMan, Vcl.ToolWin,
   System.ImageList, Vcl.ImgList, Vcl.VirtualImageList, TB2Item, SpTBXItem,
   TB2Dock, TB2Toolbar, SpTBXTabs, SpTBXDkPanels, SpTBXControls;
 
@@ -519,6 +519,7 @@ type
     TBApplication: TToolButton;
     ControlBar: TSpTBXPanel;
     vilLayoutDark: TVirtualImageList;
+    MIRecognizeAssociations: TSpTBXItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -731,6 +732,7 @@ type
     procedure FormAfterMonitorDpiChanged(Sender: TObject; OldDPI,
       NewDPI: Integer);
     procedure TBCompileJavaClick(Sender: TObject);
+    procedure MIRecognizeAssociationsClick(Sender: TObject);
   private
     FixedWindows: array of TFForm;
     EditClass: string;
@@ -861,7 +863,7 @@ type
     procedure ShowSearchReplaceDialog(Editor: TSynEditEx; AReplace: boolean);
     procedure DoSearchReplaceText(Editor: TSynEditEx; AReplace: boolean);
     procedure NotFound(Editor: TSynEdit; Backwards: boolean);  // Ex
-    function HasAValidClass(const Pathname: string): boolean;
+    function IsAValidClass(const Pathname: string): boolean;
     procedure RefreshUMLWindows;
     procedure CompileList(SL: TStringList);
     procedure CompileOneWith(const Pathname: string);
@@ -928,10 +930,10 @@ uses SysUtils, ShellAPI, StdCtrls, Themes, StrUtils, IOUtils,
   UModel, uCodeCompletion, UScpHint, UWindow, UDlgUpdate,
   UObjectInspector, UGUIDesigner, UDlgClassEditor, UJavaCommands,
   URtfdDiagram, UDlgSearch, UDlgReplace, UClassInsert,
-  UFrmTextDiff, USubversion, UDlgUnicode, URegExSearch, USearchOptions,
+  UTextDiffForm, USubversion, UDlgUnicode, URegExSearch, USearchOptions,
   UComJava1, UDlgConfigureTools, UDlgMindstorms, UDlgMindstormsEV3,
   UConjoinHost, UTabHost, UDebugger, UTooltip, UFXGuiForm, UFileStructure,
-  UDlgMessage, UTabObject, UGit, UJUnitTest, UFrmExplorer, UImages,
+  UDlgMessage, UTabObject, UGit, UJUnitTest, UExplorerForm, UImages,
   UTemplates, JvGnugettext, UStringRessources, UJEComponents;
 
 {--- TFJava -------------------------------------------------------------------}
@@ -1558,6 +1560,12 @@ begin
     FMessages.Undo
   else if Assigned(ActiveTDIChild) then
     ActiveTDIChild.Undo;
+end;
+
+procedure TFJava.MIRecognizeAssociationsClick(Sender: TObject);
+begin
+  if Assigned(ActiveTDIChild) and (ActiveTDIChild is TFUMLForm) then
+    (ActiveTDIChild as TFUMLForm).TBRecognizeAssociationsClick(self);
 end;
 
 procedure TFJava.MIRedoClick(Sender: TObject);
@@ -5083,9 +5091,10 @@ begin
       if UMLForm.DefaultFilename
         then UMLForm.Modified:= true
         else DoSave(UMLForm, false);
-      UMLForm.Refresh;
+      UMLForm.SaveAndReload;
       UMLForm.MainModul.Diagram.ResolveAssociations;
       UMLForm.MainModul.DoLayout;
+      UMLForm.CreateTVFileStructure;
     end;
   finally
     FreeAndNil(SL);
@@ -6112,7 +6121,7 @@ begin
   myJavaCommands.ExecWithoutWait(ParamStr(0), s, '', SW_ShowNormal);
 end;
 
-function TFJava.HasAValidClass(const Pathname: string): boolean;
+function TFJava.IsAValidClass(const Pathname: string): boolean;
 begin
   var F:= getTDIWindowType(Pathname, '%E%');
   var Modified:= assigned(F) and (F as TFEditForm).Modified and F.Visible;
@@ -6513,6 +6522,7 @@ begin
     TDIFormsList[i].ChangeStyle;
 
   FMessages.ChangeStyle;
+  FGUIDesigner.ChangeStyle;
   if assigned(FObjectInspector) then
     FObjectInspector.ChangeStyle;
   if assigned(FJUnitTests) then
@@ -6783,9 +6793,7 @@ begin
   end else
     s:= 'Java-Editor';
   if Caption <> s then
-      Caption:= s;
-  //FMessages.OutputToTerminal('OnIdle: ' + IntToStr(aIdle));
-  //inc(aIdle);
+    Caption:= s;
 
   if not assigned(EditorForm) then
     EditorForm:= getActiveEditor;
@@ -6796,28 +6804,14 @@ begin
   if assigned(EditorForm) and Editorform.isJava and EditorForm.NeedsParsing and
      ((Editorform.ParseThread = nil) or (EditorForm.ParseThread.state <> 2)) then
   begin
-    //QueryPerformanceFrequency(freq);
-    //QueryPerformanceCounter(startTime);
-    //inc(idle);
-    //EditorForm.ParseSourcecodeIdle;
-    //label1.caption:= IntTostr(Idle) + ' - ' + IntToStr(idle2);
-    //Application.processMessages;
-    //FMessages.OutputToTerminal('ParseSourceCodeWithThread');
     EditorForm.ParseSourceCodeWithThread(false);
-    //QueryPerformanceCounter(endTime);
-    //Memo1.Lines.Add( IntToStr((endTime - startTime) * 1000 div freq) + 'ms');
   end;
 
   if assigned(EditorForm) and Editorform.isJava and not EditorForm.NeedsParsing and
      assigned(EditorForm.ParseThread) and (EditorForm.ParseThread.state = 3) then
   begin
-    //inc(idle2);
     EditorForm.CreateTVFileStructure;
     EditorForm.ParseThread.state:= 0;
-    //label1.caption:= IntTostr(Idle) + ' - ' + IntToStr(idle2);
-    //Application.processMessages;
-    //QueryPerformanceCounter(endTime);
-    //Memo1.Lines.Add( IntToStr((endTime - startTime) * 1000 div freq) + 'ms');
   end;
   Done:= true;
 end;
@@ -6826,15 +6820,8 @@ procedure TFJava.AppOnMessage(var Msg: TMsg; var Handled: Boolean);
   var s: string; aControl : TWinControl;
 begin
   s:=  Screen.ActiveCustomForm.Name;
-
   aControl := Screen.ActiveControl; // or Application.ActiveControl (sorry, don't remember)
   while Assigned(aControl) and not (aControl is TForm) do aControl := aControl.Parent;
-
-  //FMessages.OutputToTerminal(IntToStr(Msg.message) + ' - ' + s + ' - ' + Screen.ActiveControl.name);
-  {  case Msg.Message of
-      WM_KEYFIRST..WM_KEYLAST,     // Keyboard events
-      WM_MOUSEFIRST..WM_MOUSELAST: // Mouse events
-    end;  }
 end;
 
 procedure TFJava.ActiveControlChanged(Sender: TObject);

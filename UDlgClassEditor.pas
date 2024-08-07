@@ -5,7 +5,7 @@ interface
 uses
   Controls, Classes, Forms, StdCtrls, ComCtrls, ImgList, ExtCtrls,
   Buttons, ActnList,
-  UModel, UFrmUMLdiagram, UFrmEditor, System.ImageList, System.Actions,
+  UModel, UUMLForm, UEditorForm, System.ImageList, System.Actions,
   SVGIconImageListBase, SVGIconVirtualImageList, Vcl.BaseImageCollection,
   SVGIconImageCollection, Vcl.VirtualImageList;
 
@@ -180,7 +180,7 @@ type
     procedure ChangeMethod(var M: TOperation);
     procedure ReplaceMethod(var Method: TOperation; const New: string);
     function MakeMethod: TOperation;
-    function CreateMethod(const getset: string; Attribute: TAttribute): string;
+    function CreateMethod(const getset: string; const Attribute: TAttribute): string;
     function makeConstructor(method: TOperation; Source: string): string;
     function Typ2Value(const typ: string): string;
     procedure MoveNode(TargetNode, SourceNode : TTreeNode);
@@ -222,7 +222,7 @@ implementation
 uses Math, UITypes, StrUtils, Character, Windows, Messages, SysUtils, Graphics,
      Dialogs,
      SynEdit, JvGnugettext, UStringRessources, UGUIForm, UModelEntity,
-     UJava, UConfiguration, UUtils, UFrmBaseform, UJavaParser, UFileStructure;
+     UJava, UConfiguration, UUtils, UBaseForm, UJavaParser, UFileStructure;
 
 type TParamTyp = class (TObject)
      public
@@ -1186,7 +1186,7 @@ begin
   Result:= ' = ' + s;
 end;
 
-function TFClassEditor.CreateMethod(const getset: string; Attribute: TAttribute): string;
+function TFClassEditor.CreateMethod(const getset: string; const Attribute: TAttribute): string;
   var s, aName, attname, bigName, Indent, datatype, param: string;
 begin
   Indent:= FConfiguration.Indent1;

@@ -17,14 +17,16 @@ type
     BCancel: TButton;
     LMessage: TLabel;
     ERelation: TEdit;
-    vilPopupDark: TVirtualImageList;
-    vilPopupLight: TVirtualImageList;
+    vilConnectionsDark: TVirtualImageList;
+    vilConnectionsLight: TVirtualImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LBConnectionsClick(Sender: TObject);
     procedure LBConnectionsDblClick(Sender: TObject);
     procedure LBConnectionsDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
+  private
+    ILConnections: TVirtualImageList;
   public
     isTurned: boolean;
     procedure init(IsConnecting: boolean; conn: TConnection; SelectedControls: integer);
@@ -42,6 +44,9 @@ begin
   TranslateComponent(Self);
   LBConnections.Color:= StyleServices.GetSystemColor(clWindow);
   LBConnections.ItemHeight:= LBConnections.Height div LBConnections.Items.Count;
+  if FConfiguration.isDark
+    then ILConnections:= vilConnectionsDark
+    else ILConnections:= vilConnectionsLight;
 end;
 
 procedure TFConnectDialog.FormShow(Sender: TObject);
@@ -53,7 +58,8 @@ begin
   if Left + Width > Application.MainForm.Width then
     Left:= Application.MainForm.Width - Width - 25;
   ShowScrollBar(LBConnections.Handle, SB_VERT, false);
-  ERelation.SetFocus;
+  if ERelation.CanFocus then
+    ERelation.SetFocus;
 end;
 
 procedure TFConnectDialog.LBConnectionsDrawItem(Control: TWinControl;
@@ -62,15 +68,15 @@ begin
   var aCaption:= (Control as TListBox).Items[Index];
   var aCanvas:= (Control as TListBox).Canvas;
   aCanvas.FillRect(Rect);
-  if FConfiguration.isDark
-    then vilPopupDark.Draw(aCanvas, 0, Rect.Top, Index)
-    else vilPopupLight.Draw(aCanvas, 0, Rect.Top, Index);
-  aCanvas.TextOut(vilPopupDark.Height + 8, Rect.Top, aCaption);
+  ILConnections.SetSize(Rect.Height, Rect.Height);
+  ILConnections.Draw(aCanvas, 4, Rect.Top, 12 + Index);
+  aCanvas.TextOut(4 + ILConnections.Width + 8, Rect.Top + 2, aCaption);
 end;
 
 procedure TFConnectDialog.LBConnectionsClick(Sender: TObject);
 begin
-  ERelation.SetFocus;
+  if ERelation.CanFocus then
+    ERelation.SetFocus;
 end;
 
 procedure TFConnectDialog.LBConnectionsDblClick(Sender: TObject);

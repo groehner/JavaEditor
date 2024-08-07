@@ -4,8 +4,8 @@ object FConnectDialog: TFConnectDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Connection types'
-  ClientHeight = 202
-  ClientWidth = 297
+  ClientHeight = 201
+  ClientWidth = 314
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -99,7 +99,7 @@ object FConnectDialog: TFConnectDialog
     ParentFont = False
     TabOrder = 0
   end
-  object vilPopupDark: TVirtualImageList
+  object vilConnectionsDark: TVirtualImageList
     Images = <
       item
         CollectionIndex = 12
@@ -195,7 +195,7 @@ object FConnectDialog: TFConnectDialog
     Left = 200
     Top = 9
   end
-  object vilPopupLight: TVirtualImageList
+  object vilConnectionsLight: TVirtualImageList
     Images = <
       item
         CollectionIndex = 0

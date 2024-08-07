@@ -3,7 +3,7 @@ unit UGit;
 interface
 
 uses
-  Forms, StdCtrls, ComCtrls, UFrmEditor, System.Classes, Vcl.Controls;
+  Forms, StdCtrls, ComCtrls, UEditorForm, System.Classes, Vcl.Controls;
 
 type
   TFGit = class(TForm)

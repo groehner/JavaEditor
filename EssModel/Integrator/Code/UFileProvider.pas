@@ -21,7 +21,7 @@ unit UFileProvider;
 
 interface
 
-uses Classes, uCodeProvider, UFrmBaseform;
+uses Classes, uCodeProvider, UBaseForm;
 
 type
 
@@ -40,7 +40,7 @@ type
 
 implementation
 
-uses SysUtils, UJava, UFrmEditor, UUtils, SynUnicode;
+uses SysUtils, UJava, UEditorForm, UUtils, SynUnicode;
 
 { TFileProvider }
 

@@ -1,8 +1,8 @@
 object AFrameDiagram: TAFrameDiagram
   Left = 0
   Top = 0
-  Width = 487
-  Height = 459
+  Width = 501
+  Height = 455
   Align = alClient
   TabOrder = 0
   TabStop = True
@@ -2665,7 +2665,7 @@ object AFrameDiagram: TAFrameDiagram
         Name = 'Constructor'
       end>
     ImageCollection = icUMLRtfdComponents
-    Left = 232
+    Left = 216
     Top = 383
   end
   object vilUMLRtfdComponentsDark: TVirtualImageList
@@ -2716,7 +2716,7 @@ object AFrameDiagram: TAFrameDiagram
         Name = 'Constructor'
       end>
     ImageCollection = icUMLRtfdComponents
-    Left = 379
+    Left = 395
     Top = 383
   end
   object icUMLRtfdComponents: TSVGIconImageCollection

@@ -26,7 +26,7 @@ type
 implementation
 
 uses SysUtils, JvGnugettext,
-     UJava, UFrmEditor, UConfiguration, UUtils;
+     UJava, UEditorForm, UConfiguration, UUtils;
 
 {$R *.DFM}
 

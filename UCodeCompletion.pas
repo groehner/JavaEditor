@@ -3,7 +3,7 @@ unit UCodeCompletion;
 interface
 
 uses Classes, Controls, uHTMLParser, UScpHint, UModel,
-     UFrmEditor, UJavaScanner, SynCompletionProposal;
+     UEditorForm, UJavaScanner, SynCompletionProposal;
 
 type
 

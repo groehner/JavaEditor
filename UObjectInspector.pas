@@ -109,7 +109,7 @@ implementation
 uses Windows, SysUtils, Dialogs, Clipbrd, Math, Themes, StrUtils, JvGnugettext,
      UGUIForm, UGUIDesigner, UJava, UConfiguration,
      UUtils, UJPanel, UFXComponents, UAComponents,
-     UJEComponents, UFXGuiForm, UFrmBaseform, UFrmEditor, UJGuiForm;
+     UJEComponents, UFXGuiForm, UBaseForm, UEditorForm, UJGuiForm;
 
 {$R *.dfm}
 

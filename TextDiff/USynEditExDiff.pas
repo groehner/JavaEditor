@@ -72,7 +72,7 @@ implementation
 
 uses SysUtils, Windows, Controls, Forms, Clipbrd,
      JvGnugettext, UStringRessources,
-     UFrmTextDiff, UDlgConfirmReplace, UFrmBaseform, UUtils,
+     UTextDiffform, UDlgConfirmReplace, UBaseForm, UUtils,
      SynEditTypes, {$WARNINGS OFF} FileCtrl, {$WARNINGS ON}
      UConfiguration, UJava;
 

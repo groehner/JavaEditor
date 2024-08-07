@@ -3,7 +3,7 @@ unit UDlgGrepSearch;
 interface
 
 uses
-  Forms, StdCtrls, UFrmEditor, Vcl.Controls, System.Classes;
+  Forms, StdCtrls, UEditorForm, Vcl.Controls, System.Classes;
 
 type
   TFGrepSearch = class(TForm)

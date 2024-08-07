@@ -73,7 +73,7 @@ type
 implementation
 
 uses Dialogs, SysUtils, Messages, DateUtils,
-     JvGnugettext, UStringRessources, UFrmUMLdiagram, UJava, UDlgAbout, UUtils,
+     JvGnugettext, UStringRessources, UUMLForm, UJava, UDlgAbout, UUtils,
      UMessages, UConfiguration, UDebugger, UUMLModule, URtfdDiagram;
 
 var activeComJava: TComJava1;   // the active ComJava

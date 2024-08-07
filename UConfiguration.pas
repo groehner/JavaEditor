@@ -1366,7 +1366,7 @@ implementation
 uses Zip, StrUtils, Printers, ShlObj, Math, Themes, SHDocVw, ShellAPI, IOUtils,
      UITypes, JvGnugettext,
      SynUnicode, SynEditKeyCmds, TB2Item, SpTBXTabs,
-     UJava, UFrmEditor, UFrmBaseform, UUtils, UHtmlHelp,
+     UJava, UEditorForm, UBaseForm, UUtils, UHtmlHelp,
      UDlgClasspath, UDlgAbout, UDlgDownload, UDlgJarCreate,
      USubversion, UScpHint, UImages, UJavaScanner, UGit, UCodeCompletion,
      UStringRessources, UJavaCommands;

@@ -160,7 +160,7 @@ type
 
 implementation
 
-uses SysUtils, UITypes, UFrmEditor, UFrmBaseform,
+uses SysUtils, UITypes, UEditorForm, UBaseForm,
      UUtils, ULink, UGUIForm, UGUIDesigner, JvGnugettext,
      UStringRessources, UObjectInspector, UConfiguration;
 

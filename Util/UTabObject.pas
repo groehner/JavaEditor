@@ -2,7 +2,7 @@ unit UTabObject;
 
 interface
 
-uses UFrmBaseform;
+uses UBaseForm;
 
 type TTabObject = class
        path: string;

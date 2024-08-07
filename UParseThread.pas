@@ -2,7 +2,7 @@ unit UParseThread;
 
 interface
 
-uses Classes, UFrmBaseform;
+uses Classes, UBaseForm;
 
 type
 
@@ -22,7 +22,7 @@ type
 
 implementation
 
-uses SysUtils, UConfiguration, UJavaParser, uFileProvider, UFrmEditor, UUtils;
+uses SysUtils, UConfiguration, UJavaParser, uFileProvider, UEditorForm, UUtils;
 
 var i: integer;
 

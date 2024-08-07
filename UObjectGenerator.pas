@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Graphics, Forms, Dialogs, StdCtrls, ComCtrls, Grids, ValEdit,
-  UFrmEditor, Vcl.Controls;
+  UEditorForm, Vcl.Controls;
 
 const
   TagNormal        =  0;
@@ -44,7 +44,7 @@ type
     procedure SaveWindow;
     procedure PrepareEditClass(const aCaption, Title, ObjectNameOld: string);
     procedure PrepareEditObjectOrParams(const aCaption, Title: string);
-    procedure AddRow(Attribut: string; const Value: string; es: TEditStyle; const Pick: string; _Tag: integer);
+    procedure AddRow(Attribute: string; const Value: string; es: TEditStyle; const Pick: string; _Tag: integer);
     procedure DeleteRow;
     procedure SetRow(i: integer);
     procedure SetColWidths;
@@ -173,12 +173,10 @@ begin
   max2:= 0;
   for i:= 0 to ValueListEditor.RowCount - 1 do begin
     s:= ValueListEditor.Cells[0, i];
-    max1:= Math.Max(length(s), max1);
+    max1:= Math.Max(Canvas.TextWidth(s), max1);
     s:= ValueListEditor.Cells[1, i];
-    max2:= Math.max(length(s), max2);
+    max2:= Math.max(Canvas.TextWidth(s), max2);
   end;
-  max1:= max1*(Font.Size-2);
-  max2:= max2*(Font.Size-2);
   max1:= max1 + 10;
   max2:= max2 + 10;
   if Width < max1 + 1 + max2 then
@@ -239,12 +237,12 @@ begin
       ModalResult:= mrOK;
 end;
 
-procedure TFObjectGenerator.AddRow(Attribut: string; const Value: string; es: TEditStyle;
+procedure TFObjectGenerator.AddRow(Attribute: string; const Value: string; es: TEditStyle;
                                    const Pick: string; _Tag: integer);
 begin
-  if Pos('$', Attribut) > 0 then // enum type?
-    Attribut[Pos('$', Attribut)]:= '.';
-  ValueListEditor.InsertRow(Attribut, Value, true);
+  if Pos('$', Attribute) > 0 then // enum type?
+    Attribute[Pos('$', Attribute)]:= '.';
+  ValueListEditor.InsertRow(Attribute, Value, true);
   var i:= ValueListEditor.RowCount - 1;
   case es of
     esPickList: ValueListEditor.ItemProps[i-1].PickList.Text:= Pick;

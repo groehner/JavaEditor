@@ -59,7 +59,7 @@ implementation
 
 uses
   SysUtils, Controls, Forms, USynEditEx, JvGnugettext, UStringRessources,
-  UJava, UFrmEditor, UConfiguration, UUtils, UMessages,
+  UJava, UEditorForm, UConfiguration, UUtils, UMessages,
   USearchOptions, URegExSearch, UDlgSearchAbort, SynEditTypes, UITypes;
 
 {--- TSearchResults -----------------------------------------------------------}

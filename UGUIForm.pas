@@ -2,7 +2,7 @@ unit UGUIForm;
 
 interface
 
-uses Messages, Windows, Classes, Graphics, Forms, Controls, UFrmBaseform,
+uses Messages, Windows, Classes, Graphics, Forms, Controls, UBaseForm,
   Vcl.StdCtrls, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList;
 
 type
@@ -66,13 +66,6 @@ type
     procedure SetGridOptions;
   public
     ReadOnly: boolean;
-    vilControls1315: TVirtualImageList;
-    vilControls1616: TVirtualImageList;
-    vilControls1618: TVirtualImageList;
-    vilControls21616: TVirtualImageList;
-    vilPagination: TVirtualImageList;
-    vilTurtles: TVirtualImageList;
-    vilFXTurtle: TVirtualImageList;
     constructor Create(AOwner: TComponent); override;
     function getAttributes(ShowAttributes: integer): string;
     function getEvents(ShowEvents: integer): string;
@@ -145,7 +138,7 @@ type
 implementation
 
 uses SysUtils, ComCtrls, Clipbrd, UXTheme, JvGnugettext, UStringRessources,
-     SpTBXTabs, UJava, UGUIDesigner, UObjectInspector, UFrmEditor, UMessages,
+     SpTBXTabs, UJava, UGUIDesigner, UObjectInspector, UEditorForm, UMessages,
      UUtils, UObjectGenerator, UAComponents, UJEComponents, UConfiguration;
 
 {$R *.DFM}

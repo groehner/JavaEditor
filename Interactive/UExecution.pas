@@ -2,7 +2,7 @@ unit UExecution;
 
 interface
 
-uses Contnrs, Classes, Grids, SynEdit, UFrmUMLdiagram, UComJava1;
+uses Contnrs, Classes, Grids, SynEdit, UUMLForm, UComJava1;
 
 type
 

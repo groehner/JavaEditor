@@ -76,6 +76,7 @@ type
     procedure ScreenCenterEntity(E : TModelEntity); virtual; abstract;
     procedure DeleteSelectedControlsAndRefresh; virtual; abstract;
     procedure DeleteObjects; virtual; abstract;
+    function hasObjects: boolean; virtual; abstract;
     procedure ClassEditSelectedDiagramElements; overload; virtual; abstract;
     procedure ClassEditSelectedDiagramElements(Sender: TObject); overload; virtual; abstract;
     procedure SourceEditSelectedDiagramElementsControl(C: TControl); virtual; abstract;
@@ -137,6 +138,7 @@ type
     function getClasses: TStringList; virtual; abstract;
     procedure Retranslate; virtual; abstract;
     procedure SetUMLFont; virtual; abstract;
+    function HasAInvalidClass: boolean; virtual; abstract;
 
     //Current package
     property Package: TAbstractPackage read FPackage write SetPackage;

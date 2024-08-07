@@ -3,7 +3,7 @@
 interface
 
 uses Windows, Classes, ComCtrls,
-     UFrmEditor, UModel, UComJava1, UUtils;
+     UEditorForm, UModel, UComJava1, UUtils;
 
 const
   BufSize = $4000;  // of ReadBuf
@@ -73,7 +73,7 @@ implementation
 
 uses SysUtils, Forms, Controls, StdCtrls, Dialogs, StrUtils, Graphics, ShellApi,
      WideStrUtils, Threading, JvGnugettext, UStringRessources,
-     UJava, UMessages, UFrmBaseform, UDlgAbout, UConfiguration,
+     UJava, UMessages, UBaseForm, UDlgAbout, UConfiguration,
      UJUnitTest, UModelEntity;
 
 constructor TJavaCommands.Create;

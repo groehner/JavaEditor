@@ -26,7 +26,7 @@ interface
 uses Controls, Types, Graphics, Classes, Forms, ExtCtrls,
   uDiagramFrame, uRtfdComponents, uListeners, UJniWrapper1,
   UComJava1, UMessages, uViewIntegrator, UEssConnectPanel, uModelEntity,
-  uModel, UUtils, UFrmUMLdiagram, UFrmSequencediagram, UConnection;
+  uModel, UUtils, UUMLForm, USequenceForm, UConnection;
 
 type
   TRtfdDiagram = class(TDiagramIntegrator,
@@ -111,6 +111,7 @@ type
     procedure DeleteSelectedControlsAndRefresh; override;
     procedure DeleteObjects; override;
     procedure DeleteObject(const objectname: string);
+    function hasObjects: boolean; override;
     function hasEditableClass: boolean; override;
     function hasSelectedControl: boolean; override;
     function hasSelectedConnection: boolean; override;
@@ -210,6 +211,7 @@ type
     function getClasses: TStringList; override;
     procedure Retranslate; override;
     procedure SetUMLFont; override;
+    function HasAInvalidClass: boolean; override;
   end;
 
 implementation
@@ -218,8 +220,8 @@ uses windows, Math, Menus, SysUtils, StrUtils, IniFiles, Dialogs, Contnrs,
   Clipbrd, StdCtrls, UJUnitTest, JvGnugettext, UStringRessources,
   uIterators, USugiyamaLayout, uDlgMethodCall, uRtfdDiagramFrame,
   uIntegrator, UJava, UConfiguration, UUMLModule,
-  UObjectgenerator, UCodeCompletion, UITypes, UFrmEditor,
-  UFrmBaseform, UJavaCommands, SynEdit, UDlgAbout, JNI, UExecution,
+  UObjectgenerator, UCodeCompletion, UITypes, UEditorForm,
+  UBaseForm, UJavaCommands, SynEdit, UDlgAbout, JNI, UExecution,
   UTemplates, SpTBXItem;
 
 { TRtfdDiagram }
@@ -1511,7 +1513,7 @@ begin
     Panel.DeleteSelectedControls;
     FreeAndNil(L);
   end;
-  // ResolveObjectAssociations;
+  ResolveObjectAssociations; // nötig?
 end;
 
 procedure TRtfdDiagram.DeleteSelectedControlsAndRefresh;
@@ -1564,14 +1566,22 @@ end;
 
 procedure TRtfdDiagram.RefreshDiagram;
 begin
-  ResolveAssociations;
-  ResolveObjectAssociations;
   if not PanelIsLocked then
     for var i:= 0 to BoxNames.Count - 1 do
       (BoxNames.Objects[I] as TRtfdBox).RefreshEntities;
   Panel.RecalcSize;
   Panel.ShowAll;
   Panel.IsModified := true;
+end;
+
+function TRtfdDiagram.HasAInvalidClass: boolean;
+begin
+  for var i:= 0 to BoxNames.Count - 1 do
+    if (BoxNames.Objects[i] is TRtfdClass) then begin
+      var path:= (BoxNames.Objects[i] as TRtfdClass).getPathname;
+      if not FJava.IsAValidClass(path) then exit(true);
+    end;
+   Result:= false;
 end;
 
 procedure TRtfdDiagram.RecalcPanelSize;
@@ -3788,10 +3798,12 @@ begin
       p:= Pos(' ', objname);
     end;
     aJavaObject:= ComJava.NewUnnamedObject(objname);
-    if aJavaObject.isValid
-      then ShowNewObject(aJavaObject)
-      else FreeAndNil(aJavaObject);
-    UpdateAllObjects;
+    if aJavaObject.isValid then begin
+      ShowNewObject(aJavaObject);
+      ResolveObjectAssociations;
+      UpdateAllObjects;
+    end else
+      FreeAndNil(aJavaObject);
   finally
     UnlockWindow;
   end;
@@ -3808,7 +3820,7 @@ procedure TRtfdDiagram.ShowAllNewObjects(Sender: TObject);
   var i: integer;
 begin
   try
-    LockWindow(FJava.Handle);
+    LockFormUpdate(UMLForm);
     Screen.Cursor:= crHourglass;
     if Frame.MIObjectPopupShowNewObject.Visible then
       for i:= 0 to Frame.MIObjectPopupShowNewObject.Count - 1 do
@@ -3821,8 +3833,9 @@ begin
         inc(i);
       end;
     end;
+    ResolveObjectAssociations;
   finally
-    LockWindow(0);
+    UnLockFormUpdate(UMLForm);
     Screen.Cursor:= crDefault;
   end;
 end;
@@ -3887,6 +3900,9 @@ begin
     FreeAndNil(SL1);
     inc(i);
   end;
+  ResolveObjectAssociations;
+  UpdateAllObjects;
+  Panel.RecalcSize;
 end;
 
 procedure TRtfdDiagram.ConnectBoxes(Sender: TObject);
@@ -4019,6 +4035,14 @@ begin
   except on e: exception do
     FConfiguration.Log('TRtfdDiagram.DeleteObjects; ', e);
   end;
+end;
+
+function TRtfdDiagram.hasObjects: boolean;
+begin
+  for var i:= 0 to BoxNames.Count - 1 do
+    if (BoxNames.Objects[i] is TRtfdObject) then
+      exit(true);
+  Result:= false;
 end;
 
 procedure TRtfdDiagram.DeleteObject(const objectname: string);

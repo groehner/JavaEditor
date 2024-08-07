@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Classes, Controls, Forms, Menus, Messages, ExtCtrls, ElDsgnr,
-  System.ImageList, Vcl.ImgList, UGUIForm, UFrmEditor, Vcl.VirtualImageList,
+  System.ImageList, Vcl.ImgList, UGUIForm, UEditorForm, Vcl.VirtualImageList,
   Vcl.BaseImageCollection, SVGIconImageCollection, TB2Item, SpTBXItem,
   SVGIconImage;
 
@@ -54,6 +54,7 @@ type
     vilPagination: TVirtualImageList;
     vilTurtles: TVirtualImageList;
     vilFXTurtle: TVirtualImageList;
+    vilGUIDesignerDark: TVirtualImageList;
     procedure ELDesignerControlInserting(Sender: TObject;
       var AControlClass: TControlClass);
     procedure ELDesignerControlInserted(Sender: TObject);
@@ -88,8 +89,8 @@ type
     function getParent(ATarget: TObject; AX, AY: Integer): TWinControl;
     procedure ComponentToBackground(aPartner: TFEditForm; Control: TControl);
     procedure ComponentToForeground(aPartner: TFEditForm; Control: TControl);
-    procedure RemovePixelsPerInch0(Filename: string);
     function GetPixelsPerInchOfFile(Filename: string): integer;
+    procedure RemovePixelsPerInch0(Filename: string);
   public
     ComponentToInsert: TControlClass;
     ELDesigner: TELDesigner;
@@ -117,6 +118,7 @@ type
     procedure SetAttributForComponent(Attr, Value, Typ: string;
       Control: TControl);
     procedure ScaleImages;
+    procedure ChangeStyle;
     procedure InsertComponent(Control: TControl);
     procedure MoveComponent(Control: TControl);
     procedure DeleteComponent(Control: TControl);
@@ -143,7 +145,7 @@ uses
   {$WARNINGS OFF} FileCtrl, Outline, {$WARNINGS ON}  Spin, UJComponents,
   System.Types, UITypes, TypInfo, StdCtrls, ELPropInsp,
   JvGnugettext,
-  UJava, UFrmBaseform, UObjectGenerator, ULink, UConfiguration, UUtils,
+  UJava, UBaseForm, UObjectGenerator, ULink, UConfiguration, UUtils,
   UJEComponents, UJUtilities, UObjectInspector,
 
   UAButton, UACheckboxRadio, UAComboBox, UALabel, UAList, UAMenu,
@@ -862,9 +864,12 @@ begin
   if not FileExists(Filename) then
     Exit;
   PPI:= GetPixelsPerInchOfFile(Filename);
+  if PPI = 0 then begin
+    RemovePixelsPerInch0(Filename);
+    PPI:= 96;
+  end;
   JavaForm := TFEditForm(FJava.getTDIWindow(JavaFilename));
   FObjectGenerator.Partner := JavaForm;
-  RemovePixelsPerInch0(Filename);
   FilStream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
   BinStream := TMemoryStream.Create;
   Reader := TReader.Create(BinStream, 4096);
@@ -884,7 +889,7 @@ begin
       if JavaForm.FrameType = 8
         then (DesignForm as TFXGUIForm).Open(Filename)
         else DesignForm.Open(Filename, '', JavaForm.FrameType);
-      if PPI <  DesignForm.PixelsPerInch then
+      if DesignForm.PixelsPerInch > PPI then
         DesignForm.Scale(DesignForm.PixelsPerInch, PPI);
       ScaleImages;
       DesignForm.Invalidate; // to paint correct image sizes
@@ -1325,6 +1330,13 @@ begin
   vilPagination.SetSize(DesignForm.PPIScale(125), DesignForm.PPIScale(45));
   vilTurtles.SetSize(DesignForm.PPIScale(21), DesignForm.PPIScale(26));
   vilFXTurtle.SetSize(DesignForm.PPIScale(26), DesignForm.PPIScale(21));
+end;
+
+procedure TFGUIDesigner.ChangeStyle;
+begin
+  if FConfiguration.isDark
+    then PopupMenu.Images:= vilGuiDesignerDark
+    else PopupMenu.Images:= vilGuiDesignerLight;
 end;
 
 { TMyDragObject }

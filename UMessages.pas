@@ -298,9 +298,9 @@ var
 implementation
 
 uses Math, SysUtils, Dialogs, Clipbrd, Types, Themes, System.IOUtils,
-  JvGnugettext, UStringRessources, UJava, UFrmEditor, UJavaCommands,
-  UGrepResults, UUtils, UConfiguration, UWatches, UFrmBaseform,
-  UFrmUMLdiagram, URtfdDiagram, UDebugger;
+  JvGnugettext, UStringRessources, UJava, UEditorForm, UJavaCommands,
+  UGrepResults, UUtils, UConfiguration, UWatches, UBaseForm,
+  UUMLForm, URtfdDiagram, UDebugger;
 
 {$R *.DFM}
 
@@ -600,7 +600,7 @@ begin
   TVSearch.Visible:= false;
   LBMessages.Visible:= false;
   case NewTab of
-    0: begin PInterpreter.Visible:= true; if MInterpreter.CanFocus then MInterpreter.SetFocus; end;
+    0: begin PInterpreter.Visible:= true; if MInterpreter.canFocus then MInterpreter.SetFocus; end;
     1: begin LBCompiler.Visible:= true; if LBCompiler.canFocus then LBCompiler.SetFocus; end;
     2: begin PDebugger.Visible:= true; if TVAttributes.canFocus then TVAttributes.SetFocus end;
     3: begin TVSearch.Visible:= true; if TVSearch.canFocus then TVSearch.SetFocus end;

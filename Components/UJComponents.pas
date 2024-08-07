@@ -135,7 +135,7 @@ type
 implementation
 
 uses Windows, SysUtils, UITypes, TypInfo,
-     UUtils, ULink, UObjectInspector, UFrmEditor, UFrmBaseform;
+     UUtils, ULink, UObjectInspector, UEditorForm, UBaseForm;
 
 {--- TBorder ------------------------------------------------------------------}
 

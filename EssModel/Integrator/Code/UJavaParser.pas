@@ -31,7 +31,7 @@ unit UJavaParser;
 interface
 
 uses Classes, uCodeParser, uModel, uModelEntity,
-  UStructure, UFrmBaseform, uIntegrator, UJavaScanner, UUtils;
+  UStructure, UBaseForm, uIntegrator, UJavaScanner, UUtils;
 
 type
 

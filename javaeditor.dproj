@@ -8,7 +8,7 @@
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
         <ProjectVersion>19.5</ProjectVersion>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -165,12 +165,12 @@
         <VerInfo_MajorVer>22</VerInfo_MajorVer>
         <VerInfo_Build>0</VerInfo_Build>
         <DCC_Define>SYN_DELPHI_XE;madExcept;$(DCC_Define)</DCC_Define>
-        <VerInfo_Keys>CompanyName=;FileVersion=22.1.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileVersion=22.2.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <BT_BuildType>Debug</BT_BuildType>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <DCC_ImportedDataReferences>false</DCC_ImportedDataReferences>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
-        <VerInfo_MinorVer>1</VerInfo_MinorVer>
+        <VerInfo_MinorVer>2</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <DCC_ExeOutput>.\$(Config)\$(Platform)</DCC_ExeOutput>
@@ -178,7 +178,7 @@
         <VerInfo_MajorVer>22</VerInfo_MajorVer>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_Keys>CompanyName=;FileVersion=22.1.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileVersion=22.2.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <BT_BuildType>Debug</BT_BuildType>
         <DCC_UnitSearchPath>D:\Sicherung\DelphiPipes\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
@@ -189,7 +189,7 @@
         <DCC_GenerateStackFrames>false</DCC_GenerateStackFrames>
         <DCC_OutputDRCFile>false</DCC_OutputDRCFile>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
-        <VerInfo_MinorVer>1</VerInfo_MinorVer>
+        <VerInfo_MinorVer>2</VerInfo_MinorVer>
         <VerInfo_Build>0</VerInfo_Build>
     </PropertyGroup>
     <ItemGroup>
@@ -271,16 +271,16 @@
         <DCCReference Include="UObjectInspector.pas">
             <Form>FObjectInspector</Form>
         </DCCReference>
-        <DCCReference Include="UFrmEditor.pas">
+        <DCCReference Include="UEditorForm.pas">
             <Form>FEditForm</Form>
         </DCCReference>
-        <DCCReference Include="UFrmBaseform.pas">
+        <DCCReference Include="UBaseForm.pas">
             <Form>FForm</Form>
         </DCCReference>
         <DCCReference Include="UDlgJarCreate.pas">
             <Form>FJarCreateDialog</Form>
         </DCCReference>
-        <DCCReference Include="UFrmExplorer.pas">
+        <DCCReference Include="UExplorerForm.pas">
             <Form>FExplorer</Form>
         </DCCReference>
         <DCCReference Include="USubversion.pas">
@@ -289,7 +289,7 @@
         <DCCReference Include="TextDiff\UDiff.pas"/>
         <DCCReference Include="TextDiff\UHashUnit.pas"/>
         <DCCReference Include="TextDiff\USynEditExDiff.pas"/>
-        <DCCReference Include="TextDiff\UFrmTextDiff.pas">
+        <DCCReference Include="TextDiff\UTextDiffForm.pas">
             <Form>FTextDiff</Form>
         </DCCReference>
         <DCCReference Include="UDlgAbout.pas"/>
@@ -337,7 +337,7 @@
         <DCCReference Include="essmodel\Integrator\Code\UCodeProvider.pas"/>
         <DCCReference Include="essmodel\Integrator\Code\UFileProvider.pas"/>
         <DCCReference Include="essmodel\Integrator\Code\UJavaScanner.pas"/>
-        <DCCReference Include="EssModel\System\UFrmUMLdiagram.pas">
+        <DCCReference Include="EssModel\System\UUMLForm.pas">
             <Form>FUMLForm</Form>
         </DCCReference>
         <DCCReference Include="UDlgClasspath.pas"/>
@@ -471,12 +471,12 @@
             <Form>FConnectDialog</Form>
         </DCCReference>
         <DCCReference Include="SequenceDiagram\ULifeLine.pas"/>
-        <DCCReference Include="SequenceDiagram\UFrmSequencediagram.pas">
+        <DCCReference Include="SequenceDiagram\USequenceForm.pas">
             <Form>FSequenceForm</Form>
         </DCCReference>
         <DCCReference Include="SequenceDiagram\USequencePanel.pas"/>
         <DCCReference Include="Structogram\UGenerateStructogram.pas"/>
-        <DCCReference Include="Structogram\UFrmStructogram.pas">
+        <DCCReference Include="Structogram\UStructogramform.pas">
             <Form>FStructogram</Form>
         </DCCReference>
         <DCCReference Include="Structogram\UTypes.pas"/>
@@ -535,7 +535,7 @@
         <DCCReference Include="Components\Swing\UJUtilities.pas"/>
         <DCCReference Include="Components\Swing\UJGuiForm.pas"/>
         <DCCReference Include="UTemplates.pas"/>
-        <DCCReference Include="UFrmBrowser.pas">
+        <DCCReference Include="UBrowserForm.pas">
             <Form>FBrowser</Form>
         </DCCReference>
         <DCCReference Include="UGUIDesigner.pas">

@@ -3,7 +3,7 @@ unit UJEComponents;
 interface
 
 uses
-  Controls, Classes, Graphics, UFrmEditor;
+  Controls, Classes, Graphics, UEditorForm;
 
 const DefaultMenu =
   'File'#13#10'  New'#13#10'    Java'#13#10'    XML'#13#10'  Load'#13#10'  Save, Ctrl+Shift+S'#13#10 +

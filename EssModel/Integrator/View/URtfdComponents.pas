@@ -316,18 +316,18 @@ type
 
 implementation
 
-uses SysUtils, Forms, Themes, UITypes, Types, Math, ExtCtrls,
+uses SysUtils, Forms, Themes, UITypes, Types, Math, ExtCtrls, VirtualImageList,
   StrUtils, UImages, UJava, uIterators, UConfiguration, uViewIntegrator;
 
 const
   cDefaultWidth = 150;
 
 function getSVGRect(X, Y, w, h: real; color: string;
-  attribut: string = ''): string;
+  attribute: string = ''): string;
 begin
   Result := '  <rect x=' + FloatToVal(X) + ' y=' + FloatToVal(Y) + ' width=' +
     FloatToVal(w) + ' height=' + FloatToVal(h) + ' fill="' + color +
-    '" stroke="black"' + attribut + ' />'#13#10;
+    '" stroke="black"' + attribute + ' />'#13#10;
 end;
 
 function getSVGCircle(X, Y, R: real): string;
@@ -530,12 +530,12 @@ begin
     begin
       S := ChangeFileExt(Pathname, '.java');
       if FileExists(S) then
-        IsValid := FJava.HasAValidClass(S)
+        IsValid := FJava.IsAValidClass(S)
       else
         IsValid := true;
     end
     else
-      IsValid := FJava.HasAValidClass(Pathname);
+      IsValid := FJava.IsAValidClass(Pathname);
   end;
 
   sw := ShadowWidth;
@@ -1566,6 +1566,7 @@ var
   S: string;
   PictureNr, Distance: integer;
   Style: TFontStyles;
+  vil: TVirtualImageList;
 begin
   // for debugging
   // Canvas.Brush.Color:= clRed;
@@ -1592,29 +1593,23 @@ begin
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
 
   case (Owner as TRtfdBox).ShowIcons of
-    0:
-      begin
-        var aTop:= R.Top + (R.Height - (Owner as TRtfdBox).Frame.vilUMLRtfdComponentsLight.Height) div 2;
-        if StyleServices.IsSystemStyle then
-          (Owner as TRtfdBox).Frame.vilUMLRtfdComponentsLight.Draw(Canvas, 4, aTop, PictureNr)
-        else
-          (Owner as TRtfdBox).Frame.vilUMLRtfdComponentsDark.Draw(Canvas, 4, aTop, PictureNr);
-        R.Left := R.Left + PPIScale(IconW + 8);
+    0: begin
+        if StyleServices.IsSystemStyle
+          then vil:= (Owner as TRtfdBox).Frame.vilUMLRtfdComponentsLight
+          else vil:=  (Owner as TRtfdBox).Frame.vilUMLRtfdComponentsDark;
+        vil.SetSize(r.Height, r.Height);
+        vil.Draw(Canvas, 4, 0, PictureNr);
+        R.Left := R.Left + PPIScale(vil.Width + 8);
         Canvas.TextOut(R.Left, R.Top, Caption);
       end;
-    1:
-      begin
+    1:begin
         Style := Canvas.Font.Style;
         Canvas.Font.Style := [];
         case Entity.Visibility of
-          viPrivate:
-            S := '- ';
-          viPackage:
-            S := '~ ';
-          viProtected:
-            S := '# ';
-          viPublic:
-            S := '+ ';
+          viPrivate:   S := '- ';
+          viPackage:   S := '~ ';
+          viProtected: S := '# ';
+          viPublic:    S := '+ ';
         end;
         if PictureNr = 8 then
           S := 'c ';
@@ -1624,8 +1619,7 @@ begin
         Canvas.Font.Style := Style;
         Canvas.TextOut(R.Left + 4 + Distance, R.Top, Caption);
       end;
-    2:
-      Canvas.TextOut(R.Left + 4, R.Top, Caption);
+    2:Canvas.TextOut(R.Left + 4, R.Top, Caption);
   end;
   if FConfiguration.UseAbstract and Entity.IsAbstract then
   begin

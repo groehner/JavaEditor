@@ -1,0 +1,6 @@
+Old Version: C:\Program Files\JavaEditor\javaeditor.exe
+Source     : jeregistry
+Destination: E:\Programmierung\Delphi\_JavaEditor\javaeditor16.15\javaeditor.exe
+
+create directory: E:\Programmierung\Delphi\_JavaEditor\javaeditor16.15\javaeditor.exe
+E:\Programmierung\Delphi\_JavaEditor\javaeditor16.15\update.txt

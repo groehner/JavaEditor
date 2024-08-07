@@ -1,3 +1,6 @@
+22.02, 2024.07.08
+Bug fix for incorrect PPI
+
 22.01, 2024.06.26
 Switch to svg instead of bmp icons and use of improved components for better DPI awareness
 

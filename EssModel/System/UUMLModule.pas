@@ -159,6 +159,7 @@ begin
        assigned(FModel.ModelRoot.Files) and (FModel.ModelRoot.Files.Text = '') then begin
       LoadProject(Filename);
       FDiagram.ResolveAssociations;
+      FDiagram.ResolveObjectAssociations;
       exit;
     end;
   except
@@ -183,6 +184,7 @@ begin
       try
         Imp.AddFileToModel(FileName);
         FDiagram.ResolveAssociations;
+        FDiagram.ResolveObjectAssociations;
       finally
         FreeAndNil(Imp);
       end;
@@ -317,35 +319,35 @@ begin
   Result:= false;
   var SL:= TStringList.Create;
   var Ints := Integrators.Get(TImportIntegrator);
+  var OpenFolderForm:= TFOpenFolderDialog.Create(nil);
   try
-    with TFOpenFolderDialog.Create(nil) do begin
-      for var i := 0 to Ints.Count - 1 do begin
-        var Exts := TImportIntegratorClass(Ints[i]).GetFileExtensions;
-        try
-          CBFiletype.Items.Add( '*' + Exts.Names[0]);
-        finally
-          FreeAndNil(Exts);
-        end;
+    for var i:= 0 to Ints.Count - 1 do begin
+      var Exts:= TImportIntegratorClass(Ints[i]).GetFileExtensions;
+      try
+        OpenFolderForm.CBFiletype.Items.Add( '*' + Exts.Names[0]);
+      finally
+        FreeAndNil(Exts);
       end;
-      CBFiletype.ItemIndex:= 0;
-      if ShowModal = mrOk then begin
-        Result:= true;
-        _AddFileNames(SL, PathTreeView.Path,
-                      Copy(CBFiletype.Items[CBFiletype.ItemIndex], 2, 10),
-                      CBWithSubFolder.Checked);
-        if SL.Count > 0 then begin
-          LoadProject(SL);
-          FDiagram.ResolveAssociations;
-        end else
-          ShowMessage('No files found.');
-        OpendFolder:= PathTreeView.Path;
-      end else
-        OpendFolder:= '';
     end;
-
+    OpenFolderForm.CBFiletype.ItemIndex:= 0;
+    if OpenFolderForm.ShowModal = mrOk then begin
+      Result:= true;
+      _AddFileNames(SL, OpenFolderForm.PathTreeView.Path,
+                    Copy(OpenFolderForm.CBFiletype.Items[OpenFolderForm.CBFiletype.ItemIndex], 2, 10),
+                    OpenFolderForm.CBWithSubFolder.Checked);
+      if SL.Count > 0 then begin
+        LoadProject(SL);
+        FDiagram.ResolveAssociations;
+        DoLayout;
+      end else
+        ShowMessage('No files found.');
+      OpendFolder:= OpenFolderForm.PathTreeView.Path;
+    end else
+      OpendFolder:= '';
   finally
     FreeAndNil(SL);
     FreeAndNil(Ints);
+    OpenFolderForm.Release;
   end;
 end;
 {$WARNINGS ON}

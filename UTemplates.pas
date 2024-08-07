@@ -2,7 +2,7 @@ unit UTemplates;
 
 interface
 
-uses UFrmEditor;
+uses UEditorForm;
 
 type
 
