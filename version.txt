@@ -1,3 +1,6 @@
+22.03, 2024.08.16
+Bugfix for opening uml window
+
 22.02, 2024.07.08
 Bug fix for incorrect PPI
 

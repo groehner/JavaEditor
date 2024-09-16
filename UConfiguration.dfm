@@ -27,6 +27,8 @@ object FConfiguration: TFConfiguration
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 740
+    ExplicitHeight = 469
     object TVConfiguration: TTreeView
       Left = 0
       Top = 0
@@ -97,6 +99,7 @@ object FConfiguration: TFConfiguration
         00FFFFFFFFFFFFFFFF00000000000000000000000001064A0061006C006F0070
         007900320000000000000000000000FFFFFFFFFFFFFFFF000000000000000000
         000000010A530075006200760065007200730069006F006E00}
+      ExplicitHeight = 469
     end
     object PPanelRight: TPanel
       Left = 145
@@ -105,6 +108,8 @@ object FConfiguration: TFConfiguration
       Height = 470
       Align = alClient
       TabOrder = 1
+      ExplicitWidth = 595
+      ExplicitHeight = 469
       object PButtons: TPanel
         Left = 1
         Top = 428
@@ -112,6 +117,8 @@ object FConfiguration: TFConfiguration
         Height = 41
         Align = alBottom
         TabOrder = 0
+        ExplicitTop = 427
+        ExplicitWidth = 593
         object BSave: TButton
           Left = 549
           Top = 9
@@ -175,6 +182,7 @@ object FConfiguration: TFConfiguration
         Align = alTop
         BevelOuter = bvSpace
         TabOrder = 1
+        ExplicitWidth = 593
         object LTitle: TLabel
           Left = 8
           Top = 4
@@ -194,10 +202,12 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 597
         Height = 407
-        ActivePage = PColors
+        ActivePage = PGeneralOptions
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
+        ExplicitWidth = 593
+        ExplicitHeight = 406
         object PJava: TTabSheet
           Caption = 'PJava'
         end
@@ -1247,6 +1257,15 @@ object FConfiguration: TFConfiguration
             Height = 17
             Caption = 'Show 80 characters line'
             TabOrder = 19
+          end
+          object BEditorFont: TButton
+            Left = 16
+            Top = 84
+            Width = 85
+            Height = 23
+            Caption = 'Font'
+            TabOrder = 20
+            OnClick = BEditorFontClick
           end
         end
         object PCode: TTabSheet

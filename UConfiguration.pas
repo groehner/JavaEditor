@@ -632,6 +632,7 @@ type
     EFrameWidth: TEdit;
     LFrameWidth: TLabel;
     BGuiFont: TButton;
+    BEditorFont: TButton;
     {$WARNINGS ON}
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -757,6 +758,7 @@ type
     procedure LVVisibilityTabsClick(Sender: TObject);
     procedure LVVisibilityElementsItemChecked(Sender: TObject; Item: TListItem);
     procedure BGuiFontClick(Sender: TObject);
+    procedure BEditorFontClick(Sender: TObject);
   private
     MyRegistry: TRegistry;
     FPreview: TVclStylesPreview;
@@ -1863,6 +1865,20 @@ begin
     if Execute then
       ShortenPath(EBrowserProgram, Filename);
     CheckFile(EBrowserProgram, true);
+  end;
+end;
+
+procedure TFConfiguration.BEditorFontClick(Sender: TObject);
+begin
+  with FJava.FDFont do begin
+    Options:= [fdFixedPitchOnly];
+    Font.Assign(FConfiguration.EditFont);
+    if Execute then begin
+      for var i:= 0 to FJava.TDIFormsList.Count - 1 do
+        if FJava.TDIFormsList[i].FormTag = 1 then
+          FJava.TDIFormsList[i].SetFont(Font);
+      FConfiguration.EditFont.Assign(Font);
+    end;
   end;
 end;
 

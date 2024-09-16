@@ -109,7 +109,6 @@ object FJava: TFJava
     Options.TitleBarMaxSize = 0
     ShowCaption = False
     ShowCaptionWhenDocked = False
-    ExplicitWidth = 871
     object ControlBar: TSpTBXPanel
       Left = 0
       Top = 21
@@ -119,7 +118,7 @@ object FJava: TFJava
       Align = alClient
       Constraints.MaxHeight = 59
       TabOrder = 1
-      ExplicitWidth = 624
+      ExplicitWidth = 863
       object DebugToolbar: TSpTBXToolbar
         Left = 3
         Top = 28

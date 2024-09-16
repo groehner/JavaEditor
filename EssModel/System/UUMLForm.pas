@@ -169,7 +169,7 @@ begin
   SetState(State);
   FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
 
-  Enter(Self);
+  //Enter(Self);
 end;
 
 procedure TFUMLForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
