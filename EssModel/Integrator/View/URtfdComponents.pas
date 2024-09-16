@@ -19,6 +19,8 @@
 
 
   procedure TVisibilityLabel.Paint;
+  procedure TRtfdClass.RefreshEntities;
+  procedure TRtfdCustomLabel.AdjustBounds;
 }
 
 unit URtfdComponents;
@@ -279,7 +281,6 @@ type
 
   // Left-justified label with visibility-icon
   TVisibilityLabel = class(TRtfdCustomLabel)
-  protected
   public
     procedure Paint; override;
     function IntegerInsteadOfInt(const S: string): string;
@@ -1038,7 +1039,7 @@ begin
     exit;
   inherited;
 
-  NeedW := 0;
+  NeedW := cDefaultWidth;
   NeedH := 2 * BorderWidth + 2;
 
   if (Entity is TClass) and (Entity as TClass).isJUnitTestclass then
@@ -1102,7 +1103,7 @@ begin
       CustomLabel := TRtfdCustomLabel(Controls[i]);
       NeedW := Max(CustomLabel.TextWidth + AbstractWidth, NeedW);
     end;
-  Width := Max(NeedW, cDefaultWidth);
+  Width:= NeedW;
 
   if aClassname.TypeParameter <> '' then begin
     if Width - ExtentX < Width div 4 then begin
@@ -1217,7 +1218,7 @@ begin
     exit;
   inherited;
 
-  NeedW := 0;
+  NeedW := cDefaultWidth;
   NeedH := 2 * BorderWidth + 2;
   inc(NeedH, TRtfdObjectName.Create(Self, Entity).Height);
 
@@ -1269,7 +1270,7 @@ begin
       CustomLabel := TRtfdCustomLabel(Controls[i]);
       NeedW := Max(CustomLabel.TextWidth, NeedW);
     end;
-  Width := Max(NeedW, cDefaultWidth);
+  Width:= NeedW;
 
   aTop := 4;
   for i := 0 to ControlCount - 1 do
@@ -1285,7 +1286,6 @@ begin
       Separator.SetBounds(4, aTop, Width, Separator.Height);
       aTop := aTop + Separator.Height;
     end;
-
   Width := Width + ShadowWidth;
   Visible := true;
 end;
@@ -1554,7 +1554,6 @@ end;
 { TVisibilityLabel }
 
 const
-  IconW = 12;
   AbstractText = ' {abstract}';
 
 procedure TVisibilityLabel.Paint;
@@ -1593,7 +1592,7 @@ begin
     0: begin
         if StyleServices.IsSystemStyle
           then vil:= (Owner as TRtfdBox).Frame.vilUMLRtfdComponentsLight
-          else vil:=  (Owner as TRtfdBox).Frame.vilUMLRtfdComponentsDark;
+          else vil:= (Owner as TRtfdBox).Frame.vilUMLRtfdComponentsDark;
         vil.SetSize(r.Height, r.Height);
         vil.Draw(Canvas, 4, 0, PictureNr);
         R.Left := R.Left + PPIScale(vil.Width + 8);
@@ -1618,8 +1617,7 @@ begin
       end;
     2:Canvas.TextOut(R.Left + 4, R.Top, Caption);
   end;
-  if FConfiguration.UseAbstract and Entity.IsAbstract then
-  begin
+  if FConfiguration.UseAbstract and Entity.IsAbstract then begin
     R.Right := R.Right - 8;
     DrawText(Canvas.Handle, PChar(AbstractText), length(AbstractText), R,
       DT_RIGHT);
@@ -2318,7 +2316,7 @@ begin
     exit;
   inherited;
 
-  NeedW := 0;
+  NeedW := cDefaultWidth;
   NeedH := 2 * BorderWidth + 2;
 
   inc(NeedH, TRtfdStereotype.Create(Self, nil, 'interface').Height);
@@ -2361,7 +2359,7 @@ begin
       CustomLabel := TRtfdCustomLabel(Controls[i]);
       NeedW := Max(CustomLabel.TextWidth, NeedW);
     end;
-  Width := Max(NeedW, cDefaultWidth);
+  Width := NeedW;
 
   aTop := 4;
   for i := 0 to ControlCount - 1 do
@@ -2533,11 +2531,10 @@ begin
         Canvas.Font.Style := Canvas.Font.Style + [fsBold];
     if (Entity is TOperation) and Entity.IsAbstract then
       Canvas.Font.Style := Canvas.Font.Style + [fsItalic];
-    DrawText(Canvas.Handle, PChar(Caption), length(Caption), aRect,
-      DT_CALCRECT);
+    DrawText(Canvas.Handle, PChar(Caption), length(Caption), aRect, DT_CALCRECT);
     FTextWidth := 8 + aRect.Right + 8;
     case (Owner as TRtfdBox).ShowIcons of
-      0: FTextWidth := FTextWidth + PPIScale(IconW + 4);
+      0: FTextWidth := FTextWidth + PPIScale(aRect.Height + 8);
       1: FTextWidth := FTextWidth + Canvas.TextWidth('+ ');
       2: FTextWidth := FTextWidth + 0;
     end;

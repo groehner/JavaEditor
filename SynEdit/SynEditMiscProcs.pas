@@ -141,6 +141,7 @@ procedure SubstituteControlChars(var Input: string);
 implementation
 
 uses
+  System.UITypes,
   SysUtils,
   SynHighlighterMulti,
   Vcl.Forms;
