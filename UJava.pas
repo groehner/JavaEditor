@@ -6811,7 +6811,8 @@ begin
      assigned(EditorForm.ParseThread) and (EditorForm.ParseThread.state = 3) then
   begin
     EditorForm.CreateTVFileStructure;
-    EditorForm.ParseThread.state:= 0;
+    if assigned(EditorForm.ParseThread) then
+      EditorForm.ParseThread.state:= 0;
   end;
   Done:= true;
 end;

@@ -202,7 +202,7 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 597
         Height = 407
-        ActivePage = PGUIDesigner
+        ActivePage = PCode
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
@@ -2229,7 +2229,7 @@ object FConfiguration: TFConfiguration
             Width = 21
             Height = 23
             TabOrder = 1
-            Text = '8'
+            Text = '11'
           end
           object UDGridSize: TUpDown
             Left = 37
@@ -2239,7 +2239,7 @@ object FConfiguration: TFConfiguration
             Associate = EGridSize
             Min = 2
             Max = 60
-            Position = 8
+            Position = 11
             TabOrder = 2
           end
           object CBGuiDesignerHints: TCheckBox

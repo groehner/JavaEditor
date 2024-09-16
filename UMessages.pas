@@ -418,14 +418,7 @@ begin
     Expanded[i].Duplicates:= dupIgnore;
   end;
   ChangeStyle;
-
   ShowWatchedExpressions;
-  {
-  var aFont:= TFont.Create;
-  aFont.Name:= FConfiguration.ReadStringU('Messages', 'FontName', 'Consolas');
-  aFont.Size:= PPIScale(FConfiguration.ReadIntegerU('Messages', 'FontSize', 10));
-  SetFont(aFont);
-  FreeAndNil(aFont);}
   DumpActive:= false;
   toJavaConsole:= '';
   ActiveInteractive:= nil;
@@ -471,16 +464,16 @@ end;
 
 procedure TFMessages.SetStatusBarAndTabs;
 begin
-  StatusBar.Canvas.Font.Assign(FJava.Font);
-  StatusBar.Font.Size:= PPIScale(FConfiguration.Fontsize);
+  StatusBar.Font.Size:= FConfiguration.Fontsize;
+  StatusBar.Canvas.Font.Size:= FConfiguration.Fontsize;
   var h:= StatusBar.Canvas.TextHeight('Ag') + 4;
   StatusBar.Height:= h;
   PAttribute.Height:= h;
   PLocalVariables.Height:= h;
   PWatches.Height:= h;
   PStack.Height:= h;
-  TabControlMessages.Font.Assign(FJava.Font);
-  TabControlMessages.Font.Size:= PPIScale(FConfiguration.Fontsize);
+  TabControlMessages.Font.Size:= FConfiguration.Fontsize;
+  TabControlMessages.Canvas.Font.Size:= FConfiguration.Fontsize;
   TabControlMessages.Height:= h;
   TabControlMessages.TabHeight:= h;
 end;
@@ -1664,7 +1657,8 @@ begin
 
   SGVariables:= TStringGrid.Create(Self);
   SGVariables.Parent:= PInteractiveRight;
-  SGVariables.Font.Assign(MInterpreter.Font);
+  SGVariables.Font.Assign(Font);
+  SGVariables.Font.Size:= FConfiguration.Fontsize;
   SGVariables.Align:= alClient;
   SGVariables.ColCount:= 3;
   SGVariables.RowCount:= 2;

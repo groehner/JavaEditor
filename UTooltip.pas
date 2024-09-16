@@ -43,14 +43,14 @@ type
   private
     TokenRect: TRect;
     procedure SetFontSize(Delta: integer);
-    procedure Hide; virtual;
   public
     URL: string;
     base: string;
-    Pathname: string;
     ClassPathname: string;
-    Line: string;
     closemanually: boolean;
+    class var
+      Pathname: string;
+      Line: string;
     constructor Create(AOwner: TComponent; P: TPoint; Rect: TRect; const Token: string); reintroduce;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure setURL(const aUrl: string);
@@ -59,6 +59,7 @@ type
     procedure WebBrowserOnCommandStateChange(Sender: TObject; Command: Integer; Enable: WordBool);
     function getHead: string;
     procedure ChangeStyle;
+    procedure Hide; virtual;
   end;
 
  var
@@ -73,11 +74,7 @@ uses SysUtils, UJava, UConfiguration, UUtils, UEditorForm;
 constructor TFTooltip.Create(AOwner: TComponent; P: TPoint; Rect: TRect; const Token: string);
 begin
   inherited Create(AOwner);
-  TBOpenUrl.Enabled:= false;
-  TBGotoSourcecode.Enabled:= false;
-  var w:= FConfiguration.TooltipWidth;
-  var h:= FConfiguration.TooltipHeight;
-  setBounds(P.x, P.y, w, h);
+  setBounds(P.x, P.y, FConfiguration.TooltipWidth, FConfiguration.TooltipHeight);
   Webbrowser.OnCommandStateChange:= WebBrowserOnCommandStateChange;
   TokenRect:= Rect;
   closemanually:= (Token = '# VK_F2 #');
@@ -114,11 +111,10 @@ end;
 procedure TFTooltip.OpenTooltipTimerExecute(Sender: TObject);
 begin
   OpenTooltipTimer.Enabled:= false;  //
-  if Application.Active and (PtInRect(TokenRect, Mouse.CursorPos) or closemanually) then begin
-    Show;
-    if (Owner as TForm).CanFocus then
-      (Owner as TForm).SetFocus;
-    Windows.setFocus((Owner as TForm).Handle);
+  if Application.Active {and (PtInRect(TokenRect, Mouse.CursorPos) or closemanually)} then begin
+    FTooltip.Show;
+    if (Owner as TFEditForm).Editor.CanFocus then
+      (Owner as TFEditForm).Editor.SetFocus;
     FindAdress(FConfiguration.TempDir + 'Tooltip.html');
     CloseTooltipTimer.Enabled:= not closemanually;
   end else if Visible then
@@ -135,16 +131,18 @@ end;
 
 procedure TFTooltip.TBOpenUrlClick(Sender: TObject);
 begin
-  if Url <> '' then
+  if Url <> '' then begin
     FJava.callHelp(url);
-  Hide;
+    Hide;
+  end;
 end;
 
 procedure TFTooltip.TBGotoSourcecodeClick(Sender: TObject);
 begin
-  if Pathname <> '' then
+  if Pathname <> '' then begin
     FJava.NewEditor(Pathname, 'T' + Line + ')X1)Y' + Line + ')W1)');
-  Hide;
+    Hide;
+  end;
 end;
 
 procedure TFTooltip.TBCloseClick(Sender: TObject);
@@ -154,16 +152,14 @@ end;
 
 procedure TFTooltip.setURL(const aurl: string);
 begin
-  self.url:= ToWeb('', aurl);
+  url:= ToWeb('', aurl);
   base:= ToWeb('', ExtractFilepath(aurl));
-  TBOpenUrl.Enabled:= true;
 end;
 
 procedure TFTooltip.setFile(const aPathname, aLine: string);
 begin
-  self.Pathname:= aPathname;
-  self.Line:= aLine;
-  TBGotoSourcecode.Enabled:= true;
+  Pathname:= aPathname;
+  Line:= aLine;
 end;
 
 function TFTooltip.getHead: string;
@@ -177,7 +173,7 @@ end;
 procedure TFTooltip.Hide;
 begin
   OpenTooltipTimer.Enabled:= false;
-  CloseTooltipTimer.enabled:= false;
+  CloseTooltipTimer.Enabled:= false;
   FConfiguration.TooltipWidth:=  Width;
   FConfiguration.TooltipHeight:= Height;
   inherited;

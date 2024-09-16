@@ -272,7 +272,8 @@ uses
   UDlgSearch in 'FindInFiles\UDlgSearch.pas' {FSearch},
   UDlgSearchAbort in 'FindInFiles\UDlgSearchAbort.pas' {FSearchAbort},
   UZOrderControl in 'Util\UZOrderControl.pas',
-  UConnection in 'EssModel\Components\UConnection.pas';
+  UConnection in 'EssModel\Components\UConnection.pas',
+  SynDWrite in 'SynEdit\SynDWrite.pas';
 
 {$R *.RES}
 

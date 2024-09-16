@@ -30,8 +30,6 @@ object FTooltip: TFTooltip
     Margins.Bottom = 0
     Align = alClient
     TabOrder = 0
-    ExplicitTop = 0
-    ExplicitHeight = 254
     ControlData = {
       4C000000C12900004A1500000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
@@ -47,7 +45,6 @@ object FTooltip: TFTooltip
     Align = alTop
     Images = vilToolbarLight
     TabOrder = 1
-    ExplicitWidth = 161
     object TBClose: TSpTBXItem
       Caption = 'Close'
       Hint = 'Close'
@@ -109,9 +106,6 @@ object FTooltip: TFTooltip
     Top = 228
     Width = 404
     Height = 26
-    ExplicitLeft = 200
-    ExplicitTop = 112
-    ExplicitWidth = 0
   end
   object CloseTooltipTimer: TTimer
     Enabled = False

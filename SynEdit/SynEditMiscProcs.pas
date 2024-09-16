@@ -133,11 +133,17 @@ function DeleteTypePrefixAndSynSuffix(S: string): string;
 // In Windows Vista or later use the Consolas font
 function DefaultFontName: string;
 
+function GetCorrectFontWeight(Font: TFont): Integer;
+
+// Substitutes control characters with Unicode control pictures
+procedure SubstituteControlChars(var Input: string);
+
 implementation
 
 uses
   SysUtils,
-  SynHighlighterMulti;
+  SynHighlighterMulti,
+  Vcl.Forms;
 
 function MinMax(x, mi, ma: Integer): Integer;
 begin
@@ -844,13 +850,69 @@ begin
   end;
 end;
 
-
 function DefaultFontName: string;
 begin
-    if CheckWin32Version(6) then
-      Result := 'Consolas'
-    else
-      Result := 'Courier New';
+  if CheckWin32Version(6) then
+  begin
+    Result := 'Consolas';
+    if Screen.Fonts.IndexOf(Result) >= 0 then
+      Exit;
+  end;
+
+  Result := 'Lucida Console';
+  if Screen.Fonts.IndexOf(Result) >= 0 then
+    Exit;
+
+  Result := 'Courier New';
+  if Screen.Fonts.IndexOf(Result) < 0 then
+    Result := 'Courier';
+end;
+
+function WeightEnumFontsProc(EnumLogFontExDV: PEnumLogFontExDV;
+  EnumTextMetric: PEnumTextMetric;
+  FontType: DWORD; LParam: LPARAM): Integer; stdcall;
+begin;
+  PInteger(LPARAM)^ :=  EnumLogFontExDV.elfEnumLogfontEx.elfLogFont.lfWeight;
+  Result := 0;
+end;
+
+function GetCorrectFontWeight(Font: TFont): Integer;
+var
+  DC: HDC;
+  LogFont: TLogFont;
+begin
+  if TFontStyle.fsBold in Font.Style then
+    Result := FW_BOLD
+  else
+  begin
+    Result := FW_NORMAL;
+    DC := GetDC(0);
+    FillChar(LogFont, SizeOf(LogFont), 0);
+    LogFont.lfCharSet := DEFAULT_CHARSET;
+    StrPLCopy(LogFont.lfFaceName, Font.Name, Length(LogFont.lfFaceName) - 1);
+    EnumFontFamiliesEx(DC, LogFont, @WeightEnumFontsProc, LPARAM(@Result), 0);
+    ReleaseDC(0, DC);
+  end;
+end;
+
+procedure SubstituteControlChars(var Input: string);
+const
+  ControlChars: set of Byte = [1..31, 127];
+  GraphicChars: array[1..31] of Char = (
+      #$02401, #$02402, #$02403, #$02404, #$02405, #$02406, #$02407, #$02408,
+      #$02409, #$0240A, #$0240B, #$0240C, #$0240D, #$0240E, #$0240F, #$02410,
+      #$02411, #$02412, #$02413, #$02414, #$02415, #$02416, #$02417, #$02418,
+      #$02419, #$0241A, #$0241B, #$0241C, #$0241D, #$0241E, #$0241F);
+  DeleteChar  = #$02421;
+var
+  I: Integer;
+begin
+  UniqueString(Input);
+  for I := 1 to Input.Length do
+    case Ord(Input[I]) of
+      1..8, 10..31: Input[I] := GraphicChars[Byte(Ord(Input[I]))];
+      127: Input[I] := DeleteChar;
+    end;
 end;
 
 end.

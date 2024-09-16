@@ -4324,7 +4324,7 @@ begin
   WriteBoolU('Options', 'TranslateCompilerErrors', TranslateCompilerErrors);
   WriteBoolU('Options', 'StrictJavaMode', StrictJavaMode);
   WriteBoolU('Options', 'CheckAge', CheckAge);
-  WriteIntegerU('Options', 'Fontsize', UDFontSize.Position);
+  WriteIntegerU('Options', 'Fontsize', Fontsize);
   WriteIntegerU('Options', 'MaxFileHistory', UDFileHistory.Position);
   WriteStringU('Options', 'FileFilter', FileFilter);
 
@@ -4699,7 +4699,7 @@ begin
 
     MaxFileHistory:= UDFileHistory.Position;
     Fontsize:= UDFontSize.Position;
-    FJava.Font.Size:= PPIScale(Fontsize);
+    //FJava.Font.Size:= PPIScale(Fontsize);
 
     FileFilter:= EFileFilter.Text;
     CheckAge:= CBCheckAge.Checked;

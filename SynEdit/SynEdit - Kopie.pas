@@ -59,7 +59,6 @@ uses
   Classes,
   Diagnostics,
   Imm,
-  Winapi.D2D1,
   SynTextDrawer,
   SynEditTypes,
   SynEditMiscClasses,
@@ -68,7 +67,6 @@ uses
   SynEditHighlighter,
   SynEditKbdHandler,
   SynEditCodeFolding,
-  SynDWrite,
   UStructure;
 
 const
@@ -156,10 +154,8 @@ type
     eoTrimTrailingSpaces,      //Spaces at the end of lines will be trimmed and not saved
     eoShowLigatures            //Shows font ligatures, by default it is disabled
     );
-  TSynEditorOptions = set of TSynEditorOption;
 
-  TSynSpecialChars = (scWhitespace, scControlChars, scEOL);
-  TSynVisibleSpecialChars = set of TSynSpecialChars;
+  TSynEditorOptions = set of TSynEditorOption;
 
 const
   SYNEDIT_DEFAULT_OPTIONS = [eoAutoIndent, eoDragDropEditing, eoEnhanceEndKey,
@@ -276,7 +272,6 @@ type
     procedure DisplayChanged;
     // pretty clear, heh?
     procedure Reset;
-    property RowLength[RowIndex: integer]: integer read GetRowLength;
   end;
 
   TSynEditPlugin = class(TObject)
@@ -389,7 +384,6 @@ type
     fInvalidateRect: TRect;
     fStateFlags: TSynStateFlags;
     fOptions: TSynEditorOptions;
-    FVisibleSpecialChars: TSynVisibleSpecialChars;
     fStatusChanges: TSynStatusChanges;
     fLastKey: word;
     fLastShiftState: TShiftState;
@@ -406,7 +400,6 @@ type
     FIsScrolling: Boolean;
     FAdditionalWordBreakChars: TSysCharSet;
     FAdditionalIdentChars: TSysCharSet;
-    FTextFormat: TSynTextFormat;
     SelStartBeforeSearch: integer;
     SelLengthBeforeSearch: integer;
 
@@ -489,12 +482,11 @@ type
     function GetDisplayX: Integer;
     function GetDisplayY: Integer;
     function GetDisplayXY: TDisplayCoord;
-    function GetDisplayRowCount: Integer;
+    function GetDisplayLineCount: Integer;
     function GetFont: TFont;
     function GetHookedCommandHandlersCount: Integer;
     function GetLineText: string;
     function GetMaxUndo: Integer;
-    function GetRow(RowIndex: Integer): string;
     function GetOptions: TSynEditorOptions;
     function GetSelAvail: Boolean;
     function GetSelTabBlock: Boolean;
@@ -735,9 +727,6 @@ type
     procedure FindMatchingBracket; virtual;
     function GetMatchingBracket: TBufferCoord; virtual;
     function GetMatchingBracketEx(const APoint: TBufferCoord): TBufferCoord; virtual;
-    function GetMatchingBracketEnhanced(var BracketPos: TBufferCoord;
-      AdjustMatchingPos: Boolean = True): TBufferCoord;
-
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     procedure ExecuteCommand(Command: TSynEditorCommand; AChar: WideChar;
       Data: pointer); virtual;
@@ -776,8 +765,6 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure PasteFromClipboard;
-    function TextWidth(const S: string): Integer; overload;
-    function TextWidth(P: PChar; Len: Integer): Integer; overload;
 
     function NextWordPos: TBufferCoord; virtual;
     function NextWordPosEx(const XY: TBufferCoord): TBufferCoord; virtual;
@@ -788,14 +775,11 @@ type
     function PrevWordPos: TBufferCoord; virtual;
     function PrevWordPosEx(const XY: TBufferCoord): TBufferCoord; virtual;
 
-    function PixelsToColumn(P: PChar; Len: Integer; aX: Integer; CharBefore:
-        Boolean = False): Integer;
     function PixelsToRowColumn(aX, aY: Integer): TDisplayCoord;
     function PixelsToNearestRowColumn(aX, aY: Integer): TDisplayCoord;
     procedure Redo;
     procedure RegisterCommandHandler(const AHandlerProc: THookedCommandEvent;
       AHandlerData: pointer);
-    function ColumnToPixels(const S: string; Col: Integer): Integer;
     function RowColumnToPixels(const RowCol: TDisplayCoord): TPoint;
     function RowColToCharIndex(RowCol: TBufferCoord): Integer;
     function SearchReplace(const ASearch, AReplace: string;
@@ -878,7 +862,7 @@ type
     property DisplayX: Integer read GetDisplayX;
     property DisplayY: Integer read GetDisplayY;
     property DisplayXY: TDisplayCoord read GetDisplayXY;
-    property DisplayRowCount: Integer read GetDisplayRowCount;
+    property DisplayLineCount: Integer read GetDisplayLineCount;
     property CharsInWindow: Integer read fCharsInWindow;
     property CharWidth: Integer read fCharWidth;
     property Color;
@@ -891,7 +875,6 @@ type
     property LinesInWindow: Integer read fLinesInWindow;
     property LineText: string read GetLineText write SetLineText;
     property Lines: TStrings read fLines write SetLines;
-    property Rows[RowIndex: integer]: string read GetRow;
     property Marks: TSynEditMarkList read fMarkList;
     property Modified: Boolean read fModified write SetModified;
     property PaintLock: Integer read fPaintLock;
@@ -1196,187 +1179,32 @@ end;
 { TCustomSynEdit }
 
 function TCustomSynEdit.PixelsToNearestRowColumn(aX, aY: Integer): TDisplayCoord;
-// Same as PixelsToRowColumn but don't return a partially visible last line
-begin
-  aY := MinMax(aY, 0, fLinesInWindow * fTextHeight - 1);
-  Result := PixelsToRowColumn(aX, aY);
-end;
-
-function TCustomSynEdit.PixelsToColumn(P: PChar; Len: Integer; aX: Integer;
-  CharBefore: Boolean = False): Integer;
-{ Returns the character index at given pixel position aX when the text is
-  rendered with the SynEdit TextFormat.
-  If CharBefore is true you always get the character at or before the pixel
-  position, othwerwise you get the nearest character}
+// Result is in display coordinates
 var
-  Layout: TSynTextLayout;
-  HTM: TDwriteHitTestMetrics;
-  IsTrailing, IsInside: LongBool;
-  P2, PStart, PEnd: PChar;
-  W : Integer;
-  CopyS: string;
+  f: Single;
 begin
-  if (Len = 0) or (aX <= 0) then
-    Result := Max((ax div fCharWidth) + 1, 1)
-  else
+  f := (aX - fGutterWidth - 2) / fCharWidth;
+  // don't return a partially visible last line
+  if aY >= fLinesInWindow * fTextHeight then
   begin
-    if scControlChars in FVisibleSpecialChars then
-    begin
-      SetString(CopyS, P, Len);
-      SubstituteControlChars(CopyS);
-      P := PChar(CopyS);
-    end;
-
-    PStart := P;
-    PEnd := P + Len;
-    W := 0;
-
-    while (P < PEnd) and (W < aX) do
-    begin
-      while (P < PEnd) and (W < aX) do
-      begin
-        case P^ of
-           #9: Inc(W, fTabWidth * fCharWidth - W mod (fTabWidth * fCharWidth));
-           #32..#126, #$00A0: Inc(W, FCharWidth);
-         else
-           break;
-         end;
-         Inc(P);
-      end;
-      if not CharBefore and ((P = PEnd) or (W >= aX)) and (W <= aX + fCharWidth div 2) then
-        Inc(P);
-
-      if (P >= PEnd) or (W >= aX) then Break;
-
-      // Just in case P is followed by combining characters
-      if (P > PStart) and not (Word((P-1)^) in [9, 32]) then
-      begin
-        Dec(P);
-        Dec(W, FCharWidth);
-      end;
-
-      // Measure non-ascii text code points
-      P2 := P;
-      while P2 < PEnd do
-      begin
-        Inc(P2);
-        if Word(P2^) in [9, 32..126, 160] then Break;
-      end;
-
-      Layout.Create(FTextFormat, P, P2-P, MaxInt, fTextHeight);
-      CheckOSError(Layout.IDW.HitTestPoint(aX - W,
-        fTextHeight div 2, IsTrailing, IsInside, HTM));
-
-      Inc(W, Round(HTM.left + HTM.width));
-      if IsInside then
-      begin
-        Inc(P, Integer(HTM.textPosition) +
-          IfThen(not CharBefore and IsTrailing, HTM.length + 1, 1));
-        Break;
-      end
-      else
-        P := P2;
-    end;
-    Result := P - PStart;
-    if (P >= PEnd) and (ax > W) then
-      Inc(Result, Round((ax - W) / fCharWidth))
+    aY := fLinesInWindow * fTextHeight - 1;
+    if aY < 0 then
+      aY := 0;
   end;
+  Result.Column := Max(1, LeftChar + Round(f));
+  Result.Row := Max(1, TopLine + (aY div fTextHeight));
 end;
 
 function TCustomSynEdit.PixelsToRowColumn(aX, aY: Integer): TDisplayCoord;
-var
-  S: string;
 begin
-  Result.Row := MinMax(TopLine + (aY div fTextHeight), 1, DisplayRowCount);
-  S := Rows[Result.Row];
-  Result.Column := PixelsToColumn(PChar(S), S.Length, ax - fTextOffset);
-end;
-
-function TCustomSynEdit.ColumnToPixels(const S: string; Col: Integer): Integer;
-var
-  Layout: TSynTextLayout;
-  HTM: TDwriteHitTestMetrics;
-  P, P2, PStart, PEnd, PCol: PChar;
-  X, Y: Single;
-  CopyS: string;
-begin
-  if scControlChars in FVisibleSpecialChars then
-  begin
-    CopyS := S;
-    SubstituteControlChars(CopyS);
-    P := PChar(CopyS);
-    PEnd := P + CopyS.Length;
-  end
-  else
-  begin
-    P := PChar(S);
-    PEnd := P + S.Length;
-  end;
-
-
-  PStart := P;
-  PCol := P + Col - 1;
-  Result := 0;
-
-  while P < PCol do
-  begin
-    while P < PCol do
-    begin
-      case P^ of
-         #9: Inc(Result, fTabWidth * fCharWidth - Result mod (fTabWidth * fCharWidth));
-         #32..#126, #$00A0: Inc(Result, FCharWidth);
-     else
-         break;
-       end;
-       Inc(P);
-    end;
-
-    if P >= PCol then Break;
-
-    // Just in case P is followed by combining characters
-    if (P > PStart) and not (Word((P-1)^) in [9, 32]) then
-    begin
-      Dec(P);
-      Dec(Result, FCharWidth);
-    end;
-    // Measure non-ascii text code points
-    P2 := P;
-    while P2 < PEnd do
-    begin
-      Inc(P2);
-      if Word(P2^) in [9, 32..126, 160] then Break;
-    end;
-    Layout.Create(FTextFormat, P, P2-P, MaxInt, fTextHeight);
-    if P2 < PCol then
-    begin
-      P := P2;
-      Inc(Result, Round(Layout.TextMetrics.widthIncludingTrailingWhitespace));
-    end
-    else
-    begin
-      CheckOSError(Layout.IDW.HitTestTextPosition(PCol - P, False, X, Y, HTM));
-      Inc(Result, Round(X));
-      Break;
-    end;
-  end;
+  Result.Column := Max(1, LeftChar + ((aX - fGutterWidth - 2) div fCharWidth));
+  Result.Row := Max(1, TopLine + (aY div fTextHeight));
 end;
 
 function TCustomSynEdit.RowColumnToPixels(const RowCol: TDisplayCoord): TPoint;
-var
-  S: string;
 begin
+  Result.X := (RowCol.Column-1) * fCharWidth + fTextOffset;
   Result.Y := (RowCol.Row - fTopLine) * fTextHeight;
-
-  S := Rows[RowCol.Row];
-  if RowCol.Column = 1 then
-    Result.X := 0
-  else if S = '' then
-    Result.X := (RowCol.Column - 1) * fCharWidth
-  else if RowCol.Column > S.Length then
-     Result.X := TextWidth(S) + (RowCol.Column - S.Length - 1) * fCharWidth
-  else
-    Result.X := ColumnToPixels(S, RowCol.Column);
-  Inc(Result.X, fTextOffset);
 end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
@@ -1385,7 +1213,7 @@ var
   vCaretNearestPos : TDisplayCoord;
 begin
   vCaretNearestPos := PixelsToNearestRowColumn(X, Y);
-  vCaretNearestPos.Row := MinMax(vCaretNearestPos.Row, 1, DisplayRowCount);
+  vCaretNearestPos.Row := MinMax(vCaretNearestPos.Row, 1, DisplayLineCount);
   SetInternalDisplayXY(vCaretNearestPos);
 end;
 
@@ -1697,7 +1525,6 @@ end;
 
 procedure TCustomSynEdit.SynFontChanged(Sender: TObject);
 begin
-  FTextFormat.Create(Font, fTabWidth, 0, fExtraLineSpacing);
   RecalcCharExtent;
   SizeOrFontChanged(True);
 end;
@@ -2386,7 +2213,7 @@ begin
     ComputeScroll(X, Y);
     { compute new caret }
     P := PixelsToNearestRowColumn(X, Y);
-    P.Row := MinMax(P.Row, 1, DisplayRowCount);
+    P.Row := MinMax(P.Row, 1, DisplayLineCount);
 //  Not sure what was the purpose of these
 //    if fScrollDeltaX <> 0 then
 //      P.Column := DisplayX;
@@ -2429,7 +2256,7 @@ begin
   GetCursorPos( iMousePos );
   iMousePos := ScreenToClient( iMousePos );
   C := PixelsToRowColumn( iMousePos.X, iMousePos.Y );
-  C.Row := MinMax(C.Row, 1, DisplayRowCount);
+  C.Row := MinMax(C.Row, 1, DisplayLineCount);
 
   if fScrollDeltaX <> 0 then
   begin
@@ -2448,7 +2275,7 @@ begin
     Y := TopLine;
     if fScrollDeltaY > 0 then  // scrolling down?
       Inc(Y, LinesInWindow - 1);
-    C.Row := MinMax(Y, 1, DisplayRowCount);
+    C.Row := MinMax(Y, 1, DisplayLineCount);
   end;
 
   vCaret := DisplayToBufferPos(C);
@@ -2585,7 +2412,7 @@ begin
   // lines
   nL1 := Max(TopLine + rcClip.Top div fTextHeight, TopLine);
   nL2 := MinMax(TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight,
-    1, DisplayRowCount);
+    1, DisplayLineCount);
   // Now paint everything while the caret is hidden.
   HideCaret;
   try
@@ -4494,7 +4321,7 @@ begin
       if iDelta < 0 then begin // scroll right
         nL1 := Max(TopLine + iTextArea.Top div fTextHeight, TopLine);
         nL2 := MinMax(TopLine + (iTextArea.Bottom + fTextHeight - 1) div fTextHeight,
-                      1, DisplayRowCount);
+                      1, DisplayLineCount);
         maxDepth:= 0;
         if FStructures.Count > 0 then begin
           for i:= nL1 to nL2 do begin
@@ -4911,9 +4738,9 @@ var
   Delta: Integer;
 begin
   if (eoScrollPastEof in Options) then
-    Value := Min(Value, DisplayRowCount)
+    Value := Min(Value, DisplayLineCount)
   else
-    Value := Min(Value, DisplayRowCount - fLinesInWindow + 1);
+    Value := Min(Value, DisplayLineCount - fLinesInWindow + 1);
   Value := Max(Value, 1);
   if Value <> TopLine then
   begin
@@ -5266,7 +5093,7 @@ begin
 
       if fScrollBars in [ssBoth, ssVertical] then
       begin
-        nMaxScroll := DisplayRowCount;
+        nMaxScroll := DisplayLineCount;
         if (eoScrollPastEof in Options) then
           Inc(nMaxScroll, LinesInWindow - 1);
         if nMaxScroll <= MAX_SCROLL then
@@ -5297,7 +5124,7 @@ begin
             EnableScrollBar(Handle, SB_VERT, ESB_ENABLE_BOTH);
             if (TopLine <= 1) then
               EnableScrollBar(Handle, SB_VERT, ESB_DISABLE_UP)
-            else if ((DisplayRowCount - TopLine - LinesInWindow + 1) = 0) then
+            else if ((DisplayLineCount - TopLine - LinesInWindow + 1) = 0) then
               EnableScrollBar(Handle, SB_VERT, ESB_DISABLE_DOWN);
           end;
         end
@@ -5610,7 +5437,7 @@ begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the text
     SB_TOP: TopLine := 1;
-    SB_BOTTOM: TopLine := DisplayRowCount;
+    SB_BOTTOM: TopLine := DisplayLineCount;
       // Scrolls one line up / down
     SB_LINEDOWN: TopLine := TopLine + 1;
     SB_LINEUP: TopLine := TopLine - 1;
@@ -5624,8 +5451,8 @@ begin
     SB_THUMBTRACK:
       begin
         FIsScrolling := True;
-        if DisplayRowCount > MAX_SCROLL then
-          TopLine := MulDiv(LinesInWindow + DisplayRowCount - 1, Msg.Pos,
+        if DisplayLineCount > MAX_SCROLL then
+          TopLine := MulDiv(LinesInWindow + DisplayLineCount - 1, Msg.Pos,
             MAX_SCROLL)
         else
           TopLine := Msg.Pos;
@@ -5639,7 +5466,7 @@ begin
               s := Format(SYNS_ScrollInfoFmtTop, [RowToLine(TopLine)]);
             else
               s := Format(SYNS_ScrollInfoFmt, [RowToLine(TopLine),
-                RowToLine(TopLine + Min(LinesInWindow, DisplayRowCount-TopLine))]);
+                RowToLine(TopLine + Min(LinesInWindow, DisplayLineCount-TopLine))]);
           end;
 
           rc := ScrollHint.CalcHintRect(200, s, nil);
@@ -7334,67 +7161,6 @@ procedure TCustomSynEdit.SetDefaultKeystrokes;
 begin
   FKeystrokes.ResetDefaults;
 end;
-
-function TCustomSynEdit.TextWidth(const S: string): Integer;
-begin
-  Result := TextWidth(PChar(S), S.Length);
-end;
-
-function TCustomSynEdit.TextWidth(P: PChar; Len: Integer): Integer;
-{ Ascii caracters are assumed to be fixed width.  Remaining text sequences
-  are measured using TSynTextLayout }
-var
-  Layout: TSynTextLayout;
-  P2, PStart, PEnd: PChar;
-  CopyS: string;
-begin
-  if P^ = #0 then Exit(0);
-
-  if scControlChars in FVisibleSpecialChars then
-  begin
-    SetString(CopyS, P, Len);
-    SubstituteControlChars(CopyS);
-    P := PChar(CopyS);
-  end;
-
-  PStart := P;
-  PEnd:= P + Len;
-  Result := 0;
-
-  while P < PEnd do
-  begin
-    while P < PEnd do
-    begin
-      case P^ of
-         #9: Inc(Result, fTabWidth * fCharWidth - Result mod (fTabWidth * fCharWidth));
-         #32..#126, #$00A0: Inc(Result, FCharWidth);
-       else
-         break;
-       end;
-       Inc(P);
-    end;
-
-    if P >= PEnd then Break;
-
-    // Just in case P is followed by combining characters
-    if (P > PStart) and not (Word((P-1)^) in [9, 32]) then
-    begin
-      Dec(P);
-      Dec(Result, FCharWidth);
-    end;
-    // Measure non-ascii text code points
-    P2 := P;
-    while P2 < PEnd do
-    begin
-      Inc(P2);
-      if Word(P2^) in [9, 32..126, 160] then Break;
-    end;
-    Layout.Create(FTextFormat, P, P2-P, MaxInt, fTextHeight);
-    Inc(Result, Round(Layout.TextMetrics.widthIncludingTrailingWhitespace));
-    P := P2;
-  end;
-end;
-
 
 // If the translations requires Data, memory will be allocated for it via a
 // GetMem call.  The client must call FreeMem on Data if it is not NIL.
@@ -9177,7 +8943,7 @@ begin
   if DY >= 0 then
   begin
     if RowToLine(ptDst.Row) > Lines.Count then
-      ptDst.Row := Max(1, DisplayRowCount);
+      ptDst.Row := Max(1, DisplayLineCount);
   end
   else begin
     if ptDst.Row < 1 then
@@ -10155,32 +9921,6 @@ begin
   Result := fReadOnly;
 end;
 
-function TCustomSynEdit.GetRow(RowIndex: Integer): string;
-var
-  BC: TBufferCoord;
-  Len: Integer;
-begin
-  if Wordwrap then
-  begin
-    BC := fWordWrapPlugin.DisplayToBufferPos(DisplayCoord(1, RowIndex));
-    if InRange(BC.Line, 1, Lines.Count) then
-    begin
-      Len := fWordWrapPlugin.RowLength[RowIndex];
-      Result := Copy(Lines[BC.Line - 1], BC.Char, Len);
-    end
-    else
-      Result := '';
-  end
-  else
-  begin
-    BC := DisplayToBufferPos(DisplayCoord(1, RowIndex));
-    if InRange(BC.Line, 1, Lines.Count) then
-      Result := Lines[BC.Line - 1]
-    else
-      Result := '';
-  end;
-end;
-
 procedure TCustomSynEdit.SetReadOnly(Value: Boolean);
 begin
   if fReadOnly <> Value then
@@ -10196,26 +9936,23 @@ begin
 end;
 
 function TCustomSynEdit.GetMatchingBracket: TBufferCoord;
-var
-  Pos: TBufferCoord;
 begin
-  Pos := CaretXY;
-  Result := GetMatchingBracketEnhanced(Pos);
+  Result := GetMatchingBracketEx(CaretXY);
 end;
 
 function TCustomSynEdit.GetMatchingBracketEx(const APoint: TBufferCoord): TBufferCoord;
+const
+  Brackets: array[0..7] of WideChar = ('(', ')', '[', ']', '{', '}', '<', '>');
 var
   Line: string;
-  Index, PosX, PosY, Len: Integer;
+  i, PosX, PosY, Len: Integer;
   Test, BracketInc, BracketDec: WideChar;
   NumBrackets: Integer;
-  SDummy: string;
-  Attr: TSynHighlighterAttributes;
-  P: TBufferCoord;
-  IsCommentOrString: Boolean;
-  Brackets: string;
+  vDummy: string;
+  attr: TSynHighlighterAttributes;
+  p: TBufferCoord;
+  isCommentOrString: Boolean;
 begin
-  Brackets:= '()[]{}<>';
   Result.Char := 0;
   Result.Line := 0;
   // get char at caret
@@ -10226,148 +9963,94 @@ begin
   begin
     Test := Line[PosX];
     // is it one of the recognized brackets?
-    Index := Brackets.IndexOf(Test);  // zero based
-    if Index >= 0 then
-    begin
-      // this is the bracket, get the matching one and the direction
-      BracketInc := Brackets.Chars[Index];
-      BracketDec := Brackets.Chars[Index xor 1]; // 0 -> 1, 1 -> 0, ...
-      // search for the matching bracket (that is until NumBrackets = 0)
-      NumBrackets := 1;
-      if Odd(Index) then
+    for i := Low(Brackets) to High(Brackets) do
+      if Test = Brackets[i] then
       begin
-        repeat
-          // search until start of line
-          while PosX > 1 do
-          begin
-            Dec(PosX);
-            Test := Line[PosX];
-            P.Char := PosX;
-            P.Line := PosY;
-            if (Test = BracketInc) or (Test = BracketDec) then
+        // this is the bracket, get the matching one and the direction
+        BracketInc := Brackets[i];
+        BracketDec := Brackets[i xor 1]; // 0 -> 1, 1 -> 0, ...
+        // search for the matching bracket (that is until NumBrackets = 0)
+        NumBrackets := 1;
+        if Odd(i) then
+        begin
+          repeat
+            // search until start of line
+            while PosX > 1 do
             begin
-              IsCommentOrString := GetHighlighterAttriAtRowCol(P, SDummy, Attr) and
-                ((Attr = Highlighter.StringAttribute) or (Attr = Highlighter.CommentAttribute));
-              if (Test = BracketInc) and (not IsCommentOrString) then
-                Inc(NumBrackets)
-              else if (Test = BracketDec) and (not IsCommentOrString) then
+              Dec(PosX);
+              Test := Line[PosX];
+              p.Char := PosX;
+              p.Line := PosY;
+              if (Test = BracketInc) or (Test = BracketDec) then
               begin
-                Dec(NumBrackets);
-                if NumBrackets = 0 then
+                if GetHighlighterAttriAtRowCol(p, vDummy, attr) then
+                  isCommentOrString := (attr = Highlighter.StringAttribute) or
+                    (attr = Highlighter.CommentAttribute)
+                else
+                  isCommentOrString := False;
+                if (Test = BracketInc) and (not isCommentOrString) then
+                  Inc(NumBrackets)
+                else if (Test = BracketDec) and (not isCommentOrString) then
                 begin
-                  // matching bracket found, set caret and bail out
-                  Result := P;
-                  Exit;
+                  Dec(NumBrackets);
+                  if NumBrackets = 0 then
+                  begin
+                    // matching bracket found, set caret and bail out
+                    Result := P;
+                    exit;
+                  end;
                 end;
               end;
             end;
-          end;
-          // get previous line if possible
-          if PosY = 1 then break;
-          Dec(PosY);
-          Line := Lines[PosY - 1];
-          PosX := Length(Line) + 1;
-        until False;
-      end
-      else begin
-        repeat
-          // search until end of line
-          Len := Length(Line);
-          while PosX < Len do
-          begin
-            Inc(PosX);
-            Test := Line[PosX];
-            P.Char := PosX;
-            P.Line := PosY;
-            if (Test = BracketInc) or (Test = BracketDec) then
+            // get previous line if possible
+            if PosY = 1 then break;
+            Dec(PosY);
+            Line := Lines[PosY - 1];
+            PosX := Length(Line) + 1;
+          until False;
+        end
+        else begin
+          repeat
+            // search until end of line
+            Len := Length(Line);
+            while PosX < Len do
             begin
-              IsCommentOrString := GetHighlighterAttriAtRowCol(P, SDummy, Attr) and
-                ((Attr = Highlighter.StringAttribute) or (Attr = Highlighter.CommentAttribute));
-              if (Test = BracketInc) and (not IsCommentOrString) then
-                Inc(NumBrackets)
-              else if (Test = BracketDec)and (not IsCommentOrString) then
+              Inc(PosX);
+              Test := Line[PosX];
+              p.Char := PosX;
+              p.Line := PosY;
+              if (Test = BracketInc) or (Test = BracketDec) then
               begin
-                Dec(NumBrackets);
-                if NumBrackets = 0 then
+                if GetHighlighterAttriAtRowCol(p, vDummy, attr) then
+                  isCommentOrString := (attr = Highlighter.StringAttribute) or
+                    (attr = Highlighter.CommentAttribute)
+                else
+                  isCommentOrString := False;
+                if (Test = BracketInc) and (not isCommentOrString) then
+                  Inc(NumBrackets)
+                else if (Test = BracketDec)and (not isCommentOrString) then
                 begin
-                  // matching bracket found, set caret and bail out
-                  Result := P;
-                  Exit;
+                  Dec(NumBrackets);
+                  if NumBrackets = 0 then
+                  begin
+                    // matching bracket found, set caret and bail out
+                    Result := P;
+                    exit;
+                  end;
                 end;
               end;
             end;
-          end;
-          // get next line if possible
-          if PosY = Lines.Count then
-            Break;
-          Inc(PosY);
-          Line := Lines[PosY - 1];
-          PosX := 0;
-        until False;
+            // get next line if possible
+            if PosY = Lines.Count then
+              Break;
+            Inc(PosY);
+            Line := Lines[PosY - 1];
+            PosX := 0;
+          until False;
+        end;
+        // don't test the other brackets, we're done
+        break;
       end;
-    end;
-  end;
-end;
-
-function TCustomSynEdit.GetMatchingBracketEnhanced(var BracketPos: TBufferCoord;
-  AdjustMatchingPos: Boolean = True): TBufferCoord;
-{
-   If there is a bracket on the left of BracketPos.Char it is used instead.
-   On Exit BracketPos points at the position of the bracket used for matching.
-   Returns BufferCoord(-1, -1) if BracketPos is not a bracket.
-   Returns BufferCoord(0, 0) if BracketPos contains an unbalanced bracket.
-   If AdjustMatchingPos and there is a match, the matching pair of positions
-   will be both either inside or outside the brackets.
-}
-
-  const
-    Brackets: string = '()[]{}<>';
-
-  function PosHasBracket(Pos: TBufferCoord; const Line: string): Boolean;
-  var
-    Token: string;
-    Attri: TSynHighlighterAttributes;
-  begin
-    Result :=
-     InRange(Pos.Char, 1, Line.Length) and
-     (Brackets.IndexOf(Line[Pos.Char]) >= 0) and
-     (not Assigned(fHighlighter) or
-     (GetHighlighterAttriAtRowCol(Pos, Token, Attri) and
-     (Attri <> fHighlighter.CommentAttribute) and
-     (Attri <> fHighlighter.StringAttribute)));
-  end;
-
-var
-  Line: string;
-  HasBracket, IsPreviousChar, IsOpenChar, IsOutside: Boolean;
-begin
-  Result := BufferCoord(-1, -1);
-  if BracketPos.Line > Lines.Count then Exit;
-  Line := Lines[BracketPos.Line - 1];
-
-  // First Look at the previous character like Site
-  IsPreviousChar := BracketPos.Char > 1;
-  if IsPreviousChar  then
-    Dec(BracketPos.Char);
-  HasBracket := PosHasBracket(BracketPos, Line);
-  //if it is not a bracket then look at the next character;
-  if not HasBracket and IsPreviousChar then
-  begin
-    Inc(BracketPos.Char);
-    IsPreviousChar := False;
-    HasBracket := PosHasBracket(BracketPos, Line);
-  end;
-
-  if HasBracket then
-  begin
-    Result := GetMatchingBracketEx(BracketPos);
-    if (Result.Char > 0) and AdjustMatchingPos then
-    begin
-      IsOpenChar := not Odd(Brackets.IndexOf(Line[BracketPos.Char]));
-      IsOutside := IsOpenChar xor IsPreviousChar;
-      if IsOutside xor not IsOpenChar then
-        Inc(Result.Char);
-    end;
   end;
 end;
 
@@ -11402,14 +11085,16 @@ begin
   end;
 end;
 
-function TCustomSynEdit.GetDisplayRowCount: Integer;
+function TCustomSynEdit.GetDisplayLineCount: Integer;
 begin
+//++ CodeFolding
   if fWordWrapPlugin = nil then begin
     if fUseCodeFolding then
       Result := LineToRow(Lines.Count)
      else
       Result := Lines.Count
   end else if Lines.Count = 0 then
+//++ CodeFolding
     Result := 0
   else begin
     Result := fWordWrapPlugin.RowCount;

@@ -272,8 +272,10 @@ begin
   if assigned(Control) then begin
     Control.BringToFront;
     if Control is TJPanel then (Control as TJPanel).setTab;
-    FGUIDesigner.ELDesigner.SelectedControls.Clear;
-    FGUIDesigner.ELDesigner.SelectedControls.Add(Control);
+    if FGUIDesigner.ELDesigner.Active then begin
+      FGUIDesigner.ELDesigner.SelectedControls.Clear;
+      FGUIDesigner.ELDesigner.SelectedControls.Add(Control);
+    end;
   end;
 end;
 

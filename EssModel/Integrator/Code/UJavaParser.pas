@@ -1767,7 +1767,12 @@ begin
         GetNextToken;
         Ident := Token;
         GetNextToken;
-        DoAttribute(O.AddAttribute(Ident, TypeClass), Generic, O);
+        Attribute := O.AddAttribute(Ident, TypeClass);
+        DoAttribute(Attribute, Generic, O);
+        Attribute.Static := False;
+        Attribute.Visibility := viPackage;
+        Attribute.LineS := Scanner.TokenLine;
+        Attribute.Spalte:= col;
       end;
       Scanner.Comment := '';
   end;

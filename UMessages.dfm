@@ -30,14 +30,14 @@ object FMessages: TFMessages
     Constraints.MinHeight = 40
     TabOrder = 0
     OnExit = PMainExit
-    ExplicitWidth = 855
-    ExplicitHeight = 577
+    ExplicitWidth = 847
+    ExplicitHeight = 575
     object TVSearch: TTreeView
       Tag = 6
       Left = 1
       Top = 1
-      Width = 853
-      Height = 575
+      Width = 849
+      Height = 574
       Align = alClient
       BevelInner = bvNone
       BevelOuter = bvNone
@@ -51,6 +51,8 @@ object FMessages: TFMessages
       OnDblClick = TVSearchDblClick
       OnEnter = TVSearchEnter
       OnKeyUp = TVSearchKeyUp
+      ExplicitWidth = 845
+      ExplicitHeight = 573
     end
     object LBMessages: TListBox
       Tag = 7
@@ -88,13 +90,13 @@ object FMessages: TFMessages
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 853
-      ExplicitHeight = 575
+      ExplicitWidth = 845
+      ExplicitHeight = 573
       object SplitterLeft: TSplitter
         Left = 187
         Top = 0
         Width = 4
-        Height = 575
+        Height = 574
         ExplicitLeft = 160
         ExplicitHeight = 194
       end
@@ -102,7 +104,7 @@ object FMessages: TFMessages
         Left = 351
         Top = 0
         Width = 4
-        Height = 575
+        Height = 574
         ExplicitLeft = 324
         ExplicitHeight = 194
       end
@@ -110,7 +112,7 @@ object FMessages: TFMessages
         Left = 515
         Top = 0
         Width = 4
-        Height = 575
+        Height = 574
         ExplicitLeft = 488
         ExplicitHeight = 194
       end
@@ -118,7 +120,7 @@ object FMessages: TFMessages
         Left = 27
         Top = 0
         Width = 160
-        Height = 575
+        Height = 574
         Align = alLeft
         BevelOuter = bvNone
         Constraints.MinHeight = 20
@@ -126,6 +128,7 @@ object FMessages: TFMessages
         TabOrder = 0
         OnEnter = PDebuggerLeftEnter
         ExplicitLeft = 28
+        ExplicitHeight = 573
         object PAttribute: TPanel
           Left = 0
           Top = 0
@@ -141,7 +144,7 @@ object FMessages: TFMessages
           Left = 0
           Top = 13
           Width = 160
-          Height = 562
+          Height = 561
           Align = alClient
           Indent = 19
           MultiSelect = True
@@ -152,6 +155,7 @@ object FMessages: TFMessages
           OnCollapsing = TVAttributesCollapsing
           OnExpanding = TVAttributesExpanding
           OnKeyUp = TVAttributesKeyUp
+          ExplicitHeight = 560
         end
       end
       object PDebuggerRight: TPanel
@@ -166,25 +170,25 @@ object FMessages: TFMessages
         TabOrder = 1
         OnEnter = PDebuggerRightEnter
         ExplicitLeft = 520
-        ExplicitWidth = 333
-        ExplicitHeight = 575
+        ExplicitWidth = 325
+        ExplicitHeight = 573
         object PStack: TPanel
           Left = 0
           Top = 0
-          Width = 337
+          Width = 329
           Height = 13
           Align = alTop
           BevelOuter = bvNone
           Caption = 'Call stack'
           TabOrder = 0
-          ExplicitWidth = 333
+          ExplicitWidth = 325
         end
         object LBStack: TListBox
           Tag = 5
           Left = 0
           Top = 13
-          Width = 337
-          Height = 563
+          Width = 329
+          Height = 561
           Align = alClient
           ItemHeight = 15
           MultiSelect = True
@@ -206,7 +210,7 @@ object FMessages: TFMessages
         TabOrder = 2
         OnEnter = PDebuggerCenterLeftEnter
         ExplicitLeft = 192
-        ExplicitHeight = 575
+        ExplicitHeight = 573
         object PLocalVariables: TPanel
           Left = 0
           Top = 0
@@ -222,7 +226,7 @@ object FMessages: TFMessages
           Left = 0
           Top = 13
           Width = 160
-          Height = 562
+          Height = 561
           Align = alClient
           Indent = 19
           MultiSelect = True
@@ -233,6 +237,7 @@ object FMessages: TFMessages
           OnCollapsing = TVLocalVariablesCollapsing
           OnExpanding = TVLocalVariablesExpanding
           OnKeyUp = TVLocalVariablesKeyUp
+          ExplicitHeight = 560
         end
       end
       object PDebuggerCenterRight: TPanel
@@ -247,7 +252,7 @@ object FMessages: TFMessages
         TabOrder = 3
         OnEnter = PDebuggerCenterRightEnter
         ExplicitLeft = 356
-        ExplicitHeight = 575
+        ExplicitHeight = 573
         object PWatches: TPanel
           Left = 0
           Top = 0
@@ -263,7 +268,7 @@ object FMessages: TFMessages
           Left = 0
           Top = 13
           Width = 160
-          Height = 562
+          Height = 561
           Align = alClient
           Indent = 19
           MultiSelect = True
@@ -274,6 +279,7 @@ object FMessages: TFMessages
           OnDblClick = TVWatchedExpressionsDblClick
           OnExpanding = TVWatchedExpressionsExpanding
           OnKeyUp = TVWatchedExpressionsKeyUp
+          ExplicitHeight = 560
         end
       end
       object ToolbarDock: TSpTBXDock
@@ -282,7 +288,6 @@ object FMessages: TFMessages
         Width = 27
         Height = 574
         Position = dpLeft
-        ExplicitHeight = 576
         object DebuggerToolbar: TSpTBXToolbar
           Left = 0
           Top = 0
@@ -356,19 +361,19 @@ object FMessages: TFMessages
       Color = clWhite
       TabOrder = 3
       Visible = False
-      ExplicitWidth = 853
-      ExplicitHeight = 575
+      ExplicitWidth = 845
+      ExplicitHeight = 573
       object SplitterInteractiveLeft: TSplitter
         Left = 186
         Top = 1
-        Height = 574
+        Height = 572
         ExplicitLeft = 170
         ExplicitHeight = 192
       end
       object SplitterInteractiveRight: TSplitter
-        Left = 710
+        Left = 702
         Top = 1
-        Height = 574
+        Height = 572
         Align = alRight
         OnMoved = SplitterInteractiveRightMoved
         ExplicitLeft = 430
@@ -378,25 +383,25 @@ object FMessages: TFMessages
       object PInteractiveMiddle: TPanel
         Left = 189
         Top = 1
-        Width = 521
-        Height = 574
+        Width = 513
+        Height = 572
         Align = alClient
         Color = clWhite
         Constraints.MinWidth = 50
         TabOrder = 2
         OnEnter = PInteractiveMiddleEnter
-        ExplicitWidth = 517
-        ExplicitHeight = 573
+        ExplicitWidth = 509
+        ExplicitHeight = 571
         object TBInteractiveToolbar: TToolBar
           Left = 1
           Top = 1
-          Width = 519
+          Width = 511
           Height = 22
           Color = clBtnFace
           Images = vilInteractiveLight
           ParentColor = False
           TabOrder = 0
-          ExplicitWidth = 515
+          ExplicitWidth = 507
           object TBExecute: TToolButton
             Left = 0
             Top = 0
@@ -443,16 +448,16 @@ object FMessages: TFMessages
         Left = 1
         Top = 1
         Width = 185
-        Height = 574
+        Height = 572
         Align = alLeft
         Constraints.MinWidth = 50
         TabOrder = 0
-        ExplicitHeight = 573
+        ExplicitHeight = 571
         object MInterpreter: TMemo
           Left = 1
           Top = 1
           Width = 183
-          Height = 572
+          Height = 570
           Align = alClient
           PopupMenu = PMMessages
           ScrollBars = ssBoth
@@ -460,20 +465,21 @@ object FMessages: TFMessages
           OnDblClick = MInterpreterDblClick
           OnEnter = MInterpreterEnter
           OnKeyPress = MInterpreterKeyPress
+          ExplicitHeight = 569
         end
       end
       object PInteractiveRight: TPanel
-        Left = 713
+        Left = 705
         Top = 1
         Width = 143
-        Height = 574
+        Height = 572
         Align = alRight
         Color = clWhite
         Constraints.MinWidth = 50
         TabOrder = 1
         OnEnter = PInteractiveRightEnter
-        ExplicitLeft = 709
-        ExplicitHeight = 573
+        ExplicitLeft = 701
+        ExplicitHeight = 571
       end
     end
   end
@@ -493,6 +499,8 @@ object FMessages: TFMessages
       '&Messages')
     TabIndex = 0
     OnChange = TabControlMessagesChange
+    ExplicitTop = 595
+    ExplicitWidth = 847
   end
   object StatusBar: TStatusBar
     Left = 0
@@ -506,7 +514,7 @@ object FMessages: TFMessages
         Width = 50
       end>
     OnDrawPanel = StatusBarDrawPanel
-    ExplicitWidth = 855
+    ExplicitWidth = 847
   end
   object PMMessages: TSpTBXPopupMenu
     Images = vilPMMessagesLight

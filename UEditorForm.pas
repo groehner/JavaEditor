@@ -181,7 +181,6 @@ type
     procedure DoOnMouseOverToken(Sender: TObject; const Token: string; TokenType: Integer; Caret, P: TPoint; Attri: TSynHighlighterAttributes; var Highlight: Boolean);
     procedure DoOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoOnBuildStructure(Sender: TObject);
-    procedure CreateTooltip(Caret, P: TPoint; const Token: string);
     procedure TVFileStructureChange(Sender: TObject; Node: TTreeNode);
     procedure MIClassOpenClick(Sender: TObject);
     procedure MIClassEditorClick(Sender: TObject);
@@ -220,6 +219,8 @@ type
     procedure setNeedsParsing(value: boolean);
     procedure setFileExtension(value: string);
     function getFrameType: Integer;
+    function getJavaCodeAt(Caret: TPoint): string;
+    procedure CreateTooltip(Caret, P: TPoint; const Token: string);
   public
     Editor: TSynEditEx;
     SynEditPrint: TSynEditPrint;
@@ -424,7 +425,6 @@ type
     procedure AddShortcutsToHints;
     function getAllPathnames: TStringList; override;
     function getAllClassnames: TStringList; override;
-    function getJavaCodeAt(Caret: TPoint): string;
     function ClassnameDifferentFromAncestors(const aClassname: string): boolean;
     procedure InitShowCompileErrors;
     procedure setErrorMark(line, column: integer; const error: string);
@@ -2042,7 +2042,7 @@ begin
   if (Key = VK_F2) and FConfiguration.TooltipWithKey and isJava then begin
     Editor.GetHighlighterAttriAtRowColEx(Editor.CaretXY, S, TokenTyp, Start, Attri);
     if Tokentyp = Ord(SynHighlighterJava.tkIdentifier) then begin
-      P2:= Editor.RowColumnToPixels(DisplayCoord(Start, Editor.CaretY +1));
+      P2:= Editor.RowColumnToPixels(DisplayCoord(Start, Editor.LineToRow(Editor.CaretY +1)));
       CreateTooltip(BufferToPoint(Editor.CaretXY), Editor.ClientToScreen(P2), '# VK_F2 #');
     end;
   end;
@@ -3766,20 +3766,16 @@ begin
     line:= getLineNumberWithWord(s);
     if (0 <= line) and (line <= Lines.Count - 1) then
       if Pos('public void ', Lines[line]) > 0 then begin
-        CaretY:= line + 1;
+        CaretY:= line + 2;
         if line + 1 < Lines.Count
           then p:= Pos('}', Lines[line+1])
           else p:= 0;
         if (0 < p) and (p < 5)
           then CaretX:= p
           else CaretX:= 5;
-        EnsureCursorPosVisible;
-        CommandProcessor(ecDown, #0, nil);
-        CommandProcessor(ecDown, #0, nil);
       end else begin
         CaretX:= Pos(s, Lines[line]);
         CaretY:= line + 1;
-        EnsureCursorPosVisible;
       end;
   end;
 end;
@@ -4854,16 +4850,7 @@ begin
       if s[p] = '(' then inc(brackets);
     end;
     s:= copy(s, 1, p);
-  end { else if s[p] = '[' then begin
-    s1:= copy(s, 1, p-1);
-    while p <= length(s) do begin
-      if s[p] = ']' then
-        s1:= s1 + '[]';
-      inc(p);
-    end;
-    s:= s1
-  end  }
-  else
+  end else
     s:= copy(s, 1, p-1);
 
   // expand to left

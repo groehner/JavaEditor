@@ -892,9 +892,8 @@ var
   aClass: TClass;
   aClassifier: TClassifier;
 
-  BoxShowParameter, BoxSortorder,
-  BoxShowIcons, BoxFontSize: integer;
-  BoxFontName, BoxTypeBinding: string;
+  BoxShowParameter, BoxSortorder, BoxShowIcons: integer;
+  BoxTypeBinding: string;
   CommentBox: TRtfdCommentBox;
   VisibilityFilterAsInteger: integer;
   ShadowWidth: integer;

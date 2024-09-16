@@ -36,8 +36,8 @@ object FEditForm: TFEditForm
     Height = 21
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 816
-    ExplicitWidth = 735
+    ExplicitTop = 812
+    ExplicitWidth = 719
     object DesignButton: TButton
       Left = 1
       Top = 1
@@ -52,7 +52,7 @@ object FEditForm: TFEditForm
     object StatusBar: TStatusBar
       Left = 57
       Top = 1
-      Width = 681
+      Width = 665
       Height = 19
       Align = alClient
       Panels = <
@@ -72,7 +72,7 @@ object FEditForm: TFEditForm
         item
           Width = 70
         end>
-      ExplicitWidth = 677
+      ExplicitWidth = 661
     end
   end
   object EditformToolbar: TToolBar
@@ -84,7 +84,7 @@ object FEditForm: TFEditForm
     AutoSize = True
     Images = vilEditorToolbarLight
     TabOrder = 2
-    ExplicitHeight = 816
+    ExplicitHeight = 812
     object TBClose: TToolButton
       Left = 0
       Top = 0
@@ -371,8 +371,8 @@ object FEditForm: TFEditForm
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitWidth = 712
-    ExplicitHeight = 816
+    ExplicitWidth = 696
+    ExplicitHeight = 812
   end
   object icEditor: TSVGIconImageCollection
     SVGIconItems = <

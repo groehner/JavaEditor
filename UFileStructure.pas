@@ -127,24 +127,22 @@ begin
 end;
 
 procedure TFFileStructure.init(Items: TTreeNodes; Form: TFForm);
-  var i: integer;
 begin
   myForm:= Form;
   if DifferentItems(Items) then begin
     FJava.Lock.Acquire;
     ChangeStyle;
     TVFileStructure.Items.BeginUpdate;
-    for i:= 0 to TVFileStructure.Items.Count - 1 do
+    for var i:= 0 to TVFileStructure.Items.Count - 1 do
       FreeAndNil(TVFileStructure.Items[i].Data);
     TVFileStructure.Items.Clear;
     TVFileStructure.Items.Assign(Items);
-    for i:= 0 to TVFileStructure.Items.Count - 1 do
+    for var i:= 0 to TVFileStructure.Items.Count - 1 do
       TVFileStructure.Items[i].Data:= TInteger.create(TInteger(Items[i].Data).i);
     TVFileStructure.FullExpand;
     TVFileStructure.HideSelection:= false;
     TVFileStructure.Items.EndUpdate;
-    if Form.CanFocus then
-      Form.SetFocus;
+    // if Form.CanFocus then Form.SetFocus; sets DesignButton
     FJava.Lock.Release;
   end;
 end;

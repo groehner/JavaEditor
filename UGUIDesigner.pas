@@ -1146,8 +1146,8 @@ begin
   if assigned(EditForm) then begin
     EditForm.BringToFront;
     EditForm.Enter(Self);
-    if EditForm.CanFocus then
-      EditForm.SetFocus;
+    if EditForm.Editor.CanFocus then
+      EditForm.Editor.SetFocus;
   end;
 end;
 

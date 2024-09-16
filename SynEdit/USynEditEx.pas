@@ -212,8 +212,9 @@ begin
     exit;
   end;
   P1:= DisplayToPoint(PixelsToRowColumn(X,Y));
+  P1.Y:= RowToLine(P1.Y);
   GetHighlighterAttriAtRowColEx(PointToBuffer(P1), S, TokenType, Start, Attri);
-  P2:= RowColumnToPixels(DisplayCoord(Start, P1.Y+1));
+  P2:= RowColumnToPixels(DisplayCoord(Start, LineToRow(P1.Y+1)));
   OnMouseOverToken(Self, S, TokenType, P1, ClientToScreen(P2), Attri, DoHighlight); // new position before next if
   if (S <> '') and (Attri <> nil) then begin
     if DoHighlight and not fTokenIsHighlighted then begin
