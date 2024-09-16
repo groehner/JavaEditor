@@ -6,11 +6,11 @@ uses Forms, StdCtrls, ExtCtrls, Vcl.Graphics, Vcl.Controls, System.Classes;
 
 const
   {$IFDEF WIN32}
-  Version = '22.05, 32 Bit';
+  Version = '22.06, 32 Bit';
   {$ELSE}
-  Version = '22.05, 64 Bit';
+  Version = '22.06, 64 Bit';
   {$ENDIF}
-  DTag  = 14;
+  DTag  = 15;
   Monat = 9;
   Jahr  = 2024;
 

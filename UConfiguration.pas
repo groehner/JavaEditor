@@ -4925,9 +4925,9 @@ procedure TFConfiguration.SetVisibility;
       Item: TSpTBXTabItem; Page: TSpTBXTabSheet;
 begin
   for i:= 0 to maxTab do begin
+    FJava.TabsControl.Items[i].Visible:= visTabs[i];
     Item:= TSpTBXTabItem(FJava.TabsControl.Items[i]);
     Page:= FJava.TabsControl.GetPage(item);
-    Page.TabVisible:= visTabs[i];
     WinControl:= TWinControl(Page.Controls[0]);
     for j:= 0 to WinControl.ControlCount-1 do
       WinControl.Controls[j].Visible:= vis1[i, j];

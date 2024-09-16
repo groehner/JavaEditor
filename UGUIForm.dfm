@@ -15,7 +15,6 @@ object FGUIForm: TFGUIForm
   Visible = True
   OnAfterMonitorDpiChanged = FormAfterMonitorDpiChanged
   OnBeforeMonitorDpiChanged = FormBeforeMonitorDpiChanged
-  OnCanResize = FormCanResize
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnMouseActivate = FormMouseActivate

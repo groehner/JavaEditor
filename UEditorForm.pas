@@ -1244,10 +1244,6 @@ begin
     end;
     FreeAndNil(ParseThread);
   end;
-  if assigned(FTooltip) then begin
-    FTooltip.Hide;
-    FreeAndNil(FTooltip);
-  end;
   FreeAndNil(Parser);
   FreeAndNil(TVFileStructure);
   FreeAndNil(Model);
@@ -1994,8 +1990,7 @@ begin
     Key:= #0;
   end;
   if Key = #27 then begin
-    if assigned(FTooltip) then
-      FTooltip.Hide;
+    FTooltip.Hide;
     FJava.scpJava.Form.Hide;
     FJava.scpParams.Form.Hide;
   end;
@@ -4725,7 +4720,7 @@ begin
       if (Token <> LastToken) and (Trim(Token) <> '') then
         CreateTooltip(Caret, P, Token);
     end else
-      if assigned(FTooltip) and FTooltip.Visible and not FTooltip.closemanually then
+      if FTooltip.Visible and not FTooltip.closemanually then
         FTooltip.Hide;
   end;
   LastToken:= Trim(Token);
@@ -4746,19 +4741,13 @@ begin
   QueryPerformanceFrequency(freq);
   QueryPerformanceCounter(startTime);
   w:= Editor.Canvas.TextWidth(Token);
-  h:= editor.Canvas.TextHeight(Token);
+  h:= Editor.Canvas.TextHeight(Token);
   TokenRect:= Rect(P.x, P.y-h, P.x+w, P.y);
 
   Code:= getJavaCodeAt(Caret);
   Typ:= MyCodeCompletion.SearchDocumentation(Code, Caret.Y);
   if Typ <> '' then begin
-
-    // new Tooltip due to browser.history (forward/backward)
-    if assigned(FTooltip) then begin
-      FTooltip.Hide;
-      FreeAndNil(FTooltip);
-    end;
-    FTooltip:= TFTooltip.Create(Self, P, TokenRect, Token);
+    FTooltip.Init(Self, P, TokenRect, Token);
     SL:= TStringList.Create;
     try
       SL.Add(FTooltip.getHead);

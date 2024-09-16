@@ -16,6 +16,7 @@ object FTooltip: TFTooltip
   KeyPreview = True
   Position = poDefault
   OnClose = FormClose
+  OnCreate = FormCreate
   OnMouseActivate = FormMouseActivate
   OnShow = FormShow
   TextHeight = 15
@@ -101,11 +102,12 @@ object FTooltip: TFTooltip
       OnClick = TBZoomInClick
     end
   end
-  object SpTBXStatusBar1: TSpTBXStatusBar
+  object SpTBXStatusBar: TSpTBXStatusBar
     Left = 0
     Top = 228
     Width = 404
     Height = 26
+    ExplicitTop = 231
   end
   object CloseTooltipTimer: TTimer
     Enabled = False

@@ -13,8 +13,6 @@ type
     procedure FormMouseActivate(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y, HitTest: Integer;
       var MouseActivate: TMouseActivate);
-    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
-      var Resize: Boolean);
     procedure FormAfterMonitorDpiChanged(Sender: TObject; OldDPI,
       NewDPI: Integer);
     procedure FormBeforeMonitorDpiChanged(Sender: TObject; OldDPI,
@@ -86,7 +84,6 @@ type
     procedure CutToClipboard; override;
     procedure CopyToClipboard; override;
     procedure PasteFromClipboard; override;
-    procedure EndOfResizeMoveDetected(var Msg: Tmessage); message WM_EXITSIZEMOVE;
     procedure Paint; override;
     procedure SetBoundsForFormular;
     procedure SetOptions; override;
@@ -201,7 +198,7 @@ begin
   if Assigned(Partner) then
     Partner.Partner:= nil;
   for var i:= 1 to maxTab do  // 0 is tab Program
-    FJava.TabsControl.Pages[i].TabVisible:= FConfiguration.vistabs[i];
+    FJava.TabsControl.Items[i].Visible:= FConfiguration.vistabs[i];
   aAction:= caFree;
 end;
 
@@ -320,13 +317,6 @@ begin
   OnResize:= nil;
 end;
 
-procedure TFGUIForm.FormCanResize(Sender: TObject; var NewWidth,
-  NewHeight: Integer; var Resize: Boolean);
-begin
-  if FGUIDesigner.ELDesigner.Active then
-    FGUIDesigner.ELDesigner.Active:= false;
-end;
-
 procedure TFGUIForm.FormResize(Sender: TObject);
 begin
   FObjectInspector.ELPropertyInspector.Modified;
@@ -369,11 +359,6 @@ end;
 procedure TFGUIForm.SetOptions;
 begin
   SetGridOptions;
-end;
-
-procedure TFGUIForm.EndOfResizeMoveDetected(var Msg: Tmessage);
-begin
-  FGUIDesigner.ELDesigner.Active:= true;
 end;
 
 function TFGUIForm.GetFormType: string;

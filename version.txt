@@ -1,15 +1,19 @@
+22.06, 2024.09.15
+bug fix for visibility
+improvement for tooltips
+
 22.05, 2024.09.14
 Important bug fix for editor window
 some minor improvements
 
 22.04, 2024.08.28
-Bug fix for fonts in uml window
+bug fix for fonts in uml window
 
 22.03, 2024.08.16
-Bug fix for opening uml window
+bug fix for opening uml window
 
 22.02, 2024.07.08
-Bug fix for incorrect PPI
+bug fix for incorrect PPI
 
 22.01, 2024.06.26
 Switch to svg instead of bmp icons and use of improved components for better DPI awareness

@@ -4,8 +4,8 @@ object FConfiguration: TFConfiguration
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Configuration'
-  ClientHeight = 470
-  ClientWidth = 744
+  ClientHeight = 469
+  ClientWidth = 740
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,18 +22,16 @@ object FConfiguration: TFConfiguration
   object PMain: TPanel
     Left = 0
     Top = 0
-    Width = 744
-    Height = 470
+    Width = 740
+    Height = 469
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 740
-    ExplicitHeight = 469
     object TVConfiguration: TTreeView
       Left = 0
       Top = 0
       Width = 145
-      Height = 470
+      Height = 469
       Align = alLeft
       AutoExpand = True
       HideSelection = False
@@ -99,26 +97,21 @@ object FConfiguration: TFConfiguration
         00FFFFFFFFFFFFFFFF00000000000000000000000001064A0061006C006F0070
         007900320000000000000000000000FFFFFFFFFFFFFFFF000000000000000000
         000000010A530075006200760065007200730069006F006E00}
-      ExplicitHeight = 469
     end
     object PPanelRight: TPanel
       Left = 145
       Top = 0
-      Width = 599
-      Height = 470
+      Width = 595
+      Height = 469
       Align = alClient
       TabOrder = 1
-      ExplicitWidth = 595
-      ExplicitHeight = 469
       object PButtons: TPanel
         Left = 1
-        Top = 428
-        Width = 597
+        Top = 427
+        Width = 593
         Height = 41
         Align = alBottom
         TabOrder = 0
-        ExplicitTop = 427
-        ExplicitWidth = 593
         object BSave: TButton
           Left = 549
           Top = 9
@@ -177,12 +170,11 @@ object FConfiguration: TFConfiguration
       object PTitle: TPanel
         Left = 1
         Top = 1
-        Width = 597
+        Width = 593
         Height = 20
         Align = alTop
         BevelOuter = bvSpace
         TabOrder = 1
-        ExplicitWidth = 593
         object LTitle: TLabel
           Left = 8
           Top = 4
@@ -200,14 +192,12 @@ object FConfiguration: TFConfiguration
       object PageList: TPageControl
         Left = 1
         Top = 21
-        Width = 597
-        Height = 407
+        Width = 593
+        Height = 406
         ActivePage = PCode
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
-        ExplicitWidth = 593
-        ExplicitHeight = 406
         object PJava: TTabSheet
           Caption = 'PJava'
         end

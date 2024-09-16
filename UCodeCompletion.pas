@@ -53,8 +53,6 @@ type
        procedure SplitMethodComment(MethodComment: string; var Method, Comment: string);
        function HTMLPathnameToClass(Pathname: string): string;
        function getDescription(Pathname: string): string;
-       procedure setFile(const Pathname, Line: string);
-       procedure setURL(const url: string);
        procedure getFullClassAndPath(Line: string; out FullClass, Path: string);
        procedure CheckMissingDocumentation;
        procedure ChangeStyle;
@@ -261,11 +259,11 @@ begin
     if (aClassifier.Pathname <> '') or IsSelfDefinedClassOrInterface(aClassname, aClassifier.Pathname, E) then begin
       s:= s + aClassifier.name;
       Description:= aClassifier.Documentation.Description;
-      setFile(aClassifier.Pathname, IntToStr(aClassifier.LineS));
+      FTooltip.setFile(aClassifier.Pathname, IntToStr(aClassifier.LineS));
     end else if isJavaAPIClass(aClassifier.Name) then begin
       s:= s + '<a href="' + ToWeb('', HTMLFileofJavaClass) + '">' + aClassifier.name + '</a>';
       Description:= getDescription(HTMLFileofJavaClass);
-      setUrl(HTMLFileofJavaClass);
+      FTooltip.setUrl(HTMLFileofJavaClass);
     end;
     Result:= s + '<br><br>';
   end;
@@ -390,7 +388,7 @@ begin
                   end
                 else
                   Result:= Typ;
-                setFile(MClassifier.Pathname, IntToStr(Operation.LineS));
+                FTooltip.setFile(MClassifier.Pathname, IntToStr(Operation.LineS));
                 CCOperation:= Operation;
                 exit;
               end;
@@ -408,7 +406,7 @@ begin
                   else
                     Result:= Param.TypeClassifier.Name;
                   CCParameter:= Param;
-                  setFile(MClassifier.Pathname, IntToStr(Param.LineS));
+                  FTooltip.setFile(MClassifier.Pathname, IntToStr(Param.LineS));
                   exit;
                 end;
               end;
@@ -427,7 +425,7 @@ begin
                   else
                     Result:= Attr.TypeClassifier.Name;
                   CCAttribute:= Attr;
-                  setFile(MClassifier.Pathname, IntToStr(Attr.LineS));
+                  FTooltip.setFile(MClassifier.Pathname, IntToStr(Attr.LineS));
                   exit;
                 end;
               end;
@@ -448,7 +446,7 @@ begin
                 else
                   Result:= Attr.TypeClassifier.Name;
                 CCAttribute:= Attr;
-                setFile(MClassifier.Pathname, IntToStr(Attr.LineS));
+                FTooltip.setFile(MClassifier.Pathname, IntToStr(Attr.LineS));
                 exit;
               end;
             end;
@@ -491,7 +489,7 @@ begin
       end
       else
         Result:= Typ;
-      setUrl(ToWeb('',HTMLFileofJavaClass));
+      FTooltip.setUrl(ToWeb('',HTMLFileofJavaClass));
     end;
   end;
 
@@ -598,7 +596,7 @@ function TCodeCompletion.getAPIType(const WhereOf, Args: string; AttrMethCons: i
     if countParams = countArgs then begin
       if asDescription then begin
         htmlfile:= ToWeb('', HTMLFileofJavaClass) + '#' + WithoutParameternames;
-        setUrl(htmlfile);
+        FTooltip.setUrl(htmlfile);
         Result:= '<code><img src="' + FConfiguration.EditorFolder + 'img\class.png"> ' +
                  '<a href="' + ToWeb('', HTMLFileofJavaClass) + '">' + aclass + '</a><br>' +
                  '<br><img src="' + FConfiguration.EditorFolder + 'img\constructor.png"> ' +
@@ -615,7 +613,7 @@ function TCodeCompletion.getAPIType(const WhereOf, Args: string; AttrMethCons: i
     WithoutParameternames:= getMethodWithoutParameternames(Method, countParams);
     if asDescription then begin
       htmlfile:= ToWeb('', HTMLFileofJavaClass) + '#' + WithoutParameternames;
-      setUrl(htmlfile);
+      FTooltip.setUrl(htmlfile);
       Result:= '<code><img src="' + FConfiguration.EditorFolder + 'img\class.png"> ' +
                '<a href="' + ToWeb('', HTMLFileofJavaClass) + '">' + aclass + '</a><br><br>' +
                '<img src="' + FConfiguration.EditorFolder + 'img\method.png"> ' +
@@ -630,7 +628,7 @@ function TCodeCompletion.getAPIType(const WhereOf, Args: string; AttrMethCons: i
   begin
     if asDescription then begin
       htmlfile:= ToWeb('', HTMLFileofJavaClass) + '#' + Attribute;
-      setUrl(htmlfile);
+      FTooltip.setUrl(htmlfile);
       Result:= '<code><img src="' + FConfiguration.EditorFolder + 'img\class.png"> ' +
                '<a href="' + ToWeb('', HTMLFileofJavaClass) + '">' + aclass + '</a><br>' +
                '<br><img src="' + FConfiguration.EditorFolder + 'img\attribute.png"> ' +
@@ -696,7 +694,7 @@ begin
             end else // default constructor
               if asDescription then begin
                 htmlfile:= ToWeb('', HTMLFileofJavaClass) + '#' + WithoutParameternames;
-                setUrl(htmlfile);
+                FTooltip.setUrl(htmlfile);
                 Result:= '<code><img src="' + FConfiguration.EditorFolder + 'img\class.png"> ' +
                          '<a href="' + ToWeb('', HTMLFileofJavaClass) + '">' + aclass + '</a><br>' +
                          '<br><img src="' + FConfiguration.EditorFolder + 'img\constructor.png"> ' +
@@ -942,7 +940,7 @@ begin
           then Result:= Result + '<br><br><p>Attribute of interface <i>' + MClassifier.Name + '</i>.'
           else Result:= Result + '<br><br><p>Attribute of class <i>' + MClassifier.Name + '</i>.';
         Result:= Result + '<br><br> ' + Attr.Documentation.Description;
-        setFile(MClassifier.Pathname, IntToStr(Attr.LineS));
+        FTooltip.setFile(MClassifier.Pathname, IntToStr(Attr.LineS));
       end else
         Result:= Attr.TypeClassifier.Name;
       CCAttribute:= Attr;
@@ -965,7 +963,7 @@ begin
                    '<bold>' + toHtml(Operation.toShortString) + '</bold></code><br><br>' +
                    'Method <i>' + Operation.Name + '</i> of class <i>' + MClassifier.name + '</i>.<br><br>' +
                     Operation.getFormattedDescription;
-        setFile(MClassifier.Pathname, IntToStr(Operation.LineS));
+        FTooltip.setFile(MClassifier.Pathname, IntToStr(Operation.LineS));
       end;
       CCOperation:= Operation;
       exit;
@@ -1186,7 +1184,7 @@ begin
                    getDescription(HTMLFileofJavaClass)
           else Result:= Typ
       else begin }
-        Scanner.Init(Code);
+
         StartToken:= Scanner.getNextToken;
         if Scanner.empty then
           Typ:= getStartType(Scanner.Tokentyp, StartToken, Line, asDescription)
@@ -2337,18 +2335,6 @@ function TCodeCompletion.SearchDocumentation(const JavaCode: string; Line: integ
 begin
   ParseSourceCodes;
   Result:= getTypeOfCode(JavaCode, Line, 0, true);
-end;
-
-procedure TCodeCompletion.setFile(const Pathname, Line: string);
-begin
-  if assigned(FTooltip) then
-    FTooltip.setFile(Pathname, Line);
-end;
-
-procedure TCodeCompletion.setURL(const url: string);
-begin
-  if assigned(FTooltip) then
-    FTooltip.setURL(url);
 end;
 
 procedure TCodeCompletion.getFullClassAndPath(Line: string; out FullClass, Path: string);

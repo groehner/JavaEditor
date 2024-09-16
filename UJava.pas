@@ -950,6 +950,7 @@ begin
   FWindow:= TFWindow.Create(Self);
   FScpHint:= TFScpHint.Create(Self);
   FEvaluate:= TFEvaluate.Create(Self);
+  FTooltip:= TFTooltip.Create(Self);
   myJavaCommands:= TJavaCommands.Create;
   myDebugger:= TDebugger.Create;
   mySearchOptions:= TSearchOptions.Create;
@@ -6523,6 +6524,7 @@ begin
 
   FMessages.ChangeStyle;
   FGUIDesigner.ChangeStyle;
+  FTooltip.ChangeStyle;
   if assigned(FObjectInspector) then
     FObjectInspector.ChangeStyle;
   if assigned(FJUnitTests) then
@@ -6735,6 +6737,7 @@ begin
     RetranslateComponent(FObjectGenerator);
     RetranslateComponent(FWatches);
     RetranslateComponent(FMessages);
+    RetranslateComponent(FTooltip);
 
     if assigned(FFileStructure) then
       RetranslateComponent(FFileStructure);
@@ -6746,8 +6749,6 @@ begin
       RetranslateComponent(FObjectInspector);
     if FConfiguration.SubversionOK and assigned(FSubversion) then
       RetranslateComponent(FSubversion);
-    if assigned(FTooltip) then
-      RetranslateComponent(FToolTip);
   end;
   FConfiguration.ShowDefaultMindstormsAndroidConfiguration;
   FConfiguration.InitTreeView;

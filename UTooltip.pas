@@ -24,7 +24,7 @@ type
     icTooltip: TSVGIconImageCollection;
     vilToolbarLight: TVirtualImageList;
     vilToolbarDark: TVirtualImageList;
-    SpTBXStatusBar1: TSpTBXStatusBar;
+    SpTBXStatusBar: TSpTBXStatusBar;
     procedure TBCloseClick(Sender: TObject);
     procedure TBOpenUrlClick(Sender: TObject);
     procedure TBBackClick(Sender: TObject);
@@ -35,50 +35,50 @@ type
     procedure TBZoomOutClick(Sender: TObject);
     procedure CloseTooltipTimerExecute(Sender: TObject);
     procedure OpenTooltipTimerExecute(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var aAction: TCloseAction);
     procedure FormMouseActivate(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y, HitTest: Integer;
       var MouseActivate: TMouseActivate);
   private
+    EditForm: TForm;
     TokenRect: TRect;
-    procedure SetFontSize(Delta: integer);
-  public
     URL: string;
     base: string;
-    ClassPathname: string;
-    closemanually: boolean;
-    class var
-      Pathname: string;
-      Line: string;
-    constructor Create(AOwner: TComponent; P: TPoint; Rect: TRect; const Token: string); reintroduce;
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure setURL(const aUrl: string);
-    procedure setFile(const aPathname, aLine: string);
+    Line: string;
+    Pathname: string;
+    procedure Hide;
+    procedure SetFontSize(Delta: integer);
     procedure FindAdress(const s: string);
     procedure WebBrowserOnCommandStateChange(Sender: TObject; Command: Integer; Enable: WordBool);
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+  public
+    closemanually: boolean;
+    procedure Init(Form: TForm; P: TPoint; Rect: TRect; const Token: string);
+    procedure setFile(const aPathname, aLine: string);
+    procedure setURL(const aUrl: string);
     function getHead: string;
     procedure ChangeStyle;
-    procedure Hide; virtual;
   end;
 
- var
-  FTooltip: TFTooltip = nil;
+ var FTooltip: TFTooltip = nil;
 
 implementation
 
-uses SysUtils, UJava, UConfiguration, UUtils, UEditorForm;
+uses SysUtils, JvGnugettext, UJava, UConfiguration, UUtils, UEditorForm;
 
 {$R *.dfm}
 
-constructor TFTooltip.Create(AOwner: TComponent; P: TPoint; Rect: TRect; const Token: string);
+procedure TFTooltip.Init(Form: TForm; P: TPoint; Rect: TRect; const Token: string);
 begin
-  inherited Create(AOwner);
+  // new Tooltip due to browser.history (forward/backward)  ?
+  EditForm:= Form;
   setBounds(P.x, P.y, FConfiguration.TooltipWidth, FConfiguration.TooltipHeight);
   Webbrowser.OnCommandStateChange:= WebBrowserOnCommandStateChange;
   TokenRect:= Rect;
   closemanually:= (Token = '# VK_F2 #');
-  ChangeStyle;
 end;
 
 procedure TFTooltip.CreateParams(var Params: TCreateParams);
@@ -110,11 +110,11 @@ end;
 
 procedure TFTooltip.OpenTooltipTimerExecute(Sender: TObject);
 begin
-  OpenTooltipTimer.Enabled:= false;  //
-  if Application.Active {and (PtInRect(TokenRect, Mouse.CursorPos) or closemanually)} then begin
-    FTooltip.Show;
-    if (Owner as TFEditForm).Editor.CanFocus then
-      (Owner as TFEditForm).Editor.SetFocus;
+  OpenTooltipTimer.Enabled:= false;
+  if Application.Active and (PtInRect(TokenRect, Mouse.CursorPos) or closemanually) then begin
+    Show;
+    if (EditForm as TFEditForm).Editor.CanFocus then
+      (EditForm as TFEditForm).Editor.SetFocus;
     FindAdress(FConfiguration.TempDir + 'Tooltip.html');
     CloseTooltipTimer.Enabled:= not closemanually;
   end else if Visible then
@@ -123,9 +123,9 @@ end;
 
 procedure TFTooltip.CloseTooltipTimerExecute(Sender: TObject);
 begin
-  if Visible and not (IsMouseOverControl(Self) or IsMouseOverControl(Owner as TForm) or PtInRect(TokenRect, Mouse.CursorPos)) then begin
+  if Visible and not (IsMouseOverControl(Self) or IsMouseOverControl(EditForm) or PtInRect(TokenRect, Mouse.CursorPos)) then begin
     Hide;
-    (Owner as TFEditForm).LastToken:= '';
+    (EditForm as TFEditForm).LastToken:= '';
   end;
 end;
 
@@ -139,7 +139,7 @@ end;
 
 procedure TFTooltip.TBGotoSourcecodeClick(Sender: TObject);
 begin
-  if Pathname <> '' then begin
+  if (Pathname <> '') and (Line <> '0') then begin
     FJava.NewEditor(Pathname, 'T' + Line + ')X1)Y' + Line + ')W1)');
     Hide;
   end;
@@ -203,9 +203,14 @@ begin
   FJava.ActiveTool:= -1
 end;
 
+procedure TFTooltip.FormCreate(Sender: TObject);
+begin
+  TranslateComponent(Self);
+  ChangeStyle;
+end;
+
 procedure TFTooltip.FormMouseActivate(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y, HitTest: Integer;
-  var MouseActivate: TMouseActivate);
+  Shift: TShiftState; X, Y, HitTest: Integer; var MouseActivate: TMouseActivate);
 begin
   FJava.ActiveTool:= 12;
 end;

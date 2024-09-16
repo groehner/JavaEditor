@@ -885,6 +885,7 @@ begin
         then DesignForm := TFXGUIForm(FJava.FormFactory(fkFXGUI))
         else DesignForm := TFGUIForm(FJava.FormFactory(fkGUI));
       DesignForm.Partner := JavaForm;
+      DesignForm.Name:= '';  // don't change to Name_1
       Reader.ReadRootComponent(DesignForm);
       if JavaForm.FrameType = 8
         then (DesignForm as TFXGUIForm).Open(Filename)
