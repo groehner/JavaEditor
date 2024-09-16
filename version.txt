@@ -1,3 +1,6 @@
+22.04, 2024.08.28
+Bugfix for fonts in uml window
+
 22.03, 2024.08.16
 Bugfix for opening uml window
 

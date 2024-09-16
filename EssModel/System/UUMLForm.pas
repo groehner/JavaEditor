@@ -146,6 +146,7 @@ begin
   PUMLPanel.Visible:= FConfiguration.vistoolbars[3];
   MainModul.Diagram.SetOnModified(OnPanelModified);
   MainModul.Diagram.SetOnSelectionChanged(OnSelectionChanged);
+  LockEnter:= false;
 end;
 
 procedure TFUMLForm.Retranslate;
@@ -455,11 +456,9 @@ end;
 
 procedure TFUMLForm.SetFont(aFont: TFont);
 begin
-  if (AFont.Name <> Font.Name) or (AFont.Size <> Font.Size) then begin
-    Font.Assign(aFont);
-    MainModul.Diagram.SetFont(aFont);
-    MainModul.RefreshDiagram;
-  end;
+  Font.Assign(aFont);
+  MainModul.Diagram.SetFont(aFont);
+  MainModul.RefreshDiagram;
 end;
 
 function TFUMLForm.GetFont: TFont;

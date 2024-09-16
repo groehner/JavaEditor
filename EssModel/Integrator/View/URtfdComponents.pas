@@ -88,9 +88,8 @@ type
     procedure AddChild(Sender: TModelEntity; NewChild: TModelEntity); virtual;
     procedure Remove(Sender: TModelEntity); virtual;
     procedure EntityChange(Sender: TModelEntity); virtual;
-    procedure SetParameters(ShowParameter, SortOrder, ShowIcons, FontSize,
-      ShadowWidth: integer; const Fontname: string; aFont: TFont;
-      const TypeBinding: string);
+    procedure SetParameters(ShowParameter, SortOrder, ShowIcons, ShadowWidth: integer;
+      aFont: TFont; const TypeBinding: string);
     function isJUnitTestclass: boolean;
     procedure CloseEdit;
     procedure Lock(b: boolean);
@@ -849,13 +848,11 @@ begin
   end;
 end;
 
-procedure TRtfdBox.SetParameters(ShowParameter, SortOrder, ShowIcons, FontSize,
-  ShadowWidth: integer; const Fontname: string; aFont: TFont;
-  const TypeBinding: string);
+procedure TRtfdBox.SetParameters(ShowParameter, SortOrder, ShowIcons, ShadowWidth: integer;
+   aFont: TFont; const TypeBinding: string);
 begin
   Self.Font.assign(aFont);
-  Self.Font.Size := FontSize;
-  Self.Font.Name := Fontname;
+  Canvas.Font.Assign(aFont);
   Self.FShowParameter := ShowParameter;
   Self.FSortOrder := SortOrder;
   Self.FShowIcons := ShowIcons;

@@ -202,7 +202,7 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 597
         Height = 407
-        ActivePage = PGeneralOptions
+        ActivePage = PGUIDesigner
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2

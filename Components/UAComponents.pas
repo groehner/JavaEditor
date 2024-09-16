@@ -677,6 +677,8 @@ end;
 procedure TAWTComponent.MakeFont;
   var s, map: string; intstyle: integer;
 begin
+  if Name = '' then exit;
+
   map:= Name + '_map';
   Partner.DeleteAttributeValues(map);
   Partner.DeleteAttributeValue(Name + '.setFont');

@@ -424,7 +424,7 @@ var
       then vis:= viPublished
       else vis:= viPrivate;
     Result:= BoxT.Create(Panel, E, Frame, vis);
-    Result.Font.Assign(Panel.Font);
+    Result.Font.Assign(Font);
     if FConfiguration.ArrayListAsIntegratedList and
       (E is TObjekt) and ((E as TObjekt).getTyp.Name = 'java.util.ArrayList') then
       Result.Visible:= false;
@@ -615,7 +615,7 @@ begin
     end else if BoxNames.Objects[i] is TRtfdObject then begin
       // connect Objects to Classes
       OBox:= (BoxNames.Objects[I] as TRtfdObject);
-      if Assigned(OBox.Entity as TObject) then begin
+      if Assigned(OBox.Entity) then begin
         aJavaObject:= ComJava.GetObject(OBox.Entity.Name);
         if assigned(aJavaObject) then begin
           boxname:= aJavaObject.ClassRef.getGenericTyp;
@@ -798,8 +798,6 @@ begin
           Ini.WriteInteger(S, 'Y', PPIUnScale(Box.Top));
           Ini.WriteInteger(S, 'W', PPIUnScale(Box.Width));
           Ini.WriteInteger(S, 'H', PPIUnScale(Box.Height));
-          Ini.WriteInteger(S, 'FontSize', PPIUnScale(Box.Font.Size));
-          Ini.WriteString(S, 'FontName', Box.Font.Name);
           s1:= (Box as TRtfdCommentBox).TrMemo.Text;
           Ini.WriteString(S, 'Comment', '_;_' + ReplaceStr(s1, #13#10, '_;_'));
         end else begin
@@ -812,8 +810,6 @@ begin
           Ini.WriteInteger(S, 'ShowParameter', Box.ShowParameter);
           Ini.WriteInteger(S, 'SortOrder', Box.SortOrder);
           Ini.WriteInteger(S, 'ShowIcons', Box.ShowIcons);
-          Ini.WriteInteger(S, 'FontSize', PPIUnScale(Box.Font.Size));
-          Ini.WriteString(S, 'FontName', Box.Font.Name);
           if Box.TypeBinding <> '' then
             Ini.WriteString(S, 'TypeBinding', Box.TypeBinding);
         end;
@@ -960,13 +956,10 @@ begin
           BoxShowParameter:= Ini.ReadInteger(S, 'ShowParameter', ShowParameter);
           BoxSortOrder:= Ini.ReadInteger(S, 'SortOrder', SortOrder);
           BoxShowIcons:= Ini.ReadInteger(S, 'ShowIcons', ShowIcons);
-          BoxFontsize:= PPIScale(Ini.ReadInteger(S, 'FontSize', Font.Size));
-          BoxFontname:= Ini.ReadString(S, 'FontName', Font.Name);
-          if BoxFontname = 'MS Sans Serif' then BoxFontname:= 'Segoe UI';
           BoxTypeBinding:= Ini.ReadString(S, 'TypeBinding', '');
           ShadowWidth:= FConfiguration.ShadowWidth;
-          Box.SetParameters(BoxShowParameter, BoxSortOrder, BoxShowIcons, BoxFontSize,
-                            ShadowWidth, BoxFontname, Font, BoxTypeBinding);
+          Box.SetParameters(BoxShowParameter, BoxSortOrder, BoxShowIcons,
+                            ShadowWidth, Font, BoxTypeBinding);
           // reduce to necessary files
           j:= 0;
           while j < FilesPre.Count do begin
@@ -1066,10 +1059,6 @@ begin
           Box.Width:= PPIScale(Ini.ReadInteger(S, 'W', Box.Width));
           Box.Height:= PPIScale(Ini.ReadInteger(S, 'H', Box.Height));
           Box.Font.Assign(Font);
-          Box.Font.Size:= PPIScale(Ini.ReadInteger(S, 'FontSize', Font.Size));
-          Box.Font.Name:= Ini.ReadString(S, 'FontName', Font.Name);
-          if Box.Font.name = 'MS Sans Serif' then Box.Font.Name:= 'Segoe UI';
-
           s:= Ini.ReadString(S, 'Comment', '');
           if copy(s, 1, 3) = '_;_' then
             delete(s, 1, 3);
@@ -1319,18 +1308,12 @@ procedure TRtfdDiagram.SetFont(const aFont: TFont);
   var i: integer; L: TList; B: TRtfdBox;
 begin
   inherited;
-  if Panel.hasSelectedControls
-    then L:= Panel.GetSelectedControls
-    else L:= Panel.GetManagedObjects;
+  L:= Panel.GetManagedObjects;
   try
     for i:= 0 to L.Count - 1 do begin
       B:= TObject(L[i]) as TRtfdBox;
-      try
-        if assigned(B) and assigned(b.Font) then
-          B.Font.Assign(aFont);
-      except on e: exception do
-        FConfiguration.Log('TRtfdDiagram.SetFont ' + e.Message, e);
-      end;
+      if assigned(B) and assigned(B.Font) then
+        B.Font.Assign(aFont);
     end;
   finally
     FreeAndNil(L);
@@ -1592,10 +1575,9 @@ end;
 procedure TRtfdDiagram.SetConnections(const Value: integer);
 begin
   if Value <> ShowConnections then begin
+    Panel.IsModified := true;
     inherited SetConnections(Value);
     Panel.SetConnections(Value);
-    Panel.IsModified := true;
-    // Panel.ShowAll; ?
   end;
   inherited;
 end;
@@ -1892,12 +1874,12 @@ begin
     if Assigned(B1) and Assigned(B2) then begin
       B2.Top := B1.Top + B1.Height + 50 + random(30)-30;
       B2.Left:= max(B1.Left + (B1.Width - B2.Width) div 2 + random(200) - 100, 0);
-      B2.Font.Assign(B1.Font);
+      Panel.ConnectObjects(B2, B1, asInstanceOf);
     end else if Assigned(B2) then begin
       B2.Top := B2.Top  + random(30) - 30;
       B2.Left:= B2.Left + random(30) - 30;
-      B2.Font.Assign(Font);
     end;
+    B2.Font.Assign(Font);
     Panel.RecalcSize;
     ShowAttributes(aJavaObject, aModelObject);
     // exceptions have arisen in here
@@ -2040,6 +2022,8 @@ begin
             if FConfiguration.ShowAllNewObjects then
               ShowAllNewObjectsString(theObjectname);
             UpdateAllObjects;
+            ResolveObjectAssociations;
+            Panel.RecalcSize;
           end else begin
             if FConfiguration.logfileInteractiveOK then
               ComJava.ExecuteCommand('logMemo#' + FConfiguration.LogfileInteractive + '#' + UdlgAbout.Version);
@@ -4455,6 +4439,7 @@ end;
 procedure TRtfdDiagram.SetUMLFont;
 begin
   FJava.FDFont.Font.Assign(Font);
+  FJava.FDFont.Options:= [];
   if FJava.FDFont.Execute then begin
     Font.Assign(FJava.FDFont.Font);
     FConfiguration.UMLFont.Assign(Font);

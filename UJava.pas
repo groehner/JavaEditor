@@ -1032,7 +1032,7 @@ begin
   UseLatestCommonDialogs:= true;
   InteractiveUMLForm:= nil;
   ReadHistory;
-  Screen.MenuFont.Name := 'Segoe UI';
+  Screen.MenuFont.Name:= 'Segoe UI';
   Screen.MenuFont.Size:= 9;
   FConfiguration.Init;
   LoadBounds;
@@ -2356,7 +2356,7 @@ begin
     else FDFont.Options:= [];
 
   if FDFont.Execute then begin
-    aFont:= FDFont.Font;
+    aFont.assign(FDFont.Font);
     if FormTag in [1, 2, 4, 6, 11, 14] then
       for i:= 0 to TDIFormsList.Count - 1 do
         if TDIFormsList[i].FormTag = FormTag then

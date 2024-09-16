@@ -62,7 +62,7 @@ type
     Partner: TFForm;
     AlreadySavedAs: boolean;
     FormTag: integer;
-    Lockenter: boolean;
+    LockEnter: boolean;
     constructor Create(AOwner: TComponent); override;
     procedure SetOptions; virtual;
     function getState: string; virtual;

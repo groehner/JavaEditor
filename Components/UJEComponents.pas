@@ -373,8 +373,9 @@ begin
     then Font.Size:= Font.Size + 1
     else Font.Size:= max(Font.Size - 1, 6);
   CanvasFontAssign;
-  SizeToText;
   MakeFont;
+  //if Sizeable then
+  //  SetPositionAndSize;
   Invalidate;
 end;
 

@@ -3860,6 +3860,7 @@ object FJava: TFJava
     Top = 100
   end
   object EditorAgeTimer: TTimer
+    Enabled = False
     OnTimer = EditorAgeTimerTimer
     Left = 40
     Top = 168
