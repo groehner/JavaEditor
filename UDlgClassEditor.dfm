@@ -4,8 +4,8 @@ object FClassEditor: TFClassEditor
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'UML class editor'
-  ClientHeight = 431
-  ClientWidth = 609
+  ClientHeight = 429
+  ClientWidth = 601
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

@@ -679,7 +679,8 @@ begin
     ComJava.NewClass(ChangeFileExt(ExtractFileName(SLFiles.Strings[i]), ''), SLFiles.Strings[i]);
   FreeAndNil(SLFiles);
 
-  LockWindow(UMLForm.Handle);
+  if assigned(UMLForm) then
+    LockWindow(UMLForm.Handle);
   ExecutionParser:= TExecutionParser.Create(true);
   Update:= true;
   try
@@ -709,7 +710,7 @@ begin
     end;
   finally
     Executionlist.Clear;
-    if assigned(UMLForm) and assigned(UMLForm.MainModul) and assigned(UMLForm.MainModul.Diagram) then begin
+    if assigned(UMLForm) and (UMLForm.Pathname <> '') and assigned(UMLForm.MainModul) and assigned(UMLForm.MainModul.Diagram) then begin
       Diagram:= UMLForm.MainModul.Diagram as TRtfdDiagram;
       if FConfiguration.ShowAllNewObjects then
         Diagram.ShowAllNewObjects(Self);
@@ -719,7 +720,8 @@ begin
       UpdateVariables;
     FMessages.TBExecute.Enabled:= true;
     SL.Clear;
-    UnlockWindow;
+    if assigned(UMLForm) then
+      UnlockWindow;
     FreeAndNil(ExecutionParser);
     // debug je2java
     DeleteFiles(Pathname);

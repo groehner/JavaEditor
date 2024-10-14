@@ -1037,6 +1037,21 @@ begin
   Screen.MenuFont.Size:= 9;
   FConfiguration.Init;
   LoadBounds;
+
+  FFileStructure:= TFFileStructure.create(Self);
+  FFileStructure.Visible:= FConfiguration.ReadBoolU('FileStructure', 'Visible', true);
+  FFileStructure.Height:= 300;
+  FFileStructure.Width:= 200;
+  myCodeCompletion:= TCodeCompletion.Create;
+  //myCodeCompletion.PrepareScpJavaForm;
+  FObjectInspector:= TFObjectInspector.create(Self);
+  FObjectInspector.Visible:= FConfiguration.ReadBoolU('ObjectInspector', 'Visible', true);
+  if FFileStructure.Visible or FObjectInspector.Visible or assigned(FJunitTests) and FJunitTests.Visible
+    then LoadDocking
+    else begin
+      RightDockPanel.Width:= 0;
+      VSplitter.Visible:= false;
+    end;
   TThread.ForceQueue(nil, OpenFiles);
 end;
 
@@ -1295,6 +1310,7 @@ procedure TFJava.EditorSaveAs(aForm: TFForm; Hidden: boolean);
   var dir, OldPartner, NewPartner, Ext, SaveAsName, fPath, fName: string;
       Form2: TFForm; Editform: TFEditForm; GuiForm: TFGuiForm;
       SaveDialog: TExtSaveDialog;
+      OpenGuiForm: boolean;
 begin
   if aForm.AlreadySavedAs then exit;
   if Hidden
@@ -1316,7 +1332,7 @@ begin
       if dir <> ''
         then InitialDir:= dir
         else InitialDir:= FConfiguration.Sourcepath;
-      if SaveDialog.Execute then begin
+      if Execute then begin
         fPath:= ExtractFilepath(Filename);
         fName:= ExtractFilename(Filename);
         fName:= WithoutSpaces(fName);
@@ -1348,14 +1364,15 @@ begin
           OldPartner:= ChangeFileExt(aForm.Pathname, '.jfm');
           NewPartner:= ChangeFileExt(Filename, '.jfm');
           GuiForm:= getGuiForm(OldPartner);
+          OpenGuiForm:= assigned(GuiForm);
           if Assigned(GuiForm) then begin
             GuiForm.SaveAs(NewPartner);
             GuiForm.Close;
-          end
-          else if FileExists(OldPartner) and (ExtractFileExt(OldPartner) = '.jfm') then
+            FreeAndNil(GuiForm);
+          end else if FileExists(OldPartner) and (ExtractFileExt(OldPartner) = '.jfm') then
             CopyFile(PChar(OldPartner), PChar(NewPartner), false);
           aForm.SaveAs(Filename);
-          if assigned(GuiForm) then
+          if OpenGuiForm then
             Open(NewPartner);
           FConfiguration.Sourcepath:= ExtractFilePath(Filename);
           RearrangeFileHistory(Filename);
@@ -2767,20 +2784,6 @@ begin
     DisableUpdateMenuItems;
     FMessages.InitAndShow;
     InteractiveUMLForm:= MakeNewUMLWindow(_(LNGInteractive), '');
-    FFileStructure:= TFFileStructure.create(Self);
-    FFileStructure.Visible:= FConfiguration.ReadBoolU('FileStructure', 'Visible', true);
-    FFileStructure.Height:= 300;
-    FFileStructure.Width:= 200;
-    myCodeCompletion:= TCodeCompletion.Create;
-    //myCodeCompletion.PrepareScpJavaForm;
-    FObjectInspector:= TFObjectInspector.create(Self);
-    FObjectInspector.Visible:= FConfiguration.ReadBoolU('ObjectInspector', 'Visible', true);
-    if FFileStructure.Visible or FObjectInspector.Visible or assigned(FJunitTests) and FJunitTests.Visible
-      then LoadDocking
-      else begin
-        RightDockPanel.Width:= 0;
-        VSplitter.Visible:= false;
-      end;
     if FConfiguration.LoadFiles then begin
       WinCount:= FConfiguration.ReadIntegerU('Window', 'Wins', 0);
       for i:= 1 to WinCount do begin
@@ -2828,16 +2831,19 @@ begin
   EnableUpdateMenuItems;
   if FConfiguration.FirstStartAfterInstallation then
     MIDefaultLayoutClick(Self);
-  if not FileExists(FConfiguration.JavaInterpreter) then begin
-    FConfiguration.ShowPage(0);
-    MIConfigurationClick(Self);
-  end;
   with TFUpdateDialog.Create(Self) do begin
     CheckAutomatically;
     Free;
   end;
   EditorAgeTimer.Enabled:= FConfiguration.CheckAge;
   ChangeStyle(FConfiguration.GUIStyle);
+
+  if not FileExists(FConfiguration.JavaInterpreter) then
+    TThread.ForceQueue(nil, procedure
+      begin
+        FConfiguration.ShowPage(0);
+        MIConfigurationClick(Self);
+      end);
 end;
 
 procedure TFJava.ConnectGUIAndJavaWindow(GUIForm: TFGUIForm);
@@ -5830,7 +5836,7 @@ begin
       aForm:= TFEditForm(FormFactory(fkEditor));
       if Assigned(aForm) then begin
         aForm.New(s2);
-        aForm.PutText(FMessages.LBMessages.Items.Text);
+        aForm.PutText(FMessages.LBMessages.Items.Text, false);
         aForm.Save(false);
         NewTextDiff(aActive, aForm);
       end;

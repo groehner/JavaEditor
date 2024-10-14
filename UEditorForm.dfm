@@ -3,8 +3,8 @@ object FEditForm: TFEditForm
   Top = 204
   Align = alClient
   BorderIcons = []
-  ClientHeight = 834
-  ClientWidth = 723
+  ClientHeight = 832
+  ClientWidth = 715
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -31,8 +31,8 @@ object FEditForm: TFEditForm
   end
   object BottomPanel: TPanel
     Left = 0
-    Top = 813
-    Width = 723
+    Top = 811
+    Width = 715
     Height = 21
     Align = alBottom
     TabOrder = 1
@@ -79,7 +79,7 @@ object FEditForm: TFEditForm
     Left = 0
     Top = 0
     Width = 23
-    Height = 813
+    Height = 811
     Align = alLeft
     AutoSize = True
     Images = vilEditorToolbarLight
@@ -366,8 +366,8 @@ object FEditForm: TFEditForm
   object PHaupt: TPanel
     Left = 23
     Top = 0
-    Width = 700
-    Height = 813
+    Width = 692
+    Height = 811
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3

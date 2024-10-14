@@ -266,7 +266,7 @@ type
     procedure SystemOutPrintln;
     procedure Matchbracket;
     function  getIndent: string;
-    procedure PutText(s: string);
+    procedure PutText(s: string; withCursor: boolean = true);
 
     function  CBSearchClassOrMethod(Stop: Boolean; line: Integer): string;
     function  SourceContainsClass(const aClassname: string): boolean;
@@ -1161,12 +1161,14 @@ begin
   FFileStructure.ShowSelected;
 end;
 
-procedure TFEditForm.PutText(s: string);
+procedure TFEditForm.PutText(s: string; withCursor: boolean = true);
   var p, OffX, OffY, x, y: Integer; s1: string;
 begin
-  try
+  p:= Pos('|', s);
+  if p = 0 then
+    withCursor:= false;
+  if withCursor then begin
     OffY:= 0;
-    p:= Pos('|', s);
     s1:= copy(s, 1, p-1);
     delete(s, p, 1);
     p:= Pos(#13#10, s1);
@@ -1180,8 +1182,7 @@ begin
       if SelText = '' then begin
         x:= CaretX;
         y:= CaretY;
-        end
-      else begin
+      end else begin
         x:= BlockBegin.Char;
         y:= BlockBegin.Line;
       end;
@@ -1190,10 +1191,10 @@ begin
       if OffY = 0
         then CaretX:= x + OffX - 1
         else CaretX:= OffX;
-      EnsureCursorPosVisible;
-    end;
-  except
-  end;
+    end
+  end else
+    Editor.SelText:= s;
+  Editor.EnsureCursorPosVisible;
   NeedsParsing:= true;
 end;
 
@@ -3319,7 +3320,7 @@ begin
     tl:= TopLine;
     CaretY:= line+1;
     CaretX:= 1;
-    PutText(s);
+    PutText(s, false);
     if cy > line + 1 then begin
       cl:= CountChar(#13, s);
       if cl = 0 then cl:= 1;

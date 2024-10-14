@@ -4,8 +4,8 @@ object FConfiguration: TFConfiguration
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Configuration'
-  ClientHeight = 469
-  ClientWidth = 740
+  ClientHeight = 467
+  ClientWidth = 732
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,8 +22,8 @@ object FConfiguration: TFConfiguration
   object PMain: TPanel
     Left = 0
     Top = 0
-    Width = 740
-    Height = 469
+    Width = 732
+    Height = 467
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
@@ -31,7 +31,7 @@ object FConfiguration: TFConfiguration
       Left = 0
       Top = 0
       Width = 145
-      Height = 469
+      Height = 468
       Align = alLeft
       AutoExpand = True
       HideSelection = False
@@ -101,17 +101,19 @@ object FConfiguration: TFConfiguration
     object PPanelRight: TPanel
       Left = 145
       Top = 0
-      Width = 595
-      Height = 469
+      Width = 587
+      Height = 467
       Align = alClient
       TabOrder = 1
       object PButtons: TPanel
         Left = 1
-        Top = 427
-        Width = 593
+        Top = 426
+        Width = 589
         Height = 41
         Align = alBottom
         TabOrder = 0
+        ExplicitTop = 425
+        ExplicitWidth = 585
         object BSave: TButton
           Left = 549
           Top = 9
@@ -170,11 +172,12 @@ object FConfiguration: TFConfiguration
       object PTitle: TPanel
         Left = 1
         Top = 1
-        Width = 593
+        Width = 589
         Height = 20
         Align = alTop
         BevelOuter = bvSpace
         TabOrder = 1
+        ExplicitWidth = 585
         object LTitle: TLabel
           Left = 8
           Top = 4
@@ -192,12 +195,14 @@ object FConfiguration: TFConfiguration
       object PageList: TPageControl
         Left = 1
         Top = 21
-        Width = 593
-        Height = 406
-        ActivePage = PCode
+        Width = 589
+        Height = 405
+        ActivePage = PGUIDesigner
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
+        ExplicitWidth = 585
+        ExplicitHeight = 404
         object PJava: TTabSheet
           Caption = 'PJava'
         end
@@ -2292,6 +2297,15 @@ object FConfiguration: TFConfiguration
             Caption = 'Font'
             TabOrder = 9
             OnClick = BGuiFontClick
+          end
+          object BGuiFontDefault: TButton
+            Left = 97
+            Top = 128
+            Width = 75
+            Height = 25
+            Caption = 'Default'
+            TabOrder = 10
+            OnClick = BGuiFontDefaultClick
           end
         end
         object PStructogram: TTabSheet

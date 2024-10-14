@@ -55,7 +55,8 @@ type
      procedure CallEV3(const Command: string);
      procedure MindstormsUtility(const bat: string);
      procedure EditBuffer(const Buffer: string);
-     function ExecAndWait(const ApplicationName, CommandLine, Dir, Output: string; WindowState: word): boolean;
+     function ExecAndWait(const ApplicationName, CommandLine, Dir, Output: string;
+                           WindowState: word; processMessage: boolean = true): boolean;
      function ExecWithoutWait(const ApplicationName, CommandLine, Dir: string; WindowState: word): boolean;
      procedure ExecWithPipe(const ApplicationName, CommandLine, Dir: string; JavaFX: boolean = false);
      procedure ExecWithConsoleBat(const Batchfile: string);
@@ -609,7 +610,7 @@ end;
 
 // calls a program, waits until ready and collects the output to a file
 function TJavaCommands.ExecAndWait(const ApplicationName, CommandLine, Dir, Output: string;
-                     WindowState: word): boolean;
+                     WindowState: word; processMessage: boolean = true): boolean;
   var
     StartupInfo: TStartupInfo;
     SecAttr: TSecurityAttributes;
@@ -674,7 +675,10 @@ begin
     ProcessRunning:= false;
     FJava.RunButtonToStop(false);
   end;
-  Application.ProcessMessages; // else wine produces IO-Error
+  if processMessage then
+    Application.ProcessMessages; // else wine produces IO-Error
+    // during TFJava.FormCreate/TFConfiguration.Init/getJavaVersion
+    // a ProcessMessags starts SystemExecuteMacro/TFJava.Open to early
 end;
 
 // runs an external program, no need to wait for or close external program

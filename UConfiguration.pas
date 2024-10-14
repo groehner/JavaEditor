@@ -633,6 +633,7 @@ type
     LFrameWidth: TLabel;
     BGuiFont: TButton;
     BEditorFont: TButton;
+    BGuiFontDefault: TButton;
     {$WARNINGS ON}
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -759,6 +760,7 @@ type
     procedure LVVisibilityElementsItemChecked(Sender: TObject; Item: TListItem);
     procedure BGuiFontClick(Sender: TObject);
     procedure BEditorFontClick(Sender: TObject);
+    procedure BGuiFontDefaultClick(Sender: TObject);
   private
     MyRegistry: TRegistry;
     FPreview: TVclStylesPreview;
@@ -2326,6 +2328,12 @@ begin
     ErrorMsg(_(LNGMissingAdminRights));
   Sleep(800);
   CheckFile(ETutorial, true);
+end;
+
+procedure TFConfiguration.BGuiFontDefaultClick(Sender: TObject);
+begin
+  GUIFontSize:= 12;
+  GUIFontName:= 'Dialog';
 end;
 
 procedure TFConfiguration.BGuiFontClick(Sender: TObject);
@@ -6950,7 +6958,7 @@ begin
             p:= Pos('JAVA_VERSION', SL[i]);
           end;
           s:= SL[i]; // JAVA_VERSION="1.7.0"
-        end else if myJavaCommands.ExecAndWait(JavaInterpreter, '-version', '.', TempDir + 'version.txt', SW_HIDE) then begin
+        end else if myJavaCommands.ExecAndWait(JavaInterpreter, '-version', '.', TempDir + 'version.txt', SW_HIDE, false) then begin
           SL.LoadFromFile(TempDir + 'version.txt');
           s:= SL[0];   // java version "1.5.4-rc"
         end;

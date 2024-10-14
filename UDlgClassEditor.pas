@@ -1780,9 +1780,11 @@ begin
     end;
   end;
 
-  NodeIndex:= Node.AbsoluteIndex;
-  UpdateTreeView(false, NodeIndex);  // due to loss of node.data in 64 Bit version
-  Node:= TreeView.Items[NodeIndex];
+  if assigned(Node) then begin
+    NodeIndex:= Node.AbsoluteIndex;
+    UpdateTreeView(false, NodeIndex);  // due to loss of node.data in 64 Bit version
+    Node:= TreeView.Items[NodeIndex];
+  end;
 
   if assigned(Node) and assigned(Node.Data) and IsMethodsNodeLeaf(Node) then begin
     Method:= TOperation(Node.Data);

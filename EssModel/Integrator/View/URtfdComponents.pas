@@ -2406,7 +2406,8 @@ constructor TRtfdCustomLabel.Create(aOwner: TComponent; aEntity: TModelEntity);
 begin
   inherited Create(aOwner);
   Parent := aOwner as TWinControl;
-  Font.assign((aOwner as TRtfdBox).Font);
+  var aRtfdBox:= aOwner as TRtfdBox;
+  Font.assign(aRtfdBox.Font);
   Self.Entity := aEntity;
   Height := abs(Font.Height);
   FAlignment := taLeftJustify;
