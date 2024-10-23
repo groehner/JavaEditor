@@ -1042,10 +1042,10 @@ begin
   FFileStructure.Visible:= FConfiguration.ReadBoolU('FileStructure', 'Visible', true);
   FFileStructure.Height:= 300;
   FFileStructure.Width:= 200;
-  myCodeCompletion:= TCodeCompletion.Create;
   //myCodeCompletion.PrepareScpJavaForm;
   FObjectInspector:= TFObjectInspector.create(Self);
   FObjectInspector.Visible:= FConfiguration.ReadBoolU('ObjectInspector', 'Visible', true);
+  myCodeCompletion:= TCodeCompletion.Create;
   if FFileStructure.Visible or FObjectInspector.Visible or assigned(FJunitTests) and FJunitTests.Visible
     then LoadDocking
     else begin
@@ -5530,11 +5530,6 @@ begin
     if Assigned(aUMLForm) then begin
       aUMLForm.MainModul.AddToProject(Editform.Pathname);
       aUMLForm.Modified:= true;
-      // a refresh is done automatically, why?
-       {
-      if EditClassStatus = 'Refresh'
-        then aUMLForm.TBRefreshClick(Self)
-        else aUMLForm.CreateTVFileStructure;}
       aUMLForm.MainModul.Diagram.Lock(false);
     end;
 

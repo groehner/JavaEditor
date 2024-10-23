@@ -77,10 +77,10 @@ type
     constructor Create(aOwner: TModelEntity); override;
     destructor Destroy; override;
     function GetFeatures : IModelIterator;
-    function GetShortType: string;
     function GetAttributes : IModelIterator;
     function GetAllAttributes: IModelIterator;
     function GetOperations : IModelIterator;
+    function GetShortType: string;
     function getName: string;
     function isReference: boolean;
     function getAncestorName: string; virtual;
@@ -113,13 +113,13 @@ type
     class function GetAfterListener: TGUID; override;
   public
     constructor Create(aOwner: TModelEntity); override;
+    function toTypeName: string;
+    function toNameType: string;
+    function toNameTypeValue: string;
+    function toJava: string;
     property TypeClassifier: TClassifier read FTypeClassifier write SetTypeClassifier;
     property Value: string read FValue write SetValue;
     property Connected: boolean read FConnected write SetConnected;
-    function toShortString: string;
-    function toShortStringNode: string;
-    function toShortStringNodeValue: string;
-    function toLongString: string;
   end;
 
   TOperation = class(TFeature)
@@ -142,18 +142,17 @@ type
     destructor Destroy; override;
     procedure NewParameters;
     function AddParameter(const NewName: string): TParameter;
-    property OperationType: TOperationType read FOperationType write SetOperationType;
-    property ReturnValue: TClassifier read FReturnValue write SetReturnValue;
     function GetParameters : IModelIterator;
     function AddAttribute(const NewName: string; TypeClass: TClassifier): TAttribute; // local variables
     function GetAttributes : IModelIterator;
-    function toShortString: string;
-    function toShortStringWithoutParameterNames: string;
-    function toShortStringNode: string;
-    function toLongString: string;
+    function toTypeName: string;
+    function toNameParameterTyp: string;
+    function toJava: string;
     function hasMain: boolean;
     procedure setAttributeScope(aScopeDepth, aLineE: integer);
     function getFormattedDescription: string;
+    property OperationType: TOperationType read FOperationType write SetOperationType;
+    property ReturnValue: TClassifier read FReturnValue write SetReturnValue;
   end;
 
   TProperty = class(TAttribute)
@@ -189,13 +188,13 @@ type
     function AddAttribute(const NewName: string; TypeClass: TClassifier): TAttribute;
     function AddExtends(I: TInterface): TInterface;
     procedure ViewExtends(I: TInterface);
-    property Ancestor: TInterface read FAncestor write SetAncestor;
     function GetExtends : IModelIterator;
     function GetImplementingClasses : IModelIterator;
     function FindAttribute(Name, aType: string): TAttribute;
     function FindOperation(O: TOperation): TOperation;
     function getAncestorName: string; override;
     function AddOperationWithoutType(const NewName: string): TOperation;
+    property Ancestor: TInterface read FAncestor write SetAncestor;
   end;
 
   TClass = class(TClassifier, IBeforeClassListener)
@@ -228,14 +227,14 @@ type
     function AddProperty(const NewName: string): TProperty;
     function AddImplements(I: TInterface): TInterface;
     procedure ViewImplements(I: TInterface);
-    property Ancestor: TClass read FAncestor write SetAncestor;
-    property isJUnitTestClass: boolean read FisJUnitTestClass write FisJUnitTestClass;
     function GetImplements : IModelIterator;
     function GetDescendants : IModelIterator;
     function FindOperation(O : TOperation) : TOperation;
     function FindAttribute(Name, aType: string): TAttribute;
     function GetTyp: string;
     function getAncestorName: string; override;
+    property Ancestor: TClass read FAncestor write SetAncestor;
+    property isJUnitTestClass: boolean read FisJUnitTestClass write FisJUnitTestClass;
   end;
 
   TJUnitClass = class(TClass, IBeforeClassListener)
@@ -630,13 +629,13 @@ begin
     Ai:= Cent.GetAllAttributes;
     while Ai.HasNext do begin
       Attribute:= ai.Next as TAttribute;
-      SL.Add(Attribute.toShortString);
+      SL.Add(Attribute.toTypeName);
     end;
     SL.Add('--- Operations ---');
     oi:= cent.GetOperations;
     while oi.HasNext do begin
       Operation:= oi.Next as TOperation;
-      SL.Add(Operation.toLongString);
+      SL.Add(Operation.toJava);
     end;
     SL.Add('-------------------------');
   end;
@@ -945,13 +944,13 @@ begin
     Ai:= Cent.GetAllAttributes;
     while Ai.HasNext do begin
       Attribute:= ai.Next as TAttribute;
-      SL.Add(Attribute.toShortString);
+      SL.Add(Attribute.toTypeName);
     end;
     SL.Add('--- Operations ---');
     oi:= cent.GetOperations;
     while oi.HasNext do begin
       Operation:= oi.Next as TOperation;
-      SL.Add(Operation.toLongString);
+      SL.Add(Operation.toJava);
     end;
     SL.Add('-------------------------');
   end;
@@ -1371,7 +1370,7 @@ begin
   Result := TModelIterator.Create( FAttributes);
 end;
 
-function TOperation.toShortString: string;
+function TOperation.toTypeName: string;
   var s: string; It2: IModelIterator; Parameter: TParameter;
 begin
   s:= '(';
@@ -1391,27 +1390,7 @@ begin
   end;
 end;
 
-function TOperation.toShortStringWithoutParameterNames: string;
-  var s: string; It2: IModelIterator; Parameter: TParameter;
-begin
-  s:= '(';
-  it2:= GetParameters;
-  while it2.HasNext do begin
-    Parameter:= it2.next as TParameter;
-    if assigned(Parameter.TypeClassifier) then
-      s:= s + Parameter.TypeClassifier.GetShortType + ', ';
-  end;
-  if Copy(s, length(s) - 1, 2) = ', ' then
-    Delete(s, length(s) - 1, 2);
-  s:= s + ')';
-  case OperationType of
-    otConstructor: Result:= Name + s;
-    otProcedure:   Result:= 'void ' + Name + s;
-    otFunction:    Result:= ReturnValue.GetShortType + ' ' + Name + s;
-  end;
-end;
-
-function TOperation.toShortStringNode: string;
+function TOperation.toNameParameterTyp: string;
   var s: string; It2: IModelIterator; Parameter: TParameter;
 begin
   s:= '(';
@@ -1431,10 +1410,10 @@ begin
   end;
 end;
 
-function TOperation.toLongString: string;
+function TOperation.toJava: string;
   var s, vis: string;
 begin
-  s:= toShortString;
+  s:= toTypeName;
   if OperationType <> otConstructor then begin
     if IsAbstract then s:= 'abstract ' + s;
     if Static then s:= 'static ' + s;
@@ -1467,12 +1446,10 @@ begin
 end;
 
 procedure TOperation.setAttributeScope(aScopeDepth, aLineE: integer);
-  var It: IModelIterator;
-      Attribute: TAttribute;
 begin
-  it:= GetAttributes;
+  var it:= GetAttributes;
   while it.HasNext do begin
-    Attribute:= it.next as TAttribute;
+    var Attribute:= it.next as TAttribute;
     if (Attribute.LineE = 0) and (Attribute.ScopeDepth = ScopeDepth) then
       Attribute.LineE:= LineE;
   end;
@@ -1541,14 +1518,14 @@ begin
   Fire(mtAfterEntityChange)
 end;
 
-function TAttribute.toShortString: string;
+function TAttribute.toTypeName: string;
 begin
   if assigned(FTypeClassifier)
-    then result:= TypeClassifier.GetShortType + ' ' + Name
-    else result:= Name;
+    then Result:= FTypeClassifier.GetShortType + ' ' + Name
+    else Result:= Name;
 end;
 
-function TAttribute.toShortStringNode: string;
+function TAttribute.toNameType: string;
 begin
   try
     if assigned(TypeClassifier)
@@ -1559,26 +1536,41 @@ begin
   end;
 end;
 
-function TAttribute.toShortStringNodeValue: string;
+function TAttribute.toNameTypeValue: string;
 begin
-  result:= toShortStringNode;
+  result:= toNameType;
   if Value <> '' then
     result:= result + ' = ' + Value;
 end;
 
-function TAttribute.toLongString: string;
-  var s, vis: string;
+function TAttribute.toJava: string;
+  var s, vis, v: string;
 begin
   if assigned(TypeClassifier)
-    then s:= TypeClassifier.GetShortType + ' ' + Name
+    then s:= TypeClassifier.ShortName + ' ' + Name
     else s:= Name;
   if IsFinal then s:= 'final ' + s;
   if Static then s:= 'static ' + s;
   vis:= VisibilityAsString(Visibility);
-  if vis = ''
-    then s:= s
-    else s:= vis + ' ' + s;
-  result:= s;
+  if vis <> '' then
+    s:= vis + ' ' + s;
+
+  if Value <> '' then begin
+    v:= Value;
+    if assigned(TypeClassifier) then begin
+      if TypeClassifier.ShortName = 'char' then begin
+        v:= ReplaceStr(v, '''', '');
+        if v = ''
+          then v:= ''''''
+          else v:= '''' + v[1] + ''''
+      end else if TypeClassifier.ShortName = 'String' then begin
+        v:= ReplaceStr(v, '"', '');
+        v:= '"' + v + '"';
+      end;
+    end;
+    s:= s + ' = ' + v;
+  end;
+  Result:= StringTimesN(FConfiguration.Indent1, ScopeDepth) + s + ';';
 end;
 
 { TProperty }

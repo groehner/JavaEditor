@@ -662,7 +662,7 @@ begin
     while It.HasNext do begin
       Attribute:= It.Next as TAttribute;
       PictureNr:= Integer(Attribute.Visibility) + 2;
-      Node:= TVFileStructure.Items.AddChildObject(ClassNode, Attribute.toShortString, TInteger.create(Attribute.LineS));
+      Node:= TVFileStructure.Items.AddChildObject(ClassNode, Attribute.toTypeName, TInteger.create(Attribute.LineS));
       Node.ImageIndex:= PictureNr;
       Node.SelectedIndex:= PictureNr;
       Node.HasChildren:= false;
@@ -673,7 +673,7 @@ begin
       if Method.OperationType = otConstructor
         then PictureNr:= 6
         else PictureNr:= Integer(Method.Visibility) + 7;
-      Node:= TVFileStructure.Items.AddChildObject(ClassNode, Method.toShortString, TInteger.create(Method.LineS));
+      Node:= TVFileStructure.Items.AddChildObject(ClassNode, Method.toTypeName, TInteger.create(Method.LineS));
       Node.ImageIndex:= PictureNr;
       Node.SelectedIndex:= PictureNr;
       Node.HasChildren:= false;

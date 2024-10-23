@@ -794,8 +794,8 @@ type
     procedure StyleSelectorShow;
     procedure FillVclStylesList;
     procedure DecideProxy;
-    function JavaDocComment: string;
-    function ShortComment: string;
+    function JavaDocComment(Indent: string= ''): string;
+    function ShortComment(Indent: string= ''): string;
     function getFileInCHM(s: string): string;
     function getJavaManualFX: string;
     procedure UpdateHeaderFooter;
@@ -1255,7 +1255,7 @@ type
     function ReadBinaryStream(machine: boolean; const key, aName: string; value: TStream): integer;
 
     procedure MakeAssociations;
-    function HeadText: string;
+    function HeadText(Indent: string= ''): string;
     function RemovePortableDrive(const s: string; folder: string = ''): string;
     function AddPortableDrive(const s: string; folder: string = ''): string;
     function AddPortableDrives(s: string): string;
@@ -6572,29 +6572,29 @@ begin
   end;
 end;
 
-function TFConfiguration.JavaDocComment: string;
+function TFConfiguration.JavaDocComment(Indent: string= ''): string;
 begin
   Result:=
-    '/**' + CrLf +
-    ' *' + CrLf +
-    ' * ' + _('Description') + CrLf +
-    ' *' + CrLf +
-    ' * @version 1.0 ' + _('from') + ' %DATE%' + CrLf +
-    ' * @author %AUTHOR%' + CrLf +
-    ' */' + CrLf;
+    Indent + '/**' + CrLf +
+    Indent + ' *' + CrLf +
+    Indent + ' * ' + _('Description') + CrLf +
+    Indent + ' *' + CrLf +
+    Indent + ' * @version 1.0 ' + _('from') + ' %DATE%' + CrLf +
+    Indent + ' * @author %AUTHOR%' + CrLf +
+    Indent + ' */' + CrLf;
 end;
 
-function TFConfiguration.ShortComment: string;
+function TFConfiguration.ShortComment(Indent: string = ''): string;
 begin
-  Result:= '// Author: %AUTHOR%' + CrLf + '// Date: %DATE%' + CrLf;
+  Result:= Indent + '// Author: %AUTHOR%' + CrLf + '// Date: %DATE%' + CrLf;
 end;
 
-function TFConfiguration.HeadText: string;
+function TFConfiguration.HeadText(Indent: string = ''): string;
   var s: string; p: Integer;
 begin
   case CommentKind of
-    0: s:= JavaDocComment;
-    1: s:= ShortComment;
+    0: s:= JavaDocComment(Indent);
+    1: s:= ShortComment(Indent);
     2: s:= FreeComment;
   end;
   p:= Pos('%AUTHOR%', UpperCase(s));

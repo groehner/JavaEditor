@@ -4,8 +4,8 @@ object FConfiguration: TFConfiguration
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Configuration'
-  ClientHeight = 467
-  ClientWidth = 732
+  ClientHeight = 466
+  ClientWidth = 728
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,16 +22,18 @@ object FConfiguration: TFConfiguration
   object PMain: TPanel
     Left = 0
     Top = 0
-    Width = 732
-    Height = 467
+    Width = 728
+    Height = 466
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 732
+    ExplicitHeight = 467
     object TVConfiguration: TTreeView
       Left = 0
       Top = 0
       Width = 145
-      Height = 468
+      Height = 467
       Align = alLeft
       AutoExpand = True
       HideSelection = False
@@ -101,19 +103,19 @@ object FConfiguration: TFConfiguration
     object PPanelRight: TPanel
       Left = 145
       Top = 0
-      Width = 587
-      Height = 467
+      Width = 583
+      Height = 466
       Align = alClient
       TabOrder = 1
+      ExplicitWidth = 587
+      ExplicitHeight = 467
       object PButtons: TPanel
         Left = 1
-        Top = 426
-        Width = 589
+        Top = 425
+        Width = 585
         Height = 41
         Align = alBottom
         TabOrder = 0
-        ExplicitTop = 425
-        ExplicitWidth = 585
         object BSave: TButton
           Left = 549
           Top = 9
@@ -172,12 +174,11 @@ object FConfiguration: TFConfiguration
       object PTitle: TPanel
         Left = 1
         Top = 1
-        Width = 589
+        Width = 585
         Height = 20
         Align = alTop
         BevelOuter = bvSpace
         TabOrder = 1
-        ExplicitWidth = 585
         object LTitle: TLabel
           Left = 8
           Top = 4
@@ -195,14 +196,12 @@ object FConfiguration: TFConfiguration
       object PageList: TPageControl
         Left = 1
         Top = 21
-        Width = 589
-        Height = 405
+        Width = 585
+        Height = 404
         ActivePage = PGUIDesigner
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
-        ExplicitWidth = 585
-        ExplicitHeight = 404
         object PJava: TTabSheet
           Caption = 'PJava'
         end

@@ -234,6 +234,7 @@ procedure Log(S: string);
 function CompiledRegEx(Expr : string; Options: TRegExOptions = [roNotEmpty];
   UCP : Boolean = True): TRegEx;
 function myMulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
+function StringTimesN(s: string; n: integer): string;
 
 implementation
 
@@ -2180,6 +2181,14 @@ end;
 function myMulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 begin
   Result:= MulDiv(nNumber, nNumerator, nDenominator);
+end;
+
+function StringTimesN(s: string; n: integer): string;
+  var i: integer;
+begin
+  Result:= '';
+  for i:= 1 to n do
+    Result:= Result + s;
 end;
 
 { TMatchHelper }

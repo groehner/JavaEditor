@@ -3,8 +3,8 @@ object FUMLForm: TFUMLForm
   Top = 229
   Align = alClient
   Caption = 'UML'
-  ClientHeight = 526
-  ClientWidth = 866
+  ClientHeight = 525
+  ClientWidth = 862
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,17 +21,15 @@ object FUMLForm: TFUMLForm
   object Panel: TPanel
     Left = 0
     Top = 0
-    Width = 866
-    Height = 526
+    Width = 862
+    Height = 525
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 862
-    ExplicitHeight = 525
     object PDiagramPanel: TPanel
       Left = 1
       Top = 25
-      Width = 864
-      Height = 500
+      Width = 860
+      Height = 499
       Align = alClient
       BevelEdges = [beLeft, beTop]
       BevelOuter = bvNone
@@ -44,17 +42,14 @@ object FUMLForm: TFUMLForm
       ParentFont = False
       TabOrder = 0
       OnResize = PDiagramPanelResize
-      ExplicitWidth = 860
-      ExplicitHeight = 499
     end
     object PUMLPanel: TPanel
       Left = 1
       Top = 1
-      Width = 864
+      Width = 860
       Height = 24
       Align = alTop
       TabOrder = 1
-      ExplicitWidth = 860
       object TVFileStructure: TTreeView
         Left = 735
         Top = 1

@@ -378,9 +378,9 @@ begin
                   Result:= getTooltipClass(cent as TClassifier, Description);
                   if Operation.OperationType = otConstructor
                     then Result:= Result + '<img src="' + FConfiguration.EditorFolder + 'img\constructor.png"> ' +
-                                           '<bold>' + toHtml(Operation.toLongString)  + '</bold></code><br><br>Constructor <i>'
+                                           '<bold>' + toHtml(Operation.toJava)  + '</bold></code><br><br>Constructor <i>'
                     else Result:= Result + '<img src="' + FConfiguration.EditorFolder + 'img\methods' + IntToStr(Integer(Operation.Visibility))  + '.png"> ' +
-                                           '<bold>' + toHtml(Operation.toLongString)  + '</bold></code><br><br>Method <i>';
+                                           '<bold>' + toHtml(Operation.toJava)  + '</bold></code><br><br>Method <i>';
                   if MClassifier is TInterface
                     then Result:= Result + Operation.Name + '</i> of interface <i>' + cent.name + '</i>.<br><br>'
                     else Result:= Result + Operation.Name + '</i> of class <i>' + cent.name + '</i>.<br><br>';
@@ -420,7 +420,7 @@ begin
                   if asDescription then
                     Result:= getTooltipClass(Attr.TypeClassifier, Description) +
                              '<img src="' + FConfiguration.EditorFolder + 'img\local.png"> ' +
-                             toHtml(Attr.toLongString) + '</code>' +
+                             toHtml(Attr.toJava) + '</code>' +
                              '<br><br><p>Local variable <i>' + Attr.Name + '</i> of method <i>' + Operation.Name + '</i>.'
                   else
                     Result:= Attr.TypeClassifier.Name;
@@ -935,7 +935,7 @@ begin
       Attr:= MFeature as TAttribute;
       if asDescription then begin
         Result:= '<code><img src="' + FConfiguration.EditorFolder + 'img\attribute' + IntTostr(Integer(Attr.Visibility)) + '.png"> ' +
-                 toHtml(Attr.toShortString) + '</code>';
+                 toHtml(Attr.toTypeName) + '</code>';
         if MClassifier is TInterface
           then Result:= Result + '<br><br><p>Attribute of interface <i>' + MClassifier.Name + '</i>.'
           else Result:= Result + '<br><br><p>Attribute of class <i>' + MClassifier.Name + '</i>.';
@@ -954,13 +954,13 @@ begin
         if Operation.OperationType = otConstructor then
           Result:= getTooltipClass(MClassifier, Description) +
                    '<img src="' + FConfiguration.EditorFolder + 'img\constructor.png"> ' +
-                   '<bold>' + toHtml(Operation.toShortString) + '</bold></code><br><br>' +
+                   '<bold>' + toHtml(Operation.toTypeName) + '</bold></code><br><br>' +
                    'Constructor <i>' + Operation.Name + '</i> of class <i>' + MClassifier.name + '</i>.<br><br>' +
                     Operation.getFormattedDescription
         else
           Result:= getTooltipClass(MClassifier, Description) +
                    '<img src="' + FConfiguration.EditorFolder + 'img\methods' + IntToStr(Integer(Operation.Visibility)) + '.png"> ' +
-                   '<bold>' + toHtml(Operation.toShortString) + '</bold></code><br><br>' +
+                   '<bold>' + toHtml(Operation.toTypeName) + '</bold></code><br><br>' +
                    'Method <i>' + Operation.Name + '</i> of class <i>' + MClassifier.name + '</i>.<br><br>' +
                     Operation.getFormattedDescription;
         FTooltip.setFile(MClassifier.Pathname, IntToStr(Operation.LineS));

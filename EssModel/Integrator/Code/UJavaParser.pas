@@ -861,6 +861,8 @@ var
   firstAncestor: Boolean;
   TypeClass: TClassifier;
 begin
+  Inc(CountClasses);
+  inc(ScopeDepth);
   GetNextToken;
   if IsInner then
     s := ParentName + '$' + Token
@@ -879,6 +881,8 @@ begin
   Scanner.Comment := '';
   Int.aGeneric := aGeneric;
   Int.LineS := line;
+  Int.LineSE := Scanner.line;
+  Int.ScopeDepth := ScopeDepth;
   SetVisibility(Int);
   Int.IsVisible := ShowView(IsInner);
   if Int.IsVisible then
@@ -911,13 +915,11 @@ begin
       end;
     until Token <> ',';
   Int.LineSE := Scanner.line;
-  if Token = '{' then
-  begin
+  if Token = '{' then begin
     AddStructure(line, Scanner.line);
     GetNextToken;
-    while true do
-    begin
-      line := Scanner.line;
+    while true do begin
+      line:= Scanner.line;
       ParseAnnotations;
       ParseModifiers;
       if Token = ';' then // empty
@@ -968,16 +970,15 @@ begin
             AddStructure(line, Scanner.TokenLine);
             CloseStructureDefault;
           end
-        end
-        else if IsIdentifier(Ident) and IsTypename(Typename) and
+        end else if IsIdentifier(Ident) and IsTypename(Typename) and
           (Ident <> Typename) then
         begin
           SwapArrFromTo(Ident, Typename);
           TypeClass:= NeedClassifier(GetImportName(Typename));
           Attribute := Int.AddAttribute(Ident, TypeClass);
+          Attribute.LineS:= LineS;
           DoAttribute(Attribute, aGeneric);
-          while Token = ',' do
-          begin
+          while Token = ',' do begin
             GetNextToken;
             Ident := Token;
             GetNextToken;
@@ -988,6 +989,8 @@ begin
       end;
     end;
   end;
+  Dec(ScopeDepth);
+  Int.SourceRead:= true;
 end;
 
 procedure TJavaParser.ParseEnumDeclaration;
@@ -1104,6 +1107,7 @@ begin
   O.hasComment := (Pos('/*', O.Documentation.Description) + Pos('//',
     O.Documentation.Description) = 1);
   O.ParentName := ParentName;
+  O.ScopeDepth:= ScopeDepth;
   SetVisibility(O);
   if (O.ReturnValue = nil) and (Typename <> '') and (Typename <> 'void') then
     O.ReturnValue := NeedClassifier(GetImportName(Typename));

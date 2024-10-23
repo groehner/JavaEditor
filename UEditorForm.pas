@@ -326,8 +326,7 @@ type
     function getLNGStartEventMethods: integer;
     function getLNGEndEventMethods: integer;
     function getLNG(Nr, ClassNumber: integer): string;
-    procedure EnsureStartEnd; overload;
-    procedure EnsureStartEnd(CorI: integer); overload;
+    procedure EnsureStartEnd(CorI: integer = 1);
     procedure InsertStartEnd;
     function hasStartAndEnd(CorI: integer): boolean;
 
@@ -351,6 +350,7 @@ type
     procedure ReplaceComponentname(const s1, s2: string; Events: string);
     procedure ReplaceAttributAt(const At, key, s: string);
     procedure ReplaceAttribute(const key, s: string);
+    procedure ReplaceMethod(var Method: TOperation; const New: string);
     procedure setAttributValue(const Container, key, s: string; after: integer);
     procedure ChangeAttributValue(const key, s: string); overload;  // Swing
     procedure ChangeAttributValue(const container, key, s: string); overload;  // FX
@@ -381,7 +381,8 @@ type
     procedure DeleteComponent(const Component: string);
     procedure DeleteComponentDefault(Control: TControl);
     procedure DeleteComponentTotal(ClassNumber: integer; const Component, Typ: string);
-    procedure DeleteMethod(const Method: string; SourcecodeCheck: boolean = true);
+    procedure DeleteMethod(const Method: string; SourcecodeCheck: boolean = true); overload;
+    procedure DeleteMethod(Method: TOperation); overload;
     procedure DeleteEventMethod(Method: string);
     procedure DeleteListener(Listener: string);
     procedure DeleteFXListener(Listener: string);
@@ -442,6 +443,7 @@ type
     function MakeUpperEvents(Events: string): string;
     procedure SetFXBackgroundAsString(const Container, aName, aColor: string);
     procedure DPIChanged; override;
+    function CountClassOrInterface: integer;
 
     property NeedsParsing: boolean read FNeedsParsing write setNeedsParsing;
     property FileExtension: string read fFileExtension write setFileExtension;
@@ -741,12 +743,7 @@ begin
   end;
 end;
 
-procedure TFEditForm.EnsureStartEnd;
-begin
-  EnsureStartEnd(1);
-end;
-
-procedure TFEditForm.EnsureStartEnd(CorI: integer);
+procedure TFEditForm.EnsureStartEnd(CorI: integer = 1);
 begin
  if assigned(Editor) and not Editor.ReadOnly and not hasStartAndEnd(CorI) then
    InsertStartEnd;
@@ -2174,7 +2171,7 @@ begin
         Attribute:= It.Next as TAttribute;
         ImageNr:= Integer(Attribute.Visibility) + 2;
         Node:= TVFileStructure.Items.AddChildObject(ClassNode,
-          Attribute.toShortString, TInteger.create(Attribute.LineS));
+          Attribute.toTypeName, TInteger.create(Attribute.LineS));
         Node.ImageIndex:= ImageNr;
         Node.SelectedIndex:= ImageNr;
         Node.HasChildren:= false;
@@ -2186,7 +2183,7 @@ begin
           then ImageNr:= 6
           else ImageNr:= Integer(Method.Visibility) + 7;
         Node:= TVFileStructure.Items.AddChildObject(ClassNode,
-          Method.toShortString, TInteger.create(Method.LineS));
+          Method.toTypeName, TInteger.create(Method.LineS));
         Node.ImageIndex:= ImageNr;
         Node.SelectedIndex:= ImageNr;
         Node.HasChildren:= false;
@@ -2324,8 +2321,7 @@ begin
   end;
 
   ParseSourcecode(false);
-  Ci := Model.ModelRoot.GetAllClassifiers;
-  Ind:= FConfiguration.Indent1;
+  Ci:= Model.ModelRoot.GetAllClassifiers;
   XY:= Editor.CaretXY;
   ClassNumber:= -1;
   SL:= TStringList.Create;
@@ -2336,7 +2332,7 @@ begin
     inc(ClassNumber);
     cs:= cent.LineS;
     ce:= max(cs, cent.LineE-1);
-
+    Ind:= StringTimesN(FConfiguration.Indent1, cent.ScopeDepth);
     Lines[1]:= cs; LNG[1]:= GetLNG(1, ClassNumber);
     Lines[2]:= cs; LNG[2]:= GetLNG(2, ClassNumber);
     Lines[3]:= ce; LNG[3]:= GetLNG(3, ClassNumber);
@@ -3222,6 +3218,15 @@ begin
     InsertAttribute(0, s);
 end;
 
+procedure TFEditForm.ReplaceMethod(var Method: TOperation; const New: string);
+begin
+  Editor.BeginUpdate;
+  DeleteBlock(Method.LineS-1, Method.LineE-1);
+  DeleteEmptyLines(Method.LineS-1);
+  InsertLinesAt(Method.LineS-1, New);
+  Editor.EndUpdate;
+end;
+
 procedure TFEditForm.setAttributValue(const Container, key, s: string; after: integer);
   var line, till: integer;
 begin
@@ -3341,10 +3346,10 @@ end;
 procedure TFEditForm.InsertLinesAt(const At, s: string);
 begin
   with Editor do begin
-    var line:= getLineNumberWith(At);
+    var line:= getLineNumberWithWord(At);
     if line = -1 then begin
       EnsureStartEnd;
-      line:= getLineNumberWith(At);
+      line:= getLineNumberWithWord(At);
     end;
     if line = -1 then
       ErrorMsg(_(LNGStartGUIVariables) + CrLf +
@@ -4012,6 +4017,19 @@ begin
       DeleteLine(from);
     NeedsParsing:= true;
   end;
+end;
+
+procedure TFEditForm.DeleteMethod(Method: TOperation);
+begin
+  Editor.BeginUpdate;
+  DeleteBlock(Method.LineS-1, Method.LineE-1);
+  var i:= Method.LineS - 1;
+  if Method.hasComment then begin
+    DeleteBlock(Method.Documentation.LineS-1, Method.Documentation.LineE-1);
+    i:= Method.Documentation.LineS - 1;
+  end;
+  DeleteEmptyLines(i-1);
+  Editor.EndUpdate;
 end;
 
 procedure TFEditForm.DeleteEventMethod(Method: string);
@@ -5113,6 +5131,15 @@ begin
   setFontSize(0);
   Hide;
   Show;
+end;
+
+function TFEditForm.CountClassOrInterface: integer;
+begin
+  if not assigned(Parser) then
+    ParseSourcecode(true);
+  if assigned(Parser)
+    then Result:= Parser.CountClasses
+    else Result:= 0;
 end;
 
 end.
