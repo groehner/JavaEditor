@@ -11720,8 +11720,7 @@ begin
 
   if FStructureColoring then
     for i:= FStructures.Count-1 downto 0 do begin
-      if FStructures[i].Hidden then continue;
-
+      if (FStructures[i] = nil) or FStructures[i].Hidden then continue;
       R1:= FStructures[i].FGraphicRect;
       if fPaintStructurePlane then begin
         Canvas.Brush.Color:= GetStructureColorDepth(FStructures[i].FDepth);

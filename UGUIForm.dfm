@@ -17,6 +17,7 @@ object FGUIForm: TFGUIForm
   OnBeforeMonitorDpiChanged = FormBeforeMonitorDpiChanged
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
   OnMouseActivate = FormMouseActivate
   OnResize = FormResize
   TextHeight = 15

@@ -235,6 +235,7 @@ function CompiledRegEx(Expr : string; Options: TRegExOptions = [roNotEmpty];
   UCP : Boolean = True): TRegEx;
 function myMulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 function StringTimesN(s: string; n: integer): string;
+function GetUsersWindowsLanguage: string;
 
 implementation
 
@@ -2189,6 +2190,14 @@ begin
   Result:= '';
   for i:= 1 to n do
     Result:= Result + s;
+end;
+
+function GetUsersWindowsLanguage: string;
+var
+  WinLanguage: array [0..50] of char;
+begin
+  VerLanguageName(GetUserDefaultUILanguage, WinLanguage, 50);
+  Result := WinLanguage;
 end;
 
 { TMatchHelper }

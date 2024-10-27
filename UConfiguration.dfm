@@ -4,8 +4,8 @@ object FConfiguration: TFConfiguration
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Configuration'
-  ClientHeight = 466
-  ClientWidth = 728
+  ClientHeight = 465
+  ClientWidth = 724
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,18 +22,16 @@ object FConfiguration: TFConfiguration
   object PMain: TPanel
     Left = 0
     Top = 0
-    Width = 728
-    Height = 466
+    Width = 724
+    Height = 465
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 732
-    ExplicitHeight = 467
     object TVConfiguration: TTreeView
       Left = 0
       Top = 0
       Width = 145
-      Height = 467
+      Height = 465
       Align = alLeft
       AutoExpand = True
       HideSelection = False
@@ -103,16 +101,14 @@ object FConfiguration: TFConfiguration
     object PPanelRight: TPanel
       Left = 145
       Top = 0
-      Width = 583
-      Height = 466
+      Width = 579
+      Height = 465
       Align = alClient
       TabOrder = 1
-      ExplicitWidth = 587
-      ExplicitHeight = 467
       object PButtons: TPanel
         Left = 1
-        Top = 425
-        Width = 585
+        Top = 423
+        Width = 577
         Height = 41
         Align = alBottom
         TabOrder = 0
@@ -174,7 +170,7 @@ object FConfiguration: TFConfiguration
       object PTitle: TPanel
         Left = 1
         Top = 1
-        Width = 585
+        Width = 577
         Height = 20
         Align = alTop
         BevelOuter = bvSpace
@@ -196,9 +192,9 @@ object FConfiguration: TFConfiguration
       object PageList: TPageControl
         Left = 1
         Top = 21
-        Width = 585
-        Height = 404
-        ActivePage = PGUIDesigner
+        Width = 577
+        Height = 402
+        ActivePage = PColors
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2

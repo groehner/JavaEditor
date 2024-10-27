@@ -102,15 +102,14 @@ end;
 procedure TFUpdateDialog.MakeUpdate;
   var Updater, Params, sVersion: string;
 begin
+  FConfiguration.ModelToRegistry; // do it in advance, because in 32 bit it takes very long
+  FJava.MakeUpdate:= true;
   Updater:= TPath.Combine(SourceDir, 'setup.exe');
   sVersion:= copy(UDlgAbout.Version, 1, Pos(',', UDlgAbout.Version) - 1);
   Params:= '-Update ' + HideBlanks(DestDir) +  ' ' + HideBlanks(SourceDir) + ' ' + sVersion;
   if FConfiguration.RunAsAdmin(Handle, Updater, Params) = 33 then begin
     Close;
-    TThread.ForceQueue(nil, procedure
-      begin
-        FJava.Close;
-      end);
+    FJava.Close;
   end;
 end;
 

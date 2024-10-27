@@ -177,7 +177,7 @@ end;
 procedure TSearchOptions.ShowRegSearchHelp;
   var s: string;
 begin
-  if LeftStr(Fconfiguration.LanguageCode, 2) = 'de'
+  if LeftStr(FConfiguration.LanguageCode, 2) = 'de'
     then s:= FConfiguration.EditorFolder + 'docs/TRegExpr_DE.pdf'
     else s:= FConfiguration.EditorFolder + 'docs/TRegExpr_EN.pdf';
   myJavaCommands.ShellExecuteFile(s, '', '', SW_SHOWNORMAL)

@@ -3470,28 +3470,16 @@ begin
 
   // tab Language
   LanguageCode:= ReadStringU('Options', 'Language', 'XXX');
-  // switch to new format since Version 20.08
-  var LanguageINI:= '';
-  if Length(LanguageCode) <> 5 then begin
-    if Pos('.ini', LanguageCode) > 0 then begin
-      LanguageINI:= ExtractFilename(LanguageCode);
-      if LanguageINI = 'deutsch.ini' then LanguageCode:= 'de_DE' else
-      if LanguageINI = 'chinese.ini' then LanguageCode:= 'cn_CN' else
-      if LanguageINI = 'dutch.ini' then LanguageCode:= 'nl_NL' else
-      if LanguageINI = 'english.ini' then LanguageCode:= 'en_GB' else
-      if LanguageINI = 'espanol.ini' then LanguageCode:= 'es_ES' else
-      if LanguageINI = 'pt-br.ini' then LanguageCode:= 'pt_PT';
-      LanguageINI:= ChangeFileExt(LanguageINI, '');
-    end else if LanguageCode = '' then LanguageCode:= 'de_DE'
-    else if LanguageCode = 'XXX' then LanguageCode:= 'en_GB';
+  if LanguageCode = 'XXX' then begin
+    if Pos('Deutsch', GetUsersWindowsLanguage) > 0
+      then LanguageCode:= 'de'
+      else LanguageCode:= GetCurrentLanguage;
   end;
   FJava.ChangeLanguage(LanguageCode);
   RGLanguages.ItemIndex:= max(0, fLanguagesList.IndexOf(LanguageCode));
 
   // tab Structograms after reading language
-  if LanguageINI <> ''
-    then StructogramS:= 'Structogram.' + LanguageINI
-    else StructogramS:= 'Structogram.' + LanguageCode;
+  StructogramS:= 'Structogram.' + LanguageCode;
 
   Algorithm:= ReadStringU(StructogramS, 'Algorithm', _('Algorithm'));
   Input:= ReadStringU(StructogramS, 'Input', _('Input:'));
@@ -3514,9 +3502,7 @@ begin
   StructogramShadowIntensity:= ReadIntegerU('Structogram', 'ShadowIntensity', 8);
 
   // tab Sequence diagram
-  if LanguageINI  <> ''
-    then SequenceDiagramS:= 'Sequencediagram.' + LanguageINI
-    else SequenceDiagramS:= 'Sequencediagram.' + LanguageCode;
+  SequenceDiagramS:= 'Sequencediagram.' + LanguageCode;
   SDObject:= ReadStringU(SequenceDiagramS, 'Object', _('Object'));
   SDNew:= ReadStringU(SequenceDiagramS, 'New', _('new'));
   SDClose:= ReadStringU(SequenceDiagramS, 'Close', _('close'));
@@ -4899,12 +4885,7 @@ procedure TFConfiguration.LoadVisibility;
 
 begin
   StringVisibilityToArr1(ReadStringU('Visibility', 'Tabs', '111101111'), visTabs);      // no Layout
-
-  s:= ReadStringU('Visibility', 'Program', '111100011111');
-  if length(s) = 11 then // since 16.28, June 2019
-    insert('1', s, 4);
-  StringVisibilityToArr2(s, 12, 0);     // by default
-
+  StringVisibilityToArr2(ReadStringU('Visibility', 'Program', '111111111111'), 12, 0);  // by default
   n:= FJava.ToolbarAWT.ButtonCount;
   StringVisibilityToArr2(ReadStringU('Visibility', 'AWT',       StringOfChar('1', n)), n, 1);
   n:= FJava.ToolBarSwing1.ButtonCount;
@@ -8656,7 +8637,7 @@ begin
   fLanguagesList:= TStringList.Create;
   LanguageCode := GetCurrentLanguage;
   DefaultInstance.BindtextdomainToFile ('languagecodes',
-    ExtractFilePath(Application.ExeName)+'locale\languagecodes.mo');
+    ExtractFilePath(Application.ExeName) + 'locale\languagecodes.mo');
   DefaultInstance.GetListOfLanguages ('default', fLanguagesList);
   fLanguagesList.Insert(0, 'en');
   for i := 0 to fLanguagesList.Count - 1 do begin

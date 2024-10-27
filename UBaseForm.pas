@@ -101,7 +101,6 @@ type
     function getAllClassnames: TStringList; virtual;
     procedure ChangeStyle; virtual;
     procedure DPIChanged; virtual;
-
   published
     property FrameType: integer read FFrameType write FFrameType;
     property Modified: boolean read getModified write setModified;

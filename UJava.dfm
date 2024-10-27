@@ -5,8 +5,8 @@ object FJava: TFJava
   HelpType = htKeyword
   VertScrollBar.Visible = False
   Caption = 'Java-Editor'
-  ClientHeight = 504
-  ClientWidth = 851
+  ClientHeight = 503
+  ClientWidth = 847
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -26,8 +26,8 @@ object FJava: TFJava
   TextHeight = 15
   object HSplitter: TSplitter
     Left = 0
-    Top = 500
-    Width = 851
+    Top = 499
+    Width = 847
     Height = 3
     Cursor = crVSplit
     Align = alBottom
@@ -40,9 +40,9 @@ object FJava: TFJava
     ExplicitWidth = 858
   end
   object VSplitter: TSplitter
-    Left = 848
+    Left = 844
     Top = 78
-    Height = 422
+    Height = 421
     Align = alRight
     Color = clActiveCaption
     ParentColor = False
@@ -53,8 +53,8 @@ object FJava: TFJava
   end
   object BottomDockPanel: TPanel
     Left = 0
-    Top = 503
-    Width = 851
+    Top = 502
+    Width = 847
     Height = 1
     Align = alBottom
     DockSite = True
@@ -67,10 +67,10 @@ object FJava: TFJava
     OnUnDock = BottomDockPanelUnDock
   end
   object RightDockPanel: TPanel
-    Left = 851
+    Left = 847
     Top = 78
     Width = 0
-    Height = 422
+    Height = 421
     Align = alRight
     DockSite = True
     DragKind = dkDock
@@ -83,15 +83,15 @@ object FJava: TFJava
   object MainPanel: TPanel
     Left = 0
     Top = 78
-    Width = 848
-    Height = 422
+    Width = 844
+    Height = 421
     Align = alClient
     TabOrder = 2
   end
   object TBXDockTop: TSpTBXDockablePanel
     Left = 0
     Top = 0
-    Width = 851
+    Width = 847
     Height = 78
     Align = alTop
     DockMode = dmCannotFloatOrChangeDocks
@@ -107,7 +107,7 @@ object FJava: TFJava
     object ControlBar: TSpTBXPanel
       Left = 0
       Top = 21
-      Width = 851
+      Width = 847
       Height = 57
       Caption = 'ControlBar'
       Align = alClient
@@ -270,11 +270,12 @@ object FJava: TFJava
         Width = 595
         Height = 55
         Color = clBtnFace
-        ActiveTabIndex = 6
+        ActiveTabIndex = 0
         TabAutofitMaxSize = 80
         HiddenItems = <>
         object TabProgram: TSpTBXTabItem
           Caption = 'Program'
+          Checked = True
           CustomWidth = 65
         end
         object TabAWT: TSpTBXTabItem
@@ -299,7 +300,6 @@ object FJava: TFJava
         end
         object TabFXBase: TSpTBXTabItem
           Caption = 'FX Base'
-          Checked = True
           CustomWidth = 60
         end
         object TabFXControls: TSpTBXTabItem
@@ -947,157 +947,6 @@ object FJava: TFJava
               OnClick = TBSwingClick
               OnMouseDown = ToolbuttonMouseDown
               OnStartDrag = ToolbuttonStartDrag
-            end
-          end
-        end
-        object TSProgram: TSpTBXTabSheet
-          Left = 0
-          Top = 25
-          Width = 595
-          Height = 30
-          Caption = 'Program'
-          ImageIndex = -1
-          TabItem = 'TabProgram'
-          object ToolbarProgram: TToolBar
-            Left = 2
-            Top = 0
-            Width = 589
-            Height = 26
-            Align = alClient
-            AutoSize = True
-            ButtonHeight = 27
-            ButtonWidth = 30
-            Color = clBtnFace
-            Images = vilProgramLight
-            ParentColor = False
-            TabOrder = 0
-            object TBNew: TToolButton
-              Left = 0
-              Top = 0
-              Hint = 'New'
-              ImageIndex = 0
-              ImageName = 'New1'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBNewClick
-            end
-            object TBClass: TToolButton
-              Left = 30
-              Top = 0
-              Hint = 'New class'
-              ImageIndex = 1
-              ImageName = 'NewClass'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBClassClick
-            end
-            object TBStructogram: TToolButton
-              Left = 60
-              Top = 0
-              Hint = 'New structogram'
-              ImageIndex = 2
-              ImageName = 'Structogram1'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBStructogramClick
-            end
-            object TBSequence: TToolButton
-              Left = 90
-              Top = 0
-              Hint = 'New sequence diagram'
-              ImageIndex = 3
-              ImageName = 'Sequencediagram'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBSequenceClick
-            end
-            object TBConsole: TToolButton
-              Tag = 1
-              Left = 120
-              Top = 0
-              Hint = 'Console'
-              ImageIndex = 4
-              ImageName = 'Console'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBProgramClick
-            end
-            object TBFrame: TToolButton
-              Tag = 2
-              Left = 150
-              Top = 0
-              Hint = 'Frame'
-              ImageIndex = 5
-              ImageName = 'AWT'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBDialog: TToolButton
-              Tag = 3
-              Left = 180
-              Top = 0
-              Hint = 'Dialog'
-              ImageIndex = 6
-              ImageName = 'AWTDialog'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBApplet: TToolButton
-              Tag = 4
-              Left = 210
-              Top = 0
-              Hint = 'Applet'
-              ImageIndex = 7
-              ImageName = 'AWTApplet'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBJFrame: TToolButton
-              Tag = 5
-              Left = 240
-              Top = 0
-              Hint = 'JFrame'
-              ImageIndex = 8
-              ImageName = 'Swing'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBJDialog: TToolButton
-              Tag = 6
-              Left = 270
-              Top = 0
-              Hint = 'JDialog'
-              ImageIndex = 9
-              ImageName = 'SwingDialog'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBJApplet: TToolButton
-              Tag = 7
-              Left = 300
-              Top = 0
-              Hint = 'JApplet'
-              ImageIndex = 10
-              ImageName = 'SwingApplet'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBApplication: TToolButton
-              Tag = 8
-              Left = 330
-              Top = 0
-              Hint = 'Application'
-              ImageIndex = 11
-              ImageName = 'JavaFX'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
             end
           end
         end
@@ -2370,6 +2219,157 @@ object FJava: TFJava
             end
           end
         end
+        object TSProgram: TSpTBXTabSheet
+          Left = 0
+          Top = 25
+          Width = 595
+          Height = 30
+          Caption = 'Program'
+          ImageIndex = -1
+          TabItem = 'TabProgram'
+          object ToolbarProgram: TToolBar
+            Left = 2
+            Top = 0
+            Width = 589
+            Height = 26
+            Align = alClient
+            AutoSize = True
+            ButtonHeight = 27
+            ButtonWidth = 30
+            Color = clBtnFace
+            Images = vilProgramLight
+            ParentColor = False
+            TabOrder = 0
+            object TBNew: TToolButton
+              Left = 0
+              Top = 0
+              Hint = 'New'
+              ImageIndex = 0
+              ImageName = 'New1'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBNewClick
+            end
+            object TBClass: TToolButton
+              Left = 30
+              Top = 0
+              Hint = 'New class'
+              ImageIndex = 1
+              ImageName = 'NewClass'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBClassClick
+            end
+            object TBStructogram: TToolButton
+              Left = 60
+              Top = 0
+              Hint = 'New structogram'
+              ImageIndex = 2
+              ImageName = 'Structogram1'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBStructogramClick
+            end
+            object TBSequence: TToolButton
+              Left = 90
+              Top = 0
+              Hint = 'New sequence diagram'
+              ImageIndex = 3
+              ImageName = 'Sequencediagram'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBSequenceClick
+            end
+            object TBConsole: TToolButton
+              Tag = 1
+              Left = 120
+              Top = 0
+              Hint = 'Console'
+              ImageIndex = 4
+              ImageName = 'Console'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBProgramClick
+            end
+            object TBFrame: TToolButton
+              Tag = 2
+              Left = 150
+              Top = 0
+              Hint = 'Frame'
+              ImageIndex = 5
+              ImageName = 'AWT'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBDialog: TToolButton
+              Tag = 3
+              Left = 180
+              Top = 0
+              Hint = 'Dialog'
+              ImageIndex = 6
+              ImageName = 'AWTDialog'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBApplet: TToolButton
+              Tag = 4
+              Left = 210
+              Top = 0
+              Hint = 'Applet'
+              ImageIndex = 7
+              ImageName = 'AWTApplet'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBJFrame: TToolButton
+              Tag = 5
+              Left = 240
+              Top = 0
+              Hint = 'JFrame'
+              ImageIndex = 8
+              ImageName = 'Swing'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBJDialog: TToolButton
+              Tag = 6
+              Left = 270
+              Top = 0
+              Hint = 'JDialog'
+              ImageIndex = 9
+              ImageName = 'SwingDialog'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBJApplet: TToolButton
+              Tag = 7
+              Left = 300
+              Top = 0
+              Hint = 'JApplet'
+              ImageIndex = 10
+              ImageName = 'SwingApplet'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBApplication: TToolButton
+              Tag = 8
+              Left = 330
+              Top = 0
+              Hint = 'Application'
+              ImageIndex = 11
+              ImageName = 'JavaFX'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+          end
+        end
       end
       object MainToolBar: TSpTBXToolbar
         Left = 3
@@ -2443,7 +2443,7 @@ object FJava: TFJava
     object MainMenu: TSpTBXToolbar
       Left = 0
       Top = 0
-      Width = 851
+      Width = 847
       Height = 21
       Align = alTop
       Images = vilMenuLight

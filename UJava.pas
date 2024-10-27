@@ -786,6 +786,7 @@ type
     FActiveTool: integer;
     TDIFormsList: TFormsList;
     InteractiveUMLForm: TFUMLForm;
+    MakeUpdate: boolean;
 
     procedure WMCOPYDATA(var msg: TWMCopyData); message WM_COPYDATA;
     function hasEditforms: boolean;
@@ -1035,6 +1036,7 @@ begin
   ReadHistory;
   Screen.MenuFont.Name:= 'Segoe UI';
   Screen.MenuFont.Size:= 9;
+  MakeUpdate:= false;
   FConfiguration.Init;
   LoadBounds;
 
@@ -1567,7 +1569,8 @@ begin
 
   //QueryPerformanceFrequency(freq);
   //QueryPerformanceCounter(startTime);
-  FConfiguration.ModelToRegistry;   // needs about 1,5 seconds under windows 32
+  if not MakeUpdate then
+    FConfiguration.ModelToRegistry;   // needs about 1,5 seconds under windows 32
   //QueryPerformanceCounter(endTime);
   //ErrorMsg(IntToStr((endTime - startTime) * 1000 div freq) + 'ms');
 end;
@@ -6753,6 +6756,8 @@ begin
   end;
   FConfiguration.ShowDefaultMindstormsAndroidConfiguration;
   FConfiguration.InitTreeView;
+  // Workaround: "Brackets" is always shown as "Klammern"
+  FConfiguration.rgColors.Items.Text:= 'Java'#13#10'HTML'#13#10 + _('Brackets') + #13#10;
 end;
 
 procedure TFJava.SetMenuKeyCaps;

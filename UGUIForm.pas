@@ -17,6 +17,7 @@ type
       NewDPI: Integer);
     procedure FormBeforeMonitorDpiChanged(Sender: TObject; OldDPI,
       NewDPI: Integer);
+    procedure FormCreate(Sender: TObject);
   private
     FResizable: boolean;
     FUndecorated: boolean;
@@ -182,6 +183,12 @@ begin
   Save(true);
   CanClose:= true;
   FJava.ActiveTool:= -1;
+end;
+
+procedure TFGUIForm.FormCreate(Sender: TObject);
+begin
+  inherited;
+  TranslateComponent(Self);
 end;
 
 procedure TFGUIForm.FormMouseActivate(Sender: TObject; Button: TMouseButton;
