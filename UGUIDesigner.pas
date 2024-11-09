@@ -55,6 +55,8 @@ type
     vilTurtles: TVirtualImageList;
     vilFXTurtle: TVirtualImageList;
     vilGUIDesignerDark: TVirtualImageList;
+    SpTBXSeparatorItem1: TSpTBXSeparatorItem;
+    MIConfiguration: TSpTBXItem;
     procedure ELDesignerControlInserting(Sender: TObject;
       var AControlClass: TControlClass);
     procedure ELDesignerControlInserted(Sender: TObject);
@@ -85,6 +87,7 @@ type
     procedure MIAlignClick(Sender: TObject);
     procedure MIZoomInClick(Sender: TObject);
     procedure MIZoomOutClick(Sender: TObject);
+    procedure MIConfigurationClick(Sender: TObject);
   private
     function getParent(ATarget: TObject; AX, AY: Integer): TWinControl;
     procedure ComponentToBackground(aPartner: TFEditForm; Control: TControl);
@@ -411,6 +414,12 @@ begin
     Result := nil;
 end;
 
+type
+  TControlEx = class(TControl)
+  protected
+    FFont: TFont;
+  end;
+
 procedure TFGUIDesigner.ELDragDrop(Sender, ASource, ATarget: TObject;
   AX, AY: Integer);
   var accept: boolean;
@@ -420,20 +429,15 @@ begin
   Accept:= csAcceptsControls in (ATarget as TControl).ControlStyle;
   if Accept and assigned(ComponentToInsert) then begin
     LInsertingControl := ComponentToInsert.Create(DesignForm);
-    try
-      ELDesigner.getUniqueName((LInsertingControl as TJEComponent).Tag2JavaType(LInsertingControl.Tag), LName);
-      LInsertingControl.Name:= LName; // <-- here may be exception
-      LInsertingControl.Parent := ATarget as TWinControl;
-      LInsertingControl.SetBounds(AX-LInsertingControl.Width, AY-LInsertingControl.Height,
-        LInsertingControl.Width, LInsertingControl.Height);
-     // LInsertingControl.Font.Size:= DesignForm.Font.Size;
-      ELDesigner.SelectedControls.ClearExcept(LInsertingControl);
-      ELDesignerControlInserted(nil);
-      UpdateState(Modified);
-    except
-      FreeAndNil(LInsertingControl);
-      raise;
-    end;
+    ELDesigner.getUniqueName((LInsertingControl as TJEComponent).Tag2JavaType(LInsertingControl.Tag), LName);
+    LInsertingControl.Name:= LName;
+    LInsertingControl.Parent := ATarget as TWinControl;
+    LInsertingControl.SetBounds(AX-LInsertingControl.Width, AY-LInsertingControl.Height,
+      LInsertingControl.Width, LInsertingControl.Height);
+    TControlEx(LInsertingControl).Font.Size:= DesignForm.FontSize;
+    ELDesigner.SelectedControls.ClearExcept(LInsertingControl);
+    ELDesignerControlInserted(nil);
+    UpdateState(Modified);
   end;
 end;
 
@@ -784,10 +788,8 @@ begin
   try
     try
       var FilStream := TFileStream.Create(Filename, fmCreate or fmShareExclusive);
-      if aForm.PixelsPerInch = 0  then begin
-        aForm.PixelsPerInch:= 96;
-        aForm.Scaled:= true;
-      end;
+      //if aForm.Monitor.PixelsPerInch <> 96 then
+      //  aForm.ScaleBy(96, aForm.Monitor.PixelsPerInch);
       try
         BinStream.WriteComponent(aForm);
         BinStream.Seek(0, soFromBeginning);
@@ -795,6 +797,8 @@ begin
       finally
         FreeAndNil(FilStream);
       end;
+      //if aForm.Monitor.PixelsPerInch <> 96 then
+      //  aForm.ScaleBy(aForm.Monitor.PixelsPerInch, 96);
     except
       on e: exception do
         ErrorMsg(e.Message);
@@ -896,9 +900,9 @@ begin
   FilStream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
   BinStream := TMemoryStream.Create;
   Reader := TReader.Create(BinStream, 4096);
+  Reader.OnError := ErrorMethod;
   Reader.OnFindMethod := FindMethod;
   Reader.OnCreateComponent := CreateComponent;
-  Reader.OnError := ErrorMethod;
   try
     try
       NewName:= getName;
@@ -912,10 +916,10 @@ begin
       Reader.ReadRootComponent(DesignForm);
       if JavaForm.FrameType = 8
         then (DesignForm as TFXGUIForm).Open(Filename)
-        else DesignForm.Open(Filename, '', JavaForm.FrameType);
+        else DesignForm.Open(Filename, '');
       DesignForm.Name:= NewName;
-      if DesignForm.PixelsPerInch > PPI then
-        DesignForm.Scale(DesignForm.PixelsPerInch, PPI);
+      if DesignForm.Monitor.PixelsPerInch > PPI then
+        DesignForm.Scale(DesignForm.Monitor.PixelsPerInch, PPI);
       ScaleImages;
       DesignForm.Invalidate; // to paint correct image sizes
       DesignForm.EnsureOnDesktop;
@@ -962,6 +966,11 @@ end;
 procedure TFGUIDesigner.MICloseClick(Sender: TObject);
 begin
   TForm(ELDesigner.DesignControl).Close;
+end;
+
+procedure TFGUIDesigner.MIConfigurationClick(Sender: TObject);
+begin
+  FConfiguration.OpenAndShowPage('GUI designer');
 end;
 
 procedure TFGUIDesigner.ELDesignerDesignFormClose(Sender: TObject;

@@ -709,7 +709,7 @@ begin
       2: s:= s + 'Font.ITALIC, ';
       3: s:= s + 'Font.BOLD + Font.ITALIC, ';
     end;
-    s:= s + IntToStr(PPIUnScale(Font.Size)) + '));';
+    s:= s + IntToStr(Font.Size) + '));';
     if Tag = 34
       then Partner.setAttributValue(GetContainerAdd, Name + '.setFont', s, 1)
       else Partner.setAttributValue(GetContainerAdd, Name + '.setFont', s, 0);

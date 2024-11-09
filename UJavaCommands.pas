@@ -73,14 +73,14 @@ var myJavaCommands: TJavaCommands;
 implementation
 
 uses SysUtils, Forms, Controls, StdCtrls, Dialogs, StrUtils, Graphics, ShellApi,
-     WideStrUtils, Threading, JvGnugettext, UStringRessources,
+     WideStrUtils, IOUtils, Threading, JvGnugettext, UStringRessources,
      UJava, UMessages, UBaseForm, UDlgAbout, UConfiguration,
      UJUnitTest, UModelEntity;
 
 constructor TJavaCommands.Create;
 begin
   OutputLines:= TStringList.Create;
-  ErrFile:= FConfiguration.TempDir + 'error.txt';
+  ErrFile:= TPath.Combine(FConfiguration.TempDir, 'error.txt');
   TVJUnitTests:= nil;
   ProcessRunning:= false;
   ProcessrunningComJava:= nil;

@@ -4,8 +4,8 @@ object FConfiguration: TFConfiguration
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Configuration'
-  ClientHeight = 465
-  ClientWidth = 724
+  ClientHeight = 629
+  ClientWidth = 887
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,16 +22,18 @@ object FConfiguration: TFConfiguration
   object PMain: TPanel
     Left = 0
     Top = 0
-    Width = 724
-    Height = 465
+    Width = 887
+    Height = 629
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 883
+    ExplicitHeight = 628
     object TVConfiguration: TTreeView
       Left = 0
       Top = 0
       Width = 145
-      Height = 465
+      Height = 629
       Align = alLeft
       AutoExpand = True
       HideSelection = False
@@ -97,21 +99,26 @@ object FConfiguration: TFConfiguration
         00FFFFFFFFFFFFFFFF00000000000000000000000001064A0061006C006F0070
         007900320000000000000000000000FFFFFFFFFFFFFFFF000000000000000000
         000000010A530075006200760065007200730069006F006E00}
+      ExplicitHeight = 628
     end
     object PPanelRight: TPanel
       Left = 145
       Top = 0
-      Width = 579
-      Height = 465
+      Width = 742
+      Height = 629
       Align = alClient
       TabOrder = 1
+      ExplicitWidth = 738
+      ExplicitHeight = 628
       object PButtons: TPanel
         Left = 1
-        Top = 423
-        Width = 577
+        Top = 587
+        Width = 740
         Height = 41
         Align = alBottom
         TabOrder = 0
+        ExplicitTop = 586
+        ExplicitWidth = 736
         object BSave: TButton
           Left = 549
           Top = 9
@@ -170,11 +177,12 @@ object FConfiguration: TFConfiguration
       object PTitle: TPanel
         Left = 1
         Top = 1
-        Width = 577
+        Width = 740
         Height = 20
         Align = alTop
         BevelOuter = bvSpace
         TabOrder = 1
+        ExplicitWidth = 736
         object LTitle: TLabel
           Left = 8
           Top = 4
@@ -192,12 +200,14 @@ object FConfiguration: TFConfiguration
       object PageList: TPageControl
         Left = 1
         Top = 21
-        Width = 577
-        Height = 402
-        ActivePage = PColors
+        Width = 740
+        Height = 566
+        ActivePage = PGUIDesigner
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
+        ExplicitWidth = 736
+        ExplicitHeight = 565
         object PJava: TTabSheet
           Caption = 'PJava'
         end
@@ -2205,6 +2215,27 @@ object FConfiguration: TFConfiguration
             Height = 15
             Caption = 'Frame width'
           end
+          object Label2: TLabel
+            Left = 97
+            Top = 203
+            Width = 60
+            Height = 15
+            Caption = 'Dialog 12pt'
+          end
+          object Label3: TLabel
+            Left = 97
+            Top = 172
+            Width = 132
+            Height = 15
+            Caption = 'doesn'#39't show font Dialog'
+          end
+          object LZoomsteps: TLabel
+            Left = 59
+            Top = 127
+            Width = 87
+            Height = 15
+            Caption = 'Font zoom steps'
+          end
           object CBNameFromText: TCheckBox
             Left = 16
             Top = 16
@@ -2286,7 +2317,7 @@ object FConfiguration: TFConfiguration
           end
           object BGuiFont: TButton
             Left = 16
-            Top = 128
+            Top = 168
             Width = 75
             Height = 25
             Caption = 'Font'
@@ -2294,13 +2325,32 @@ object FConfiguration: TFConfiguration
             OnClick = BGuiFontClick
           end
           object BGuiFontDefault: TButton
-            Left = 97
-            Top = 128
+            Left = 16
+            Top = 199
             Width = 75
             Height = 25
             Caption = 'Default'
             TabOrder = 10
             OnClick = BGuiFontDefaultClick
+          end
+          object UDZoomSteps: TUpDown
+            Left = 37
+            Top = 124
+            Width = 16
+            Height = 23
+            Associate = EZoomSteps
+            Min = 1
+            Max = 5
+            Position = 1
+            TabOrder = 11
+          end
+          object EZoomSteps: TEdit
+            Left = 16
+            Top = 124
+            Width = 21
+            Height = 23
+            TabOrder = 12
+            Text = '1'
           end
         end
         object PStructogram: TTabSheet

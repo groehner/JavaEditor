@@ -3,8 +3,8 @@ object FFileStructure: TFFileStructure
   Top = 0
   BorderIcons = [biSystemMenu]
   Caption = 'Structure'
-  ClientHeight = 383
-  ClientWidth = 223
+  ClientHeight = 382
+  ClientWidth = 219
   Color = clBtnFace
   UseDockManager = True
   DragKind = dkDock
@@ -26,8 +26,8 @@ object FFileStructure: TFFileStructure
   object TVFileStructure: TTreeView
     Left = 0
     Top = 0
-    Width = 223
-    Height = 383
+    Width = 219
+    Height = 382
     Align = alClient
     Indent = 19
     ParentShowHint = False

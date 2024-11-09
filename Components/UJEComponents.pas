@@ -370,8 +370,8 @@ end;
 procedure TJEComponent.Zooming(_in: boolean);
 begin
   if _in
-    then Font.Size:= Font.Size + 1
-    else Font.Size:= max(Font.Size - 1, 6);
+    then Font.Size:= Font.Size + FConfiguration.ZoomSteps
+    else Font.Size:= max(Font.Size - FConfiguration.ZoomSteps, 6);
   CanvasFontAssign;
   MakeFont;
   //if Sizeable then

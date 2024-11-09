@@ -46,9 +46,9 @@ type
     {$ENDIF}
   private
     FModified: boolean;
-    FFrameType: integer; // 1..8, look in UEditorForm
     class var FormNumber: integer; // class attribute
   protected
+    FFrameType: integer; // 1..8, look in UEditorForm
     procedure FormClose(Sender: TObject; var aAction: TCloseAction); virtual;
     procedure UpdateState; virtual;
     function GetModified: boolean; virtual;
@@ -56,6 +56,8 @@ type
     procedure MIReleaseWindowClick(Sender: TObject); virtual;
     procedure GotoLine(i: integer); virtual;
     procedure SetModified(Modified: boolean); virtual;
+    function getFrameType: Integer; virtual;
+    procedure setFrameType(value: integer);
   public
     Number: integer;
     Pathname: string;
@@ -102,7 +104,7 @@ type
     procedure ChangeStyle; virtual;
     procedure DPIChanged; virtual;
   published
-    property FrameType: integer read FFrameType write FFrameType;
+    property FrameType: integer read getFrameType write setFrameType;
     property Modified: boolean read getModified write setModified;
   end;
 
@@ -446,6 +448,16 @@ procedure TFForm.SetActiveControl(aControl: TWinControl);
 begin
   if assigned(Parent) then
     Application.Mainform.ActiveControl:= aControl;
+end;
+
+function TFForm.getFrameType: Integer;
+begin
+  Result:= FFrameType;
+end;
+
+procedure TFForm.setFrameType(value: integer);
+begin
+  FFrameType:= value;
 end;
 
 initialization

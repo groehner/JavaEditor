@@ -683,27 +683,22 @@ end;
 procedure TEssConnectPanel.DblClick;
 begin
   inherited;
-  var
-  found := FindVCLWindow(Mouse.CursorPos);
-  if assigned(found) then
-  begin
+  var found := FindVCLWindow(Mouse.CursorPos);
+  if assigned(found) then begin
     FindManagedControl(found);
     if found <> Self then
       TCrackControl(found).DblClick;
-    if (GetClickedConnectionNr <> -1) then
+    if GetClickedConnectionNr <> -1 then
       SelectAssociation;
   end
 end;
 
 function TEssConnectPanel.GetClickedConnectionNr: Integer;
 begin
-  var
-  P := Self.ScreenToClient(Mouse.CursorPos);
+  var P := Self.ScreenToClient(Mouse.CursorPos);
   Result := 0;
-  while Result < FConnections.Count do
-  begin
-    var
-    conn := TConnection(FConnections[Result]);
+  while Result < FConnections.Count do begin
+    var  conn := TConnection(FConnections[Result]);
     if conn.IsClicked(P) then
       exit;
     inc(Result);
@@ -713,8 +708,7 @@ end;
 
 function TEssConnectPanel.GetClickedConnection: TConnection;
 begin
-  var
-  Nr := GetClickedConnectionNr;
+  var Nr := GetClickedConnectionNr;
   if Nr <> -1 then
     Result := TConnection(FConnections[Nr])
   else

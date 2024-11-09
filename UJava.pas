@@ -2856,7 +2856,7 @@ begin
   if assigned(EditorForm) then begin
     EditorForm.Partner:= GUIForm;
     GUIForm.Partner:= EditorForm;
-    GUIForm.FrameType:= EditorForm.FrameType;
+    //GUIForm.FrameType:= EditorForm.FrameType;
   end else
     ErrorMsg(Format(_(LNGAssociatedJavaFileNotFound), [s]));
   FObjectInspector.RefreshCBObjects;
@@ -4269,7 +4269,7 @@ begin
       (GUIForm as TFXGUIForm).Open(filename);
     end else begin
       GUIForm:= TFGUIForm(FormFactory(fkGUI));
-      GUIForm.Open(Filename, '', TComponent(Sender).Tag);
+      GUIForm.Open(Filename, '');
     end;
     WH:= JavaFormular.getWidthAndHeight;
     with GUIForm do
@@ -4332,12 +4332,19 @@ begin
     (Sender as TToolButton).BeginDrag(false, 10);
 end;
 
+type
+  TControlEx = class(TControl)
+  protected
+    FFont: TFont;
+  end;
+
 procedure TFJava.ToolbuttonStartDrag(Sender: TObject; var DragObject: TDragObject);
 begin
   var ControlClass:= FGUIDesigner.Tag2Class((Sender as TToolButton).Tag);
   var DragRectangle:= ControlClass.Create(FGUIDesigner.DesignForm);
   DragRectangle.Parent:= FGuiDesigner;
   DragRectangle.ScaleForPPI(FGUIDesigner.DesignForm.PixelsPerInch);
+  TControlEx(DragRectangle).Font.Size:= FGUIDesigner.DesignForm.FontSize;
   DragObject:= TMyDragObject.Create(DragRectangle);
 end;
 

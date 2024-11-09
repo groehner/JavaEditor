@@ -3,8 +3,8 @@ object FEditForm: TFEditForm
   Top = 204
   Align = alClient
   BorderIcons = []
-  ClientHeight = 831
-  ClientWidth = 711
+  ClientHeight = 829
+  ClientWidth = 703
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -31,13 +31,11 @@ object FEditForm: TFEditForm
   end
   object BottomPanel: TPanel
     Left = 0
-    Top = 810
-    Width = 711
+    Top = 808
+    Width = 703
     Height = 21
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 809
-    ExplicitWidth = 707
     object DesignButton: TButton
       Left = 1
       Top = 1
@@ -52,7 +50,7 @@ object FEditForm: TFEditForm
     object StatusBar: TStatusBar
       Left = 57
       Top = 1
-      Width = 653
+      Width = 649
       Height = 19
       Align = alClient
       Panels = <
@@ -72,19 +70,18 @@ object FEditForm: TFEditForm
         item
           Width = 70
         end>
-      ExplicitWidth = 649
+      ExplicitWidth = 645
     end
   end
   object EditformToolbar: TToolBar
     Left = 0
     Top = 0
     Width = 23
-    Height = 810
+    Height = 808
     Align = alLeft
     AutoSize = True
     Images = vilEditorToolbarLight
     TabOrder = 2
-    ExplicitHeight = 809
     object TBClose: TToolButton
       Left = 0
       Top = 0
@@ -366,13 +363,11 @@ object FEditForm: TFEditForm
   object PHaupt: TPanel
     Left = 23
     Top = 0
-    Width = 688
-    Height = 810
+    Width = 680
+    Height = 808
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitWidth = 684
-    ExplicitHeight = 809
   end
   object icEditor: TSVGIconImageCollection
     SVGIconItems = <

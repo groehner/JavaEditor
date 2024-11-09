@@ -4252,7 +4252,7 @@ procedure TRtfdDiagram.OnRunJunitTestMethod(Sender: TObject);
       C: TControl;
 begin
   C:= FindVCLWindow(Frame.PopMenuClass.PopupPoint);
-  if Sender is TSpTBXItem then begin
+  if assigned(C) and (Sender is TSpTBXItem) then begin
     aMenuItem:= Sender as TSpTBXItem;
     p:= FullParameters.IndexOfName(aMenuItem.Caption);
     s:= FullParameters.ValueFromIndex[p];

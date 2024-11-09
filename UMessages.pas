@@ -1570,7 +1570,9 @@ begin
   if not (Sender is TSpTBXPopupMenu) then
     exit;
   aWinControl:= FindVCLWindow((Sender as TSpTBXPopupMenu).PopupPoint);
-  ActiveSubTool:= aWinControl.Tag;
+  if assigned(aWinControl)
+    then ActiveSubTool:= aWinControl.Tag
+    else ActiveSubTool:= -1;
 
   SetVisibleMI(MICollapse, TabControlMessages.TabIndex in [2, 3]);
   SetVisibleMI(MIExpand, TabControlMessages.TabIndex in [2, 3]);

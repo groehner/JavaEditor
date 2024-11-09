@@ -69,7 +69,7 @@ end;
 
 procedure TFXGuiForm.Open(const Filename: string);
 begin
-  inherited Open(Filename, '', 8);
+  inherited Open(Filename, '');
   Title:= ChangeFileExt(ExtractFilename(Pathname), '');
 end;
 

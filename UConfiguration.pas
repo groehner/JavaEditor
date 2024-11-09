@@ -634,6 +634,11 @@ type
     BGuiFont: TButton;
     BEditorFont: TButton;
     BGuiFontDefault: TButton;
+    Label2: TLabel;
+    Label3: TLabel;
+    LZoomsteps: TLabel;
+    UDZoomSteps: TUpDown;
+    EZoomSteps: TEdit;
     {$WARNINGS ON}
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -975,6 +980,7 @@ type
     GuiDesignerHints: Boolean;
     SnapToGrid: boolean;
     GridSize: Integer;
+    ZoomSteps: Integer;
     GUIFontSize: integer;
     GUIFontName: string;
     FrameWidth: Integer;
@@ -3317,6 +3323,7 @@ begin
   GuiDesignerHints:= ReadBoolU('Options', 'GuiDesignerHints', true);
   SnapToGrid:= ReadBoolU('Options', 'SnapToGrid', true);
   GridSize:= ReadIntegerU('Options', 'GridSize', 8);
+  ZoomSteps:= ReadIntegerU('Options', 'ZoomSteps', 1);
   GUIFontSize:= max(ReadIntegerU('Options', 'GUIFontSize', 11), 4);
   GUIFontName:= ReadStringU('Options', 'GUIFontName', 'Dialog');
   FrameWidth  := ReadIntegerU('Editor', 'FrameWidth', 300);
@@ -3948,6 +3955,7 @@ begin
     CBGuiDesignerHints.Checked:= GuiDesignerHints;
     CBSnapToGrid.Checked:= SnapToGrid;
     UDGridSize.Position:= GridSize;
+    UDZoomSteps.Position:= ZoomSteps;
     EFrameWidth.Text:= IntToStr(FrameWidth);
     EFrameHeight.Text:= IntToStr(FrameHeight);
     EAppletWidth.Text:= IntToStr(AppletWidth);
@@ -4299,6 +4307,7 @@ begin
   WriteBoolU('Options', 'GuiDesignerHints', GuiDesignerHints);
   WriteBoolU('Options', 'SnapToGrid', SnapToGrid);
   WriteIntegerU('Options', 'GridSize', GridSize);
+  WriteIntegerU('Options', 'ZoomSteps',ZoomSteps);
   WriteIntegerU('Options', 'GUIFontSize', GUIFontSize);
   WriteStringU('Options', 'GUIFontName', GUIFontName);
   WriteIntegerU('Editor', 'FrameWidth', FrameWidth);
@@ -4676,6 +4685,7 @@ begin
     GuiDesignerHints:= CBGuiDesignerHints.Checked;
     SnapToGrid:= CBSnapToGrid.Checked;
     GridSize:= UDGridSize.Position;
+    ZoomSteps:= UDZoomSteps.Position;
     FrameWidth:= StrToInt(EFrameWidth.Text);
     FrameHeight:= strToInt(EFrameHeight.Text);
     AppletWidth:= StrToInt(EAppletWidth.Text);
@@ -8636,9 +8646,9 @@ begin
   RGLanguages.Items.Clear;
   fLanguagesList:= TStringList.Create;
   LanguageCode := GetCurrentLanguage;
-  DefaultInstance.BindtextdomainToFile ('languagecodes',
+  DefaultInstance.BindtextdomainToFile('languagecodes',
     ExtractFilePath(Application.ExeName) + 'locale\languagecodes.mo');
-  DefaultInstance.GetListOfLanguages ('default', fLanguagesList);
+  DefaultInstance.GetListOfLanguages('default', fLanguagesList);
   fLanguagesList.Insert(0, 'en');
   for i := 0 to fLanguagesList.Count - 1 do begin
     // Translate the language code to English language name and then to a localized language name

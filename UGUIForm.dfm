@@ -2,8 +2,8 @@ object FGUIForm: TFGUIForm
   Left = 498
   Top = 276
   BorderIcons = [biSystemMenu]
-  ClientHeight = 233
-  ClientWidth = 310
+  ClientHeight = 231
+  ClientWidth = 302
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,6 +15,7 @@ object FGUIForm: TFGUIForm
   Visible = True
   OnAfterMonitorDpiChanged = FormAfterMonitorDpiChanged
   OnBeforeMonitorDpiChanged = FormBeforeMonitorDpiChanged
+  OnCanResize = FormCanResize
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate

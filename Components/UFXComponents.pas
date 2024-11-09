@@ -416,7 +416,7 @@ begin
     2: s:= s + ', FontPosture.ITALIC';
     3: s:= s + ', FontWeight.BOLD, FontPosture.ITALIC';
   end;
-  s:= s + ', ' + IntToStr(PPIUnScale(Font.Size)) + '));';
+  s:= s + ', ' + IntToStr(Font.Size) + '));';
   setAttributValue(Name + '.setFont', s);
   InsertImport('javafx.scene.text.*');
   if fsUnderline in Font.Style

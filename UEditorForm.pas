@@ -212,15 +212,15 @@ type
     ModifiedStrs: array[boolean] of string;
     InsertModeStrs: array[boolean] of string;
     ToolButtons: array[0..29] of TToolButton;
-    FFrameType: integer;
     procedure Translate;
     procedure Statusline(i: Integer; const s: string);
     procedure CalculateStatusline;
     procedure setNeedsParsing(value: boolean);
     procedure setFileExtension(value: string);
-    function getFrameType: Integer;
     function getJavaCodeAt(Caret: TPoint): string;
     procedure CreateTooltip(Caret, P: TPoint; const Token: string);
+  protected
+    function getFrameType: Integer; override;
   public
     Editor: TSynEditEx;
     SynEditPrint: TSynEditPrint;
@@ -447,7 +447,6 @@ type
 
     property NeedsParsing: boolean read FNeedsParsing write setNeedsParsing;
     property FileExtension: string read fFileExtension write setFileExtension;
-    property FrameType: integer read getFrameType write FFrameType;
   end;
 
   TInteger = class
