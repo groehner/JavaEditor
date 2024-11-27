@@ -1,0 +1,3091 @@
+# ==========================================================================================
+# Add terms that should not be translated to this file.
+# It works in conjunction with ggexclude.cfg. First try to exclude stuff via ggexclude.cfg.
+# Things that still make it through the ggexclude sieve should then be added here.
+# Make sure to leave a blank line after each entry!
+# ==========================================================================================
+msgid ""
+msgstr ""
+
+#  Doesn't have any letters
+#. FClassEditor..PageControl..TSAttributes..CBAttributeValue....Items.Strings
+#: Main/UClassEditor.dfm:304
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..CBParamValue....Items.Strings
+#: Main/UClassEditor.dfm:663
+msgid "''"
+msgstr ""
+
+#  Doesn't have any letters
+#. FEditForm..PopUpEditor..N1..Caption
+#: UEditor.dfm:396
+#. FEditForm..PopUpEditor..N2..Caption
+#: UEditor.dfm:412
+#. FEditForm..PopUpEditor..MIGit..N3..Caption
+#: UEditor.dfm:434
+#. FEditForm..PopUpEditor..MIGit..N4..Caption
+#: UEditor.dfm:449
+#. FEditForm..PopUpEditor..MIGit..N5..Caption
+#: UEditor.dfm:464
+#. FEditForm..PopUpEditor..MILine1..Caption
+#: UEditor.dfm:488
+#. FEditForm..PopUpEditor..MILine2..Caption
+#: UEditor.dfm:502
+#. FEditForm..PopUpEditor..MILine3..Caption
+#: UEditor.dfm:523
+#. FEditForm..PopUpEditor..MILine4..Caption
+#: UEditor.dfm:536
+#. FJava..MainMenu..MIFile..MINew..N19..Caption
+#: UJava_-_Kopie.dfm:2322
+#. FJava..MainMenu..MIFile..MINew..N10..Caption
+#: UJava_-_Kopie.dfm:2343
+#. FJava..MainMenu..MIFile..N15..Caption
+#: UJava_-_Kopie.dfm:2397
+#. FJava..MainMenu..MIFile..N1..Caption
+#: UJava_-_Kopie.dfm:2450
+#. FJava..MainMenu..MIFile..N9..Caption
+#: UJava_-_Kopie.dfm:2470
+#. FJava..MainMenu..MIEdit..N3..Caption
+#: UJava_-_Kopie.dfm:2496
+#. FJava..MainMenu..MIEdit..N4..Caption
+#: UJava_-_Kopie.dfm:2546
+#. FJava..MainMenu..MIEdit..N8..Caption
+#: UJava_-_Kopie.dfm:2576
+#. FJava..MainMenu..MIEdit..MIStrich10..Caption
+#: UJava_-_Kopie.dfm:2605
+#. FJava..MainMenu..MIStart..MIStrich7..Caption
+#: UJava_-_Kopie.dfm:2675
+#. FJava..MainMenu..MIStart..N6..Caption
+#: UJava_-_Kopie.dfm:2692
+#. FJava..MainMenu..MITest..N12..Caption
+#: UJava_-_Kopie.dfm:2773
+#. FJava..MainMenu..MITest..N13..Caption
+#: UJava_-_Kopie.dfm:2789
+#. FJava..MainMenu..MITools..MISubversion..N16..Caption
+#: UJava_-_Kopie.dfm:2920
+#. FJava..MainMenu..MITools..MIGit..N20..Caption
+#: UJava_-_Kopie.dfm:2961
+#. FJava..MainMenu..MITools..MIGit..N21..Caption
+#: UJava_-_Kopie.dfm:2979
+#. FJava..MainMenu..MITools..MIGit..N22..Caption
+#: UJava_-_Kopie.dfm:2997
+#. FJava..MainMenu..MITools..N17..Caption
+#: UJava_-_Kopie.dfm:3029
+#. FJava..MainMenu..MITools..N18..Caption
+#: UJava_-_Kopie.dfm:3038
+#. FJava..MainMenu..MIComponents..MIProgramm..N5..Caption
+#: UJava_-_Kopie.dfm:3081
+#. FJava..MainMenu..MIWindow..MIStrich..Caption
+#: UJava_-_Kopie.dfm:3566
+#. FJava..MainMenu..MIWindow..N14..Caption
+#: UJava_-_Kopie.dfm:3581
+#. FJava..MainMenu..MIWindow..N11..Caption
+#: UJava_-_Kopie.dfm:3608
+#. FJava..MainMenu..MIHelp..N7..Caption
+#: UJava_-_Kopie.dfm:3635
+#. FJava..MainMenu..MIHelp..N2..Caption
+#: UJava_-_Kopie.dfm:3658
+#. FStructogram..StructoPopupMenu..N2..Caption
+#: Structogram/UStructogram.dfm:246
+#. FStructogram..StructoPopupMenu..N1..Caption
+#: Structogram/UStructogram.dfm:286
+#. FTextDiff..PopUpEditor..MILine2..Caption
+#: TextDiff/UTextDiff.dfm:760
+msgid "-"
+msgstr ""
+
+#  Doesn't have any letters
+#: Structogram/UFrmStructogram.pas:547
+#: Structogram/UStructogramform.pas:547
+#: Structogram/UTypes.pas:1288
+#: Structogram/UTypes.pas:1291
+#: Structogram/UTypes.pas:1297
+#: Structogram/UTypes.pas:1536
+#: Structogram/UTypes.pas:1539
+#: Structogram/UTypes.pas:2115
+#: Structogram/UTypes.pas:2265
+#: Structogram/UTypes.pas:2325
+#: Structogram/UTypes.pas:2579
+msgid "  "
+msgstr ""
+
+#  Doesn't have any letters
+#: Structogram/UTypes.pas:2120
+msgid "    "
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..EFooter..Text
+#: UConfiguration.dfm:3376
+msgid "##- %PAGENUM% -"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..EHeader..Text
+#: UConfiguration.dfm:3365
+msgid "#%PATH%#%DATE%"
+msgstr ""
+
+#. FConfigureTools..EParameter..Text
+#: UDlgConfigureTools.dfm:105
+msgid "%ACTIVEWINDOW%"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
+#: UConfiguration.dfm:3323
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
+#: UConfiguration.dfm:3338
+msgid "%DATE%"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
+#: UConfiguration.dfm:3321
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
+#: UConfiguration.dfm:3336
+msgid "%FILE%"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
+#: UConfiguration.dfm:3326
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
+#: UConfiguration.dfm:3341
+msgid "%PAGECOUNT%"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
+#: UConfiguration.dfm:3325
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
+#: UConfiguration.dfm:3340
+msgid "%PAGENUM%"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
+#: UConfiguration.dfm:3322
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
+#: UConfiguration.dfm:3337
+msgid "%PATH%"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
+#: UConfiguration.dfm:3324
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
+#: UConfiguration.dfm:3339
+msgid "%TIME%"
+msgstr ""
+
+#. FClassEditor..ActionList..ActionInterface..Caption
+#: UDlgClassEditor.dfm:651
+msgid "&Interface"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIUML..Caption
+#: UJava.dfm:2960
+msgid "&UML"
+msgstr ""
+
+#. FAbout..GBVersion..LNameOfCopyrights..Caption
+#: UDlgAbout.dfm:132
+msgid "(c) Gerhard Röhner"
+msgstr ""
+
+#  Doesn't have any letters
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..CBJarPack....Items.Strings
+#: UConfiguration.dfm:1026
+#. FGrepSearch..GBDirectories..CBFileMask....Items.Strings
+#: FindInFiles/UDlgGrepSearch.dfm:255
+msgid "*.*"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..EJarCreate..Text
+#: UConfiguration.dfm:965
+msgid "*.class"
+msgstr ""
+
+#  Seems like a path, foldername or filename
+#. FConfigureTools..OpenDialog..FileName
+#: UDlgConfigureTools.dfm:171
+msgid "*.exe"
+msgstr ""
+
+#. FConfigureTools..OpenDialog..Filter
+#: UDlgConfigureTools.dfm:172
+msgid "*.exe|exe|*.com|com"
+msgstr ""
+
+#. FGrepSearch..GBDirectories..CBFileMask....Items.Strings
+#: FindInFiles/UDlgGrepSearch.dfm:257
+msgid "*.html"
+msgstr ""
+
+#. FGrepSearch..GBDirectories..CBFileMask..Text
+#: FindInFiles/UDlgGrepSearch.dfm:253
+#. FGrepSearch..GBDirectories..CBFileMask....Items.Strings
+#: FindInFiles/UDlgGrepSearch.dfm:256
+msgid "*.java"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..CBJarPack....Items.Strings
+#: UConfiguration.dfm:1025
+msgid "*.java *.jfm"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..CBJarPack....Items.Strings
+#: UConfiguration.dfm:1024
+msgid "*.java *.jfm *.uml"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..LAssociationsExample..Caption
+#: UConfiguration.dfm:4310
+msgid "*.pas;*.class"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..EAdditionalAssociations..Hint
+#: UConfiguration.dfm:4396
+msgid "*.pas;*.jar"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PGeneralOptions..LFileFilterExample..Caption
+#: UConfiguration.dfm:4035
+#. FConfiguration..PMain..PPanelRight..PageList..PGeneralOptions..EFileFilter..Hint
+#: UConfiguration.dfm:4122
+msgid "*.php;*.css"
+msgstr ""
+
+msgid "*.php;*.jar"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FGrepSearch..GBDirectories..CBFileMask....Items.Strings
+#: FindInFiles/UDlgGrepSearch.dfm:258
+msgid "*.txt"
+msgstr ""
+
+#  Doesn't have any letters
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..EClasspathAdmin..Text
+#: UConfiguration.dfm:360
+msgid "."
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationCss..Caption
+#: UConfiguration.dfm:4388
+msgid ".css"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationHtml..Caption
+#: UConfiguration.dfm:4340
+msgid ".html"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationInc..Caption
+#: UConfiguration.dfm:4406
+msgid ".inc"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJava..Caption
+#: UConfiguration.dfm:4324
+#. FJava..ODOpen..DefaultExt
+#: UJava.dfm:3826
+#. FJava..SDSaveAs..DefaultExt
+#: UJava.dfm:3850
+msgid ".java"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJep..Caption
+#: UConfiguration.dfm:4348
+msgid ".jep"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJfm..Caption
+#: UConfiguration.dfm:4332
+msgid ".jfm"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJSD..Caption
+#: UConfiguration.dfm:4447
+msgid ".jsd"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJsg..Caption
+#: UConfiguration.dfm:4439
+msgid ".jsg"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJsp..Caption
+#: UConfiguration.dfm:4372
+msgid ".jsp"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationPhp..Caption
+#: UConfiguration.dfm:4380
+msgid ".php"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationTxt..Caption
+#: UConfiguration.dfm:4364
+msgid ".txt"
+msgstr ""
+
+#  Looks like a file extension or file mask
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationUml..Caption
+#: UConfiguration.dfm:4356
+msgid ".uml"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PUML..RGObjectCaption....Items.Strings
+#: UConfiguration.dfm:4553
+msgid ": class"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManual....Items.Strings
+#: UConfiguration.dfm:3130
+msgid "\\chm"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManual....Items.Strings
+#: UConfiguration.dfm:3129
+msgid "\\docs"
+msgstr ""
+
+#. ELStringsEditorDlg..lbLineCount..Caption
+#: Formdesigner/ELDlgStringsEdit.dfm:25
+msgid "0 lines"
+msgstr ""
+
+#  Doesn't have any letters
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..SBDelete..ImageName
+#: UDlgClassEditor.dfm:480
+#. FWatches..SBUp..ImageName
+#: UWatches.dfm:41
+msgid "00"
+msgstr ""
+
+#  Doesn't have any letters
+#. FTextDiff..StatusBar..liLineColumn..Caption
+#: TextDiff/UFrmTextDiff.dfm:216
+#. FTextDiff..StatusBar..liLineColumn..Caption
+#: TextDiff/UTextDiffForm.dfm:216
+msgid "0000: 000"
+msgstr ""
+
+#  Doesn't have any letters
+#. FWatches..SBDown..ImageName
+#: UWatches.dfm:51
+msgid "01"
+msgstr ""
+
+#  Doesn't have any letters
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..SBLeft..ImageName
+#: UDlgClassEditor.dfm:511
+msgid "02"
+msgstr ""
+
+#  Doesn't have any letters
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..SBRight..ImageName
+#: UDlgClassEditor.dfm:501
+msgid "03"
+msgstr ""
+
+#  Doesn't have any letters
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..SBUp..ImageName
+#: UDlgClassEditor.dfm:470
+msgid "04"
+msgstr ""
+
+#  Doesn't have any letters
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..SBDown..ImageName
+#: UDlgClassEditor.dfm:491
+msgid "05"
+msgstr ""
+
+#  Doesn't have any letters
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..EMindstormsIP..Text
+#: UConfiguration.dfm:3756
+msgid "10.0.1.1"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PCode..GBCodeCompletion..LCompletionMax..Caption
+#: UConfiguration.dfm:1325
+msgid "1000 ms"
+msgstr ""
+
+#  Doesn't have any letters
+#. FConfiguration..PMain..PPanelRight..PageList..PBrowser..GBProxy..EProxyIP..Text
+#: UConfiguration.dfm:2725
+msgid "192.168.0.100"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PCode..GBTooltips..LToolTipMax..Caption
+#: UConfiguration.dfm:1468
+msgid "2000 ms"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:529
+msgid "437 USA"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PCode..GBCodeCompletion..LCompletionMin..Caption
+#: UConfiguration.dfm:1318
+#. FConfiguration..PMain..PPanelRight..PageList..PCode..GBTooltips..LToolTipMin..Caption
+#: UConfiguration.dfm:1461
+msgid "50 ms"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:542
+msgid "65001 UTF-8"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage..Text
+#: UConfiguration.dfm:526
+msgid "850 Default (Latin 1)"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:530
+msgid "850 Latin 1"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:531
+msgid "852 Latin 2"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:532
+msgid "855 Cyrillic"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:533
+msgid "857 Turkish"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:534
+msgid "860 Portuguese"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:535
+msgid "861 Icelandic"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:536
+msgid "863 Canadian-French"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:537
+msgid "865 Nordic"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:538
+msgid "866 Russian"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:539
+msgid "869 Modern Greek"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:540
+msgid "936 Chinese Simplified"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBCodepage....Items.Strings
+#: UConfiguration.dfm:541
+msgid "950 Chinese Traditional"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBAbsoluteLayout..Hint
+#: UJava.dfm:690
+#. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIAbsoluteLayout..Caption
+#: UJava.dfm:3644
+msgid "AbsoluteLayout"
+msgstr ""
+
+#. FClassEditor..PageControl..TSClass..CBClassAbstract..Caption
+#: UDlgClassEditor.dfm:105
+#. FClassEditor..PageControl..TSMethods..GBMethodOptions..CBMethodAbstract..Caption
+#: UDlgClassEditor.dfm:407
+msgid "abstract"
+msgstr ""
+
+#  Doesn't look like text
+#. Programmer's name for it: SYNS_FriendlyLangADSP21xx
+#: SynEdit/SynEditStrConst.pas:526
+msgid "ADSP21xx"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJUnit..CBJUnitAfterEach..Caption
+#: UConfiguration.dfm:5359
+msgid "AfterEach"
+msgstr ""
+
+#. FClasspath..BNewAllClasses..Caption
+#: UDlgClasspath.dfm:78
+msgid "allclasses-index.html"
+msgstr ""
+
+#: UConfiguration.pas:8708
+msgid "Android"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..CBAndroidMode..Caption
+#: UConfiguration.dfm:3926
+msgid "Android mode"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..LAndroidSDK..Caption
+#: UConfiguration.dfm:3865
+msgid "Android SDK folder"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBFileEncoding....Items.Strings
+#: UConfiguration.dfm:516
+#. FConfiguration..PMain..PPanelRight..PageList..PCompiler..CBCompilerEncoding....Items.Strings
+#: UConfiguration.dfm:644
+msgid "ANSI"
+msgstr ""
+
+#. FHelpDialog..PCJDKHelp..TSSearch..RGSearchOptions....Items.Strings
+#: UDlgHelp.dfm:155
+#. FHelpDialog..PCJDKHelp..TSAPI..Caption
+#: UDlgHelp.dfm:165
+#. FJava..TBXDockTop..MainMenu..MIHelp..MIAPI..Caption
+#: UJava.dfm:3762
+msgid "API"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateApplet..Caption
+#: UConfiguration.dfm:1808
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBApplet..Hint
+#: UJava.dfm:2325
+#. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewApplet..Caption
+#: UJava.dfm:2522
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIApplet..Caption
+#: UJava.dfm:3208
+msgid "Applet"
+msgstr ""
+
+#: UConfiguration.pas:8691
+msgid "Applets"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PApplets..LAppletviewer..Caption
+#: UConfiguration.dfm:747
+#. FJava..TBXDockTop..MainMenu..MIStart..MIAppletviewer..Caption
+#: UJava.dfm:2838
+msgid "Appletviewer"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateapplication..Caption
+#: UConfiguration.dfm:1857
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBApplication..Hint
+#: UJava.dfm:2369
+msgid "Application"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXArc..Hint
+#: UJava.dfm:801
+msgid "Arc"
+msgstr ""
+
+#  Seems like a Font.Name extract
+#. SsAboutForm..NewsLbl..Font.Name
+#: Util/ShellShock/SsAbout0.dfm:116
+msgid "Arial"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..BAndroidAssemble..Caption
+#: UConfiguration.dfm:3934
+msgid "Assemble.BAT"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrograms..EDocParameter..Text
+#: UConfiguration.dfm:705
+#. FConfiguration..PMain..PPanelRight..PageList..PDisassembler..EDisassemblerParameter..Text
+#: UConfiguration.dfm:884
+msgid "-author -version"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TabAWT..Caption
+#: UJava.dfm:287
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..Caption
+#: UJava.dfm:323
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..Caption
+#: UJava.dfm:3312
+msgid "AWT"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJUnit..CBJUnitBeforeEach..Caption
+#: UConfiguration.dfm:5351
+msgid "BeforeEach"
+msgstr ""
+
+#. FBorder..PCBorder..TSBevel..Caption
+#: Formdesigner/ELDlgBorder.dfm:104
+msgid "Bevel"
+msgstr ""
+
+#. FBorder..Panel1..RGBordertype....Items.Strings
+#: Formdesigner/ELDlgBorder.dfm:272
+msgid "Bevel border"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2484
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2758
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3039
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3040
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3120
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3121
+msgid "Bookmark0"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2505
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2779
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3044
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3045
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3125
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3126
+msgid "Bookmark1"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2526
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2800
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3049
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3050
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3130
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3131
+msgid "Bookmark2"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2547
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2821
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3054
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3055
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3135
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3136
+msgid "Bookmark3"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2568
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2842
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3059
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3060
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3140
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3141
+msgid "Bookmark4"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2589
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2863
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3064
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3065
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3145
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3146
+msgid "Bookmark5"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2610
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2884
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3069
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3070
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3150
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3151
+msgid "Bookmark6"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2631
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2905
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3074
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3075
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3155
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3156
+msgid "Bookmark7"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2652
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2926
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3079
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3080
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3160
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3161
+msgid "Bookmark8"
+msgstr ""
+
+#  Doesn't look like text
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2673
+#. FEditForm..icBookmarks......IconName
+#: UFrmEditor.dfm:2947
+#. FEditForm..vilBookmarksLight......CollectionName
+#: UFrmEditor.dfm:3084
+#. FEditForm..vilBookmarksLight......Name
+#: UFrmEditor.dfm:3085
+#. FEditForm..vilBookmarksDark......CollectionName
+#: UFrmEditor.dfm:3165
+#. FEditForm..vilBookmarksDark......Name
+#: UFrmEditor.dfm:3166
+msgid "Bookmark9"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
+#: UConfiguration.dfm:2551
+#. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
+#: UDlgClassEditor.dfm:217
+#. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
+#: UDlgClassEditor.dfm:366
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..CBParamType....Items.Strings
+#: UDlgClassEditor.dfm:531
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..MIBoolean..Caption
+#: UJava.dfm:3304
+#. FStructogram..StructoPopupMenu..MIDataType..MIBoolean..Caption
+#: Structogram/UFrmStructogram.dfm:883
+#. FStructogram..StructoPopupMenu..MIDataType..MIBoolean..Caption
+#: Structogram/UStructogramform.dfm:880
+msgid "boolean"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBBorderLayout..Hint
+#: UJava.dfm:624
+#. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIBorderLayout..Caption
+#: UJava.dfm:3619
+msgid "BorderLayout"
+msgstr ""
+
+#. FStructogram..PanelLeft..ToolBarStructogram..TBBreak..Hint
+#: Structogram/UFrmStructogram.dfm:175
+#. FStructogram..PanelLeft..ToolBarStructogram..TBBreak..Hint
+#: Structogram/UStructogramform.dfm:172
+msgid "break"
+msgstr ""
+
+#. FBrowser..Caption
+#: UBrowserForm.dfm:6
+#. FMindstormsDialog..BBrowser..Caption
+#: UDlgMindstorms.dfm:93
+#. FBrowser..Caption
+#: UFrmBrowser.dfm:6
+#. FJava..TBXDockTop..MainMenu..MIWindow..MIBrowser..Caption
+#: UJava.dfm:3705
+#: UConfiguration.pas:8704
+msgid "Browser"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBButton..Hint
+#: UJava.dfm:404
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXButton..Hint
+#: UJava.dfm:1706
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIButton..Caption
+#: UJava.dfm:3335
+msgid "Button"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXButtonGroup..Hint
+#: UJava.dfm:1736
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJButtonGroup..Hint
+#: UJava.dfm:2047
+msgid "ButtonGroup"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..MIByte..Caption
+#: UJava.dfm:3276
+msgid "byte"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..PBorder..SBCenter..Caption
+#: UJava.dfm:266
+msgid "C"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MICanvas..Caption
+#: UJava.dfm:3385
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJCanvas..Caption
+#: UJava.dfm:3483
+msgid "Canvas"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBCardLayout..Hint
+#: UJava.dfm:664
+#. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MICardLayout..Caption
+#: UJava.dfm:3634
+msgid "CardLayout"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..EJarParameter..Text
+#: UConfiguration.dfm:989
+msgid "-cfv"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
+#: UConfiguration.dfm:2552
+#. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
+#: UDlgClassEditor.dfm:218
+#. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
+#: UDlgClassEditor.dfm:367
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..CBParamType....Items.Strings
+#: UDlgClassEditor.dfm:532
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..MIChar..Caption
+#: UJava.dfm:3300
+#. FStructogram..StructoPopupMenu..MIDataType..MIChar..Caption
+#: Structogram/UFrmStructogram.dfm:887
+#. FStructogram..StructoPopupMenu..MIDataType..MIChar..Caption
+#: Structogram/UStructogramform.dfm:884
+msgid "char"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBCheckbox..Hint
+#: UJava.dfm:419
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MICheckbox..Caption
+#: UJava.dfm:3340
+msgid "Checkbox"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXCheckBox..Hint
+#: UJava.dfm:1721
+msgid "CheckBox"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBCheckboxGroup..Hint
+#: UJava.dfm:434
+msgid "CheckboxGroup"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MICheckBoxGroup..Caption
+#: UJava.dfm:3350
+msgid "CheckBoxGroup"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MIGitCheckout..Caption
+#: UEditorForm.dfm:2363
+#. FEditForm..PopUpEditor..MIGit..MIGitCheckout..Caption
+#: UFrmEditor.dfm:2363
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitCheckout..Caption
+#: UJava.dfm:3122
+msgid "Checkout"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..LCheckstyle..Caption
+#: UConfiguration.dfm:5393
+#. FJava..TBXDockTop..MainMenu..MITools..MICheckStyle..Caption
+#: UJava.dfm:3037
+#: UConfiguration.pas:8721
+msgid "Checkstyle"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBChoice..Hint
+#: UJava.dfm:464
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIChoice..Caption
+#: UJava.dfm:3360
+msgid "Choice"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXChoiceBox..Hint
+#: UJava.dfm:1412
+msgid "ChoiceBox"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXCircle..Hint
+#: UJava.dfm:726
+msgid "Circle"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..LJarClasspath..Caption
+#: UConfiguration.dfm:948
+msgid "Classpath"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..LClasspathAdmin..Caption
+#: UConfiguration.dfm:260
+msgid "Classpath admin"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..LClasspathUser..Caption
+#: UConfiguration.dfm:253
+msgid "Classpath user"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PGit..BGitClone..Caption
+#: UConfiguration.dfm:5205
+msgid "Clone"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..Label1..Caption
+#: UConfiguration.dfm:506
+msgid "Codepage"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXColorPicker..Hint
+#: UJava.dfm:1472
+msgid "ColorPicker"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
+#: UConfiguration.dfm:3808
+msgid "COM1"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
+#: UConfiguration.dfm:3809
+msgid "COM2"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
+#: UConfiguration.dfm:3810
+msgid "COM3"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
+#: UConfiguration.dfm:3811
+msgid "COM4"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXComboBox..Hint
+#: UJava.dfm:1767
+msgid "ComboBox"
+msgstr ""
+
+#. FJe2Java..Panel1..LCommand..Caption
+#: UJe2Java.dfm:41
+msgid "Command"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LLejosCompiler..Caption
+#: UConfiguration.dfm:3675
+#. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfileCompiler..Caption
+#: UConfiguration.dfm:5033
+#: UConfiguration.pas:8689
+msgid "Compiler"
+msgstr ""
+
+#. ConjoinDockHost..Caption
+#: Dockable/uConjoinHost.dfm:5
+msgid "ConjoinDockHost"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXContextMenu..Hint
+#: UJava.dfm:1888
+msgid "ContextMenu"
+msgstr ""
+
+#. FMindstormsDialog..BControlCenter..Caption
+#: UDlgMindstorms.dfm:73
+#. FMindstormsEV3Dialog..BControlCenter..Caption
+#: UDlgMindstormsEV3.dfm:40
+msgid "Control Center"
+msgstr ""
+
+#  Seems like a Font.Name extract
+#. FConfiguration..PMain..PPanelRight..PageList..PComment..MComment..Font.Name
+#: UConfiguration.dfm:1745
+#. FConfiguration..PMain..PPanelRight..PageList..PComment..MMethodComment..Font.Name
+#: UConfiguration.dfm:1759
+#. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..MKeyboard..Font.Name
+#: UConfiguration.dfm:2149
+#. ELStringsEditorDlg..memMain..Font.Name
+#: Formdesigner/ELDlgStringsEdit.dfm:62
+msgid "Courier New"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXCubicCurve..Hint
+#: UJava.dfm:861
+msgid "CubicCurve"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXDatePicker..Hint
+#: UJava.dfm:1487
+msgid "DatePicker"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIHelp..MIDebug..Caption
+#: UJava.dfm:3817
+#: UDebugger.pas:242
+msgid "Debug"
+msgstr ""
+
+#  Seems like a path, foldername or filename
+#. FMemo..SaveDialog..FileName
+#: Setup/UMemo.dfm:41
+msgid "deinstallJE.txt"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PCompiler..EJavaCompilerParameter..Text
+#: UConfiguration.dfm:593
+msgid "-deprecation"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..LFileEncoding..Caption
+#: UConfiguration.dfm:499
+msgid "-Dfile.encoding"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXDirectoryChooser..Hint
+#: UJava.dfm:1547
+msgid "DirectoryChooser"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PDisassembler..LDisassembler..Caption
+#: UConfiguration.dfm:810
+#. FJava..TBXDockTop..MainMenu..MIStart..MIDissasembler..Caption
+#: UJava.dfm:2852
+#: UConfiguration.pas:8692
+msgid "Disassembler"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..LDoWhile..Caption
+#: UConfiguration.dfm:2391
+#. FStructogram..PanelLeft..ToolBarStructogram..TBDoWhile..Hint
+#: Structogram/UFrmStructogram.dfm:139
+#. FStructogram..PanelLeft..ToolBarStructogram..TBDoWhile..Hint
+#: Structogram/UStructogramform.dfm:136
+msgid "do while"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..MIdowhile..Caption
+#: UJava.dfm:3254
+msgid "do..while"
+msgstr ""
+
+#. DockableForm..Caption
+#: Dockable/uDockForm.dfm:5
+msgid "DockableForm"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
+#: UConfiguration.dfm:2553
+#. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
+#: UDlgClassEditor.dfm:219
+#. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
+#: UDlgClassEditor.dfm:368
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..CBParamType....Items.Strings
+#: UDlgClassEditor.dfm:533
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..MIDouble..Caption
+#: UJava.dfm:3296
+#. FStructogram..StructoPopupMenu..MIDataType..MIDouble..Caption
+#: Structogram/UFrmStructogram.dfm:891
+#. FStructogram..StructoPopupMenu..MIDataType..MIDouble..Caption
+#: Structogram/UStructogramform.dfm:888
+msgid "double"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..PBorder..SBEast..Caption
+#: UJava.dfm:251
+msgid "E"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXEllipse..Hint
+#: UJava.dfm:756
+msgid "Ellipse"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PCompiler..LCompilerEncoding..Caption
+#: UConfiguration.dfm:585
+msgid "-encoding"
+msgstr ""
+
+#. FTextDiff..StatusBar..liEncoding..Caption
+#: TextDiff/UFrmTextDiff.dfm:229
+#. FTextDiff..StatusBar..liEncoding..Caption
+#: TextDiff/UTextDiffForm.dfm:229
+#: UJava.pas:1323
+msgid "Encoding"
+msgstr ""
+
+#. FAbout..GBComponents..LUMLvalue..Caption
+#: UDlgAbout.dfm:62
+msgid "ESS model"
+msgstr ""
+
+#. FBorder..PCBorder..TSEtched..Caption
+#: Formdesigner/ELDlgBorder.dfm:74
+msgid "Etched"
+msgstr ""
+
+#. FBorder..Panel1..RGBordertype....Items.Strings
+#: Formdesigner/ELDlgBorder.dfm:271
+msgid "Etched border"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..RGMindstormsVersion....Items.Strings
+#: UConfiguration.dfm:3733
+msgid "EV3"
+msgstr ""
+
+#. Programmer's name for it: SELDsgnrClipboardFormat
+#: Formdesigner/ELSConsts.pas:23
+msgid "Extension Library designer components"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
+#: UConfiguration.dfm:3950
+msgid "Fachbereich Elektrotechnik und Informationstechnik"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
+#: UConfiguration.dfm:3949
+msgid "Fachgebiet Echtzeitsysteme / Real-Time "
+"Systems"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MIGitFetch..Caption
+#: UEditorForm.dfm:2377
+#. FEditForm..PopUpEditor..MIGit..MIGitFetch..Caption
+#: UFrmEditor.dfm:2377
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitFetch..Caption
+#: UJava.dfm:3139
+msgid "Fetch"
+msgstr ""
+
+#. FHint..Caption
+#: UHint.dfm:7
+msgid "FHint"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXFileOpenChooser..Hint
+#: UJava.dfm:1517
+msgid "FileOpenChooser"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXFileSaveChooser..Hint
+#: UJava.dfm:1532
+msgid "FileSaveChooser"
+msgstr ""
+
+#. FClassEditor..PageControl..TSAttributes..GBAttributeOptions..CBAttributeFinal..Caption
+#: UDlgClassEditor.dfm:286
+msgid "final"
+msgstr ""
+
+#  Doesn't look like text
+#. FJe2Java..Caption
+#: UJe2Java.dfm:4
+msgid "FJe2Java"
+msgstr ""
+
+#. FMindstormsDialog..BFlash..Caption
+#: UDlgMindstorms.dfm:83
+msgid "Flash"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LFlasher..Caption
+#: UConfiguration.dfm:3630
+msgid "Flasher"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
+#: UConfiguration.dfm:2554
+#. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
+#: UDlgClassEditor.dfm:220
+#. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
+#: UDlgClassEditor.dfm:369
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..CBParamType....Items.Strings
+#: UDlgClassEditor.dfm:534
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..MIFloat..Caption
+#: UJava.dfm:3292
+#. FStructogram..StructoPopupMenu..MIDataType..MIFloat..Caption
+#: Structogram/UFrmStructogram.dfm:895
+#. FStructogram..StructoPopupMenu..MIDataType..MIFloat..Caption
+#: Structogram/UStructogramform.dfm:892
+msgid "float"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBFlowLayout..Hint
+#: UJava.dfm:638
+#. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIFlowLayout..Caption
+#: UJava.dfm:3624
+msgid "FlowLayout"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..LFor..Caption
+#: UConfiguration.dfm:2398
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..MIfor..Caption
+#: UJava.dfm:3259
+#. FStructogram..PanelLeft..ToolBarStructogram..TBFor..Hint
+#: Structogram/UFrmStructogram.dfm:151
+#. FStructogram..PanelLeft..ToolBarStructogram..TBFor..Hint
+#: Structogram/UStructogramform.dfm:148
+#: UJava.pas:4856
+#: UJava.pas:4904
+msgid "for"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIFile..MINew..MIApplication..Caption
+#: UJava.dfm:2542
+msgid "FX Application"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TabFXBase..Caption
+#: UJava.dfm:307
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..Caption
+#: UJava.dfm:1625
+msgid "FX Base"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TabFXControls..Caption
+#: UJava.dfm:311
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..Caption
+#: UJava.dfm:1287
+msgid "FX Controls"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TabFXShapes..Caption
+#: UJava.dfm:315
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..Caption
+#: UJava.dfm:706
+msgid "FX Shapes"
+msgstr ""
+
+#. FJava..ControlBar..PGComponentsToolbar..TSFXShapes..ToolBarFXShapes..TBFXLine..Hint
+#: UJava.dfm:1844
+msgid "FXLine"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..Caption
+#: UEditorForm.dfm:2337
+#. FEditForm..PopUpEditor..MIGit..Caption
+#: UFrmEditor.dfm:2337
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..Caption
+#: UJava.dfm:3090
+#: UConfiguration.pas:8719
+msgid "Git"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBGridBagLayout..Hint
+#: UJava.dfm:677
+#. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIGridBagLayout..Caption
+#: UJava.dfm:3639
+msgid "GridBagLayout"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBGridLayout..Hint
+#: UJava.dfm:651
+#. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIGridLayout..Caption
+#: UJava.dfm:3629
+msgid "GridLayout"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MIGitGui..Caption
+#: UEditorForm.dfm:2387
+#. FEditForm..PopUpEditor..MIGit..MIGitGui..Caption
+#: UFrmEditor.dfm:2387
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitGUI..Caption
+#: UJava.dfm:3151
+msgid "GUI"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UExplorerForm.dfm:151
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UFrmExplorer.dfm:151
+msgid "GUI (*.jfm)"
+msgstr ""
+
+#  Doesn't look like text
+#. friendly language names
+#. Programmer's name for it: SYNS_FriendlyLangHP48
+#: SynEdit/SynEditStrConst.pas:502
+msgid "HP48"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PColors..rgcolors....Items.Strings
+#: UConfiguration.dfm:1620
+#. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewHtml..Caption
+#: UJava.dfm:2480
+#. FJava..TBXDockTop..MainMenu..MIEdit..MICopy..MICopyHTML..Caption
+#: UJava.dfm:2682
+msgid "HTML"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UExplorerForm.dfm:153
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UFrmExplorer.dfm:153
+msgid "HTML (*.html)"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXHTMLEditor..Hint
+#: UJava.dfm:1442
+msgid "HTMLEditor"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManual....Items.Strings
+#: UConfiguration.dfm:3024
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManualFX....Items.Strings
+#: UConfiguration.dfm:3119
+msgid "https://java.sun.com/j2se/1.4.2/docs/index.html"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManual....Items.Strings
+#: UConfiguration.dfm:3023
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManualFX....Items.Strings
+#: UConfiguration.dfm:3118
+msgid "https://java.sun.com/j2se/1.5.0/docs/index.html"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManual....Items.Strings
+#: UConfiguration.dfm:3131
+msgid "https://java.sun.com/javase/6/docs/index.html"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXHyperlink..Hint
+#: UJava.dfm:1427
+msgid "Hyperlink"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..MIIf..Caption
+#: UJava.dfm:3239
+msgid "if"
+msgstr ""
+
+#. FStructogram..PanelLeft..ToolBarStructogram..TBIf..Hint
+#: Structogram/UFrmStructogram.dfm:105
+#. FStructogram..PanelLeft..ToolBarStructogram..TBIf..Hint
+#: Structogram/UStructogramform.dfm:102
+msgid "if else"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..MIifelse..Caption
+#: UJava.dfm:3244
+msgid "if..else"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
+#: UConfiguration.dfm:3827
+msgid "im Auftrag von "
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXImageView..Hint
+#: UJava.dfm:1562
+msgid "ImageView"
+msgstr ""
+
+#. FClassEditor..PageControl..TSClass..CBClassInner..Caption
+#: UDlgClassEditor.dfm:159
+msgid "inner"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
+#: UConfiguration.dfm:2555
+#. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
+#: UDlgClassEditor.dfm:221
+#. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
+#: UDlgClassEditor.dfm:370
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..CBParamType....Items.Strings
+#: UDlgClassEditor.dfm:535
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..MIInt..Caption
+#: UJava.dfm:3284
+#. FStructogram..StructoPopupMenu..MIDataType..MIInt..Caption
+#: Structogram/UFrmStructogram.dfm:899
+#. FStructogram..StructoPopupMenu..MIDataType..MIInt..Caption
+#: Structogram/UStructogramform.dfm:896
+msgid "int"
+msgstr ""
+
+#. Programmer's name for it: LNGInterface
+#: Util/UStringRessources.pas:14
+msgid "Interface"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..LJavaInterpreter..Caption
+#: UConfiguration.dfm:221
+#: UConfiguration.pas:8688
+msgid "Interpreter"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PDisassembler..CBDisassembler....Items.Strings
+#: UConfiguration.dfm:894
+msgid "jad.exe"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJalopy..LJalopy..Caption
+#: UConfiguration.dfm:5507
+#. FJava..TBXDockTop..MainMenu..MITools..MIJalopy..Caption
+#: UJava.dfm:3043
+#: UConfiguration.pas:8722
+msgid "Jalopy"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateJApplet..Caption
+#: UConfiguration.dfm:1773
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBJApplet..Hint
+#: UJava.dfm:2358
+#. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJApplet..Caption
+#: UJava.dfm:2537
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIJApplet..Caption
+#: UJava.dfm:3223
+msgid "JApplet"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..LJar..Caption
+#: UConfiguration.dfm:925
+#: UConfiguration.pas:8693
+msgid "Jar"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UExplorerForm.dfm:156
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UFrmExplorer.dfm:156
+msgid "Jar (*.jar)"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PColors..rgcolors....Items.Strings
+#: UConfiguration.dfm:1619
+#. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJava..Caption
+#: UJava.dfm:2467
+#: UConfiguration.pas:8687
+msgid "Java"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UExplorerForm.dfm:150
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UFrmExplorer.dfm:150
+msgid "Java (*.java)"
+msgstr ""
+
+#. FJava..SDSaveAs....Filter
+#: UJava.dfm:3853
+msgid "Java (*.java)|*.java|HTML (*.html)|*.html;*.htm|Text "
+"(*.txt)|*.txt|All (*.*)|*.*"
+msgstr ""
+
+#. FParameterDialog..ODParaSelect..Filter
+#: UDlgParameter.dfm:84
+msgid "java|*.java|*.*|*.*"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrograms..LJavaDoc..Caption
+#: UConfiguration.dfm:663
+#. FConfiguration..PMain..PPanelRight..PageList..PComment..RGComment....Items.Strings
+#: UConfiguration.dfm:1731
+#. FJava..TBXDockTop..MainMenu..MIStart..MIJavaDoc..Caption
+#: UJava.dfm:2856
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIJavaDoc1..Caption
+#: UJava.dfm:3229
+msgid "JavaDoc"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..LJavaDocs..Caption
+#: UConfiguration.dfm:306
+msgid "JavaDocs user"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UExplorerForm.dfm:149
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UFrmExplorer.dfm:149
+#. FJava..Caption
+#: UJava.dfm:7
+msgid "Java-Editor"
+msgstr ""
+
+#. FAbout..GBVersion..LProductName..Caption
+#: UDlgAbout.dfm:124
+msgid "Java-Editor, 1.6 vom 14.9.2000"
+msgstr ""
+
+#. FJava..ODOpen....Filter
+#: UJava.dfm:3832
+msgid "Java-Editor|*.java;*.jfm;*.uml;*.html;*.htm;*.jep;*.jsp;*.jsd;*.txt;*."
+"jar|Java (*.java)|*.java|GUI (*.jfm)|*.jfm|UML (*.uml)|*.uml|HTML "
+"(*.html)|*.html;*.htm|Project (*.jep)|*.jep|Text (*.txt)|*.txt|Jar "
+"(*.jar)|*.jar|JSP (*.jsp)|*.jsp|JSD (*.jsd)|*.jsd|Backup "
+"(*.~ava)|*.~ava|All (*.*)|*.*"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIHelp..MIJavaFx..Caption
+#: UJava.dfm:3769
+msgid "JavaFX"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJButton..Hint
+#: UJava.dfm:2017
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJButton..Caption
+#: UJava.dfm:3433
+msgid "JButton"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJCheckbox..Hint
+#: UJava.dfm:2032
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJCheckbox..Caption
+#: UJava.dfm:3438
+msgid "JCheckbox"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJCheckBoxGroup..Caption
+#: UJava.dfm:3448
+msgid "JCheckBoxGroup"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJColorChooser..Hint
+#: UJava.dfm:1254
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJColorChooser..Caption
+#: UJava.dfm:3607
+msgid "JColorChooser"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJComboBox..Hint
+#: UJava.dfm:2077
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJComboBox..Caption
+#: UJava.dfm:3458
+msgid "JComboBox"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJDesktopPane..Hint
+#: UJava.dfm:1194
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJDesktopPane..Caption
+#: UJava.dfm:3587
+msgid "JDesktopPane"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateJDialog..Caption
+#: UConfiguration.dfm:1843
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBJDialog..Hint
+#: UJava.dfm:2347
+#. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJDialog..Caption
+#: UJava.dfm:2532
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIJDialog..Caption
+#: UJava.dfm:3218
+msgid "JDialog"
+msgstr ""
+
+#  Doesn't look like text
+#. FJe2Java..aPipeServer..PipeName
+#: UJe2Java.dfm:66
+msgid "je2java"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJEditorPane..Hint
+#: UJava.dfm:1149
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJEditorPane..Caption
+#: UJava.dfm:3572
+msgid "JEditorPane"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJFileChooserOpen..Caption
+#: UJava.dfm:3597
+msgid "JFileChooser open"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJFileChooserSave..Caption
+#: UJava.dfm:3602
+msgid "JFileChooser save"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJFileOpen..Hint
+#: UJava.dfm:1224
+msgid "JFileChooser|Open"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJFileSave..Hint
+#: UJava.dfm:1239
+msgid "JFileChooser|Save"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJFormattedTextField..Hint
+#: UJava.dfm:1134
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJFormattedTextField..Caption
+#: UJava.dfm:3567
+msgid "JFormattedTextField"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateJFrame..Caption
+#: UConfiguration.dfm:1815
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBJFrame..Hint
+#: UJava.dfm:2336
+#. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJFrame..Caption
+#: UJava.dfm:2527
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIJFrame..Caption
+#: UJava.dfm:3213
+msgid "JFrame"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TJInternalFrame..Hint
+#: UJava.dfm:1209
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJInternalFrame..Caption
+#: UJava.dfm:3592
+msgid "JInternalFrame"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJLabel..Hint
+#: UJava.dfm:1957
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJLabel..Caption
+#: UJava.dfm:3413
+msgid "JLabel"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJLayeredPane..Hint
+#: UJava.dfm:1179
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJLayeredPane..Caption
+#: UJava.dfm:3582
+msgid "JLayeredPane"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJList..Hint
+#: UJava.dfm:2062
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJList..Caption
+#: UJava.dfm:3453
+msgid "JList"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJMenu..Hint
+#: UJava.dfm:2199
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJMenu..Caption
+#: UJava.dfm:3498
+msgid "JMenu"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJMenuBar..Hint
+#: UJava.dfm:2184
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJMenuBar..Caption
+#: UJava.dfm:3493
+msgid "JMenuBar"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJNumberField..Hint
+#: UJava.dfm:1987
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJNumberField..Caption
+#: UJava.dfm:3423
+msgid "JNumberField"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJOptionPane..Hint
+#: UJava.dfm:1269
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJOptionPane..Caption
+#: UJava.dfm:3612
+msgid "JOptionPane"
+msgstr "JPanel"
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJPanel..Caption
+#: UJava.dfm:3478
+msgid "JPanel"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJPasswordField..Hint
+#: UJava.dfm:1119
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJPasswordField..Caption
+#: UJava.dfm:3562
+msgid "JPasswordField"
+msgstr ""
+
+#. FObjectGenerator..PictureDialog....Filter
+#: UObjectGenerator.dfm:81
+msgid "JPEG and GIF|*.jpg;*.jpeg;*.gif|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|GIF "
+"(*.gif)|*.gif|All (*.*)|*.*"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJPopupMenu..Hint
+#: UJava.dfm:2214
+msgid "JPopupMenu"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJPopUpMenu..Caption
+#: UJava.dfm:3503
+msgid "JPopUpMenu"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJProgressBar..Hint
+#: UJava.dfm:999
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJProgressBar..Caption
+#: UJava.dfm:3522
+msgid "JProgressBar"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJRadiobutton..Caption
+#: UJava.dfm:3443
+msgid "JRadiobutton"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJScrollbar..Caption
+#: UJava.dfm:3468
+msgid "JScrollbar"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJScrollBar..Hint
+#: UJava.dfm:2107
+msgid "JScrollBar"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJScrollPane..Hint
+#: UJava.dfm:2122
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJScrollPane..Caption
+#: UJava.dfm:3473
+msgid "JScrollPane"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TJSeparator..Hint
+#: UJava.dfm:1089
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJSeparator..Caption
+#: UJava.dfm:3552
+msgid "JSeparator"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJSlider..Hint
+#: UJava.dfm:984
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJSlider..Caption
+#: UJava.dfm:3517
+msgid "JSlider"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UExplorerForm.dfm:157
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UFrmExplorer.dfm:157
+msgid "Jsp (*.jsp)"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJSpinner..Hint
+#: UJava.dfm:2092
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJSpinner..Caption
+#: UJava.dfm:3463
+msgid "JSpinner"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJSplitPane..Hint
+#: UJava.dfm:1014
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJSplitPane..Caption
+#: UJava.dfm:3527
+msgid "JSplitPane"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJTabbedPane..Hint
+#: UJava.dfm:1029
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJTabbedPane..Caption
+#: UJava.dfm:3532
+msgid "JTabbedPane"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJTable..Hint
+#: UJava.dfm:1044
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJTable..Caption
+#: UJava.dfm:3537
+msgid "JTable"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJTextArea..Hint
+#: UJava.dfm:2002
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJTextArea..Caption
+#: UJava.dfm:3428
+msgid "JTextArea"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJTextField..Hint
+#: UJava.dfm:1972
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJTextField..Caption
+#: UJava.dfm:3418
+msgid "JTextField"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJTextPane..Hint
+#: UJava.dfm:1164
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJTextPane..Caption
+#: UJava.dfm:3577
+msgid "JTextPane"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TJToggleButton..Hint
+#: UJava.dfm:1104
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJToggleButton..Caption
+#: UJava.dfm:3557
+msgid "JToggleButton"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJToolbar..Caption
+#: UJava.dfm:3547
+msgid "JToolbar"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJToolBar..Hint
+#: UJava.dfm:1074
+msgid "JToolBar"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJTree..Hint
+#: UJava.dfm:1059
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJTree..Caption
+#: UJava.dfm:3542
+msgid "JTree"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJUnit..LJUnit..Caption
+#: UConfiguration.dfm:5217
+#. FJava..TBXDockTop..MainMenu..MITools..MIJUnit..Caption
+#: UJava.dfm:3166
+#. FJava..TBXDockTop..MainMenu..MIHelp..MIJunitManual..Caption
+#: UJava.dfm:3773
+#. FJUnitTests..Caption
+#: UJUnitTest.dfm:5
+#: UConfiguration.pas:8720
+msgid "JUnit"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBLabel..Hint
+#: UJava.dfm:344
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXLabel..Hint
+#: UJava.dfm:1646
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MILabel..Caption
+#: UJava.dfm:3315
+msgid "Label"
+msgstr ""
+
+#. FBorder..Panel1..RGBordertype....Items.Strings
+#: Formdesigner/ELDlgBorder.dfm:270
+msgid "Line border"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..ToolbarExplorer..TBViewMenu..TBViewList..Caption
+#: UExplorerForm.dfm:123
+#. FExplorer..PMViewMenu..MILIst..Caption
+#: UExplorerForm.dfm:605
+#. FExplorer..PTop..PLeft..ToolbarExplorer..TBViewMenu..TBViewList..Caption
+#: UFrmExplorer.dfm:123
+#. FExplorer..PMViewMenu..MILIst..Caption
+#: UFrmExplorer.dfm:605
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBList..Hint
+#: UJava.dfm:449
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIList..Caption
+#: UJava.dfm:3355
+msgid "List"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXListView..Hint
+#: UJava.dfm:1752
+msgid "ListView"
+msgstr ""
+
+#. DlgMessage..LMessage..Caption
+#: Util/UDlgMessage.dfm:137
+msgid "LMessage"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MIGitLog..Caption
+#: UEditorForm.dfm:2353
+#. FEditForm..PopUpEditor..MIGit..MIGitLog..Caption
+#: UFrmEditor.dfm:2353
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitLog..Caption
+#: UJava.dfm:3110
+msgid "Log"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..MILong..Caption
+#: UJava.dfm:3288
+msgid "long"
+msgstr ""
+
+#. FAbout..GBComponents..Label1..Caption
+#: UDlgAbout.dfm:69
+msgid "madExcept"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..LJarManifest..Caption
+#: UConfiguration.dfm:911
+msgid "Manifest"
+msgstr ""
+
+#. FBorder..PCBorder..TSMatte..Hint
+#: Formdesigner/ELDlgBorder.dfm:154
+#. FBorder..PCBorder..TSMatte..Caption
+#: Formdesigner/ELDlgBorder.dfm:155
+msgid "Matte"
+msgstr ""
+
+#. FBorder..Panel1..RGBordertype....Items.Strings
+#: Formdesigner/ELDlgBorder.dfm:274
+msgid "Matte border"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXMediaView..Hint
+#: UJava.dfm:1577
+msgid "MediaView"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..RGKeyboard....Items.Strings
+#: UConfiguration.dfm:2165
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBMenu..Hint
+#: UJava.dfm:571
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXMenu..Hint
+#: UJava.dfm:1873
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIMenu..Caption
+#: UJava.dfm:3380
+msgid "Menu"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBMenuBar..Hint
+#: UJava.dfm:556
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXMenuBar..Hint
+#: UJava.dfm:1858
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIMenuBar..Caption
+#: UJava.dfm:3395
+msgid "MenuBar"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXMenuButton..Hint
+#: UJava.dfm:1903
+msgid "MenuButton"
+msgstr ""
+
+#. FMindstormsDialog..Caption
+#: UDlgMindstorms.dfm:4
+#. FJava..TBXDockTop..MainMenu..MIHelp..MIMindstormsHelp..Caption
+#: UJava.dfm:3793
+#: UConfiguration.pas:8707
+msgid "Mindstorms"
+msgstr ""
+
+#. FMindstormsEV3Dialog..Caption
+#: UDlgMindstormsEV3.dfm:4
+msgid "Mindstorms EV3"
+msgstr ""
+
+#  Doesn't look like text
+#. FJava..MainMenu..MITools..MISubversion..N16..Hint
+#: UJava_-_Kopie.dfm:2921
+msgid "MISVNS1"
+msgstr ""
+
+#  Seems like a Font.Name extract
+#. FConfiguration..PMain..PPanelRight..PTitle..LTitle..Font.Name
+#: UConfiguration.dfm:195
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..LJavaInterpreter..Font.Name
+#: UConfiguration.dfm:225
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..LInterpreterParameter..Font.Name
+#: UConfiguration.dfm:241
+#. FConfiguration..PMain..PPanelRight..PageList..PCompiler..LJavaCompilerParameter..Font.Name
+#: UConfiguration.dfm:557
+#. FConfiguration..PMain..PPanelRight..PageList..PCompiler..LJavaCompiler..Font.Name
+#: UConfiguration.dfm:573
+#. FConfiguration..PMain..PPanelRight..PageList..PPrograms..LJavaDoc..Font.Name
+#: UConfiguration.dfm:667
+#. FConfiguration..PMain..PPanelRight..PageList..PPrograms..LDebugger..Font.Name
+#: UConfiguration.dfm:683
+#. FConfiguration..PMain..PPanelRight..PageList..PApplets..LAppletviewer..Font.Name
+#: UConfiguration.dfm:751
+#. FConfiguration..PMain..PPanelRight..PageList..PDisassembler..LDisassembler..Font.Name
+#: UConfiguration.dfm:814
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..LJar..Font.Name
+#: UConfiguration.dfm:929
+#. FConfiguration..PMain..PPanelRight..PageList..PCode..GBCodeCompletion..LCompletionHint1..Font.Name
+#: UConfiguration.dfm:1296
+#. FConfiguration..PMain..PPanelRight..PageList..PCode..GBCodeCompletion..LCompletionHint2..Font.Name
+#: UConfiguration.dfm:1309
+#. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..LCollision..Font.Name
+#: UConfiguration.dfm:2111
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LCache..Font.Name
+#: UConfiguration.dfm:2858
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LJavabook..Font.Name
+#: UConfiguration.dfm:2888
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LTutorial..Font.Name
+#: UConfiguration.dfm:2904
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LLejos..Font.Name
+#: UConfiguration.dfm:3458
+#. FConfiguration..PMain..PPanelRight..PageList..PRestrictions..LRestrictions..Font.Name
+#: UConfiguration.dfm:4252
+#. FConfiguration..PMain..PPanelRight..PageList..PGit..LGitFolder..Font.Name
+#: UConfiguration.dfm:5112
+#. FConfiguration..PMain..PPanelRight..PageList..PJUnit..LJUnit..Font.Name
+#: UConfiguration.dfm:5221
+#. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..LCheckstyle..Font.Name
+#: UConfiguration.dfm:5397
+#. FConfiguration..PMain..PPanelRight..PageList..PJalopy..LJalopy..Font.Name
+#: UConfiguration.dfm:5511
+#. FConfiguration..PMain..PPanelRight..PageList..PSubversion..LSVN..Font.Name
+#: UConfiguration.dfm:5619
+#. FAbout..Font.Name
+#: UDlgAbout.dfm:13
+#. FClassEditor..TreeView..Font.Name
+#: UDlgClassEditor.dfm:38
+#. FClasspath..Font.Name
+#: UDlgClasspath.dfm:13
+#. FGotoLineDialog..LGoto..Font.Name
+#: UDlgGotoLine.dfm:28
+#. FJava..FDFont..Font.Name
+#: UJava.dfm:3842
+#. FObjectGenerator..FontDialog..Font.Name
+#: UObjectGenerator.dfm:90
+#. FUMLForm..Panel..PDiagramPanel..Font.Name
+#: EssModel/System/UFrmUMLdiagram.dfm:39
+#. FUMLForm..Panel..PDiagramPanel..Font.Name
+#: EssModel/System/UUMLForm.dfm:41
+#. FMemo..Font.Name
+#: Setup/UMemo.dfm:12
+#. FSetup..Font.Name
+#: Setup/USetup.dfm:12
+msgid "MS Sans Serif"
+msgstr ""
+
+#. FBorder..Panel1..RGBordertype....Items.Strings
+#: Formdesigner/ELDlgBorder.dfm:269
+msgid "No border"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBNumberField..Hint
+#: UJava.dfm:374
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXNumberField..Hint
+#: UJava.dfm:1676
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MINumberField..Caption
+#: UJava.dfm:3325
+msgid "NumberField"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..RGMindstormsVersion....Items.Strings
+#: UConfiguration.dfm:3732
+msgid "NXT"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PUML..RGAttributsMethodsDisplay....Items.Strings
+#: UConfiguration.dfm:4659
+#. FClassEditor..PageControl..TSAttributes..RGAttributeAccess....Items.Strings
+#: UDlgClassEditor.dfm:196
+#. FClassEditor..PageControl..TSMethods..RGMethodAccess....Items.Strings
+#: UDlgClassEditor.dfm:382
+#. AFrameDiagram..PopMenuClass..MIClassPopupDisplay..MIClassPopupDisplay3..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:125
+#. AFrameDiagram..PopMenuObject..MIObjectPopupDisplay..MIObjectPopupDisplay3..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:265
+#. AFrameDiagram..PopupMenuWindow..MIWindowPopupDisplay..MIWindowPopupDisplay3..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:538
+msgid "package"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Caption
+#: UConfiguration.dfm:3859
+msgid "PAndroid"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXPane..Hint
+#: UJava.dfm:1812
+msgid "Pane"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PApplets..Caption
+#: UConfiguration.dfm:741
+msgid "PApplets"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAssociations..Caption
+#: UConfiguration.dfm:4290
+msgid "PAsso"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXPasswordField..Hint
+#: UJava.dfm:1397
+msgid "PasswordField"
+msgstr ""
+
+msgid "PasswortField"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PBrowser..Caption
+#: UConfiguration.dfm:2723
+msgid "PBrowser"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..Caption
+#: UConfiguration.dfm:5373
+msgid "PCheckstyle"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PCode..Caption
+#: UConfiguration.dfm:1272
+msgid "PCode"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PColors..Caption
+#: UConfiguration.dfm:1505
+msgid "PColors"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PComment..Caption
+#: UConfiguration.dfm:1694
+msgid "PComment"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PCompiler..Caption
+#: UConfiguration.dfm:547
+msgid "PCompiler"
+msgstr ""
+
+msgid "PDisassembler"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PDisassembler..Caption
+#: UConfiguration.dfm:797
+msgid "PDissasembler"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..Caption
+#: UConfiguration.dfm:2848
+msgid "PDocumentation"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PEditor..Caption
+#: UConfiguration.dfm:1046
+msgid "PEditor"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PEditorOptions..Caption
+#: UConfiguration.dfm:1049
+msgid "PEditorOptions"
+msgstr ""
+
+#. FExplorer..PFolder..Caption
+#: UExplorer.dfm:206
+msgid "PFolder"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PGeneralOptions..Caption
+#: UConfiguration.dfm:3969
+msgid "PGeneralOptions"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PGit..Caption
+#: UConfiguration.dfm:5102
+msgid "PGit"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PGUIDesigner..Caption
+#: UConfiguration.dfm:2181
+msgid "PGUIDesigner"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..Caption
+#: UConfiguration.dfm:215
+msgid "PInterpreter"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJalopy..Caption
+#: UConfiguration.dfm:5487
+msgid "PJalopy"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJar..Caption
+#: UConfiguration.dfm:898
+msgid "PJar"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJava..Caption
+#: UConfiguration.dfm:212
+msgid "PJava"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PJUnit..Caption
+#: UConfiguration.dfm:5211
+msgid "PJunit"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..Caption
+#: UConfiguration.dfm:2054
+msgid "PKeyboard"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PLanguage..Caption
+#: UConfiguration.dfm:3958
+msgid "PLanguage"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..Caption
+#: UConfiguration.dfm:5020
+msgid "PLogfiles"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..Caption
+#: UConfiguration.dfm:3420
+msgid "PMindstorms"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXPolygon..Hint
+#: UJava.dfm:771
+msgid "Polygon"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXPolyline..Hint
+#: UJava.dfm:786
+msgid "Polyline"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBPopupMenu..Hint
+#: UJava.dfm:586
+msgid "PopupMenu"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIPopUpMenu..Caption
+#: UJava.dfm:3405
+msgid "PopUpMenu"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrinter..Caption
+#: UConfiguration.dfm:3233
+msgid "PPrinter"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PPrograms..Caption
+#: UConfiguration.dfm:650
+msgid "PPrograms"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PRestrictions..Caption
+#: UConfiguration.dfm:4242
+msgid "PRestric"
+msgstr ""
+
+#. FClassEditor..PageControl..TSAttributes..RGAttributeAccess....Items.Strings
+#: UDlgClassEditor.dfm:195
+#. FClassEditor..PageControl..TSMethods..RGMethodAccess....Items.Strings
+#: UDlgClassEditor.dfm:381
+msgid "private"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
+#: UConfiguration.dfm:3948
+msgid "Prof. Dr. Andy Schürr"
+msgstr ""
+
+msgid "ProgressBae"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXProgressBar..Hint
+#: UJava.dfm:1322
+msgid "ProgressBar"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXProgressIndicator..Hint
+#: UJava.dfm:1337
+msgid "ProgressIndicator"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UExplorerForm.dfm:154
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UFrmExplorer.dfm:154
+msgid "Project (*.jep)"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PUML..RGAttributsMethodsDisplay....Items.Strings
+#: UConfiguration.dfm:4658
+#. FClassEditor..PageControl..TSAttributes..RGAttributeAccess....Items.Strings
+#: UDlgClassEditor.dfm:197
+#. FClassEditor..PageControl..TSMethods..RGMethodAccess....Items.Strings
+#: UDlgClassEditor.dfm:383
+#. AFrameDiagram..PopMenuClass..MIClassPopupDisplay..MIClassPopupDisplay2..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:120
+#. AFrameDiagram..PopMenuObject..MIObjectPopupDisplay..MIObjectPopupDisplay2..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:260
+#. AFrameDiagram..PopupMenuWindow..MIWindowPopupDisplay..MIWindowPopupDisplay2..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:533
+msgid "protected"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PBrowser..GBProxy..Caption
+#: UConfiguration.dfm:2807
+msgid "Proxy"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PSequencediagram..Caption
+#: UConfiguration.dfm:2628
+msgid "PSequencediagram"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..Caption
+#: UConfiguration.dfm:2357
+msgid "PStructo"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStyles..Caption
+#: UConfiguration.dfm:4194
+msgid "PStyles"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PSubversion..Caption
+#: UConfiguration.dfm:5602
+msgid "PSubver"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PTemplates..Caption
+#: UConfiguration.dfm:1767
+msgid "PTemplates"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PTools..Caption
+#: UConfiguration.dfm:5099
+msgid "PTools"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PUML..RGAttributsMethodsDisplay....Items.Strings
+#: UConfiguration.dfm:4657
+#. FClassEditor..PageControl..TSAttributes..RGAttributeAccess....Items.Strings
+#: UDlgClassEditor.dfm:198
+#. FClassEditor..PageControl..TSMethods..RGMethodAccess....Items.Strings
+#: UDlgClassEditor.dfm:384
+#. AFrameDiagram..PopMenuClass..MIClassPopupDisplay..MIClassPopupDisplay1..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:115
+#. AFrameDiagram..PopMenuObject..MIObjectPopupDisplay..MIObjectPopupDisplay1..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:255
+#. AFrameDiagram..PopupMenuWindow..MIWindowPopupDisplay..MIWindowPopupDisplay1..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:528
+msgid "public"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PUML..Caption
+#: UConfiguration.dfm:4452
+msgid "PUML"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PUML2..Caption
+#: UConfiguration.dfm:4703
+msgid "PUML2"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MIGitPush..Caption
+#: UEditorForm.dfm:2381
+#. FEditForm..PopUpEditor..MIGit..MIGitPush..Caption
+#: UFrmEditor.dfm:2381
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitPush..Caption
+#: UJava.dfm:3144
+msgid "Push"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PVisibility..Caption
+#: UConfiguration.dfm:4914
+msgid "PVisibili"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXQuadCurve..Hint
+#: UJava.dfm:846
+msgid "QuadCurve"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIRadiobutton..Caption
+#: UJava.dfm:3345
+msgid "Radiobutton"
+msgstr ""
+
+#. FBorder..PCBorder..TSEtched..RGEtchtype....Items.Strings
+#: Formdesigner/ELDlgBorder.dfm:98
+#. FBorder..PCBorder..TSBevel..RGBevelType....Items.Strings
+#: Formdesigner/ELDlgBorder.dfm:129
+msgid "Raised"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..RGMindstormsVersion....Items.Strings
+#: UConfiguration.dfm:3731
+msgid "RCX"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXRectangle..Hint
+#: UJava.dfm:741
+msgid "Rectangle"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIReleaseWindow..Caption
+#: UEditorForm.dfm:2462
+#. FEditForm..PopUpEditor..MIReleaseWindow..Caption
+#: UFrmEditor.dfm:2462
+msgid "Release window"
+msgstr ""
+
+msgid "Release Window"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MIGitRemote..Caption
+#: UEditorForm.dfm:2373
+#. FEditForm..PopUpEditor..MIGit..MIGitRemote..Caption
+#: UFrmEditor.dfm:2373
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitRemote..Caption
+#: UJava.dfm:3134
+msgid "Remote"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MIGitRemove..Caption
+#: UEditorForm.dfm:2367
+#. FEditForm..PopUpEditor..MIGit..MIGitRemove..Caption
+#: UFrmEditor.dfm:2367
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitRemove..Caption
+#: UJava.dfm:3127
+msgid "Remove"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PGit..LLocalRepository..Caption
+#: UConfiguration.dfm:5124
+msgid "Repository local"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PGit..LRemoteRepository..Caption
+#: UConfiguration.dfm:5138
+msgid "Repository remote"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MGitReset..Caption
+#: UEditorForm.dfm:2359
+#. FEditForm..PopUpEditor..MIGit..MGitReset..Caption
+#: UFrmEditor.dfm:2359
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitReset..Caption
+#: UJava.dfm:3117
+msgid "Reset"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIEdit..MICopy..MICopyRTF..Caption
+#: UJava.dfm:2673
+msgid "RTF"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..BRunJava..Caption
+#: UConfiguration.dfm:481
+msgid "RunJava.BAT"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBScrollbar..Hint
+#: UJava.dfm:479
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIScrollbar..Caption
+#: UJava.dfm:3365
+msgid "Scrollbar"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBScrollPane..Hint
+#: UJava.dfm:494
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXScrollPane..Hint
+#: UJava.dfm:1797
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIScrollPane..Caption
+#: UJava.dfm:3370
+msgid "ScrollPane"
+msgstr ""
+
+#  Seems like a Font.Name extract
+#. FForm..Font.Name
+#: UBaseForm.dfm:10
+#. FBrowser..Font.Name
+#: UBrowserForm.dfm:13
+#. FConfiguration..Font.Name
+#: UConfiguration.dfm:13
+#. FAssociationDialog..Font.Name
+#: UDlgAssociation.dfm:13
+#. FAssociationDialog..ERelation..Font.Name
+#: UDlgAssociation.dfm:129
+#. FAssociationDialog..CBReadingOrderA..Font.Name
+#: UDlgAssociation.dfm:157
+#. FAssociationDialog..CBReadingOrderB..Font.Name
+#: UDlgAssociation.dfm:171
+#. FClassEditor..Font.Name
+#: UDlgClassEditor.dfm:13
+#. FConfigureTools..Font.Name
+#: UDlgConfigureTools.dfm:12
+#. FDownload..Font.Name
+#: UDlgDownload.dfm:11
+#. FEvaluate..Font.Name
+#: UDlgEvaluate.dfm:13
+#. FFavoritenDialog..Font.Name
+#: UDlgFavoriten.dfm:13
+#. FGotoLineDialog..Font.Name
+#: UDlgGotoLine.dfm:14
+#. FHelpDialog..Font.Name
+#: UDlgHelp.dfm:14
+#. FJarCreateDialog..Font.Name
+#: UDlgJarCreate.dfm:13
+#. FMethodCallDialog..Font.Name
+#: UDlgMethodCall.dfm:11
+#. FMindstormsDialog..Font.Name
+#: UDlgMindstorms.dfm:11
+#. FMindstormsEV3Dialog..Font.Name
+#: UDlgMindstormsEV3.dfm:11
+#. FOpenFolderDialog..Font.Name
+#: UDlgOpenFolder.dfm:13
+#. FParameterDialog..Font.Name
+#: UDlgParameter.dfm:13
+#. FUnicodeDialog..Font.Name
+#: UDlgUnicode.dfm:13
+#. FUpdateDialog..Font.Name
+#: UDlgUpdate.dfm:13
+#. FEditForm..Font.Name
+#: UEditorForm.dfm:12
+#. FExplorer..Font.Name
+#: UExplorerForm.dfm:12
+#. FFileStructure..Font.Name
+#: UFileStructure.dfm:15
+#. FForm..Font.Name
+#: UFrmBaseform.dfm:10
+#. FBrowser..Font.Name
+#: UFrmBrowser.dfm:13
+#. FEditForm..Font.Name
+#: UFrmEditor.dfm:12
+#. FExplorer..Font.Name
+#: UFrmExplorer.dfm:12
+#. FGit..Font.Name
+#: UGit.dfm:13
+#. FGUIDesigner..Font.Name
+#: UGUIDesigner.dfm:12
+#. FGUIForm..Font.Name
+#: UGUIForm.dfm:11
+#. FJava..Font.Name
+#: UJava.dfm:14
+#. FJUnitTests..Font.Name
+#: UJUnitTest.dfm:15
+#. FMessages..Font.Name
+#: UMessages.dfm:13
+#. FObjectGenerator..Font.Name
+#: UObjectGenerator.dfm:13
+#. FObjectInspector..Font.Name
+#: UObjectInspector.dfm:16
+#. FScpHint..Font.Name
+#: UScpHint.dfm:13
+#. FSubversion..Font.Name
+#: USubversion.dfm:13
+#. FTooltip..Font.Name
+#: UTooltip.dfm:13
+#. FWatches..Font.Name
+#: UWatches.dfm:13
+#. FClassInsert..Font.Name
+#: EssModel/System/UClassInsert.dfm:13
+#. FUMLForm..Font.Name
+#: EssModel/System/UFrmUMLdiagram.dfm:12
+#. FUMLForm..Font.Name
+#: EssModel/System/UUMLForm.dfm:12
+#. FConfirmReplace..Font.Name
+#: FindInFiles/UDlgConfirmReplace.dfm:13
+#. FGrepSearch..Font.Name
+#: FindInFiles/UDlgGrepSearch.dfm:14
+#. FReplace..Font.Name
+#: FindInFiles/UDlgReplace.dfm:13
+#. FSearch..Font.Name
+#: FindInFiles/UDlgSearch.dfm:13
+#. FSearchAbort..Font.Name
+#: FindInFiles/UDlgSearchAbort.dfm:12
+#. FBorder..Font.Name
+#: Formdesigner/ELDlgBorder.dfm:11
+#. FIconEditor..Font.Name
+#: Formdesigner/ELDlgImage.dfm:12
+#. ELStringsEditorDlg..Font.Name
+#: Formdesigner/ELDlgStringsEdit.dfm:13
+#. FConnectDialog..Font.Name
+#: Sequencediagram/UDlgConnect.dfm:13
+#. FConnectDialog..ERelation..Font.Name
+#: Sequencediagram/UDlgConnect.dfm:96
+#. FSequenceForm..Font.Name
+#: Sequencediagram/UFrmSequencediagram.dfm:13
+#. FSequenceForm..Font.Name
+#: Sequencediagram/USequenceForm.dfm:13
+#. FStructogram..Font.Name
+#: Structogram/UFrmStructogram.dfm:13
+#. FStructogram..Font.Name
+#: Structogram/UStructogramform.dfm:13
+#. FTextDiff..Font.Name
+#: TextDiff/UFrmTextDiff.dfm:12
+#. FTextDiff..Font.Name
+#: TextDiff/UTextDiffForm.dfm:12
+#. DlgMessage..Font.Name
+#: Util/UDlgMessage.dfm:13
+#. FWindow..Font.Name
+#: Util/UWindow.dfm:11
+msgid "Segoe UI"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXSeparator..Hint
+#: UJava.dfm:1367
+msgid "Separator"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..MIShort..Caption
+#: UJava.dfm:3280
+msgid "short"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXSlider..Hint
+#: UJava.dfm:1307
+msgid "Slider"
+msgstr ""
+
+#  Doesn't look like text
+#. SsAboutForm..NewsLbl..Caption
+#: Util/ShellShock/SsAbout0.dfm:112
+msgid "sourceforge.net/forum/forum.php?forum_id=241877"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXSpinner..Hint
+#: UJava.dfm:1782
+msgid "Spinner"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXSplitMenuButton..Hint
+#: UJava.dfm:1918
+msgid "SplitMenuButton"
+msgstr ""
+
+#. FClassEditor..PageControl..TSAttributes..GBAttributeOptions..CBAttributeStatic..Caption
+#: UDlgClassEditor.dfm:276
+#. FClassEditor..PageControl..TSMethods..GBMethodOptions..CBMethodStatic..Caption
+#: UDlgClassEditor.dfm:399
+msgid "static"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MIGitStatus..Caption
+#: UEditorForm.dfm:2341
+#. FEditForm..PopUpEditor..MIGit..MIGitStatus..Caption
+#: UFrmEditor.dfm:2341
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitStatus..Caption
+#: UJava.dfm:3095
+msgid "Status"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
+#: UConfiguration.dfm:2556
+#. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
+#: UDlgClassEditor.dfm:222
+#. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
+#: UDlgClassEditor.dfm:371
+#. FClassEditor..PageControl..TSMethods..GRFormalParameters..CBParamType....Items.Strings
+#: UDlgClassEditor.dfm:536
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..MIString..Caption
+#: UJava.dfm:3308
+#. FStructogram..StructoPopupMenu..MIDataType..MIString..Caption
+#: Structogram/UFrmStructogram.dfm:903
+#. FStructogram..StructoPopupMenu..MIDataType..MIString..Caption
+#: Structogram/UStructogramform.dfm:900
+#. Programmer's name for it: LNGString
+#: Util/UStringRessources.pas:94
+msgid "String"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MITools..MISubversion..Caption
+#: UJava.dfm:3055
+#: UConfiguration.pas:8723
+msgid "Subversion"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXSVGPath..Hint
+#: UJava.dfm:876
+msgid "SVGPath"
+msgstr ""
+
+#. FJava..ControlBar..PGComponentsToolbar..TSSwing1..Caption
+#: UJava_-_Kopie.dfm:485
+msgid "Swing 1"
+msgstr ""
+
+#. FJava..ControlBar..PGComponentsToolbar..TSSwing2..Caption
+#: UJava_-_Kopie.dfm:770
+msgid "Swing 2"
+msgstr ""
+
+#  Doesn't look like text
+#. FJava..TBXDockTop..ControlBar..TabsControl..TabSwing1..Caption
+#: UJava.dfm:291
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..Caption
+#: UJava.dfm:1936
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..Caption
+#: UJava.dfm:3410
+msgid "Swing1"
+msgstr ""
+
+#  Doesn't look like text
+#. FJava..TBXDockTop..ControlBar..TabsControl..TabSwing2..Caption
+#: UJava.dfm:295
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..Caption
+#: UJava.dfm:963
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..Caption
+#: UJava.dfm:3514
+msgid "Swing2"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..MISwitch..Caption
+#: UJava.dfm:3264
+#. FStructogram..PanelLeft..ToolBarStructogram..TBSwitch..Hint
+#: Structogram/UFrmStructogram.dfm:117
+#. FStructogram..PanelLeft..ToolBarStructogram..TBSwitch..Hint
+#: Structogram/UStructogramform.dfm:114
+msgid "switch"
+msgstr ""
+
+#. FAbout..GBComponents..LEditorValue..Caption
+#: UDlgAbout.dfm:48
+msgid "SynEdit 1.3"
+msgstr ""
+
+#. TabDockHost..Caption
+#: Dockable/uTabHost.dfm:4
+msgid "TabDockHost"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXTableView..Hint
+#: UJava.dfm:1592
+msgid "TableView"
+msgstr ""
+
+#  Seems like a Font.Name extract
+#. FStringEditorDialog..Font.Name
+#: UDlgStringsEditor.dfm:11
+#. FJe2Java..Font.Name
+#: UJe2Java.dfm:11
+#. FUpdater..Font.Name
+#: Setup/UUpdater.dfm:12
+#. Fwait..Font.Name
+#: Setup/UWait.dfm:11
+#. Fwait..Label1..Font.Name
+#: Setup/UWait.dfm:24
+#. DlgMessage..LMessage..Font.Name
+#: Util/UDlgMessage.dfm:141
+msgid "Tahoma"
+msgstr ""
+
+msgid "TBDelete"
+msgstr ""
+
+msgid "TBExecute"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
+#: UConfiguration.dfm:3951
+msgid "Technische Universität Darmstadt"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PColors..LTextColor..Caption
+#: UConfiguration.dfm:1533
+#. FConfiguration..PMain..PPanelRight..PageList..PUML..RGVisibilityDisplay....Items.Strings
+#: UConfiguration.dfm:4697
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXText..Hint
+#: UJava.dfm:831
+#. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewText..Caption
+#: UJava.dfm:2475
+#. AFrameDiagram..PopMenuClass..MIClassPopupVisibility..MIClassPopupVisibilityText..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:172
+#. AFrameDiagram..PopMenuObject..MIObjectPopupVisibility..MIObjectPopupVisibilityText..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:283
+#. AFrameDiagram..PopupMenuWindow..MIWindowPopupVisibility..MIWindowPopupVisibilityText..Caption
+#: EssModel/Integrator/View/UDiagramFrame.dfm:582
+#. Programmer's name for it: LNGText
+#: Util/UStringRessources.pas:99
+msgid "Text"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UExplorerForm.dfm:155
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UFrmExplorer.dfm:155
+msgid "Text (*.txt)"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBTextArea..Hint
+#: UJava.dfm:389
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXTextArea..Hint
+#: UJava.dfm:1691
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MITextArea..Caption
+#: UJava.dfm:3330
+msgid "TextArea"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBTextField..Hint
+#: UJava.dfm:359
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXTextField..Hint
+#: UJava.dfm:1661
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MITextField..Caption
+#: UJava.dfm:3320
+msgid "TextField"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSUtilities..ToolBarUtilities..TBTimer..Hint
+#: UJava.dfm:945
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MITimer..Caption
+#: UJava.dfm:3400
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJTimer..Caption
+#: UJava.dfm:3508
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJTimer..Hint
+#: UJava.dfm:3509
+msgid "Timer"
+msgstr ""
+
+#. FBorder..PCBorder..TSTitled..Caption
+#: Formdesigner/ELDlgBorder.dfm:135
+msgid "Titled"
+msgstr ""
+
+#. FBorder..Panel1..RGBordertype....Items.Strings
+#: Formdesigner/ELDlgBorder.dfm:273
+msgid "Titled border"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXToggleButton..Hint
+#: UJava.dfm:1382
+msgid "ToggleButton"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXButtonGroup..Caption
+#: UJava.dfm:1737
+msgid "ToggleGroup"
+msgstr ""
+
+#. FBrowser..PBrowser..ToolBar..Caption
+#: UBrowserForm.dfm:111
+#. FBrowser..PBrowser..ToolBar..Caption
+#: UFrmBrowser.dfm:112
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXToolbar..Hint
+#: UJava.dfm:1352
+msgid "ToolBar"
+msgstr ""
+
+#  Doesn't look like text
+#. FJava..ControlBar..PGComponentsToolbar..TSSwing1..ToolBarSwing1..Caption
+#: UJava.dfm:462
+msgid "ToolBarSwing1"
+msgstr ""
+
+#  Doesn't look like text
+#. FJava..ControlBar..PGComponentsToolbar..TSSwing2..ToolbarSwing2..Caption
+#: UJava.dfm:730
+msgid "ToolbarSwing2"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXTreeView..Hint
+#: UJava.dfm:1607
+msgid "TreeView"
+msgstr ""
+
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..MITry..Caption
+#: UJava.dfm:3269
+msgid "try"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBATurtle..Hint
+#: UJava.dfm:541
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSUtilities..ToolBarUtilities..TBTurtle..Hint
+#: UJava.dfm:930
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXTurtle..Hint
+#: UJava.dfm:1843
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJTurtle..Hint
+#: UJava.dfm:2169
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MITurtle..Caption
+#: UJava.dfm:3390
+#. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJTurtle..Caption
+#: UJava.dfm:3488
+msgid "Turtle"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSUtilities..ToolBarUtilities..TBPlayground..Hint
+#: UJava.dfm:915
+msgid "Turtle playground"
+msgstr ""
+
+#. FUnicodeDialog..LUnicode..Caption
+#: UDlgUnicode.dfm:22
+msgid "U+"
+msgstr ""
+
+#. FUMLForm..Caption
+#: EssModel/System/UFrmUMLdiagram.dfm:5
+#. FUMLForm..Caption
+#: EssModel/System/UUMLForm.dfm:5
+#: UConfiguration.pas:8714
+msgid "UML"
+msgstr ""
+
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UExplorerForm.dfm:152
+#. FExplorer..PTop..PLeft..CBFilter....Items.Strings
+#: UFrmExplorer.dfm:152
+msgid "UML (*.uml)"
+msgstr ""
+
+#. FUnicodeDialog..Caption
+#: UDlgUnicode.dfm:6
+msgid "Unicode"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LUploader..Caption
+#: UConfiguration.dfm:3623
+msgid "Uploader"
+msgstr ""
+
+#. FDownload..LUrl..Caption
+#: UDlgDownload.dfm:22
+msgid "Url"
+msgstr ""
+
+#. FFavoritenDialog..LUrl..Caption
+#: UDlgFavoriten.dfm:30
+msgid "URL"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort..Text
+#: UConfiguration.dfm:3805
+#. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
+#: UConfiguration.dfm:3807
+msgid "USB"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PGit..LUserEMail..Caption
+#: UConfiguration.dfm:5145
+msgid "user.email"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PGit..LUserName..Caption
+#: UConfiguration.dfm:5131
+msgid "user.name"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBFileEncoding....Items.Strings
+#: UConfiguration.dfm:518
+#. FConfiguration..PMain..PPanelRight..PageList..PCompiler..CBCompilerEncoding....Items.Strings
+#: UConfiguration.dfm:646
+msgid "UTF-16"
+msgstr ""
+
+#  Doesn't look like text
+#. Programmer's name for it: SUTF7Encoding
+#: System/Vcl.Consts.pas:342
+msgid "UTF-7"
+msgstr ""
+
+#  Doesn't look like text
+#. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..GBConsoleOptions..CBFileEncoding....Items.Strings
+#: UConfiguration.dfm:517
+#. FConfiguration..PMain..PPanelRight..PageList..PCompiler..CBCompilerEncoding....Items.Strings
+#: UConfiguration.dfm:645
+msgid "UTF-8"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TabUtilities..Caption
+#: UJava.dfm:303
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSUtilities..Caption
+#: UJava.dfm:894
+msgid "Utilities"
+msgstr ""
+
+#. FEditForm..PopUpEditor..MIGit..MIGitViewer..Caption
+#: UEditorForm.dfm:2391
+#. FEditForm..PopUpEditor..MIGit..MIGitViewer..Caption
+#: UFrmEditor.dfm:2391
+#. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitViewer..Caption
+#: UJava.dfm:3156
+msgid "Viewer"
+msgstr ""
+
+#  Doesn't look like text
+#. Programmer's name for it: SYNS_FriendlyLangVrml97
+#: SynEdit/SynEditStrConst.pas:561
+msgid "Vrml97"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..PBorder..SBWest..Caption
+#: UJava.dfm:236
+msgid "W"
+msgstr ""
+
+#. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXWebView..Hint
+#: UJava.dfm:1457
+msgid "WebView"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PStructogram..LWhile..Caption
+#: UConfiguration.dfm:2384
+#. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..MIwhile..Caption
+#: UJava.dfm:3249
+#. FStructogram..PanelLeft..ToolBarStructogram..TBwhile..Hint
+#: Structogram/UFrmStructogram.dfm:129
+#. FStructogram..PanelLeft..ToolBarStructogram..TBwhile..Hint
+#: Structogram/UStructogramform.dfm:126
+msgid "while"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
+#: UConfiguration.dfm:3952
+msgid "www.es.tu-darmstadt.de"
+msgstr ""
+
+#  Doesn't look like text
+#. Programmer's name for it: SYNS_FriendlyAttrX3DDocType
+#: SynEdit/SynEditStrConst.pas:419
+msgid "X3DDocType"
+msgstr ""
+
+#  Doesn't look like text
+#. Programmer's name for it: SYNS_FriendlyAttrX3DHeader
+#: SynEdit/SynEditStrConst.pas:420
+msgid "X3DHeader"
+msgstr ""
+
+#. FClassInsert..ODClassInsert..Filter
+#: EssModel/System/UClassInsert.dfm:116
+msgid "zip|*.zip|jar|*.jar|All|*.*"
+msgstr ""
+
