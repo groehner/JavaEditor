@@ -4,8 +4,8 @@ object FConfiguration: TFConfiguration
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Configuration'
-  ClientHeight = 491
-  ClientWidth = 792
+  ClientHeight = 489
+  ClientWidth = 784
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,8 +22,8 @@ object FConfiguration: TFConfiguration
   object PMain: TPanel
     Left = 0
     Top = 0
-    Width = 792
-    Height = 491
+    Width = 784
+    Height = 489
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
@@ -31,7 +31,7 @@ object FConfiguration: TFConfiguration
       Left = 0
       Top = 0
       Width = 145
-      Height = 491
+      Height = 489
       Align = alLeft
       AutoExpand = True
       HideSelection = False
@@ -105,14 +105,14 @@ object FConfiguration: TFConfiguration
     object PPanelRight: TPanel
       Left = 145
       Top = 0
-      Width = 647
-      Height = 491
+      Width = 639
+      Height = 489
       Align = alClient
       TabOrder = 1
       object PButtons: TPanel
         Left = 1
-        Top = 449
-        Width = 645
+        Top = 447
+        Width = 637
         Height = 41
         Align = alBottom
         TabOrder = 0
@@ -174,7 +174,7 @@ object FConfiguration: TFConfiguration
       object PTitle: TPanel
         Left = 1
         Top = 1
-        Width = 645
+        Width = 637
         Height = 20
         Align = alTop
         BevelOuter = bvSpace
@@ -196,8 +196,8 @@ object FConfiguration: TFConfiguration
       object PageList: TPageControl
         Left = 1
         Top = 21
-        Width = 645
-        Height = 428
+        Width = 637
+        Height = 426
         ActivePage = PUMLOptions
         Align = alClient
         Style = tsFlatButtons

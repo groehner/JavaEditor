@@ -422,7 +422,11 @@ procedure TLLMChatForm.actAskQuestionExecute(Sender: TObject);
 begin
   if synQuestion.Text = '' then
     Exit;
-  LLMChat.Ask(synQuestion.Text);
+
+  if FConfiguration.LanguageCode = 'de' then
+    LLMChat.Ask('Answer in German. ' + synQuestion.Text)
+  else
+    LLMChat.Ask(synQuestion.Text);
 end;
 
 procedure TLLMChatForm.actCancelRequestExecute(Sender: TObject);

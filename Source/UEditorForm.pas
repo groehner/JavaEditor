@@ -225,7 +225,6 @@ type
     ModifiedStrs: array[boolean] of string;
     InsertModeStrs: array[boolean] of string;
     ToolButtons: array[0..29] of TToolButton;
-    ActivityPopupPoint: TPoint;
     procedure Translate;
     procedure Statusline(i: Integer; const s: string);
     procedure CalculateStatusline;
@@ -1937,7 +1936,6 @@ end;
 
 procedure TFEditForm.PopUpEditorPopup(Sender: TObject);
 begin
-  ActivityPopupPoint:= (Sender as TSpTBXPopupMenu).PopupPoint;
   MouseBorderOfStructure:= 0;
   MouseIsInBorderOfStructure:= Editor.MouseInBorderOfStructure(MouseBorderOfStructure);
   if not Editor.getPositionOfMouse(MousePosition) then
@@ -5206,8 +5204,8 @@ type
 procedure TFEditForm.SetActivityIndicator(TurnOn: Boolean; Hint: string;
   OnClick: TNotifyEvent);
 begin
-  ActivityIndicator.Left:= ActivityPopupPoint.X;
-  ActivityIndicator.Top:= ActivityPopupPoint.Y;
+  ActivityIndicator.Left:= Width div 2;
+  ActivityIndicator.Top:= Height div 2;
   ActivityIndicator.Visible := TurnOn;
   ActivityIndicator.Hint := Hint;
   ActivityIndicator.Animate := TurnOn;
@@ -5216,7 +5214,7 @@ end;
 
 procedure TFEditForm.ShowAssistantError(Msg: string);
 begin
-  ShowMessagePos(Msg, ActivityPopupPoint.X, ActivityPopupPoint.Y);
+  ShowMessage(Msg);
 end;
 
 end.

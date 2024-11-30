@@ -3,29 +3,32 @@ inherited LLMChatForm: TLLMChatForm
   Top = 0
   HelpContext = 497
   Caption = 'Chat'
-  ClientHeight = 641
-  ClientWidth = 570
+  ClientHeight = 640
+  ClientWidth = 566
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  ExplicitWidth = 586
-  ExplicitHeight = 680
+  ExplicitWidth = 578
+  ExplicitHeight = 678
   TextHeight = 15
   object pnlQuestion: TPanel
     Left = 0
-    Top = 556
-    Width = 570
+    Top = 555
+    Width = 566
     Height = 85
     Align = alBottom
     ParentBackground = False
     ParentColor = True
     TabOrder = 0
+    ExplicitTop = 554
+    ExplicitWidth = 562
     object pAsk: TPanel
-      Left = 536
+      Left = 532
       Top = 1
       Width = 33
       Height = 83
       Align = alRight
       TabOrder = 0
+      ExplicitLeft = 528
       DesignSize = (
         33
         83)
@@ -51,20 +54,20 @@ inherited LLMChatForm: TLLMChatForm
   object ScrollBox: TScrollBox
     Left = 0
     Top = 34
-    Width = 570
-    Height = 517
+    Width = 566
+    Height = 516
     HorzScrollBar.Visible = False
     VertScrollBar.Tracking = True
     Align = alClient
     ParentBackground = True
     TabOrder = 1
-    ExplicitWidth = 574
-    ExplicitHeight = 518
+    ExplicitWidth = 562
+    ExplicitHeight = 515
     object QAStackPanel: TStackPanel
       AlignWithMargins = True
       Left = 3
       Top = 3
-      Width = 568
+      Width = 556
       Height = 23
       Align = alTop
       AutoSize = True
@@ -75,29 +78,29 @@ inherited LLMChatForm: TLLMChatForm
       ParentColor = True
       ParentDoubleBuffered = False
       TabOrder = 0
-      ExplicitWidth = 564
+      ExplicitWidth = 552
     end
   end
   object Splitter: TSpTBXSplitter
     Left = 0
-    Top = 551
-    Width = 570
+    Top = 550
+    Width = 566
     Height = 5
     Cursor = crSizeNS
     Align = alBottom
     ParentColor = False
     MinSize = 90
-    ExplicitTop = 552
-    ExplicitWidth = 574
+    ExplicitTop = 549
+    ExplicitWidth = 562
   end
   object SpTBXDock: TSpTBXDock
     Left = 0
     Top = 0
-    Width = 570
+    Width = 566
     Height = 34
     AllowDrag = False
     DoubleBuffered = True
-    ExplicitWidth = 574
+    ExplicitWidth = 562
     object SpTBXToolbar: TSpTBXToolbar
       Left = 0
       Top = 0
@@ -133,11 +136,10 @@ inherited LLMChatForm: TLLMChatForm
         Action = actCancelRequest
       end
       object SpTBXRightAlignSpacerItem: TSpTBXRightAlignSpacerItem
-        CustomWidth = 341
+        CustomWidth = 333
       end
       object spiPreviousTopic: TSpTBXItem
         Action = actChatPrevious
-        Images = vilImages
       end
       object spiNextTopic: TSpTBXItem
         Action = actChatNext
@@ -153,7 +155,7 @@ inherited LLMChatForm: TLLMChatForm
       Caption = 'Save chat'
       Hint = 'Save chat history'
       ImageIndex = 4
-      ImageName = 'Save'
+      ImageName = 'ChatSave'
       OnExecute = actChatSaveExecute
     end
     object actChatRemove: TAction
@@ -188,7 +190,7 @@ inherited LLMChatForm: TLLMChatForm
       Caption = 'Copy'
       Hint = 'Copy text'
       ImageIndex = 7
-      ImageName = 'Copy'
+      ImageName = 'ChatCopy'
       OnExecute = actCopyTextExecute
     end
     object actAskQuestion: TAction
@@ -201,14 +203,14 @@ inherited LLMChatForm: TLLMChatForm
       Caption = 'Topic Title'
       Hint = 'Set the title of the chat topic'
       ImageIndex = 5
-      ImageName = 'Title'
+      ImageName = 'ChatTitle'
       OnExecute = actTopicTitleExecute
     end
     object actCancelRequest: TAction
       Caption = 'Cancel Request'
       Hint = 'Cancel active request'
       ImageIndex = 6
-      ImageName = 'Cancel'
+      ImageName = 'ChatCancel'
       OnExecute = actCancelRequestExecute
     end
     object actCopyCode: TAction
@@ -255,13 +257,13 @@ inherited LLMChatForm: TLLMChatForm
     object mnCopy: TSpTBXItem
       Caption = 'Copy'
       ImageIndex = 7
-      ImageName = 'Copy'
+      ImageName = 'ChatCopy'
       OnClick = mnCopyClick
     end
     object mnPaste: TSpTBXItem
       Caption = 'Paste'
       ImageIndex = 10
-      ImageName = 'Paste'
+      ImageName = 'ChatPaste'
       OnClick = mnPasteClick
     end
   end
@@ -321,7 +323,7 @@ inherited LLMChatForm: TLLMChatForm
           '11C2 6.58 6.5 3 12 3Z"/>'#13#10'</svg>'#13#10
       end
       item
-        IconName = 'Save'
+        IconName = 'ChatSave'
         SVGText = 
           '<svg viewBox="0 0 32 32">'#13#10#9'<path d="M23.5,2.5h-18c-1.7,0-3,1.4-' +
           '3,3v21c0,1.6,1.3,3,3,3h21c1.6,0,3-1.4,3-3v-18L23.5,2.5z M26.5,26' +
@@ -330,20 +332,20 @@ inherited LLMChatForm: TLLMChatForm
           #13#10'</svg>'#13#10
       end
       item
-        IconName = 'Title'
+        IconName = 'ChatTitle'
         SVGText = 
           '<svg viewBox="0 0 24 24">'#13#10'   <path d="M5,4V7H10.5V19H13.5V7H19V' +
           '4H5Z" />'#13#10'</svg>'
       end
       item
-        IconName = 'Cancel'
+        IconName = 'ChatCancel'
         SVGText = 
           '<svg viewBox="0 0 32 32">'#13#10#9'<path fill="#E24444" d="M24.9,10.2L2' +
           '7,5.9L22.5,8l-6.2,6.2L5.6,3.5L3.4,5.8l10.7,10.7l-9,9l2.2,2.2l9-9' +
           'l9,9l3.3,0.7l-1.2-3l-8.9-8.9L24.9,10.2z"/>'#13#10'</svg>'
       end
       item
-        IconName = 'Copy'
+        IconName = 'ChatCopy'
         SVGText = 
           '<svg viewBox="0 0 32 32">'#13#10'<g transform="translate(69.2 -212)">'#13 +
           #10#9'<path d="M-46.8,212.2h-17.2c-1.6,0-2.9,1.2-2.9,2.9v20.1h2.9v-2' +
@@ -378,7 +380,7 @@ inherited LLMChatForm: TLLMChatForm
           '"/>'#13#10'</svg>'#13#10
       end
       item
-        IconName = 'Paste'
+        IconName = 'ChatPaste'
         SVGText = 
           '<svg viewBox="0 0 32 32">'#13#10'<g transform="translate(-180.6 -325.9' +
           ')">'#13#10#9'<path d="M206.8,329h-6.2c-0.9-2.3-3.3-3.4-5.6-2.6c-1.2,0.5' +
@@ -442,23 +444,23 @@ inherited LLMChatForm: TLLMChatForm
       end
       item
         CollectionIndex = 4
-        CollectionName = 'Save'
-        Name = 'Save'
+        CollectionName = 'ChatSave'
+        Name = 'ChatSave'
       end
       item
         CollectionIndex = 5
-        CollectionName = 'Title'
-        Name = 'Title'
+        CollectionName = 'ChatTitle'
+        Name = 'ChatTitle'
       end
       item
         CollectionIndex = 6
-        CollectionName = 'Cancel'
-        Name = 'Cancel'
+        CollectionName = 'ChatCancel'
+        Name = 'ChatCancel'
       end
       item
         CollectionIndex = 7
-        CollectionName = 'Copy'
-        Name = 'Copy'
+        CollectionName = 'ChatCopy'
+        Name = 'ChatCopy'
       end
       item
         CollectionIndex = 8
@@ -472,8 +474,8 @@ inherited LLMChatForm: TLLMChatForm
       end
       item
         CollectionIndex = 10
-        CollectionName = 'Paste'
-        Name = 'Paste'
+        CollectionName = 'ChatPaste'
+        Name = 'ChatPaste'
       end
       item
         CollectionIndex = 11

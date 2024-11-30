@@ -5,8 +5,8 @@ object FJava: TFJava
   HelpType = htKeyword
   VertScrollBar.Visible = False
   Caption = 'Java-Editor'
-  ClientHeight = 494
-  ClientWidth = 811
+  ClientHeight = 493
+  ClientWidth = 807
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -26,8 +26,8 @@ object FJava: TFJava
   TextHeight = 15
   object HSplitter: TSplitter
     Left = 0
-    Top = 490
-    Width = 811
+    Top = 489
+    Width = 807
     Height = 3
     Cursor = crVSplit
     Align = alBottom
@@ -40,9 +40,9 @@ object FJava: TFJava
     ExplicitWidth = 858
   end
   object VSplitter: TSplitter
-    Left = 808
+    Left = 804
     Top = 78
-    Height = 412
+    Height = 411
     Align = alRight
     Color = clActiveCaption
     ParentColor = False
@@ -53,8 +53,8 @@ object FJava: TFJava
   end
   object BottomDockPanel: TPanel
     Left = 0
-    Top = 493
-    Width = 811
+    Top = 492
+    Width = 807
     Height = 1
     Align = alBottom
     DockSite = True
@@ -69,10 +69,10 @@ object FJava: TFJava
     ExplicitWidth = 815
   end
   object RightDockPanel: TPanel
-    Left = 811
+    Left = 807
     Top = 78
     Width = 0
-    Height = 412
+    Height = 411
     Align = alRight
     DockSite = True
     DragKind = dkDock
@@ -87,8 +87,8 @@ object FJava: TFJava
   object MainPanel: TPanel
     Left = 0
     Top = 78
-    Width = 808
-    Height = 412
+    Width = 804
+    Height = 411
     Align = alClient
     TabOrder = 2
     ExplicitWidth = 812
@@ -97,7 +97,7 @@ object FJava: TFJava
   object TBXDockTop: TSpTBXDockablePanel
     Left = 0
     Top = 0
-    Width = 811
+    Width = 807
     Height = 78
     Align = alTop
     DockMode = dmCannotFloatOrChangeDocks
@@ -113,7 +113,7 @@ object FJava: TFJava
     object ControlBar: TSpTBXPanel
       Left = 0
       Top = 21
-      Width = 811
+      Width = 807
       Height = 57
       Align = alClient
       Constraints.MaxHeight = 59
@@ -2448,7 +2448,7 @@ object FJava: TFJava
     object MainMenu: TSpTBXToolbar
       Left = 0
       Top = 0
-      Width = 811
+      Width = 807
       Height = 21
       Align = alTop
       Images = vilMenuLight

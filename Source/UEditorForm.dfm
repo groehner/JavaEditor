@@ -3,7 +3,7 @@ object FEditForm: TFEditForm
   Top = 204
   Align = alClient
   BorderIcons = []
-  ClientHeight = 826
+  ClientHeight = 547
   ClientWidth = 691
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object FEditForm: TFEditForm
   OnDestroy = FormDestroy
   DesignSize = (
     691
-    826)
+    547)
   TextHeight = 15
   object TVFileStructure: TTreeView
     Left = 192
@@ -34,13 +34,13 @@ object FEditForm: TFEditForm
   end
   object BottomPanel: TPanel
     Left = 0
-    Top = 805
+    Top = 526
     Width = 691
     Height = 21
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 806
-    ExplicitWidth = 695
+    ExplicitTop = 804
+    ExplicitWidth = 687
     object DesignButton: TButton
       Left = 1
       Top = 1
@@ -55,7 +55,7 @@ object FEditForm: TFEditForm
     object StatusBar: TStatusBar
       Left = 57
       Top = 1
-      Width = 641
+      Width = 633
       Height = 19
       Align = alClient
       Panels = <
@@ -75,31 +75,31 @@ object FEditForm: TFEditForm
         item
           Width = 70
         end>
-      ExplicitWidth = 637
+      ExplicitWidth = 629
     end
   end
   object EditformToolbar: TToolBar
     Left = 0
     Top = 0
-    Width = 23
-    Height = 805
+    Width = 46
+    Height = 526
     Align = alLeft
     AutoSize = True
     Images = vilEditorToolbarLight
     TabOrder = 2
-    ExplicitHeight = 806
+    ExplicitWidth = 23
+    ExplicitHeight = 804
     object TBClose: TToolButton
       Left = 0
       Top = 0
       Hint = 'Close'
       ImageIndex = 0
       ImageName = 'Close'
-      Wrap = True
       OnClick = SBCloseClick
     end
     object TBExplorer: TToolButton
-      Left = 0
-      Top = 22
+      Left = 23
+      Top = 0
       Hint = 'Explorer'
       ImageIndex = 1
       ImageName = 'Explorer'
@@ -108,16 +108,15 @@ object FEditForm: TFEditForm
     end
     object TBBrowser: TToolButton
       Left = 0
-      Top = 44
+      Top = 22
       Hint = 'Show in browser'
       ImageIndex = 2
       ImageName = 'Browser'
-      Wrap = True
       OnClick = SBBrowserClick
     end
     object TBDesignform: TToolButton
-      Left = 0
-      Top = 66
+      Left = 23
+      Top = 22
       Hint = 'Open the associated design form'
       ImageIndex = 3
       ImageName = 'Designform'
@@ -126,16 +125,15 @@ object FEditForm: TFEditForm
     end
     object TBStructure: TToolButton
       Left = 0
-      Top = 88
+      Top = 44
       Hint = 'Edit class structure'
       ImageIndex = 4
       ImageName = 'Classedit'
-      Wrap = True
       OnClick = SBClassEditClick
     end
     object TBClassOpen: TToolButton
-      Left = 0
-      Top = 110
+      Left = 23
+      Top = 44
       Hint = 'Open class in UML window'
       ImageIndex = 5
       ImageName = 'ClassOpen'
@@ -144,16 +142,15 @@ object FEditForm: TFEditForm
     end
     object TBMatchBracket: TToolButton
       Left = 0
-      Top = 132
+      Top = 66
       Hint = 'Go to the related bracket'
       ImageIndex = 6
       ImageName = 'MatchBracket'
-      Wrap = True
       OnClick = SBMatchBracketClick
     end
     object TBSystemOutPrintln: TToolButton
-      Left = 0
-      Top = 154
+      Left = 23
+      Top = 66
       Hint = 'System.out.println'
       ImageIndex = 7
       ImageName = 'SystemOutPrintln'
@@ -162,17 +159,16 @@ object FEditForm: TFEditForm
     end
     object TBStructureIndent: TToolButton
       Left = 0
-      Top = 176
+      Top = 88
       Hint = 'Structured indentation'
       ImageIndex = 8
       ImageName = 'StructureIndent'
-      Wrap = True
       OnClick = SBStructureIndentClick
     end
     object TBIfStatement: TToolButton
       Tag = 1
-      Left = 0
-      Top = 198
+      Left = 23
+      Top = 88
       Hint = 'if statement'
       ImageIndex = 9
       ImageName = 'IfStatement'
@@ -182,17 +178,16 @@ object FEditForm: TFEditForm
     object TBIfElseStatement: TToolButton
       Tag = 9
       Left = 0
-      Top = 220
+      Top = 110
       Hint = 'if-else statement'
       ImageIndex = 10
       ImageName = 'IfElseStatement'
-      Wrap = True
       OnClick = SBStatementClick
     end
     object TBWhileStatement: TToolButton
       Tag = 2
-      Left = 0
-      Top = 242
+      Left = 23
+      Top = 110
       Hint = 'while statement'
       ImageIndex = 11
       ImageName = 'WhileStatement'
@@ -202,17 +197,16 @@ object FEditForm: TFEditForm
     object TBForStatement: TToolButton
       Tag = 3
       Left = 0
-      Top = 264
+      Top = 132
       Hint = 'for statement'
       ImageIndex = 12
       ImageName = 'ForStatement'
-      Wrap = True
       OnClick = SBStatementClick
     end
     object TBDoWhileStatement: TToolButton
       Tag = 4
-      Left = 0
-      Top = 286
+      Left = 23
+      Top = 132
       Hint = 'do-while statement'
       ImageIndex = 13
       ImageName = 'DoWhileStatement'
@@ -222,17 +216,16 @@ object FEditForm: TFEditForm
     object TBSwitchStatement: TToolButton
       Tag = 5
       Left = 0
-      Top = 308
+      Top = 154
       Hint = 'switch statement'
       ImageIndex = 14
       ImageName = 'SwitchStatement'
-      Wrap = True
       OnClick = SBStatementClick
     end
     object TBTryStatement: TToolButton
       Tag = 6
-      Left = 0
-      Top = 330
+      Left = 23
+      Top = 154
       Hint = 'try statement'
       ImageIndex = 15
       ImageName = 'TryStatement'
@@ -242,16 +235,15 @@ object FEditForm: TFEditForm
     object TBBlockStatement: TToolButton
       Tag = 10
       Left = 0
-      Top = 352
+      Top = 176
       Hint = 'block statement'
       ImageIndex = 16
       ImageName = 'BlockStatement'
-      Wrap = True
       OnClick = SBStatementClick
     end
     object TBComment: TToolButton
-      Left = 0
-      Top = 374
+      Left = 23
+      Top = 176
       Hint = 'Comment/Uncomment'
       ImageIndex = 17
       ImageName = 'Comment'
@@ -260,16 +252,15 @@ object FEditForm: TFEditForm
     end
     object TBIndent: TToolButton
       Left = 0
-      Top = 396
+      Top = 198
       Hint = 'Indent'
       ImageIndex = 18
       ImageName = 'Indent'
-      Wrap = True
       OnClick = SBIndentClick
     end
     object TBUnindent: TToolButton
-      Left = 0
-      Top = 418
+      Left = 23
+      Top = 198
       Hint = 'Unindent'
       ImageIndex = 19
       ImageName = 'Unindent'
@@ -278,16 +269,15 @@ object FEditForm: TFEditForm
     end
     object TBWordWrap: TToolButton
       Left = 0
-      Top = 440
+      Top = 220
       Hint = 'Word wrap'
       ImageIndex = 20
       ImageName = 'WordWrap'
-      Wrap = True
       OnClick = SBWordWrapClick
     end
     object TBBreakpoint: TToolButton
-      Left = 0
-      Top = 462
+      Left = 23
+      Top = 220
       Hint = 'Breakpoint on/off'
       ImageIndex = 21
       ImageName = 'Breakpoint'
@@ -296,16 +286,15 @@ object FEditForm: TFEditForm
     end
     object TBBreakpointsClear: TToolButton
       Left = 0
-      Top = 484
+      Top = 242
       Hint = 'Clear breakpoints'
       ImageIndex = 22
       ImageName = 'BreakpointsClear'
-      Wrap = True
       OnClick = SBBreakpointsClearClick
     end
     object TBBookmark: TToolButton
-      Left = 0
-      Top = 506
+      Left = 23
+      Top = 242
       Hint = 'Set bookmark'
       ImageIndex = 23
       ImageName = 'Bookmark'
@@ -314,16 +303,15 @@ object FEditForm: TFEditForm
     end
     object TBGotoBookmark: TToolButton
       Left = 0
-      Top = 528
+      Top = 264
       Hint = 'Go to bookmark'
       ImageIndex = 24
       ImageName = 'GotoBookmark'
-      Wrap = True
       OnClick = SBGotoBookmarkClick
     end
     object TBParagraph: TToolButton
-      Left = 0
-      Top = 550
+      Left = 23
+      Top = 264
       Hint = 'Paragraph on/off'
       ImageIndex = 25
       ImageName = 'Paragraph'
@@ -332,16 +320,15 @@ object FEditForm: TFEditForm
     end
     object TBNumbers: TToolButton
       Left = 0
-      Top = 572
+      Top = 286
       Hint = 'Line numbers on/off'
       ImageIndex = 26
       ImageName = 'Numbers'
-      Wrap = True
       OnClick = SBNumbersClick
     end
     object TBZoomOut: TToolButton
-      Left = 0
-      Top = 594
+      Left = 23
+      Top = 286
       Hint = 'Zoom out'
       ImageIndex = 27
       ImageName = 'ZoomOut'
@@ -350,16 +337,15 @@ object FEditForm: TFEditForm
     end
     object TBZoomIn: TToolButton
       Left = 0
-      Top = 616
+      Top = 308
       Hint = 'Zoom in'
       ImageIndex = 28
       ImageName = 'ZoomIn'
-      Wrap = True
       OnClick = SBZoomInClick
     end
     object TBValidate: TToolButton
-      Left = 0
-      Top = 638
+      Left = 23
+      Top = 308
       Hint = 'Validate'
       ImageIndex = 29
       ImageName = 'Validate'
@@ -367,23 +353,25 @@ object FEditForm: TFEditForm
     end
   end
   object PMain: TPanel
-    Left = 23
+    Left = 46
     Top = 0
-    Width = 668
-    Height = 805
+    Width = 645
+    Height = 526
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitWidth = 672
-    ExplicitHeight = 806
+    ExplicitLeft = 23
+    ExplicitWidth = 664
+    ExplicitHeight = 804
   end
   object ActivityIndicator: TActivityIndicator
-    Left = 488
-    Top = 56
+    Left = 484
+    Top = 32
     Anchors = [akRight]
     FrameDelay = 150
     IndicatorType = aitRotatingSector
-    ExplicitLeft = 496
+    ExplicitLeft = 480
+    ExplicitTop = 56
   end
   object icEditor: TSVGIconImageCollection
     SVGIconItems = <
@@ -2086,6 +2074,44 @@ object FEditForm: TFEditForm
           '2.9,7.7l-0.6,0.6H9L-0.1,29.3z M11.8,11.8c0-4.6,3.7-8.3,8.3-8.3c4' +
           '.6,0,8.3,3.7,8.3,8.3'#13#10#9#9's-3.7,8.3-8.3,8.3C15.5,20.1,11.8,16.4,11' +
           '.8,11.8z"/>'#13#10'</svg>'
+      end
+      item
+        IconName = 'SuggestAssistant'
+        SVGText = 
+          '<svg viewBox="0 -960 960 960">'#13#10'    <circle r="70" cx="360" cy="' +
+          '-640" fill="#E24444" /> '#13#10'    <circle r="70" cx="600" cy="-640" ' +
+          'fill="#E24444" /> '#13#10#13#10'    <path'#13#10'        d="M160-120v-200q0-33 2' +
+          '3.5-56.5T240-400h480q33 0 56.5 23.5T800-320v200H160Zm200-320'#13#10'  ' +
+          '      q-83 0-141.5-58.5T160-640q0-83 58.5-141.5T360-840h240q83 0' +
+          ' 141.5 58.5T800-640'#13#10'        q0 83-58.5 141.5T600-440H360Z'#13#10'    ' +
+          '    M240-200h480v-120H240v120Zm120-320h240q50 0 85-35t35-85q0-50' +
+          '-35-85t-85-35H360'#13#10'        q-50 0-85 35t-35 85q0 50 35 85t85 35Z' +
+          '" />'#13#10'</svg>'
+      end
+      item
+        IconName = 'SuggestAssistant'
+        SVGText = 
+          '<svg viewBox="0 -960 960 960" fill="#e9e9e9">'#13#10'    <circle r="70' +
+          '" cx="360" cy="-640" fill="#E24444" /> '#13#10'    <circle r="70" cx="' +
+          '600" cy="-640" fill="#E24444" /> '#13#10#13#10'    <path'#13#10'        d="M160-' +
+          '120v-200q0-33 23.5-56.5T240-400h480q33 0 56.5 23.5T800-320v200H1' +
+          '60Zm200-320'#13#10'        q-83 0-141.5-58.5T160-640q0-83 58.5-141.5T3' +
+          '60-840h240q83 0 141.5 58.5T800-640'#13#10'        q0 83-58.5 141.5T600' +
+          '-440H360Z'#13#10'        M240-200h480v-120H240v120Zm120-320h240q50 0 8' +
+          '5-35t35-85q0-50-35-85t-85-35H360'#13#10'        q-50 0-85 35t-35 85q0 ' +
+          '50 35 85t85 35Z" />'#13#10'</svg>'
+      end
+      item
+        IconName = 'SuggestCancel'
+        SVGText = 
+          '<svg height="24px" viewBox="0 -960 960 960" width="24px" >'#13#10'    ' +
+          '<path fill="#E24444"'#13#10'        d="m336-280 144-144 144 144 56-56-' +
+          '144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 5' +
+          '6ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.' +
+          '5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54' +
+          ' 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm' +
+          '0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 ' +
+          '227q0 134 93 227t227 93Zm0-320Z" />'#13#10'</svg>'
       end>
     Left = 376
     Top = 159
@@ -2186,6 +2212,16 @@ object FEditForm: TFEditForm
         CollectionIndex = 31
         CollectionName = 'Search'
         Name = 'Search'
+      end
+      item
+        CollectionIndex = 33
+        CollectionName = 'SuggestAssistant'
+        Name = 'SuggestAssistant'
+      end
+      item
+        CollectionIndex = 35
+        CollectionName = 'SuggestCancel'
+        Name = 'SuggestCancel'
       end>
     ImageCollection = icContextMenu
     Left = 72
@@ -2287,6 +2323,16 @@ object FEditForm: TFEditForm
         CollectionIndex = 32
         CollectionName = 'Search'
         Name = 'Search'
+      end
+      item
+        CollectionIndex = 34
+        CollectionName = 'SuggestAssistant'
+        Name = 'SuggestAssistant'
+      end
+      item
+        CollectionIndex = 35
+        CollectionName = 'SuggestCancel'
+        Name = 'SuggestCancel'
       end>
     ImageCollection = icContextMenu
     Left = 224
@@ -2329,6 +2375,8 @@ object FEditForm: TFEditForm
     end
     object MIAssistant: TSpTBXSubmenuItem
       Caption = 'Assistant'
+      ImageIndex = 19
+      ImageName = 'SuggestAssistant'
       object mnAssistantExplain: TSpTBXItem
         Caption = 'Explain'
         Hint = 'Add comments explaining the selected code'
@@ -2355,6 +2403,8 @@ object FEditForm: TFEditForm
       object mnAssistantCancel: TSpTBXItem
         Caption = 'Cancel'
         Hint = 'Cancel Assistant action'
+        ImageIndex = 20
+        ImageName = 'SuggestCancel'
         OnClick = mnAssistantCancelClick
       end
     end

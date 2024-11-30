@@ -223,6 +223,7 @@ uses
   Vcl.Dialogs,
   ULLMSuggestForm,
   UJava,
+  UConfiguration,
   UUtils;
 
 resourcestring
@@ -672,7 +673,6 @@ begin
   Result := svValid;
 end;
 
-
 { TLLMAssistant }
 
 procedure TLLMAssistant.Explain;
@@ -696,6 +696,9 @@ begin
   if FSelText = '' then Exit;
 
   var Prompt := Format(ExplainPrompt, [FSelText]);
+  if FConfiguration.LanguageCode = 'de' then
+    Prompt:= 'Answer in German. ' + Prompt;
+
   Ask(Prompt);
 end;
 
@@ -791,6 +794,8 @@ begin
   if FSelText = '' then Exit;
 
   var Prompt := Format(FixBugsPrompt, [FSelText]);
+  if FConfiguration.LanguageCode = 'de' then
+    Prompt:= 'Answer in German. ' + Prompt;
   Ask(Prompt);
 end;
 
@@ -814,6 +819,8 @@ begin
   if FSelText = '' then Exit;
 
   var Prompt := Format(OptimizePrompt, [FSelText]);
+  if FConfiguration.LanguageCode = 'de' then
+    Prompt:= 'Answer in German. ' + Prompt;
   Ask(Prompt);
 end;
 
