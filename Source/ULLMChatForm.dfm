@@ -3,24 +3,24 @@ inherited LLMChatForm: TLLMChatForm
   Top = 0
   HelpContext = 497
   Caption = 'Chat'
-  ClientHeight = 642
-  ClientWidth = 574
+  ClientHeight = 641
+  ClientWidth = 570
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  ExplicitWidth = 590
-  ExplicitHeight = 681
+  ExplicitWidth = 586
+  ExplicitHeight = 680
   TextHeight = 15
   object pnlQuestion: TPanel
     Left = 0
-    Top = 557
-    Width = 574
+    Top = 556
+    Width = 570
     Height = 85
     Align = alBottom
     ParentBackground = False
     ParentColor = True
     TabOrder = 0
     object pAsk: TPanel
-      Left = 540
+      Left = 536
       Top = 1
       Width = 33
       Height = 83
@@ -51,13 +51,15 @@ inherited LLMChatForm: TLLMChatForm
   object ScrollBox: TScrollBox
     Left = 0
     Top = 34
-    Width = 574
-    Height = 518
+    Width = 570
+    Height = 517
     HorzScrollBar.Visible = False
     VertScrollBar.Tracking = True
     Align = alClient
     ParentBackground = True
     TabOrder = 1
+    ExplicitWidth = 574
+    ExplicitHeight = 518
     object QAStackPanel: TStackPanel
       AlignWithMargins = True
       Left = 3
@@ -78,21 +80,24 @@ inherited LLMChatForm: TLLMChatForm
   end
   object Splitter: TSpTBXSplitter
     Left = 0
-    Top = 552
-    Width = 574
+    Top = 551
+    Width = 570
     Height = 5
     Cursor = crSizeNS
     Align = alBottom
     ParentColor = False
     MinSize = 90
+    ExplicitTop = 552
+    ExplicitWidth = 574
   end
   object SpTBXDock: TSpTBXDock
     Left = 0
     Top = 0
-    Width = 574
+    Width = 570
     Height = 34
     AllowDrag = False
     DoubleBuffered = True
+    ExplicitWidth = 574
     object SpTBXToolbar: TSpTBXToolbar
       Left = 0
       Top = 0
@@ -128,7 +133,7 @@ inherited LLMChatForm: TLLMChatForm
         Action = actCancelRequest
       end
       object SpTBXRightAlignSpacerItem: TSpTBXRightAlignSpacerItem
-        CustomWidth = 345
+        CustomWidth = 341
       end
       object spiPreviousTopic: TSpTBXItem
         Action = actChatPrevious

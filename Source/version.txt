@@ -1,3 +1,6 @@
+23.01, 2024.11.30
+Usage of Large Language Models with LLM assistant and LLM chat
+
 22.12, 2024.11.27
 bugfix for ansi files
 improvements for relationship attributes

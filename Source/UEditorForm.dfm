@@ -3,8 +3,8 @@ object FEditForm: TFEditForm
   Top = 204
   Align = alClient
   BorderIcons = []
-  ClientHeight = 827
-  ClientWidth = 695
+  ClientHeight = 826
+  ClientWidth = 691
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,8 +19,8 @@ object FEditForm: TFEditForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    695
-    827)
+    691
+    826)
   TextHeight = 15
   object TVFileStructure: TTreeView
     Left = 192
@@ -34,11 +34,13 @@ object FEditForm: TFEditForm
   end
   object BottomPanel: TPanel
     Left = 0
-    Top = 806
-    Width = 695
+    Top = 805
+    Width = 691
     Height = 21
     Align = alBottom
     TabOrder = 1
+    ExplicitTop = 806
+    ExplicitWidth = 695
     object DesignButton: TButton
       Left = 1
       Top = 1
@@ -80,11 +82,12 @@ object FEditForm: TFEditForm
     Left = 0
     Top = 0
     Width = 23
-    Height = 806
+    Height = 805
     Align = alLeft
     AutoSize = True
     Images = vilEditorToolbarLight
     TabOrder = 2
+    ExplicitHeight = 806
     object TBClose: TToolButton
       Left = 0
       Top = 0
@@ -366,14 +369,16 @@ object FEditForm: TFEditForm
   object PMain: TPanel
     Left = 23
     Top = 0
-    Width = 672
-    Height = 806
+    Width = 668
+    Height = 805
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
+    ExplicitWidth = 672
+    ExplicitHeight = 806
   end
   object ActivityIndicator: TActivityIndicator
-    Left = 492
+    Left = 488
     Top = 56
     Anchors = [akRight]
     FrameDelay = 150
