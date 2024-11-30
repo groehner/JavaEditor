@@ -60,6 +60,26 @@ type
     function PPIUnScale(ASize: integer): integer;
   end;
 
+(*
+  Minimalist SmartPointer implementation based on a blog post by Barry Kelly:
+  http://blog.barrkel.com/2008/11/reference-counted-pointers-revisited.html,
+  https://stackoverflow.com/questions/30153682/why-does-this-optimization-of-a-smartpointer-not-work
+*)
+  TSmartPtr = record
+  private type
+    TObjectHandle<T: class> = class(TInterfacedObject, TFunc<T>)
+    private
+      FValue: T;
+    protected
+      function Invoke:  T;
+    public
+      constructor Create(AValue:  T);
+      destructor Destroy;  override;
+    end;
+  public
+    class function Make<T: class>(AValue: T): TFunc<T>; static;
+  end;
+
 function isAscii(const s: string): boolean;
 function ANSI2ASCII(const aText: string): string;
 function IsHTML(const Pathname: string): Boolean;
@@ -236,6 +256,7 @@ function CompiledRegEx(Expr : string; Options: TRegExOptions = [roNotEmpty];
 function myMulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 function StringTimesN(s: string; n: integer): string;
 function GetUsersWindowsLanguage: string;
+function Obfuscate(const s: string): string;
 
 implementation
 
@@ -2200,6 +2221,22 @@ begin
   Result := WinLanguage;
 end;
 
+function Obfuscate(const s: string): string;
+// Reversible string obfuscation using the ROT13 algorithm
+var
+  I: integer;
+begin
+  result := s;
+  for I := 1 to length(s) do
+    case ord(s[I]) of
+    ord('A')..ord('M'),ord('a')..ord('m'): result[I] := chr(ord(s[I])+13);
+    ord('N')..ord('Z'),ord('n')..ord('z'): result[I] := chr(ord(s[I])-13);
+    ord('0')..ord('4'): result[I] := chr(ord(s[I])+5);
+    ord('5')..ord('9'): result[I] := chr(ord(s[I])-5);
+    end;
+end;
+
+
 { TMatchHelper }
 
 function TMatchHelper.GroupIndex(Index: integer): integer;
@@ -2237,6 +2274,29 @@ function TControlHelper.PPIUnScale(ASize: integer): integer;
 begin
    Result := MulDiv(ASize, 96, FCurrentPPI);
 end;
+
+{ TSmartPointer }
+
+constructor TSmartPtr.TObjectHandle<T>.Create(AValue:  T);
+begin
+  FValue  :=  AValue;
+end;
+
+destructor TSmartPtr.TObjectHandle<T>.Destroy;
+begin
+  FValue.Free;
+end;
+
+function TSmartPtr.TObjectHandle<T>.Invoke: T;
+begin
+  Result  :=  FValue;
+end;
+
+class function TSmartPtr.Make<T>(AValue: T): TFunc<T>;
+begin
+  Result := TObjectHandle<T>.Create(AValue);
+end;
+
 
 end.
 

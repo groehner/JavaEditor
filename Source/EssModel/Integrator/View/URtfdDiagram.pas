@@ -1035,7 +1035,7 @@ begin
     CountObjects:= 0;
     Sections:= TStringList.Create;
     Ini.ReadSections(Sections);
-    for i:= 0 to Sections.Count - 1 do
+    for i:= 0 to Sections.Count - 1 do begin
       if Pos('Object', Sections[i]) > 0 then begin
         S:= Sections[i];
         UnitPackage:= Model.ModelRoot.FindUnitPackage('Default'); // TODO nicht bei package
@@ -1078,16 +1078,11 @@ begin
             Box.Left:= PPIScale(Ini.ReadInteger(S, 'X', Box.Left));
             Box.Top := PPIScale(Ini.ReadInteger(S, 'Y', Box.Top));
             Box.Font.Assign(Font);
-            p:= BoxNames.IndexOf(theClassname);
-            if p > 0 then begin
-              Box1:= BoxNames.Objects[p] as TRtfdBox;
-              Box.Font.Size:= Box1.Font.Size;
-            end else
-              Box.Font.Size:= PPIScale(Font.Size);
           end;
           inc(CountObjects);
         end;
       end;
+    end;
     Panel.DeleteConnections;
 
     // read comments

@@ -22,7 +22,7 @@ uses
   SynEditHighlighter, SynHighlighterHtml, SynHighlighterJava,
   SynHighlighterMulti, SynHighlighterPhp, SynHighlighterCSS,
   SynHighlighterPas, SynHighlighterGeneral,
-  UTree, UStyles, SpTBXItem;
+  UTree, UStyles, SpTBXItem, ULLMSupport, ULLMChatForm;
 
 const
   CrLf = #13#10;
@@ -496,7 +496,7 @@ type
     Memo1: TMemo;
     CBNoSyntaxHighlighting: TCheckBox;
     CBTranslateCompilerErrors: TCheckBox;
-    PUML2: TTabSheet;
+    PUMLOptions: TTabSheet;
     LAttributesAndMethods: TLabel;
     RGAttributsMethodsDisplay: TRadioGroup;
     RGSequenceAttributsMethods: TRadioGroup;
@@ -639,6 +639,36 @@ type
     LZoomsteps: TLabel;
     UDZoomSteps: TUpDown;
     EZoomSteps: TEdit;
+    PLLMAssistant: TTabSheet;
+    PLLMChat: TTabSheet;
+    LProvider: TLabel;
+    CBProvider: TComboBox;
+    LEndpoint: TLabel;
+    EEndPoint: TEdit;
+    LModel: TLabel;
+    EModel: TEdit;
+    LAPIKey: TLabel;
+    EAPIKey: TEdit;
+    LSystemPrompt: TLabel;
+    ESystemPrompt: TEdit;
+    LMaxTokens: TLabel;
+    EMaxTokens: TEdit;
+    LLLMTimeout: TLabel;
+    ELLMTimeout: TEdit;
+    LChatProvider: TLabel;
+    CBChatProvider: TComboBox;
+    LChatEndPoint: TLabel;
+    EChatEndPoint: TEdit;
+    LChatModel: TLabel;
+    EChatModel: TEdit;
+    LChatApiKey: TLabel;
+    EChatApiKey: TEdit;
+    LChatSystemPrompt: TLabel;
+    EChatSystemPrompt: TEdit;
+    LChatMaxTokens: TLabel;
+    EChatMaxTokens: TEdit;
+    LChatTimeout: TLabel;
+    EChatTimeout: TEdit;
     {$WARNINGS ON}
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -766,6 +796,10 @@ type
     procedure BGuiFontClick(Sender: TObject);
     procedure BEditorFontClick(Sender: TObject);
     procedure BGuiFontDefaultClick(Sender: TObject);
+    procedure CBProviderDropDown(Sender: TObject);
+    procedure CBProviderSelect(Sender: TObject);
+    procedure CBChatProviderDropDown(Sender: TObject);
+    procedure CBChatProviderSelect(Sender: TObject);
   private
     MyRegistry: TRegistry;
     FPreview: TVclStylesPreview;
@@ -773,6 +807,9 @@ type
     LoadedStylesDict :  TDictionary<string, string>;
     fLanguagesList: TStringList;
     VisSelectedTab: integer;
+    // tab LLM assistant
+    TempProviders: TLLMProviders;
+    TempChatProviders: TLLMProviders;
     function getWriteProtection: Boolean;
     function getCheckColor(s: string; emptyAllowed: boolean): TColor;
     function DirectoryFilesExists(s: string): boolean;
@@ -799,11 +836,18 @@ type
     procedure StyleSelectorShow;
     procedure FillVclStylesList;
     procedure DecideProxy;
-    function JavaDocComment(Indent: string= ''): string;
-    function ShortComment(Indent: string= ''): string;
+    function JavaDocComment(Indent: string = ''): string;
+    function ShortComment(Indent: string = ''): string;
     function getFileInCHM(s: string): string;
     function getJavaManualFX: string;
     procedure UpdateHeaderFooter;
+    procedure ReadProviders(Name: string; var Providers: TLLMProviders);
+    procedure WriteProviders(Name: string; Providers: TLLMProviders);
+    procedure CopyProviders(From: TLLMProviders; var Toward: TLLMProviders);
+    procedure LLMAssistantModelToView;
+    procedure LLMAssistantViewToModel;
+    procedure LLMChatModelToView;
+    procedure LLMChatViewToModel;
   public
     ODSelect: TOpenDialog;
     LNGTVItems: TStringList;
@@ -1382,7 +1426,7 @@ uses Zip, StrUtils, Printers, ShlObj, Math, Themes, SHDocVw, ShellAPI, IOUtils,
      UStringRessources, UJavaCommands;
 
 const
-  MaxPages = 34;
+  MaxPages = 36;
   machine = 0;
   allusers = 1;
   user = 2;
@@ -3520,6 +3564,10 @@ begin
   SDShowParameter:= ReadBoolU(SequenceDiagramS, 'ShowParameter', true);
   SDShowReturn:= ReadBoolU(SequenceDiagramS, 'ShowReturn', true);
 
+  // tab providers
+  ReadProviders('LLMAssistant', LLMAssistant.Providers);
+  ReadProviders('LLMChat', FLLMChatForm.LLMChat.Providers);
+
   FJava.FormResize(Self);
   ApplyKeyboardShortcuts;
   FJava.ODOpen.Filter:= GetFileFilters;
@@ -4050,6 +4098,15 @@ begin
     // tab Visibility
     VisibilityModelToView;
 
+    // tab LLM Assistant
+    CopyProviders(LLMAssistant.Providers, TempProviders);
+    CBProvider.ItemIndex:= Integer(TempProviders.Provider);
+    LLMAssistantModelToView;
+
+    CopyProviders(FLLMChatForm.LLMChat.Providers, TempChatProviders);
+    CBChatProvider.ItemIndex:= Integer(TempChatProviders.Provider);
+    LLMChatModelToView;
+
     // tab SVN
     ShortenPath(ESVNFolder, SVNFolder);
     ShortenPath(CBRepository, SVNRepository);
@@ -4453,6 +4510,10 @@ begin
   WriteIntegerU('Panel', 'RightDockPanelWidth', RightDockPanelWidth);
   WriteIntegerU('Panel', 'BottomDockPanelHeight', BottomDockPanelHeight);
 
+  // tab Providers
+  WriteProviders('LLMAssistant', LLMAssistant.Providers);
+  WriteProviders('LLMChat', FLLMChatForm.LLMChat.Providers);
+
   JavaVersion:= 0;
   DocumentationVersion:= 0;
   SaveVisibility;
@@ -4828,6 +4889,16 @@ begin
     SDShowMainCall:= CBSDShowMainCall.Checked;
     SDShowParameter:= CBSDShowParameter.Checked;
     SDShowReturn:= CBSDShowReturn.Checked;
+
+    // tab providers
+    LLMAssistantViewToModel;
+    CopyProviders(TempProviders, LLMAssistant.Providers);
+    LLMAssistant.ClearContext;
+
+    LLMChatViewToModel;
+    CopyProviders(TempChatProviders, FLLMChatForm.LLMChat.Providers);
+    FLLMChatForm.LLMChat.ClearContext;
+
     VisibilityViewToModel;
   end;
 end; // ViewToModel
@@ -5826,6 +5897,26 @@ begin
   end;
 end;
 
+procedure TFConfiguration.CBProviderDropDown(Sender: TObject);
+begin
+  LLMAssistantViewToModel;
+end;
+
+procedure TFConfiguration.CBProviderSelect(Sender: TObject);
+begin
+  LLMAssistantModelToView;
+end;
+
+procedure TFConfiguration.CBChatProviderDropDown(Sender: TObject);
+begin
+  LLMChatViewToModel;
+end;
+
+procedure TFConfiguration.CBChatProviderSelect(Sender: TObject);
+begin
+  LLMChatModelToView;
+end;
+
 procedure TFConfiguration.CBColorBoxChange(Sender: TObject);
 var
   Attr: TSynHighlighterAttributes;
@@ -6182,14 +6273,14 @@ var
       ('java', 'interpreter', 'compiler', 'programs', 'applets', 'disassembler', 'jar',
        'editor', 'options', 'code', 'colors', 'comment', 'templates', 'keyboard',
        'structogram', 'sequencediagram', 'browser', 'documentation', 'printer', 'mindstorms', 'android',
-       'language', 'options', 'restrictions', 'associations', 'uml', 'uml2', 'visibility',
-       'protocols', 'tools', 'git', 'junit', 'checkstyle', 'jalopy', 'subversion');
+       'language', 'options', 'restrictions', 'associations', 'uml', 'uml2', 'llm_assistant', 'llm_chat',
+       'visibility', 'protocols', 'tools', 'git', 'junit', 'checkstyle', 'jalopy', 'subversion');
   de: array[0..MaxPages] of string =
       ('java', 'interpreter', 'compiler', 'programme', 'applets', 'disassembler', 'jar',
        'editor', 'optionen', 'code', 'farben', 'kommentar', 'vorlagen', 'tastatur',
        'struktogramm', 'sequenzdiagramm', 'browser', 'dokumentation', 'drucker', 'mindstorms', 'android',
-       'sprache', 'optionen', 'restriktionen', 'verknüpfungen', 'uml', 'uml2', 'sichtbarkeit',
-       'protokolle', 'tools', 'git', 'junit', 'checkstyle', 'jalopy', 'subversion');
+       'sprache', 'optionen', 'restriktionen', 'verknüpfungen', 'uml', 'uml2', 'llm_assistent', 'llm_chat',
+       'sichtbarkeit', 'protokolle', 'tools', 'git', 'junit', 'checkstyle', 'jalopy', 'subversion');
 
 procedure TFConfiguration.BHelpClick(Sender: TObject);
   var count: integer; aNode: TTreeNode;
@@ -8713,6 +8804,8 @@ begin
   LNGTVItems.Add(_('Associations'));
   LNGTVItems.Add(_('UML'));
   LNGTVItems.Add(_('UML options'));
+  LNGTVItems.Add(_('LLM Assistant'));
+  LNGTVItems.Add(_('LLM Chat'));
   LNGTVItems.Add(_('Visibility'));
   LNGTVItems.Add(_('Log files'));
   LNGTVItems.Add(_('Tools'));
@@ -8778,6 +8871,141 @@ begin
     FreeAndNil(ZipFile);
   end;
 end;
+
+procedure TFConfiguration.ReadProviders(Name: string; var Providers: TLLMProviders);
+
+  procedure ReadProvider(ID: string; var Provider: TLLMSettings);
+  begin
+    var key:= Name + '\' + ID;
+    Provider.EndPoint:= ReadStringU(key, 'EndPoint', Provider.EndPoint);
+    Provider.ApiKey:= Obfuscate(ReadStringU(key, 'ApiKey', Provider.ApiKey));
+    Provider.Model:= ReadStringU(key, 'Model', Provider.Model);
+    Provider.SystemPrompt:= ReadStringU(key, 'SystemPrompt', Provider.SystemPrompt);
+    Provider.TimeOut:= ReadIntegerU(key, 'TimeOut', Provider.TimeOut);
+    Provider.MaxTokens:= ReadIntegerU(key, 'MaxTokens', Provider.MaxTokens);
+  end;
+
+begin
+  Providers.Provider:= TLLMProvider(ReadIntegerU(Name, 'Provider', Integer(Providers.Provider)));
+  ReadProvider('OpenAI', Providers.OpenAI);
+  ReadProvider('Gemini', Providers.Gemini);
+  ReadProvider('Ollama', Providers.Ollama);
+end;
+
+procedure TFConfiguration.WriteProviders(Name: string; Providers: TLLMProviders);
+
+  procedure WriteProvider(ID: string; Provider: TLLMSettings);
+  begin
+    var key:= Name + '\' + ID;
+    WriteStringU(key, 'EndPoint', Provider.EndPoint);
+    WriteStringU(key, 'ApiKey', Obfuscate(Provider.ApiKey));
+    WriteStringU(key, 'Model', Provider.Model);
+    WriteStringU(key, 'SystemPrompt', Provider.SystemPrompt);
+    WriteIntegerU(key, 'TimeOut', Provider.TimeOut);
+    WriteIntegerU(key, 'MaxTokens', Provider.MaxTokens);
+  end;
+
+begin
+  WriteIntegerU(Name, 'Provider', Integer(Providers.Provider));
+  WriteProvider('OpenAI', Providers.OpenAI);
+  WriteProvider('Gemini', Providers.Gemini);
+  WriteProvider('Ollama', Providers.Ollama);
+end;
+
+
+procedure TFConfiguration.CopyProviders(From: TLLMProviders; var Toward: TLLMProviders);
+
+  procedure CopyProvider(From: TLLMSettings; var Toward: TLLMSettings);
+  begin
+    Toward.EndPoint:= From.EndPoint;
+    Toward.ApiKey:= From.ApiKey;
+    Toward.Model:= From.Model;
+    Toward.SystemPrompt:= From.SystemPrompt;
+    Toward.Timeout:= From.Timeout;
+    Toward.MaxTokens:= From.MaxTokens;
+  end;
+
+begin
+  Toward.Provider:= From.Provider;
+  CopyProvider(From.OpenAI, Toward.OpenAI);
+  CopyProvider(From.Gemini, Toward.Gemini);
+  CopyProvider(From.Ollama, Toward.Ollama);
+end;
+
+procedure TFConfiguration.LLMAssistantModelToView;
+  var Settings: TLLMSettings;
+begin
+  case CBProvider.ItemIndex of
+    0: Settings := TempProviders.OpenAI;
+    1: Settings := TempProviders.Gemini;
+    2: Settings := TempProviders.Ollama;
+  end;
+  EEndPoint.text:= Settings.EndPoint;
+  EModel.text:= Settings.Model;
+  EAPIKey.text:= Settings.ApiKey;
+  ESystemPrompt.text:= Settings.SystemPrompt;
+  EMaxTokens.text:= Settings.MaxTokens.toString;
+  ELLMTimeout.text:= (Settings.TimeOut div 1000).toString;
+end;
+
+procedure TFConfiguration.LLMAssistantViewToModel;
+  var Settings: TLLMSettings; value: integer;
+begin
+  TempProviders.Provider:= TLLMProvider(CBProvider.ItemIndex);
+  Settings.EndPoint:= EEndPoint.text;
+  Settings.Model:= EModel.text;
+  Settings.ApiKey:= EAPIKey.text;
+  Settings.SystemPrompt:= ESystemPrompt.text;
+  if not TryStrToInt(EMaxTokens.text, value) then
+    value:= 1000;
+  Settings.MaxTokens:= value;
+  if not TryStrToInt(ELLMTimeout.text, value) then
+    value:= 20;
+  Settings.Timeout:= value*1000;
+  case CBProvider.ItemIndex of
+    0: TempProviders.OpenAI:= Settings;
+    1: TempProviders.Gemini:= Settings;
+    2: TempProviders.Ollama:= Settings;
+  end;
+end;
+
+procedure TFConfiguration.LLMChatModelToView;
+  var Settings: TLLMSettings;
+begin
+  case CBChatProvider.ItemIndex of
+    0: Settings := TempChatProviders.OpenAI;
+    1: Settings := TempChatProviders.Gemini;
+    2: Settings := TempChatProviders.Ollama;
+  end;
+  EChatEndPoint.text:= Settings.EndPoint;
+  EChatModel.text:= Settings.Model;
+  EChatAPIKey.text:= Settings.ApiKey;
+  EChatSystemPrompt.text:= Settings.SystemPrompt;
+  EChatMaxTokens.text:= Settings.MaxTokens.toString;
+  EChatTimeout.text:= (Settings.TimeOut div 1000).toString;
+end;
+
+procedure TFConfiguration.LLMChatViewToModel;
+  var Settings: TLLMSettings; value: integer;
+begin
+  TempChatProviders.Provider:= TLLMProvider(CBChatProvider.ItemIndex);
+  Settings.EndPoint:= EChatEndPoint.text;
+  Settings.Model:= EChatModel.text;
+  Settings.ApiKey:= EChatAPIKey.text;
+  Settings.SystemPrompt:= EChatSystemPrompt.text;
+  if not TryStrToInt(EChatMaxTokens.text, value) then
+    value:= 1000;
+  Settings.MaxTokens:= value;
+  if not TryStrToInt(EChatTimeout.text, value) then
+    value:= 20;
+  Settings.Timeout:= value*1000;
+  case CBChatProvider.ItemIndex of
+    0: TempChatProviders.OpenAI:= Settings;
+    1: TempChatProviders.Gemini:= Settings;
+    2: TempChatProviders.Ollama:= Settings;
+  end;
+end;
+
 
 
 initialization

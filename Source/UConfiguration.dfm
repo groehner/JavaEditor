@@ -4,8 +4,8 @@ object FConfiguration: TFConfiguration
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Configuration'
-  ClientHeight = 493
-  ClientWidth = 800
+  ClientHeight = 492
+  ClientWidth = 796
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,18 +22,18 @@ object FConfiguration: TFConfiguration
   object PMain: TPanel
     Left = 0
     Top = 0
-    Width = 800
-    Height = 493
+    Width = 796
+    Height = 492
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 796
-    ExplicitHeight = 492
+    ExplicitWidth = 792
+    ExplicitHeight = 491
     object TVConfiguration: TTreeView
       Left = 0
       Top = 0
       Width = 145
-      Height = 493
+      Height = 492
       Align = alLeft
       AutoExpand = True
       HideSelection = False
@@ -41,7 +41,7 @@ object FConfiguration: TFConfiguration
       TabOrder = 0
       OnChange = TVConfigurationChange
       Items.NodeData = {
-        0314000000260000000000000000000000FFFFFFFFFFFFFFFF00000000000000
+        0316000000260000000000000000000000FFFFFFFFFFFFFFFF00000000000000
         000600000001044A00610076006100340000000000000000000000FFFFFFFFFF
         FFFFFF000000000000000000000000010B49006E007400650072007000720065
         007400650072002E0000000000000000000000FFFFFFFFFFFFFFFF0000000000
@@ -86,39 +86,43 @@ object FConfiguration: TFConfiguration
         00000000000000000001054C0069006E006B0073002400000000000000000000
         00FFFFFFFFFFFFFFFF000000000000000000000000010355004D004C00340000
         000000000000000000FFFFFFFFFFFFFFFF000000000000000000000000010B55
-        004D004C0020006F007000740069006F006E0073003200000000000000000000
-        00FFFFFFFFFFFFFFFF000000000000000000000000010A560069007300690062
-        0069006C00690074007900300000000000000000000000FFFFFFFFFFFFFFFF00
-        000000000000000000000001094C006F0067002000660069006C006500730028
-        0000000000000000000000FFFFFFFFFFFFFFFF00000000000000000500000001
-        0554006F006F006C007300240000000000000000000000FFFFFFFFFFFFFFFF00
-        00000000000000000000000103470069007400280000000000000000000000FF
-        FFFFFFFFFFFFFF00000000000000000000000001054A0055006E006900740032
-        0000000000000000000000FFFFFFFFFFFFFFFF00000000000000000000000001
-        0A43006800650063006B007300740079006C0065002A00000000000000000000
-        00FFFFFFFFFFFFFFFF00000000000000000000000001064A0061006C006F0070
-        007900320000000000000000000000FFFFFFFFFFFFFFFF000000000000000000
-        000000010A530075006200760065007200730069006F006E00}
-      ExplicitHeight = 492
+        004D004C0020006F007000740069006F006E0073003800000000000000000000
+        00FFFFFFFFFFFFFFFF000000000000000000000000010D4C004C004D00200041
+        007300730069007300740061006E0074002E0000000000000000000000FFFFFF
+        FFFFFFFFFF00000000000000000000000001084C004C004D0020004300680061
+        007400320000000000000000000000FFFFFFFFFFFFFFFF000000000000000000
+        000000010A5600690073006900620069006C0069007400790030000000000000
+        0000000000FFFFFFFFFFFFFFFF00000000000000000000000001094C006F0067
+        002000660069006C0065007300280000000000000000000000FFFFFFFFFFFFFF
+        FF000000000000000005000000010554006F006F006C00730024000000000000
+        0000000000FFFFFFFFFFFFFFFF00000000000000000000000001034700690074
+        00280000000000000000000000FFFFFFFFFFFFFFFF0000000000000000000000
+        0001054A0055006E0069007400320000000000000000000000FFFFFFFFFFFFFF
+        FF000000000000000000000000010A43006800650063006B007300740079006C
+        0065002A0000000000000000000000FFFFFFFFFFFFFFFF000000000000000000
+        00000001064A0061006C006F0070007900320000000000000000000000FFFFFF
+        FFFFFFFFFF000000000000000000000000010A53007500620076006500720073
+        0069006F006E00}
+      ExplicitHeight = 491
     end
     object PPanelRight: TPanel
       Left = 145
       Top = 0
-      Width = 655
-      Height = 493
+      Width = 651
+      Height = 492
       Align = alClient
       TabOrder = 1
-      ExplicitWidth = 651
-      ExplicitHeight = 492
+      ExplicitWidth = 647
+      ExplicitHeight = 491
       object PButtons: TPanel
         Left = 1
-        Top = 451
-        Width = 653
+        Top = 450
+        Width = 649
         Height = 41
         Align = alBottom
         TabOrder = 0
-        ExplicitTop = 450
-        ExplicitWidth = 649
+        ExplicitTop = 449
+        ExplicitWidth = 645
         object BSave: TButton
           Left = 549
           Top = 9
@@ -177,12 +181,12 @@ object FConfiguration: TFConfiguration
       object PTitle: TPanel
         Left = 1
         Top = 1
-        Width = 653
+        Width = 649
         Height = 20
         Align = alTop
         BevelOuter = bvSpace
         TabOrder = 1
-        ExplicitWidth = 649
+        ExplicitWidth = 645
         object LTitle: TLabel
           Left = 8
           Top = 4
@@ -200,19 +204,19 @@ object FConfiguration: TFConfiguration
       object PageList: TPageControl
         Left = 1
         Top = 21
-        Width = 653
-        Height = 430
-        ActivePage = PUML2
+        Width = 649
+        Height = 429
+        ActivePage = PUMLOptions
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
-        ExplicitWidth = 649
-        ExplicitHeight = 429
+        ExplicitWidth = 645
+        ExplicitHeight = 428
         object PJava: TTabSheet
-          Caption = 'PJava'
+          Caption = 'Java'
         end
         object PInterpreter: TTabSheet
-          Caption = 'PInterpreter'
+          Caption = 'Interpreter'
           object LJavaInterpreter: TLabel
             Left = 16
             Top = 52
@@ -544,7 +548,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PCompiler: TTabSheet
-          Caption = 'PCompiler'
+          Caption = 'Compiler'
           object LJavaCompilerParameter: TLabel
             Left = 40
             Top = 52
@@ -647,7 +651,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PPrograms: TTabSheet
-          Caption = 'PPrograms'
+          Caption = 'Programs'
           object LJavaDocParameter: TLabel
             Left = 40
             Top = 84
@@ -738,7 +742,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PApplets: TTabSheet
-          Caption = 'PApplets'
+          Caption = 'Applets'
           object LAppletviewer: TLabel
             Left = 16
             Top = 20
@@ -794,7 +798,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PDisassembler: TTabSheet
-          Caption = 'PDissasembler'
+          Caption = 'Disassembler'
           object LDissasemblerParameter: TLabel
             Left = 40
             Top = 52
@@ -895,7 +899,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PJar: TTabSheet
-          Caption = 'PJar'
+          Caption = 'Jar'
           object LJarCreate: TLabel
             Left = 40
             Top = 116
@@ -1043,10 +1047,10 @@ object FConfiguration: TFConfiguration
           end
         end
         object PEditor: TTabSheet
-          Caption = 'PEditor'
+          Caption = 'Editor'
         end
         object PEditorOptions: TTabSheet
-          Caption = 'PEditorOptions'
+          Caption = 'Editor options'
           object LEditorIndent: TLabel
             Left = 16
             Top = 52
@@ -1269,7 +1273,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PCode: TTabSheet
-          Caption = 'PCode'
+          Caption = 'Code'
           object GBCodeCompletion: TGroupBox
             Left = 10
             Top = 14
@@ -1502,7 +1506,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PColors: TTabSheet
-          Caption = 'PColors'
+          Caption = 'Colors'
           object LTextattribute: TLabel
             Left = 357
             Top = 136
@@ -1691,7 +1695,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PComment: TTabSheet
-          Caption = 'PComment'
+          Caption = 'Comment'
           object LAuthor: TLabel
             Left = 16
             Top = 180
@@ -1764,7 +1768,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PTemplates: TTabSheet
-          Caption = 'PTemplates'
+          Caption = 'Templates'
           object LTemplateJApplet: TLabel
             Left = 16
             Top = 212
@@ -2051,7 +2055,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PKeyboard: TTabSheet
-          Caption = 'PKeyboard'
+          Caption = 'Keyboard'
           object LKeyboardFromFile: TLabel
             Left = 16
             Top = 301
@@ -2178,7 +2182,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PGUIDesigner: TTabSheet
-          Caption = 'PGUIDesigner'
+          Caption = 'GUI designer'
           ImageIndex = 36
           object LGridSize: TLabel
             Left = 59
@@ -2354,7 +2358,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PStructogram: TTabSheet
-          Caption = 'PStructo'
+          Caption = 'Structogram'
           object LInput: TLabel
             Left = 16
             Top = 51
@@ -2625,7 +2629,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PSequencediagram: TTabSheet
-          Caption = 'PSequencediagram'
+          Caption = 'Sequence diagram'
           object LSDObject: TLabel
             Left = 16
             Top = 19
@@ -2720,7 +2724,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PBrowser: TTabSheet
-          Caption = 'PBrowser'
+          Caption = 'Browser'
           object LAltKeysBrowser: TLabel
             Left = 16
             Top = 148
@@ -2845,7 +2849,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PDocumentation: TTabSheet
-          Caption = 'PDocumentation'
+          Caption = 'Documentation'
           object LCache: TLabel
             Left = 16
             Top = 148
@@ -3230,7 +3234,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PPrinter: TTabSheet
-          Caption = 'PPrinter'
+          Caption = 'Printer'
           object LFooterMacro: TLabel
             Left = 296
             Top = 70
@@ -3417,7 +3421,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PMindstorms: TTabSheet
-          Caption = 'PMindstorms'
+          Caption = 'Mindstorms'
           object LMindstormsParameter: TLabel
             Left = 16
             Top = 180
@@ -3856,7 +3860,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PAndroid: TTabSheet
-          Caption = 'PAndroid'
+          Caption = 'Android'
           object LAndroidSDK: TLabel
             Left = 16
             Top = 20
@@ -3955,7 +3959,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PLanguage: TTabSheet
-          Caption = 'PLanguage'
+          Caption = 'Language'
           object RGLanguages: TRadioGroup
             Left = 16
             Top = 16
@@ -3966,7 +3970,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PGeneralOptions: TTabSheet
-          Caption = 'PGeneralOptions'
+          Caption = 'General options'
           object LFontsize: TLabel
             Left = 59
             Top = 162
@@ -4191,7 +4195,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PStyles: TTabSheet
-          Caption = 'PStyles'
+          Caption = 'Styles'
           ImageIndex = 35
           object LNewStyle: TLabel
             Left = 3
@@ -4239,7 +4243,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PRestrictions: TTabSheet
-          Caption = 'PRestric'
+          Caption = 'Restrictions'
           object LRestrictions: TLabel
             Left = 16
             Top = 106
@@ -4287,7 +4291,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PAssociations: TTabSheet
-          Caption = 'PAsso'
+          Caption = 'Associations'
           object LAssociations: TLabel
             Left = 16
             Top = 20
@@ -4449,7 +4453,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PUML: TTabSheet
-          Caption = 'PUML'
+          Caption = 'UML'
           object LObjectDesign: TLabel
             Left = 16
             Top = 95
@@ -4699,8 +4703,8 @@ object FConfiguration: TFConfiguration
             TabOrder = 16
           end
         end
-        object PUML2: TTabSheet
-          Caption = 'PUML2'
+        object PUMLOptions: TTabSheet
+          Caption = 'UML options'
           object GBClassPresentation: TGroupBox
             Left = 16
             Top = 20
@@ -4910,8 +4914,234 @@ object FConfiguration: TFConfiguration
             end
           end
         end
+        object PLLMAssistant: TTabSheet
+          Caption = 'LLM Assistant'
+          ImageIndex = 37
+          object LProvider: TLabel
+            Left = 16
+            Top = 16
+            Width = 44
+            Height = 15
+            Caption = 'Provider'
+          end
+          object LEndpoint: TLabel
+            Left = 32
+            Top = 48
+            Width = 48
+            Height = 15
+            Caption = 'Endpoint'
+          end
+          object LModel: TLabel
+            Left = 32
+            Top = 80
+            Width = 34
+            Height = 15
+            Caption = 'Model'
+          end
+          object LAPIKey: TLabel
+            Left = 32
+            Top = 112
+            Width = 39
+            Height = 15
+            Caption = 'API key'
+          end
+          object LSystemPrompt: TLabel
+            Left = 32
+            Top = 144
+            Width = 81
+            Height = 15
+            Caption = 'System prompt'
+          end
+          object LMaxTokens: TLabel
+            Left = 32
+            Top = 176
+            Width = 111
+            Height = 15
+            Caption = 'Max response tokens'
+          end
+          object LLLMTimeout: TLabel
+            Left = 32
+            Top = 208
+            Width = 103
+            Height = 15
+            Caption = 'Timeout in seconds'
+          end
+          object CBProvider: TComboBox
+            Left = 160
+            Top = 13
+            Width = 97
+            Height = 23
+            Style = csDropDownList
+            TabOrder = 0
+            OnDropDown = CBProviderDropDown
+            OnSelect = CBProviderSelect
+            Items.Strings = (
+              'OpenAI'
+              'Gemini'
+              'Ollama')
+          end
+          object EEndPoint: TEdit
+            Left = 160
+            Top = 45
+            Width = 400
+            Height = 23
+            TabOrder = 1
+          end
+          object EModel: TEdit
+            Left = 160
+            Top = 77
+            Width = 400
+            Height = 23
+            TabOrder = 2
+          end
+          object EAPIKey: TEdit
+            Left = 160
+            Top = 109
+            Width = 400
+            Height = 23
+            PasswordChar = #9679
+            TabOrder = 3
+          end
+          object ESystemPrompt: TEdit
+            Left = 160
+            Top = 141
+            Width = 400
+            Height = 23
+            TabOrder = 4
+            Text = 'You are my expert java coding assistant'
+          end
+          object EMaxTokens: TEdit
+            Left = 160
+            Top = 173
+            Width = 60
+            Height = 23
+            TabOrder = 5
+            Text = '1000'
+          end
+          object ELLMTimeout: TEdit
+            Left = 160
+            Top = 206
+            Width = 60
+            Height = 23
+            TabOrder = 6
+            Text = '20'
+          end
+        end
+        object PLLMChat: TTabSheet
+          Caption = 'LLM Chat'
+          ImageIndex = 38
+          object LChatProvider: TLabel
+            Left = 16
+            Top = 16
+            Width = 44
+            Height = 15
+            Caption = 'Provider'
+          end
+          object LChatEndPoint: TLabel
+            Left = 32
+            Top = 48
+            Width = 48
+            Height = 15
+            Caption = 'Endpoint'
+          end
+          object LChatModel: TLabel
+            Left = 32
+            Top = 80
+            Width = 34
+            Height = 15
+            Caption = 'Model'
+          end
+          object LChatApiKey: TLabel
+            Left = 32
+            Top = 112
+            Width = 39
+            Height = 15
+            Caption = 'API key'
+          end
+          object LChatSystemPrompt: TLabel
+            Left = 32
+            Top = 144
+            Width = 81
+            Height = 15
+            Caption = 'System prompt'
+          end
+          object LChatMaxTokens: TLabel
+            Left = 32
+            Top = 176
+            Width = 111
+            Height = 15
+            Caption = 'Max response tokens'
+          end
+          object LChatTimeout: TLabel
+            Left = 32
+            Top = 208
+            Width = 103
+            Height = 15
+            Caption = 'Timeout in seconds'
+          end
+          object CBChatProvider: TComboBox
+            Left = 160
+            Top = 13
+            Width = 97
+            Height = 23
+            Style = csDropDownList
+            TabOrder = 0
+            OnDropDown = CBChatProviderDropDown
+            OnSelect = CBChatProviderSelect
+            Items.Strings = (
+              'OpenAI'
+              'Gemini'
+              'Ollama')
+          end
+          object EChatEndPoint: TEdit
+            Left = 160
+            Top = 45
+            Width = 400
+            Height = 23
+            TabOrder = 1
+          end
+          object EChatModel: TEdit
+            Left = 160
+            Top = 77
+            Width = 400
+            Height = 23
+            TabOrder = 2
+          end
+          object EChatApiKey: TEdit
+            Left = 160
+            Top = 109
+            Width = 400
+            Height = 23
+            PasswordChar = #9679
+            TabOrder = 3
+          end
+          object EChatSystemPrompt: TEdit
+            Left = 160
+            Top = 141
+            Width = 400
+            Height = 23
+            TabOrder = 4
+            Text = 'You are my expert java coding assistant'
+          end
+          object EChatMaxTokens: TEdit
+            Left = 160
+            Top = 173
+            Width = 60
+            Height = 23
+            TabOrder = 5
+            Text = '1000'
+          end
+          object EChatTimeout: TEdit
+            Left = 160
+            Top = 206
+            Width = 60
+            Height = 23
+            TabOrder = 6
+            Text = '20'
+          end
+        end
         object PVisibility: TTabSheet
-          Caption = 'PVisibili'
+          Caption = 'Visibility'
           object LVisTabs: TLabel
             Left = 15
             Top = 20
@@ -5017,7 +5247,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PLogfiles: TTabSheet
-          Caption = 'PLogfiles'
+          Caption = 'Log files'
           object LLogfilenames: TLabel
             Left = 16
             Top = 20
@@ -5096,10 +5326,10 @@ object FConfiguration: TFConfiguration
           end
         end
         object PTools: TTabSheet
-          Caption = 'PTools'
+          Caption = 'Tools'
         end
         object PGit: TTabSheet
-          Caption = 'PGit'
+          Caption = 'Git'
           object LGitFolder: TLabel
             Left = 16
             Top = 20
@@ -5208,7 +5438,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PJUnit: TTabSheet
-          Caption = 'PJunit'
+          Caption = 'JUnit'
           object LJUnit: TLabel
             Left = 16
             Top = 20
@@ -5370,7 +5600,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PCheckStyle: TTabSheet
-          Caption = 'PCheckstyle'
+          Caption = 'Checkstyle'
           object LCheckstyleConfiguration: TLabel
             Left = 32
             Top = 52
@@ -5484,7 +5714,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PJalopy: TTabSheet
-          Caption = 'PJalopy'
+          Caption = 'Jalopy'
           object LJalopyParameter: TLabel
             Left = 32
             Top = 84
@@ -5599,7 +5829,7 @@ object FConfiguration: TFConfiguration
           end
         end
         object PSubversion: TTabSheet
-          Caption = 'PSubver'
+          Caption = 'Subversion'
           object LRepository: TLabel
             Left = 32
             Top = 52

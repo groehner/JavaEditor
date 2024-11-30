@@ -3,8 +3,8 @@ object FEditForm: TFEditForm
   Top = 204
   Align = alClient
   BorderIcons = []
-  ClientHeight = 829
-  ClientWidth = 703
+  ClientHeight = 827
+  ClientWidth = 695
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,6 +18,9 @@ object FEditForm: TFEditForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    695
+    827)
   TextHeight = 15
   object TVFileStructure: TTreeView
     Left = 192
@@ -31,13 +34,11 @@ object FEditForm: TFEditForm
   end
   object BottomPanel: TPanel
     Left = 0
-    Top = 808
-    Width = 703
+    Top = 806
+    Width = 695
     Height = 21
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 807
-    ExplicitWidth = 699
     object DesignButton: TButton
       Left = 1
       Top = 1
@@ -52,7 +53,7 @@ object FEditForm: TFEditForm
     object StatusBar: TStatusBar
       Left = 57
       Top = 1
-      Width = 645
+      Width = 641
       Height = 19
       Align = alClient
       Panels = <
@@ -72,19 +73,18 @@ object FEditForm: TFEditForm
         item
           Width = 70
         end>
-      ExplicitWidth = 641
+      ExplicitWidth = 637
     end
   end
   object EditformToolbar: TToolBar
     Left = 0
     Top = 0
     Width = 23
-    Height = 808
+    Height = 806
     Align = alLeft
     AutoSize = True
     Images = vilEditorToolbarLight
     TabOrder = 2
-    ExplicitHeight = 807
     object TBClose: TToolButton
       Left = 0
       Top = 0
@@ -363,16 +363,22 @@ object FEditForm: TFEditForm
       OnClick = SBValidateClick
     end
   end
-  object PHaupt: TPanel
+  object PMain: TPanel
     Left = 23
     Top = 0
-    Width = 680
-    Height = 808
+    Width = 672
+    Height = 806
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitWidth = 676
-    ExplicitHeight = 807
+  end
+  object ActivityIndicator: TActivityIndicator
+    Left = 492
+    Top = 56
+    Anchors = [akRight]
+    FrameDelay = 150
+    IndicatorType = aitRotatingSector
+    ExplicitLeft = 496
   end
   object icEditor: TSVGIconImageCollection
     SVGIconItems = <
@@ -2283,6 +2289,7 @@ object FEditForm: TFEditForm
   end
   object PopUpEditor: TSpTBXPopupMenu
     Images = vilContextMenuLight
+    OnPopup = PopUpEditorPopup
     Left = 504
     Top = 159
     object MISearchDeclaration: TSpTBXItem
@@ -2314,6 +2321,37 @@ object FEditForm: TFEditForm
       ImageIndex = 14
       ImageName = 'CreateStructogram'
       OnClick = MICreateStructogramClick
+    end
+    object MIAssistant: TSpTBXSubmenuItem
+      Caption = 'Assistant'
+      object mnAssistantExplain: TSpTBXItem
+        Caption = 'Explain'
+        Hint = 'Add comments explaining the selected code'
+        OnClick = mnAssistantExplainClick
+      end
+      object mnAssistantFixBugs: TSpTBXItem
+        Caption = 'Fix Bugs'
+        Hint = 'Fix bugs in the selected code'
+        OnClick = mnAssistantFixBugsClick
+      end
+      object mnAssistantOptimize: TSpTBXItem
+        Caption = 'Optimize'
+        Hint = 'Optimize the selected code'
+        OnClick = mnAssistantOptimizeClick
+      end
+      object mnAssistanSuggest: TSpTBXItem
+        Caption = 'Suggest'
+        Hint = 'Provide a suggestion for code completion'
+        ShortCut = 49184
+        OnClick = mnAssistanSuggestClick
+      end
+      object SpTBXSeparatorItem1: TSpTBXSeparatorItem
+      end
+      object mnAssistantCancel: TSpTBXItem
+        Caption = 'Cancel'
+        Hint = 'Cancel Assistant action'
+        OnClick = mnAssistantCancelClick
+      end
     end
     object N1: TSpTBXSeparatorItem
     end

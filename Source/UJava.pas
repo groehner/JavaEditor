@@ -17,7 +17,7 @@ uses
   UEditorForm, UBaseForm, UUMLForm, UStructogramform,
   USequenceForm, UBrowserForm, UGUIForm, Vcl.DdeMan, Vcl.ToolWin,
   System.ImageList, Vcl.ImgList, Vcl.VirtualImageList, TB2Item, SpTBXItem,
-  TB2Dock, TB2Toolbar, SpTBXTabs, SpTBXDkPanels, SpTBXControls;
+  TB2Dock, TB2Toolbar, SpTBXTabs, SpTBXDkPanels, SpTBXControls, Vcl.WinXCtrls;
 
 const
   WindowOffset = 16;
@@ -520,6 +520,7 @@ type
     ControlBar: TSpTBXPanel;
     vilLayoutDark: TVirtualImageList;
     MIRecognizeAssociations: TSpTBXItem;
+    MIChat: TSpTBXItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -733,6 +734,7 @@ type
       NewDPI: Integer);
     procedure TBCompileJavaClick(Sender: TObject);
     procedure MIRecognizeAssociationsClick(Sender: TObject);
+    procedure MIChatClick(Sender: TObject);
   private
     FixedWindows: array of TFForm;
     EditClass: string;
@@ -935,7 +937,7 @@ uses SysUtils, ShellAPI, StdCtrls, Themes, StrUtils, IOUtils,
   UComJava1, UDlgConfigureTools, UDlgMindstorms, UDlgMindstormsEV3,
   UConjoinHost, UTabHost, UDebugger, UTooltip, UFXGuiForm, UFileStructure,
   UDlgMessage, UTabObject, UGit, UJUnitTest, UExplorerForm, UImages,
-  UTemplates, JvGnugettext, UStringRessources, UJEComponents;
+  UTemplates, JvGnugettext, UStringRessources, UJEComponents, ULLMChatForm;
 
 {--- TFJava -------------------------------------------------------------------}
 
@@ -952,6 +954,7 @@ begin
   FScpHint:= TFScpHint.Create(Self);
   FEvaluate:= TFEvaluate.Create(Self);
   FTooltip:= TFTooltip.Create(Self);
+  FLLMChatForm:= TLLMChatForm.Create(Self);
   myJavaCommands:= TJavaCommands.Create;
   myDebugger:= TDebugger.Create;
   mySearchOptions:= TSearchOptions.Create;
@@ -4835,6 +4838,11 @@ begin
     then s:= Homepage + '/doku.php?id=de:java-editor'
     else s:= Homepage + '/doku.php?id=start';
   CallHelp(false, s);
+end;
+
+procedure TFJava.MIChatClick(Sender: TObject);
+begin
+  FLLMChatForm.Show;
 end;
 
 procedure TFJava.MICheckstyleClick(Sender: TObject);

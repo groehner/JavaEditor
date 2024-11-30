@@ -8,7 +8,7 @@
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
         <ProjectVersion>19.5</ProjectVersion>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -571,6 +571,15 @@
         <DCCReference Include="Util\UZOrderControl.pas"/>
         <DCCReference Include="EssModel\Components\UConnection.pas"/>
         <DCCReference Include="SynEdit\SynDWrite.pas"/>
+        <DCCReference Include="ULLMSupport.pas"/>
+        <DCCReference Include="ULLMChatForm.pas">
+            <Form>LLMChatForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="ULLMSuggestForm.pas">
+            <Form>SuggestWindow</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <None Include="version.txt">
             <ContainerId>File</ContainerId>
         </None>
@@ -641,6 +650,12 @@
             </Platforms>
             <Deployment Version="4">
                 <DeployFile LocalName="Debug\Win32\javaeditor.exe" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="Debug\Win32\javaeditor.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>javaeditor.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Debug\Win64\javaeditor.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>javaeditor.exe</RemoteName>
@@ -650,6 +665,12 @@
                 <DeployFile LocalName="FastMM4-master\FullDebugMode DLL\Precompiled\FastMM_FullDebugMode.dll" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Styles\VCL.Styles.Utils.inc" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Styles\VCL.Styles.Utils.inc" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Styles\VCL.Styles.Utils.inc" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
@@ -658,7 +679,19 @@
                 <DeployFile LocalName="ToDo.txt" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Wegweiser.txt" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Wegweiser.txt" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Wegweiser.txt" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="_Done.txt" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
@@ -670,12 +703,24 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="_ToDo.txt" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="_ToDo.txt" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="version.txt" Configuration="Debug" Class="ProjectFile"/>
+                <DeployFile LocalName="version.txt" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="version.txt" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>

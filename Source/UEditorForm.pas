@@ -10,7 +10,7 @@ uses
   SynEdit, USynEditEx, SynEditExport, SynEditHighlighter,
   UModel, UBaseForm, UJavaParser, UParseThread, Vcl.ToolWin,
   System.ImageList, Vcl.ImgList, Vcl.BaseImageCollection, SVGIconImageCollection,
-  Vcl.VirtualImageList, TB2Item, SpTBXItem, SpTBXTabs;
+  Vcl.VirtualImageList, TB2Item, SpTBXItem, SpTBXTabs, Vcl.WinXCtrls;
 
   //  Application FrameType:= 8
   //  JApplet     FrameType:= 7
@@ -35,7 +35,7 @@ type
   { TFEditForm }
 
   TFEditForm = class(TFForm)
-    PHaupt: TPanel;
+    PMain: TPanel;
     TVFileStructure: TTreeView;
     StatusBar: TStatusBar;
     BottomPanel: TPanel;
@@ -125,6 +125,14 @@ type
     icBookmarks: TSVGIconImageCollection;
     vilBookmarksLight: TVirtualImageList;
     vilBookmarksDark: TVirtualImageList;
+    MIAssistant: TSpTBXSubmenuItem;
+    mnAssistantCancel: TSpTBXItem;
+    mnAssistantOptimize: TSpTBXItem;
+    mnAssistantFixBugs: TSpTBXItem;
+    mnAssistantExplain: TSpTBXItem;
+    mnAssistanSuggest: TSpTBXItem;
+    SpTBXSeparatorItem1: TSpTBXSeparatorItem;
+    ActivityIndicator: TActivityIndicator;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormClose(Sender: TObject; var aAction: TCloseAction); override;
@@ -203,6 +211,11 @@ type
     procedure ReleaseWindow(aFree: boolean); override;
     procedure MIReleaseWindowClick(Sender: TObject); override;
     procedure DesignButtonClick(Sender: TObject);
+    procedure mnAssistanSuggestClick(Sender: TObject);
+    procedure mnAssistantExplainClick(Sender: TObject);
+    procedure mnAssistantFixBugsClick(Sender: TObject);
+    procedure mnAssistantOptimizeClick(Sender: TObject);
+    procedure mnAssistantCancelClick(Sender: TObject);
   private
     Bookmark: Integer;
     BreakPointCount: integer;
@@ -212,6 +225,7 @@ type
     ModifiedStrs: array[boolean] of string;
     InsertModeStrs: array[boolean] of string;
     ToolButtons: array[0..29] of TToolButton;
+    ActivityPopupPoint: TPoint;
     procedure Translate;
     procedure Statusline(i: Integer; const s: string);
     procedure CalculateStatusline;
@@ -444,6 +458,8 @@ type
     procedure SetFXBackgroundAsString(const Container, aName, aColor: string);
     procedure DPIChanged; override;
     function CountClassOrInterface: integer;
+    procedure SetActivityIndicator(TurnOn: Boolean; Hint: string = ''; OnClick: TNotifyEvent = nil);
+    procedure ShowAssistantError(Msg: string);
 
     property NeedsParsing: boolean read FNeedsParsing write setNeedsParsing;
     property FileExtension: string read fFileExtension write setFileExtension;
@@ -471,7 +487,7 @@ uses
   UDlgConfirmReplace, UUMLForm, UUMLModule, JvGnugettext, UStringRessources,
   UDebugger, UFileStructure, UFXComponents, UGit, UJUnitTest,
   USequenceForm, UJavaScanner, UTooltip, UObjectInspector, UJEComponents,
-  UTemplates;
+  UTemplates, ULLMSupport;
 
 const
   ecMatchBracket    = 250;  // Go to matching bracket
@@ -551,8 +567,10 @@ begin
       else RightEdge:= 0;
   end;
 
-  Editor.Parent:= PHaupt;
+  Editor.Parent:= PMain;
   Editor.Align:= alClient;
+  ActivityIndicator.Parent:= Editor;
+
   EditformToolbar.Visible:= FConfiguration.vistoolbars[2];
   Encoding:= FConfiguration.getEncoding;
   CheckAgeEnabled:= FConfiguration.CheckAge;
@@ -1919,6 +1937,7 @@ end;
 
 procedure TFEditForm.PopUpEditorPopup(Sender: TObject);
 begin
+  ActivityPopupPoint:= (Sender as TSpTBXPopupMenu).PopupPoint;
   MouseBorderOfStructure:= 0;
   MouseIsInBorderOfStructure:= Editor.MouseInBorderOfStructure(MouseBorderOfStructure);
   if not Editor.getPositionOfMouse(MousePosition) then
@@ -1934,11 +1953,52 @@ begin
   MIExecuteWithConsole.Visible:= isJava;
   MIRenewImports.Visible:= isJava;
   MIGit.Visible:= FConfiguration.GitOK;
+
+  // Assistant actions
+  var EditForm:= FJava.getActiveEditor;
+  var HasJavaFile := Assigned(EditForm) and EditForm.IsJava;
+  mnAssistanSuggest.Enabled := HasJavaFile and not Editor.SelAvail and not LLMAssistant.IsBusy;
+  mnAssistantOptimize.Enabled := HasJavaFile and Editor.SelAvail and not LLMAssistant.IsBusy;
+  mnAssistantFixBugs.Enabled := HasJavaFile and Editor.SelAvail and not LLMAssistant.IsBusy;
+  mnAssistantExplain.Enabled := HasJavaFile and Editor.SelAvail and not LLMAssistant.IsBusy;
+  mnAssistantCancel.Enabled := LLMAssistant.IsBusy;
 end;
 
 procedure TFEditForm.MIUnindentClick(Sender: TObject);
 begin
   Unindent;
+end;
+
+procedure TFEditForm.mnAssistanSuggestClick(Sender: TObject);
+begin
+  var EditForm:= FJava.getActiveEditor;
+  if Assigned(EditForm) then
+  begin
+    FJava.scpJava.CancelCompletion;
+    FJava.scpParams.CancelCompletion;
+    LLMAssistant.Suggest;
+  end;
+end;
+
+procedure TFEditForm.mnAssistantCancelClick(Sender: TObject);
+begin
+  if LLMAssistant.IsBusy then
+    LLMAssistant.CancelRequest;
+end;
+
+procedure TFEditForm.mnAssistantExplainClick(Sender: TObject);
+begin
+  LLMAssistant.Explain;
+end;
+
+procedure TFEditForm.mnAssistantFixBugsClick(Sender: TObject);
+begin
+  LLMAssistant.FixBugs;
+end;
+
+procedure TFEditForm.mnAssistantOptimizeClick(Sender: TObject);
+begin
+  LLMAssistant.Optimize;
 end;
 
 procedure TFEditForm.MIIndentClick(Sender: TObject);
@@ -5138,6 +5198,25 @@ begin
   if assigned(Parser)
     then Result:= Parser.CountClasses
     else Result:= 0;
+end;
+
+type
+  TCrackActivityIndicator = class(TActivityIndicator);
+
+procedure TFEditForm.SetActivityIndicator(TurnOn: Boolean; Hint: string;
+  OnClick: TNotifyEvent);
+begin
+  ActivityIndicator.Left:= ActivityPopupPoint.X;
+  ActivityIndicator.Top:= ActivityPopupPoint.Y;
+  ActivityIndicator.Visible := TurnOn;
+  ActivityIndicator.Hint := Hint;
+  ActivityIndicator.Animate := TurnOn;
+  TCrackActivityIndicator(ActivityIndicator).OnClick := OnClick;
+end;
+
+procedure TFEditForm.ShowAssistantError(Msg: string);
+begin
+  ShowMessagePos(Msg, ActivityPopupPoint.X, ActivityPopupPoint.Y);
 end;
 
 end.

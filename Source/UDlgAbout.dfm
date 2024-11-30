@@ -4,8 +4,8 @@ object FAbout: TFAbout
   ActiveControl = BOK
   BorderStyle = bsDialog
   Caption = 'Info'
-  ClientHeight = 267
-  ClientWidth = 322
+  ClientHeight = 266
+  ClientWidth = 318
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clBlack

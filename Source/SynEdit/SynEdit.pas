@@ -3948,7 +3948,8 @@ begin
   end;
 
   bCurrentLine := False;
-  if assigned(HighLighter) and (Highlighter.WhitespaceAttribute.Background <> clNone) then
+  if assigned(HighLighter) and assigned(Highlighter.WhitespaceAttribute) and
+    (Highlighter.WhitespaceAttribute.Background <> clNone) then
     self.Color:= Highlighter.WhitespaceAttribute.Background;
   // If the right edge is visible and in the invalid area, prepare to paint it.
   // Do this first to realize the pen when getting the dc variable.

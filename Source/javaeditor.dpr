@@ -273,7 +273,10 @@ uses
   UDlgSearchAbort in 'FindInFiles\UDlgSearchAbort.pas' {FSearchAbort},
   UZOrderControl in 'Util\UZOrderControl.pas',
   UConnection in 'EssModel\Components\UConnection.pas',
-  SynDWrite in 'SynEdit\SynDWrite.pas';
+  SynDWrite in 'SynEdit\SynDWrite.pas',
+  ULLMSupport in 'ULLMSupport.pas',
+  ULLMChatForm in 'ULLMChatForm.pas' {LLMChatForm},
+  ULLMSuggestForm in 'ULLMSuggestForm.pas' {SuggestWindow};
 
 {$R *.RES}
 
