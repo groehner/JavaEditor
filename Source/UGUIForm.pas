@@ -74,7 +74,7 @@ type
     function getAttributes(ShowAttributes: integer): string;
     function getEvents(ShowEvents: integer): string;
     procedure setAttribute(Attr, Value, Typ: string); virtual;
-    procedure Open(const Filename: string; State: string);
+    procedure Open(const Filename: string; State: string); virtual;
     procedure Enter(Sender: TObject); override;
     procedure Save(MitBackup: boolean); override;
     procedure SaveIn(const Dir: string); override;

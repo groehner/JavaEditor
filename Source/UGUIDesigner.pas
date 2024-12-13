@@ -908,7 +908,7 @@ begin
       DesignForm.Partner := JavaForm;
       Reader.ReadRootComponent(DesignForm);
       if JavaForm.FrameType = 8
-        then (DesignForm as TFXGUIForm).Open(Filename)
+        then (DesignForm as TFXGUIForm).Open(Filename, '')
         else DesignForm.Open(Filename, '');
       DesignForm.Name:= NewName;
       if DesignForm.Monitor.PixelsPerInch > PPI then

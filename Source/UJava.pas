@@ -4263,20 +4263,17 @@ begin
   JavaFormular:= NewEditform(false);
   if Assigned(JavaFormular) then begin
     FTemplates.FrameDialogApplet(JavaFormular, TComponent(Sender).Tag);
+    WH:= JavaFormular.getWidthAndHeight;
     UMLFenster:= getUMLWindow;
     if Assigned(UMLFenster) then
       UMLFenster.MainModul.AddToProject(JavaFormular.Pathname);
     Filename:= ChangeFileExt(JavaFormular.Pathname, '.jfm');
-    if TComponent(Sender).Tag = 8 then begin
-      GUIForm:= TFXGUIForm(FormFactory(fkFXGUI));
-      (GUIForm as TFXGUIForm).Open(filename);
-    end else begin
-      GUIForm:= TFGUIForm(FormFactory(fkGUI));
-      GUIForm.Open(Filename, '');
-    end;
-    WH:= JavaFormular.getWidthAndHeight;
+    if TComponent(Sender).Tag = 8
+      then GUIForm:= TFXGUIForm(FormFactory(fkFXGUI))
+      else GUIForm:= TFGUIForm(FormFactory(fkGUI));
     with GUIForm do
       setBounds(Left, Top, PPIScale(WH.X), PPIScale(WH.Y));
+    GUIForm.Open(Filename, '');
     DoSave(JavaFormular, WithoutBackup);
   end;
   EnableUpdateMenuItems;

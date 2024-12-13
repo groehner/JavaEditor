@@ -31,7 +31,7 @@ type
     function toJavaFXColor(col: string): string;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Open(const Filename: string);
+    procedure Open(const Filename: string; State: String); override;
     function getAttributes(ShowAttributes: integer): string;
     function getEvents(ShowEvents: integer): string;
     procedure setAttribute(Attr, Value, Typ: string); override;
@@ -67,9 +67,9 @@ begin
   Tag:= 180;
 end;
 
-procedure TFXGuiForm.Open(const Filename: string);
+procedure TFXGuiForm.Open(const Filename: string; State: string);
 begin
-  inherited Open(Filename, '');
+  inherited Open(Filename, State);
   Title:= ChangeFileExt(ExtractFilename(Pathname), '');
 end;
 

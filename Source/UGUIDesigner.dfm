@@ -2,8 +2,8 @@ object FGUIDesigner: TFGUIDesigner
   Left = 564
   Top = 308
   Caption = 'GUI designer'
-  ClientHeight = 564
-  ClientWidth = 386
+  ClientHeight = 563
+  ClientWidth = 382
   Color = clBtnFace
   DragMode = dmAutomatic
   Font.Charset = DEFAULT_CHARSET

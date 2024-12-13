@@ -29,6 +29,7 @@ type
     procedure setAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
     procedure DefaultPenBrush;
+    procedure MakeFont; override;
 
     //procedure WmEraseBkgnd (var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     //procedure CreateParams (var Params: TCreateParams); override;
@@ -129,6 +130,11 @@ begin
   Msg.Result := 1
 end;
 }
+
+procedure TFXShape.MakeFont;
+begin
+  // no font
+end;
 
 procedure TFXShape.DefaultPenBrush;
 begin
