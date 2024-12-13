@@ -436,7 +436,7 @@ begin
     s1:= s1 + surroundIndent('  private TitledBorder ' + Name + 'TB = new TitledBorder(' + asString(FTitle) + ');');
   for i:= 0 to FItems.Count - 1 do begin
     s:= FItems[i];
-    p:= Pos(', selected', s);
+    p:= Pos(', ' + _('selected'), s);
     if p > 0
       then s:= asString(copy(s, 1, p-1))
       else s:= asString(s);
@@ -524,7 +524,7 @@ begin
         nam:= RBName(line);
         s:= s + surroundFix('  ' + nam + '.setBounds' + '(' + IntToStr(PPIUnScale(x)) + ', ' +
                   IntToStr(PPIUnScale(y)) + ', ' + IntToStr(PPIUnScale(ColWidthI)) + ', ' + IntToStr(PPIUnScale(RowHeightI)) + ');');
-        if Pos(', selected', FItems[line]) > 0 then
+        if Pos(', ' + _('selected'), FItems[line]) > 0 then
           s:= s + surroundFix('  ' + nam + '.setSelected(true);');
         if ActionPerformed <> '' then
           s:= s + surroundFix('  ' + nam + '.addActionListener((event) -> {' + Name + '_ActionPerformed(event);});');
@@ -594,7 +594,7 @@ begin
       ItemsInCol:= ItemsInColumn(col);
       for row:= 1 to ItemsInCol do begin
         s:= FItems[line];
-        p:= Pos(', selected', s);
+        p:= Pos(', ' + _('selected'), s);
         if p > 0 then
           s:= copy(s, 1, p-1);
         x:= tw + (col - 1)*ColumnWidth;

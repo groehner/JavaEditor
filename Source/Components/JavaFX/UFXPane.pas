@@ -12,7 +12,6 @@ type
     function getAttributes(ShowAttributes: integer): string; override;
     procedure setAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
-    procedure MakeFont; override;
     procedure Paint; override;
   end;
 
@@ -49,11 +48,6 @@ procedure TFXPane.NewControl;
 begin
   DefaultComponent;
   InsertNewVariable('private Pane '  + Name + ' = new Pane();');
-end;
-
-procedure TFXPane.MakeFont;
-begin
-  // no font
 end;
 
 procedure TFXPane.Paint;

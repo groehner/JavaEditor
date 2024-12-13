@@ -23,6 +23,7 @@ type
     function getEvents(ShowEvents: integer): string; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure DeleteComponent; override;
+    procedure MakeFont; override;
   published
     property InitialDirectory: string read FInitialDirectory write FInitialDirectory;
     property Title: string read FTitle write FTitle;
@@ -77,7 +78,7 @@ end;
 procedure TFXDirectoryChooser.Paint;
 begin
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  FJava.vilSwing2.Draw(Canvas, 5, 2, 20);
+  FJava.vilFXControls.Draw(Canvas, 5, 2, 16);
 end;
 
 procedure TFXDirectoryChooser.NewControl;
@@ -124,6 +125,11 @@ begin
   Partner.DeleteMethod(Name+ '_openDirectory', false);
 end;
 
+procedure TFXDirectoryChooser.MakeFont;
+begin
+  // no font
+end;
+
 {--- FileSaveChooser ----------------------------------------------------------}
 
 constructor TFXFileSaveChooser.Create(AOwner: TComponent);
@@ -138,7 +144,7 @@ end;
 procedure TFXFileSaveChooser.Paint;
 begin
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  FJava.vilSwing2.Draw(Canvas, 5, 2, 17);
+  FJava.vilFXControls.Draw(Canvas, 5, 2, 15);
 end;
 
 procedure TFXFileSaveChooser.NewControl;
@@ -185,7 +191,7 @@ end;
 procedure TFXFileOpenChooser.Paint;
 begin
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  FJava.vilSwing2.Draw(Canvas, 5, 2, 16);
+  FJava.vilFXControls.Draw(Canvas, 5, 2, 14);
 end;
 
 procedure TFXFileOpenChooser.NewControl;

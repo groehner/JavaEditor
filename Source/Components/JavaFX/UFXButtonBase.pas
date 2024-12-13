@@ -871,7 +871,7 @@ begin
   for i:= 0 to FItems.Count - 1 do begin
     nam:= RBName(i);
     s1:= FItems[i];
-    p:= Pos(', selected', s1);
+    p:= Pos(', ' + _('selected'), s1);
     if p > 0
       then s1:= asString(copy(s1, 1, p-1))
       else s1:= asString(s1);
@@ -990,7 +990,7 @@ begin
           s:= s + surroundFix('  ' + nam + '.setToggleGroup(' + Name + 'TG);');
         if FAction <> '' then
           s:= s + surroundFix('  ' + nam + '.setOnAction((event) -> {' + Name + '_Action(event);});');
-        if Pos(', selected', FItems[line]) > 0 then
+        if Pos(', ' + _('selected'), FItems[line]) > 0 then
           s:= s + surroundFix('  ' + nam + '.setSelected(true);');
         if FontChanged then
           s:= s + surroundFix('  ' + nam + '.setFont(new Font(' + asString(Font.Name) + ', ' + IntToStr(PPIUnScale(Font.Size)) + '));');
@@ -1117,7 +1117,7 @@ begin
       ItemsInCol:= ItemsInColumn(col);
       for row:= 1 to ItemsInCol do begin
         s:= FItems[line];
-        p:= Pos(', selected', s);
+        p:= Pos(', ' + _('selected'), s);
         if p > 0 then
           s:= copy(s, 1, p-1);
         x:= tw + (col - 1)*ColumnWidth;

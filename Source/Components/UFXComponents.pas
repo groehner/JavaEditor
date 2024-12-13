@@ -119,7 +119,9 @@ type
     procedure DefaultComponent;
     procedure SetBackgroundAsString(const aColor: string);
     function isFontAttribute(const s: string): boolean;
-    procedure MakeFont; override;
+    procedure MakeFont;  override;
+    procedure DoMakeFont;
+    procedure DoMakeFontWithStyle;
     procedure MakeCursor(const Value: string);
     procedure MakeColor(const Attr, Value: string);
     function getAttrColor(const Value: string): string;
@@ -399,6 +401,11 @@ begin
 end;
 
 procedure TFXNode.MakeFont;
+begin
+  DoMakeFontWithStyle
+end;
+
+procedure TFXNode.DoMakeFont;
   var s, map: string; intstyle: integer;
 begin
   if Name = '' then exit;
@@ -424,6 +431,25 @@ begin
     else MakeAttribut('Underline', '');
   SizeToText;
   InsertImport('javafx.scene.text.Font');
+end;
+
+procedure TFXNode.DoMakeFontWithStyle;
+begin
+  if Name = '' then exit;
+  Partner.DeleteAttributeValue(Name + '.setFont');
+  var s:= Name + '.setStyle("-fx-font-family: '''+ Font.Name + '''; ';
+  s:= 'fx-font-family: '''+ Font.Name + '''; ';
+  s:= s + '-fx-font-size: ' + IntToStr(Font.Size) + 'px; ';
+  if fsBold in Font.Style  then
+    s:= s + '-fx-font-weight: bold; ';
+  if fsItalic in Font.Style then
+    s:= s + '-fx-font-style: italic; ';
+  if fsUnderline in Font.Style then
+    s:= s + '-fx-text-decoration: underline; ';
+  Style:= s;
+  s:= Name + '.setStyle("' + s + '");';
+  setAttributValue(Name + '.setStyle', s);
+  SizeToText;
 end;
 
 procedure TFXNode.MakeCursor(const Value: string);

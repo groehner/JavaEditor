@@ -45,6 +45,7 @@ type
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure DeleteComponent; override;
     function getPicNr: integer; virtual;
+    procedure MakeFont; override;
   published
     property Alignment: TAlignment read FAlignment write setAlignment;
     property ContentDisplay: TContentDisplay read FContentDisplay write setContentDisplay;
@@ -307,6 +308,11 @@ end;
 function TFXLabeled.getPicNr: integer;
 begin
   Result:= 0;
+end;
+
+procedure TFXLabeled.MakeFont;
+begin
+  DoMakeFont;
 end;
 
 procedure TFXLabeled.setLineSpacing(aValue: double);

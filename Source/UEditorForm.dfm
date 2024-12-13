@@ -39,7 +39,7 @@ object FEditForm: TFEditForm
     Height = 21
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 804
+    ExplicitTop = 525
     ExplicitWidth = 687
     object DesignButton: TButton
       Left = 1
@@ -87,8 +87,7 @@ object FEditForm: TFEditForm
     AutoSize = True
     Images = vilEditorToolbarLight
     TabOrder = 2
-    ExplicitWidth = 23
-    ExplicitHeight = 804
+    ExplicitHeight = 525
     object TBClose: TToolButton
       Left = 0
       Top = 0
@@ -360,9 +359,8 @@ object FEditForm: TFEditForm
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitLeft = 23
-    ExplicitWidth = 664
-    ExplicitHeight = 804
+    ExplicitWidth = 641
+    ExplicitHeight = 525
   end
   object ActivityIndicator: TActivityIndicator
     Left = 484
@@ -371,7 +369,6 @@ object FEditForm: TFEditForm
     FrameDelay = 150
     IndicatorType = aitRotatingSector
     ExplicitLeft = 480
-    ExplicitTop = 56
   end
   object icEditor: TSVGIconImageCollection
     SVGIconItems = <

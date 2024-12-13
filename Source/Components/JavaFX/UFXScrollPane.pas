@@ -31,6 +31,7 @@ type
     procedure NewControl; override;
     procedure setAttribute(Attr, Value, Typ: string); override;
     function getAttributes(ShowAttributes: integer): string; override;
+    procedure MakeFont; override;
   published
     property Content: string read FContent write FContent;
     property FitToHeight: boolean read FFitToHeight write FFitToHeight;
@@ -97,6 +98,11 @@ begin
       Typ:= 'Identifier';
     inherited;
   end;
+end;
+
+procedure TFXScrollPane.MakeFont;
+begin
+  // no font
 end;
 
 function TFXScrollPane.getAttributes(ShowAttributes: integer): string;

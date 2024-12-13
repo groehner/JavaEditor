@@ -32,7 +32,6 @@ type
     destructor Destroy; override;
     procedure Paint; override;
     procedure NewControl; override;
-    procedure MakeFont; override;
     procedure setAttribute(Attr, Value, Typ: string); override;
     function getEvents(ShowEvents: integer): string; override;
     function getAttributes(ShowAttributes: integer): string; override;
@@ -162,11 +161,6 @@ begin
   DefaultComponent;
   MakeAttribut('Items', Name + 'ObservableList');
   MakeList;
-end;
-
-procedure TFXListView.MakeFont;
-begin
-  // no font
 end;
 
 procedure TFXListView.SetAttribute(Attr, Value, Typ: string);

@@ -14,6 +14,7 @@ type
     procedure NewControl; override;
     function getAttributes(ShowAttributes: integer): string; override;
     procedure SetPositionAndSize; override;
+    procedure MakeFont; override;
   end;
 
   TFXSubCanvas = class(TFXCanvas)
@@ -69,6 +70,11 @@ begin
   ChangeAttributValue(Name + '.setLayoutY(', getLayoutYCode);
   ChangeAttributValue(Name + '.setWidth(', getWidthCode);
   ChangeAttributValue(Name + '.setHeight(', getHeightCode);
+end;
+
+procedure TFXCanvas.MakeFont;
+begin
+  // no font
 end;
 
 {--- TFXSubCanvas -----------------------------------------------------------------}

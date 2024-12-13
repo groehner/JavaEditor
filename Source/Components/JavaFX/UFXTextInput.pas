@@ -5,7 +5,7 @@ unit UFXTextInput;
       TFXTextField = class (TFXTextInputControl)
         TFXNumberField = class(TFXTextField)
         TFXPasswordField = class (TFXTextField)
-    TFXTextArea = class (TFXControl)
+      TFXTextArea = class (TFXTextInputControl)
 }
 
 interface
@@ -26,6 +26,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     function getAttributes(ShowAttributes: integer): string; override;
+    procedure MakeFont; override;
   published
     property Text: string read FText write setText;
     property Editable: boolean read FEditable write setEditable;
@@ -64,19 +65,15 @@ type
     procedure NewControl; override;
   end;
 
-  TFXTextArea = class (TFXControl)
+  TFXTextArea = class (TFXTextInputControl)
   private
     FScrollLeft: double;
     FScrollTop: double;
     FText: TStrings;
     FWrapText: boolean;
-    FEditable: boolean;
-    FPromptText: string;
 
     procedure setStrings(Strings: TStrings);
     procedure setWrapText(aValue: boolean);
-    procedure setEditable(aValue: boolean);
-    procedure setPromptText(const aValue: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -89,8 +86,6 @@ type
     property ScrollTop: double read FScrollTop write FScrollTop;
     property Text: TStrings read FText write setStrings;
     property WrapText: boolean read FWrapText write setWrapText;
-    property Editable: boolean read FEditable write setEditable;
-    property PromptText: string read FPromptText write setPromptText;
   end;
 
 implementation
@@ -136,6 +131,11 @@ begin
   if ShowAttributes = 1
     then Result:= Attributes1 + inherited getAttributes(ShowAttributes)
     else Result:= Attributes2 + inherited getAttributes(ShowAttributes)
+end;
+
+procedure TFXTextInputControl.MakeFont;
+begin
+  DoMakeFont;
 end;
 
 {--- TFXTextField ----------------------------------------------------------}
@@ -398,22 +398,6 @@ procedure TFXTextArea.setWrapText(aValue: boolean);
 begin
   if aValue <> FWrapText then begin
     FWrapText:= aValue;
-    Invalidate;
-  end;
-end;
-
-procedure TFXTextArea.setEditable(aValue: boolean);
-begin
-  if aValue <> FEditable then begin
-    FEditable:= aValue;
-    Invalidate;
-  end;
-end;
-
-procedure TFXTextArea.setPromptText(const aValue: string);
-begin
-  if aValue <> FPromptText then begin
-    FPromptText:= aValue;
     Invalidate;
   end;
 end;
