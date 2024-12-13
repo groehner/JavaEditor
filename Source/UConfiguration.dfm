@@ -27,6 +27,8 @@ object FConfiguration: TFConfiguration
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 780
+    ExplicitHeight = 488
     object TVConfiguration: TTreeView
       Left = 0
       Top = 0
@@ -101,6 +103,7 @@ object FConfiguration: TFConfiguration
         00000001064A0061006C006F0070007900320000000000000000000000FFFFFF
         FFFFFFFFFF000000000000000000000000010A53007500620076006500720073
         0069006F006E00}
+      ExplicitHeight = 488
     end
     object PPanelRight: TPanel
       Left = 145
@@ -109,6 +112,8 @@ object FConfiguration: TFConfiguration
       Height = 489
       Align = alClient
       TabOrder = 1
+      ExplicitWidth = 635
+      ExplicitHeight = 488
       object PButtons: TPanel
         Left = 1
         Top = 447
@@ -116,6 +121,8 @@ object FConfiguration: TFConfiguration
         Height = 41
         Align = alBottom
         TabOrder = 0
+        ExplicitTop = 446
+        ExplicitWidth = 633
         object BSave: TButton
           Left = 549
           Top = 9
@@ -179,6 +186,7 @@ object FConfiguration: TFConfiguration
         Align = alTop
         BevelOuter = bvSpace
         TabOrder = 1
+        ExplicitWidth = 633
         object LTitle: TLabel
           Left = 8
           Top = 4
@@ -198,10 +206,12 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 637
         Height = 426
-        ActivePage = PUMLOptions
+        ActivePage = PDocumentation
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
+        ExplicitWidth = 633
+        ExplicitHeight = 425
         object PJava: TTabSheet
           Caption = 'Java'
         end

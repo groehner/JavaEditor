@@ -80,7 +80,6 @@ uses SysUtils, Forms, Controls, StdCtrls, Dialogs, StrUtils, Graphics, ShellApi,
 constructor TJavaCommands.Create;
 begin
   OutputLines:= TStringList.Create;
-  ErrFile:= TPath.Combine(FConfiguration.TempDir, 'error.txt');
   TVJUnitTests:= nil;
   ProcessRunning:= false;
   ProcessrunningComJava:= nil;
@@ -276,6 +275,7 @@ begin  // CompileOnFile
     FMessages.StatusMessage(Format(_(LNGFileNotFound), [Pathname]), 2);
     exit;
   end;
+  ErrFile:= TPath.Combine(FConfiguration.TempDir, 'error.txt');
   Compiler:= FConfiguration.JavaCompiler;
   Directory:= ExtractFilePath(Pathname);
   Programname:= ExtractFilename(Pathname);

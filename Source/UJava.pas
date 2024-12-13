@@ -761,6 +761,7 @@ type
     procedure JarOpen(const Filename: string);
     function getUMLWindow: TFUMLForm;
     procedure LoadBounds;
+    procedure OpenFileStructureAndObjectInspector;
   public
     scpJava: TSynCompletionProposal;
     scpParams: TSynCompletionProposal;
@@ -1042,12 +1043,15 @@ begin
   MakeUpdate:= false;
   FConfiguration.Init;
   LoadBounds;
+  TThread.ForceQueue(nil, OpenFiles);
+end;
 
+procedure TFJava.OpenFileStructureAndObjectInspector;
+begin
   FFileStructure:= TFFileStructure.create(Self);
   FFileStructure.Visible:= FConfiguration.ReadBoolU('FileStructure', 'Visible', true);
   FFileStructure.Height:= 300;
   FFileStructure.Width:= 200;
-  //myCodeCompletion.PrepareScpJavaForm;
   FObjectInspector:= TFObjectInspector.create(Self);
   FObjectInspector.Visible:= FConfiguration.ReadBoolU('ObjectInspector', 'Visible', true);
   myCodeCompletion:= TCodeCompletion.Create;
@@ -1057,7 +1061,6 @@ begin
       RightDockPanel.Width:= 0;
       VSplitter.Visible:= false;
     end;
-  TThread.ForceQueue(nil, OpenFiles);
 end;
 
 procedure TFJava.FormDestroy(Sender: TObject);
@@ -2788,8 +2791,9 @@ begin
     LockFormUpdate(Self);
     Screen.Cursor:= crHourGlass;
     DisableUpdateMenuItems;
-    FMessages.InitAndShow;
     InteractiveUMLForm:= MakeNewUMLWindow(_(LNGInteractive), '');
+    OpenFileStructureAndObjectInspector;
+    FMessages.InitAndShow;
     if FConfiguration.LoadFiles then begin
       WinCount:= FConfiguration.ReadIntegerU('Window', 'Wins', 0);
       for i:= 1 to WinCount do begin
@@ -2804,6 +2808,7 @@ begin
           RearrangeFileHistory(ParamStr(i));
         cur:= Paramstr(i);
       end;
+
   finally
     OpenFileWithState(cur);
     HSplitterMoved(Self);

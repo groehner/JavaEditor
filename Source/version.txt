@@ -1,3 +1,7 @@
+23.02, 2024.12.13
+improvements for zooming gui form
+a GUI window is active again after opening
+
 23.01, 2024.11.30
 Usage of Large Language Models with LLM assistant and LLM chat
 
