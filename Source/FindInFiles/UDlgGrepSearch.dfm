@@ -5,8 +5,8 @@ object FGrepSearch: TFGrepSearch
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'In files...'
-  ClientHeight = 361
-  ClientWidth = 426
+  ClientHeight = 388
+  ClientWidth = 436
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -105,13 +105,13 @@ object FGrepSearch: TFGrepSearch
   object GBSearchOptions: TGroupBox
     Left = 8
     Top = 76
-    Width = 193
-    Height = 109
+    Width = 233
+    Height = 133
     Caption = 'Options'
     TabOrder = 2
     object LSearchRegSearch: TLabel
-      Left = 30
-      Top = 85
+      Left = 33
+      Top = 107
       Width = 104
       Height = 15
       Caption = 'Regular expressions'
@@ -140,7 +140,7 @@ object FGrepSearch: TFGrepSearch
     object CBSearchRegSearch: TCheckBox
       Tag = 8
       Left = 13
-      Top = 84
+      Top = 106
       Width = 17
       Height = 17
       TabOrder = 3
@@ -155,11 +155,20 @@ object FGrepSearch: TFGrepSearch
       TabOrder = 0
       OnClick = RBDirectoriesClick
     end
+    object CBExcludeCommentsAndStrings: TCheckBox
+      Tag = 16
+      Left = 13
+      Top = 84
+      Width = 217
+      Height = 17
+      Caption = 'Exclude Comments and Strings'
+      TabOrder = 4
+    end
   end
   object GBWhere: TGroupBox
-    Left = 224
+    Left = 264
     Top = 76
-    Width = 206
+    Width = 166
     Height = 109
     Caption = 'Where'
     TabOrder = 3
@@ -167,7 +176,7 @@ object FGrepSearch: TFGrepSearch
       Tag = 11
       Left = 13
       Top = 44
-      Width = 180
+      Width = 148
       Height = 17
       Caption = 'All open files'
       TabOrder = 1
@@ -177,7 +186,7 @@ object FGrepSearch: TFGrepSearch
       Tag = 12
       Left = 13
       Top = 64
-      Width = 180
+      Width = 148
       Height = 17
       Caption = 'In directories'
       TabOrder = 2
@@ -187,7 +196,7 @@ object FGrepSearch: TFGrepSearch
       Tag = 10
       Left = 13
       Top = 24
-      Width = 180
+      Width = 148
       Height = 17
       Caption = 'Current file'
       Checked = True
@@ -198,7 +207,7 @@ object FGrepSearch: TFGrepSearch
   end
   object GBDirectories: TGroupBox
     Left = 8
-    Top = 202
+    Top = 226
     Width = 422
     Height = 123
     Caption = 'Search directory options'
@@ -259,8 +268,8 @@ object FGrepSearch: TFGrepSearch
     end
   end
   object BOK: TButton
-    Left = 149
-    Top = 331
+    Left = 143
+    Top = 355
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -269,8 +278,8 @@ object FGrepSearch: TFGrepSearch
     TabOrder = 5
   end
   object BCancel: TButton
-    Left = 230
-    Top = 331
+    Left = 224
+    Top = 355
     Width = 75
     Height = 25
     Cancel = True

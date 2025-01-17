@@ -17,6 +17,7 @@ type
       WholeWords: boolean;         // Tag = 5
       FromCursor: boolean;         // Tag = 6, user setting
       SelectionOnly: boolean;      // Tag = 7
+      ExcludeCommentsAndStrings: boolean;  // Tag = 16
       RegEx: boolean;              // Tag = 8
       Backwards: boolean;          // Tag = 9
       fFromCursor: boolean;        // system setting for SearchAgain
@@ -55,6 +56,7 @@ begin
   WholeWords:= FConfiguration.ReadBoolU('SearchReplace', 'WholeWords', false);
   FromCursor:= FConfiguration.ReadBoolU('SearchReplace', 'FromCursor', false);
   SelectionOnly:= FConfiguration.ReadBoolU('SearchReplace', 'SelectionOnly', false);
+  ExcludeCommentsAndStrings:= FConfiguration.ReadBoolU('SearchReplace', 'ExcludeCommentsAndStrings', False);
   RegEx:= FConfiguration.ReadBoolU('SearchReplace', 'RegEx', false);
   Backwards:= false;
 
@@ -91,6 +93,7 @@ begin
         5: (Component as TCheckBox).Checked:= WholeWords;
         6: (Component as TCheckBox).Checked:= FromCursor;
         7: (Component as TCheckBox).Checked:= SelectionOnly;
+       16: (Component as TCheckBox).Checked:= ExcludeCommentsAndStrings;
         8: (Component as TCheckBox).Checked:= RegEx;
         9: if Backwards
              then (Component as TRadioGroup).ItemIndex:= 1
@@ -132,6 +135,7 @@ begin
         5: WholeWords:= (Component as TCheckBox).Checked;
         6: FromCursor:= (Component as TCheckBox).Checked;
         7: SelectionOnly:= (Component as TCheckBox).Checked;
+       16: ExcludeCommentsAndStrings:= (Component as TCheckBox).Checked;
         8: RegEx:= (Component as TCheckBox).Checked;
         9: Backwards:= ((Component as TRadioGroup).ItemIndex = 1);
        10: if (Component as TRadioButton).Checked then GrepAction:= 1;
@@ -164,6 +168,7 @@ begin
   FConfiguration.WriteBoolU('SearchReplace', 'WholeWords', WholeWords);
   FConfiguration.WriteBoolU('SearchReplace', 'FromCursor', FromCursor);
   FConfiguration.WriteBoolU('SearchReplace', 'SelectionOnly', SelectionOnly);
+  FConfiguration.WriteBoolU('SearchReplace', 'ExcludeCommentsAndStrings', ExcludeCommentsAndStrings);
   FConfiguration.WriteBoolU('SearchReplace', 'RegEx', RegEx);
 
   FConfiguration.WriteIntegerU('SearchReplace', 'Where', GrepAction);

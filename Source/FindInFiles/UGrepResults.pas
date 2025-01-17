@@ -60,7 +60,8 @@ implementation
 uses
   SysUtils, Controls, Forms, USynEditEx, JvGnugettext, UStringRessources,
   UJava, UEditorForm, UConfiguration, UUtils, UMessages,
-  USearchOptions, URegExSearch, UDlgSearchAbort, SynEditTypes, UITypes;
+  USearchOptions, URegExSearch, UDlgSearchAbort, SynEditTypes, SynEditHighlighter,
+  UITypes;
 
 {--- TSearchResults -----------------------------------------------------------}
 
@@ -135,7 +136,7 @@ procedure TFGrepResults.Execute;
   procedure BeginSearch(myEditor: TSynEdit; const Pathname: string);
   begin
     Filename:= Pathname;
-    FMessages.StatusMessage(_('Search for:') + ' ' + Filename);
+    FMessages.StatusMessage(_('Search for') + ' "' + MySearchOptions.SearchText + '" in ' + Filename);
     Editor:= myEditor;
     myTopLine:= Editor.TopLine;
     myCaretXY:= Editor.CaretXY;
@@ -199,7 +200,8 @@ procedure TFGrepResults.Execute;
             if (Search.Name <> '.') and (Search.Name <> '..') then
               DirGrep(Dir + Search.Name + '\', Uppercase(Mask));
         end
-        else if (Pos(Uppercase(ExtractFileExt(Search.Name)), Mask) > 0) or (Mask = '*.*') then begin
+        else if (Pos(Uppercase(ExtractFileExt(Search.Name)), Mask) > 0) or (Mask = '*.*')
+        then begin
           Results:= nil;
           Pathname:= Dir + Search.Name;
           EditForm:= TFEditForm(FJava.getTDIWindowType(Pathname, '%E%'));
@@ -217,8 +219,10 @@ procedure TFGrepResults.Execute;
               try
                 myEditor.Lines.LoadFromFile(Pathname);
               except on e: exception do
-                ErrorMsg(e.Message + #13#10+ 'File ' + Pathname + ' cannot be opened');
+                ErrorMsg(e.Message + #13#10+ _('File') + ' ' + Pathname + ' ' + _('cannot be opened'));
               end;
+              if mySearchOptions.ExcludeCommentsAndStrings then
+                myEditor.Highlighter:= FConfiguration.GetHighlighter(Pathname);
               BeginSearch(myEditor, Pathname);
               myEditor.ReplaceTabs(FConfiguration.TabWidth);
               if mySearchOptions.RegEx
@@ -308,7 +312,8 @@ begin
   tvResults.Items.EndUpdate;
   if Counts = 0 then
     InformationMsg(Format(_(LNGSearchTextNotFound), [MySearchOptions.SearchText]));
-  FMessages.StatusMessage(Format(_('%d occurrences in %d of total %d files'), [Counts, Files, FileCount]));
+  FMessages.StatusMessage(Format(_('%d occurrences of "%s" in %d of total %d files'),
+    [Counts, MySearchOptions.SearchText, Files, FileCount]));
 end;
 
 procedure TFGrepResults.OpenSource(Node: TTreeNode);
@@ -339,86 +344,68 @@ begin
 end;
 
 procedure TFGrepResults.DoSearchReplace(const SearchText, ReplaceText: string);
-  var i, p: integer; Action: TSynReplaceAction;
-      UpperSearchText, LineSearchText: string; Flags: TReplaceFlags;
+var
+  Action: TSynReplaceAction;
+  UsedSearchLine, ReplaceLine, UsedSearchText: string;
+  Positions: array of Integer;
+  StackPos, ScanPos: integer;
 
-  procedure DoWholeWord(p, i: integer);
-    var s1, s2, re: string; q, scanned: integer;
-        us1, uSearchText: string;
-
-    function IsWholeWord(p, q: integer): boolean;
-    begin
-      p:= scanned + p;
-      q:= scanned + q;
-      Result:= (((p - 1 = 0) or IsWordBreakChar(s2[p-1])) and
-                ((q + 1 > length(s2)) or IsWordBreakChar(s2[q+1])))
-    end;
-
+  function IsWholeWord(ScanPos: integer): boolean;
   begin
-    scanned:= 0;
-    s1:= Editor.Lines[i];
-    s2:= s1;
-    if not mySearchOptions.CaseSensitive then begin
-      us1:= WideUpperCase(s1);
-      uSearchText:= WideUppercase(SearchText);
-    end;
-    q:= p + length(SearchText) - 1;
-    while not IsWholeWord(p, q) do begin
-      inc(scanned, q);
-      delete(s1, 1, q);
-      delete(us1, 1, q);
-      if mySearchOptions.CaseSensitive
-        then p:= Pos(SearchText, s1)
-        else p:= Pos(uSearchText, us1);
-      if p = 0 then exit;
-      q:= p + length(SearchText) - 1;
-    end;
-    FoundIt(Self, SearchText, ReplaceText, i+1, scanned + p, Action);
-    if mySearchOptions.Replace then begin
-      re:= copy(s2, 1, scanned);
-      while p > 0 do begin
-        if IsWholeWord(p, q)
-          then re:= re + copy(s1, 1, p-1) + ReplaceText
-          else re:= re + copy(s1, 1, q);
-        inc(scanned, q);
-        delete(s1, 1, q);
-        delete(us1, 1, q);
-        if mySearchOptions.CaseSensitive
-          then p:= Pos(SearchText, s1)
-          else p:= Pos(uSearchText, us1);
-        q:= p + length(SearchText) - 1;
-      end;
-      Editor.Lines[i]:= re + s1;
-    end;
+    var p:= ScanPos;
+    var q:= ScanPos + length(SearchText) - 1;
+    Result:= (((p - 1 = 0) or IsWordBreakChar(UsedSearchLine[p-1])) and
+      ((q + 1 > length(UsedSearchLine)) or IsWordBreakChar(UsedSearchLine[q+1])))
+  end;
+
+  function IsCommentOrString(ScanPos, LineNo: integer): boolean;
+  var
+    Token: string;
+    Attr: TSynHighlighterAttributes;
+  begin
+    Editor.GetHighlighterAttriAtRowCol(BufferCoord(ScanPos, LineNo +1 ), Token, Attr);
+    Result:= (Attr = Editor.Highlighter.CommentAttribute) or
+             (Attr = Editor.Highlighter.StringAttribute)
   end;
 
 begin
-  Editor.BeginUpdate;
-  if not mySearchOptions.CaseSensitive then begin
-    UpperSearchText:= WideUpperCase(SearchText);
-    Flags:= [rfReplaceAll, rfIgnoreCase];
-  end else
-    Flags:= [rfReplaceAll];
-
-  for i:= 0 to Editor.Lines.Count - 1 do begin
-    if mySearchOptions.CaseSensitive then
-      p:= System.Pos(Searchtext, Editor.Lines[i])
-    else begin
-      LineSearchText:= WideUpperCase(Editor.Lines[i]);
-      p:= System.Pos(UpperSearchText, LineSearchText);
+  for var LineNo:= 0 to Editor.Lines.Count - 1 do begin
+    SetLength(Positions, 100);
+    StackPos:= 0;
+    UsedSearchLine:= Editor.Lines[LineNo];
+    UsedSearchText:= SearchText;
+    if not mySearchOptions.CaseSensitive then begin
+      UsedSearchLine:= WideUpperCase(UsedSearchLine);
+      UsedSearchText:= WideUpperCase(SearchText);
     end;
-    if p > 0 then
-      if mySearchOptions.WholeWords
-        then DoWholeWord(p, i)
-      else begin
-        if mySearchOptions.Replace then begin
-          Editor.Lines[i]:= StringReplace(Editor.Lines[i], SearchText, ReplaceText, Flags);
-          Editor.Modified:= true;
+    ScanPos:= 1;
+    repeat
+      ScanPos:= Pos(UsedSearchText, UsedSearchLine, ScanPos);
+      if ScanPos > 0 then begin
+        if not (mySearchOptions.WholeWords and not IsWholeWord(ScanPos)) and
+           not (mySearchOptions.ExcludeCommentsAndStrings and
+                IsCommentOrString(ScanPos, LineNo))
+        then begin
+          FoundIt(Self, SearchText, ReplaceText, LineNo+1, ScanPos, Action);
+          Positions[StackPos]:= ScanPos;
+          Inc(StackPos);
         end;
-        FoundIt(Self, SearchText, ReplaceText, i+1, p, Action);
+        Inc(ScanPos, length(SearchText) - 1);
       end;
+    until ScanPos = 0;
+    if mySearchOptions.Replace then begin
+      Editor.BeginUpdate;
+      ReplaceLine := Editor.Lines[LineNo];
+      while StackPos > 0 do begin
+        Dec(StackPos);
+        Delete(ReplaceLine, Positions[StackPos], Length(SearchText));
+        Insert(ReplaceText, ReplaceLine, Positions[StackPos]);
+      end;
+      Editor.Lines[LineNo] := ReplaceLine;
+      Editor.Modified := true;
+      Editor.EndUpdate;
+    end;
   end;
-  Editor.EndUpdate;
 end;
 
 end.

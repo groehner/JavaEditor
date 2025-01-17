@@ -30,6 +30,7 @@ type
     CBReplaceText: TComboBox;
     CBReplace: TCheckBox;
     LSearchRegSearch: TLabel;
+    CBExcludeCommentsAndStrings: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure RBDirectoriesClick(Sender: TObject);
     procedure BSelectClick(Sender: TObject);
@@ -49,11 +50,10 @@ uses SysUtils, Graphics, Dialogs,
 
 {$R *.DFM}
 
-
 procedure TFGrepSearch.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
-  if myGrepResults = nil then
+  if not Assigned(myGrepResults) then
     myGrepResults:= TFGrepResults.Create(FMessages.TVSearch);
 end;
 
@@ -107,7 +107,7 @@ begin
   if assigned(Editform) and not mySearchOptions.RegEx then
     CBSearchText.Text:= Editform.Editor.GetSearchText(CBSearchText.Text);
   rbCurrentOnly.Enabled:= assigned(Editform);
-  rbOpenFiles.Enabled  := FJava.hasEditforms;
+  rbOpenFiles.Enabled := FJava.hasEditforms;
   if rbCurrentOnly.Checked and not rbCurrentOnly.Enabled then
     rbOpenFiles.Checked:= true;
   if rbOpenFiles.Checked and not rbOpenFiles.Enabled then

@@ -1346,7 +1346,7 @@ type
     function GetCSSHighlighter: TSynCssSyn;
     function GetMultiSynHighlighter: TSynMultiSyn;
     function GetGeneralHighlighter: TSynGeneralSyn;
-    function GetHighlighter(const FileExtension: string): TSynCustomHighlighter;
+    function GetHighlighter(const Pathname: string): TSynCustomHighlighter;
     function getClasspathFromSourcepath(const aClassname, aSourcepath: string): string;
     function IsInClasspath(const aClassname: string; actPath: string): boolean;
     procedure MakeClassAndPackageList(const classfile, packagefile: string);
@@ -7395,8 +7395,9 @@ begin
   Result:= Directory;
 end;
 
-function TFConfiguration.GetHighlighter(const FileExtension: string): TSynCustomHighlighter;
+function TFConfiguration.GetHighlighter(const Pathname: string): TSynCustomHighlighter;
 begin
+  var FileExtension:= Lowercase(ExtractFileExt(Pathname));
   if FileExtension = '' then
     Result:= nil
   else if (FileExtension = '.java') or (FileExtension = '.~ava') then
