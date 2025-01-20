@@ -6,13 +6,13 @@ uses Forms, StdCtrls, ExtCtrls, Vcl.Graphics, Vcl.Controls, System.Classes;
 
 const
   {$IFDEF WIN32}
-  Version = '23.02, 32 Bit';
+  Version = '23.03, 32 Bit';
   {$ELSE}
-  Version = '23.02, 64 Bit';
+  Version = '23.03, 64 Bit';
   {$ENDIF}
-  DTag  = 13;
-  Monat = 12;
-  Jahr  = 2024;
+  DTag  = 20;
+  Monat = 1;
+  Jahr  = 2025;
 
 type
   TFAbout = class(TForm)

@@ -1,6 +1,6 @@
 23.03, 2025.01.20
 improved chat and messages window
-
+file search/replace with new option "Exclude comments and strings"
 
 23.02, 2024.12.13
 improvements for zooming gui form
