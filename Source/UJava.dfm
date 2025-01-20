@@ -5,8 +5,8 @@ object FJava: TFJava
   HelpType = htKeyword
   VertScrollBar.Visible = False
   Caption = 'Java-Editor'
-  ClientHeight = 492
-  ClientWidth = 803
+  ClientHeight = 490
+  ClientWidth = 795
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -26,8 +26,8 @@ object FJava: TFJava
   TextHeight = 15
   object HSplitter: TSplitter
     Left = 0
-    Top = 488
-    Width = 803
+    Top = 486
+    Width = 795
     Height = 3
     Cursor = crVSplit
     Align = alBottom
@@ -40,9 +40,9 @@ object FJava: TFJava
     ExplicitWidth = 858
   end
   object VSplitter: TSplitter
-    Left = 800
+    Left = 792
     Top = 78
-    Height = 410
+    Height = 408
     Align = alRight
     Color = clActiveCaption
     ParentColor = False
@@ -53,8 +53,8 @@ object FJava: TFJava
   end
   object BottomDockPanel: TPanel
     Left = 0
-    Top = 491
-    Width = 803
+    Top = 489
+    Width = 795
     Height = 1
     Align = alBottom
     DockSite = True
@@ -69,10 +69,10 @@ object FJava: TFJava
     ExplicitWidth = 799
   end
   object RightDockPanel: TPanel
-    Left = 803
+    Left = 795
     Top = 78
     Width = 0
-    Height = 410
+    Height = 408
     Align = alRight
     DockSite = True
     DragKind = dkDock
@@ -87,8 +87,8 @@ object FJava: TFJava
   object MainPanel: TPanel
     Left = 0
     Top = 78
-    Width = 800
-    Height = 410
+    Width = 792
+    Height = 408
     Align = alClient
     TabOrder = 2
     ExplicitWidth = 796
@@ -97,7 +97,7 @@ object FJava: TFJava
   object TBXDockTop: TSpTBXDockablePanel
     Left = 0
     Top = 0
-    Width = 803
+    Width = 795
     Height = 78
     Align = alTop
     DockMode = dmCannotFloatOrChangeDocks
@@ -113,12 +113,12 @@ object FJava: TFJava
     object ControlBar: TSpTBXPanel
       Left = 0
       Top = 21
-      Width = 803
+      Width = 795
       Height = 57
       Align = alClient
       Constraints.MaxHeight = 59
       TabOrder = 1
-      ExplicitWidth = 799
+      ExplicitWidth = 624
       object DebugToolbar: TSpTBXToolbar
         Left = 3
         Top = 28
@@ -2448,7 +2448,7 @@ object FJava: TFJava
     object MainMenu: TSpTBXToolbar
       Left = 0
       Top = 0
-      Width = 803
+      Width = 795
       Height = 21
       Align = alTop
       Images = vilMenuLight
@@ -3672,7 +3672,6 @@ object FJava: TFJava
         object MIMessagesDocked: TSpTBXItem
           Caption = 'Messages docked/undocked'
           ShortCut = 49229
-          Visible = False
           OnClick = MIMessagesDockedClick
         end
         object MIFileStructure: TSpTBXItem

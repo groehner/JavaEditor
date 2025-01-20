@@ -1,5 +1,6 @@
 ﻿unit UMessages;
 
+// ActiveSubTool
 // 0: MInterpreter
 // 1: LBCompiler
 
@@ -12,18 +13,42 @@
 // 7: LBMessages
 // 8: Interactive Editor
 // 9: Interactive Variables
+// 10: Interactive Memo
 
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls,
-  ExtCtrls, Menus, ComCtrls, Grids, Contnrs,
-  USynEditEx, SynEdit, UExecution, UComJava1,
-  Vcl.ToolWin, System.ImageList, Vcl.ImgList, Vcl.BaseImageCollection,
-  SVGIconImageCollection, Vcl.VirtualImageList, TB2Dock, TB2Toolbar, SpTBXItem,
-  TB2Item;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.Classes,
+  System.Contnrs,
+  System.ImageList,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  Vcl.Menus,
+  Vcl.ComCtrls,
+  Vcl.Grids,
+  Vcl.ToolWin,
+  Vcl.ImgList,
+  Vcl.BaseImageCollection,
+  Vcl.VirtualImageList,
+  SVGIconImageCollection,
+  TB2Dock,
+  TB2Toolbar,
+  SpTBXItem,
+  TB2Item,
+  SynEdit,
+  USynEditEx,
+  UExecution,
+  UComJava1;
 
 type
+
+  TArray3Stringlist = array [1 .. 3] of TStringList;
+
   TInteractiveEdit = class(TSynEditEx)
     constructor Create(AOwner: TComponent); override;
     procedure SystemOutPrintln;
@@ -36,10 +61,12 @@ type
   TInteractive = class
     UMLForm: TForm;
     InteractiveEditor: TInteractiveEdit;
+    Memo: TMemo;
     SGVariables: TStringGrid;
     Executer: TInteractiveExecuter;
     ComJava: TComJava1;
-    constructor create(U: TForm; IE: TInteractiveEdit; SG: TStringGrid; E: TInteractiveExecuter; C: TComJava1);
+    constructor Create(UML: TForm; IEdit: TInteractiveEdit; AMemo: TMemo;
+      SGrid: TStringGrid; AExecuter: TInteractiveExecuter; CJava: TComJava1);
   end;
 
   { TFMessages }
@@ -73,15 +100,14 @@ type
     MIFont: TSpTBXItem;
     MICopyAll: TSpTBXItem;
     MIClose: TSpTBXItem;
-    N1: TSpTBXSeparatorItem;
+    N01: TSpTBXSeparatorItem;
     MIExpand: TSpTBXItem;
     MICollapse: TSpTBXItem;
-    PInterpreter: TPanel;
+    PInteractive: TPanel;
     SplitterInteractiveLeft: TSplitter;
     PInteractiveLeft: TPanel;
     SplitterInteractiveRight: TSplitter;
     PInteractiveRight: TPanel;
-    MInterpreter: TMemo;
     PInteractiveMiddle: TPanel;
     MIPaste: TSpTBXItem;
     TBInteractiveToolbar: TToolBar;
@@ -89,7 +115,7 @@ type
     TBShowUML: TToolButton;
     TBJavaReset: TToolButton;
     TBDelete: TToolButton;
-    N4: TSpTBXSeparatorItem;
+    N04: TSpTBXSeparatorItem;
     MIGotoError: TSpTBXItem;
     MIDock: TSpTBXItem;
     MIUndock: TSpTBXItem;
@@ -116,10 +142,15 @@ type
     icPMMessages: TSVGIconImageCollection;
     vilPMMessagesDark: TVirtualImageList;
     vilPMMessagesLight: TVirtualImageList;
+    PInterpreter: TPanel;
+    MInterpreter: TMemo;
+    PCompiler: TPanel;
+    PMessages: TPanel;
+    PSearch: TPanel;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
 
     procedure LBCompilerDblClick(Sender: TObject);
@@ -139,14 +170,14 @@ type
       var AllowExpansion: Boolean);
     procedure TVAttributesCollapsing(Sender: TObject; Node: TTreeNode;
       var AllowCollapse: Boolean);
-    procedure TVWatchedExpressionsExpanding(Sender: TObject;
-      Node: TTreeNode; var AllowExpansion: Boolean);
-    procedure TVWatchedExpressionsCollapsing(Sender: TObject;
-      Node: TTreeNode; var AllowCollapse: Boolean);
+    procedure TVWatchedExpressionsExpanding(Sender: TObject; Node: TTreeNode;
+      var AllowExpansion: Boolean);
+    procedure TVWatchedExpressionsCollapsing(Sender: TObject; Node: TTreeNode;
+      var AllowCollapse: Boolean);
     procedure TVSearchDblClick(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure MIFontClick(Sender: TObject);
-    procedure MInterpreterKeyPress(Sender: TObject; var Key: Char);
+    procedure MInteractiveKeyPress(Sender: TObject; var Key: Char);
     procedure MICopyAllClick(Sender: TObject);
     procedure MICloseClick(Sender: TObject);
     procedure PMMessagesPopup(Sender: TObject);
@@ -157,16 +188,14 @@ type
     procedure TVSearchKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure LBInteractiveMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure OnSplitterMoved(Sender: TObject);
     procedure SplitterInteractiveRightMoved(Sender: TObject);
     procedure MIPasteClick(Sender: TObject);
     procedure TBShowUMLClick(Sender: TObject);
-    procedure MInterpreterEnter(Sender: TObject);
+    procedure MInteractiveEnter(Sender: TObject);
     procedure MIDeleteClick(Sender: TObject);
     procedure TBDeleteClick(Sender: TObject);
     procedure TBJavaResetMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure MInterpreterDblClick(Sender: TObject);
     procedure MIGotoErrorClick(Sender: TObject);
     procedure TVAttributesKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -193,7 +222,8 @@ type
     procedure LBMessagesEnter(Sender: TObject);
     procedure PInteractiveMiddleEnter(Sender: TObject);
     procedure PInteractiveRightEnter(Sender: TObject);
-    procedure StatusBarDrawPanel(aStatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
+    procedure StatusBarDrawPanel(PStatusBar: TStatusBar; Panel: TStatusPanel;
+      const Rect: TRect);
     procedure FormMouseActivate(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y, HitTest: Integer;
       var MouseActivate: TMouseActivate);
@@ -202,154 +232,186 @@ type
     procedure StringGrid1MouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
     procedure MISameWidthClick(Sender: TObject);
+    procedure MInterpreterDblClick(Sender: TObject);
+    procedure PInteractiveLeftEnter(Sender: TObject);
   private
-    initialized: Boolean;
-    aPosition: TRect;
-    BGColor: TColor;
-    FGColor: TColor;
+    FPosition: TRect;
+    FToJavaConsole: string;
+    FBGColor: TColor;
+    FFGColor: TColor;
 
-    InteractiveEditors: TStringList;
-    InteractiveUMLForms: TStringList;
-    InteractiveVariables: TStringList;
-    InteractiveExecuters: TObjectList;
-    InteractiveComJavas: TObjectList;
+    FInteractiveEditors: TStringList;
+    FInteractiveMemos: TStringList;
+    FInteractiveUMLForms: TStringList;
+    FInteractiveVariables: TStringList;
+    FInteractiveExecuters: TObjectList;
+    FInteractiveComJavas: TObjectList;
 
-    toJavaConsole: string;
-    InteractiveWidth1: Integer;
-    InteractiveWidth2: Integer;
-    fActiveSubTool: integer;
-    procedure ShowMessagesOrInterpreter(const aFile: string; OutputNr: integer);
-    procedure setActiveSubTool(value: integer);
+    FActiveSubTool: Integer;
+    FActiveInteractive: TInteractiveEdit;
+    FUndocking: Boolean;
+    FExpanded: TArray3Stringlist;
+    FDumpActive: Boolean;
+    FSearchGoalLine: Integer;
+    FSearchGoalPath: string;
+    procedure ShowMessagesOrInterpreter(const AFile: string; OutputNr: Integer);
+    procedure SetActiveSubTool(Value: Integer);
     procedure SetStatusBarAndTabs;
-    procedure ShowInteractiveSplitter;
-    procedure HideInteractiveSplitter;
-    procedure Expand(Node: TTreeNode; chapter: integer);
-    procedure Collapse(Node: TTreeNode; chapter: integer);
+    procedure Expand(Node: TTreeNode; Chapter: Integer);
+    procedure Collapse(Node: TTreeNode; Chapter: Integer);
     procedure HideIt;
     function GetSelectedLines(ListBox: TListBox): string;
-    procedure ScrollEnd(i: Integer);
-    function CopyTreeView(TreeView: TTreeView; all: boolean): string;
+    procedure ScrollEnd(Tab: Integer);
+    function CopyTreeView(TreeView: TTreeView; All: Boolean): string;
     function CopyTreeViewSelected(TreeView: TTreeView): string;
     function CopyTreeViewAll(TreeView: TTreeView): string;
-    function GetFileWithPath(LB: TListBox; var i: integer): string;
-    procedure TreeViewDelete(TreeView: TTreeView; all: boolean);
+    function GetFileWithPath(LBox: TListBox; var LineNo: Integer): string;
+    procedure TreeViewDelete(TreeView: TTreeView; All: Boolean);
     procedure TreeViewDeleteSelected(TreeView: TTreeView);
     procedure TreeViewDeleteAll(TreeView: TTreeView);
-    procedure TabControlChange(NewTab: integer);
-    function GetInteractive(i: integer): TInteractiveEdit;
-    procedure SetModifiedUMLForm(i: integer);
-    procedure AdjustVariablesWidths(Tab: integer);
+    procedure TabControlChange(NewTab: Integer);
+    function GetMemo(Tab: Integer): TMemo;
+    function GetInteractive(Tab: Integer): TInteractiveEdit;
+    procedure SetModifiedUMLForm(Tab: Integer);
+    procedure AdjustVariablesWidths(Tab: Integer);
   public
-    ActiveInteractive: TInteractiveEdit;
-    Undocking: boolean;
-    Expanded: array[1..3] of TStringList;
-    DumpActive: boolean;
-    SearchGoalLine: Integer;
-    SearchGoalPath: string;
     procedure ShowIt;
-    procedure UpdateState;
-    procedure ShowTab(i: Integer); overload;
-    procedure ShowTab(const path: string); overload;
-    procedure ChangeTab(i: Integer);
-    procedure DeleteTab(i: Integer);
-    procedure ShowMessages(const aFile: string);
-    procedure ShowInterpreter(const aFile: string);
-    procedure OutputTo(i: Integer; Lines: TStrings);
-    procedure OutputToTerminal(s: string);
-    procedure OutputLineTo(i: Integer; const s: string);
-    function myIsVisible: Boolean;
+    procedure ShowTab(Tab: Integer); overload;
+    procedure ShowTab(const Path: string); overload;
+    procedure ChangeTab(Tab: Integer);
+    procedure DeleteTab(Tab: Integer);
+    procedure ShowMessages(const AFile: string);
+    procedure ShowInterpreter(const AFile: string);
+    procedure OutputTo(Tab: Integer; Lines: TStrings);
+    procedure OutputToTerminal(Message: string);
+    procedure OutputLineTo(Tab: Integer; const Message: string);
+    function MyIsVisible: Boolean;
     procedure ChangeHideShow;
     function GetFont: TFont;
-    procedure SetFont(aFont: TFont);
-    procedure SetFontSize(Delta: integer);
+    procedure SetFont(Font: TFont);
+    procedure SetFontSize(Delta: Integer);
     procedure InitAndShow;
     procedure MyDock;
     procedure Undock;
     procedure SaveWindow;
     procedure ShowWatchedExpressions;
-    function AddInteractive(UMLForm: TForm; const path: string): TInteractive;
+    function AddInteractive(UMLForm: TForm; const Path: string): TInteractive;
     function GetCurrentInteractive: TInteractiveEdit;
     function GetCurrentStringGrid: TStringGrid;
-    procedure DelInteractive(const path: string);
+    procedure DelInteractive(const Path: string);
     procedure Run(const Classpath, Programm, Callparameter: string);
     procedure RenameInteractive(const FromPath, ToPath: string);
-    procedure SetMinHeight(min: integer);
+    procedure SetMinHeight(Min: Integer);
     procedure CutToClipboard;
     procedure PasteFromClipboard;
     procedure CopyToClipboard;
     procedure Undo;
     procedure Redo;
     procedure SystemOutPrintln;
-    procedure Execute(const s: string);
-    function NeedsSemicolon(const s: string): boolean;
-    function getCompileError(const Path: string): string;
-    function InteractiveEditActive: boolean;
-    procedure StatusMessage(const s: string; Status: integer = 0);
+    procedure Execute(const Command: string);
+    function NeedsSemicolon(const Command: string): Boolean;
+    function GetCompileError(const Path: string): string;
+    function InteractiveEditActive: Boolean;
+    procedure StatusMessage(const Message: string; Status: Integer = 0);
     procedure ClearStack;
     procedure ChangeStyle;
     procedure DeleteDebuggingTreeViews;
     procedure DPIChanged;
-    property ActiveSubTool: integer read fActiveSubTool write setActiveSubTool;
-  end;
+    procedure SetDumpActive(Value: Boolean);
+
+    property ActiveSubTool: Integer read FActiveSubTool write SetActiveSubTool;
+    property ActiveInteractive: TInteractiveEdit read FActiveInteractive;
+    property Undocking: Boolean read FUndocking write FUndocking;
+    property Expanded: TArray3Stringlist read FExpanded;
+    property DumpActive: Boolean read FDumpActive;
+    property SearchGoalLine: Integer read FSearchGoalLine;
+    property SearchGoalPath: string read FSearchGoalPath;
+end;
 
 var
   FMessages: TFMessages = nil;
 
 implementation
 
-uses Math, SysUtils, Dialogs, Clipbrd, Types, Themes, System.IOUtils,
-  JvGnugettext, UStringRessources, UJava, UEditorForm, UJavaCommands,
-  UGrepResults, UUtils, UConfiguration, UWatches, UBaseForm,
-  UUMLForm, URtfdDiagram, UDebugger;
+uses
+  System.Math,
+  System.SysUtils,
+  System.IOUtils,
+  System.Types,
+  Vcl.Clipbrd,
+  Vcl.Themes,
+  JvGnugettext,
+  UStringRessources,
+  UUtils,
+  UConfiguration,
+  UEditorForm,
+  UJavaCommands,
+  UGrepResults,
+  UWatches,
+  UUMLForm,
+  URtfdDiagram,
+  UJava,
+  UDebugger;
 
 {$R *.DFM}
+{ -- TInteractive ------------------------------------------------------------ }
 
-constructor TInteractive.create(U: TForm; IE: TInteractiveEdit; SG: TStringGrid; E: TInteractiveExecuter; C: TComJava1);
+constructor TInteractive.Create(UML: TForm; IEdit: TInteractiveEdit;
+  AMemo: TMemo; SGrid: TStringGrid; AExecuter: TInteractiveExecuter;
+  CJava: TComJava1);
 begin
-  UMLForm:= U;
-  InteractiveEditor:= IE;
-  SGVariables:= SG;
-  Executer:= E;
-  ComJava:= C;
+  UMLForm := UML;
+  InteractiveEditor := IEdit;
+  Memo := AMemo;
+  SGVariables := SGrid;
+  Executer := AExecuter;
+  ComJava := CJava;
 end;
 
-{-- TInteractiveEdit ----------------------------------------------------------}
+{ -- TInteractiveEdit -------------------------------------------------------- }
 
 constructor TInteractiveEdit.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Parent:= FMessages.PInteractiveMiddle;
-  PopupMenu:= FMessages.PMMessages;
-  OnMouseDown:=  FMessages.LBInteractiveMouseDown;
-  OnStatusChange:=  EditorStatusChange;
-  OnEnter:=  Enter;
+  inherited Create(AOwner);
+  Parent := FMessages.PInteractiveMiddle;
+  PopupMenu := FMessages.PMMessages;
+  OnMouseDown := FMessages.LBInteractiveMouseDown;
+  OnStatusChange := EditorStatusChange;
+  OnEnter := Enter;
   AddKeyUpHandler(aKeyUpHandler);
   Lines.Add('');
-  Gutter.Visible:= false;
-  //Font.Assign(FMessages.MInterpreter.Font);  ToDO
-  var O:= Options; Exclude(O, eoScrollPastEol); Options:= O;
-  Align:= alClient;
-  RightEdge:= 0;
-  Tag:= 8;
-  if FConfiguration.NoSyntaxHighlighting
-    then Highlighter:= nil
-    else Highlighter:= FConfiguration.GetHighlighter('.java');
+  Gutter.Visible := False;
+  // Font.Assign(FMessages.MInterpreter.Font);  ToDO
+  var
+  Opt := Options;
+  Exclude(Opt, eoScrollPastEol);
+  Options := Opt;
+  Align := alClient;
+  RightEdge := 0;
+  Tag := 8;
+  if FConfiguration.NoSyntaxHighlighting then
+    Highlighter := nil
+  else
+    Highlighter := FConfiguration.GetHighlighter('.java');
 end;
 
 procedure TInteractiveEdit.SystemOutPrintln;
-  var x: Integer;
+var
+  XPos: Integer;
 begin
-  if SelText = ''
-    then x:= CaretX
-    else x:= BlockBegin.Char;
-  SelText:= 'System.out.println();';
-  CaretX:= x + 19;
+  if SelText = '' then
+    XPos := CaretX
+  else
+    XPos := BlockBegin.Char;
+  SelText := 'System.out.println();';
+  CaretX := XPos + 19;
   EnsureCursorPosVisible;
 end;
 
 procedure TInteractiveEdit.UpdateState;
 begin
-  with FJava do begin
+  with FJava do
+  begin
     SetEnabledMI(MICut, SelAvail);
     SetEnabledMI(MICopy, SelAvail);
     SetEnabledMI(MICopyNormal, SelAvail);
@@ -361,9 +423,10 @@ begin
   end;
 end;
 
-procedure TInteractiveEdit.EditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
+procedure TInteractiveEdit.EditorStatusChange(Sender: TObject;
+  Changes: TSynStatusChanges);
 begin
-  if scModified in Changes then  // SynEditTypes
+  if scModified in Changes then
     FMessages.SetModifiedUMLForm(FMessages.TabControlMessages.TabIndex);
   UpdateState;
 end;
@@ -375,250 +438,322 @@ begin
   FJava.scpSetEditor(Self);
 end;
 
-var sKeyUp: string;
+var
+  SKeyUp: string;
 
-procedure TInteractiveEdit.aKeyUpHandler(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TInteractiveEdit.aKeyUpHandler(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
-  if Key = VK_Return then begin
-    var i:= FMessages.TabControlMessages.TabIndex - 5;
-    if i >= 0 then begin
-      if sKeyUp <> ''
-        then sKeyUp:= sKeyUp + #13#10;
-      sKeyUp:= sKeyUp + Lines[CaretY-2];
-      if Shift = [] then begin
-        var aExecuter:= TInteractiveExecuter(FMessages.InteractiveExecuters.Items[i]);
-        aExecuter.execute(sKeyUp);
-        sKeyUp:= '';
+  if Key = VK_RETURN then
+  begin
+    var
+    Tab := FMessages.TabControlMessages.TabIndex - 5;
+    if Tab >= 0 then
+    begin
+      if SKeyUp <> '' then
+        SKeyUp := SKeyUp + #13#10;
+      SKeyUp := SKeyUp + Lines[CaretY - 2];
+      if Shift = [] then
+      begin
+        var
+        Executer := TInteractiveExecuter(FMessages.FInteractiveExecuters[Tab]);
+        Executer.Execute(SKeyUp);
+        SKeyUp := '';
         EnsureCursorPosVisible;
-        if (i = FMessages.TabControlMessages.TabIndex - 5) and canFocus then
-          setFocus;
+        if (Tab = FMessages.TabControlMessages.TabIndex - 5) and CanFocus then
+          SetFocus;
       end;
-      Key:= 0;
+      Key := 0;
     end;
-  end else if (Key = VK_Down) and (CaretY >= Lines.Count) then
+  end
+  else if (Key = VK_DOWN) and (CaretY >= Lines.Count) then
     Lines.Add('')
   else if (Key = Ord('U')) and (ssCtrl in Shift) then
     SystemOutPrintln;
 end;
 
-{--- TFMessages ---------------------------------------------------------------}
+{ --- TFMessages ------------------------------------------------------------- }
 
 procedure TFMessages.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
-  ActiveSubTool:= -1;
-  Undocking:= false;
-  InteractiveEditors  := TStringList.Create;
-  InteractiveUMLForms := TStringList.Create;
-  InteractiveVariables:= TStringList.Create;
-  InteractiveExecuters:= TObjectList.Create;
-  InteractiveComJavas := TObjectList.Create;
-  for var i:= 1 to 3 do begin
-    Expanded[i]:= TStringList.Create;
-    Expanded[i].Duplicates:= dupIgnore;
+  ActiveSubTool := -1;
+  FUndocking := False;
+  FInteractiveEditors := TStringList.Create;
+  FInteractiveMemos := TStringList.Create;
+  FInteractiveUMLForms := TStringList.Create;
+  FInteractiveVariables := TStringList.Create;
+  FInteractiveExecuters := TObjectList.Create;
+  FInteractiveComJavas := TObjectList.Create;
+  for var I := 1 to 3 do
+  begin
+    FExpanded[I] := TStringList.Create;
+    FExpanded[I].Sorted := True;
+    FExpanded[I].Duplicates := dupIgnore;
   end;
   ChangeStyle;
   ShowWatchedExpressions;
-  DumpActive:= false;
-  toJavaConsole:= '';
-  ActiveInteractive:= nil;
-  TBStep.Hint:= FJava.MIStep.Caption;
-  TBNext.Hint:= FJava.MINext.Caption;
-  TBStepUp.Hint:= FJava.MIStepUp.Caption;
-  TBRunToCursor.Hint:= FJava.MIRunToCursor.Caption;
-  TBShowExecutionPoint.Hint:= FJava.MIShowExecutionPoint.Caption;
-  TBExpression.Hint:= FJava.MIExpression.Caption;
-  TBWatches.Hint:= FJava.MIWatches.Caption;
+  FDumpActive := False;
+  FToJavaConsole := '';
+  FActiveInteractive := nil;
+  TBStep.Hint := FJava.MIStep.Caption;
+  TBNext.Hint := FJava.MINext.Caption;
+  TBStepUp.Hint := FJava.MIStepUp.Caption;
+  TBRunToCursor.Hint := FJava.MIRunToCursor.Caption;
+  TBShowExecutionPoint.Hint := FJava.MIShowExecutionPoint.Caption;
+  TBExpression.Hint := FJava.MIExpression.Caption;
+  TBWatches.Hint := FJava.MIWatches.Caption;
 end;
 
 procedure TFMessages.FormDestroy(Sender: TObject);
-  var i: integer; aObject: TObject;
+var
+  I: Integer;
+  AObject: TObject;
 begin
   if TVSearch.Items.Count > 0 then
     myGrepResults.DeleteSearchResults;
   FreeAndNil(myGrepResults);
-  for i:= 0 to InteractiveEditors.Count - 1 do begin
-    aObject:= InteractiveEditors.Objects[i];
-    FreeAndNil(aObject);
+  for I := 0 to FInteractiveEditors.Count - 1 do
+  begin
+    AObject := FInteractiveEditors.Objects[I];
+    FreeAndNil(AObject);
   end;
-  FreeAndNil(InteractiveEditors);
-  FreeAndNil(InteractiveUMLForms);
-  for i:= 0 to InteractiveVariables.Count - 1 do begin
-    aObject:= InteractiveVariables.Objects[i];
-    FreeAndNil(aObject);
+  FreeAndNil(FInteractiveEditors);
+  for I := 0 to FInteractiveMemos.Count - 1 do
+  begin
+    AObject := FInteractiveMemos.Objects[I];
+    FreeAndNil(AObject);
   end;
-  FreeAndNil(InteractiveVariables);
-  FreeAndNil(InteractiveExecuters);
-  FreeAndNil(InteractiveComJavas);
-  for i:= 1 to 3 do
-    FreeAndNil(Expanded[i]);
-  inherited;
+  FreeAndNil(FInteractiveMemos);
+  FreeAndNil(FInteractiveUMLForms);
+  for I := 0 to FInteractiveVariables.Count - 1 do
+  begin
+    AObject := FInteractiveVariables.Objects[I];
+    FreeAndNil(AObject);
+  end;
+  FreeAndNil(FInteractiveVariables);
+  FreeAndNil(FInteractiveExecuters);
+  FreeAndNil(FInteractiveComJavas);
+  for I := 1 to 3 do
+    FreeAndNil(FExpanded[I]);
 end;
 
 procedure TFMessages.FormShow(Sender: TObject);
 begin
-  FJava.ActiveTool:= 7;
-  if canFocus then
-    setFocus;
+  FJava.ActiveTool := 7;
+  if CanFocus then
+    SetFocus;
 end;
 
 procedure TFMessages.SetStatusBarAndTabs;
 begin
-  StatusBar.Font.Size:= FConfiguration.Fontsize;
-  StatusBar.Canvas.Font.Size:= FConfiguration.Fontsize;
-  var h:= StatusBar.Canvas.TextHeight('Ag') + 4;
-  StatusBar.Height:= h;
-  PAttribute.Height:= h;
-  PLocalVariables.Height:= h;
-  PWatches.Height:= h;
-  PStack.Height:= h;
-  TabControlMessages.Font.Size:= FConfiguration.Fontsize;
-  TabControlMessages.Canvas.Font.Size:= FConfiguration.Fontsize;
-  TabControlMessages.Height:= h;
-  TabControlMessages.TabHeight:= h;
+  StatusBar.Font.Size := FConfiguration.Fontsize;
+  StatusBar.Canvas.Font.Size := FConfiguration.Fontsize;
+  var
+  Height := StatusBar.Canvas.TextHeight('Ag') + 4;
+  StatusBar.Height := Height;
+  PAttribute.Height := Height;
+  PLocalVariables.Height := Height;
+  PWatches.Height := Height;
+  PStack.Height := Height;
+  TabControlMessages.Font.Size := FConfiguration.Fontsize;
+  TabControlMessages.Canvas.Font.Size := FConfiguration.Fontsize;
+  TabControlMessages.Height := Height;
+  TabControlMessages.TabHeight := Height;
 end;
 
-procedure TFMessages.FormClose(Sender: TObject; var aAction: TCloseAction);
+procedure TFMessages.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  aAction:= caHide;
+  Action := caHide;
   FJava.ShowDockPanel(FJava.BottomDockPanel, False, nil);
-  FJava.MIMessages.Checked:= false;
-  FJava.ActiveTool:= -1;
+  FJava.MIMessages.Checked := False;
+  FJava.ActiveTool := -1;
 end;
 
 procedure TFMessages.FormMouseActivate(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y, HitTest: Integer;
   var MouseActivate: TMouseActivate);
 begin
-  FJava.ActiveTool:= 7;
+  FJava.ActiveTool := 7;
   FJava.UpdateMenuItems(Self);
 end;
 
 procedure TFMessages.InitAndShow;
-  var myVisible, Docked: boolean;
-      L, T, W, H: integer;
+var
+  MyVisible, Docked: Boolean;
+  AFont: TFont;
+  Left, Top, Width, Height: Integer;
 begin
   LockFormUpdate(Self);
-  myVisible:= FConfiguration.ReadBoolU('Messages', 'Visible', true);
-  Docked:= FConfiguration.ReadBoolU('Messages', 'Docked', true);
-  W:= PPIScale(FConfiguration.ReadIntegerU('Messages', 'Width', 200));
-  if W < 50 then W:= 50;
-  if W > Screen.Width - 50 then W:= Screen.Width - 50;
-  H:= PPIScale(FConfiguration.ReadIntegerU('Messages', 'Height', 200));
-  if H < 50 then H:= 50;
-  if H > Screen.Height - 50 then H:= Screen.Height - 50;
-  L:= PPIScale(FConfiguration.ReadIntegerU('Messages', 'Left', 100));
-  if L + W < 50 then L:= 50 - W;
-  if Screen.Width - L < 50 then L:= Screen.Width - 50;
-  T:= PPIScale(FConfiguration.ReadIntegerU('Messages', 'Top', 500));
-  if T + W < 50 then T:= 50 - H;
-  if Screen.Height - T < 50 then T:= Screen.Height - 50;
-  aPosition:= Rect(L, T, W, H);
-  SetBounds(L, T, W, H);
+  MyVisible := FConfiguration.ReadBoolU('Messages', 'Visible', True);
+  Docked := FConfiguration.ReadBoolU('Messages', 'Docked', True);
+  Width := PPIScale(FConfiguration.ReadIntegerU('Messages', 'Width', 200));
+  if Width < 50 then
+    Width := 50;
+  if Width > Screen.Width - 50 then
+    Width := Screen.Width - 50;
+  Height := PPIScale(FConfiguration.ReadIntegerU('Messages', 'Height', 200));
+  if Height < 50 then
+    Height := 50;
+  if Height > Screen.Height - 50 then
+    Height := Screen.Height - 50;
+  Left := PPIScale(FConfiguration.ReadIntegerU('Messages', 'Left', 100));
+  if Left + Width < 50 then
+    Left := 50 - Width;
+  if Screen.Width - Left < 50 then
+    Left := Screen.Width - 50;
+  Top := PPIScale(FConfiguration.ReadIntegerU('Messages', 'Top', 500));
+  if Top + Width < 50 then
+    Top := 50 - Height;
+  if Screen.Height - Top < 50 then
+    Top := Screen.Height - 50;
+  FPosition := Rect(Left, Top, Width, Height);
+  SetBounds(Left, Top, Width, Height);
   if Docked then
     MyDock;
   ShowIt;
-  if not myVisible then
+  if not MyVisible then
     HideIt;
 
-  var aFont:= TFont.Create;
-  aFont.Name:= FConfiguration.ReadStringU('Messages', 'FontName', 'Consolas');
-  aFont.Size:= PPIScale(FConfiguration.ReadIntegerU('Messages', 'FontSize', 10));
-  SetFont(aFont);
-  FreeAndNil(aFont);
+  AFont := TFont.Create;
+  AFont.Name := FConfiguration.ReadStringU('Messages', 'FontName', 'Consolas');
+  AFont.Size := PPIScale(FConfiguration.ReadIntegerU('Messages',
+    'FontSize', 10));
+  SetFont(AFont);
+  FreeAndNil(AFont);
   SetStatusBarAndTabs;
-  initialized:= false;
-  InteractiveWidth1:= PPIScale(FConfiguration.ReadIntegerU('Messages', 'InteractiveWidth1', 300));
-  if InteractiveWidth1 > W - 200 then
-    InteractiveWidth1:= W - 200;
-  if InteractiveWidth1 < 100 then
-    InteractiveWidth1:= 100;
-  InteractiveWidth2:= PPIScale(FConfiguration.ReadIntegerU('Messages', 'InteractiveWidth2', 200));
-  if Interactivewidth2 > W - 200 then
-    InteractiveWidth2:= W - 200;
-  if InteractiveWidth2 < 100 then
-    InteractiveWidth2:= 100;
 
-  PInteractiveLeft.Width:= InteractiveWidth1;
-  PInteractiveRight.Width:= InteractiveWidth2;
+  PInteractiveLeft.Width := PPIScale(FConfiguration.ReadIntegerU('Messages',
+    'InteractiveLeft', ClientWidth div 3));
+  PInteractiveMiddle.Width := PPIScale(FConfiguration.ReadIntegerU('Messages',
+    'InteractiveMiddle', ClientWidth div 3));
+
+  PDebuggerLeft.Width := PPIScale(FConfiguration.ReadIntegerU('Messages',
+    'DebuggerLeft', ClientWidth div 4));
+  PDebuggerCenterLeft.Width := PPIScale(FConfiguration.ReadIntegerU('Messages',
+    'DebuggerCenterLeft', ClientWidth div 4));
+  PDebuggerCenterRight.Width := PPIScale(FConfiguration.ReadIntegerU('Messages',
+    'DebuggerCenterRight', ClientWidth div 4));
+
+  TabControlChange(FConfiguration.ReadIntegerU('Messages', 'TabIndex', 1));
   FConfiguration.RemoveShortcutsFrom(PMMessages);
-  UnLockFormUpdate(Self);
+  UnlockFormUpdate(Self);
 end;
 
 procedure TFMessages.SaveWindow;
 begin
   // Don't use with, otherwise PPIUnScale is calculated for FConfiguration!
-  FConfiguration.WriteBoolU('Messages', 'Visible', myIsVisible);
+  FConfiguration.WriteBoolU('Messages', 'Visible', MyIsVisible);
   FConfiguration.WriteBoolU('Messages', 'Docked', not FMessages.Floating);
   FConfiguration.WriteStringU('Messages', 'FontName', MInterpreter.Font.Name);
-  FConfiguration.WriteIntegerU('Messages', 'FontSize', PPIUnScale(MInterpreter.Font.Size));
-  if SplitterInteractiveLeft.Visible then begin
-    FConfiguration.WriteIntegerU('Messages', 'InteractiveWidth1', PPIUnScale(PInteractiveLeft.Width));
-    FConfiguration.WriteIntegerU('Messages', 'InteractiveWidth2', PPIUnScale(PInteractiveRight.Width));
-  end else begin
-    FConfiguration.WriteIntegerU('Messages', 'InteractiveWidth1', PPIUnScale(InteractiveWidth1));
-    FConfiguration.WriteIntegerU('Messages', 'InteractiveWidth2', PPIUnScale(InteractiveWidth2));
-  end;
-  FConfiguration.WriteIntegerU('Messages', 'TabIndex', TabControlMessages.TabIndex);
-  if FMessages.Floating then begin
+  FConfiguration.WriteIntegerU('Messages', 'FontSize',
+    PPIUnScale(MInterpreter.Font.Size));
+  FConfiguration.WriteIntegerU('Messages', 'InteractiveLeft',
+    PPIUnScale(PInteractiveLeft.Width));
+  FConfiguration.WriteIntegerU('Messages', 'InteractiveMiddle',
+    PPIUnScale(PInteractiveMiddle.Width));
+
+  FConfiguration.WriteIntegerU('Messages', 'DebuggerLeft',
+    PPIUnScale(PDebuggerLeft.Width));
+  FConfiguration.WriteIntegerU('Messages', 'DebuggerCenterLeft',
+    PPIUnScale(PDebuggerCenterLeft.Width));
+  FConfiguration.WriteIntegerU('Messages', 'DebuggerCenterRight',
+    PPIUnScale(PDebuggerCenterRight.Width));
+
+  FConfiguration.WriteIntegerU('Messages', 'TabIndex',
+    TabControlMessages.TabIndex);
+  if FMessages.Floating then
+  begin
     FConfiguration.WriteIntegerU('Messages', 'Left', PPIUnScale(Self.Left));
-    FConfiguration.WriteIntegerU('Messages', 'Top',  PPIUnScale(Self.Top));
+    FConfiguration.WriteIntegerU('Messages', 'Top', PPIUnScale(Self.Top));
     FConfiguration.WriteIntegerU('Messages', 'Width', PPIUnScale(Self.Width));
     FConfiguration.WriteIntegerU('Messages', 'Height', PPIUnScale(Self.Height));
-  end else begin
-    FConfiguration.WriteIntegerU('Messages', 'Left', PPIUnScale(Self.aPosition.Left));
-    FConfiguration.WriteIntegerU('Messages', 'Top',  PPIUnScale(Self.aPosition.Top));
-    FConfiguration.WriteIntegerU('Messages', 'Width', PPIUnScale(Self.aPosition.Right));
-    FConfiguration.WriteIntegerU('Messages', 'Height', PPIUnScale(Self.aPosition.Bottom));
-    FConfiguration.WriteIntegerU('Messages', 'Splitter', PPIUnScale(FJava.BottomDockPanel.Height));
+  end
+  else
+  begin
+    FConfiguration.WriteIntegerU('Messages', 'Left',
+      PPIUnScale(Self.FPosition.Left));
+    FConfiguration.WriteIntegerU('Messages', 'Top',
+      PPIUnScale(Self.FPosition.Top));
+    FConfiguration.WriteIntegerU('Messages', 'Width',
+      PPIUnScale(Self.FPosition.Right));
+    FConfiguration.WriteIntegerU('Messages', 'Height',
+      PPIUnScale(Self.FPosition.Bottom));
+    FConfiguration.WriteIntegerU('Messages', 'Splitter',
+      PPIUnScale(FJava.BottomDockPanel.Height));
   end;
+  FConfiguration.WriteIntegerU('Messages', 'TabIndex',
+    Min(TabControlMessages.TabIndex, 5));
 end;
 
-procedure TFMessages.TabControlChange(NewTab: integer);
-  var i: integer; IE: TInteractiveEdit;
+procedure TFMessages.TabControlChange(NewTab: Integer);
+var
+  IEdit: TInteractiveEdit;
 begin
-  if not initialized then begin
-    i:= ClientWidth - 3*4; // Splitter
-    i:= i div 4;
-    PDebuggerLeft.Width:= i;
-    PDebuggerCenterLeft.Width:= i;
-    PDebuggerCenterRight.Width:= i;
-    initialized:= true;
-  end;
-  HideInteractiveSplitter;
-  PInterpreter.Visible:= false;
-  LBCompiler.Visible:= false;
-  PDebugger.Visible:= false;
-  TVSearch.Visible:= false;
-  LBMessages.Visible:= false;
+  PInterpreter.Visible := False;
+  PCompiler.Visible := False;
+  PDebugger.Visible := False;
+  PSearch.Visible := False;
+  PMessages.Visible := False;
+  PInteractive.Visible := False;
   case NewTab of
-    0: begin PInterpreter.Visible:= true; if MInterpreter.canFocus then MInterpreter.SetFocus; end;
-    1: begin LBCompiler.Visible:= true; if LBCompiler.canFocus then LBCompiler.SetFocus; end;
-    2: begin PDebugger.Visible:= true; if TVAttributes.canFocus then TVAttributes.SetFocus end;
-    3: begin TVSearch.Visible:= true; if TVSearch.canFocus then TVSearch.SetFocus end;
-    4: begin LBMessages.Visible:= true; if LBMessages.canFocus then LBMessages.SetFocus; end;
-  else begin
-    PInterpreter.Visible:= true;
-    for i:= 0 to InteractiveEditors.Count - 1 do begin
-      TInteractiveEdit(InteractiveEditors.Objects[i]).Visible:= false;
-      TStringGrid(InteractiveVariables.Objects[i]).Visible:= false;
-    end;
-    IE:= GetInteractive(NewTab);
-    if assigned(IE) then begin
-      ShowInteractiveSplitter;
-      ActiveInteractive:= IE;
-      IE.Visible:= true;
-      if IE.CanFocus then // responsible for inactive window exception
-        IE.SetFocus;  //this gave an unexpected exception
-      IE.UpdateState;
-      TStringGrid(InteractiveVariables.Objects[NewTab-5]).Show;
-      AdjustVariablesWidths(NewTab);
-      TComJava1(InteractiveComJavas.Items[NewTab-5]).setActiveComJava(TComJava1(InteractiveComJavas.Items[NewTab-5]));
-      IE.Enter(Self);
-     end;
+    0:
+      begin
+        PInterpreter.Visible := True;
+        if MInterpreter.CanFocus then
+          MInterpreter.SetFocus;
+      end;
+    1:
+      begin
+        PCompiler.Visible := True;
+        if LBCompiler.CanFocus then
+          LBCompiler.SetFocus;
+      end;
+    2:
+      begin
+        PDebugger.Visible := True;
+        if TVAttributes.CanFocus then
+          TVAttributes.SetFocus;
+      end;
+    3:
+      begin
+        PSearch.Visible := True;
+        if TVSearch.CanFocus then
+          TVSearch.SetFocus;
+      end;
+    4:
+      begin
+        PMessages.Visible := True;
+        if LBMessages.CanFocus then
+          LBMessages.SetFocus;
+      end;
+  else
+    begin
+      PInteractive.Visible := True;
+      for var I := 0 to FInteractiveEditors.Count - 1 do
+      begin
+        TInteractiveEdit(FInteractiveEditors.Objects[I]).Visible := False;
+        TMemo(FInteractiveMemos.Objects[I]).Visible := False;
+        TStringGrid(FInteractiveVariables.Objects[I]).Visible := False;
+      end;
+      IEdit := GetInteractive(NewTab);
+      if Assigned(IEdit) then
+      begin
+        FActiveInteractive := IEdit;
+        IEdit.Visible := True;
+        if IEdit.CanFocus then // responsible for inactive window exception
+          IEdit.SetFocus; // this gave an unexpected exception
+        IEdit.UpdateState;
+        TStringGrid(FInteractiveVariables.Objects[NewTab - 5]).Show;
+        AdjustVariablesWidths(NewTab);
+        TComJava1(FInteractiveComJavas[NewTab - 5])
+          .setActiveComJava(TComJava1(FInteractiveComJavas[NewTab - 5]));
+        IEdit.Enter(Self);
+      end;
+      GetMemo(NewTab).Visible := True;
     end;
   end;
-  TabControlMessages.TabIndex:= NewTab;
+  TabControlMessages.TabIndex := NewTab;
   FJava.UpdateMenuItems(nil);
 end;
 
@@ -630,231 +765,282 @@ end;
 
 procedure TFMessages.TBDeleteClick(Sender: TObject);
 begin
-  var IE:= GetInteractive(TabControlMessages.TabIndex);
-  if IE.SelAvail
-    then IE.ClearSelection
-    else IE.Clear;
+  var
+  IEdit := GetInteractive(TabControlMessages.TabIndex);
+  if IEdit.SelAvail then
+    IEdit.ClearSelection
+  else
+    IEdit.Clear;
 end;
 
-procedure TFMessages.ShowTab(i: Integer);
+procedure TFMessages.ShowTab(Tab: Integer);
 begin
   if not Visible then
     ShowIt;
-  if TabControlMessages.TabIndex <> i then begin
-    ChangeTab(i);
+  if TabControlMessages.TabIndex <> Tab then
+  begin
+    ChangeTab(Tab);
     Update;
   end;
 end;
 
-procedure TFMessages.ShowTab(const path: string);
+procedure TFMessages.ShowTab(const Path: string);
 begin
-  var i:= 0;
-  while i < InteractiveEditors.Count do begin
-    if path = InteractiveEditors.Strings[i] then begin
-      ChangeTab(i+5);
-      if ExtractFileExt(path) = '.uml' then
-        ShowInteractiveSplitter;
-      break;
+  var
+  I := 0;
+  while I < FInteractiveEditors.Count do
+  begin
+    if Path = FInteractiveEditors[I] then
+    begin
+      ChangeTab(I + 5);
+      Break;
     end;
-    inc(i);
+    Inc(I);
   end;
   Update;
 end;
 
-procedure TFMessages.ChangeTab(i: Integer);
+procedure TFMessages.ChangeTab(Tab: Integer);
 begin
-  if myIsVisible and (TabControlMessages.TabIndex <> i) then begin
-    TabControlMessages.TabIndex:= i;
+  if MyIsVisible and (TabControlMessages.TabIndex <> Tab) then
+  begin
+    TabControlMessages.TabIndex := Tab;
     TabControlMessagesChange(Self);
-    AdjustVariablesWidths(i);
+    AdjustVariablesWidths(Tab);
   end;
 end;
 
-procedure TFMessages.DeleteTab(i: Integer);
+procedure TFMessages.DeleteTab(Tab: Integer);
 begin
-  case i of
-    0: MInterpreter.Text:= '';
-    1: LBCompiler.Clear;
-    2: ;
-    3: ;
-    4: LBMessages.Clear;
-  else begin
-    GetInteractive(i).Clear;
-    SetModifiedUMLForm(i);
+  case Tab of
+    0:
+      MInterpreter.Text := '';
+    1:
+      LBCompiler.Clear;
+    2:
+      ;
+    3:
+      ;
+    4:
+      LBMessages.Clear;
+  else
+    begin
+      GetMemo(Tab).Clear;
+      GetInteractive(Tab).Clear;
+      SetModifiedUMLForm(Tab);
     end;
   end;
 end;
 
-procedure TFMessages.ShowMessagesOrInterpreter(const aFile: string; OutputNr: integer);
+procedure TFMessages.ShowMessagesOrInterpreter(const AFile: string;
+  OutputNr: Integer);
 begin
-  var Messages:= TStringlist.Create;
+  var
+  Messages := TStringList.Create;
   try
-    Messages.LoadfromFile(aFile);
+    Messages.LoadFromFile(AFile);
     OutputTo(OutputNr, Messages);
   except
-    on e: exception do
-      ErrorMsg(e.Message);
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
   ChangeTab(OutputNr);
   FreeAndNil(Messages);
 end;
 
-procedure TFMessages.ShowMessages(const aFile: string);
+procedure TFMessages.ShowMessages(const AFile: string);
 begin
-  ShowMessagesOrInterpreter(aFile, K_Messages);
+  ShowMessagesOrInterpreter(AFile, K_Messages);
 end;
 
-procedure TFMessages.ShowInterpreter(const aFile: string);
+procedure TFMessages.ShowInterpreter(const AFile: string);
 begin
-  ShowMessagesOrInterpreter(aFile, K_Interpreter);
+  ShowMessagesOrInterpreter(AFile, K_Interpreter);
 end;
 
-procedure TFMessages.OutputTo(i: integer; Lines: TStrings);
+procedure TFMessages.OutputTo(Tab: Integer; Lines: TStrings);
 begin
-  case i of
-    0: MInterpreter.Lines.AddStrings(Lines);
-    1: LBCompiler.Items.AddStrings(Lines);
-    2: ;
-    3: ;
-    4: LBMessages.Items.AddStrings(Lines);
-  else begin
-    GetInteractive(i).Lines.Add(Lines.Text);
-    SetModifiedUMLForm(i);
+  case Tab of
+    0:
+      MInterpreter.Lines.AddStrings(Lines);
+    1:
+      LBCompiler.Items.AddStrings(Lines);
+    2:
+      ;
+    3:
+      ;
+    4:
+      LBMessages.Items.AddStrings(Lines);
+  else
+    begin
+      GetInteractive(Tab).Lines.Add(Lines.Text);
+      SetModifiedUMLForm(Tab);
     end;
   end;
-  ScrollEnd(i);
+  ScrollEnd(Tab);
 end;
 
-procedure TFMessages.OutputToTerminal(s: string);
+procedure TFMessages.OutputToTerminal(Message: string);
 begin
-  if endsWith(s, CrLf) then
-    delete(s, length(s)-1, 2);
-  MInterpreter.Lines.Add(s);
-  ScrollEnd(0);
+  if EndsWith(Message, CrLf) then
+    Delete(Message, Length(Message) - 1, 2);
+  var
+  Tab := TabControlMessages.TabIndex;
+  if Tab > 4 then
+  begin
+    GetMemo(Tab).Lines.Add(Message);
+    ScrollEnd(Tab);
+  end
+  else
+  begin
+    MInterpreter.Lines.Add(Message);
+    ScrollEnd(0);
+  end;
 end;
 
-procedure TFMessages.OutputLineTo(i: Integer; const s: string);
+procedure TFMessages.OutputLineTo(Tab: Integer; const Message: string);
 begin
-  case i of
-    0: MInterpreter.Lines.Add(s);
-    1: LBCompiler.Items.Add(s);
-    2: ;
-    3: ;
-    4: LBMessages.Items.Add(s);
-  else begin
-    GetInteractive(i).Lines.Add(s);
-    SetModifiedUMLForm(i);
+  case Tab of
+    0:
+      MInterpreter.Lines.Add(Message);
+    1:
+      LBCompiler.Items.Add(Message);
+    2:
+      ;
+    3:
+      ;
+    4:
+      LBMessages.Items.Add(Message);
+  else
+    begin
+      GetInteractive(Tab).Lines.Add(Message);
+      SetModifiedUMLForm(Tab);
     end;
   end;
-  ScrollEnd(i);
+  ScrollEnd(Tab);
 end;
 
-function TFMessages.GetFileWithPath(LB: TListBox; var i: integer): string;
-  var s, pathname, filename, path: string; j, p: integer;
+function TFMessages.GetFileWithPath(LBox: TListBox;
+  var LineNo: Integer): string;
+var
+  Str, Pathname, Filename, Path: string;
 begin
-  Result:= '';
-  while i >= 0 do begin
-    s:= LB.Items[i];
-    p:= Pos('.java:', s);
-    if p > 0 then begin
-      delete(s, p + 5, length(s));
-      if copy(s, 1, 2) = '.\' then  // .\filename.java
-        delete(s, 1, 2);
-      if TPath.DriveExists(s) or IsUNC(s) then begin
-        Result:= s;
-        exit;
-      end;
-      for j:= 0 to FJava.TDIEditFormCount - 1 do begin
-        pathname:= FJava.TDIEditFormGet(j).Pathname;
-        filename:= ExtractFilename(pathname);
-        if (filename = s) and FileExists(pathname) then begin
-          Result:= Pathname;
-          exit;
-        end;
-        path:= ExtractFilePath(pathname);
-        if FileExists(path + s) then begin
-          Result:= path + s;
-          exit;
-        end;
+  Result := '';
+  while LineNo >= 0 do
+  begin
+    Str := LBox.Items[LineNo];
+    var Pos := Pos('.java:', Str);
+    if Pos > 0 then
+    begin
+      Delete(Str, Pos + 5, Length(Str));
+      if Copy(Str, 1, 2) = '.\' then // .\filename.java
+        Delete(Str, 1, 2);
+      if TPath.DriveExists(Str) or IsUNC(Str) then
+        Exit(Str);
+      for var J := 0 to FJava.TDIEditFormCount - 1 do
+      begin
+        Pathname := FJava.TDIEditFormGet(J).Pathname;
+        Filename := ExtractFileName(Pathname);
+        if (Filename = Str) and FileExists(Pathname) then
+          Exit(Pathname);
+        Path := ExtractFilePath(Pathname);
+        if FileExists(Path + Str) then
+          Exit(Path + Str);
       end;
     end;
-    dec(i);
+    Dec(LineNo);
   end;
 end;
 
 procedure TFMessages.LBCompilerDblClick(Sender: TObject);
-  var i, d1, d2, Line, Column : Integer;
-      s, s1, s2, FileWithPath: string;
+var
+  I, Pos1, Pos2, Line, Column: Integer;
+  Str, Str1, Str2, FileWithPath: string;
 begin
   // activate double-clicked errorline in editor-window
-  i:= LBCompiler.ItemIndex;
-  d2:= i;
-  FileWithPath:= GetFileWithPath(LBCompiler, d2);
+  I := LBCompiler.ItemIndex;
+  Pos2 := I;
+  FileWithPath := GetFileWithPath(LBCompiler, Pos2);
   repeat
-    s1:= LBCompiler.Items[i];
-    d1:= Pos('.java:', s1);   // VisibleStack.java:12:
-    if d1 > 0 then begin
-      s2:= copy(s1, d1 + 6, 255);
-      d2:= Pos(':', s2);                  // compile error
-      if d2 > 0 then begin                // errorline found
-        LBCompiler.ItemIndex:= i;
-        if not TryStrToInt(Copy(s2, 1, d2-1), Line) then
-          continue;
-        delete(s2, 1, d2);
-        d2:= Pos(':', s2);
-        if not TryStrToInt(Copy(s2, 1, d2-1), Column) then
-          Column:= 1;
+    Str1 := LBCompiler.Items[I];
+    Pos1 := Pos('.java:', Str1); // VisibleStack.java:12:
+    if Pos1 > 0 then
+    begin
+      Str2 := Copy(Str1, Pos1 + 6, 255);
+      Pos2 := Pos(':', Str2); // compile error
+      if Pos2 > 0 then
+      begin // errorline found
+        LBCompiler.ItemIndex := I;
+        if not TryStrToInt(Copy(Str2, 1, Pos2 - 1), Line) then
+          Continue;
+        Delete(Str2, 1, Pos2);
+        Pos2 := Pos(':', Str2);
+        if not TryStrToInt(Copy(Str2, 1, Pos2 - 1), Column) then
+          Column := 1;
         // position cursor in editor
-        if Copy(Trim(s1), 1, 2) = '.\' then // relativ path
-          FileWithPath:= ExtractFilePath(FileWithPath) + ExtractFileName(Copy(s1, 1, d1+4));
-        FJava.ChangeWindowWithPositioning(ToWindows(FileWithPath), Column, Line, true);
-        break;
+        if Copy(Trim(Str1), 1, 2) = '.\' then // relativ path
+          FileWithPath := ExtractFilePath(FileWithPath) +
+            ExtractFileName(Copy(Str1, 1, Pos1 + 4));
+        FJava.ChangeWindowWithPositioning(ToWindows(FileWithPath), Column,
+          Line, True);
+        Break;
       end;
     end;
-    i:= i - 1;
-  until i = -1;
-  if i = -1 then begin
-    i:= LBCompiler.ItemIndex;
-    s:= LBCompiler.Items[i];
-    if (Pos('-deprecation', s) > 0) and FileExists(FileWithPath) then begin
-      FConfiguration.JavaCompilerParameter:= '-deprecation ' + FConfiguration.JavaCompilerParameter;
+    I := I - 1;
+  until I = -1;
+  if I = -1 then
+  begin
+    I := LBCompiler.ItemIndex;
+    Str := LBCompiler.Items[I];
+    if (Pos('-deprecation', Str) > 0) and FileExists(FileWithPath) then
+    begin
+      FConfiguration.JavaCompilerParameter := '-deprecation ' +
+        FConfiguration.JavaCompilerParameter;
       myJavaCommands.Compile(FileWithPath, '');
-      delete(FConfiguration.JavaCompilerParameter, 1, 13);
-    end else
-    if (Pos('-Xlint:unchecked ', s) > 0) and FileExists(FileWithPath) then begin
-      FConfiguration.JavaCompilerParameter:= '-Xlint:unchecked ' + FConfiguration.JavaCompilerParameter;
+      Delete(FConfiguration.JavaCompilerParameter, 1, 13);
+    end
+    else if (Pos('-Xlint:unchecked ', Str) > 0) and FileExists(FileWithPath) then
+    begin
+      FConfiguration.JavaCompilerParameter := '-Xlint:unchecked ' +
+        FConfiguration.JavaCompilerParameter;
       myJavaCommands.Compile(FileWithPath, '');
-      delete(FConfiguration.JavaCompilerParameter, 1, 17);
+      Delete(FConfiguration.JavaCompilerParameter, 1, 17);
     end;
   end;
 end;
 
 procedure TFMessages.MInterpreterDblClick(Sender: TObject);
-  var i, p, d0, d1, d2, Line: Integer;
-      s, s2, FileWithPath: string;
+var
+  I, Pos0, Pos1, Pos2, Pos3, Line: Integer;
+  Str1, Str2, FileWithPath: string;
 begin
   // activate double-clicked errorline in editor-window
-  i:= MInterpreter.CaretPos.y + 1;
-  p:= 0;
-  while (i > 0) and (p = 0) do begin
-    dec(i);
-    s:= trim(MInterpreter.Lines[i]);
-    p:= Pos('Exception', s);  // Exception at
+  I := MInterpreter.CaretPos.Y + 1;
+  Pos3 := 0;
+  while (I > 0) and (Pos3 = 0) do
+  begin
+    Dec(I);
+    Str1 := Trim(MInterpreter.Lines[I]);
+    Pos3 := Pos('Exception', Str1); // Exception at
   end;
 
-  if p > 0 then begin
-    s:= MInterpreter.Lines[i+1];
-    d0:= Pos('(', s);
-    d1:= Pos('.java:', s);   // VisibleStack.java:12:
-    if d1 > 0 then begin
-      s2:= copy(s, d1 + 6, 255);
-      d2:= Pos(')', s2);                  // compile error
-      if d2 > 0 then begin                // errorline found
-        MInterpreter.CaretPos:= Point(1, i+1);
-        if not TryStrToInt(Copy(s2, 1, d2-1), Line) then exit;
-        FileWithPath:=  FJava.GetPathnameForClass(copy(s, d0+1, d1-d0+4));
+  if Pos3 > 0 then
+  begin
+    Str1 := MInterpreter.Lines[I + 1];
+    Pos0 := Pos('(', Str1);
+    Pos1 := Pos('.java:', Str1); // VisibleStack.java:12:
+    if Pos1 > 0 then
+    begin
+      Str2 := Copy(Str1, Pos1 + 6, 255);
+      Pos2 := Pos(')', Str2); // compile error
+      if Pos2 > 0 then
+      begin // errorline found
+        MInterpreter.CaretPos := Point(1, I + 1);
+        if not TryStrToInt(Copy(Str2, 1, Pos2 - 1), Line) then
+          Exit;
+        FileWithPath := FJava.GetPathnameForClass(Copy(Str1, Pos0 + 1, Pos1 - Pos0 + 4));
         if FileWithPath <> '' then
-          FJava.ChangeWindowWithPositioning(FileWithPath, -1, Line, true);
+          FJava.ChangeWindowWithPositioning(FileWithPath, -1, Line, True);
       end;
     end;
   end;
@@ -863,217 +1049,257 @@ end;
 procedure TFMessages.MIGotoErrorClick(Sender: TObject);
 begin
   case TabControlMessages.TabIndex of
-    0: begin
-         MInterpreter.CaretPos:= Point(1, MInterpreter.Lines.Count);
-         MInterpreterDblClick(Self);
-       end;
-    1: begin
-         var i:= 0;
-         while (i < LBCompiler.Items.Count) and (Pos(': error: ', LBCompiler.Items[i]) = 0) do
-           inc(i);
-         if i < LBCompiler.Items.Count then begin
-           LBCompiler.ItemIndex:= i;
-           LBCompilerDblClick(self);
-         end;
-       end;
+    0:
+      begin
+        MInterpreter.CaretPos := Point(1, MInterpreter.Lines.Count);
+        MInterpreterDblClick(Self);
+      end;
+    1:
+      begin
+        var
+        I := 0;
+        while (I < LBCompiler.Items.Count) and
+          (Pos(': error: ', LBCompiler.Items[I]) = 0) do
+          Inc(I);
+        if I < LBCompiler.Items.Count then
+        begin
+          LBCompiler.ItemIndex := I;
+          LBCompilerDblClick(Self);
+        end;
+      end;
   end;
 end;
 
 procedure TFMessages.LBMessagesDblClick(Sender: TObject);
-  var i, d1, d2, Line, Column: Integer;
-      s, FileWithPath: string;
+var
+  I, Pos1, Pos2, Line, Column: Integer;
+  Str, FileWithPath: string;
 begin
   // Activate the double-clicked error line in the editor window
-  i:= LBMessages.ItemIndex;
-  d1:= 0;
-  FileWithPath:= GetFileWithPath(LBMessages, d1);
-  s:= LBMessages.Items[i];
-  d1:= Pos('.java:', s);   // VisibleStack.java:12:
-  if d1 > 0 then begin
-    s:= copy(s, d1 + 6, 255);
-    d2:= Pos(':', s);      // Style check failed
-    if d2 > 0 then begin   // error line found
-      LBMessages.ItemIndex:= i;
-      if TryStrToInt(Copy(s, 1, d2-1), Line) then begin
-        s:= Copy(s, d2+1, 255);
-        d2:= Pos(':', s);
-        if d2 = 0
-          then Column:= -1
-          else if not TryStrToInt(Copy(s, 1, d2-1), Column) then exit;
-        FJava.ChangeWindowWithPositioning(ToWindows(FileWithPath), Column, Line, true);
+  I := LBMessages.ItemIndex;
+  Pos1 := 0;
+  FileWithPath := GetFileWithPath(LBMessages, Pos1);
+  Str := LBMessages.Items[I];
+  Pos1 := Pos('.java:', Str); // VisibleStack.java:12:
+  if Pos1 > 0 then
+  begin
+    Str := Copy(Str, Pos1 + 6, 255);
+    Pos2 := Pos(':', Str); // Style check failed
+    if Pos2 > 0 then
+    begin // error line found
+      LBMessages.ItemIndex := I;
+      if TryStrToInt(Copy(Str, 1, Pos2 - 1), Line) then
+      begin
+        Str := Copy(Str, Pos2 + 1, 255);
+        Pos2 := Pos(':', Str);
+        if Pos2 = 0 then
+          Column := -1
+        else if not TryStrToInt(Copy(Str, 1, Pos2 - 1), Column) then
+          Exit;
+        FJava.ChangeWindowWithPositioning(ToWindows(FileWithPath), Column,
+          Line, True);
       end;
     end;
   end;
 end;
 
-procedure TFMessages.ScrollEnd(i: Integer);
-  var IE: TInteractiveEdit;
+procedure TFMessages.ScrollEnd(Tab: Integer);
+var
+  IEdit: TInteractiveEdit;
 
-  procedure ScrollEndMemo(M: TMemo);
+  procedure ScrollEndMemo(Memo: TMemo);
   begin
-    M.Perform(EM_LineScroll, 0 , M.Lines.Count-1);
-    M.Update;
-    M.SelStart:= Length(M.Text)-2;
+    Memo.Perform(EM_LINESCROLL, 0, Memo.Lines.Count - 1);
+    Memo.Update;
+    Memo.SelStart := Length(Memo.Text) - 2;
   end;
 
 begin
-  case i of
-    0: ScrollEndMemo(MInterpreter);
-    1: ScrollEndListBox(LBCompiler);
-    2: ;
-    3: ;
-    4: ScrollEndListBox(LBMessages);
-  else begin
-    IE:= GetInteractive(i);
-    IE.TopLine:= IE.Lines.Count - 2;
-   end;
+  case Tab of
+    0:
+      ScrollEndMemo(MInterpreter);
+    1:
+      ScrollEndListBox(LBCompiler);
+    2:
+      ;
+    3:
+      ;
+    4:
+      ScrollEndListBox(LBMessages);
+  else
+    begin
+      ScrollEndMemo(GetMemo(Tab));
+      IEdit := GetInteractive(Tab);
+      IEdit.TopLine := IEdit.Lines.Count - 2;
+    end;
   end;
 end;
 
-procedure TFMessages.SetFont(aFont: TFont);
+procedure TFMessages.SetFont(Font: TFont);
 begin
-  MInterpreter.Font.Assign(aFont);
-  LBCompiler.Font.Assign(aFont);
-  TVAttributes.Font.Assign(aFont);
-  TVLocalVariables.Font.Assign(aFont);
-  TVWatchedExpressions.Font.Assign(aFont);
-  LBStack.Font.Assign(aFont);
-  TVSearch.Font.Assign(aFont);
-  LBMessages.Font.Assign(aFont);
-  for var i:= 0 to InteractiveEditors.Count - 1 do begin
-    GetInteractive(i+5).Font.Assign(aFont);
-    TStringGrid(InteractiveVariables.Objects[i]).Font.Assign(aFont);
-    TStringGrid(InteractiveVariables.Objects[i]).DefaultRowHeight:= Round(aFont.Size*1.8);
+  MInterpreter.Font.Assign(Font);
+  LBCompiler.Font.Assign(Font);
+  TVAttributes.Font.Assign(Font);
+  TVLocalVariables.Font.Assign(Font);
+  TVWatchedExpressions.Font.Assign(Font);
+  LBStack.Font.Assign(Font);
+  TVSearch.Font.Assign(Font);
+  LBMessages.Font.Assign(Font);
+  for var I := 0 to FInteractiveEditors.Count - 1 do
+  begin
+    GetMemo(I + 5).Font.Assign(Font);
+    GetInteractive(I + 5).Font.Assign(Font);
+    TStringGrid(FInteractiveVariables.Objects[I]).Font.Assign(Font);
+    TStringGrid(FInteractiveVariables.Objects[I]).DefaultRowHeight :=
+      Round(Font.Size * 1.8);
   end;
 end;
 
 function TFMessages.GetFont: TFont;
 begin
-  Result:= MInterpreter.Font;
+  Result := MInterpreter.Font;
 end;
 
-procedure TFMessages.SetFontSize(Delta: integer);
+procedure TFMessages.SetFontSize(Delta: Integer);
 begin
-  var Size:= MInterpreter.Font.Size + Delta;
-  if Size < 6 then Size:= 6;
-  MInterpreter.Font.Size:= Size;
-  LBCompiler.Font.Size:= Size;
-  TVAttributes.Font.Size:= Size;
-  TVLocalVariables.Font.Size:= Size;
-  TVWatchedExpressions.Font.Size:= Size;
-  LBStack.Font.Size:= Size;
-  TVSearch.Font.Size:= Size;
-  LBMessages.Font.Size:= Size;
-  StatusBar.Font.Size:= Size;
-  for var i:= 0 to InteractiveEditors.Count - 1 do begin
-    GetInteractive(i+5).Font.Size:= Size;
-    SetModifiedUMLForm(i+5);
-    TStringGrid(InteractiveVariables.Objects[i]).Font.Size:= Size;
-    TStringGrid(InteractiveVariables.Objects[i]).DefaultRowHeight:= Round(Size*1.8);
+  var
+  Size := MInterpreter.Font.Size + Delta;
+  if Size < 6 then
+    Size := 6;
+  MInterpreter.Font.Size := Size;
+  LBCompiler.Font.Size := Size;
+  TVAttributes.Font.Size := Size;
+  TVLocalVariables.Font.Size := Size;
+  TVWatchedExpressions.Font.Size := Size;
+  LBStack.Font.Size := Size;
+  TVSearch.Font.Size := Size;
+  LBMessages.Font.Size := Size;
+  StatusBar.Font.Size := Size;
+  for var I := 0 to FInteractiveEditors.Count - 1 do
+  begin
+    GetMemo(I + 5).Font.Size := Size;
+    GetInteractive(I + 5).Font.Size := Size;
+    SetModifiedUMLForm(I + 5);
+    TStringGrid(FInteractiveVariables.Objects[I]).Font.Size := Size;
+    TStringGrid(FInteractiveVariables.Objects[I]).DefaultRowHeight :=
+      Round(Size * 1.8);
   end;
   Show;
 end;
 
-function TFMessages.myIsVisible: Boolean;
+function TFMessages.MyIsVisible: Boolean;
 begin
-  if Floating
-    then Result:= FMessages.Visible
-    else Result:= FMessages.Visible and (FJava.BottomDockPanel.Height > 1);
+  if Floating then
+    Result := FMessages.Visible
+  else
+    Result := FMessages.Visible and (FJava.BottomDockPanel.Height > 1);
 end;
 
 procedure TFMessages.ShowIt;
 begin
-  if not myIsVisible then
-    if Floating
-      then Show
-      else FJava.ShowDockPanel(FJava.BottomDockPanel, true, FMessages);
+  if not MyIsVisible then
+    if Floating then
+      Show
+    else
+      FJava.ShowDockPanel(FJava.BottomDockPanel, True, FMessages);
 end;
 
 procedure TFMessages.HideIt;
 begin
-  if myIsVisible then
-    if Floating
-      then Hide
-      else FJava.ShowDockPanel(FJava.BottomDockPanel, false, nil);
+  if MyIsVisible then
+    if Floating then
+      Hide
+    else
+      FJava.ShowDockPanel(FJava.BottomDockPanel, False, nil);
 end;
 
 procedure TFMessages.ChangeHideShow;
 begin
-  if myIsVisible
-    then HideIt
-    else ShowIt;
+  if MyIsVisible then
+    HideIt
+  else
+    ShowIt;
 end;
 
 procedure TFMessages.MyDock;
 begin
   if Floating then
     ManualDock(FJava.BottomDockPanel, nil, alTop);
-  TabControlMessages.Top:= ClientHeight;
+  TabControlMessages.Top := ClientHeight;
 end;
 
 procedure TFMessages.Undock;
 begin
-  if not Floating then begin
-    var Pos:= aPosition;
-    Pos.Right:= aPosition.Left + aPosition.Right;
-    Pos.Bottom:= aPosition.Top + aPosition.Bottom;
+  if not Floating then
+  begin
+    var
+    Pos := FPosition;
+    Pos.Right := FPosition.Left + FPosition.Right;
+    Pos.Bottom := FPosition.Top + FPosition.Bottom;
     ManualFloat(Pos);
   end;
 end;
 
 procedure TFMessages.MIDockClick(Sender: TObject);
 begin
-  if Floating
-    then MyDock
+  if Floating then
+    MyDock;
 end;
 
 procedure TFMessages.MIUndockClick(Sender: TObject);
 begin
-  if not FMessages.Floating
-     then FMessages.Undock;
+  if not FMessages.Floating then
+    FMessages.Undock;
 end;
 
-procedure TFMessages.TVWatchedExpressionsKeyUp(Sender: TObject;
-                       var Key: Word; Shift: TShiftState);
-  var p: integer; s: string; Node: TTreeNode;
+procedure TFMessages.TVWatchedExpressionsKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  Node: TTreeNode;
 begin
- if Key = VK_Insert then
+  if Key = VK_INSERT then
     FJava.MIWatchesClick(Self)
-  else if Key = VK_Delete then
-    with TVWatchedExpressions do begin
-      Node:= Selected;
-      if Assigned(Node) and not Assigned(Node.Parent) then begin
-        s:= Node.Text;
-        p:= Pos(' = ', s);
-        if p > 0 then
-          delete(s, p, length(s));
-        Items.delete(Node);
-        FWatches.Delete(s);
+  else if Key = VK_DELETE then
+    with TVWatchedExpressions do
+    begin
+      Node := Selected;
+      if Assigned(Node) and not Assigned(Node.Parent) then
+      begin
+        var Str := Node.Text;
+        var Posi := Pos(' = ', Str);
+        if Posi > 0 then
+          Delete(Str, Posi, Length(STr));
+        Items.Delete(Node);
+        FWatches.Delete(Str);
+      end;
     end;
-  end;
 end;
 
 procedure TFMessages.LBStackDblClick(Sender: TObject);
-  var s, aClass, Path: string;
-      Line, p, p1, p2: Integer;
+var
+  Str, AClass, Path: string;
+  Line, Pos1, Pos2, Pos3: Integer;
 begin
-  if (0 <= LBStack.ItemIndex) and (LBStack.ItemIndex < LBStack.Items.Count) then begin
-    s:= LBStack.Items[LBStack.ItemIndex];
-    p1:= Pos('(', s);
-    p2:= Pos(')', s);
-    s:= Copy(s, p1 + 1 , p2 - p1 - 1);
-    p:= Pos(':', s);
-    aClass:= Copy(s, 1, p-1);
-    delete(s, 1, p);
+  if (0 <= LBStack.ItemIndex) and (LBStack.ItemIndex < LBStack.Items.Count) then
+  begin
+    Str := LBStack.Items[LBStack.ItemIndex];
+    Pos1 := Pos('(', Str);
+    Pos2 := Pos(')', Str);
+    Str := Copy(Str, Pos1 + 1, Pos2 - Pos1 - 1);
+    Pos3 := Pos(':', Str);
+    AClass := Copy(Str, 1, Pos3 - 1);
+    Delete(Str, 1, Pos3);
     try
-      if not TryStrToInt(s, Line) then exit;
-      p:= Pos('.', aClass);
-      Delete(aClass, p, Length(aClass));
-      Path:= FJava.GetPathnameForClass(aClass);
-      if Path <> '' then begin
-        SearchGoalLine:= Line;
-        SearchGoalPath:= Path;
-        FJava.ChangeWindowWithPositioning(Path, 1, Line, false);
+      if not TryStrToInt(Str, Line) then
+        Exit;
+      Pos3 := Pos('.', AClass);
+      Delete(AClass, Pos3, Length(AClass));
+      Path := FJava.GetPathnameForClass(AClass);
+      if Path <> '' then
+      begin
+        FSearchGoalLine := Line;
+        FSearchGoalPath := Path;
+        FJava.ChangeWindowWithPositioning(Path, 1, Line, False);
       end;
     except
     end;
@@ -1083,8 +1309,8 @@ end;
 procedure TFMessages.LBStackKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_Delete then
-    LBCompiler.DeleteSelected
+  if Key = VK_DELETE then
+    LBCompiler.DeleteSelected;
 end;
 
 procedure TFMessages.TVWatchedExpressionsDblClick(Sender: TObject);
@@ -1095,153 +1321,211 @@ end;
 procedure TFMessages.MIDeleteClick(Sender: TObject);
 begin
   case ActiveSubTool of
-    0: if MInterpreter.SelLength > 0
-         then MInterpreter.ClearSelection
-         else MInterpreter.Clear;
-    1: LBCompiler.DeleteSelected;
-    2: TreeViewDeleteSelected(TVAttributes);
-    3: TreeViewDeleteSelected(TVLocalVariables);
-    4: TreeViewDeleteSelected(TVWatchedExpressions);
-    5: LBStack.DeleteSelected;
-    6: TreeViewDeleteSelected(TVSearch);
-    7: LBMessages.DeleteSelected;
-    8: begin
-         var IE:= GetInteractive(TabControlMessages.TabIndex);
-         IE.ClearSelection;
-         SetModifiedUMLForm(TabControlMessages.TabIndex);
-       end;
+    0:
+      if MInterpreter.SelLength > 0 then
+        MInterpreter.ClearSelection
+      else
+        MInterpreter.Clear;
+    1:
+      LBCompiler.DeleteSelected;
+    2:
+      TreeViewDeleteSelected(TVAttributes);
+    3:
+      TreeViewDeleteSelected(TVLocalVariables);
+    4:
+      TreeViewDeleteSelected(TVWatchedExpressions);
+    5:
+      LBStack.DeleteSelected;
+    6:
+      TreeViewDeleteSelected(TVSearch);
+    7:
+      LBMessages.DeleteSelected;
+    8:
+      begin
+        GetInteractive(TabControlMessages.TabIndex).ClearSelection;
+        SetModifiedUMLForm(TabControlMessages.TabIndex);
+      end;
+    10:
+      GetMemo(TabControlMessages.TabIndex).ClearSelection;
   end;
 end;
 
 procedure TFMessages.MIDeleteAllClick(Sender: TObject);
 begin
   case ActiveSubTool of
-    0: MInterpreter.Clear;
-    1: LBCompiler.Clear;
-    2: TreeViewDeleteAll(TVAttributes);
-    3: TreeViewDeleteAll(TVLocalVariables);
-    4: TreeViewDeleteAll(TVWatchedExpressions);
-    5: LBStack.Clear;
-    6: TreeViewDeleteAll(TVSearch);
-    7: LBMessages.Clear;
-    8: begin
-         var IE:= GetInteractive(TabControlMessages.TabIndex);
-         IE.Clear;
-         SetModifiedUMLForm(TabControlMessages.TabIndex);
-       end;
+    0:
+      MInterpreter.Clear;
+    1:
+      LBCompiler.Clear;
+    2:
+      TreeViewDeleteAll(TVAttributes);
+    3:
+      TreeViewDeleteAll(TVLocalVariables);
+    4:
+      TreeViewDeleteAll(TVWatchedExpressions);
+    5:
+      LBStack.Clear;
+    6:
+      TreeViewDeleteAll(TVSearch);
+    7:
+      LBMessages.Clear;
+    8:
+      begin
+        GetInteractive(TabControlMessages.TabIndex).Clear;
+        SetModifiedUMLForm(TabControlMessages.TabIndex);
+      end;
+    10:
+      GetMemo(TabControlMessages.TabIndex).Clear;
   end;
 end;
 
 procedure TFMessages.TBExecuteClick(Sender: TObject);
-  var aForm: TFEditForm; IE: TSynEdit; aExecuter: TInteractiveExecuter;
-      i: integer; s: string;
+var
+  Form: TFEditForm;
+  IEdit: TSynEdit;
+  Executer: TInteractiveExecuter;
+  Str: string;
 begin
-  TBExecute.Enabled:= false;
-  Screen.Cursor:= crHourglass;
+  TBExecute.Enabled := False;
+  Screen.Cursor := crHourGlass;
   try
-    i:= TabControlMessages.TabIndex - 5;
-    if i >= 0 then begin
-      if assigned(InteractiveUMLForms.Objects[i]) then begin
-        aForm:= FJava.getActiveEditor;
-        if TSynEdit(InteractiveEditors.Objects[i]).SelAvail then
-          IE:= TSynEdit(InteractiveEditors.Objects[i])
-        else if assigned(aForm) and aForm.Editor.SelAvail then
-          IE:= aForm.Editor
+    var I := TabControlMessages.TabIndex - 5;
+    if I >= 0 then
+    begin
+      if Assigned(FInteractiveUMLForms.Objects[I]) then
+      begin
+        Form := FJava.getActiveEditor;
+        if TSynEdit(FInteractiveEditors.Objects[I]).SelAvail then
+          IEdit := TSynEdit(FInteractiveEditors.Objects[I])
+        else if Assigned(Form) and Form.Editor.SelAvail then
+          IEdit := Form.Editor
         else
-          IE:=  TSynEdit(InteractiveEditors.Objects[i]);
-        if IE.SelAvail
-          then s:= IE.GetLinesWithSelection
-          else s:= IE.LineText;
-        IE.SelStart:= IE.SelEnd;
-        aExecuter:= TInteractiveExecuter(InteractiveExecuters.Items[i]);
-        aExecuter.execute(s);
+          IEdit := TSynEdit(FInteractiveEditors.Objects[I]);
+        if IEdit.SelAvail then
+          Str := IEdit.GetLinesWithSelection
+        else
+          Str := IEdit.LineText;
+        IEdit.SelStart := IEdit.SelEnd;
+        Executer := TInteractiveExecuter(FInteractiveExecuters[I]);
+        Executer.Execute(Str);
       end;
     end;
   finally
-    Screen.Cursor:= crDefault;
-    TBExecute.Enabled:= true;
+    Screen.Cursor := crDefault;
+    TBExecute.Enabled := True;
   end;
 end;
 
 procedure TFMessages.MIExpandClick(Sender: TObject);
 begin
   case ActiveSubTool of
-    2: TVAttributes.FullExpand;
-    3: TVLocalVariables.FullExpand;
-    4: TVWatchedExpressions.FullExpand;
-    6: TVSearch.FullExpand;
+    2:
+      TVAttributes.FullExpand;
+    3:
+      TVLocalVariables.FullExpand;
+    4:
+      TVWatchedExpressions.FullExpand;
+    6:
+      TVSearch.FullExpand;
   end;
 end;
 
 procedure TFMessages.MICollapseClick(Sender: TObject);
 begin
   case ActiveSubTool of
-    2: TVAttributes.FullCollapse;
-    3: TVLocalVariables.FullCollapse;
-    4: TVWatchedExpressions.FullCollapse;
-    6: TVSearch.FullCollapse;
+    2:
+      TVAttributes.FullCollapse;
+    3:
+      TVLocalVariables.FullCollapse;
+    4:
+      TVWatchedExpressions.FullCollapse;
+    6:
+      TVSearch.FullCollapse;
   end;
 end;
 
 function TFMessages.GetSelectedLines(ListBox: TListBox): string;
-  var i: Integer; var s: string;
 begin
-  s:= '';
-  for i:= 0 to ListBox.Count - 1 do
-    if ListBox.Selected[i] then s:= s + ListBox.Items[i] + #13#10;
-  Result:= s;
+  var
+  Str := '';
+  for var I := 0 to ListBox.Count - 1 do
+    if ListBox.Selected[I] then
+      Str := Str + ListBox.Items[I] + #13#10;
+  Result := Str;
 end;
 
-function TFMessages.CopyTreeView(TreeView: TTreeView; all: boolean): string;
+function TFMessages.CopyTreeView(TreeView: TTreeView; All: Boolean): string;
 begin
-  var s:= '';
-  for var i:= 0 to TreeView.Items.Count - 1 do
-    if all or TreeView.Items[i].Selected then
-      if assigned(TreeView.Items[i].Parent) then
-        if TreeView.Items[i].Text <> 'dummy'
-          then s:= s + '  ' + TreeView.Items[i].Text + #13#10
-          else
-        else s:= s + TreeView.Items[i].Text + #13#10;
-  Result:= s;
+  Result := '';
+  for var I := 0 to TreeView.Items.Count - 1 do
+    if All or TreeView.Items[I].Selected then
+      if Assigned(TreeView.Items[I].Parent) then
+        if TreeView.Items[I].Text <> 'dummy' then
+          Result := Result + '  ' + TreeView.Items[I].Text + #13#10
+        else
+      else
+        Result := Result + TreeView.Items[I].Text + #13#10;
 end;
 
 function TFMessages.CopyTreeViewAll(TreeView: TTreeView): string;
 begin
-  Result:= CopyTreeView(TReeView, true);
+  Result := CopyTreeView(TreeView, True);
 end;
 
 function TFMessages.CopyTreeViewSelected(TreeView: TTreeView): string;
 begin
-  Result:= CopyTreeView(TReeView, false);
+  Result := CopyTreeView(TreeView, False);
 end;
 
 procedure TFMessages.MICopyClick(Sender: TObject);
 begin
   case ActiveSubTool of
-    0: MInterpreter.CopyToClipboard;
-    1: Clipboard.AsText:= GetSelectedLines(LBCompiler);
-    2: Clipboard.AsText:= CopyTreeViewSelected(TVAttributes);
-    3: Clipboard.AsText:= CopyTreeViewSelected(TVLocalVariables);
-    4: Clipboard.AsText:= CopyTreeViewSelected(TVWatchedExpressions);
-    5: Clipboard.AsText:= GetSelectedLines(LBStack);
-    6: Clipboard.AsText:= CopyTreeViewSelected(TVSearch);
-    7: Clipboard.AsText:= GetSelectedLines(LBMessages);
-    8: Clipboard.AsText:= GetInteractive(TabControlMessages.TabIndex).SelText;
+    0:
+      MInterpreter.CopyToClipboard;
+    1:
+      Clipboard.AsText := GetSelectedLines(LBCompiler);
+    2:
+      Clipboard.AsText := CopyTreeViewSelected(TVAttributes);
+    3:
+      Clipboard.AsText := CopyTreeViewSelected(TVLocalVariables);
+    4:
+      Clipboard.AsText := CopyTreeViewSelected(TVWatchedExpressions);
+    5:
+      Clipboard.AsText := GetSelectedLines(LBStack);
+    6:
+      Clipboard.AsText := CopyTreeViewSelected(TVSearch);
+    7:
+      Clipboard.AsText := GetSelectedLines(LBMessages);
+    8:
+      Clipboard.AsText := GetInteractive(TabControlMessages.TabIndex).SelText;
+    10:
+      Clipboard.AsText := GetMemo(TabControlMessages.TabIndex).SelText;
   end;
 end;
 
 procedure TFMessages.MICopyAllClick(Sender: TObject);
 begin
   case ActiveSubTool of
-    0: Clipboard.AsText:= MInterpreter.Lines.Text;
-    1: Clipboard.AsText:= LBCompiler.Items.Text;
-    2: Clipboard.AsText:= CopyTreeViewAll(TVAttributes);
-    3: Clipboard.AsText:= CopyTreeViewAll(TVLocalVariables);
-    4: Clipboard.AsText:= CopyTreeViewAll(TVWatchedExpressions);
-    5: Clipboard.AsText:= LBStack.Items.Text;
-    6: Clipboard.AsText:= CopyTreeViewAll(TVSearch);
-    7: Clipboard.AsText:= LBMessages.Items.Text;
-    8: Clipboard.AsText:= GetInteractive(TabControlMessages.TabIndex).Text;
+    0:
+      Clipboard.AsText := MInterpreter.Lines.Text;
+    1:
+      Clipboard.AsText := LBCompiler.Items.Text;
+    2:
+      Clipboard.AsText := CopyTreeViewAll(TVAttributes);
+    3:
+      Clipboard.AsText := CopyTreeViewAll(TVLocalVariables);
+    4:
+      Clipboard.AsText := CopyTreeViewAll(TVWatchedExpressions);
+    5:
+      Clipboard.AsText := LBStack.Items.Text;
+    6:
+      Clipboard.AsText := CopyTreeViewAll(TVSearch);
+    7:
+      Clipboard.AsText := LBMessages.Items.Text;
+    8:
+      Clipboard.AsText := GetInteractive(TabControlMessages.TabIndex).Text;
+    10:
+      Clipboard.AsText := GetMemo(TabControlMessages.TabIndex).Text;
   end;
 end;
 
@@ -1250,98 +1534,99 @@ begin
   Close;
 end;
 
-  function ExtractVariable(const s: string): string;
+function getFullName(Node: TTreeNode): string;
+var
+  AktNode: TTreeNode;
+  Str, Variable: string;
+
+  function ExtractVariable(const Str: string): string;
   begin
-    var p2:= Pos(' = instance of', s);
-    if p2 = 0 then p2:= Pos(': instance of', s);
-    if p2 = 0 then p2:= Pos(' = {', s);
-    if p2 = 0
-      then Result:= s
-      else Result:= Copy(s, 1, p2-1);
+    var
+    Posi := Pos(' = instance of', Str);
+    if Posi = 0 then
+      Posi := Pos(': instance of', Str);
+    if Posi = 0 then
+      Posi := Pos(' = {', Str);
+    if Posi = 0 then
+      Result := Str
+    else
+      Result := Copy(Str, 1, Posi - 1);
   end;
 
-  function ExtractArraySize(const s: string): integer;
-  begin
-    // instance of java.lang.Object[10]
-    Result:= -1;
-    var p1:= Pos('[', s);
-    var p2:= Pos(']', s);
-    if p1 > 0 then
-      TryStrToInt(copy(s, p1 + 1, p2 - p1 - 1), Result);
-  end;
-
-  function getFullName(Node: TTreeNode): string;
-    var AktNode: TTreeNode;
-        s, variable: string;
-  begin
-    AktNode:= Node;
-    s:= ExtractVariable(Node.Text);
-    while assigned(AktNode.Parent) do begin
-      AktNode:= AktNode.Parent;
-      variable:= ExtractVariable(AktNode.Text);
-      if Pos(variable, s) = 1
-        then s:= s
-        else s:= variable + '.' + s;
-    end;
-    Result:= s;
-  end;
-
-procedure TFMessages.Expand(Node: TTreeNode; chapter: integer);
 begin
-  var TotalVariable:= getFullName(Node);
-  Expanded[chapter].Add(TotalVariable);
-  myDebugger.NewCommand(chapter + 6, 'dump ' + TotalVariable);
+  AktNode := Node;
+  Str := ExtractVariable(Node.Text);
+  while Assigned(AktNode.Parent) do
+  begin
+    AktNode := AktNode.Parent;
+    Variable := ExtractVariable(AktNode.Text);
+    if Pos(Variable, Str) <> 1 then
+      Str := Variable + '.' + Str;
+  end;
+  Result := Str;
+end;
+
+procedure TFMessages.Expand(Node: TTreeNode; Chapter: Integer);
+begin
+  var
+  TotalVariable := getFullName(Node);
+  FExpanded[Chapter].Add(TotalVariable);
+  MyDebugger.NewCommand(Chapter + 6, 'dump ' + TotalVariable);
   Node.DeleteChildren;
 end;
 
-procedure TFMessages.Collapse(Node: TTreeNode; chapter: integer);
+procedure TFMessages.Collapse(Node: TTreeNode; Chapter: Integer);
 begin
-  var TotalVariable:= getFullname(Node);
-  for var i:= Expanded[chapter].Count - 1 downto 0 do
-    if Pos(TotalVariable, Expanded[chapter].Strings[i]) = 1
-      then Expanded[chapter].Delete(i);
+  var
+  TotalVariable := getFullName(Node);
+  for var I := FExpanded[Chapter].Count - 1 downto 0 do
+    if Pos(TotalVariable, FExpanded[Chapter].Strings[I]) = 1 then
+      FExpanded[Chapter].Delete(I);
 end;
 
 procedure TFMessages.TVAttributesExpanding(Sender: TObject; Node: TTreeNode;
   var AllowExpansion: Boolean);
 begin
-  if DumpActive then exit;
-  AllowExpansion:= false;
+  if FDumpActive then
+    Exit;
+  AllowExpansion := False;
   Expand(Node, 1);
 end;
 
 procedure TFMessages.TVAttributesKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_Delete then
-    TreeViewDelete(TVAttributes, false);
+  if Key = VK_DELETE then
+    TreeViewDelete(TVAttributes, False);
 end;
 
-procedure TFMessages.TVLocalVariablesExpanding(Sender: TObject;
-  Node: TTreeNode; var AllowExpansion: Boolean);
+procedure TFMessages.TVLocalVariablesExpanding(Sender: TObject; Node: TTreeNode;
+  var AllowExpansion: Boolean);
 begin
-  if DumpActive then exit;
-  AllowExpansion:= false;
+  if FDumpActive then
+    Exit;
+  AllowExpansion := False;
   Expand(Node, 2);
 end;
 
 procedure TFMessages.TVLocalVariablesKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_Delete then
-    TreeViewDelete(TVLocalVariables, false);
+  if Key = VK_DELETE then
+    TreeViewDelete(TVLocalVariables, False);
 end;
 
 procedure TFMessages.TVWatchedExpressionsExpanding(Sender: TObject;
   Node: TTreeNode; var AllowExpansion: Boolean);
 begin
-  if DumpActive then exit;
-  AllowExpansion:= false;
+  if FDumpActive then
+    Exit;
+  AllowExpansion := False;
   Expand(Node, 3);
 end;
 
-procedure TFMessages.TVAttributesCollapsing(Sender: TObject;
-  Node: TTreeNode; var AllowCollapse: Boolean);
+procedure TFMessages.TVAttributesCollapsing(Sender: TObject; Node: TTreeNode;
+  var AllowCollapse: Boolean);
 begin
   Collapse(Node, 1);
 end;
@@ -1359,20 +1644,20 @@ begin
 end;
 
 procedure TFMessages.ShowWatchedExpressions;
-  var i: integer; s: string; Node: TTreeNode;
 begin
   TVWatchedExpressions.Items.Clear;
-  for i:= 0 to FWatches.LBWatches.Items.Count - 1 do begin
-    s:= FWatches.LBWatches.Items[i];
-    Node:= TVWatchedExpressions.Items.Add(nil, s);
-    if Pos('instance of', s) > 0 then
-      TVWatchedExpressions.Items.AddChild(Node, s);
+  for var I := 0 to FWatches.LBWatches.Items.Count - 1 do
+  begin
+    var Str := FWatches.LBWatches.Items[I];
+    var Node := TVWatchedExpressions.Items.Add(nil, Str);
+    if Pos('instance of', Str) > 0 then
+      TVWatchedExpressions.Items.AddChild(Node, Str);
   end;
 end;
 
 procedure TFMessages.SplitterInteractiveRightMoved(Sender: TObject);
 begin
-  AdjustVariablesWidths(TabControlMessages.Tabindex);
+  AdjustVariablesWidths(TabControlMessages.TabIndex);
 end;
 
 procedure TFMessages.SBStepClick(Sender: TObject);
@@ -1412,389 +1697,451 @@ end;
 
 procedure TFMessages.SBDetailsClick(Sender: TObject);
 begin
-  myDebugger.SwitchDetails;
+  MyDebugger.SwitchDetails;
 end;
 
 procedure TFMessages.TVSearchDblClick(Sender: TObject);
-  var Node: TTreeNode;
+var
+  Node: TTreeNode;
 begin
-  Node:= TVSearch.Selected;
+  Node := TVSearch.Selected;
   if Assigned(Node) then
     myGrepResults.OpenSource(Node);
 end;
 
 procedure TFMessages.TreeViewDeleteSelected(TreeView: TTreeView);
-  var Node: TTreeNode; s: string; p: integer;
+var
+  Node: TTreeNode;
 begin
-  with TreeView do begin
-    Node:= Selected;
-    if Assigned(Node) and not Assigned(Node.Parent) then begin
-      s:= Node.Text;
-      p:= Pos(' = ', s);
-      if p > 0 then
-        delete(s, p, length(s));
-      Items.delete(Node);
-      FWatches.Delete(s);
+  with TreeView do
+  begin
+    Node := Selected;
+    if Assigned(Node) and not Assigned(Node.Parent) then
+    begin
+      var
+      Str := Node.Text;
+      var
+      Posi := Pos(' = ', Str);
+      if Posi > 0 then
+        Delete(Str, Posi, Length(Str));
+      Items.Delete(Node);
+      FWatches.Delete(Str);
     end;
   end;
-  TreeViewDelete(TreeView, false);
+  TreeViewDelete(TreeView, False);
 end;
 
 procedure TFMessages.TreeViewDeleteAll(TreeView: TTreeView);
 begin
-  TreeViewDelete(TreeView, true);
+  TreeViewDelete(TreeView, True);
   FWatches.DeleteAll;
 end;
 
-procedure TFMessages.TreeViewDelete(TreeView: TTreeView; all: boolean);
-  var Node, LastNode, PrevNode: TTreeNode; Results: TSearchResults;
+procedure TFMessages.TreeViewDelete(TreeView: TTreeView; All: Boolean);
+var
+  Node, LastNode, PrevNode: TTreeNode;
+  Results: TSearchResults;
 begin
-  LastNode:= nil;
+  LastNode := nil;
   TreeView.Items.BeginUpdate;
-  Node:= TreeView.Items.GetFirstNode;
-  while assigned(Node) do begin
-    if all or Node.Selected then Node.Text:= 'DELETE';
-    if Node.GetNext = nil then LastNode:= Node;
-    Node:= Node.GetNext;
+  Node := TreeView.Items.GetFirstNode;
+  while Assigned(Node) do
+  begin
+    if All or Node.Selected then
+      Node.Text := 'Delete';
+    if Node.GetNext = nil then
+      LastNode := Node;
+    Node := Node.GetNext;
   end;
-  Node:= LastNode;
-  while assigned(Node) do begin
-    if Node.Text = 'DELETE' then begin
-      if (Node.Parent = nil) and (TreeView = TVSearch) then begin
-        Results:= TSearchResults(Node.Data);
+  Node := LastNode;
+  while Assigned(Node) do
+  begin
+    if Node.Text = 'Delete' then
+    begin
+      if (Node.Parent = nil) and (TreeView = TVSearch) then
+      begin
+        Results := TSearchResults(Node.Data);
         FreeAndNil(Results);
       end;
-      PrevNode:= Node.GetPrev;
+      PrevNode := Node.GetPrev;
       Node.Delete;
-      Node:= PrevNode;
-    end else
-      Node:= Node.GetPrev;
+      Node := PrevNode;
+    end
+    else
+      Node := Node.GetPrev;
   end;
   TreeView.Items.EndUpdate;
 end;
 
-procedure TFMessages.TVSearchKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TFMessages.TVSearchKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
-  if Key = VK_Delete then
-    TreeViewDelete(TVSearch, false);
+  if Key = VK_DELETE then
+    TreeViewDelete(TVSearch, False);
 end;
 
 procedure TFMessages.FormPaint(Sender: TObject);
-  var Msg: TWMMove;
+var
+  Msg: TWMMove;
 begin
-  if Undocking then begin
-    Undocking:= false;
+  if FUndocking then
+  begin
+    FUndocking := False;
     ShowTab(K_Interpreter);
   end;
-  OnMove(Msg);
+  try
+    // OnMove(Msg);  // exception reported when no valid java interpreter
+  except
+  end;
 end;
 
 procedure TFMessages.MIFontClick(Sender: TObject);
 begin
   FJava.FDFont.Font.Assign(GetFont);
-  FJava.FDFont.Options:= [];
+  FJava.FDFont.Options := [];
   if FJava.FDFont.Execute then
     SetFont(FJava.FDFont.Font);
 end;
 
 procedure TFMessages.MIPasteClick(Sender: TObject);
 begin
-  if TabControlMessages.TabIndex = 2
-    then FJava.MIWatchesClick(Self)
-    else PasteFromClipboard;
+  if TabControlMessages.TabIndex = 2 then
+    FJava.MIWatchesClick(Self)
+  else
+    PasteFromClipboard;
 end;
 
 procedure TFMessages.MISameWidthClick(Sender: TObject);
 begin
-  var w:= PMain.Width div 4;
-  PDebuggerLeft.Width:= w;
-  PDebuggerCenterLeft.Width:= w;
-  PDebuggerCenterRight.Width:= w;
-  PDebuggerRight.Width:= W;
-  w:= ClientWidth div 3;
-  PInteractiveLeft.Width:= w;
-  PInteractiveMiddle.Width:= w;
-  PInteractiveRight.Width:= w;
-  for var i:= 0 to InteractiveVariables.Count - 1 do begin
-    TStringGrid(InteractiveVariables.Objects[i]).ColWidths[0]:= w div 3;
-    TStringGrid(InteractiveVariables.Objects[i]).ColWidths[1]:= w div 3;
-    TStringGrid(InteractiveVariables.Objects[i]).ColWidths[2]:= w div 3;
+  var
+  Width := PMain.Width div 4;
+  PDebuggerLeft.Width := Width;
+  PDebuggerCenterLeft.Width := Width;
+  PDebuggerCenterRight.Width := Width;
+  PDebuggerRight.Width := Width;
+  Width := ClientWidth div 3;
+  PInteractiveLeft.Width := Width;
+  PInteractiveMiddle.Width := Width;
+  PInteractiveRight.Width := Width;
+  for var I := 0 to FInteractiveVariables.Count - 1 do
+  begin
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[0] := Width div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[1] := Width div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[2] := Width div 3;
   end;
 end;
 
 procedure TFMessages.TBJavaResetMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if Button = mbLeft
-    then getComJava.JavaReset
-    else FJava.Restart;
+  if Button = mbLeft then
+    getComJava.JavaReset
+  else
+    FJava.Restart;
 end;
 
-procedure TFMessages.MInterpreterEnter(Sender: TObject);
+procedure TFMessages.MInteractiveEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 0;
+  ActiveSubTool := 0;
 end;
 
-procedure TFMessages.MInterpreterKeyPress(Sender: TObject; var Key: Char);
+procedure TFMessages.MInteractiveKeyPress(Sender: TObject; var Key: Char);
 begin
   case Key of
-    #13: begin
-           if myDebugger.Running
-             then myDebugger.ToUserProgram(toJavaConsole)
-             else getComJava.WriteToJava(toJavaConsole + #13#10);
-           if not myDebugger.Running and (toJavaConsole <> '') then
-             Key:= #0;
-           toJavaConsole:= '';
-         end;
-    #08: toJavaConsole:= copy(toJavaConsole, 1, Length(toJavaConsole)-1);
-    else toJavaConsole:= toJavaConsole + Key;
+    #13:
+      begin
+        if MyDebugger.Running then
+          MyDebugger.ToUserProgram(FToJavaConsole)
+        else
+          getComJava.WriteToJava(FToJavaConsole + #13#10);
+        if not MyDebugger.Running and (FToJavaConsole <> '') then
+          Key := #0;
+        FToJavaConsole := '';
+      end;
+    #08:
+      FToJavaConsole := Copy(FToJavaConsole, 1, Length(FToJavaConsole) - 1);
+  else
+    FToJavaConsole := FToJavaConsole + Key;
   end;
 end;
 
 procedure TFMessages.TBShowUMLClick(Sender: TObject);
-  var i: integer; U: TFUMLForm;
+var
+  UMLForm: TFUMLForm;
 begin
-  i:= TabControlMessages.TabIndex;
-  if i > 5 then begin
-    U:= TFUMLForm(InteractiveUMLForms.Objects[i-5]);
-    if (i = 5) and (not U.Visible)
-      then U.Show
-      else FJava.SwitchToWindow(U);
+  var
+  I := TabControlMessages.TabIndex;
+  if I > 5 then
+  begin
+    UMLForm := TFUMLForm(FInteractiveUMLForms.Objects[I - 5]);
+    if (I = 5) and not UMLForm.Visible then
+      UMLForm.Show
+    else
+      FJava.SwitchToWindow(UMLForm);
   end;
 end;
 
 procedure TFMessages.PMMessagesPopup(Sender: TObject);
-  var Selected, error: boolean; aWinControl: TWinControl;
+var
+  Selected, Error: Boolean;
+  WinControl: TWinControl;
 begin
-  if not (Sender is TSpTBXPopupMenu) then
-    exit;
-  aWinControl:= FindVCLWindow((Sender as TSpTBXPopupMenu).PopupPoint);
-  if assigned(aWinControl)
-    then ActiveSubTool:= aWinControl.Tag
-    else ActiveSubTool:= -1;
+  if not(Sender is TSpTBXPopupMenu) then
+    Exit;
+  WinControl := FindVCLWindow((Sender as TSpTBXPopupMenu).PopupPoint);
+  if Assigned(WinControl) then
+    ActiveSubTool := WinControl.Tag
+  else
+    ActiveSubTool := -1;
 
   SetVisibleMI(MICollapse, TabControlMessages.TabIndex in [2, 3]);
   SetVisibleMI(MIExpand, TabControlMessages.TabIndex in [2, 3]);
-  SetVisibleMI(MIPaste, ActiveSubTool in [0, 8]);
+  SetVisibleMI(MIPaste, ActiveSubTool in [0, 8, 10]);
 
   SetVisibleMI(MIClose, TabControlMessages.TabIndex <> 2);
-  SetVisibleMI(MIDeleteAll, true);
-  SetVisibleMI(MICopyAll, true);
-  error:= false;
-  selected:= false;
+  SetVisibleMI(MIDeleteAll, True);
+  SetVisibleMI(MICopyAll, True);
+  Error := False;
+  Selected := False;
   case ActiveSubTool of
-    0: begin
-         Selected:= MInterpreter.SelLength > 0;
-         error:= (Pos('Exception', MInterpreter.Lines.Text) > 0);
-         setVisibleMI(MIPaste, false);
-       end;
-    1: begin
-         Selected:= LBCompiler.SelCount > 0;
-         error:= (Pos(': error: ', LBCompiler.Items.Text) > 0);
-       end;
-    2: Selected:= true;
-    3: Selected:= true;
-    4: Selected:= true;
-    5: Selected:= true;
-    6: Selected:= true;
-    7: Selected:= LBMessages.SelCount > 0;
-    8: begin
-         Selected:= ActiveInteractive.SelAvail;
-         setVisibleMI(MIPaste, true);
-       end;
-    9: begin
-         setVisibleMI(MIPaste, false);
-         setVisibleMI(MIDeleteAll, false);
-         setVisibleMI(MICopyAll, false);
-       end;
+    0:
+      begin
+        Selected := MInterpreter.SelLength > 0;
+        Error := (Pos('Exception', MInterpreter.Lines.Text) > 0);
+        SetVisibleMI(MIPaste, False);
+      end;
+    1:
+      begin
+        Selected := LBCompiler.SelCount > 0;
+        Error := (Pos(': error: ', LBCompiler.Items.Text) > 0);
+      end;
+    2:
+      Selected := True;
+    3:
+      Selected := True;
+    4:
+      Selected := True;
+    5:
+      Selected := True;
+    6:
+      Selected := True;
+    7:
+      Selected := LBMessages.SelCount > 0;
+    8:
+      begin
+        Selected := FActiveInteractive.SelAvail;
+        SetVisibleMI(MIPaste, True);
+      end;
+    9:
+      begin
+        SetVisibleMI(MIPaste, False);
+        SetVisibleMI(MIDeleteAll, False);
+        SetVisibleMI(MICopyAll, False);
+      end;
+    10:
+      begin
+        Selected := (GetMemo(TabControlMessages.TabIndex).SelLength > 0);
+        SetVisibleMI(MIPaste, True);
+      end;
   end;
   SetVisibleMI(MICopy, Selected);
   SetVisibleMI(MIDelete, Selected);
-  SetVisibleMI(MIGotoError, error);
+  SetVisibleMI(MIGotoError, Error);
   SetVisibleMI(MIDock, Floating);
   SetVisibleMI(MIUndock, not Floating);
 end;
 
-procedure TFMessages.ShowInteractiveSplitter;
+function TFMessages.AddInteractive(UMLForm: TForm; const Path: string)
+  : TInteractive;
+var
+  IEdit: TInteractiveEdit;
+  Executer: TInteractiveExecuter;
+  Memo: TMemo;
+  SGVariables: TStringGrid;
+  Options: TGridOptions;
+  ComJava: TComJava1;
 begin
-  if not SplitterInteractiveLeft.Visible then begin
-    PInteractiveLeft.Align:= alLeft;
-    PInteractiveLeft.Width:= Math.min(InteractiveWidth1, round(FJava.Width*0.8));
-    SplitterInteractiveLeft.Left:= PInteractiveLeft.Width + 1;
-    SplitterInteractiveLeft.Visible:= true;
+  IEdit := TInteractiveEdit.Create(Self);
+  IEdit.ReadOnly := False; // <---
 
-    PInteractiveRight.Align:= alRight;
-    PInteractiveRight.Left:= ClientWidth - InteractiveWidth2;
-    PInteractiveRight.Visible:= true;
-    SplitterInteractiveRight.Left:= PInteractiveRight.Width - 1;
-    SplitterInteractiveRight.Visible:= true;
-
-    PInteractiveMiddle.Align:= alClient;
-    PInteractiveMiddle.Visible:= true;
-  end;
-end;
-
-procedure TFMessages.HideInteractiveSplitter;
-begin
-  if SplitterInteractiveLeft.Visible then begin
-    InteractiveWidth1:= PInteractiveLeft.Width;
-    InteractiveWidth2:= PInteractiveRight.Width;
-    PInteractiveMiddle.Align:= alNone;
-    PInteractiveMiddle.Visible:= false;
-    PInteractiveRight.Align:= alNone;
-    PInteractiveRight.Visible:= false;
-    SplitterInteractiveRight.Visible:= false;
-    SplitterInteractiveLeft.Visible:= false;
-    PInteractiveLeft.Align:= alClient;
-  end;
-end;
-
-function TFMessages.AddInteractive(UMLForm: TForm; const path: string): TInteractive;
-  var IE: TInteractiveEdit; aExecuter: TInteractiveExecuter;
-      SGVariables: TStringGrid; GO: TGridOptions; ComJava: TComJava1;
-begin
-  IE:= TInteractiveEdit.Create(Self);
-  IE.ReadOnly:= false;     // <---
-
-  SGVariables:= TStringGrid.Create(Self);
-  SGVariables.Parent:= PInteractiveRight;
+  SGVariables := TStringGrid.Create(Self);
+  SGVariables.Parent := PInteractiveRight;
   SGVariables.Font.Assign(Font);
-  SGVariables.Font.Size:= FConfiguration.Fontsize;
-  SGVariables.Align:= alClient;
-  SGVariables.ColCount:= 3;
-  SGVariables.RowCount:= 2;
-  SGVariables.FixedCols:= 0;
-  SGVariables.FixedRows:= 1;
-  SGVariables.Cells[0,0]:= _('Name');
-  SGVariables.Cells[1,0]:= _('Type');
-  SGVariables.Cells[2,0]:= _(LNGValue);
-  GO:= SGVariables.Options;
-  Include(GO, goColSizing);
-  SGVariables.Options:= GO;
-  SGVariables.DefaultRowHeight:= Round(MInterpreter.Font.Size*1.8);
-  SGVariables.Selection:= TGridRect(Rect(-1, -1, -1, -1));
-  SGVariables.PopupMenu:= PMMessages;
-  SGVariables.Tag:= 9;
-  SGVariables.OnMouseWheelDown:= StringGrid1MouseWheelDown;
-  SGVariables.OnMouseWheelUp:= StringGrid1MouseWheelUp;
-  ComJava:= TComJava1.Create(UMLForm, InteractiveEditors.Count);
-  aExecuter:= TInteractiveExecuter.create(UMLForm as TFUMLForm, IE, SGVariables, ComJava);
+  SGVariables.Font.Size := FConfiguration.Fontsize;
+  SGVariables.Align := alClient;
+  SGVariables.ColCount := 3;
+  SGVariables.RowCount := 2;
+  SGVariables.FixedCols := 0;
+  SGVariables.FixedRows := 1;
+  SGVariables.Cells[0, 0] := _('Name');
+  SGVariables.Cells[1, 0] := _('Type');
+  SGVariables.Cells[2, 0] := _(LNGValue);
+  Options := SGVariables.Options;
+  Include(Options, goColSizing);
+  SGVariables.Options := Options;
+  SGVariables.DefaultRowHeight := Round(MInterpreter.Font.Size * 1.8);
+  SGVariables.Selection := TGridRect(Rect(-1, -1, -1, -1));
+  SGVariables.PopupMenu := PMMessages;
+  SGVariables.Tag := 9;
+  SGVariables.OnMouseWheelDown := StringGrid1MouseWheelDown;
+  SGVariables.OnMouseWheelUp := StringGrid1MouseWheelUp;
+  ComJava := TComJava1.Create(UMLForm, FInteractiveEditors.Count);
+  Executer := TInteractiveExecuter.Create(UMLForm as TFUMLForm, IEdit,
+    SGVariables, ComJava);
+  Memo := TMemo.Create(Self);
+  Memo.Parent := PInteractiveLeft;
+  Memo.Align := alClient;
+  Memo.PopupMenu := PMMessages;
+  Memo.Tag := 10;
 
-  InteractiveEditors.AddObject(path, IE);
-  InteractiveUMLForms.AddObject(path, UMLForm);
-  InteractiveVariables.AddObject(path, SGVariables);
-  InteractiveExecuters.Add(aExecuter);
-  InteractiveComJavas.Add(ComJava);
+  FInteractiveEditors.AddObject(Path, IEdit);
+  FInteractiveMemos.AddObject(Path, Memo);
+  FInteractiveUMLForms.AddObject(Path, UMLForm);
+  FInteractiveVariables.AddObject(Path, SGVariables);
+  FInteractiveExecuters.Add(Executer);
+  FInteractiveComJavas.Add(ComJava);
 
-  TabControlMessages.Tabs.Add(ExtractFilenameEx(path));
-  ChangeTab(TabControlMessages.Tabs.Count-1);
-  AdjustVariablesWidths(TabControlMessages.Tabs.Count-1);
-  Result:= TInteractive.create(UMLForm, IE, SGVariables, aExecuter, ComJava);
+  TabControlMessages.Tabs.Add(ExtractFileNameEx(Path));
+  ChangeTab(TabControlMessages.Tabs.Count - 1);
+  AdjustVariablesWidths(TabControlMessages.Tabs.Count - 1);
+  Result := TInteractive.Create(UMLForm, IEdit, Memo, SGVariables,
+    Executer, ComJava);
 end;
 
-procedure TFMessages.AdjustVariablesWidths(Tab: integer);
-  var b: integer; SG: TStringGrid;
+procedure TFMessages.AdjustVariablesWidths(Tab: Integer);
+var
+  Width: Integer;
+  SGrid: TStringGrid;
 begin
-  if (0 <= Tab-5) and (Tab-5 < InteractiveVariables.Count) then begin
-    SG:= TStringGrid(InteractiveVariables.Objects[Tab-5]);
-    b:= SG.Width div 3;
-    SG.ColWidths[0]:= b-1;
-    SG.ColWidths[1]:= b-1;
-    SG.ColWidths[2]:= b;
+  if (0 <= Tab - 5) and (Tab - 5 < FInteractiveVariables.Count) then
+  begin
+    SGrid := TStringGrid(FInteractiveVariables.Objects[Tab - 5]);
+    Width := SGrid.Width div 3;
+    SGrid.ColWidths[0] := Width - 1;
+    SGrid.ColWidths[1] := Width - 1;
+    SGrid.ColWidths[2] := Width;
   end;
 end;
 
-procedure TFMessages.LBInteractiveMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TFMessages.LBInteractiveMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  for var i:= 0 to InteractiveEditors.Count - 1 do
-    if GetInteractive(i+5) = (Sender as TInteractiveEdit) then ChangeTab(i+5);
-  if canFocus then SetFocus;
+  for var I := 0 to FInteractiveEditors.Count - 1 do
+    if GetInteractive(I + 5) = (Sender as TInteractiveEdit) then
+      ChangeTab(I + 5);
+  if CanFocus then
+    SetFocus;
 end;
 
-function TFMessages.GetInteractive(i: integer): TInteractiveEdit;
+function TFMessages.GetInteractive(Tab: Integer): TInteractiveEdit;
 begin
-  if (InteractiveEditors.Count > i-5) and (i-5 >= 0)
-    then Result:= TInteractiveEdit(InteractiveEditors.Objects[i-5])
-    else Result:= nil;
+  if (FInteractiveEditors.Count > Tab - 5) and (Tab - 5 >= 0) then
+    Result := TInteractiveEdit(FInteractiveEditors.Objects[Tab - 5])
+  else
+    Result := nil;
+end;
+
+function TFMessages.GetMemo(Tab: Integer): TMemo;
+begin
+  if (FInteractiveMemos.Count > Tab - 5) and (Tab - 5 >= 0) then
+    Result := TMemo(FInteractiveMemos.Objects[Tab - 5])
+  else
+    Result := nil;
 end;
 
 function TFMessages.GetCurrentInteractive: TInteractiveEdit;
 begin
-  Result:= nil;
-  if ActiveSubTool = 8 then begin
-    var i:= TabControlMessages.TabIndex;
-    if i >= 5 then
-      Result:= TInteractiveEdit(InteractiveEditors.Objects[i-5]);
+  Result := nil;
+  if ActiveSubTool = 8 then
+  begin
+    var
+    I := TabControlMessages.TabIndex;
+    if I >= 5 then
+      Result := TInteractiveEdit(FInteractiveEditors.Objects[I - 5]);
   end;
 end;
 
-function TFMessages.InteractiveEditActive: boolean;
+function TFMessages.InteractiveEditActive: Boolean;
 begin
-  Result:= (ActiveSubTool = 8);
+  Result := (ActiveSubTool = 8);
 end;
 
 function TFMessages.GetCurrentStringGrid: TStringGrid;
 begin
-  Result:= nil;
-  if ActiveSubTool = 8 then begin
-    var i:= TabControlMessages.TabIndex;
-    if i >= 5 then
-      Result:= TStringGrid(InteractiveVariables.Objects[i-5]);
+  Result := nil;
+  if ActiveSubTool = 8 then
+  begin
+    var
+    I := TabControlMessages.TabIndex;
+    if I >= 5 then
+      Result := TStringGrid(FInteractiveVariables.Objects[I - 5]);
   end;
 end;
 
-procedure TFMessages.Run(const Classpath, Programm, CallParameter: string);
-  var UMLForm: TFUMLForm;
+procedure TFMessages.Run(const Classpath, Programm, Callparameter: string);
+var
+  UMLForm: TFUMLForm;
 begin
-  Visible:= true;
-  if canFocus then SetFocus;
-  if assigned(FJava.ActiveTDIChild ) and (FJava.ActiveTDIChild.FormTag = 2) then
-    UMLForm:= FJava.ActiveTDIChild as TFUMLForm
+  Visible := True;
+  if CanFocus then
+    SetFocus;
+  if Assigned(FJava.ActiveTDIChild) and (FJava.ActiveTDIChild.FormTag = 2) then
+    UMLForm := FJava.ActiveTDIChild as TFUMLForm
   else
-    UMLForm:= FJava.InteractiveUMLForm;
-  (UMLForm.MainModul.Diagram as TRtfdDiagram).CallMain(UnHideBlanks(Classpath), Programm, CallParameter);
+    UMLForm := FJava.InteractiveUMLForm;
+  (UMLForm.MainModul.Diagram as TRtfdDiagram).CallMain(UnHideBlanks(Classpath),
+    Programm, Callparameter);
 end;
 
-procedure TFMessages.SetModifiedUMLForm(i: integer);
+procedure TFMessages.SetModifiedUMLForm(Tab: Integer);
 begin
-  if i >= 6 then
-    TFUMLForm(InteractiveUMLForms.Objects[i-5]).Modified:= true;
+  if Tab >= 6 then
+    TFUMLForm(FInteractiveUMLForms.Objects[Tab - 5]).Modified := True;
 end;
 
-procedure TFMessages.DelInteractive(const path: string);
+procedure TFMessages.DelInteractive(const Path: string);
 begin
-  var i:= InteractiveEditors.IndexOf(path);
-  if i > -1 then begin
-    var aObject:= InteractiveEditors.Objects[i];
+  var
+  I := FInteractiveEditors.IndexOf(Path);
+  if I > -1 then
+  begin
+    var
+    AObject := FInteractiveEditors.Objects[I];
     // FreeAndNil(aObject);  ToDo check!
-    InteractiveEditors.Delete(i);
-    //InteractiveUMLForms.Objects[i] . Free;  UMLForm is Part of the GUI and destroyed by the system
-    InteractiveUMLForms.Delete(i);
-    aObject:= InteractiveVariables.Objects[i];
-    FreeAndNil(aObject);
-    InteractiveVariables.Delete(i);
-    InteractiveExecuters.Delete(i);
-    InteractiveComJavas.Delete(i);
-    if InteractiveEditors.Count > 0
-      then activeInteractive:= TInteractiveEdit(InteractiveEditors.Objects[0])
-      else activeInteractive:= nil;
-    if TabControlMessages.TabIndex = i+5 then ChangeTab(0);
-    if TabControlMessages.Tabs.Count > i+5 then
-      TabControlMessages.Tabs.Delete(i+5);
+    FInteractiveEditors.Delete(I);
+    FInteractiveMemos.Delete(I);
+    // FInteractiveUMLForms.Objects[i] . Free;  UMLForm is Part of the GUI and destroyed by the system
+    FInteractiveUMLForms.Delete(I);
+    AObject := FInteractiveVariables.Objects[I];
+    FreeAndNil(AObject);
+    FInteractiveVariables.Delete(I);
+    FInteractiveExecuters.Delete(I);
+    FInteractiveComJavas.Delete(I);
+    if FInteractiveEditors.Count > 0 then
+      FActiveInteractive := TInteractiveEdit(FInteractiveEditors.Objects[0])
+    else
+      FActiveInteractive := nil;
+    if TabControlMessages.TabIndex = I + 5 then
+      ChangeTab(0);
+    if TabControlMessages.Tabs.Count > I + 5 then
+      TabControlMessages.Tabs.Delete(I + 5);
   end;
 end;
 
 procedure TFMessages.RenameInteractive(const FromPath, ToPath: string);
 begin
-  var i:= InteractiveEditors.IndexOf(FromPath);
-  if i > -1 then begin
+  var
+  I := FInteractiveEditors.IndexOf(FromPath);
+  if I > -1 then
+  begin
     try
-      InteractiveEditors.Strings[i]:= ToPath;
-      InteractiveUMLForms.Strings[i]:= ToPath;
-      TabControlMessages.Tabs[i+5]:= ExtractFileNameEx(ToPath);
-    except on e: exception do
-      ErrorMsg(e.message);
+      FInteractiveEditors[I] := ToPath;
+      FInteractiveMemos[I] := ToPath;
+      FInteractiveUMLForms[I] := ToPath;
+      TabControlMessages.Tabs[I + 5] := ExtractFileNameEx(ToPath);
+    except
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
   end;
 end;
@@ -1803,210 +2150,227 @@ procedure TFMessages.OnMove(var Msg: TWMMove);
 begin
   inherited;
   if Floating then
-    aPosition:= Rect(Left, Top, Width, Height);
+    FPosition := Rect(Left, Top, Width, Height);
 end;
 
-procedure TFMessages.setMinHeight(min: integer);
+procedure TFMessages.SetMinHeight(Min: Integer);
 begin
-  if not Floating and (FJava.BottomDockPanel.Height < min) then begin
-    FJava.BottomDockPanel.Height:= min;
-    FJava.MoveHSplitter(min)
+  if not Floating and (FJava.BottomDockPanel.Height < Min) then
+  begin
+    FJava.BottomDockPanel.Height := Min;
+    FJava.MoveHSplitter(Min);
   end;
 end;
 
 procedure TFMessages.CutToClipboard;
 begin
   case ActiveSubTool of
-    0: MInterpreter.CutToClipboard;
-    8: ActiveInteractive.CutToClipboard;
+    0:
+      MInterpreter.CutToClipboard;
+    8:
+      FActiveInteractive.CutToClipboard;
+    10:
+      GetMemo(TabControlMessages.TabIndex).CutToClipboard;
   end;
 end;
 
 procedure TFMessages.PasteFromClipboard;
 begin
   case ActiveSubTool of
-    0: MInterpreter.PasteFromClipboard;
-    8: ActiveInteractive.PasteFromClipboard;
+    0:
+      MInterpreter.PasteFromClipboard;
+    8:
+      FActiveInteractive.PasteFromClipboard;
+    10:
+      GetMemo(TabControlMessages.TabIndex).PasteFromClipboard;
   end;
 end;
 
 procedure TFMessages.CopyToClipboard;
 begin
   case ActiveSubTool of
-    0: MInterpreter.CopyToClipboard;
-    8: ActiveInteractive.CopyToClipboard;
+    0:
+      MInterpreter.CopyToClipboard;
+    8:
+      FActiveInteractive.CopyToClipboard;
+    10:
+      GetMemo(TabControlMessages.TabIndex).CopyToClipboard;
   end;
 end;
 
 procedure TFMessages.Undo;
 begin
   if ActiveSubTool = 8 then
-    ActiveInteractive.Undo;
+    FActiveInteractive.Undo;
 end;
 
 procedure TFMessages.Redo;
 begin
   if ActiveSubTool = 8 then
-    ActiveInteractive.Redo;
+    FActiveInteractive.Redo;
 end;
 
 procedure TFMessages.LBCompilerEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 1;
+  ActiveSubTool := 1;
 end;
 
 procedure TFMessages.PDebuggerLeftEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 2;
+  ActiveSubTool := 2;
 end;
 
 procedure TFMessages.PDebuggerCenterLeftEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 3;
+  ActiveSubTool := 3;
 end;
 
 procedure TFMessages.PDebuggerCenterRightEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 4;
+  ActiveSubTool := 4;
 end;
 
 procedure TFMessages.PDebuggerRightEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 5;
+  ActiveSubTool := 5;
 end;
 
 procedure TFMessages.TVSearchEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 6;
+  ActiveSubTool := 6;
 end;
 
 procedure TFMessages.LBMessagesEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 7;
+  ActiveSubTool := 7;
 end;
 
 procedure TFMessages.PInteractiveMiddleEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 8;
+  ActiveSubTool := 8;
 end;
 
 procedure TFMessages.PInteractiveRightEnter(Sender: TObject);
 begin
-  ActiveSubTool:= 9;
+  ActiveSubTool := 9;
+end;
+
+procedure TFMessages.PInteractiveLeftEnter(Sender: TObject);
+begin
+  ActiveSubTool := 10;
 end;
 
 procedure TFMessages.PMainExit(Sender: TObject);
 begin
-  ActiveSubTool:= -1;
-end;
-
-procedure TFMessages.OnSplitterMoved(Sender: TObject);
-begin
-  if SplitterInteractiveLeft.Left > FJava.Width - 50 then
-    SplitterInteractiveLeft.Left:= FJava.Width - 50;
+  ActiveSubTool := -1;
 end;
 
 procedure TFMessages.SystemOutPrintln;
 begin
   if ActiveSubTool = 8 then
-    ActiveInteractive.SystemOutPrintln;
+    FActiveInteractive.SystemOutPrintln;
 end;
 
-procedure TFMessages.Execute(const s: string);
-  var i: integer; aExecuter: TInteractiveExecuter;
+procedure TFMessages.Execute(const Command: string);
+var
+  Executer: TInteractiveExecuter;
 begin
-  if TabControlMessages.TabIndex < 5 then ShowTab(5);
-  i:= TabControlMessages.TabIndex - 5;
-  aExecuter:= TInteractiveExecuter(FMessages.InteractiveExecuters.Items[i]);
-  aExecuter.execute(s);
+  if TabControlMessages.TabIndex < 5 then
+    ShowTab(5);
+  Executer := TInteractiveExecuter(FMessages.FInteractiveExecuters
+    [TabControlMessages.TabIndex - 5]);
+  Executer.Execute(Command);
 end;
 
-function TFMessages.NeedsSemicolon(const s: string): boolean;
-  var aExecuter: TInteractiveExecuter;
+function TFMessages.NeedsSemicolon(const Command: string): Boolean;
+var
+  Executer: TInteractiveExecuter;
 begin
-  if InteractiveExecuters.Count > 0 then begin
-    aExecuter:= TInteractiveExecuter(InteractiveExecuters.Items[0]);
-    Result:= aExecuter.NeedsSemicolon(s);
-  end else
-    Result:= false;
+  if FInteractiveExecuters.Count > 0 then
+  begin
+    Executer := TInteractiveExecuter(FInteractiveExecuters[0]);
+    Result := Executer.NeedsSemicolon(Command);
+  end
+  else
+    Result := False;
 end;
 
-function TFMessages.getCompileError(const Path: string): string;
-  var i, j, k: Integer;
-      FileWithPath: string;
+function TFMessages.GetCompileError(const Path: string): string;
+var
+  I, J, K: Integer;
+  FileWithPath: string;
 begin
-  Result:= '';
-  i:= LBCompiler.Items.Count-1;
-  while i > -1 do begin
-    j:= i;
-    FileWithPath:= GetFileWithPath(LBCompiler, i);
-    if FileWithPath = Path then begin
-      for k:= i to j do
-        Result:= Result + '#13#10' + LBCompiler.Items[k];
-      exit;
-    end else
-      i:= i - 1;
+  Result := '';
+  I := LBCompiler.Items.Count - 1;
+  while I > -1 do
+  begin
+    J := I;
+    FileWithPath := GetFileWithPath(LBCompiler, I);
+    if FileWithPath = Path then
+    begin
+      for K := I to J do
+        Result := Result + '#13#10' + LBCompiler.Items[K];
+      Exit;
+    end
+    else
+      I := I - 1;
   end;
 end;
 
-procedure TFMessages.UpdateState;
-begin                  {
-  SetEnabledTB(TBStep, FJava.MIStep.Enabled);
-  SetEnabledTB(TBNext, FJava.MINext.Enabled);
-  SetEnabledTB(TBStepUp, FJava.MIStepUp.Enabled);
-  SetEnabledTB(TBRunToCursor, FJava.MIRunToCursor.Enabled);
-  SetEnabledTB(TBExecute, not myJavaCommands.ProcessRunning and not myDebugger.Running);
-  }
-end;
-
-procedure TFMessages.StatusMessage(const s: string; Status: integer = 0);
+procedure TFMessages.StatusMessage(const Message: string; Status: Integer = 0);
 begin
-  StatusBar.Tag:= Status;
-  StatusBar.Panels[0].Text:= '  ' + s;
+  StatusBar.Tag := Status;
+  StatusBar.Panels[0].Text := '  ' + Message;
 end;
 
 procedure TFMessages.StringGrid1MouseWheelDown(Sender: TObject;
   Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
 begin
-  with Sender as Tstringgrid do
-    begin
-      //top row + displayed rows must not be larger than the total rows
-      if TopRow+Visiblerowcount<rowcount then toprow:=toprow+1
-    end;
-  handled:=true;
+  with Sender as TStringGrid do
+  begin
+    // top row + displayed rows must not be larger than the total rows
+    if TopRow + VisibleRowCount < RowCount then
+      TopRow := TopRow + 1;
+  end;
+  Handled := True;
 end;
 
 procedure TFMessages.StringGrid1MouseWheelUp(Sender: TObject;
   Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
 begin
-  with Sender as Tstringgrid do
-    begin
-      if TopRow>fixedrows then toprow:=toprow-1
-    end;
-  handled:=true;
+  with Sender as TStringGrid do
+    if TopRow > FixedRows then
+      TopRow := TopRow - 1;
+  Handled := True;
 end;
 
-procedure TFMessages.StatusBarDrawPanel(aStatusBar: TStatusBar; Panel: TStatusPanel;
-  const Rect: TRect);
+procedure TFMessages.StatusBarDrawPanel(PStatusBar: TStatusBar;
+  Panel: TStatusPanel; const Rect: TRect);
 begin
-  case aStatusBar.Tag of
-    0: aStatusBar.Canvas.Brush.Color:= StyleServices.GetSystemColor(clBtnFace);
-    1: begin
-         aStatusBar.Canvas.Font.Color:= clBlack;
-         aStatusBar.Canvas.Brush.Color:= clLime;
-       end;
-    2: begin
-         aStatusBar.Canvas.Font.Color:= clWhite;
-         aStatusBar.Canvas.Brush.Color:= clRed;
-       end;
+  case PStatusBar.Tag of
+    0:
+      PStatusBar.Canvas.Brush.Color := StyleServices.GetSystemColor(clBtnFace);
+    1:
+      begin
+        PStatusBar.Canvas.Font.Color := clBlack;
+        PStatusBar.Canvas.Brush.Color := clLime;
+      end;
+    2:
+      begin
+        PStatusBar.Canvas.Font.Color := clWhite;
+        PStatusBar.Canvas.Brush.Color := clRed;
+      end;
   end;
-  var aRect:= Rect;
-  aRect.Width:= ClientWidth;
-  aRect.Height:= StatusBar.Height;
-  aStatusBar.Canvas.FillRect(aRect);
-  aStatusBar.Canvas.Font.Assign(aStatusBar.Font);
-  var h:= aStatusBar.Canvas.TextHeight('A');
-  aStatusBar.Canvas.TextOut(Rect.Left, (StatusBar.Height - h) div 2 + 1, Panel.Text);
+  var
+  ARect := Rect;
+  ARect.Width := ClientWidth;
+  ARect.Height := StatusBar.Height;
+  PStatusBar.Canvas.FillRect(ARect);
+  PStatusBar.Canvas.Font.Assign(PStatusBar.Font);
+  var
+  Height := PStatusBar.Canvas.TextHeight('A');
+  PStatusBar.Canvas.TextOut(Rect.Left, (StatusBar.Height - Height) div 2 + 1,
+    Panel.Text);
 end;
 
 procedure TFMessages.ClearStack;
@@ -2015,40 +2379,47 @@ begin
 end;
 
 procedure TFMessages.ChangeStyle;
-  var Details: TThemedElementDetails; i: integer;
+var
+  Details: TThemedElementDetails;
 begin
-  if FConfiguration.isDark then begin
-    DebuggerToolbar.Images:= vilDebuggerToolbarDark;
-    TBInteractiveToolbar.Images:= vilInteractiveDark;
-    PMMessages.Images:= vilPMMessagesDark;
-  end else begin
-    DebuggerToolbar.Images:= vilDebuggerToolbarLight;
-    TBInteractiveToolbar.Images:= vilInteractiveLight;
-    PMMessages.Images:= vilPMMessagesLight;
+  if FConfiguration.isDark then
+  begin
+    DebuggerToolbar.Images := vilDebuggerToolbarDark;
+    TBInteractiveToolbar.Images := vilInteractiveDark;
+    PMMessages.Images := vilPMMessagesDark;
+  end
+  else
+  begin
+    DebuggerToolbar.Images := vilDebuggerToolbarLight;
+    TBInteractiveToolbar.Images := vilInteractiveLight;
+    PMMessages.Images := vilPMMessagesLight;
   end;
-  if StyleServices.IsSystemStyle then begin
-    BGColor:= clWhite;
-    FGColor:= clBlack;
-  end else begin
-    Details:= StyleServices.GetElementDetails(tbsBackground);
-    StyleServices.GetElementColor(Details, ecFillColor, BGColor);
-    FGColor:= StyleServices.getStyleFontColor(sfTabTextInactiveNormal);
+  if StyleServices.IsSystemStyle then
+  begin
+    FBGColor := clWhite;
+    FFGColor := clBlack;
+  end
+  else
+  begin
+    Details := StyleServices.GetElementDetails(tbsBackground);
+    StyleServices.GetElementColor(Details, ecFillColor, FBGColor);
+    FFGColor := StyleServices.GetStyleFontColor(sfTabTextInactiveNormal);
   end;
-  MInterpreter.Color:= BGColor;
-  MInterpreter.Font.Color:= FGColor;
-  for i:= 0 to InteractiveEditors.Count - 1 do
-    TInteractiveEdit(InteractiveEditors.Objects[i]).Loaded;
+  MInterpreter.Color := FBGColor;
+  MInterpreter.Font.Color := FFGColor;
+  for var I := 0 to FInteractiveEditors.Count - 1 do
+    TInteractiveEdit(FInteractiveEditors.Objects[I]).Loaded;
 end;
 
-procedure TFMessages.setActiveSubTool(value: integer);
+procedure TFMessages.SetActiveSubTool(Value: Integer);
 begin
-  fActiveSubTool:= value;
+  FActiveSubTool := Value;
 end;
 
 procedure TFMessages.DeleteDebuggingTreeViews;
 begin
-  TreeViewDelete(TVAttributes, true);
-  TreeViewDelete(TVLocalVariables, true);
+  TreeViewDelete(TVAttributes, True);
+  TreeViewDelete(TVLocalVariables, True);
   LBStack.Clear;
 end;
 
@@ -2059,5 +2430,11 @@ begin
   SetStatusBarAndTabs;
   MISameWidthClick(Self);
 end;
+
+procedure TFMessages.SetDumpActive(Value: Boolean);
+begin
+  FDumpActive:= Value;
+end;
+
 
 end.

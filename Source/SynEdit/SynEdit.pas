@@ -676,6 +676,8 @@ type
     procedure DoOnCommandProcessed(Command: TSynEditorCommand; AChar: WideChar;
       Data: pointer); virtual;
     procedure DoOnGutterClick(Button: TMouseButton; X, Y: Integer); virtual;
+    procedure DoOnMouserCursor(const aLineCharPos: TBufferCoord;
+      var aCursor: TCursor); virtual;
     procedure DoOnPaint; virtual;
     procedure DoOnPaintTransientEx(TransientType: TTransientType; Lock: Boolean); virtual;
     procedure DoOnPaintTransient(TransientType: TTransientType); virtual;
@@ -765,6 +767,7 @@ type
     procedure InvalidateGutterLines(FirstLine, LastLine: integer);
     procedure InvalidateLine(Line: integer);
     procedure InvalidateLines(FirstLine, LastLine: integer);
+    procedure InvalidateRange(const BB, BE: TBufferCoord);
     procedure InvalidateSelection;
     function IsBookmark(BookMark: Integer): Boolean;
     function IsPointInSelection(const Value: TBufferCoord): Boolean;
@@ -2567,6 +2570,13 @@ begin
       fOnGutterClick(Self, Button, X, Y, line, mark);
     end;
   end;
+end;
+
+procedure TCustomSynEdit.DoOnMouserCursor(const aLineCharPos: TBufferCoord;
+  var aCursor: TCursor);
+begin
+  if Assigned(fOnMouseCursor) then
+    fOnMouseCursor(Self, aLineCharPos, aCursor);
 end;
 
 procedure TCustomSynEdit.Paint;
@@ -9780,6 +9790,37 @@ begin
   end;
 
   UpdateScrollBars;
+end;
+
+procedure TCustomSynEdit.InvalidateRange(const BB, BE: TBufferCoord);
+var
+  DB, DE: TDisplayCoord;
+  P1, P2: TPoint;
+  R : TRect;
+begin
+  if BB.Line <> BE.Line then
+    InvalidateLines(BB.Line, BE.Line)
+  else if BB.Char <> BE.Char then
+  begin
+    DB := BufferToDisplayPos(BB);
+    DE := BufferToDisplayPos(BE);
+    if DB.Row <> DE.Row then
+      InvalidateLine(BB.Line)
+    else
+    begin
+      // part of a row
+      if not InRange(DB.Row, TopLine, TopLine + LinesInWindow) or
+        (DB.Column = DE.Column)
+      then
+        Exit;
+      P1 := RowColumnToPixels(DB);
+      P2 := RowColumnToPixels(DE);
+      R := Rect(P1.X, fTextHeight * (DB.Row - TopLine), P2.X,
+        fTextHeight * (DB.Row - TopLine + 1));
+      R.NormalizeRect;
+      InvalidateRect(R, False);
+    end;
+  end;
 end;
 
 procedure TCustomSynEdit.InvalidateRect(const aRect: TRect; aErase: Boolean);

@@ -369,6 +369,8 @@ end;
 
 procedure TJEComponent.Zooming(_in: boolean);
 begin
+  if (Name = '') or (Abs(Tag) in [7, 42, 43, 44, 50, 52, 115, 116, 117, 124]) then
+    Exit;   // ButtonGroup, Menu, ...
   if _in
     then Font.Size:= Font.Size + FConfiguration.ZoomSteps
     else Font.Size:= max(Font.Size - FConfiguration.ZoomSteps, 6);

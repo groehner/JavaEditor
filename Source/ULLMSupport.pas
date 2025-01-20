@@ -82,7 +82,6 @@ type
     FOnLLMResponse: TOnLLMResponseEvent;
     FOnLLMError: TOnLLMErrorEvent;
     FLastPrompt: string;
-    FContext: TJSONValue;
     FEndPointType: TEndpointType;
     procedure OnRequestError(const Sender: TObject; const AError: string);
     procedure OnRequestCompleted(const Sender: TObject; const AResponse: IHTTPResponse);
@@ -101,7 +100,6 @@ type
     Providers: TLLMProviders;
     ActiveTopicIndex: Integer;
     ChatTopics: TArray<TChatTopic>;
-    procedure ClearContext;
     function ValidateSettings: TLLMSettingsValidation; virtual;
     function ValidationErrMsg(Validation: TLLMSettingsValidation): string;
     constructor Create;
@@ -218,9 +216,10 @@ implementation
 uses
   System.Math,
   System.IOUtils,
-  JvGnugettext,
   Vcl.Forms,
   Vcl.Dialogs,
+  JvGnugettext,
+  SynUnicode,
   ULLMSuggestForm,
   UJava,
   UConfiguration,
@@ -306,11 +305,6 @@ begin
     FHttpResponse.AsyncResult.Cancel;
 end;
 
-procedure TLLMBase.ClearContext;
-begin
-  FreeAndNil(FContext);
-end;
-
 constructor TLLMBase.Create;
 begin
   inherited;
@@ -329,7 +323,6 @@ begin
   FSerializer.Free;
   FSourceStream.Free;
   FHttpClient.Free;
-  FContext.Free;
   inherited;
 end;
 
@@ -404,14 +397,6 @@ begin
           etGemini:
             ResponseOK := JsonResponse.TryGetValue('candidates[0].content.parts[0].text', Msg);
         end;
-
-      if FEndPointType = etOllamaGenerate then
-      begin
-        ClearContext;
-        FContext := JsonResponse.FindValue('context');
-        if Assigned(FContext) then
-          FContext.Owned := False;
-      end;
     finally
       JsonResponse.Free;
     end;
@@ -466,7 +451,6 @@ end;
 procedure TLLMChat.ClearTopic;
 begin
   ChatTopics[ActiveTopicIndex] := default(TChatTopic);
-  ClearContext;
 end;
 
 constructor TLLMChat.Create;
@@ -509,19 +493,13 @@ end;
 procedure TLLMChat.NextTopic;
 begin
   if ActiveTopicIndex < Length(ChatTopics) - 1 then
-  begin
     Inc(ActiveTopicIndex);
-    ClearContext;
-  end;
 end;
 
 procedure TLLMChat.PreviousTopic;
 begin
   if ActiveTopicIndex > 0 then
-  begin
     Dec(ActiveTopicIndex);
-    ClearContext;
-  end;
 end;
 
 function TLLMChat.RequestParams(const Prompt: string; const Suffix: string = ''): string;
@@ -607,7 +585,6 @@ begin
     else
       ChatTopics := [default(TChatTopic)];
   end;
-  ClearContext;
 end;
 
 procedure TLLMChat.SaveChat(const FName: string);
@@ -684,14 +661,14 @@ const
      'understand the logic and functionality of the code. ' +
      'Ensure that the explanations and comments are integrated into the source ' +
      'code. The final output should be valid java code.'#$A#$A +
-     'Here is the source code that needs comments:'#10'```'#$A + '%s'#$A'```';
+     'Here is the source code that needs comments:'#$A'```'#$A'%s'#$A'```';
 begin
   FEditForm:= FJava.getActiveEditor;
   if IsBusy or not Assigned(FEditForm) then Exit;
 
   FActiveEditor := FEditForm.Editor;
   FCaret := FActiveEditor.CaretXY;
-  FSelText := FActiveEditor.SelText;
+  FSelText := AdjustLineBreaks(FActiveEditor.SelText, tlbsLF);
 
   if FSelText = '' then Exit;
 
@@ -750,7 +727,7 @@ begin
   if not Assigned(FEditForm) or
     (FActiveEditor <> FEditForm.Editor) or
     (FCaret <> FEditForm.Editor.CaretXY) or
-    (FSelText <> FActiveEditor.SelText)
+    (FSelText <> AdjustLineBreaks(FActiveEditor.SelText, tlbsLF))
   then
     Exit;
 
@@ -782,14 +759,14 @@ const
     'and should be complete and ready to run. ' +
     'Along with the fixes, insert detailed java comments explaining the nature ' +
     'of the original issues and how they were resolved.'#$A#$A +
-    'Here is the source code that needs fixing:'#10'```'#$A + '%s'#$A'```';
+    'Here is the source code that needs fixing:'#$A'```'#$A'%s'#$A'```';
 begin
   FEditForm:= FJava.getActiveEditor;
   if IsBusy or not Assigned(FEditForm) then Exit;
 
   FActiveEditor := FEditForm.Editor;
   FCaret := FActiveEditor.CaretXY;
-  FSelText := FActiveEditor.SelText;
+  FSelText := AdjustLineBreaks(FActiveEditor.SelText, tlbsLF);
 
   if FSelText = '' then Exit;
 
@@ -807,7 +784,7 @@ const
     'should maintain the original functionality of the code.'#10#10 +
     'The response should contain only the optimized code ' +
     'and should be complete and ready to run.'#$A#$A +
-    'Here is the source code that needs optimization:'#$A'```'#10'%s'#$A'```';
+    'Here is the source code that needs optimization:'#$A'```'#$A'%s'#$A'```';
 begin
   FEditForm:= FJava.getActiveEditor;
   if IsBusy or not Assigned(FEditForm) then Exit;
@@ -862,6 +839,8 @@ begin
   JSON.AddPair('model', Settings.Model);
   JSON.AddPair('stream', False);
   JSON.AddPair('prompt', Prompt);
+  if Suffix <> '' then
+    JSON.AddPair('suffix', Suffix);
   case FEndPointType of
     etOllamaGenerate:
       begin
@@ -878,14 +857,11 @@ begin
         Options.AddPair('num_predict', Settings.MaxTokens);
         Options.AddPair('temperature', Temperature);
         JSON.AddPair('options', Options);
-        //JSON.AddPair('raw', True);
       end;
     etOpenAICompletion:
       begin
         JSON.AddPair('max_tokens', Settings.MaxTokens);
         JSON.AddPair('temperature', Temperature);
-        if Suffix <> '' then
-          JSON.AddPair('suffix', Suffix);
       end;
   end;
 
@@ -903,10 +879,7 @@ const
   OpenAISuggestPrompt: string =
     'You are my java coding assistant.  Please complete the following' +
     ' Java code. Return only the missing part:'#13#10'%s';
-  CodellamaSuggestPrompt = '<PRE> %s <SUF> %s <MID>';
-//  GeminiSuggestPrompt = //'%s____%s';
-//    'Please complete the following java code. Return only the missing part:'#13#10'```%s____%s```';
-  GeminiSuggestPrompt = //'%s____%s';
+  GeminiSuggestPrompt =
     'Please fill the blank indicated by "____" in the following java code. '+
     'Return only what is missing and nothing else:'#13#10'```%s____%s```';
 
@@ -914,7 +887,7 @@ const
   begin
     Result := '';
     for var I := Max(0, FCaret.Line - MaxPrefixLines) to FCaret.Line - 2 do
-      Result := Result + FActiveEditor.Lines[I] + sLineBreak;
+      Result := Result + FActiveEditor.Lines[I] + WideLF;
     Result := Result + Copy(FActiveEditor.Lines[FCaret.Line - 1], 1, FCaret.Char - 1);
   end;
 
@@ -922,7 +895,7 @@ const
   begin
     Result := Copy(FActiveEditor.Lines[FCaret.Line - 1], FCaret.Char + 1);
     for var I := FCaret.Line to Min(FActiveEditor.Lines.Count - 1, FCaret.Line + MaxSuffixLines) do
-      Result := Result + sLineBreak + FActiveEditor.Lines[I];
+      Result := Result + WideLF + FActiveEditor.Lines[I];
   end;
 
 begin
@@ -943,9 +916,10 @@ begin
       end;
     etOllamaGenerate:
       begin
-        FStopSequence := ['<END>', '<EOD>', '<EOT>'];
-        var Prompt := Format(CodellamaSuggestPrompt, [GetPrefix, GetSuffix]);
-        Ask(Prompt, '');
+        if Settings.Model.StartsWith('codellama') then
+          FStopSequence := ['<END>', '<EOD>', '<EOT>'];
+        var Prompt := GetPrefix;
+        Ask(Prompt, GetSuffix);
         FStopSequence := [];
       end;
     etGemini:
@@ -956,7 +930,6 @@ begin
         FStopSequence := [];
       end;
   end;
-
 end;
 
 function TLLMAssistant.ValidateSettings: TLLMSettingsValidation;
@@ -966,10 +939,6 @@ begin
     not (Settings.EndPointType in [etOllamaGenerate, etOpenAICompletion, etGemini])
   then
     Result := svInvalidEndpoint
-  else if (Settings.EndPointType = etOllamaGenerate) and
-    not Settings.Model.StartsWith('codellama')
-  then
-    Result := svInvalidModel;
 end;
 
 initialization

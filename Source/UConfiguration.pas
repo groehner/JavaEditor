@@ -4893,11 +4893,9 @@ begin
     // tab providers
     LLMAssistantViewToModel;
     CopyProviders(TempProviders, LLMAssistant.Providers);
-    LLMAssistant.ClearContext;
 
     LLMChatViewToModel;
     CopyProviders(TempChatProviders, FLLMChatForm.LLMChat.Providers);
-    FLLMChatForm.LLMChat.ClearContext;
 
     VisibilityViewToModel;
   end;

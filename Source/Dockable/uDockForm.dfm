@@ -3,8 +3,8 @@ object DockableForm: TDockableForm
   Top = 294
   Anchors = [akLeft]
   Caption = 'DockableForm'
-  ClientHeight = 188
-  ClientWidth = 321
+  ClientHeight = 187
+  ClientWidth = 317
   Color = clBtnFace
   DockSite = True
   DragKind = dkDock

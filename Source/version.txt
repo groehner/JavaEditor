@@ -1,3 +1,7 @@
+23.03, 2025.01.20
+improved chat and messages window
+
+
 23.02, 2024.12.13
 improvements for zooming gui form
 a GUI window is active again after opening

@@ -47,7 +47,7 @@ type
     Terminated: boolean;
     ProcessInformation: TProcessinformation;
     AnswerFromJe2Java: string;
-    constructor create(aUMLForm: TForm; aNumber: integer);
+    constructor Create(aUMLForm: TForm; aNumber: integer);
     destructor Destroy; override;
     function NewClass(aClassname, Pathname: string): boolean;
     function NewAPIClass(aClassname: string): boolean;
@@ -86,7 +86,7 @@ begin
   Result:= activeComJava;
 end;
 
-constructor TComJava1.create(aUMLForm: TForm; aNumber: integer);
+constructor TComJava1.Create(aUMLForm: TForm; aNumber: integer);
 begin
   Received:= '';
   AnswerFromJe2Java:= '';

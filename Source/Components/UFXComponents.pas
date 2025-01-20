@@ -408,8 +408,8 @@ end;
 procedure TFXNode.DoMakeFont;
   var s, map: string; intstyle: integer;
 begin
-  if Name = '' then exit;
-
+  if (Name = '') or (Tag in [116, 117]) then
+    Exit;
   map:= Name + '_map';
   Partner.DeleteAttributeValues(map);
   Partner.DeleteAttributeValue(Name + '.setFont');
@@ -435,7 +435,8 @@ end;
 
 procedure TFXNode.DoMakeFontWithStyle;
 begin
-  if Name = '' then exit;
+  if (Name = '') or (Tag in [115, 116, 117, 124]) then
+    Exit;
   Partner.DeleteAttributeValue(Name + '.setFont');
   var s:= Name + '.setStyle("-fx-font-family: '''+ Font.Name + '''; ';
   s:= 'fx-font-family: '''+ Font.Name + '''; ';

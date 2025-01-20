@@ -35,6 +35,7 @@ uses
   Vcl.WinXCtrls,
   Vcl.ActnList,
   Vcl.AppEvnts,
+  Vcl.BaseImageCollection,
   SynEdit,
   SynEditHighlighter,
   SynHighlighterMulti,
@@ -49,10 +50,18 @@ uses
   TB2Item,
   SpTBXEditors,
   SpTBXSkins,
-  UBaseForm, UDockForm,
-  uLLMSupport, Vcl.BaseImageCollection, SVGIconImageCollection;
+  UBaseForm,
+  UDockForm,
+  uLLMSupport,
+  SVGIconImageCollection;
 
 type
+
+  // Interposer class to prevent the auto-scrolling when clicking
+  TScrollBox = class(Vcl.Forms.TScrollBox)
+  protected
+    procedure AutoScrollInView(AControl: TControl); override;
+  end;
 
   TLLMChatForm = class(TDockableForm)
     pnlQuestion: TPanel;
@@ -95,9 +104,11 @@ type
     actCopyToNewEditor: TAction;
     SpTBXSeparatorItem5: TSpTBXSeparatorItem;
     mnCopyToNewEditor: TSpTBXItem;
-    icMenuAndToolbar: TSVGIconImageCollection;
     vilImages: TVirtualImageList;
     pAsk: TPanel;
+    icMenuAndToolbar: TSVGIconImageCollection;
+    vilImagesDark: TVirtualImageList;
+    vilImagesLight: TVirtualImageList;
     procedure actChatSaveExecute(Sender: TObject);
     procedure AppEventsMessage(var Msg: tagMsg; var Handled: Boolean);
     procedure FormCreate(Sender: TObject);
@@ -135,6 +146,7 @@ type
     procedure WMSpSkinChange(var Message: TMessage); message WM_SPSKINCHANGE;
   public
     LLMChat: TLLMChat;
+    procedure ChangeStyle;
   end;
 
 var
@@ -228,7 +240,10 @@ begin
     Width := 24;
     Height := 24;
     AutoSize := False;
-    ImageList := vilImages;
+    if TFConfiguration.IsDark then
+      ImageList:= vilImagesDark
+    else
+      ImageList:= vilImagesLight;
     ImageName := ImgName;
     Anchors := [akLeft, akTop];
     FixedColor := StyleServices.GetSystemColor(clWindowText);
@@ -243,13 +258,10 @@ begin
     BorderStyle := bsNone;
     Anchors := [akLeft, akRight, akTop, akBottom];
     Options := Options + [eoRightMouseMovesCursor];
-    UseCodeFolding := False;
     Highlighter := SynMultiSyn;
-    ReadOnly := True;
-    RightEdge := 0;
     Top := 0;
-    Left := 40;
-    Width := PanelQA.Width - 40;
+    Left := 30;
+    Width := PanelQA.Width - 30;
     Height := PanelQA.Height;
     Font.Name := 'Consolas';
     Font.Size := 10;
@@ -262,7 +274,6 @@ begin
   end;
   PanelQA.ScaleForPPI(CurrentPPI);
   PanelQA.Parent := QAStackPanel;
-  synQA.WordWrap := True;
   synQA.Text := QA.Trim;
   PanelQA.OnResize :=  PanelQAResize;
   // Resize twice! - The first time the Scrollbox scrollbar may be shown
@@ -283,10 +294,15 @@ procedure TLLMChatForm.DisplayActiveChatTopic;
 begin
   ClearConversation;
   DisplayTopicTitle(LLMChat.ActiveTopic.Title);
-  for var QAItem in LLMChat.ActiveTopic.QAItems do
-  begin
-    DisplayQA(QAItem.Prompt, 'UserQuestion');
-    DisplayQA(QAItem.Answer, 'Assistant');
+  QAStackPanel.LockDrawing;
+  try
+    for var QAItem in LLMChat.ActiveTopic.QAItems do
+    begin
+      DisplayQA(QAItem.Prompt, 'UserQuestion');
+      DisplayQA(QAItem.Answer, 'Assistant2');
+    end;
+  finally
+    QAStackPanel.UnlockDrawing;
   end;
   if SynQuestion.HandleAllocated then
     SynQuestion.SetFocus;
@@ -349,6 +365,7 @@ begin
   var FileName := TPath.Combine(FConfiguration.HomeDir, 'Chat history.json');
   LLMChat.LoadChat(FileName);
   SetQuestionTextHint;
+  ChangeStyle;
 end;
 
 procedure TLLMChatForm.FormShow(Sender: TObject);
@@ -407,7 +424,7 @@ procedure TLLMChatForm.OnLLMResponse(Sender: TObject; const Prompt,
   Answer: string);
 begin
   DisplayQA(Prompt, 'UserQuestion');
-  DisplayQA(Answer, 'Assistant');
+  DisplayQA(Answer, 'Assistant2');
   synQuestion.Clear;
 end;
 
@@ -415,7 +432,10 @@ procedure TLLMChatForm.synQuestionKeyDown(Sender: TObject; var Key: Word; Shift:
     TShiftState);
 begin
   if (Shift * [ssShift, ssCtrl] <> []) and  (Key = vkReturn) then
+  begin
     actAskQuestion.Execute;
+    Key := 0;
+  end;
 end;
 
 procedure TLLMChatForm.actAskQuestionExecute(Sender: TObject);
@@ -571,6 +591,25 @@ begin
   aiBusy.IndicatorCustomColor := StyleServices.GetSystemColor(clWindowText);
   {$ENDIF}
   DisplayActiveChatTopic;
+end;
+
+procedure TLLMChatForm.ChangeStyle;
+begin
+  if TFConfiguration.IsDark then begin
+    SpTBXToolbar.Images:= vilImagesDark;
+    sbAsk.Images:= vilImagesDark;
+  end
+  else
+  begin
+    SpTBXToolbar.Images:= vilImagesLight;
+    sbAsk.Images:= vilImagesLight;
+  end;
+end;
+
+{ TScrollBox }
+// To avoid the jumping of the cursor
+procedure TScrollBox.AutoScrollInView(AControl: TControl);
+begin
 end;
 
 end.

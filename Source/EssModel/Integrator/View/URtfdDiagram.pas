@@ -2362,7 +2362,7 @@ begin
                   FreeAndNil(aJavaValue);
                 end else begin
                   ErrorMsg(aJavaMethod.Error);
-                  FMessages.OutputLineTo(0, aJavaMethod.Error);
+                  FMessages.OutputToTerminal(aJavaMethod.Error);
                 end;
               finally
                 FreeAndNil(aJavaMethod);

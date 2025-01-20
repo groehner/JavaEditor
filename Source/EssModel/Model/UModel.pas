@@ -981,7 +981,10 @@ end;
 
 function TClass.AddAttribute(const NewName: string; TypeClass: TClassifier): TAttribute;
 begin
-  Result:= FindAttribute(NewName, TypeClass.Name);
+  if Assigned(TypeClass) then
+    Result:= FindAttribute(NewName, TypeClass.Name)
+  else
+    Result:= nil;
   if Result = nil then begin
     Result := TAttribute.Create(Self);
     Result.FTypeClassifier:= TypeClass;
@@ -1794,7 +1797,10 @@ end;
 
 function TInterface.AddAttribute(const NewName: string; TypeClass: TClassifier): TAttribute;
 begin
-  Result:= FindAttribute(NewName, TypeClass.Name);
+  if Assigned(TypeClass) then
+    Result:= FindAttribute(NewName, TypeClass.Name)
+  else
+    Result:= nil;
   if Result = nil then begin
     Result := TAttribute.Create(Self);
     Result.FName := NewName;

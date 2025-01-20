@@ -957,9 +957,9 @@ begin
             AttVarAus.AddChild(CurNode, s);
         end;
       end;
-      FMessages.DumpActive:= true;
+      FMessages.SetDumpActive(True);
       CurNode.Expand(false);
-      FMessages.DumpActive:= false;
+      FMessages.SetDumpActive(False);
     end;
     AttVarAus.EndUpdate;
   end;

@@ -365,7 +365,8 @@ var
   begin
     Editor.GetHighlighterAttriAtRowCol(BufferCoord(ScanPos, LineNo +1 ), Token, Attr);
     Result:= (Attr = Editor.Highlighter.CommentAttribute) or
-             (Attr = Editor.Highlighter.StringAttribute)
+             (Attr = Editor.Highlighter.StringAttribute) or
+             (Attr.Name = 'Preprocessor') // compiler directives
   end;
 
 begin

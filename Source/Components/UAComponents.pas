@@ -677,7 +677,8 @@ end;
 procedure TAWTComponent.MakeFont;
   var s, map: string; intstyle: integer;
 begin
-  if Name = '' then exit;
+  if (Name = '') or (Abs(Tag) in [7, 42, 43, 44, 50, 52]) then
+    Exit;   // ButtonGroup, Menu, ...
 
   map:= Name + '_map';
   Partner.DeleteAttributeValues(map);

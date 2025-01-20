@@ -95,9 +95,9 @@ type
     procedure CreateObject(aExecution: TExecutionLine);
     procedure CreateArray(aExecution: TExecutionLine);
   public
-    constructor create(aUMLForm: TFUMLForm; SE: TSynEdit; SG: TStringGrid; C: TComJava1);
+    constructor Create(aUMLForm: TFUMLForm; SE: TSynEdit; SG: TStringGrid; C: TComJava1);
     destructor Destroy; override;
-    procedure execute(const s: string);
+    procedure Execute(const s: string);
     procedure Clear;
     procedure DelVariable(const Name: string);
     procedure AddVariable(const Name, Typ, Value: string);
@@ -230,7 +230,7 @@ end;
 
 {--- TInteractiveExecuter ----------------------------------------------------------------}
 
-constructor TInteractiveExecuter.create(aUMLForm: TFUMLForm; SE: TSynEdit; SG: TStringGrid; C: TComJava1);
+constructor TInteractiveExecuter.Create(aUMLForm: TFUMLForm; SE: TSynEdit; SG: TStringGrid; C: TComJava1);
 begin
   SL:= TStringList.Create;
   VariableList:= TVariableList.create;
@@ -243,7 +243,7 @@ begin
   aClassname:= '';
 end;
 
-destructor TInteractiveExecuter.destroy;
+destructor TInteractiveExecuter.Destroy;
 begin
   FreeAndNil(SL);
   FreeAndNil(VariableList);
@@ -354,7 +354,7 @@ begin
   end;
 end;
 
-procedure TInteractiveExecuter.error(const Compiled: string);
+procedure TInteractiveExecuter.Error(const Compiled: string);
 begin
   if SL.Count > 1
     then FMessages.OutputToTerminal(StripFile(compiled))
@@ -455,7 +455,7 @@ begin
   Result:= Compiled;
 end;
 
-function TInteractiveExecuter.run(aExecution: TExecutionLine): boolean;
+function TInteractiveExecuter.Run(aExecution: TExecutionLine): boolean;
   var aJavaClass: TComJavaClass;
       aJavaMethod: TComJavaMethod;
       aJavaValue: TComJavaValue;
@@ -480,7 +480,7 @@ begin
   end;
 end;
 
-procedure TInteractiveExecuter.getExpression(aExecution: TExecutionLine);
+procedure TInteractiveExecuter.GetExpression(aExecution: TExecutionLine);
   var aJavaClass: TComJavaClass;
       aJavaMethod: TComJavaMethod;
       aComJavaValue: TComJavaValue;
@@ -514,7 +514,7 @@ begin
   end;
 end;
 
-procedure TInteractiveExecuter.assignWithoutType(aExecution: TExecutionLine);
+procedure TInteractiveExecuter.AssignWithoutType(aExecution: TExecutionLine);
   var aJavaClass: TComJavaClass;
       aJavaMethod: TComJavaMethod;
       Compiled, s, varname: string;
@@ -816,7 +816,7 @@ begin
     Variable.existing:= true;
 end;
 
-function TInteractiveExecuter.putVariables: string;
+function TInteractiveExecuter.PutVariables: string;
   var s: string; i: integer; Variable: TVariable;
 begin
   s:= '';

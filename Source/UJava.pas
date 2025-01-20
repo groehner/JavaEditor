@@ -2255,7 +2255,6 @@ begin
   SetEnabledMI(MITestCreateSequencediagram, EditorIsJava and NoProcessRunning); // getEditFormWithMain <> nil { EditorIsJava});
   SetEnabledTB(TBStep, MIStep.Enabled);
   SetEnabledTB(TBNext, MINext.Enabled);
-  FMessages.UpdateState;
 
   // UML menu
   SetEnabledMI(MINewUML, NoProcessRunning);
