@@ -140,7 +140,7 @@ type
     procedure DisplayActiveChatTopic;
     procedure PythonHighlighterChange(Sender: TObject);
     procedure SetQuestionTextHint;
-    procedure OnLLMResponse(Sender: TObject; const Prompt, Answer: string);
+    procedure OnLLMResponse(Sender: TObject; const Prompt, Answer, Reason: string);
     procedure OnLLMError(Sender: TObject; const Error: string);
   protected
     procedure WMSpSkinChange(var Message: TMessage); message WM_SPSKINCHANGE;
@@ -391,9 +391,9 @@ begin
   var StartLine := BC.Line;
   var EndLine := BC.Line;
 
-  while (StartLine > 1) and  not Editor.Lines[StartLine -1].StartsWith('```') do
+  while (StartLine > 1) and  not Editor.Lines[StartLine -1].TrimLeft.StartsWith('```') do
     Dec(StartLine);
-  while (EndLine < Editor.Lines.Count) and not Editor.Lines[EndLine -1].StartsWith('```') do
+  while (EndLine < Editor.Lines.Count) and not Editor.Lines[EndLine -1].TrimLeft.StartsWith('```') do
     Inc(EndLine);
 
   Result := '';
@@ -421,10 +421,9 @@ begin
 end;
 
 procedure TLLMChatForm.OnLLMResponse(Sender: TObject; const Prompt,
-  Answer: string);
+  Answer, Reason: string);
 begin
-  DisplayQA(Prompt, 'UserQuestion');
-  DisplayQA(Answer, 'Assistant2');
+  DisplayQA(Prompt, Answer);
   synQuestion.Clear;
 end;
 

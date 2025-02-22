@@ -5,10 +5,11 @@ inherited LLMChatForm: TLLMChatForm
   Caption = 'Chat'
   ClientHeight = 640
   ClientWidth = 566
+  StyleElements = [seFont, seClient, seBorder]
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  ExplicitWidth = 578
-  ExplicitHeight = 678
+  ExplicitWidth = 582
+  ExplicitHeight = 679
   TextHeight = 15
   object pnlQuestion: TPanel
     Left = 0
@@ -19,8 +20,6 @@ inherited LLMChatForm: TLLMChatForm
     ParentBackground = False
     ParentColor = True
     TabOrder = 0
-    ExplicitTop = 554
-    ExplicitWidth = 562
     object pAsk: TPanel
       Left = 532
       Top = 1
@@ -28,7 +27,6 @@ inherited LLMChatForm: TLLMChatForm
       Height = 83
       Align = alRight
       TabOrder = 0
-      ExplicitLeft = 528
       DesignSize = (
         33
         83)
@@ -62,8 +60,6 @@ inherited LLMChatForm: TLLMChatForm
     Align = alClient
     ParentBackground = True
     TabOrder = 1
-    ExplicitWidth = 562
-    ExplicitHeight = 515
     object QAStackPanel: TStackPanel
       AlignWithMargins = True
       Left = 3
@@ -79,7 +75,6 @@ inherited LLMChatForm: TLLMChatForm
       ParentColor = True
       ParentDoubleBuffered = False
       TabOrder = 0
-      ExplicitWidth = 552
     end
   end
   object Splitter: TSpTBXSplitter
@@ -91,8 +86,6 @@ inherited LLMChatForm: TLLMChatForm
     Align = alBottom
     ParentColor = False
     MinSize = 90
-    ExplicitTop = 549
-    ExplicitWidth = 562
   end
   object SpTBXDock: TSpTBXDock
     Left = 0
@@ -101,7 +94,6 @@ inherited LLMChatForm: TLLMChatForm
     Height = 34
     AllowDrag = False
     DoubleBuffered = True
-    ExplicitWidth = 562
     object SpTBXToolbar: TSpTBXToolbar
       Left = 0
       Top = 0

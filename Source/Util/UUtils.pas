@@ -257,6 +257,7 @@ function myMulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 function StringTimesN(s: string; n: integer): string;
 function GetUsersWindowsLanguage: string;
 function Obfuscate(const s: string): string;
+function StringZuSingle(S: string): Single;
 
 implementation
 
@@ -1415,11 +1416,14 @@ end;
 
 procedure ErrorMsg(const s: string);
 begin
+  MessageDlg(s, mtError, [mbOk], 0);
+  {
   TThread.Synchronize(nil,
     procedure
     begin
       MessageDlg(s, mtError, [mbOk], 0);
     end);
+  }
 end;
 
 procedure InformationMsg(const s: string);
@@ -2236,6 +2240,25 @@ begin
     end;
 end;
 
+function StringZuSingle(S: string): Single;
+var
+  FS: TFormatSettings;
+begin
+  // Feste FormatSettings definieren
+  FS := TFormatSettings.Create;
+  FS.DecimalSeparator := '.'; // Dezimaltrennzeichen explizit auf Punkt setzen
+
+  // Ersetze alle Kommata durch einen Punkt
+  S := StringReplace(S, ',', '.', [rfReplaceAll]);
+
+  // Versuche die Konvertierung
+  try
+    Result := StrToFloat(S, FS);
+  except
+    on E: EConvertError do
+      Result := 0.0; // Fallback-Wert, falls ungültige Eingabe
+  end;
+end;
 
 { TMatchHelper }
 

@@ -232,7 +232,7 @@ begin
   end;
   with TVFileStructure.ScreenToClient(Mouse.CursorPos) do
     Node:= TVFileStructure.GetNodeAt(X, Y);
-  if Node = nil then
+  if not Assigned(Node) then
     Exit;
   NavigateToNodeElement(TVFileStructure.Selected);
   var attri:= Node.Text;
@@ -384,5 +384,8 @@ begin
     UnlockFormUpdate(Self);
   end;
 end;
+
+Initialization
+  FFileStructure:= nil;
 
 end.

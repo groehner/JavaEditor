@@ -3614,7 +3614,7 @@ begin
   Parameter:= ' -classpath ' + FConfiguration.getClassPath(aFile, Package);
   Parameter:= Parameter + ' ' + FConfiguration.JavaDocParameter;
   if (EditorForm.Encoding <> 'ANSI') and (Pos('encoding', Parameter) = 0) then
-    if EditorForm.Encoding = 'UTF8'
+    if EditorForm.Encoding = 'UTF-8'
       then Parameter:= Parameter + ' -encoding UTF-8'
       else Parameter:= Parameter + ' -encoding UTF-16';
   dir:= ExtractFilePath(aFile) + 'Doc\';

@@ -23,6 +23,7 @@ type
   TLLMProvider = (
     llmProviderOpenAI,
     llmProviderGemini,
+    llmProviderDeepSeek,
     llmProviderOllama);
 
   TEndpointType = (
@@ -38,7 +39,8 @@ type
     svModelEmpty,
     svInvalidEndpoint,
     svInvalidModel,
-    svAPIKeyMissing);
+    svAPIKeyMissing,
+    svInvalidTemperature);
 
   TLLMSettings = record
     EndPoint: string;
@@ -46,6 +48,7 @@ type
     Model: string;
     TimeOut: Integer;
     MaxTokens: Integer;
+    Temperature: Single;
     SystemPrompt: string;
     function Validate: TLLMSettingsValidation;
     function IsLocal: Boolean;
@@ -54,6 +57,7 @@ type
 
   TLLMProviders = record
     Provider: TLLMProvider;
+    DeepSeek: TLLMSettings;
     OpenAI: TLLMSettings;
     Gemini: TLLMSettings;
     Ollama: TLLMSettings;
@@ -62,7 +66,8 @@ type
   TQAItem = record
     Prompt: string;
     Answer: string;
-    constructor Create(const AQuestion, AnAnswer: string);
+    Reason: string;
+    constructor Create(const AQuestion, AnAnswer, Reason: string);
   end;
 
   TChatTopic = record
@@ -71,7 +76,7 @@ type
   end;
   TChatTopics = TArray<TChatTopic>;
 
-  TOnLLMResponseEvent = procedure(Sender: TObject; const Prompt, Answer: string) of object;
+  TOnLLMResponseEvent = procedure(Sender: TObject; const Prompt, Answer, Reason: string) of object;
   TOnLLMErrorEvent = procedure(Sender: TObject; const Error: string) of object;
 
   TLLMBase = class
@@ -91,7 +96,7 @@ type
     FSerializer: TJsonSerializer;
     procedure DoResponseCompleted(const AResponse: IHTTPResponse); virtual;
     procedure DoResponseCreated(const AResponse: IHTTPResponse); virtual;
-    procedure DoResponseOK(const Msg: string); virtual;
+    procedure DoResponseOK(const Msg, Reason: string); virtual;
     function RequestParams(const Prompt: string; const Suffix: string = ''): string; virtual; abstract;
     // Gemini support
     procedure AddGeminiSystemPrompt(Params: TJSONObject);
@@ -116,7 +121,7 @@ type
 
   TLLMChat = class(TLLMBase)
   protected
-    procedure DoResponseOK(const Msg: string); override;
+    procedure DoResponseOK(const Msg, Reason: string); override;
     function RequestParams(const Prompt: string; const Suffix: string = ''): string; override;
   public
     ActiveTopicIndex: Integer;
@@ -148,7 +153,7 @@ type
     const MaxSuffixLines = 50;
     procedure DoResponseCompleted(const AResponse: IHTTPResponse); override;
     procedure DoResponseCreated(const AResponse: IHTTPResponse); override;
-    procedure DoResponseOK(const Msg: string); override;
+    procedure DoResponseOK(const Msg, Reason: string); override;
     procedure ShowError(Sender: TObject; const Error: string);
     function RequestParams(const Prompt: string; const Suffix: string = ''): string; override;
   public
@@ -171,9 +176,9 @@ const
     EndPoint: 'https://api.openai.com/v1/chat/completions';
     ApiKey: '';
     Model: 'gpt-4o';
-    //Model: 'gpt-3.5-turbo';
     TimeOut: 20000;
     MaxTokens: 1000;
+    Temperature: 1.0;
     SystemPrompt: DefaultSystemPrompt);
 
   OpenaiCompletionSettings: TLLMSettings = (
@@ -182,6 +187,7 @@ const
     Model: 'gpt-3.5-turbo-instruct';
     TimeOut: 20000;
     MaxTokens: 1000;
+    Temperature: 0.2;
     SystemPrompt: '');
 
   GeminiSettings: TLLMSettings = (
@@ -190,7 +196,26 @@ const
     Model: 'gemini-1.5-flash';
     TimeOut: 20000;
     MaxTokens: 1000;
+    Temperature: 1.0;
     SystemPrompt: DefaultSystemPrompt);
+
+  DeepSeekChatSettings: TLLMSettings = (
+    EndPoint: 'https://api.deepseek.com/chat/completions';
+    ApiKey: '';
+    Model: 'deepseek-chat';
+    TimeOut: 20000;
+    MaxTokens: 3000;
+    Temperature: 1.0;
+    SystemPrompt: DefaultSystemPrompt);
+
+  DeepSeekCompletionSettings: TLLMSettings = (
+    EndPoint: 'https://api.deepseek.com/beta/completions';
+    ApiKey: '';
+    Model: 'deepseek-chat';
+    TimeOut: 20000;
+    MaxTokens: 1000;
+    Temperature: 0;
+    SystemPrompt: '');
 
   OllamaChatSettings: TLLMSettings = (
     EndPoint: 'http://localhost:11434/api/chat';
@@ -201,6 +226,7 @@ const
     //Model: 'stable-code';
     TimeOut: 60000;
     MaxTokens: 1000;
+    Temperature: 1.0;
     SystemPrompt: DefaultSystemPrompt);
 
   OllamaCompletionSettings: TLLMSettings = (
@@ -209,6 +235,7 @@ const
     Model: 'codellama:code';
     TimeOut: 60000;
     MaxTokens: 1000;
+    Temperature: 0.2;
     SystemPrompt: DefaultSystemPrompt);
 
 implementation
@@ -230,6 +257,7 @@ resourcestring
   sNoResponse = 'No response from the LLM Server.';
   sNoAPIKey = 'The LLM API key is missing.';
   sNoModel = 'The LLM model has not been set.';
+  sInvalidTemperature = 'Invalid temperature: It should be a decimal number between 0.0 and 2.0';
   sUnsupportedEndpoint = 'The LLM endpoint is missing or not supported.';
   sUnsupportedModel = 'The LLM model is not supported.';
   sUnexpectedResponse = 'Unexpected response from the LLM Server.';
@@ -336,7 +364,7 @@ begin
   // Do Nothing
 end;
 
-procedure TLLMBase.DoResponseOK(const Msg: string);
+procedure TLLMBase.DoResponseOK(const Msg, Reason: string);
 begin
   // Do nothing
 end;
@@ -358,6 +386,7 @@ end;
 function TLLMBase.GetLLMSettings: TLLMSettings;
 begin
   case Providers.Provider of
+    llmProviderDeepSeek: Result := Providers.DeepSeek;
     llmProviderOpenAI: Result := Providers.OpenAI;
     llmProviderOllama: Result := Providers.Ollama;
     llmProviderGemini: Result := Providers.Gemini;
@@ -369,7 +398,7 @@ procedure TLLMBase.OnRequestCompleted(const Sender: TObject;
 var
   ResponseData: TBytes;
   ResponseOK: Boolean;
-  ErrMsg, Msg: string;
+  ErrMsg, Msg, Reason: string;
 begin
   FHttpResponse := nil;
   DoResponseCompleted(AResponse);
@@ -381,13 +410,18 @@ begin
     SetLength(ResponseData, AResponse.ContentStream.Size);
     AResponse.ContentStream.Read(ResponseData, AResponse.ContentStream.Size);
     var JsonResponse := TJsonValue.ParseJSONValue(ResponseData, 0);
+    //GI_PyIDEServices.Logger.Write(JsonResponse.ToJSON);
     try
       if not (JsonResponse.TryGetValue('error.message', ErrMsg)
         or JsonResponse.TryGetValue('error', ErrMsg))
       then
         case FEndPointType of
           etOpenAIChatCompletion:
-            ResponseOK := JsonResponse.TryGetValue('choices[0].message.content', Msg);
+            begin
+              ResponseOK := JsonResponse.TryGetValue('choices[0].message.content', Msg);
+              // for DeepSeek R1 model (deepseek-reasoner)
+              JsonResponse.TryGetValue('choices[0].message.reasoning_content', Reason);
+            end;
           etOpenAICompletion:
             ResponseOK := JsonResponse.TryGetValue('choices[0].text', Msg);
           etOllamaGenerate:
@@ -405,9 +439,9 @@ begin
 
   if ResponseOK then
   begin
-    DoResponseOK(Msg);
+    DoResponseOK(Msg, Reason);
     if Assigned(FOnLLMResponse)  then
-      FOnLLMResponse(Self, FLastPrompt, Msg);
+      FOnLLMResponse(Self, FLastPrompt, Msg, Reason);
   end
   else
   begin
@@ -438,6 +472,7 @@ begin
     svInvalidEndpoint: Result := sUnsupportedEndpoint;
     svInvalidModel: Result := sUnsupportedModel;
     svAPIKeyMissing: Result := sNoAPIKey;
+    svInvalidTemperature: Result := sInvalidTemperature;
   end;
 end;
 
@@ -457,6 +492,7 @@ constructor TLLMChat.Create;
 begin
   inherited;
   Providers.Provider := llmProviderOpenAI;
+  Providers.DeepSeek := DeepSeekChatSettings;
   Providers.OpenAI := OpenaiChatSettings;
   Providers.Ollama := OllamaChatSettings;
   Providers.Gemini := GeminiSettings;
@@ -465,9 +501,9 @@ begin
   ActiveTopicIndex := 0;
 end;
 
-procedure TLLMChat.DoResponseOK(const Msg: string);
+procedure TLLMChat.DoResponseOK(const Msg, Reason: string);
 begin
-  ChatTopics[ActiveTopicIndex].QAItems := ActiveTopic.QAItems + [TQAItem.Create(FLastPrompt, Msg)];
+  ChatTopics[ActiveTopicIndex].QAItems := ActiveTopic.QAItems + [TQAItem.Create(FLastPrompt, Msg, Reason)];
 end;
 
 procedure TLLMChat.LoadChat(const FName: string);
@@ -524,16 +560,21 @@ function TLLMChat.RequestParams(const Prompt: string; const Suffix: string = '')
 
     // now add parameters
     var GenerationConfig := TJsonObject.Create();
+    GenerationConfig.AddPair('temperature', Settings.Temperature);
     GenerationConfig.AddPair('maxOutputTokens', Settings.MaxTokens);
     JSON.AddPair('generationConfig', GenerationConfig);
 
     Result := JSON.ToJSON;
   end;
 
-  function NewMessage(const Role, Content: string): TJsonObject;
+  function NewOpenAIMessage(const Role, Content: string): TJSONObject;
   begin
-    Result := TJsonObject.Create;
-    Result.AddPair('role', Role);
+    Result := TJSONObject.Create;
+    if Settings.Model.StartsWith('o') and (Role = 'system') then
+    // newer OpenAI models do support system messages
+      Result.AddPair('role', 'user')
+    else
+      Result.AddPair('role', Role);
     Result.AddPair('content', Content);
   end;
 
@@ -550,24 +591,32 @@ begin
       begin
         var Options := TJSONObject.Create;
         Options.AddPair('num_predict', Settings.MaxTokens);
+        Options.AddPair('temperature', Settings.Temperature);
         JSON.AddPair('options', Options);
       end;
     etOpenAIChatCompletion:
-      JSON.AddPair('max_tokens', Settings.MaxTokens);
+    begin
+      JSON.AddPair('temperature', Settings.Temperature);
+      // Newer OpenAI models do not support max_tokens
+      if Settings.Model.StartsWith('o') then
+        JSON.AddPair('max_completion_tokens', Settings.MaxTokens)
+      else
+        JSON.AddPair('max_tokens', Settings.MaxTokens);
+    end;
   end;
 
   var Messages := TJSONArray.Create;
   // start with the system message
   if Settings.SystemPrompt <> '' then
-    Messages.Add(NewMessage('system', Settings.SystemPrompt));
+    Messages.Add(NewOpenAIMessage('system', Settings.SystemPrompt));
   // add the history
   for var QAItem in ActiveTopic.QAItems do
   begin
-    Messages.Add(NewMessage('user', QAItem.Prompt));
-    Messages.Add(NewMessage('assistant', QAItem.Answer));
+    Messages.Add(NewOpenAIMessage('user', QAItem.Prompt));
+    Messages.Add(NewOpenAIMessage('assistant', QAItem.Answer));
   end;
   // finally add the new prompt
-  Messages.Add(NewMessage('user', Prompt));
+  Messages.Add(NewOpenAIMessage('user', Prompt));
 
   JSON.AddPair('messages', Messages);
 
@@ -603,10 +652,11 @@ end;
 
 { TQAItem }
 
-constructor TQAItem.Create(const AQuestion, AnAnswer: string);
+constructor TQAItem.Create(const AQuestion, AnAnswer, Reason: string);
 begin
   Self.Prompt := AQuestion;
   Self.Answer := AnAnswer;
+  Self.Reason := Reason;
 end;
 
 { TLLMSettings }
@@ -614,22 +664,22 @@ end;
 function TLLMSettings.EndpointType: TEndpointType;
 begin
   Result := etUnsupported;
-  if Endpoint.Contains('googleapis') then
+  if EndPoint.Contains('googleapis') then
     Result := etGemini
-  else if Endpoint.Contains('openai') then
+  else if EndPoint.Contains('openai') or EndPoint.Contains('deepseek') then
   begin
-    if EndPoint = 'https://api.openai.com/v1/chat/completions' then
+    if EndPoint.EndsWith('chat/completions') then
       Result := etOpenAIChatCompletion
-    else if EndPoint = 'https://api.openai.com/v1/completions' then
+    else if EndPoint.EndsWith('/completions') then
       Result := etOpenAICompletion;
   end
   else
   begin
-    if Endpoint.EndsWith('api/generate') then
+    if EndPoint.EndsWith('api/generate') then
       Result := etOllamaGenerate
-    else if Endpoint.EndsWith('api/chat') then
+    else if EndPoint.EndsWith('api/chat') then
       Result := etOllamaChat;
-  end
+  end;
 end;
 
 function TLLMSettings.IsLocal: Boolean;
@@ -641,6 +691,7 @@ function TLLMSettings.Validate: TLLMSettingsValidation;
 begin
   if Model = '' then
     Exit(svModelEmpty);
+  if not InRange(Temperature, 0.0, 2.0) then Exit(svInvalidTemperature);
   case EndpointType of
     etUnsupported: Exit(svInvalidEndpoint);
     etOpenAICompletion, etOpenAIChatCompletion, etGemini:
@@ -684,9 +735,11 @@ begin
   inherited;
   OnLLMError := ShowError;
   Providers.Provider := llmProviderOpenAI;
+  Providers.DeepSeek := DeepSeekCompletionSettings;
   Providers.OpenAI := OpenaiCompletionSettings;
   Providers.Ollama := OllamaCompletionSettings;
   Providers.Gemini := GeminiSettings;
+  Providers.Gemini.Temperature := 0.2;
 end;
 
 procedure TLLMAssistant.DoCancelRequest(Sender: TObject);
@@ -707,7 +760,7 @@ begin
     _('Assistant is busy. Click to cancel.'), DoCancelRequest);
 end;
 
-procedure TLLMAssistant.DoResponseOK(const Msg: string);
+procedure TLLMAssistant.DoResponseOK(const Msg, Reason: string);
 
   procedure RemoveLeadingLB(var S: string);
   var
@@ -802,8 +855,6 @@ begin
 end;
 
 function TLLMAssistant.RequestParams(const Prompt: string; const Suffix: string = ''): string;
-const
-  Temperature = 0.2;
 
   function GeminiParams: string;
   begin
@@ -816,9 +867,9 @@ const
     JSON.AddPair('contents', GeminiMessage('user', Prompt));
 
     // now add parameters
-    var GenerationConfig := TJsonObject.Create();
+    var GenerationConfig := TJSONObject.Create;
+    GenerationConfig.AddPair('temperature', Settings.Temperature);
     GenerationConfig.AddPair('maxOutputTokens', Settings.MaxTokens);
-    GenerationConfig.AddPair('temperature', Temperature);
     if Length(FStopSequence) > 0 then
     begin
       var StopArray := TJSONArray.Create;
@@ -855,13 +906,13 @@ begin
           Options.AddPair('stop', StopArray);
         end;
         Options.AddPair('num_predict', Settings.MaxTokens);
-        Options.AddPair('temperature', Temperature);
+        Options.AddPair('temperature', Settings.Temperature);
         JSON.AddPair('options', Options);
       end;
     etOpenAICompletion:
       begin
         JSON.AddPair('max_tokens', Settings.MaxTokens);
-        JSON.AddPair('temperature', Temperature);
+        JSON.AddPair('temperature', Settings.Temperature);
       end;
   end;
 

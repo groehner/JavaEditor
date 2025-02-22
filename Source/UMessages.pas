@@ -700,32 +700,27 @@ begin
     0:
       begin
         PInterpreter.Visible := True;
-        if MInterpreter.CanFocus then
-          MInterpreter.SetFocus;
+        //if MInterpreter.CanFocus then MInterpreter.SetFocus;    a lot of exceptions
       end;
     1:
       begin
         PCompiler.Visible := True;
-        if LBCompiler.CanFocus then
-          LBCompiler.SetFocus;
+        // if LBCompiler.CanFocus then LBCompiler.SetFocus;
       end;
     2:
       begin
         PDebugger.Visible := True;
-        if TVAttributes.CanFocus then
-          TVAttributes.SetFocus;
+        // if TVAttributes.CanFocus then TVAttributes.SetFocus;
       end;
     3:
       begin
         PSearch.Visible := True;
-        if TVSearch.CanFocus then
-          TVSearch.SetFocus;
+        // if TVSearch.CanFocus then TVSearch.SetFocus;
       end;
     4:
       begin
         PMessages.Visible := True;
-        if LBMessages.CanFocus then
-          LBMessages.SetFocus;
+        // if LBMessages.CanFocus then LBMessages.SetFocus;
       end;
   else
     begin

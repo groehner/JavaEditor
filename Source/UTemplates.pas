@@ -489,6 +489,7 @@ begin
       8,
       9: e:= ' // end of if-else';
      10: e:= '';
+     12: e:= ' // end of for';
     end
   else
     e:= '';

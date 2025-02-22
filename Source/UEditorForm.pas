@@ -1170,7 +1170,8 @@ begin
       Editor.Gutter.DigitCount:= Digits;
   end;
 
-  FFileStructure.ShowSelected;
+  if assigned(FFileStructure) then
+    FFileStructure.ShowSelected;
 end;
 
 procedure TFEditForm.PutText(s: string; withCursor: boolean = true);

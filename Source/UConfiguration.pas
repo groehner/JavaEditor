@@ -611,7 +611,7 @@ type
     CBCompilerEncoding: TComboBox;
     GBConsoleOptions: TGroupBox;
     LFileEncoding: TLabel;
-    Label1: TLabel;
+    LCodepage: TLabel;
     CBFileEncoding: TComboBox;
     CBCodepage: TComboBox;
     RGLanguages: TRadioGroup;
@@ -634,8 +634,8 @@ type
     BGuiFont: TButton;
     BEditorFont: TButton;
     BGuiFontDefault: TButton;
-    Label2: TLabel;
-    Label3: TLabel;
+    LDialog12pt: TLabel;
+    LDoesntShow: TLabel;
     LZoomsteps: TLabel;
     UDZoomSteps: TUpDown;
     EZoomSteps: TEdit;
@@ -669,6 +669,10 @@ type
     EChatMaxTokens: TEdit;
     LChatTimeout: TLabel;
     EChatTimeout: TEdit;
+    EChatTemperature: TEdit;
+    LChatTemperature: TLabel;
+    LLLMTemperature: TLabel;
+    ELLMTemperature: TEdit;
     {$WARNINGS ON}
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -8882,6 +8886,7 @@ procedure TFConfiguration.ReadProviders(Name: string; var Providers: TLLMProvide
     Provider.SystemPrompt:= ReadStringU(key, 'SystemPrompt', Provider.SystemPrompt);
     Provider.TimeOut:= ReadIntegerU(key, 'TimeOut', Provider.TimeOut);
     Provider.MaxTokens:= ReadIntegerU(key, 'MaxTokens', Provider.MaxTokens);
+    Provider.Temperature:= StrToFloatDef(ReadStringU(key, 'Temperature', FloatToStr(Provider.Temperature)), Provider.Temperature);
   end;
 
 begin
@@ -8889,6 +8894,7 @@ begin
   ReadProvider('OpenAI', Providers.OpenAI);
   ReadProvider('Gemini', Providers.Gemini);
   ReadProvider('Ollama', Providers.Ollama);
+  ReadProvider('DeepSeek', Providers.DeepSeek);
 end;
 
 procedure TFConfiguration.WriteProviders(Name: string; Providers: TLLMProviders);
@@ -8902,6 +8908,7 @@ procedure TFConfiguration.WriteProviders(Name: string; Providers: TLLMProviders)
     WriteStringU(key, 'SystemPrompt', Provider.SystemPrompt);
     WriteIntegerU(key, 'TimeOut', Provider.TimeOut);
     WriteIntegerU(key, 'MaxTokens', Provider.MaxTokens);
+    WriteStringU(key, 'Temperature', Provider.Temperature.ToString);
   end;
 
 begin
@@ -8909,6 +8916,7 @@ begin
   WriteProvider('OpenAI', Providers.OpenAI);
   WriteProvider('Gemini', Providers.Gemini);
   WriteProvider('Ollama', Providers.Ollama);
+  WriteProvider('DeepSeek', Providers.DeepSeek);
 end;
 
 
@@ -8922,6 +8930,7 @@ procedure TFConfiguration.CopyProviders(From: TLLMProviders; var Toward: TLLMPro
     Toward.SystemPrompt:= From.SystemPrompt;
     Toward.Timeout:= From.Timeout;
     Toward.MaxTokens:= From.MaxTokens;
+    Toward.Temperature:= From.Temperature;
   end;
 
 begin
@@ -8929,6 +8938,7 @@ begin
   CopyProvider(From.OpenAI, Toward.OpenAI);
   CopyProvider(From.Gemini, Toward.Gemini);
   CopyProvider(From.Ollama, Toward.Ollama);
+  CopyProvider(From.DeepSeek, Toward.DeepSeek);
 end;
 
 procedure TFConfiguration.LLMAssistantModelToView;
@@ -8938,6 +8948,7 @@ begin
     0: Settings := TempProviders.OpenAI;
     1: Settings := TempProviders.Gemini;
     2: Settings := TempProviders.Ollama;
+    3: Settings := TempProviders.DeepSeek;
   end;
   EEndPoint.text:= Settings.EndPoint;
   EModel.text:= Settings.Model;
@@ -8945,6 +8956,7 @@ begin
   ESystemPrompt.text:= Settings.SystemPrompt;
   EMaxTokens.text:= Settings.MaxTokens.toString;
   ELLMTimeout.text:= (Settings.TimeOut div 1000).toString;
+  ELLMTemperature.text:= StrUtils.LeftStr((Settings.Temperature).toString, 5);
 end;
 
 procedure TFConfiguration.LLMAssistantViewToModel;
@@ -8961,10 +8973,12 @@ begin
   if not TryStrToInt(ELLMTimeout.text, value) then
     value:= 20;
   Settings.Timeout:= value*1000;
+  Settings.Temperature:= StringZuSingle(ELLMTemperature.text);
   case CBProvider.ItemIndex of
     0: TempProviders.OpenAI:= Settings;
     1: TempProviders.Gemini:= Settings;
     2: TempProviders.Ollama:= Settings;
+    3: TempProviders.DeepSeek:= Settings;
   end;
 end;
 
@@ -8975,6 +8989,7 @@ begin
     0: Settings := TempChatProviders.OpenAI;
     1: Settings := TempChatProviders.Gemini;
     2: Settings := TempChatProviders.Ollama;
+    3: Settings := TempChatProviders.DeepSeek;
   end;
   EChatEndPoint.text:= Settings.EndPoint;
   EChatModel.text:= Settings.Model;
@@ -8982,6 +8997,7 @@ begin
   EChatSystemPrompt.text:= Settings.SystemPrompt;
   EChatMaxTokens.text:= Settings.MaxTokens.toString;
   EChatTimeout.text:= (Settings.TimeOut div 1000).toString;
+  EChatTemperature.text:= Settings.Temperature.toString;
 end;
 
 procedure TFConfiguration.LLMChatViewToModel;
@@ -8998,14 +9014,14 @@ begin
   if not TryStrToInt(EChatTimeout.text, value) then
     value:= 20;
   Settings.Timeout:= value*1000;
+  Settings.Temperature:= StringZuSingle(EChatTemperature.text);
   case CBChatProvider.ItemIndex of
     0: TempChatProviders.OpenAI:= Settings;
     1: TempChatProviders.Gemini:= Settings;
     2: TempChatProviders.Ollama:= Settings;
+    3: TempChatProviders.DeepSeek:= Settings;
   end;
 end;
-
-
 
 initialization
   TStyleManager.Engine.RegisterStyleHook(TEdit, TEditStyleHookColor);
