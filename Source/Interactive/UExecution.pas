@@ -193,7 +193,7 @@ begin
   Result:= nil;
   for var i:= 0 to Count - 1 do begin
     var Variable:= get(i);
-    if Variable.Name = Name then begin
+    if TVariable(Variable).Name = Name then begin
       Result:= Variable;
       break;
     end;
@@ -204,7 +204,7 @@ procedure TVariableList.delete(const Name: string);
 begin
   for var i:= 0 to Count - 1 do begin
     var Variable:= get(i);
-    if Variable.Name = Name then begin
+    if TVariable(Variable).Name = Name then begin
       inherited Delete(i);
       break;
     end;
@@ -215,7 +215,7 @@ procedure TVariableList.setNotExisting;
 begin
   for var i:= 0 to Count - 1 do begin
     var Variable:= get(i);
-    Variable.existing:= false;
+    TVariable(Variable).existing:= false;
   end;
 end;
 
@@ -224,7 +224,7 @@ begin
   Result:= false;
   for var i:= 0 to Count - 1 do begin
     var Variable:= get(i);
-    Result:= Result or (Variable.Typ = Typename);
+    Result:= Result or (TVariable(Variable).Typ = Typename);
   end;
 end;
 

@@ -496,13 +496,6 @@ begin
   FDumpActive := False;
   FToJavaConsole := '';
   FActiveInteractive := nil;
-  TBStep.Hint := FJava.MIStep.Caption;
-  TBNext.Hint := FJava.MINext.Caption;
-  TBStepUp.Hint := FJava.MIStepUp.Caption;
-  TBRunToCursor.Hint := FJava.MIRunToCursor.Caption;
-  TBShowExecutionPoint.Hint := FJava.MIShowExecutionPoint.Caption;
-  TBExpression.Hint := FJava.MIExpression.Caption;
-  TBWatches.Hint := FJava.MIWatches.Caption;
 end;
 
 procedure TFMessages.FormDestroy(Sender: TObject);
@@ -540,6 +533,13 @@ end;
 
 procedure TFMessages.FormShow(Sender: TObject);
 begin
+  TBStep.Hint := FJava.MIStep.Caption;
+  TBNext.Hint := FJava.MINext.Caption;
+  TBStepUp.Hint := FJava.MIStepUp.Caption;
+  TBRunToCursor.Hint := FJava.MIRunToCursor.Caption;
+  TBShowExecutionPoint.Hint := FJava.MIShowExecutionPoint.Caption;
+  TBExpression.Hint := FJava.MIExpression.Caption;
+  TBWatches.Hint := FJava.MIWatches.Caption;
   FJava.ActiveTool := 7;
   if CanFocus then
     SetFocus;

@@ -53,7 +53,7 @@ object FEditForm: TFEditForm
     object StatusBar: TStatusBar
       Left = 57
       Top = 1
-      Width = 633
+      Width = 629
       Height = 19
       Align = alClient
       Panels = <
@@ -73,7 +73,6 @@ object FEditForm: TFEditForm
         item
           Width = 70
         end>
-      ExplicitWidth = 629
     end
   end
   object EditformToolbar: TToolBar

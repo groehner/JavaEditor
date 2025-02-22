@@ -204,4 +204,7 @@ begin
     else PMJUnitTests.Images:= vilJUnitLight;
 end;
 
+initialization
+  FJUnitTests:= nil;
+
 end.

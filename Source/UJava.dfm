@@ -65,8 +65,6 @@ object FJava: TFJava
     OnGetSiteInfo = BottomDockPanelGetSiteInfo
     OnStartDock = BottomDockPanelStartDock
     OnUnDock = BottomDockPanelUnDock
-    ExplicitTop = 490
-    ExplicitWidth = 799
   end
   object RightDockPanel: TPanel
     Left = 795
@@ -81,8 +79,6 @@ object FJava: TFJava
     OnDockOver = RightDockPanelDockOver
     OnGetSiteInfo = RightDockPanelGetSiteInfo
     OnUnDock = RightDockPanelUnDock
-    ExplicitLeft = 799
-    ExplicitHeight = 409
   end
   object MainPanel: TPanel
     Left = 0
@@ -91,8 +87,6 @@ object FJava: TFJava
     Height = 408
     Align = alClient
     TabOrder = 2
-    ExplicitWidth = 796
-    ExplicitHeight = 409
   end
   object TBXDockTop: TSpTBXDockablePanel
     Left = 0
@@ -109,7 +103,6 @@ object FJava: TFJava
     Options.TitleBarMaxSize = 0
     ShowCaption = False
     ShowCaptionWhenDocked = False
-    ExplicitWidth = 807
     object ControlBar: TSpTBXPanel
       Left = 0
       Top = 21
@@ -118,7 +111,6 @@ object FJava: TFJava
       Align = alClient
       Constraints.MaxHeight = 59
       TabOrder = 1
-      ExplicitWidth = 624
       object DebugToolbar: TSpTBXToolbar
         Left = 3
         Top = 28
@@ -2457,7 +2449,6 @@ object FJava: TFJava
       TabOrder = 2
       Customizable = False
       MenuBar = True
-      ExplicitWidth = 799
       object MIFile: TSpTBXSubmenuItem
         Caption = '&File'
         object MINew: TSpTBXSubmenuItem

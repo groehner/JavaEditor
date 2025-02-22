@@ -1033,7 +1033,6 @@ begin
   Screen.HintFont.Size:= 10;
   // Create critical section and threads
   Lock:= TCriticalSection.Create;
-  FJUnitTests:= nil;
   DragAcceptFiles(Self.Handle, True);
   UseLatestCommonDialogs:= true;
   InteractiveUMLForm:= nil;

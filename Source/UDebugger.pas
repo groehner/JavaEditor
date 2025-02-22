@@ -283,7 +283,7 @@ begin
         else
           error:= not startConsoleProcess(Applicationname, Commandline, Dir,
                                           ProcessInformation1, StartupInfo1);
-        Sleep(200); // give program time to start
+        Sleep(400); // give program time to start
       end;
 
       if not error and startProcess(Debugger, DebuggerParameter, Dir, false, SecAttr2, PipeInput2, PipeOutput2, ProcessInformation2, StartupInfo2) then begin
@@ -591,7 +591,8 @@ begin
   Attributes.Clear;
   LocalVariables.Clear;
   LinesDebugger.Clear;
-  for var i:= 1 to 3 do FMessages.Expanded[i].clear;
+  for var i:= 1 to 3 do
+    FMessages.Expanded[i].clear;
   FMessages.ShowIt;
   FMessages.DeleteTab(K_Interpreter);
   FMessages.ShowTab(K_Debugger);

@@ -1290,7 +1290,7 @@ procedure TFEditForm.ClearCompilerErrorMarks;
 begin
   with Editor do
     for var i:= Marks.Count-1 downto 0 do begin
-      var Mark:= Marks.Items[i];
+      var Mark:= TSynEditMark(Marks[i]);
       if Mark.ImageIndex = ErrorMarkIndex then begin
         InvalidateLine(Mark.Line);
         Marks.Remove(Mark);
@@ -1303,7 +1303,7 @@ procedure TFEditForm.ClearMarks;
 begin
   with Editor do
     for var i:= Marks.Count-1 downto 0 do begin
-      var Mark:= Marks.Items[i];
+      var Mark:= TSynEditMark(Marks[i]);
       InvalidateLine(Mark.Line);
       Marks.Remove(Mark);
     end;
@@ -1314,7 +1314,7 @@ procedure TFEditForm.SetBreakpoints;
 begin
   with Editor do begin
     for var i:= 0 to Marks.Count-1 do begin
-      var Mark:= Marks.Items[i];
+      var Mark:= TSynEditMark(Marks[i]);
       if Mark.ImageIndex = BreakpointImageIndex then begin
         ParseSourcecode(false);
         var s:= CBSearchClassOrMethod(StopInAt, Mark.Line);
@@ -1330,9 +1330,11 @@ function TFEditForm.HasBreakpoints: Boolean;
 begin
   Result:= false;
   if assigned(Editor) and assigned(Editor.Marks) then
-    for var i:= 0 to Editor.Marks.Count - 1 do
-      if Editor.Marks.Items[i].ImageIndex = BreakpointImageIndex then
-        Exit(true)
+    for var i:= 0 to Editor.Marks.Count - 1 do begin
+      var Mark:= TSynEditMark(Editor.Marks[i]);
+      if Mark.ImageIndex = BreakpointImageIndex then
+        Exit(true);
+    end;
 end;
 
 procedure TFEditForm.SetDebuglineMark(Line: Integer);
@@ -1389,9 +1391,9 @@ begin
   delete(s, p, length(s));
   if TryStrToInt(s, p) then
     for i:= 0 to Editor.Marks.Count-1 do begin
-      Mark:= Editor.Marks.Items[i];
+      Mark:= Editor.Marks[i];
       if (Mark.ImageIndex = BreakpointImageIndex) and (Mark.Line = p)
-        then Editor.Marks.Items[i].ImageIndex:= NoBreakpointImageIndex;
+        then Editor.Marks[i].ImageIndex:= NoBreakpointImageIndex;
     end;
 end;
 
@@ -1540,7 +1542,7 @@ function TFEditForm.HasBreakpoint(ALine: integer; var Mark: TSynEditMark): Boole
 begin
   Result:= False;
   for var i:= 0 to Editor.Marks.Count-1 do begin
-    Mark:= Editor.Marks.Items[i];
+    Mark:= TSynEditMark(Editor.Marks[i]);
     if ((Mark.ImageIndex = BreakpointImageIndex) or (Mark.ImageIndex = NoBreakpointImageIndex))
         and (Mark.Line = ALine) then
       exit(True);
@@ -1551,7 +1553,7 @@ function TFEditForm.IsExecutableLine(ALine: Integer): Boolean;
 begin
   Result:= true;
   for var i:= 0 to Editor.Marks.Count-1 do begin
-    var Mark:= Editor.Marks.Items[i];
+    var Mark:= TSynEditMark(Editor.Marks[i]);
     if (Mark.ImageIndex = NoBreakpointImageIndex) and (Mark.Line = ALine) then
       exit(false);
   end;
@@ -2254,7 +2256,7 @@ end;
 
 procedure TFEditForm.RunTests;
 begin
-  if FJUnitTests = nil then
+  if not Assigned(FJUnitTests) then
     FJUnitTests:= TFJUnitTests.Create(FJava);
   FJunitTests.Pathname:= Pathname;
   var Ci:= Model.ModelRoot.GetAllClassifiers;
@@ -2951,12 +2953,14 @@ function TFEditForm.getMarksBreakpoints: string;
 begin
   var s:= '';
   with Editor do
-    for var i:= 0 to Marks.Count-1 do
-      if Marks.Items[i].Visible then
-        if Marks.Items[i].IsBookmark then
-          s:= s + 'M' + IntToStr(Marks.Items[i].Line)
-        else if Marks.Items[i].ImageIndex = BreakPointImageIndex then
-          s:= s + 'B' + IntToStr(Marks.Items[i].Line);
+    for var i:= 0 to Marks.Count-1 do begin
+      var Mark:= TSynEditMark(Marks[i]);
+      if Mark.Visible then
+        if Mark.IsBookmark then
+          s:= s + 'M' + IntToStr(Mark.Line)
+        else if Mark.ImageIndex = BreakPointImageIndex then
+          s:= s + 'B' + IntToStr(Mark.Line);
+    end;
   Result:= s;
 end;
 

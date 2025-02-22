@@ -589,6 +589,7 @@ type
     procedure SetCustomForm(Value: TCustomForm);
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
+    function GetExcludedStyleElements(AControl: TControl): TStyleElements;
     function IsDesignMsg(Sender: TControl; var Message: TMessage): Boolean;
     procedure DrawSelectionMarks(AControl: TControl);
     function IsSelected(AControl: TControl): Boolean;
@@ -842,6 +843,11 @@ begin
 end;
 
 procedure TDEng.CanInsertComponent(AComponent: TComponent);
+begin
+  // otherwise the compiler will complain!
+end;
+
+function TDEng.GetExcludedStyleElements(AControl: TControl): TStyleElements;
 begin
   // otherwise the compiler will complain!
 end;

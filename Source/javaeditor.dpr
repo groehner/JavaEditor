@@ -261,7 +261,6 @@ uses
   UExecution in 'Interactive\UExecution.pas',
   UExecutionParser in 'Interactive\UExecutionParser.pas',
   Vcl.Menus in 'System\Vcl.Menus.pas',
-  Vcl.Consts in 'System\Vcl.Consts.pas',
   UDlgEvaluate in 'UDlgEvaluate.pas' {FEvaluate},
   UGrepResults in 'FindInFiles\UGrepResults.pas',
   URegExSearch in 'FindInFiles\URegExSearch.pas',

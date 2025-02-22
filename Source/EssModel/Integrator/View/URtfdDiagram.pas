@@ -4313,7 +4313,7 @@ procedure TRtfdDiagram.RunTests(aControl: TControl; const Method: string);
 begin
   if aControl is TRtfdClass then
     if (aControl as TRtfdClass).Entity is TClass then begin
-      if FJUnitTests = nil then
+      if not Assigned(FJUnitTests) then
         FJUnitTests:= TFJUnitTests.Create(FJava);
       FJUnitTests.Pathname:= ((aControl as TRtfdClass).Entity as TClass).Pathname;
       myJavaCommands.RunTests((aControl as TRtfdClass).Entity as TClass, Method);

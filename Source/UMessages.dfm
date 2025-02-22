@@ -43,7 +43,7 @@ object FMessages: TFMessages
       ExplicitWidth = 843
       ExplicitHeight = 348
       object SplitterLeft: TSplitter
-        Left = 188
+        Left = 187
         Top = 0
         Width = 4
         Height = 349
@@ -51,7 +51,7 @@ object FMessages: TFMessages
         ExplicitHeight = 194
       end
       object SplitterCenter: TSplitter
-        Left = 352
+        Left = 351
         Top = 0
         Width = 4
         Height = 349
@@ -59,7 +59,7 @@ object FMessages: TFMessages
         ExplicitHeight = 194
       end
       object SplitterRight: TSplitter
-        Left = 516
+        Left = 515
         Top = 0
         Width = 4
         Height = 349
@@ -67,7 +67,7 @@ object FMessages: TFMessages
         ExplicitHeight = 194
       end
       object PDebuggerLeft: TPanel
-        Left = 28
+        Left = 27
         Top = 0
         Width = 160
         Height = 349
@@ -77,7 +77,6 @@ object FMessages: TFMessages
         Constraints.MinWidth = 30
         TabOrder = 0
         OnEnter = PDebuggerLeftEnter
-        ExplicitLeft = 27
         ExplicitHeight = 348
         object PAttribute: TPanel
           Left = 0
@@ -105,13 +104,12 @@ object FMessages: TFMessages
           OnCollapsing = TVAttributesCollapsing
           OnExpanding = TVAttributesExpanding
           OnKeyUp = TVAttributesKeyUp
-          ExplicitHeight = 335
         end
       end
       object PDebuggerRight: TPanel
-        Left = 520
+        Left = 519
         Top = 0
-        Width = 327
+        Width = 328
         Height = 349
         Align = alClient
         BevelOuter = bvNone
@@ -119,7 +117,6 @@ object FMessages: TFMessages
         Constraints.MinWidth = 30
         TabOrder = 1
         OnEnter = PDebuggerRightEnter
-        ExplicitLeft = 519
         ExplicitWidth = 324
         ExplicitHeight = 348
         object PStack: TPanel
@@ -146,12 +143,10 @@ object FMessages: TFMessages
           TabOrder = 1
           OnDblClick = LBStackDblClick
           OnKeyUp = LBStackKeyUp
-          ExplicitWidth = 324
-          ExplicitHeight = 335
         end
       end
       object PDebuggerCenterLeft: TPanel
-        Left = 192
+        Left = 191
         Top = 0
         Width = 160
         Height = 349
@@ -161,7 +156,6 @@ object FMessages: TFMessages
         Constraints.MinWidth = 30
         TabOrder = 2
         OnEnter = PDebuggerCenterLeftEnter
-        ExplicitLeft = 191
         ExplicitHeight = 348
         object PLocalVariables: TPanel
           Left = 0
@@ -189,11 +183,10 @@ object FMessages: TFMessages
           OnCollapsing = TVLocalVariablesCollapsing
           OnExpanding = TVLocalVariablesExpanding
           OnKeyUp = TVLocalVariablesKeyUp
-          ExplicitHeight = 335
         end
       end
       object PDebuggerCenterRight: TPanel
-        Left = 356
+        Left = 355
         Top = 0
         Width = 160
         Height = 349
@@ -203,7 +196,6 @@ object FMessages: TFMessages
         Constraints.MinWidth = 30
         TabOrder = 3
         OnEnter = PDebuggerCenterRightEnter
-        ExplicitLeft = 355
         ExplicitHeight = 348
         object PWatches: TPanel
           Left = 0
@@ -231,16 +223,14 @@ object FMessages: TFMessages
           OnDblClick = TVWatchedExpressionsDblClick
           OnExpanding = TVWatchedExpressionsExpanding
           OnKeyUp = TVWatchedExpressionsKeyUp
-          ExplicitHeight = 335
         end
       end
       object ToolbarDock: TSpTBXDock
         Left = 0
         Top = 0
-        Width = 28
+        Width = 27
         Height = 349
         Position = dpLeft
-        ExplicitHeight = 348
         object DebuggerToolbar: TSpTBXToolbar
           Left = 0
           Top = 0
@@ -460,8 +450,6 @@ object FMessages: TFMessages
         TabOrder = 0
         OnDblClick = LBCompilerDblClick
         OnEnter = LBCompilerEnter
-        ExplicitWidth = 841
-        ExplicitHeight = 346
       end
     end
     object PMessages: TPanel
@@ -486,8 +474,6 @@ object FMessages: TFMessages
         TabOrder = 0
         OnDblClick = LBMessagesDblClick
         OnEnter = LBMessagesEnter
-        ExplicitWidth = 841
-        ExplicitHeight = 346
       end
     end
     object PSearch: TPanel
@@ -518,8 +504,6 @@ object FMessages: TFMessages
         OnDblClick = TVSearchDblClick
         OnEnter = TVSearchEnter
         OnKeyUp = TVSearchKeyUp
-        ExplicitWidth = 841
-        ExplicitHeight = 346
       end
     end
   end
@@ -539,8 +523,6 @@ object FMessages: TFMessages
       '&Messages')
     TabIndex = 0
     OnChange = TabControlMessagesChange
-    ExplicitTop = 370
-    ExplicitWidth = 845
   end
   object StatusBar: TStatusBar
     Left = 0

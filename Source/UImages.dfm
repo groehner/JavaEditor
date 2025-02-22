@@ -5108,7 +5108,7 @@ object DMImages: TDMImages
         IconName = '87'
         SVGText = 
           '<svg viewBox="0 0 16 20">'#13#10'  <polygon points="3,2 11,10 3,18" fi' +
-          'll="#11ffff" stroke="#222222" stroke-width="0.5" />'#13#10'</svg>>'#13#10
+          'll="#11ffff" stroke="#222222" stroke-width="0.5" />'#13#10'</svg>'#13#10
       end
       item
         IconName = '88'
