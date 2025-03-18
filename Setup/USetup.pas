@@ -265,6 +265,11 @@ begin
   if DirectoryExists(ToDir + '\languages\') then
     RemoveDir(ToDir + '\languages\');
 
+  CopyAFile(FromDir + 'WebView2Loader.dll', ToDir + 'WebView2Loader.dll');
+  CopyAFile(FromDir + 'MicrosoftEdgeWebview2Setup.exe', ToDir + 'MicrosoftEdgeWebview2Setup.exe');
+  if IsWebView2RuntimeNeeded() then
+    ExecuteFile(FromDir + 'MicrosoftEdgeWebview2Setup.exe', '/silent /install', ToDir, SW_HIDE);
+
   CopyAFile(FromDir + 'Setup.exe', ToDir + 'Setup.exe');
   ShellLink.ProgramFile:= ToDir + 'JavaEditor.exe';
   if CBDesktopSymbol.Checked then begin

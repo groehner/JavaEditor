@@ -424,6 +424,11 @@ begin
       FromTo('java.policy.applet');
       FromTo('JEClasses.jar');
       FromTo('Setup.exe');
+      FromTo('WebView2Loader.dll');
+      FromTo('MicrosoftEdgeWebview2Setup.exe');
+      if IsWebView2RuntimeNeeded() then
+        ExecuteFile(Dest + 'MicrosoftEdgeWebview2Setup.exe', '/silent /install', Dest, SW_HIDE);
+
     end;
     try
       Memo.Lines.Add(IncludeTrailingBackslash(ExtractFilePath(Dest)) + 'update.txt');

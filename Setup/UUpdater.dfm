@@ -21,8 +21,6 @@ object FUpdater: TFUpdater
     Align = alClient
     ScrollBars = ssVertical
     TabOrder = 0
-    ExplicitWidth = 664
-    ExplicitHeight = 216
   end
   object Panel1: TPanel
     Left = 0
@@ -31,11 +29,9 @@ object FUpdater: TFUpdater
     Height = 35
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 216
-    ExplicitWidth = 664
     object BOK: TButton
       AlignWithMargins = True
-      Left = 585
+      Left = 581
       Top = 4
       Width = 75
       Height = 27
