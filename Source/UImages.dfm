@@ -783,44 +783,6 @@ object DMImages: TDMImages
           '12h1M15 13h1M15 14h1M15 15h1M15 16h1M3 17h13" />'#13#10'</svg>'#13#10
       end
       item
-        IconName = 'JFileSave'
-        SVGText = 
-          '<svg viewBox="0 -0.5 23 22">'#13#10'<path stroke="#7e7e7e" d="M1 1h21M' +
-          '1 2h1M1 3h1M1 4h1M1 5h1M1 6h1M1 7h1M1 8h1M1 9h1M1 10h1M1 11h1M1 ' +
-          '12h1M1 13h1M1 14h1M1 15h1M1 16h1M1 17h1M1 18h1M1 19h1M1 20h1" />' +
-          #13#10'<path stroke="#ffffff" d="M2 2h1M19 2h2M2 4h1M4 4h1M6 4h1M8 4h' +
-          '1M10 4h1M12 4h1M14 4h1M16 4h1M18 4h1M20 4h1M3 5h1M19 5h1M2 6h1M4' +
-          ' 6h1M8 6h8M20 6h1M3 7h1M8 7h1M15 7h1M19 7h1M2 8h1M4 8h1M6 8h1M8 ' +
-          '8h8M20 8h1M3 9h1M8 9h1M12 9h1M15 9h1M17 9h1M19 9h1M2 10h1M4 10h1' +
-          'M6 10h1M8 10h8M20 10h1M3 11h1M8 11h8M17 11h1M19 11h1M2 12h1M4 12' +
-          'h1M6 12h1M20 12h1M3 13h1M7 13h1M9 13h1M11 13h1M13 13h1M15 13h1M1' +
-          '7 13h1M19 13h1M2 14h1M4 14h1M6 14h1M16 14h1M20 14h1M3 15h1M7 15h' +
-          '1M17 15h1M19 15h1M2 16h1M4 16h1M6 16h1M12 16h1M16 16h1M20 16h1M3' +
-          ' 17h1M7 17h1M12 17h1M17 17h1M19 17h1M2 18h1M4 18h1M20 18h1M3 19h' +
-          '1M5 19h1M7 19h1M9 19h1M11 19h1M13 19h1M15 19h1M17 19h1M19 19h1" ' +
-          '/>'#13#10'<path stroke="#000000" d="M3 2h1M18 2h1M21 2h1M2 3h20M21 4h1' +
-          'M6 5h12M21 5h1M5 6h1M7 6h1M16 6h1M18 6h1M21 6h1M5 7h3M16 7h3M21 ' +
-          '7h1M5 8h1M7 8h1M16 8h1M18 8h1M21 8h1M5 9h1M7 9h1M16 9h1M18 9h1M2' +
-          '1 9h1M5 10h1M7 10h1M16 10h1M18 10h1M21 10h1M5 11h1M7 11h1M16 11h' +
-          '1M18 11h1M21 11h1M5 12h1M8 12h8M18 12h1M21 12h1M5 13h1M18 13h1M2' +
-          '1 13h1M5 14h1M9 14h6M18 14h1M21 14h1M5 15h1M8 15h1M15 15h1M18 15' +
-          'h1M21 15h1M5 16h1M8 16h1M15 16h1M18 16h1M21 16h1M5 17h1M8 17h1M1' +
-          '5 17h1M18 17h1M21 17h1M6 18h12M21 18h1M21 19h1M2 20h20" />'#13#10'<pat' +
-          'h stroke="#0000ff" d="M4 2h14" />'#13#10'<path stroke="#cecec6" d="M3 ' +
-          '4h1M5 4h1M7 4h1M9 4h1M11 4h1M13 4h1M15 4h1M17 4h1M19 4h1M2 5h1M4' +
-          ' 5h2M18 5h1M20 5h1M3 6h1M6 6h1M17 6h1M19 6h1M2 7h1M4 7h1M20 7h1M' +
-          '3 8h1M19 8h1M2 9h1M4 9h1M20 9h1M3 10h1M19 10h1M2 11h1M4 11h1M20 ' +
-          '11h1M3 12h1M19 12h1M2 13h1M4 13h1M20 13h1M3 14h1M19 14h1M2 15h1M' +
-          '4 15h1M9 15h6M20 15h1M3 16h1M9 16h1M13 16h2M19 16h1M2 17h1M4 17h' +
-          '1M9 17h1M13 17h2M20 17h1M3 18h1M5 18h1M18 18h2M2 19h1M4 19h1M6 1' +
-          '9h1M8 19h1M10 19h1M12 19h1M14 19h1M16 19h1M18 19h1M20 19h1" />'#13#10 +
-          '<path stroke="#00007e" d="M9 7h6M9 9h3M13 9h2" />'#13#10'<path stroke=' +
-          '"#11ffff" d="M17 8h1M6 9h1M17 10h1M6 11h1M17 12h1M6 13h1M8 13h1M' +
-          '10 13h1M12 13h1M14 13h1M16 13h1M7 14h1M17 14h1M6 15h1M16 15h1M7 ' +
-          '16h1M10 16h2M17 16h1M6 17h1M10 17h2M16 17h1" />'#13#10'<path stroke="#' +
-          '087e7e" d="M7 12h1M16 12h1M8 14h1M15 14h1" />'#13#10'</svg>'#13#10
-      end
-      item
         IconName = 'JFileOpen'
         SVGText = 
           '<svg viewBox="0 -0.5 23 22">'#13#10'<path stroke="#7e7e7e" d="M1 1h21M' +
@@ -863,6 +825,44 @@ object DMImages: TDMImages
           ' 14h1M14 14h1M16 14h1M5 15h1M7 15h1M9 15h1M11 15h1M13 15h1M15 15' +
           'h1M17 15h1M6 16h1M8 16h1M10 16h1M12 16h1M14 16h1M16 16h1" />'#13#10'</' +
           'svg>'#13#10
+      end
+      item
+        IconName = 'JFileSave'
+        SVGText = 
+          '<svg viewBox="0 -0.5 23 22">'#13#10'<path stroke="#7e7e7e" d="M1 1h21M' +
+          '1 2h1M1 3h1M1 4h1M1 5h1M1 6h1M1 7h1M1 8h1M1 9h1M1 10h1M1 11h1M1 ' +
+          '12h1M1 13h1M1 14h1M1 15h1M1 16h1M1 17h1M1 18h1M1 19h1M1 20h1" />' +
+          #13#10'<path stroke="#ffffff" d="M2 2h1M19 2h2M2 4h1M4 4h1M6 4h1M8 4h' +
+          '1M10 4h1M12 4h1M14 4h1M16 4h1M18 4h1M20 4h1M3 5h1M19 5h1M2 6h1M4' +
+          ' 6h1M8 6h8M20 6h1M3 7h1M8 7h1M15 7h1M19 7h1M2 8h1M4 8h1M6 8h1M8 ' +
+          '8h8M20 8h1M3 9h1M8 9h1M12 9h1M15 9h1M17 9h1M19 9h1M2 10h1M4 10h1' +
+          'M6 10h1M8 10h8M20 10h1M3 11h1M8 11h8M17 11h1M19 11h1M2 12h1M4 12' +
+          'h1M6 12h1M20 12h1M3 13h1M7 13h1M9 13h1M11 13h1M13 13h1M15 13h1M1' +
+          '7 13h1M19 13h1M2 14h1M4 14h1M6 14h1M16 14h1M20 14h1M3 15h1M7 15h' +
+          '1M17 15h1M19 15h1M2 16h1M4 16h1M6 16h1M12 16h1M16 16h1M20 16h1M3' +
+          ' 17h1M7 17h1M12 17h1M17 17h1M19 17h1M2 18h1M4 18h1M20 18h1M3 19h' +
+          '1M5 19h1M7 19h1M9 19h1M11 19h1M13 19h1M15 19h1M17 19h1M19 19h1" ' +
+          '/>'#13#10'<path stroke="#000000" d="M3 2h1M18 2h1M21 2h1M2 3h20M21 4h1' +
+          'M6 5h12M21 5h1M5 6h1M7 6h1M16 6h1M18 6h1M21 6h1M5 7h3M16 7h3M21 ' +
+          '7h1M5 8h1M7 8h1M16 8h1M18 8h1M21 8h1M5 9h1M7 9h1M16 9h1M18 9h1M2' +
+          '1 9h1M5 10h1M7 10h1M16 10h1M18 10h1M21 10h1M5 11h1M7 11h1M16 11h' +
+          '1M18 11h1M21 11h1M5 12h1M8 12h8M18 12h1M21 12h1M5 13h1M18 13h1M2' +
+          '1 13h1M5 14h1M9 14h6M18 14h1M21 14h1M5 15h1M8 15h1M15 15h1M18 15' +
+          'h1M21 15h1M5 16h1M8 16h1M15 16h1M18 16h1M21 16h1M5 17h1M8 17h1M1' +
+          '5 17h1M18 17h1M21 17h1M6 18h12M21 18h1M21 19h1M2 20h20" />'#13#10'<pat' +
+          'h stroke="#0000ff" d="M4 2h14" />'#13#10'<path stroke="#cecec6" d="M3 ' +
+          '4h1M5 4h1M7 4h1M9 4h1M11 4h1M13 4h1M15 4h1M17 4h1M19 4h1M2 5h1M4' +
+          ' 5h2M18 5h1M20 5h1M3 6h1M6 6h1M17 6h1M19 6h1M2 7h1M4 7h1M20 7h1M' +
+          '3 8h1M19 8h1M2 9h1M4 9h1M20 9h1M3 10h1M19 10h1M2 11h1M4 11h1M20 ' +
+          '11h1M3 12h1M19 12h1M2 13h1M4 13h1M20 13h1M3 14h1M19 14h1M2 15h1M' +
+          '4 15h1M9 15h6M20 15h1M3 16h1M9 16h1M13 16h2M19 16h1M2 17h1M4 17h' +
+          '1M9 17h1M13 17h2M20 17h1M3 18h1M5 18h1M18 18h2M2 19h1M4 19h1M6 1' +
+          '9h1M8 19h1M10 19h1M12 19h1M14 19h1M16 19h1M18 19h1M20 19h1" />'#13#10 +
+          '<path stroke="#00007e" d="M9 7h6M9 9h3M13 9h2" />'#13#10'<path stroke=' +
+          '"#11ffff" d="M17 8h1M6 9h1M17 10h1M6 11h1M17 12h1M6 13h1M8 13h1M' +
+          '10 13h1M12 13h1M14 13h1M16 13h1M7 14h1M17 14h1M6 15h1M16 15h1M7 ' +
+          '16h1M10 16h2M17 16h1M6 17h1M10 17h2M16 17h1" />'#13#10'<path stroke="#' +
+          '087e7e" d="M7 12h1M16 12h1M8 14h1M15 14h1" />'#13#10'</svg>'#13#10
       end
       item
         IconName = 'JColorChooser'

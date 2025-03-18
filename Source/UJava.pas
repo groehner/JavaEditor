@@ -1560,7 +1560,7 @@ begin
 
   MISaveAllClick(Self);
   for i:= TDIFormsList.count - 1 downto 0 do
-    TDIFormsList[i].Close;
+    TDIFormsList[i].Close;   // exception
 
   FMessages.SaveWindow;
   FWatches.SaveWindow;

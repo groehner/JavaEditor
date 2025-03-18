@@ -267,7 +267,7 @@ object FJava: TFJava
         Width = 595
         Height = 55
         Color = clBtnFace
-        ActiveTabIndex = 4
+        ActiveTabIndex = 3
         TabAutofitMaxSize = 80
         HiddenItems = <>
         object TabProgram: TSpTBXTabItem
@@ -284,11 +284,11 @@ object FJava: TFJava
         end
         object TabSwing2: TSpTBXTabItem
           Caption = 'Swing2'
+          Checked = True
           CustomWidth = 60
         end
         object TabLayout: TSpTBXTabItem
           Caption = 'Layout'
-          Checked = True
           CustomWidth = 60
         end
         object TabUtilities: TSpTBXTabItem
@@ -836,330 +836,6 @@ object FJava: TFJava
               Grouped = True
               ImageIndex = 2
               ImageName = 'Timer'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-          end
-        end
-        object TSSwing2: TSpTBXTabSheet
-          Left = 0
-          Top = 25
-          Width = 595
-          Height = 30
-          Caption = 'Swing2'
-          ImageIndex = -1
-          TabItem = 'TabSwing2'
-          object ToolbarSwing2: TToolBar
-            Left = 2
-            Top = 0
-            Width = 589
-            Height = 26
-            Align = alClient
-            AutoSize = True
-            ButtonHeight = 27
-            ButtonWidth = 28
-            EdgeInner = esNone
-            EdgeOuter = esNone
-            Images = vilSwing2
-            TabOrder = 0
-            Wrapable = False
-            object TBJSlider: TToolButton
-              Tag = 15
-              Left = 0
-              Top = 0
-              Hint = 'JSlider'
-              Grouped = True
-              ImageIndex = 0
-              ImageName = 'JSlider'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJProgressBar: TToolButton
-              Tag = 16
-              Left = 28
-              Top = 0
-              Hint = 'JProgressBar'
-              Grouped = True
-              ImageIndex = 1
-              ImageName = 'JProgressBar'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJSplitPane: TToolButton
-              Tag = 17
-              Left = 56
-              Top = 0
-              Hint = 'JSplitPane'
-              Grouped = True
-              ImageIndex = 2
-              ImageName = 'JSplitPane'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJTabbedPane: TToolButton
-              Tag = 18
-              Left = 84
-              Top = 0
-              Hint = 'JTabbedPane'
-              Grouped = True
-              ImageIndex = 3
-              ImageName = 'JTabbedPane'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJTable: TToolButton
-              Tag = 19
-              Left = 112
-              Top = 0
-              Hint = 'JTable'
-              Grouped = True
-              ImageIndex = 4
-              ImageName = 'JTable'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJTree: TToolButton
-              Tag = 20
-              Left = 140
-              Top = 0
-              Hint = 'JTree'
-              Grouped = True
-              ImageIndex = 5
-              ImageName = 'JTree'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJToolBar: TToolButton
-              Tag = 23
-              Left = 168
-              Top = 0
-              Hint = 'JToolBar'
-              Grouped = True
-              ImageIndex = 6
-              ImageName = 'JToolBar'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TJSeparator: TToolButton
-              Tag = 24
-              Left = 196
-              Top = 0
-              Hint = 'JSeparator'
-              Grouped = True
-              ImageIndex = 7
-              ImageName = 'JSeparator'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TJToggleButton: TToolButton
-              Tag = 25
-              Left = 224
-              Top = 0
-              Hint = 'JToggleButton'
-              Grouped = True
-              ImageIndex = 8
-              ImageName = 'JToggleButton'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJPasswordField: TToolButton
-              Tag = 26
-              Left = 252
-              Top = 0
-              Hint = 'JPasswordField'
-              Grouped = True
-              ImageIndex = 9
-              ImageName = 'JPasswordField'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJFormattedTextField: TToolButton
-              Tag = 27
-              Left = 280
-              Top = 0
-              Hint = 'JFormattedTextField'
-              Grouped = True
-              ImageIndex = 10
-              ImageName = 'JFormattedTextField'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJEditorPane: TToolButton
-              Tag = 28
-              Left = 308
-              Top = 0
-              Hint = 'JEditorPane'
-              Grouped = True
-              ImageIndex = 11
-              ImageName = 'JEditorPane'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJTextPane: TToolButton
-              Tag = 29
-              Left = 336
-              Top = 0
-              Hint = 'JTextPane'
-              Grouped = True
-              ImageIndex = 12
-              ImageName = 'JTextPane'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJLayeredPane: TToolButton
-              Tag = 30
-              Left = 364
-              Top = 0
-              Hint = 'JLayeredPane'
-              Grouped = True
-              ImageIndex = 13
-              ImageName = 'JLayeredPane'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJDesktopPane: TToolButton
-              Tag = 31
-              Left = 392
-              Top = 0
-              Hint = 'JDesktopPane'
-              Grouped = True
-              ImageIndex = 14
-              ImageName = 'JDesktopPane'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TJInternalFrame: TToolButton
-              Tag = 32
-              Left = 420
-              Top = 0
-              Hint = 'JInternalFrame'
-              Grouped = True
-              ImageIndex = 15
-              ImageName = 'JInternalFrame'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJFileOpen: TToolButton
-              Tag = 45
-              Left = 448
-              Top = 0
-              Hint = 'JFileChooser|Open'
-              Grouped = True
-              ImageIndex = 17
-              ImageName = 'JFileOpen'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJFileSave: TToolButton
-              Tag = 46
-              Left = 476
-              Top = 0
-              Hint = 'JFileChooser|Save'
-              Grouped = True
-              ImageIndex = 16
-              ImageName = 'JFileSave'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJColorChooser: TToolButton
-              Tag = 47
-              Left = 504
-              Top = 0
-              Hint = 'JColorChooser'
-              Grouped = True
-              ImageIndex = 18
-              ImageName = 'JColorChooser'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBSwingClick
-              OnMouseDown = ToolbuttonMouseDown
-              OnStartDrag = ToolbuttonStartDrag
-            end
-            object TBJOptionPane: TToolButton
-              Tag = 48
-              Left = 532
-              Top = 0
-              Hint = 'JOptionPane'
-              Grouped = True
-              ImageIndex = 19
-              ImageName = 'JOptionPane'
               ParentShowHint = False
               ShowHint = True
               Style = tbsCheck
@@ -2364,6 +2040,330 @@ object FJava: TFJava
               ShowHint = True
               Style = tbsCheck
               OnClick = TBLayoutClick
+            end
+          end
+        end
+        object TSSwing2: TSpTBXTabSheet
+          Left = 0
+          Top = 25
+          Width = 595
+          Height = 30
+          Caption = 'Swing2'
+          ImageIndex = -1
+          TabItem = 'TabSwing2'
+          object ToolbarSwing2: TToolBar
+            Left = 2
+            Top = 0
+            Width = 589
+            Height = 26
+            Align = alClient
+            AutoSize = True
+            ButtonHeight = 27
+            ButtonWidth = 28
+            EdgeInner = esNone
+            EdgeOuter = esNone
+            Images = vilSwing2
+            TabOrder = 0
+            Wrapable = False
+            object TBJSlider: TToolButton
+              Tag = 15
+              Left = 0
+              Top = 0
+              Hint = 'JSlider'
+              Grouped = True
+              ImageIndex = 0
+              ImageName = 'JSlider'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJProgressBar: TToolButton
+              Tag = 16
+              Left = 28
+              Top = 0
+              Hint = 'JProgressBar'
+              Grouped = True
+              ImageIndex = 1
+              ImageName = 'JProgressBar'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJSplitPane: TToolButton
+              Tag = 17
+              Left = 56
+              Top = 0
+              Hint = 'JSplitPane'
+              Grouped = True
+              ImageIndex = 2
+              ImageName = 'JSplitPane'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJTabbedPane: TToolButton
+              Tag = 18
+              Left = 84
+              Top = 0
+              Hint = 'JTabbedPane'
+              Grouped = True
+              ImageIndex = 3
+              ImageName = 'JTabbedPane'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJTable: TToolButton
+              Tag = 19
+              Left = 112
+              Top = 0
+              Hint = 'JTable'
+              Grouped = True
+              ImageIndex = 4
+              ImageName = 'JTable'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJTree: TToolButton
+              Tag = 20
+              Left = 140
+              Top = 0
+              Hint = 'JTree'
+              Grouped = True
+              ImageIndex = 5
+              ImageName = 'JTree'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJToolBar: TToolButton
+              Tag = 23
+              Left = 168
+              Top = 0
+              Hint = 'JToolBar'
+              Grouped = True
+              ImageIndex = 6
+              ImageName = 'JToolBar'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TJSeparator: TToolButton
+              Tag = 24
+              Left = 196
+              Top = 0
+              Hint = 'JSeparator'
+              Grouped = True
+              ImageIndex = 7
+              ImageName = 'JSeparator'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TJToggleButton: TToolButton
+              Tag = 25
+              Left = 224
+              Top = 0
+              Hint = 'JToggleButton'
+              Grouped = True
+              ImageIndex = 8
+              ImageName = 'JToggleButton'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJPasswordField: TToolButton
+              Tag = 26
+              Left = 252
+              Top = 0
+              Hint = 'JPasswordField'
+              Grouped = True
+              ImageIndex = 9
+              ImageName = 'JPasswordField'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJFormattedTextField: TToolButton
+              Tag = 27
+              Left = 280
+              Top = 0
+              Hint = 'JFormattedTextField'
+              Grouped = True
+              ImageIndex = 10
+              ImageName = 'JFormattedTextField'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJEditorPane: TToolButton
+              Tag = 28
+              Left = 308
+              Top = 0
+              Hint = 'JEditorPane'
+              Grouped = True
+              ImageIndex = 11
+              ImageName = 'JEditorPane'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJTextPane: TToolButton
+              Tag = 29
+              Left = 336
+              Top = 0
+              Hint = 'JTextPane'
+              Grouped = True
+              ImageIndex = 12
+              ImageName = 'JTextPane'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJLayeredPane: TToolButton
+              Tag = 30
+              Left = 364
+              Top = 0
+              Hint = 'JLayeredPane'
+              Grouped = True
+              ImageIndex = 13
+              ImageName = 'JLayeredPane'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJDesktopPane: TToolButton
+              Tag = 31
+              Left = 392
+              Top = 0
+              Hint = 'JDesktopPane'
+              Grouped = True
+              ImageIndex = 14
+              ImageName = 'JDesktopPane'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TJInternalFrame: TToolButton
+              Tag = 32
+              Left = 420
+              Top = 0
+              Hint = 'JInternalFrame'
+              Grouped = True
+              ImageIndex = 15
+              ImageName = 'JInternalFrame'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJFileOpen: TToolButton
+              Tag = 45
+              Left = 448
+              Top = 0
+              Hint = 'JFileChooser|Open'
+              Grouped = True
+              ImageIndex = 16
+              ImageName = 'JFileOpen'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJFileSave: TToolButton
+              Tag = 46
+              Left = 476
+              Top = 0
+              Hint = 'JFileChooser|Save'
+              Grouped = True
+              ImageIndex = 17
+              ImageName = 'JFileSave'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJColorChooser: TToolButton
+              Tag = 47
+              Left = 504
+              Top = 0
+              Hint = 'JColorChooser'
+              Grouped = True
+              ImageIndex = 18
+              ImageName = 'JColorChooser'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
+            end
+            object TBJOptionPane: TToolButton
+              Tag = 48
+              Left = 532
+              Top = 0
+              Hint = 'JOptionPane'
+              Grouped = True
+              ImageIndex = 19
+              ImageName = 'JOptionPane'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBSwingClick
+              OnMouseDown = ToolbuttonMouseDown
+              OnStartDrag = ToolbuttonStartDrag
             end
           end
         end
@@ -3963,13 +3963,13 @@ object FJava: TFJava
       end
       item
         CollectionIndex = 16
-        CollectionName = 'JFileSave'
-        Name = 'JFileSave'
+        CollectionName = 'JFileOpen'
+        Name = 'JFileOpen'
       end
       item
         CollectionIndex = 17
-        CollectionName = 'JFileOpen'
-        Name = 'JFileOpen'
+        CollectionName = 'JFileSave'
+        Name = 'JFileSave'
       end
       item
         CollectionIndex = 18

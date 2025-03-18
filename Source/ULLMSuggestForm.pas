@@ -16,11 +16,13 @@ uses
   Vcl.Dialogs,
   Vcl.ImgList,
   Vcl.VirtualImageList,
+  Vcl.BaseImageCollection,
   TB2Item,
   TB2Dock,
   TB2Toolbar,
   SpTBXItem,
-  SynEdit, Vcl.BaseImageCollection, SVGIconImageCollection;
+  SynEdit,
+  SVGIconImageCollection;
 
 type
   TSuggestWindow = class(TForm)
@@ -45,7 +47,6 @@ type
     seSuggest: TSynEdit;
     FEditor: TCustomSynEdit;
     procedure CreateParams(var Params: TCreateParams); override;
-  public
   end;
 
 procedure ShowSuggestion(const Suggestion: string; Editor: TCustomSynEdit);
