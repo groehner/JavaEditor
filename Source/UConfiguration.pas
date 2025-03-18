@@ -8074,7 +8074,6 @@ begin
   end;
 end;
 
-
 function TFConfiguration.PathForSystemClass(const Path: string): boolean;
 begin
   Result:= (Pos(JavaCache, Path) = 1) and FileExists(Path);

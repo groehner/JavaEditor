@@ -1,3 +1,9 @@
+23.05, 2025.03.18
+improved chat form
+improved handling of gui tabs
+bugfix file chooser images
+Grok support
+
 23.04, 2025.02.25
 change to compiler of Delphi 12
 bugfix for exceptions at program start

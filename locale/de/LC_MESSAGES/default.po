@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-02-22 17:48\n"
-"PO-Revision-Date: 2025-02-22 17:50+0100\n"
+"POT-Creation-Date: 2025-03-18 09:43\n"
+"PO-Revision-Date: 2025-03-18 09:43+0100\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -46,6 +46,8 @@ msgstr "Gehe zu"
 #. FConnectDialog..LBConnections....Items.Strings
 #. FSequenceForm..TBSequence..TBClose..Hint
 #. FSequenceForm..PopupMenuConnection..MIClose..Caption
+#. FMemo..BClose..Caption
+#. FSetup..BClose..Caption
 #. FStructogram..PanelLeft..ToolBarStructogram..TBClose..Hint
 #. FTextDiff..TBTextDiff..TBClose..Hint
 #. FTextDiff..PopupEditor..MIClose..Caption
@@ -57,7 +59,8 @@ msgstr "Gehe zu"
 #: UMessages.dfm:628 UObjectInspector.dfm:134 UScpHint.dfm:52 UTooltip.dfm:50
 #: UTooltip.dfm:51 UWatches.dfm:94 EssModel/System/UUMLForm.dfm:83
 #: Sequencediagram/UDlgConnect.dfm:45 Sequencediagram/USequenceForm.dfm:51
-#: Sequencediagram/USequenceForm.dfm:216 Structogram/UStructogramform.dfm:78
+#: Sequencediagram/USequenceForm.dfm:216 Setup/UMemo.dfm:35
+#: Setup/USetup.dfm:135 Structogram/UStructogramform.dfm:78
 #: TextDiff/UTextDiffForm.dfm:38 TextDiff/UTextDiffForm.dfm:872
 msgid "Close"
 msgstr "Schließen"
@@ -122,7 +125,7 @@ msgstr "Favorit löschen"
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupConfiguration..Caption
 #. FSequenceForm..PopupMenuLifeLineAndSequencePanel..MIPopupConfiguration..Caption
 #. FStructogram..StructoPopupMenu..MIConfiguration..Caption
-#: UConfiguration.dfm:6 UConfiguration.dfm:5635 UConfiguration.dfm:5756
+#: UConfiguration.dfm:6 UConfiguration.dfm:5655 UConfiguration.dfm:5776
 #: UEditorForm.dfm:2556 UGUIDesigner.dfm:177 UJava.dfm:3715
 #: EssModel/Integrator/View/UDiagramFrame.dfm:603
 #: Sequencediagram/USequenceForm.dfm:176 Structogram/UStructogramform.dfm:927
@@ -177,7 +180,7 @@ msgstr "Speichern"
 #: FindInFiles/UDlgGrepSearch.dfm:286 FindInFiles/UDlgReplace.dfm:69
 #: FindInFiles/UDlgSearch.dfm:62 Formdesigner/ELDlgBorder.dfm:247
 #: Formdesigner/ELDlgStringsEdit.dfm:50 Sequencediagram/UDlgConnect.dfm:84
-#: Util/UDlgMessage.dfm:179 Util/UStringRessources.pas:250
+#: Util/UDlgMessage.dfm:179 Util/UStringRessources.pas:254
 msgid "Cancel"
 msgstr "&Abbrechen"
 
@@ -203,7 +206,7 @@ msgstr "Prüfen"
 
 #. FConfiguration..PMain..PPanelRight..PButtons..BHelp..Caption
 #. Programmer's name for it: SDlgHelpHelp
-#: UConfiguration.dfm:173 Util/UStringRessources.pas:252
+#: UConfiguration.dfm:173 Util/UStringRessources.pas:256
 msgid "Help"
 msgstr "Hilfe"
 
@@ -230,8 +233,8 @@ msgstr "Titel"
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupParameter..Caption
 #: UConfiguration.dfm:235 UConfiguration.dfm:551 UConfiguration.dfm:654
 #: UConfiguration.dfm:801 UConfiguration.dfm:916 UConfiguration.dfm:3424
-#: UConfiguration.dfm:4678 UConfiguration.dfm:5527 UConfiguration.dfm:5642
-#: UConfiguration.dfm:5749 UDlgConfigureTools.dfm:44
+#: UConfiguration.dfm:4678 UConfiguration.dfm:5547 UConfiguration.dfm:5662
+#: UConfiguration.dfm:5769 UDlgConfigureTools.dfm:44
 #: EssModel/Integrator/View/UDiagramFrame.dfm:135
 #: EssModel/Integrator/View/UDiagramFrame.dfm:547
 #: EssModel/Integrator/View/URtfdDiagram.pas:2049
@@ -270,10 +273,11 @@ msgstr "Hier können benutzerspezifische Jar-Dateien angegeben werden"
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..BJUnitInstall..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..BCheckstyleInstall..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PJalopy..BJalopyInstall..Caption
+#. FSetup..BInstall..Caption
 #: UConfiguration.dfm:365 UConfiguration.dfm:872 UConfiguration.dfm:3156
 #: UConfiguration.dfm:3172 UConfiguration.dfm:3189 UConfiguration.dfm:3225
-#: UConfiguration.dfm:3816 UConfiguration.dfm:3915 UConfiguration.dfm:5589
-#: UConfiguration.dfm:5726 UConfiguration.dfm:5841
+#: UConfiguration.dfm:3816 UConfiguration.dfm:3915 UConfiguration.dfm:5609
+#: UConfiguration.dfm:5746 UConfiguration.dfm:5861 Setup/USetup.dfm:117
 msgid "Install"
 msgstr "Installieren"
 
@@ -293,6 +297,8 @@ msgstr "Installieren"
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..BCache..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..BMindstormsParameter..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PGeneralOptions..BTempFolder..Caption
+#. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..BLLMAssistantDefault..Caption
+#. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..BLLMChatDefault..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PVisibility..BVisDefault..Caption
 #. FConfigureTools..BParameter..Caption
 #: UConfiguration.dfm:374 UConfiguration.dfm:401 UConfiguration.dfm:462
@@ -300,8 +306,8 @@ msgstr "Installieren"
 #: UConfiguration.dfm:970 UConfiguration.dfm:994 UConfiguration.dfm:1038
 #: UConfiguration.dfm:1560 UConfiguration.dfm:1686 UConfiguration.dfm:2330
 #: UConfiguration.dfm:2789 UConfiguration.dfm:3137 UConfiguration.dfm:3740
-#: UConfiguration.dfm:4092 UConfiguration.dfm:5270 UDlgConfigureTools.dfm:121
-#: UObjectInspector.pas:509
+#: UConfiguration.dfm:4092 UConfiguration.dfm:5045 UConfiguration.dfm:5184
+#: UConfiguration.dfm:5290 UDlgConfigureTools.dfm:121 UObjectInspector.pas:509
 msgid "Default"
 msgstr "Standard"
 
@@ -343,10 +349,10 @@ msgstr "Standard"
 #: UConfiguration.dfm:1904 UConfiguration.dfm:1921 UConfiguration.dfm:1938
 #: UConfiguration.dfm:1955 UConfiguration.dfm:1986 UConfiguration.dfm:1996
 #: UConfiguration.dfm:2013 UConfiguration.dfm:2030 UConfiguration.dfm:2046
-#: UConfiguration.dfm:2764 UConfiguration.dfm:5324 UConfiguration.dfm:5333
-#: UConfiguration.dfm:5342 UConfiguration.dfm:5422 UConfiguration.dfm:5431
-#: UConfiguration.dfm:5703 UConfiguration.dfm:5825 UConfiguration.dfm:5894
-#: UConfiguration.dfm:5903 UDlgAssociation.dfm:24 UDlgParameter.dfm:79
+#: UConfiguration.dfm:2764 UConfiguration.dfm:5344 UConfiguration.dfm:5353
+#: UConfiguration.dfm:5362 UConfiguration.dfm:5442 UConfiguration.dfm:5451
+#: UConfiguration.dfm:5723 UConfiguration.dfm:5845 UConfiguration.dfm:5914
+#: UConfiguration.dfm:5923 UDlgAssociation.dfm:24 UDlgParameter.dfm:79
 #: Formdesigner/ELDlgImage.dfm:21 Sequencediagram/UDlgConnect.dfm:24
 msgid "Select"
 msgstr "Wählen"
@@ -386,7 +392,7 @@ msgstr "Öffnet die letzte Batch-Datei für den Interpreter-Aufruf"
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitConsole..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIConsole..Caption
 #: UConfiguration.dfm:490 UConfiguration.dfm:1827 UEditorForm.dfm:2478
-#: UJava.dfm:2284 UJava.dfm:2498 UJava.dfm:3152 UJava.dfm:3184
+#: UJava.dfm:1858 UJava.dfm:2498 UJava.dfm:3152 UJava.dfm:3184
 msgid "Console"
 msgstr "Console"
 
@@ -406,7 +412,7 @@ msgid "Show compiler call"
 msgstr "Zeige Compileraufruf"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrograms..Caption
-#: UConfiguration.dfm:648 UConfiguration.pas:8784
+#: UConfiguration.dfm:648 UConfiguration.pas:8790
 msgid "Programs"
 msgstr "Programme"
 
@@ -466,7 +472,7 @@ msgstr "Alle geöffneten Dateien"
 #. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..RGKeyboard....Items.Strings
 #. FAbout..GBComponents..LEditor..Caption
 #: UConfiguration.dfm:1044 UConfiguration.dfm:2162 UDlgAbout.dfm:41
-#: UConfiguration.pas:8788
+#: UConfiguration.pas:8794
 msgid "Editor"
 msgstr "Editor"
 
@@ -585,7 +591,7 @@ msgid "Font"
 msgstr "&Schriftart"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PCode..Caption
-#: UConfiguration.dfm:1270 UConfiguration.pas:8790
+#: UConfiguration.dfm:1270 UConfiguration.pas:8796
 msgid "Code"
 msgstr "Code"
 
@@ -662,7 +668,7 @@ msgstr "Automatisch nach"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..LColor..Caption
-#: UConfiguration.dfm:1503 UConfiguration.dfm:1516 UConfiguration.pas:8791
+#: UConfiguration.dfm:1503 UConfiguration.dfm:1516 UConfiguration.pas:8797
 msgid "Colors"
 msgstr "Farben"
 
@@ -715,7 +721,7 @@ msgstr "Farben für"
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..rgcolors....Items.Strings
 #. Workaround: "Brackets" is always shown as "Klammern"
 #. Programmer's name for it: LNGBrackets
-#: UConfiguration.dfm:1619 UJava.pas:6756 Util/UStringRessources.pas:84
+#: UConfiguration.dfm:1619 UJava.pas:6758 Util/UStringRessources.pas:84
 msgid "Brackets"
 msgstr "Klammern"
 
@@ -739,7 +745,7 @@ msgstr "Keine Syntaxhervorhebung"
 #. FUMLForm..Panel..PUMLPanel..TBUMLToolbar..TBComment..Hint
 #. Programmer's name for it: LNGComment
 #: UConfiguration.dfm:1692 UDlgAssociation.dfm:79
-#: EssModel/System/UUMLForm.dfm:155 UConfiguration.pas:8792
+#: EssModel/System/UUMLForm.dfm:155 UConfiguration.pas:8798
 #: Util/UStringRessources.pas:90
 msgid "Comment"
 msgstr "Kommentar"
@@ -782,7 +788,7 @@ msgid "Free"
 msgstr "Frei"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..Caption
-#: UConfiguration.dfm:1765 UConfiguration.pas:8793
+#: UConfiguration.dfm:1765 UConfiguration.pas:8799
 msgid "Templates"
 msgstr "Vorlagen"
 
@@ -811,7 +817,7 @@ msgstr "Hinweis"
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBFrame..Hint
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewFrame..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIFrame..Caption
-#: UConfiguration.dfm:1820 UJava.dfm:2295 UJava.dfm:2503 UJava.dfm:3189
+#: UConfiguration.dfm:1820 UJava.dfm:1869 UJava.dfm:2503 UJava.dfm:3189
 msgid "Frame"
 msgstr "Frame"
 
@@ -819,7 +825,7 @@ msgstr "Frame"
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBDialog..Hint
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewDialog..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIDialog..Caption
-#: UConfiguration.dfm:1834 UJava.dfm:2306 UJava.dfm:2508 UJava.dfm:3194
+#: UConfiguration.dfm:1834 UJava.dfm:1880 UJava.dfm:2508 UJava.dfm:3194
 msgid "Dialog"
 msgstr "Dialog"
 
@@ -834,7 +840,7 @@ msgid "JUnit test"
 msgstr "JUnit Test"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..Caption
-#: UConfiguration.dfm:2052 UConfiguration.pas:8794
+#: UConfiguration.dfm:2052 UConfiguration.pas:8800
 msgid "Keyboard"
 msgstr "Tastatur"
 
@@ -880,7 +886,7 @@ msgstr "Alle"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGUIDesigner..Caption
 #. FGUIDesigner..Caption
-#: UConfiguration.dfm:2179 UGUIDesigner.dfm:4 UConfiguration.pas:8795
+#: UConfiguration.dfm:2179 UGUIDesigner.dfm:4 UConfiguration.pas:8801
 msgid "GUI designer"
 msgstr "GUI-Designer"
 
@@ -961,7 +967,7 @@ msgstr "Ausgabe"
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EAlgorithm..Text
 #. FStructogram..PanelLeft..ToolBarStructogram..TBAlgorithm..Hint
 #: UConfiguration.dfm:2375 UConfiguration.dfm:2485
-#: Structogram/UStructogramform.dfm:183 UConfiguration.pas:3540
+#: Structogram/UStructogramform.dfm:183 UConfiguration.pas:3546
 msgid "Algorithm"
 msgstr "Algorithmus"
 
@@ -1016,35 +1022,35 @@ msgid "[i]=count variable, [1]=start value, [n]=end value, [s]=increment"
 msgstr "[i]=Zählvariable, [1]=Startwert, [n]=Endwert, [s]=Schrittweite"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EInput..Text
-#: UConfiguration.dfm:2469 UConfiguration.pas:3541
+#: UConfiguration.dfm:2469 UConfiguration.pas:3547
 msgid "Input:"
 msgstr "Eingabe:"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EOutput..Text
-#: UConfiguration.dfm:2477 UConfiguration.pas:3542
+#: UConfiguration.dfm:2477 UConfiguration.pas:3548
 msgid "Output:"
 msgstr "Ausgabe:"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EWhile..Text
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EDoWhile..Text
-#: UConfiguration.dfm:2493 UConfiguration.dfm:2501 UConfiguration.pas:3543
-#: UConfiguration.pas:3544
+#: UConfiguration.dfm:2493 UConfiguration.dfm:2501 UConfiguration.pas:3549
+#: UConfiguration.pas:3550
 msgid "repeat while"
 msgstr "wiederhole solange"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EFor..Text
-#: UConfiguration.dfm:2509 UConfiguration.pas:3545
+#: UConfiguration.dfm:2509 UConfiguration.pas:3551
 msgid "repeat for [i] = [1] to [n]"
 msgstr "wiederhole für [i] = [1] to [n]"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EYes..Text
-#: UConfiguration.dfm:2517 UConfiguration.pas:3548
+#: UConfiguration.dfm:2517 UConfiguration.pas:3554
 msgid "yes"
 msgstr "Ja"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..ENo..Text
 #. FConfiguration..PMain..PPanelRight..PageList..PSequencediagram..CBSDNoFilling..Caption
-#: UConfiguration.dfm:2525 UConfiguration.dfm:2716 UConfiguration.pas:3549
+#: UConfiguration.dfm:2525 UConfiguration.dfm:2716 UConfiguration.pas:3555
 msgid "no"
 msgstr "Nein"
 
@@ -1087,7 +1093,7 @@ msgstr "Sequenzdiagramm"
 #. FConfiguration..PMain..PPanelRight..PageList..PUML..RGObjectCaption....Items.Strings
 #. tab Sequence diagram
 #: UConfiguration.dfm:2632 UConfiguration.dfm:2661 UConfiguration.dfm:4550
-#: UConfiguration.pas:3562
+#: UConfiguration.pas:3568
 msgid "Object"
 msgstr "Objekt"
 
@@ -1100,7 +1106,7 @@ msgstr "Objekt"
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..Caption
 #. FJava..TBXDockTop..MainMenu..MIUML..MINewUML..Caption
 #: UConfiguration.dfm:2639 UConfiguration.dfm:2669 UDlgClassEditor.dfm:543
-#: UDlgConfigureTools.dfm:166 UDlgHelp.dfm:96 UJava.dfm:2243 UJava.dfm:2455
+#: UDlgConfigureTools.dfm:166 UDlgHelp.dfm:96 UJava.dfm:1817 UJava.dfm:2455
 #: UJava.dfm:2953 UDlgClassEditor.pas:1249 UObjectInspector.pas:517
 msgid "New"
 msgstr "Neu"
@@ -1172,7 +1178,7 @@ msgstr "Proxy benutzen"
 #. FHelpDialog..PCJDKHelp..TSDocu..Caption
 #. Programmer's name for it: LNGDocumentation
 #: UConfiguration.dfm:2846 UDlgHelp.dfm:157 UDlgHelp.dfm:184
-#: UConfiguration.pas:8799 Util/UStringRessources.pas:89
+#: UConfiguration.pas:8805 Util/UStringRessources.pas:89
 msgid "Documentation"
 msgstr "Dokumentation"
 
@@ -1210,7 +1216,7 @@ msgstr "Tutorial"
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LManual..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LLejosManual..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..LJUnitManual..Caption
-#: UConfiguration.dfm:2914 UConfiguration.dfm:3438 UConfiguration.dfm:5534
+#: UConfiguration.dfm:2914 UConfiguration.dfm:3438 UConfiguration.dfm:5554
 msgid "Manual"
 msgstr "Manual"
 
@@ -1238,7 +1244,7 @@ msgid "The tutorial file - %java%\\tutorial\\tutorial.chm"
 msgstr "Die Tutorial-Datei - %java%\tutorial\tutorial.chm"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..Caption
-#: UConfiguration.dfm:3231 UConfiguration.pas:8800
+#: UConfiguration.dfm:3231 UConfiguration.pas:8806
 msgid "Printer"
 msgstr "Drucker"
 
@@ -1289,8 +1295,8 @@ msgstr "Oben"
 #. Programmer's name for it: SmkcRight
 #: UConfiguration.dfm:3279 UConfiguration.dfm:3351 UGUIDesigner.dfm:67
 #: EssModel/Integrator/View/UDiagramFrame.dfm:449
-#: Formdesigner/ELDlgBorder.dfm:191 UJava.pas:6772
-#: Util/UStringRessources.pas:275
+#: Formdesigner/ELDlgBorder.dfm:191 UJava.pas:6774
+#: Util/UStringRessources.pas:279
 msgid "Right"
 msgstr "Rechts"
 
@@ -1302,8 +1308,8 @@ msgstr "Rechts"
 #. Programmer's name for it: SmkcLeft
 #: UConfiguration.dfm:3286 UConfiguration.dfm:3349 UGUIDesigner.dfm:53
 #: EssModel/Integrator/View/UDiagramFrame.dfm:435
-#: Formdesigner/ELDlgBorder.dfm:177 UJava.pas:6770
-#: Util/UStringRessources.pas:273
+#: Formdesigner/ELDlgBorder.dfm:177 UJava.pas:6772
+#: Util/UStringRessources.pas:277
 msgid "Left"
 msgstr "Links"
 
@@ -1382,7 +1388,8 @@ msgid "Roland Kluge and"
 msgstr "Roland Kluge und"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLanguage..Caption
-#: UConfiguration.dfm:3956
+#. FSetup..BLanguage..Caption
+#: UConfiguration.dfm:3956 Setup/USetup.dfm:164
 msgid "Language"
 msgstr "Sprache (Language)"
 
@@ -1467,7 +1474,7 @@ msgid "Translate compiler errors"
 msgstr "Übersetze Compilerfehler"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStyles..Caption
-#: UConfiguration.dfm:4192 UConfiguration.pas:8805
+#: UConfiguration.dfm:4192 UConfiguration.pas:8811
 msgid "Styles"
 msgstr "Stile"
 
@@ -1487,7 +1494,7 @@ msgid "Current style"
 msgstr "Aktueller Stil"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PRestrictions..Caption
-#: UConfiguration.dfm:4240 UConfiguration.pas:8806
+#: UConfiguration.dfm:4240 UConfiguration.pas:8812
 msgid "Restrictions"
 msgstr "Restriktionen"
 
@@ -1517,7 +1524,7 @@ msgid "Lock conversion structogram <-> program"
 msgstr "Konvertierung Struktogramm <-> Programm sperren"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..Caption
-#: UConfiguration.dfm:4288 UConfiguration.pas:8807
+#: UConfiguration.dfm:4288 UConfiguration.pas:8813
 msgid "Associations"
 msgstr "Verknüpfungen"
 
@@ -1672,11 +1679,11 @@ msgstr "Sourcecode"
 #. AFrameDiagram..PopMenuClass..MIClassPopupVisibility..Caption
 #. AFrameDiagram..PopMenuObject..MIObjectPopupVisibility..Caption
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupVisibility..Caption
-#: UConfiguration.dfm:4669 UConfiguration.dfm:4692 UConfiguration.dfm:5170
+#: UConfiguration.dfm:4669 UConfiguration.dfm:4692 UConfiguration.dfm:5190
 #: UDlgClassEditor.dfm:192 UDlgClassEditor.dfm:378
 #: EssModel/Integrator/View/UDiagramFrame.dfm:164
 #: EssModel/Integrator/View/UDiagramFrame.dfm:275
-#: EssModel/Integrator/View/UDiagramFrame.dfm:574 UConfiguration.pas:8812
+#: EssModel/Integrator/View/UDiagramFrame.dfm:574 UConfiguration.pas:8818
 msgid "Visibility"
 msgstr "Sichtbarkeit"
 
@@ -1723,7 +1730,7 @@ msgid "Icons"
 msgstr "Icons"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..Caption
-#: UConfiguration.dfm:4701 UConfiguration.pas:8809
+#: UConfiguration.dfm:4701 UConfiguration.pas:8815
 msgid "UML options"
 msgstr "UML-Optionen"
 
@@ -1854,109 +1861,103 @@ msgid "Output function values in the interpreter window"
 msgstr "Funktionswerte im Interpreterfenster ausgeben"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..Caption
-#: UConfiguration.dfm:4912 UConfiguration.pas:8810
+#: UConfiguration.dfm:4912 UConfiguration.pas:8816
 msgid "LLM Assistant"
 msgstr "LLM Assistent"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LProvider..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatProvider..Caption
-#: UConfiguration.dfm:4919 UConfiguration.dfm:5048
+#: UConfiguration.dfm:4919 UConfiguration.dfm:5058
 msgid "Provider"
 msgstr "Provider"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LEndpoint..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatEndPoint..Caption
-#: UConfiguration.dfm:4926 UConfiguration.dfm:5055
+#: UConfiguration.dfm:4926 UConfiguration.dfm:5065
 msgid "Endpoint"
 msgstr "Endpunkt"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LModel..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatModel..Caption
-#: UConfiguration.dfm:4933 UConfiguration.dfm:5062
+#: UConfiguration.dfm:4933 UConfiguration.dfm:5072
 msgid "Model"
 msgstr "Modell"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LAPIKey..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatApiKey..Caption
-#: UConfiguration.dfm:4940 UConfiguration.dfm:5069
+#: UConfiguration.dfm:4940 UConfiguration.dfm:5079
 msgid "API key"
 msgstr "API-Schlüssel"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LSystemPrompt..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatSystemPrompt..Caption
-#: UConfiguration.dfm:4947 UConfiguration.dfm:5076
+#: UConfiguration.dfm:4947 UConfiguration.dfm:5086
 msgid "System prompt"
 msgstr "Systemprompt"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LMaxTokens..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatMaxTokens..Caption
-#: UConfiguration.dfm:4954 UConfiguration.dfm:5083
+#: UConfiguration.dfm:4954 UConfiguration.dfm:5093
 msgid "Max response tokens"
 msgstr "Maxzahl Antworttoken"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LLLMTimeout..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatTimeout..Caption
-#: UConfiguration.dfm:4961 UConfiguration.dfm:5090
+#: UConfiguration.dfm:4961 UConfiguration.dfm:5100
 msgid "Timeout in seconds"
 msgstr "Timeout in Sekunden"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LLLMTemperature..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatTemperature..Caption
-#: UConfiguration.dfm:4968 UConfiguration.dfm:5097
+#: UConfiguration.dfm:4968 UConfiguration.dfm:5107
 msgid "Temperature"
 msgstr "Temperatur"
 
-#. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
-#. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
-#: UConfiguration.dfm:4983 UConfiguration.dfm:5112
-msgid "DeepSeek"
-msgstr "DeepSeek"
-
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..ESystemPrompt..Text
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..EChatSystemPrompt..Text
-#: UConfiguration.dfm:5013 UConfiguration.dfm:5142
+#: UConfiguration.dfm:5014 UConfiguration.dfm:5153
 msgid "You are my expert java coding assistant"
 msgstr "Du bist mein erfahrener Java-Code-Assistent"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..Caption
-#: UConfiguration.dfm:5041 UConfiguration.pas:8811
+#: UConfiguration.dfm:5051 UConfiguration.pas:8817
 msgid "LLM Chat"
 msgstr "LLM Chat"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PVisibility..LVisTabs..Caption
-#: UConfiguration.dfm:5176
+#: UConfiguration.dfm:5196
 msgid "Tabs"
 msgstr "Registerkarten"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PVisibility..LVisItems..Caption
-#: UConfiguration.dfm:5183
+#: UConfiguration.dfm:5203
 msgid "Elements"
 msgstr "Elemente"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PVisibility..LVisToolbars..Caption
-#: UConfiguration.dfm:5190
+#: UConfiguration.dfm:5210
 msgid "Toolbars"
 msgstr "Symbolleisten"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PVisibility..LVisMenus..Caption
-#: UConfiguration.dfm:5197
+#: UConfiguration.dfm:5217
 msgid "Menus"
 msgstr "Menüs"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfilenames..Caption
-#: UConfiguration.dfm:5276 UConfiguration.dfm:5282 UConfiguration.pas:8813
+#: UConfiguration.dfm:5296 UConfiguration.dfm:5302 UConfiguration.pas:8819
 msgid "Log files"
 msgstr "Protokolldateien"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfileExceptions..Caption
-#: UConfiguration.dfm:5296
+#: UConfiguration.dfm:5316
 msgid "Exceptions"
 msgstr "Ausnahmen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfileInteractive..Caption
 #. Programmer's name for it: LNGInteractive
-#: UConfiguration.dfm:5303 Util/UStringRessources.pas:76
+#: UConfiguration.dfm:5323 Util/UStringRessources.pas:76
 msgid "Interactive"
 msgstr "Interaktiv"
 
@@ -1965,34 +1966,34 @@ msgstr "Interaktiv"
 #. FHelpDialog..PCJDKHelp..TSSearch..RGSearchOptions....Items.Strings
 #. FHelpDialog..PCJDKHelp..TSTools..Caption
 #. FJava..TBXDockTop..MainMenu..MITools..Caption
-#: UConfiguration.dfm:5355 UDlgConfigureTools.dfm:23 UDlgHelp.dfm:159
-#: UDlgHelp.dfm:202 UJava.dfm:3026 UConfiguration.pas:8814
+#: UConfiguration.dfm:5375 UDlgConfigureTools.dfm:23 UDlgHelp.dfm:159
+#: UDlgHelp.dfm:202 UJava.dfm:3026 UConfiguration.pas:8820
 msgid "Tools"
 msgstr "Tools"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LGitFolder..Caption
-#: UConfiguration.dfm:5364
+#: UConfiguration.dfm:5384
 msgid "Git folder"
 msgstr "Git-Ordner"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..EJUnitJarFile..Hint
-#: UConfiguration.dfm:5579
+#: UConfiguration.dfm:5599
 msgid "JUnit jar file"
 msgstr "JUnit-jar-Datei"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..ECheckstyle..Hint
 #. FConfiguration..PMain..PPanelRight..PageList..PJalopy..EJalopy..Hint
-#: UConfiguration.dfm:5735 UConfiguration.dfm:5850
+#: UConfiguration.dfm:5755 UConfiguration.dfm:5870
 msgid "Checkstyle jar file"
 msgstr "Checkstyle-Jar-Datei"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PSubversion..LRepository..Caption
-#: UConfiguration.dfm:5864
+#: UConfiguration.dfm:5884
 msgid "Repository"
 msgstr "Repository"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PSubversion..LSVN..Caption
-#: UConfiguration.dfm:5871
+#: UConfiguration.dfm:5891
 msgid "SVN folder"
 msgstr "SVN-folder"
 
@@ -2015,13 +2016,15 @@ msgstr "Info"
 #. FBorder..PButtons..BOK..Caption
 #. FIconEditor..BOK..Caption
 #. FConnectDialog..BOK..Caption
+#. FUpdater..Panel1..BOK..Caption
 #. Programmer's name for it: SDlgOK
 #: UDlgAbout.dfm:23 UDlgAssociation.dfm:89 UDlgParameter.dfm:44
 #: UDlgStringsEditor.dfm:30 UGit.dfm:50 USubversion.dfm:50
 #: EssModel/System/UClassInsert.dfm:80 FindInFiles/UDlgGrepSearch.dfm:275
 #: FindInFiles/UDlgReplace.dfm:58 FindInFiles/UDlgSearch.dfm:51
 #: Formdesigner/ELDlgBorder.dfm:237 Formdesigner/ELDlgImage.dfm:39
-#: Sequencediagram/UDlgConnect.dfm:56 Util/UStringRessources.pas:249
+#: Sequencediagram/UDlgConnect.dfm:56 Setup/UUpdater.dfm:43
+#: Util/UStringRessources.pas:253
 msgid "OK"
 msgstr "&OK"
 
@@ -2172,6 +2175,7 @@ msgstr "Umdrehen"
 #: Formdesigner/ELDlgImage.dfm:30 Sequencediagram/UDlgConnect.dfm:75
 #: Sequencediagram/USequenceForm.dfm:239 Structogram/UStructogramform.dfm:61
 #: Structogram/UStructogramform.dfm:838 UObjectInspector.pas:518
+#: Setup/USetup.pas:377
 msgid "Delete"
 msgstr "&Löschen"
 
@@ -2264,8 +2268,8 @@ msgstr "Wert"
 #: UDlgClassEditor.dfm:249 UDlgClassEditor.dfm:392 UDlgHelp.dfm:151
 #: UDlgMindstorms.dfm:22 EssModel/System/UClassInsert.dfm:107
 #: FindInFiles/UDlgGrepSearch.dfm:110 FindInFiles/UDlgReplace.dfm:79
-#: FindInFiles/UDlgSearch.dfm:72 UConfiguration.pas:8789
-#: UConfiguration.pas:8804
+#: FindInFiles/UDlgSearch.dfm:72 UConfiguration.pas:8795
+#: UConfiguration.pas:8810
 msgid "Options"
 msgstr "Optionen"
 
@@ -2322,7 +2326,7 @@ msgstr "&Löschen"
 
 #. FClassEditor..ActionList..ActionClose..Caption
 #. Programmer's name for it: SDlgClose
-#: UDlgClassEditor.dfm:648 Util/UStringRessources.pas:259
+#: UDlgClassEditor.dfm:648 Util/UStringRessources.pas:263
 msgid "&Close"
 msgstr "&Schließen"
 
@@ -2332,7 +2336,7 @@ msgid "&Apply"
 msgstr "&Übernehmen"
 
 #. FClasspath..Caption
-#: UDlgClasspath.dfm:6 UConfiguration.pas:1997
+#: UDlgClasspath.dfm:6 UConfiguration.pas:2003
 msgid "Edit classpath"
 msgstr "Classpath bearbeiten"
 
@@ -2364,7 +2368,7 @@ msgstr "Tools konfigurieren"
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..Caption
 #: UDlgConfigureTools.dfm:37 UDlgConfigureTools.dfm:112 UJava.dfm:274
-#: UJava.dfm:2224 UJava.dfm:3181
+#: UJava.dfm:1798 UJava.dfm:3181
 msgid "Program"
 msgstr "Programm"
 
@@ -2419,7 +2423,7 @@ msgid "Edit favorites"
 msgstr "Favoriten bearbeiten"
 
 #. FFavoritenDialog..LDescription..Caption
-#: UDlgFavoriten.dfm:23 UConfiguration.pas:6664
+#: UDlgFavoriten.dfm:23 UConfiguration.pas:6670
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -2527,8 +2531,8 @@ msgstr "Nach dem Hochladen starten (-r)"
 #. FJava..TBXDockTop..MainMenu..MIStart..MIRun..Caption
 #. AFrameDiagram..PopMenuClass..MIClassPopupRun..Caption
 #: UDlgMindstorms.dfm:54 UDlgMindstormsEV3.dfm:21 UJava.dfm:175 UJava.dfm:2793
-#: EssModel/Integrator/View/UDiagramFrame.dfm:47 UConfiguration.pas:3676
-#: UJava.pas:2234 UJava.pas:4533
+#: EssModel/Integrator/View/UDiagramFrame.dfm:47 UConfiguration.pas:3682
+#: UJava.pas:2235 UJava.pas:4534
 msgid "Run"
 msgstr "Starten"
 
@@ -2652,7 +2656,7 @@ msgstr "Design"
 
 #. FEditForm..BottomPanel..StatusBar......Text
 #. Programmer's name for it: LNGColumn
-#: UEditorForm.dfm:66 UEditorForm.pas:1148 UEditorForm.pas:1491
+#: UEditorForm.dfm:66 UEditorForm.pas:1148 UEditorForm.pas:1476
 #: Util/UStringRessources.pas:55
 msgid "Column"
 msgstr "Spalte"
@@ -2982,30 +2986,27 @@ msgstr "&Ausschneiden"
 #. FEditForm..PopUpEditor..MICopy..Caption
 #. FGUIDesigner..PopupMenu..MICopy..Caption
 #. FJava..TBXDockTop..MainMenu..MIEdit..MICopy..Caption
-#. LLMChatForm..ChatActionList..actCopyText..Caption
-#. LLMChatForm..pmAsk..mnCopy..Caption
 #. FMessages..PMMessages..MICopy..Caption
 #. FObjectInspector..PMObjectInspector..MICopy..Caption
 #. FScpHint..PopupMenuHint..MICopy..Caption
 #. FStructogram..StructoPopupMenu..MICopy..Caption
 #. FTextDiff..PopupEditor..MICopy..Caption
-#: UEditorForm.dfm:2515 UGUIDesigner.dfm:147 UJava.dfm:2653
-#: ULLMChatForm.dfm:187 ULLMChatForm.dfm:250 UMessages.dfm:560
+#. Programmer's name for it: SEdCmdCopy
+#: UEditorForm.dfm:2515 UGUIDesigner.dfm:147 UJava.dfm:2653 UMessages.dfm:560
 #: UObjectInspector.dfm:109 UScpHint.dfm:40
 #: Structogram/UStructogramform.dfm:844 TextDiff/UTextDiffForm.dfm:862
+#: Util/UStringRessources.pas:118
 msgid "Copy"
 msgstr "&Kopieren"
 
 #. FEditForm..PopUpEditor..MIInsert..Caption
 #. FGUIDesigner..PopupMenu..MIPaste..Caption
 #. FJava..TBXDockTop..MainMenu..MIEdit..MIPaste..Caption
-#. LLMChatForm..pmAsk..mnPaste..Caption
 #. FMessages..PMMessages..MIPaste..Caption
 #. FObjectInspector..PMObjectInspector..MIPaste..Caption
 #. FTextDiff..PopupEditor..MIPaste..Caption
-#: UEditorForm.dfm:2522 UGUIDesigner.dfm:154 UJava.dfm:2686
-#: ULLMChatForm.dfm:255 UMessages.dfm:553 UObjectInspector.dfm:115
-#: TextDiff/UTextDiffForm.dfm:867
+#: UEditorForm.dfm:2522 UGUIDesigner.dfm:154 UJava.dfm:2686 UMessages.dfm:553
+#: UObjectInspector.dfm:115 TextDiff/UTextDiffForm.dfm:867
 msgid "Paste"
 msgstr "&Einfügen"
 
@@ -3186,7 +3187,7 @@ msgstr "Compilieren"
 
 #. FJava..TBXDockTop..ControlBar..DebugToolbar..TBCompileAll..Hint
 #. FJava..TBXDockTop..MainMenu..MIStart..MICompileAll..Caption
-#: UJava.dfm:167 UJava.dfm:2787 UConfiguration.pas:3675
+#: UJava.dfm:167 UJava.dfm:2787 UConfiguration.pas:3681
 msgid "Compile all"
 msgstr "Alle compilieren"
 
@@ -3218,7 +3219,7 @@ msgstr "Center"
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabLayout..Caption
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..Caption
-#: UJava.dfm:291 UJava.dfm:596 UJava.dfm:3608
+#: UJava.dfm:291 UJava.dfm:1949 UJava.dfm:3608
 msgid "Layout"
 msgstr "Layout"
 
@@ -3229,30 +3230,30 @@ msgstr "Panel - Rechtsklick für eine Unterklasse von Panel"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBCanvas..Hint
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJCanvas..Hint
-#: UJava.dfm:517 UJava.dfm:2145
+#: UJava.dfm:517 UJava.dfm:1719
 msgid "Canvas - right-click for a subclass of Canvas"
 msgstr "Canvas - Rechtsklick für eine Unterklasse von Canvas"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXLine..Hint
 #. FBorder..PCBorder..TSLine..Caption
 #. Programmer's name for it: LNGLine
-#: UJava.dfm:808 Formdesigner/ELDlgBorder.dfm:30 UEditorForm.pas:1148
-#: UEditorForm.pas:1491 Util/UStringRessources.pas:54
+#: UJava.dfm:706 Formdesigner/ELDlgBorder.dfm:30 UEditorForm.pas:1148
+#: UEditorForm.pas:1476 Util/UStringRessources.pas:54
 msgid "Line"
 msgstr "Zeile"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXPagination..Hint
-#: UJava.dfm:1494
+#: UJava.dfm:1068
 msgid "Pagination"
 msgstr "Paginierung"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXCanvas..Hint
-#: UJava.dfm:1819
+#: UJava.dfm:1393
 msgid "Canvas - right click for a sub class of  Canvas"
 msgstr "Canvas - Rechtsklick für eine Unterklasse von Canvas"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJPanel..Hint
-#: UJava.dfm:2129
+#: UJava.dfm:1703
 msgid "JPanel - right-click for a subclass of JPanel"
 msgstr "JPanel - Rechtsklick für eine Unterklasse von JPanel"
 
@@ -3260,18 +3261,18 @@ msgstr "JPanel - Rechtsklick für eine Unterklasse von JPanel"
 #. FJava..TBXDockTop..MainMenu..MIUML..MINewClass..Caption
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupNewClass..Caption
 #. FUMLForm..Panel..PUMLPanel..TBUMLToolbar..TBClassNew..Hint
-#: UJava.dfm:2253 UJava.dfm:2959 EssModel/Integrator/View/UDiagramFrame.dfm:484
+#: UJava.dfm:1827 UJava.dfm:2959 EssModel/Integrator/View/UDiagramFrame.dfm:484
 #: EssModel/System/UUMLForm.dfm:91
 msgid "New class"
 msgstr "Neue Klasse"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBStructogram..Hint
-#: UJava.dfm:2263
+#: UJava.dfm:1837
 msgid "New structogram"
 msgstr "Neues Struktogramm"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBSequence..Hint
-#: UJava.dfm:2273
+#: UJava.dfm:1847
 msgid "New sequence diagram"
 msgstr "Neues Sequenzdiagramm"
 
@@ -3356,7 +3357,8 @@ msgid "Export"
 msgstr "Exportieren"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MIPrint..Caption
-#: UJava.dfm:2602
+#. LLMChatForm..ChatActionList..actPrint..Caption
+#: UJava.dfm:2602 ULLMChatForm.dfm:218
 msgid "Print"
 msgstr "&Drucken"
 
@@ -3639,7 +3641,7 @@ msgstr "Struktur ein/aus"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIChat..Caption
 #. LLMChatForm..Caption
-#: UJava.dfm:3682 ULLMChatForm.dfm:5 ULLMChatForm.pas:288 ULLMChatForm.pas:290
+#: UJava.dfm:3682 ULLMChatForm.dfm:5 ULLMChatForm.pas:718 ULLMChatForm.pas:720
 msgid "Chat"
 msgstr "Chat"
 
@@ -3670,7 +3672,7 @@ msgstr "&Untereinander"
 
 #. FJava..TBXDockTop..MainMenu..MIHelp..Caption
 #. Programmer's name for it: SDlgHelp
-#: UJava.dfm:3750 Util/UStringRessources.pas:251
+#: UJava.dfm:3750 Util/UStringRessources.pas:255
 msgid "&Help"
 msgstr "Hilfe"
 
@@ -3695,104 +3697,89 @@ msgid "javaconsole"
 msgstr "javaconsole"
 
 #. LLMChatForm..ChatActionList..actChatSave..Caption
-#: ULLMChatForm.dfm:157
+#: ULLMChatForm.dfm:158
 msgid "Save chat"
 msgstr "Chat speichern"
 
 #. LLMChatForm..ChatActionList..actChatSave..Hint
-#: ULLMChatForm.dfm:158
+#: ULLMChatForm.dfm:159
 msgid "Save chat history"
 msgstr "Chatverlauf speichern"
 
 #. LLMChatForm..ChatActionList..actChatRemove..Caption
-#: ULLMChatForm.dfm:163
+#: ULLMChatForm.dfm:166
 msgid "Remove Chat Topic"
 msgstr "Chatthema entfernen"
 
 #. LLMChatForm..ChatActionList..actChatRemove..Hint
-#: ULLMChatForm.dfm:164
+#: ULLMChatForm.dfm:167
 msgid "Remove current chat topic"
 msgstr "Aktuelles Chatthema entfernen"
 
 #. LLMChatForm..ChatActionList..actChatNew..Caption
-#: ULLMChatForm.dfm:169
+#: ULLMChatForm.dfm:174
 msgid "New Chat Topic"
 msgstr "Neues Chatthema"
 
 #. LLMChatForm..ChatActionList..actChatNew..Hint
-#: ULLMChatForm.dfm:170
+#: ULLMChatForm.dfm:175
 msgid "Add a new chat topic"
 msgstr "Ein neues Chat-Thema hinzufügen"
 
 #. LLMChatForm..ChatActionList..actChatPrevious..Caption
-#: ULLMChatForm.dfm:175
+#: ULLMChatForm.dfm:182
 msgid "Previous Chat Topic"
 msgstr "Vorheriges Chat-Thema"
 
 #. LLMChatForm..ChatActionList..actChatPrevious..Hint
-#: ULLMChatForm.dfm:176
+#: ULLMChatForm.dfm:183
 msgid "Show previous chat topic"
 msgstr "Vorheriges Chatthema zeigen"
 
 #. LLMChatForm..ChatActionList..actChatNext..Caption
-#: ULLMChatForm.dfm:181
+#: ULLMChatForm.dfm:190
 msgid "Next Chat Topic"
 msgstr "Nächstes Chatthema"
 
 #. LLMChatForm..ChatActionList..actChatNext..Hint
-#: ULLMChatForm.dfm:182
+#: ULLMChatForm.dfm:191
 msgid "Show next chat topic"
 msgstr "Nächstes Chatthema zeigen"
 
-#. LLMChatForm..ChatActionList..actCopyText..Hint
-#: ULLMChatForm.dfm:188
-msgid "Copy text"
-msgstr "Text kopieren"
-
 #. LLMChatForm..ChatActionList..actAskQuestion..Hint
-#: ULLMChatForm.dfm:193
+#: ULLMChatForm.dfm:197
 msgid "Ask question"
 msgstr "Stelle Frage"
 
 #. LLMChatForm..ChatActionList..actTopicTitle..Caption
-#: ULLMChatForm.dfm:198 ULLMChatForm.pas:525
+#: ULLMChatForm.dfm:202 ULLMChatForm.pas:896
 msgid "Topic Title"
 msgstr "Thementitel"
 
 #. LLMChatForm..ChatActionList..actTopicTitle..Hint
-#: ULLMChatForm.dfm:199
+#: ULLMChatForm.dfm:203
 msgid "Set the title of the chat topic"
 msgstr "Lege den Titel des Chatthemas fest"
 
 #. LLMChatForm..ChatActionList..actCancelRequest..Caption
-#: ULLMChatForm.dfm:204
+#: ULLMChatForm.dfm:210
 msgid "Cancel Request"
 msgstr "Anfrage abbrechen"
 
 #. LLMChatForm..ChatActionList..actCancelRequest..Hint
-#: ULLMChatForm.dfm:205
+#: ULLMChatForm.dfm:211
 msgid "Cancel active request"
 msgstr "Aktive Anfrage abbrechen"
 
-#. LLMChatForm..ChatActionList..actCopyCode..Caption
-#: ULLMChatForm.dfm:210
-msgid "Copy Code"
-msgstr "Code kopieren"
+#. LLMChatForm..ChatActionList..actPrint..Hint
+#: ULLMChatForm.dfm:219
+msgid "Print chat topic"
+msgstr "Chatthema drucken"
 
-#. LLMChatForm..ChatActionList..actCopyCode..Hint
-#: ULLMChatForm.dfm:211
-msgid "Copy the python code"
-msgstr "Pythoncode kopieren"
-
-#. LLMChatForm..ChatActionList..actCopyToNewEditor..Caption
-#: ULLMChatForm.dfm:215
-msgid "Copy Code to New Editor"
-msgstr "Code in neuen Editor kopieren"
-
-#. LLMChatForm..ChatActionList..actCopyToNewEditor..Hint
-#: ULLMChatForm.dfm:216
-msgid "Copy the python code to a new editor"
-msgstr "Kopieren Sie den Python-Code in einen neuen Editor"
+#. LLMChatForm..pmAsk..mnSpelling..Caption
+#: ULLMChatForm.dfm:254
+msgid "Spelling"
+msgstr "Rechtschreibung"
 
 #. SuggestWindow..SpTBXDock..SpTBXToolbar..spiAccept..Caption
 #: ULLMSuggestForm.dfm:45
@@ -4340,6 +4327,86 @@ msgstr "Lösche Lebenslinie"
 msgid "As text"
 msgstr "Als Text"
 
+#. FMemo..Caption
+#: Setup/UMemo.dfm:5
+msgid "Installation"
+msgstr "Installation"
+
+#. FMemo..MInstallation....Lines.Strings
+#: Setup/UMemo.dfm:24
+msgid "Java-Editor Installation"
+msgstr "Java-Editor Installation"
+
+#. FSetup..Caption
+#: Setup/USetup.dfm:5
+msgid "Setup"
+msgstr "Setup für JavaEditor"
+
+#. FSetup..LHint1..Caption
+#: Setup/USetup.dfm:24
+msgid "Folder for storage of user specific settings with"
+msgstr "Ordner zum Speichern von benutzerspezifischen Einstellungen mit"
+
+#. FSetup..LHint2..Caption
+#: Setup/USetup.dfm:31
+msgid "permanent write rights. %Username% in path possible."
+msgstr "permanenten Schreibrechten. %Username% im Pfad möglich."
+
+#. FSetup..LFolder..Caption
+#: Setup/USetup.dfm:38
+msgid "Installation folder - local or net"
+msgstr "Installationsordner - lokal oder net"
+
+#. FSetup..RGRegOrIni..Caption
+#: Setup/USetup.dfm:88
+msgid "Configuration settings"
+msgstr "Konfigurationseinstellungen"
+
+#. FSetup..RGRegOrIni....Items.Strings
+#: Setup/USetup.dfm:91
+msgid "save in Registry"
+msgstr "In der Registrierung speichern"
+
+#. FSetup..RGRegOrIni....Items.Strings
+#: Setup/USetup.dfm:92
+msgid "save in INI files"
+msgstr "Speichern in INI-Dateien"
+
+#. FSetup..BDeinstall..Caption
+#: Setup/USetup.dfm:126
+msgid "Uninstall"
+msgstr "Deinstallieren"
+
+#. FSetup..CBDesktopSymbol..Caption
+#: Setup/USetup.dfm:144
+msgid "Create desktop symbol"
+msgstr "Desktop-Symbol erzeugen"
+
+#. FSetup..CBStartmenu..Caption
+#: Setup/USetup.dfm:154
+msgid "Create entry in start menu"
+msgstr "Eintrag in das Startmenü erzeugen"
+
+#. FSetup..CBPortableApplication..Caption
+#: Setup/USetup.dfm:173
+msgid "Portable application / USB flash drive"
+msgstr "Portable Anwendung / USB-Stick"
+
+#. FUpdater..Caption
+#: Setup/UUpdater.dfm:5
+msgid "Java-Editor updater"
+msgstr "Java-Editor Updater"
+
+#. FUpdater..Panel1..BRetry..Caption
+#: Setup/UUpdater.dfm:52
+msgid "Retry"
+msgstr "Wiederholen"
+
+#. Fwait..Label1..Caption
+#: Setup/UWait.dfm:20
+msgid "Please wait!"
+msgstr "Bitte warten!"
+
 #. FStructogram..Caption
 #: Structogram/UStructogramform.dfm:6
 msgid "Diagram"
@@ -4478,7 +4545,7 @@ msgstr "Unterschiede"
 #. DlgMessage..Caption
 #. Programmer's name for it: SDlgInformation
 #: Util/UDlgMessage.dfm:6 Util/UDlgMessage.pas:30
-#: Util/UStringRessources.pas:245
+#: Util/UStringRessources.pas:249
 msgid "Information"
 msgstr "Informationen"
 
@@ -4491,200 +4558,200 @@ msgstr "Überschreiben"
 msgid "Open documentation"
 msgstr "Öffne Dokumentation"
 
-#: UConfiguration.pas:1891
+#: UConfiguration.pas:1897
 msgid "Java interpreter %s not found!"
 msgstr "Java-Interpreter %s nicht gefunden!"
 
-#: UConfiguration.pas:2015
+#: UConfiguration.pas:2021
 msgid "Edit JavaDoc User"
 msgstr "JavaDoc-User bearbeiten"
 
 #. Programmer's name for it: SmkcCtrl
-#: UConfiguration.pas:2588 UJava.pas:6778 Util/ULanguageControl.pas:245
-#: Util/UStringRessources.pas:280
+#: UConfiguration.pas:2594 UJava.pas:6780 Util/ULanguageControl.pas:245
+#: Util/UStringRessources.pas:284
 msgid "Ctrl+"
 msgstr "Strg+"
 
 #. Programmer's name for it: SmkcShift
-#: UConfiguration.pas:2589 UJava.pas:6777 Util/ULanguageControl.pas:244
-#: Util/UStringRessources.pas:279
+#: UConfiguration.pas:2595 UJava.pas:6779 Util/ULanguageControl.pas:244
+#: Util/UStringRessources.pas:283
 msgid "Shift+"
 msgstr "Umsch+"
 
 #. Programmer's name for it: SmkcAlt
-#: UConfiguration.pas:2590 UJava.pas:6779 Util/ULanguageControl.pas:246
-#: Util/UStringRessources.pas:281
+#: UConfiguration.pas:2596 UJava.pas:6781 Util/ULanguageControl.pas:246
+#: Util/UStringRessources.pas:285
 msgid "Alt+"
 msgstr "Alt+"
 
-#: UConfiguration.pas:3550
+#: UConfiguration.pas:3556
 msgid "other"
 msgstr "sonst"
 
-#: UConfiguration.pas:3563
+#: UConfiguration.pas:3569
 msgid "new"
 msgstr "Neu"
 
-#: UConfiguration.pas:3564
+#: UConfiguration.pas:3570
 msgid "close"
 msgstr "&Schließen"
 
-#: UConfiguration.pas:3590
+#: UConfiguration.pas:3596
 msgid "';' expected"
 msgstr "es fehlt ein Semikolon"
 
-#: UConfiguration.pas:3591
+#: UConfiguration.pas:3597
 msgid "'(' expected"
 msgstr "es fehlt eine Klammer auf '('"
 
-#: UConfiguration.pas:3592
+#: UConfiguration.pas:3598
 msgid "')' expected"
 msgstr "es fehlt eine Klammer zu ')'"
 
-#: UConfiguration.pas:3593
+#: UConfiguration.pas:3599
 msgid "']' expected"
 msgstr "es fehlt eine eckige Klammer zu ']'"
 
-#: UConfiguration.pas:3594
+#: UConfiguration.pas:3600
 msgid "'}' expected"
 msgstr "es fehlt eine geschweifte Klammer zu '}'"
 
-#: UConfiguration.pas:3595
+#: UConfiguration.pas:3601
 msgid "> expected"
 msgstr "es fehlt ein '>'"
 
-#: UConfiguration.pas:3596
+#: UConfiguration.pas:3602
 msgid "<identifier> expected"
 msgstr "einen Bezeichner angeben"
 
-#: UConfiguration.pas:3597
+#: UConfiguration.pas:3603
 msgid "not a statement"
 msgstr "keine Anweisung"
 
-#: UConfiguration.pas:3598
+#: UConfiguration.pas:3604
 msgid "unclosed string literal"
 msgstr "den String mit \" schließen"
 
-#: UConfiguration.pas:3599
+#: UConfiguration.pas:3605
 msgid "illegal start of expression"
 msgstr "ungültiger Beginn eines Ausdrucks"
 
-#: UConfiguration.pas:3600
+#: UConfiguration.pas:3606
 msgid "illegal start of type"
 msgstr "ungültiger Beginn eines Datentyps"
 
-#: UConfiguration.pas:3601
+#: UConfiguration.pas:3607
 msgid "cannot find symbol"
 msgstr "kann Symbol nicht finden"
 
-#: UConfiguration.pas:3602
+#: UConfiguration.pas:3608
 msgid "class, interface, or enum expected"
 msgstr "Beginn einer Klasse erwartet"
 
-#: UConfiguration.pas:3603
+#: UConfiguration.pas:3609
 msgid "class expected"
 msgstr "Klasse erwartet"
 
-#: UConfiguration.pas:3604
+#: UConfiguration.pas:3610
 msgid "reached end of file while parsing"
 msgstr "es fehlt eine geschweifte Klammer zu '}'"
 
-#: UConfiguration.pas:3605
+#: UConfiguration.pas:3611
 msgid "might not have been initialized"
 msgstr "ist nicht initialisiert"
 
-#: UConfiguration.pas:3606
+#: UConfiguration.pas:3612
 msgid "is already defined in"
 msgstr "ist schon definiert in"
 
-#: UConfiguration.pas:3607
+#: UConfiguration.pas:3613
 msgid "array required, but found"
 msgstr "array erforderlich, aber %s gefunden"
 
-#: UConfiguration.pas:3608
+#: UConfiguration.pas:3614
 msgid "incompatible types"
 msgstr ""
 "Datentypen passen nicht zueinander: %s kann nicht in %s konvertiert werden"
 
-#: UConfiguration.pas:3609
+#: UConfiguration.pas:3615
 msgid "incompatible types: missing return value"
 msgstr "Der Wert für return fehlt"
 
-#: UConfiguration.pas:3610
+#: UConfiguration.pas:3616
 msgid "incompatible types: unexpected return value"
 msgstr "void Methoden können keinen Wert zurückgeben"
 
-#: UConfiguration.pas:3611
+#: UConfiguration.pas:3617
 msgid "incompatible types: possible lossy"
 msgstr "kann Datentyp nicht von% s nach% s konvertieren"
 
-#: UConfiguration.pas:3612
+#: UConfiguration.pas:3618
 msgid "invalid method declaration; return type required"
 msgstr "Rückgabetyp für die Methode fehlt"
 
-#: UConfiguration.pas:3613
+#: UConfiguration.pas:3619
 msgid "non-static cannot be referenced"
 msgstr "Kann nicht statisch auf das nicht-statische %s verweisen"
 
-#: UConfiguration.pas:3614
+#: UConfiguration.pas:3620
 msgid "unreachable statement"
 msgstr "Unerreichbare Anweisung"
 
-#: UConfiguration.pas:3615
+#: UConfiguration.pas:3621
 msgid "bad operand types for binary operator"
 msgstr "ungültige Datentypen für Operator"
 
-#: UConfiguration.pas:3656
+#: UConfiguration.pas:3662
 msgid "NXT options"
 msgstr "NXT Optionen"
 
-#: UConfiguration.pas:3738
+#: UConfiguration.pas:3744
 msgid "In section [user] of the configuration file \"%s\" the value"
 msgstr "In der Konfigurationsdatei %s ist im Abschnitt \"User\" der Wert"
 
-#: UConfiguration.pas:3739
+#: UConfiguration.pas:3745
 msgid "of the key \"HomeDir\" for the home directory of the user is not set."
 msgstr ""
 "des Schlüssels \"HomeDir\" für das Home-Verzeichnis des Benutzers nicht "
 "gesetzt."
 
-#: UConfiguration.pas:3753 UConfiguration.pas:3766
+#: UConfiguration.pas:3759 UConfiguration.pas:3772
 msgid "Could not create the preferencesfile %s!"
 msgstr "Die Konfigurationsdatei %s konnte nicht erzeugt werden!"
 
-#: UConfiguration.pas:6007
+#: UConfiguration.pas:6013
 msgid "Internet Explorer is not installed."
 msgstr "Der Internet-Explorer ist nicht installiert."
 
-#: UConfiguration.pas:6151
+#: UConfiguration.pas:6157
 msgid "Jar create files"
 msgstr "Jar create Dateien"
 
-#: UConfiguration.pas:6410
+#: UConfiguration.pas:6416
 msgid "Could not create preferences."
 msgstr "Die Konfiguration konnte nicht erzeugt werden."
 
-#: UConfiguration.pas:6666
+#: UConfiguration.pas:6672
 msgid "from"
 msgstr "vom"
 
-#: UConfiguration.pas:7307
+#: UConfiguration.pas:7313
 msgid "Form"
 msgstr "Formular"
 
-#: UConfiguration.pas:7314
+#: UConfiguration.pas:7320
 msgid "Backup"
 msgstr "Backup"
 
-#: UConfiguration.pas:7314
+#: UConfiguration.pas:7320
 msgid "All files"
 msgstr "Alle Dateien"
 
-#: UConfiguration.pas:8796
+#: UConfiguration.pas:8802
 msgid "Structograms"
 msgstr "Struktogramme"
 
-#: UConfiguration.pas:8797
+#: UConfiguration.pas:8803
 msgid "Sequencediagrams"
 msgstr "Sequenzdiagramme"
 
@@ -4740,155 +4807,155 @@ msgstr "Die Schriftgröße beträgt %3d pt. Soll dennoch gedruckt werden?"
 msgid "File from Java-Editor"
 msgstr "Dokument vom Java-Editor"
 
-#: UEditorForm.pas:4585
+#: UEditorForm.pas:4570
 msgid "File %s externally modified. Open new?"
 msgstr "Datei %s wurde extern geändert. Neu laden?"
 
-#: UJava.pas:1357 UJava.pas:1359
+#: UJava.pas:1358 UJava.pas:1360
 msgid "Invalid class name"
 msgstr "Ungültiger Klassenname"
 
-#: UJava.pas:2229
+#: UJava.pas:2230
 msgid "Start Applet"
 msgstr "Applet starten"
 
-#: UJava.pas:2888
+#: UJava.pas:2889
 msgid "Files in the cache folder are not compiled."
 msgstr "Dateien im Cache-Verzeichnis werden nicht compiliert."
 
 #. if ExecWithoutWait(Disassembler, Call, ExtractFilePath(Filename), SW_HIDE) then begin
-#: UJava.pas:3571
+#: UJava.pas:3572
 msgid "disassembled"
 msgstr "disassembliert"
 
-#: UJava.pas:3574
+#: UJava.pas:3575
 msgid "Error during disassembling of %s"
 msgstr "Fehler beim Disassemblieren von %s"
 
-#: UJava.pas:3632
+#: UJava.pas:3633
 msgid "Error during creation of documentation."
 msgstr "Fehler beim Erzeugen der Dokumentation."
 
-#: UJava.pas:3671
+#: UJava.pas:3672
 msgid "The JUnit manual is not installed."
 msgstr "Das JUnit-Handbuch ist nicht installiert."
 
-#: UJava.pas:3685
+#: UJava.pas:3686
 msgid "Jar call"
 msgstr "Jar-Aufruf"
 
 #. extracted:
-#: UJava.pas:3714
+#: UJava.pas:3715
 msgid "Too much files to open."
 msgstr "Zuviele Dateien zum Öffnen."
 
-#: UJava.pas:3867
+#: UJava.pas:3868
 msgid "Overwrite with jar files?"
 msgstr "Mit Jar-Dateien überschreiben?"
 
-#: UJava.pas:3896
+#: UJava.pas:3897
 msgid "Show content of jar file"
 msgstr "Inhalt einer Jar-Datei anzeigen"
 
-#: UJava.pas:3897
+#: UJava.pas:3898
 msgid "Unpack jar file"
 msgstr "Jar-Datei entpacken"
 
-#: UJava.pas:3898
+#: UJava.pas:3899
 msgid "Open jar file"
 msgstr "Jar-Datei öffnen"
 
-#: UJava.pas:4141
+#: UJava.pas:4142
 msgid "No browser configured"
 msgstr "Kein Browser konfiguriert"
 
-#: UJava.pas:4198
+#: UJava.pas:4199
 msgid "The tutorial %s is not installed."
 msgstr "Das Tutorial %s ist nicht installiert."
 
-#: UJava.pas:4206
+#: UJava.pas:4207
 msgid "The Java book from www.javabuch.de is not installed."
 msgstr "Das Javabuch von www.javabuch.de ist nicht installiert."
 
-#: UJava.pas:4214
+#: UJava.pas:4215
 msgid ""
 "The mindstorms manual from https://lejos.sourceforge.net/ is not installed."
 msgstr ""
 "Das Mindstorms-Manual von http://lejos.sourceforge.net/ ist nicht "
 "installiert."
 
-#: UJava.pas:4260
+#: UJava.pas:4261
 msgid "JavaFX needs Java JDK 8 or higher"
 msgstr "JavaFX benötigt Java JDK 8 oder höher"
 
-#: UJava.pas:5560
+#: UJava.pas:5561
 msgid "Sourcecode has errors. Open anyway?"
 msgstr "Quelltext enthält Fehler. Dennoch öffnen?"
 
 #. Programmer's name for it: SmkcBkSp
-#: UJava.pas:6761 UJava.pas:6776 Util/UStringRessources.pas:264
+#: UJava.pas:6763 UJava.pas:6778 Util/UStringRessources.pas:268
 msgid "BkSp"
 msgstr "Rück"
 
 #. Programmer's name for it: SmkcTab
-#: UJava.pas:6762 Util/UStringRessources.pas:265
+#: UJava.pas:6764 Util/UStringRessources.pas:269
 msgid "Tab"
 msgstr "Tab"
 
 #. Programmer's name for it: SmkcEsc
-#: UJava.pas:6763 Util/UStringRessources.pas:266
+#: UJava.pas:6765 Util/UStringRessources.pas:270
 msgid "Esc"
 msgstr "Esc"
 
 #. Programmer's name for it: SmkcEnter
-#: UJava.pas:6764 Util/UStringRessources.pas:267
+#: UJava.pas:6766 Util/UStringRessources.pas:271
 msgid "Enter"
 msgstr "Eingabe"
 
 #. Programmer's name for it: LNGSpace
 #. Programmer's name for it: SmkcSpace
-#: UJava.pas:6765 Util/UStringRessources.pas:91 Util/UStringRessources.pas:268
+#: UJava.pas:6767 Util/UStringRessources.pas:91 Util/UStringRessources.pas:272
 msgid "Space"
 msgstr "Leerraum"
 
 #. Programmer's name for it: SmkcPgUp
-#: UJava.pas:6766 Util/UStringRessources.pas:269
+#: UJava.pas:6768 Util/UStringRessources.pas:273
 msgid "PgUp"
 msgstr "BildAuf"
 
 #. Programmer's name for it: SmkcPgDn
-#: UJava.pas:6767 Util/UStringRessources.pas:270
+#: UJava.pas:6769 Util/UStringRessources.pas:274
 msgid "PgDn"
 msgstr "BildAb"
 
 #. Programmer's name for it: SmkcEnd
-#: UJava.pas:6768 Util/UStringRessources.pas:271
+#: UJava.pas:6770 Util/UStringRessources.pas:275
 msgid "End"
 msgstr "Ende"
 
 #. Programmer's name for it: SmkcHome
-#: UJava.pas:6769 Util/UStringRessources.pas:272
+#: UJava.pas:6771 Util/UStringRessources.pas:276
 msgid "Home"
 msgstr "Pos1"
 
 #. Programmer's name for it: SmkcUp
-#: UJava.pas:6771 Util/UStringRessources.pas:274
+#: UJava.pas:6773 Util/UStringRessources.pas:278
 msgid "Up"
 msgstr "Auf"
 
 #. Programmer's name for it: SmkcDown
-#: UJava.pas:6773 Util/UStringRessources.pas:276
+#: UJava.pas:6775 Util/UStringRessources.pas:280
 msgid "Down"
 msgstr "Ab"
 
 #. Programmer's name for it: LNGModusInsert
 #. Programmer's name for it: SmkcIns
-#: UJava.pas:6774 Util/UStringRessources.pas:53 Util/UStringRessources.pas:277
+#: UJava.pas:6776 Util/UStringRessources.pas:53 Util/UStringRessources.pas:281
 msgid "Ins"
 msgstr "Einf"
 
 #. Programmer's name for it: SmkcDel
-#: UJava.pas:6775 Util/UStringRessources.pas:278
+#: UJava.pas:6777 Util/UStringRessources.pas:282
 msgid "Del"
 msgstr "Entf"
 
@@ -4901,61 +4968,70 @@ msgid "Starting"
 msgstr "Starten"
 
 #. Programmer's name for it: SQuestionHintValid
-#: ULLMChatForm.pas:170
+#: ULLMChatForm.pas:172
 msgid "Ask me anything"
 msgstr "Frage mich etwas"
 
 #. Programmer's name for it: SQuestionHintInvalid
-#: ULLMChatForm.pas:171
+#: ULLMChatForm.pas:173
 msgid "Chat setup incomplete"
 msgstr "Chat-Einrichtung unvollständig"
 
-#: ULLMChatForm.pas:525
+#. Restore settings and history
+#: ULLMChatForm.pas:804
+msgid "Could not read the Chat history"
+msgstr "Konnte die Chathistorie nicht lesen."
+
+#: ULLMChatForm.pas:896
 msgid "Enter title:"
 msgstr "Titel eingeben:"
 
+#: ULLMChatForm.pas:1030
+msgid "Copy code to new editor"
+msgstr "Code in neuen Editor kopieren"
+
 #. Programmer's name for it: sLLMBusy
-#: ULLMSupport.pas:256
+#: ULLMSupport.pas:278
 msgid "The LLM client is busy."
 msgstr "Der LLM-Client ist beschäftigt."
 
 #. Programmer's name for it: sNoResponse
-#: ULLMSupport.pas:257
+#: ULLMSupport.pas:279
 msgid "No response from the LLM Server."
 msgstr "Keine Antwort vom LLM-Server."
 
 #. Programmer's name for it: sNoAPIKey
-#: ULLMSupport.pas:258
+#: ULLMSupport.pas:280
 msgid "The LLM API key is missing."
 msgstr "Der LLM-API-Schlüssel fehlt."
 
 #. Programmer's name for it: sNoModel
-#: ULLMSupport.pas:259
+#: ULLMSupport.pas:281
 msgid "The LLM model has not been set."
 msgstr "Das LLM-Modell wurde nicht festgelegt."
 
 #. Programmer's name for it: sInvalidTemperature
-#: ULLMSupport.pas:260
-msgid "Invalid temperature: It should be a decimal number between 0.0 and 2.0"
+#: ULLMSupport.pas:282
+msgid "Invalid temperature: It should be a decimal number between 0.0 and 2.0."
 msgstr ""
 "Ungültige Temperatur. Es sollte eine Dezimalzahl zwischen 0.0 und 2.0 sein."
 
 #. Programmer's name for it: sUnsupportedEndpoint
-#: ULLMSupport.pas:261
+#: ULLMSupport.pas:283
 msgid "The LLM endpoint is missing or not supported."
 msgstr "Der LLM-Endpunkt fehlt oder wird nicht unterstützt."
 
 #. Programmer's name for it: sUnsupportedModel
-#: ULLMSupport.pas:262
+#: ULLMSupport.pas:284
 msgid "The LLM model is not supported."
 msgstr "Das LLM-Modell wird nicht unterstützt."
 
 #. Programmer's name for it: sUnexpectedResponse
-#: ULLMSupport.pas:263
+#: ULLMSupport.pas:285
 msgid "Unexpected response from the LLM Server."
 msgstr "Unerwartete Antwort vom LLM-Server."
 
-#: ULLMSupport.pas:760
+#: ULLMSupport.pas:808
 msgid "Assistant is busy. Click to cancel."
 msgstr "Assistent ist beschäftigt. Zum Abbrechen klicken."
 
@@ -5084,6 +5160,86 @@ msgstr "Inkompatible Typen: gefunden %s aber %s erwartet"
 #: Jni/UComJava1.pas:221
 msgid "No connection to: "
 msgstr "Keine Verbindung zu: "
+
+#: Setup/USetup.pas:168 Setup/UUpdater.pas:68
+msgid "Copy %s to %s"
+msgstr "Kopiere %s nach %s"
+
+#: Setup/USetup.pas:170 Setup/USetup.pas:382 Setup/UUpdater.pas:66
+msgid "\"%s\" can not be deleted"
+msgstr "\"%s\" kann nicht gelöscht werden"
+
+#: Setup/USetup.pas:177 Setup/USetup.pas:251
+msgid "Error copying to \"%s\""
+msgstr "Fehler beim Kopieren nach \"%s\""
+
+#: Setup/USetup.pas:185
+msgid "Generate configuration file:"
+msgstr "Erzeuge Konfigurationsdatei:"
+
+#: Setup/USetup.pas:190
+msgid "The configuration file %s could not be created!"
+msgstr "Die Konfigurationsdatei %s konnte nicht erstellt werden!"
+
+#: Setup/USetup.pas:200
+msgid "Create directory:"
+msgstr "Verzeichnis erstellen:"
+
+#: Setup/USetup.pas:211 Setup/USetup.pas:425
+msgid "No admin rights. Continue?"
+msgstr "Keine Administratorrechte. Fortsetzen?"
+
+#: Setup/USetup.pas:214
+msgid "Please specify installation folder."
+msgstr "Bitte geben Sie den Installationsordner an."
+
+#: Setup/USetup.pas:221
+msgid "Installation folder %s does not exist."
+msgstr "Installationsordner %s ist nicht vorhanden."
+
+#: Setup/USetup.pas:243
+msgid "Please specify folder for storing custom files."
+msgstr "Geben Sie den Ordner zum Speichern benutzerdefinierter Dateien an."
+
+#: Setup/USetup.pas:272
+msgid "Create desktop shortcut"
+msgstr "Desktopverknüpfung erstellen"
+
+#: Setup/USetup.pas:280
+msgid "Create entry in the programs menu"
+msgstr "Eintrag im Programmmenü anlegen"
+
+#: Setup/USetup.pas:285
+msgid "Create additional desktop shortcut for Java-Editor in folder"
+msgstr "Zusätzliche Desktop-Verknüpfung für Java-Editor im Ordner erstellen"
+
+#: Setup/USetup.pas:298
+msgid "save in it"
+msgstr "darin speichern"
+
+#: Setup/USetup.pas:319
+msgid "Save installation flow in"
+msgstr "Installationsablauf speichern in"
+
+#: Setup/USetup.pas:327 Setup/USetup.pas:444
+msgid "Ready"
+msgstr "Fertig"
+
+#: Setup/USetup.pas:414
+msgid "configuration file"
+msgstr "Konfigurationsdatei"
+
+#: Setup/USetup.pas:431
+msgid "desktop shortcut"
+msgstr "Desktop-Verknüpfung"
+
+#: Setup/USetup.pas:439
+msgid "Delete registry entries"
+msgstr "Registryeinträge löschen"
+
+#: Setup/USetup.pas:441
+msgid "Delete INI files"
+msgstr "INI-Dateien löschen"
 
 #: Structogram/UStructogramform.pas:450
 msgid "Invalid file format!"
@@ -5469,184 +5625,105 @@ msgstr "Projekt"
 msgid "%s already exists. Overwrite?"
 msgstr "%s existiert schon. Überschreiben?"
 
+#. Programmer's name for it: SWebView2Error
+#: Util/UStringRessources.pas:116
+msgid ""
+"The WebView2 control creation failed.\n"
+"Please install the WebView2 runtime."
+msgstr ""
+"Fehler bei der Erstellung des WebView2-Steuerelements.\n"
+"Bitte installieren Sie die WebView2-Laufzeitumgebung."
+
+#. Programmer's name for it: SWebNavigationError
+#: Util/UStringRessources.pas:117
+msgid "Error in loading html in the browser"
+msgstr "Fehler beim Laden von HTML in den Browser"
+
 #. Delphi dialogs (from Vcl.Consts)
 #. Programmer's name for it: srNone
-#: Util/UStringRessources.pas:242
+#: Util/UStringRessources.pas:246
 msgid "(None)"
 msgstr "(Kein)"
 
 #. Programmer's name for it: SDlgWarning
-#: Util/UStringRessources.pas:243
+#: Util/UStringRessources.pas:247
 msgid "Warning"
 msgstr "Warnung"
 
 #. Programmer's name for it: SDlgError
-#: Util/UStringRessources.pas:244
+#: Util/UStringRessources.pas:248
 msgid "Error"
 msgstr "Fehler"
 
 #. Programmer's name for it: SDlgConfirm
-#: Util/UStringRessources.pas:246
+#: Util/UStringRessources.pas:250
 msgid "Confirm"
 msgstr "Bestätigen"
 
 #. Programmer's name for it: SDlgYes
-#: Util/UStringRessources.pas:247
+#: Util/UStringRessources.pas:251
 msgid "&Yes"
 msgstr "&Ja"
 
 #. Programmer's name for it: SDlgNo
-#: Util/UStringRessources.pas:248
+#: Util/UStringRessources.pas:252
 msgid "&No"
 msgstr "&Nein"
 
 #. Programmer's name for it: SDlgAbort
-#: Util/UStringRessources.pas:253
+#: Util/UStringRessources.pas:257
 msgid "&Abort"
 msgstr "&Abbruch"
 
 #. Programmer's name for it: SDlgRetry
-#: Util/UStringRessources.pas:254
+#: Util/UStringRessources.pas:258
 msgid "&Retry"
 msgstr "&Wiederholen"
 
 #. Programmer's name for it: SDlgIgnore
-#: Util/UStringRessources.pas:255
+#: Util/UStringRessources.pas:259
 msgid "&Ignore"
 msgstr "&Ignorieren"
 
 #. Programmer's name for it: SDlgAll
-#: Util/UStringRessources.pas:256
+#: Util/UStringRessources.pas:260
 msgid "&All"
 msgstr "&Alle"
 
 #. Programmer's name for it: SDlgNoToAll
-#: Util/UStringRessources.pas:257
+#: Util/UStringRessources.pas:261
 msgid "N&o to All"
 msgstr "&Nein zu allen"
 
 #. Programmer's name for it: SDlgYesToAll
-#: Util/UStringRessources.pas:258
+#: Util/UStringRessources.pas:262
 msgid "Yes to &All"
 msgstr "&Ja zu allen"
 
 #. Programmer's name for it: STrueValue
-#: Util/UStringRessources.pas:261
+#: Util/UStringRessources.pas:265
 msgid "True"
 msgstr "Wahr"
 
 #. Programmer's name for it: SFalseValue
-#: Util/UStringRessources.pas:262
+#: Util/UStringRessources.pas:266
 msgid "False"
 msgstr "Falsch"
 
-#~ msgid "Installation"
-#~ msgstr "Installation"
+#~ msgid "DeepSeek"
+#~ msgstr "DeepSeek"
 
-#~ msgid "Java-Editor Installation"
-#~ msgstr "Java-Editor Installation"
+#~ msgid "Copy text"
+#~ msgstr "Text kopieren"
 
-#~ msgid "Setup"
-#~ msgstr "Setup für JavaEditor"
+#~ msgid "Copy Code"
+#~ msgstr "Code kopieren"
 
-#~ msgid "Folder for storage of user specific settings with"
-#~ msgstr "Ordner zum Speichern von benutzerspezifischen Einstellungen mit"
+#~ msgid "Copy the python code"
+#~ msgstr "Pythoncode kopieren"
 
-#~ msgid "permanent write rights. %Username% in path possible."
-#~ msgstr "permanenten Schreibrechten. %Username% im Pfad möglich."
-
-#~ msgid "Installation folder - local or net"
-#~ msgstr "Installationsordner - lokal oder net"
-
-#~ msgid "Configuration settings"
-#~ msgstr "Konfigurationseinstellungen"
-
-#~ msgid "save in Registry"
-#~ msgstr "In der Registrierung speichern"
-
-#~ msgid "save in INI files"
-#~ msgstr "Speichern in INI-Dateien"
-
-#~ msgid "Uninstall"
-#~ msgstr "Deinstallieren"
-
-#~ msgid "Create desktop symbol"
-#~ msgstr "Desktop-Symbol erzeugen"
-
-#~ msgid "Create entry in start menu"
-#~ msgstr "Eintrag in das Startmenü erzeugen"
-
-#~ msgid "Portable application / USB flash drive"
-#~ msgstr "Portable Anwendung / USB-Stick"
-
-#~ msgid "Java-Editor updater"
-#~ msgstr "Java-Editor Updater"
-
-#~ msgid "Retry"
-#~ msgstr "Wiederholen"
-
-#~ msgid "Please wait!"
-#~ msgstr "Bitte warten!"
-
-#~ msgid "Copy %s to %s"
-#~ msgstr "Kopiere %s nach %s"
-
-#~ msgid "\"%s\" can not be deleted"
-#~ msgstr "\"%s\" kann nicht gelöscht werden"
-
-#~ msgid "Error copying to \"%s\""
-#~ msgstr "Fehler beim Kopieren nach \"%s\""
-
-#~ msgid "Generate configuration file:"
-#~ msgstr "Erzeuge Konfigurationsdatei:"
-
-#~ msgid "The configuration file %s could not be created!"
-#~ msgstr "Die Konfigurationsdatei %s konnte nicht erstellt werden!"
-
-#~ msgid "Create directory:"
-#~ msgstr "Verzeichnis erstellen:"
-
-#~ msgid "No admin rights. Continue?"
-#~ msgstr "Keine Administratorrechte. Fortsetzen?"
-
-#~ msgid "Please specify installation folder."
-#~ msgstr "Bitte geben Sie den Installationsordner an."
-
-#~ msgid "Installation folder %s does not exist."
-#~ msgstr "Installationsordner %s ist nicht vorhanden."
-
-#~ msgid "Please specify folder for storing custom files."
-#~ msgstr "Geben Sie den Ordner zum Speichern benutzerdefinierter Dateien an."
-
-#~ msgid "Create desktop shortcut"
-#~ msgstr "Desktopverknüpfung erstellen"
-
-#~ msgid "Create entry in the programs menu"
-#~ msgstr "Eintrag im Programmmenü anlegen"
-
-#~ msgid "Create additional desktop shortcut for Java-Editor in folder"
-#~ msgstr "Zusätzliche Desktop-Verknüpfung für Java-Editor im Ordner erstellen"
-
-#~ msgid "save in it"
-#~ msgstr "darin speichern"
-
-#~ msgid "Save installation flow in"
-#~ msgstr "Installationsablauf speichern in"
-
-#~ msgid "Ready"
-#~ msgstr "Fertig"
-
-#~ msgid "configuration file"
-#~ msgstr "Konfigurationsdatei"
-
-#~ msgid "desktop shortcut"
-#~ msgstr "Desktop-Verknüpfung"
-
-#~ msgid "Delete registry entries"
-#~ msgstr "Registryeinträge löschen"
-
-#~ msgid "Delete INI files"
-#~ msgstr "INI-Dateien löschen"
+#~ msgid "Copy the python code to a new editor"
+#~ msgstr "Kopieren Sie den Python-Code in einen neuen Editor"
 
 #, fuzzy
 #~| msgid "Open"

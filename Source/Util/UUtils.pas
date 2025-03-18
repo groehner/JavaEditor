@@ -957,7 +957,7 @@ begin
 end;
 
 procedure SetPrinterIndex(i: integer);
-  var Device, Driver, Port: array[0..79] of char;
+  var Device, Driver, Port: String;
       Dest: PChar; DeviceMode: THandle;
 begin
   try
@@ -970,7 +970,7 @@ begin
     Printer.GetPrinter(Device, Driver, Port, DeviceMode);
     if DeviceMode <> 0 then begin
       Dest:= GlobalLock(DeviceMode);
-      StrCopy(Dest, Device);
+      Device:= Dest;
       GlobalUnlock(DeviceMode);
     end;
   except

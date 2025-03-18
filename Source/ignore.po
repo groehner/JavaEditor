@@ -412,9 +412,9 @@ msgstr ""
 
 #  Doesn't have any letters
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..ELLMTemperature..Text
-#: UConfiguration.dfm:5037
+#: UConfiguration.dfm:5038
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..EChatTemperature..Text
-#: UConfiguration.dfm:5166
+#: UConfiguration.dfm:5177
 msgid "1.0"
 msgstr ""
 
@@ -427,6 +427,12 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PCode..GBCodeCompletion..LCompletionMax..Caption
 #: UConfiguration.dfm:1323
 msgid "1000 ms"
+msgstr ""
+
+#  Doesn't have any letters
+#. LLMChatForm..EdgeBrowser..TargetCompatibleBrowserVersion
+#: ULLMChatForm.dfm:137
+msgid "117.0.2045.28"
 msgstr ""
 
 #  Doesn't have any letters
@@ -523,7 +529,7 @@ msgid "950 Chinese Traditional"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBAbsoluteLayout..Hint
-#: UJava.dfm:682
+#: UJava.dfm:2035
 #. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIAbsoluteLayout..Caption
 #: UJava.dfm:3635
 msgid "AbsoluteLayout"
@@ -543,7 +549,7 @@ msgid "ADSP21xx"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..CBJUnitAfterEach..Caption
-#: UConfiguration.dfm:5615
+#: UConfiguration.dfm:5635
 msgid "AfterEach"
 msgstr ""
 
@@ -554,7 +560,7 @@ msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Caption
 #: UConfiguration.dfm:3857
-#: UConfiguration.pas:8802
+#: UConfiguration.pas:8808
 msgid "Android"
 msgstr ""
 
@@ -587,7 +593,7 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateApplet..Caption
 #: UConfiguration.dfm:1806
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBApplet..Hint
-#: UJava.dfm:2317
+#: UJava.dfm:1891
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewApplet..Caption
 #: UJava.dfm:2513
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIApplet..Caption
@@ -597,7 +603,7 @@ msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PApplets..Caption
 #: UConfiguration.dfm:739
-#: UConfiguration.pas:8785
+#: UConfiguration.pas:8791
 msgid "Applets"
 msgstr ""
 
@@ -611,12 +617,12 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateapplication..Caption
 #: UConfiguration.dfm:1855
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBApplication..Hint
-#: UJava.dfm:2361
+#: UJava.dfm:1935
 msgid "Application"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXArc..Hint
-#: UJava.dfm:793
+#: UJava.dfm:691
 msgid "Arc"
 msgstr ""
 
@@ -639,7 +645,7 @@ msgid "-author -version"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabAWT..Caption
-#: UJava.dfm:279
+#: UJava.dfm:278
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..Caption
 #: UJava.dfm:315
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..Caption
@@ -648,7 +654,7 @@ msgid "AWT"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..CBJUnitBeforeEach..Caption
-#: UConfiguration.dfm:5607
+#: UConfiguration.dfm:5627
 msgid "BeforeEach"
 msgstr ""
 
@@ -838,7 +844,7 @@ msgid "boolean"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBBorderLayout..Hint
-#: UJava.dfm:616
+#: UJava.dfm:1969
 #. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIBorderLayout..Caption
 #: UJava.dfm:3610
 msgid "BorderLayout"
@@ -857,23 +863,23 @@ msgstr ""
 #: UDlgMindstorms.dfm:93
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIBrowser..Caption
 #: UJava.dfm:3701
-#: UConfiguration.pas:8798
+#: UConfiguration.pas:8804
 msgid "Browser"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBButton..Hint
 #: UJava.dfm:396
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXButton..Hint
-#: UJava.dfm:1698
+#: UJava.dfm:1272
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIButton..Caption
 #: UJava.dfm:3326
 msgid "Button"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXButtonGroup..Hint
-#: UJava.dfm:1728
+#: UJava.dfm:1302
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJButtonGroup..Hint
-#: UJava.dfm:2039
+#: UJava.dfm:1613
 msgid "ButtonGroup"
 msgstr ""
 
@@ -895,7 +901,7 @@ msgid "Canvas"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBCardLayout..Hint
-#: UJava.dfm:656
+#: UJava.dfm:2009
 #. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MICardLayout..Caption
 #: UJava.dfm:3625
 msgid "CardLayout"
@@ -929,7 +935,7 @@ msgid "Checkbox"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXCheckBox..Hint
-#: UJava.dfm:1713
+#: UJava.dfm:1287
 msgid "CheckBox"
 msgstr ""
 
@@ -951,12 +957,12 @@ msgid "Checkout"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..Caption
-#: UConfiguration.dfm:5629
-#. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..LCheckstyle..Caption
 #: UConfiguration.dfm:5649
+#. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..LCheckstyle..Caption
+#: UConfiguration.dfm:5669
 #. FJava..TBXDockTop..MainMenu..MITools..MICheckStyle..Caption
 #: UJava.dfm:3028
-#: UConfiguration.pas:8817
+#: UConfiguration.pas:8823
 msgid "Checkstyle"
 msgstr ""
 
@@ -968,12 +974,12 @@ msgid "Choice"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXChoiceBox..Hint
-#: UJava.dfm:1404
+#: UJava.dfm:978
 msgid "ChoiceBox"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXCircle..Hint
-#: UJava.dfm:718
+#: UJava.dfm:616
 msgid "Circle"
 msgstr ""
 
@@ -993,7 +999,7 @@ msgid "Classpath user"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..BGitClone..Caption
-#: UConfiguration.dfm:5461
+#: UConfiguration.dfm:5481
 msgid "Clone"
 msgstr ""
 
@@ -1003,7 +1009,7 @@ msgid "Codepage"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXColorPicker..Hint
-#: UJava.dfm:1464
+#: UJava.dfm:1038
 msgid "ColorPicker"
 msgstr ""
 
@@ -1032,7 +1038,7 @@ msgid "COM4"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXComboBox..Hint
-#: UJava.dfm:1759
+#: UJava.dfm:1333
 msgid "ComboBox"
 msgstr ""
 
@@ -1046,8 +1052,8 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LLejosCompiler..Caption
 #: UConfiguration.dfm:3673
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfileCompiler..Caption
-#: UConfiguration.dfm:5289
-#: UConfiguration.pas:8783
+#: UConfiguration.dfm:5309
+#: UConfiguration.pas:8789
 msgid "Compiler"
 msgstr ""
 
@@ -1057,7 +1063,7 @@ msgid "ConjoinDockHost"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXContextMenu..Hint
-#: UJava.dfm:1880
+#: UJava.dfm:1454
 msgid "ContextMenu"
 msgstr ""
 
@@ -1081,12 +1087,12 @@ msgid "Courier New"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXCubicCurve..Hint
-#: UJava.dfm:853
+#: UJava.dfm:751
 msgid "CubicCurve"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXDatePicker..Hint
-#: UJava.dfm:1479
+#: UJava.dfm:1053
 msgid "DatePicker"
 msgstr ""
 
@@ -1094,6 +1100,13 @@ msgstr ""
 #: UJava.dfm:3813
 #: UDebugger.pas:242
 msgid "Debug"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
+#: UConfiguration.dfm:4983
+#. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
+#: UConfiguration.dfm:5122
+msgid "DeepSeek"
 msgstr ""
 
 #  Seems like a path, foldername or filename
@@ -1113,7 +1126,7 @@ msgid "-Dfile.encoding"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXDirectoryChooser..Hint
-#: UJava.dfm:1539
+#: UJava.dfm:1113
 msgid "DirectoryChooser"
 msgstr ""
 
@@ -1123,7 +1136,7 @@ msgstr ""
 #: UConfiguration.dfm:808
 #. FJava..TBXDockTop..MainMenu..MIStart..MIDissasembler..Caption
 #: UJava.dfm:2843
-#: UConfiguration.pas:8786
+#: UConfiguration.pas:8792
 msgid "Disassembler"
 msgstr ""
 
@@ -1165,7 +1178,7 @@ msgid "E"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXEllipse..Hint
-#: UJava.dfm:748
+#: UJava.dfm:646
 msgid "Ellipse"
 msgstr ""
 
@@ -1176,7 +1189,7 @@ msgstr ""
 
 #. FTextDiff..StatusBar..liEncoding..Caption
 #: TextDiff/UTextDiffForm.dfm:229
-#: UJava.pas:1328
+#: UJava.pas:1329
 msgid "Encoding"
 msgstr ""
 
@@ -1230,12 +1243,12 @@ msgid "FHint"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXFileOpenChooser..Hint
-#: UJava.dfm:1509
+#: UJava.dfm:1083
 msgid "FileOpenChooser"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXFileSaveChooser..Hint
-#: UJava.dfm:1524
+#: UJava.dfm:1098
 msgid "FileSaveChooser"
 msgstr ""
 
@@ -1276,7 +1289,7 @@ msgid "float"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBFlowLayout..Hint
-#: UJava.dfm:630
+#: UJava.dfm:1983
 #. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIFlowLayout..Caption
 #: UJava.dfm:3615
 msgid "FlowLayout"
@@ -1288,8 +1301,8 @@ msgstr ""
 #: UJava.dfm:3250
 #. FStructogram..PanelLeft..ToolBarStructogram..TBFor..Hint
 #: Structogram/UStructogramform.dfm:148
-#: UJava.pas:4864
-#: UJava.pas:4912
+#: UJava.pas:4865
+#: UJava.pas:4913
 msgid "for"
 msgstr ""
 
@@ -1301,21 +1314,21 @@ msgstr ""
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabFXBase..Caption
 #: UJava.dfm:299
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..Caption
-#: UJava.dfm:1617
+#: UJava.dfm:1191
 msgid "FX Base"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabFXControls..Caption
 #: UJava.dfm:303
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..Caption
-#: UJava.dfm:1279
+#: UJava.dfm:853
 msgid "FX Controls"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabFXShapes..Caption
 #: UJava.dfm:307
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..Caption
-#: UJava.dfm:698
+#: UJava.dfm:596
 msgid "FX Shapes"
 msgstr ""
 
@@ -1327,32 +1340,39 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
 #: UConfiguration.dfm:4981
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
-#: UConfiguration.dfm:5110
+#: UConfiguration.dfm:5120
 msgid "Gemini"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..Caption
-#: UConfiguration.dfm:5358
+#: UConfiguration.dfm:5378
 #. FEditForm..PopUpEditor..MIGit..Caption
 #: UEditorForm.dfm:2420
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..Caption
 #: UJava.dfm:3081
-#: UConfiguration.pas:8815
+#: UConfiguration.pas:8821
 msgid "Git"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBGridBagLayout..Hint
-#: UJava.dfm:669
+#: UJava.dfm:2022
 #. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIGridBagLayout..Caption
 #: UJava.dfm:3630
 msgid "GridBagLayout"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..ToolBarLayout..TBGridLayout..Hint
-#: UJava.dfm:643
+#: UJava.dfm:1996
 #. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..MIGridLayout..Caption
 #: UJava.dfm:3620
 msgid "GridLayout"
+msgstr ""
+
+#. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
+#: UConfiguration.dfm:4984
+#. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
+#: UConfiguration.dfm:5123
+msgid "Grok"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitGui..Caption
@@ -1389,7 +1409,7 @@ msgid "HTML (*.html)"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXHTMLEditor..Hint
-#: UJava.dfm:1434
+#: UJava.dfm:1008
 msgid "HTMLEditor"
 msgstr ""
 
@@ -1416,7 +1436,7 @@ msgid "https://java.sun.com/javase/6/docs/index.html"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXHyperlink..Hint
-#: UJava.dfm:1419
+#: UJava.dfm:993
 msgid "Hyperlink"
 msgstr ""
 
@@ -1441,7 +1461,7 @@ msgid "im Auftrag von "
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXImageView..Hint
-#: UJava.dfm:1554
+#: UJava.dfm:1128
 msgid "ImageView"
 msgstr ""
 
@@ -1474,7 +1494,7 @@ msgstr ""
 #: UConfiguration.dfm:213
 #. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..LJavaInterpreter..Caption
 #: UConfiguration.dfm:219
-#: UConfiguration.pas:8782
+#: UConfiguration.pas:8788
 msgid "Interpreter"
 msgstr ""
 
@@ -1484,19 +1504,19 @@ msgid "jad.exe"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJalopy..Caption
-#: UConfiguration.dfm:5743
-#. FConfiguration..PMain..PPanelRight..PageList..PJalopy..LJalopy..Caption
 #: UConfiguration.dfm:5763
+#. FConfiguration..PMain..PPanelRight..PageList..PJalopy..LJalopy..Caption
+#: UConfiguration.dfm:5783
 #. FJava..TBXDockTop..MainMenu..MITools..MIJalopy..Caption
 #: UJava.dfm:3034
-#: UConfiguration.pas:8818
+#: UConfiguration.pas:8824
 msgid "Jalopy"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateJApplet..Caption
 #: UConfiguration.dfm:1771
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBJApplet..Hint
-#: UJava.dfm:2350
+#: UJava.dfm:1924
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJApplet..Caption
 #: UJava.dfm:2528
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIJApplet..Caption
@@ -1508,7 +1528,7 @@ msgstr ""
 #: UConfiguration.dfm:896
 #. FConfiguration..PMain..PPanelRight..PageList..PJar..LJar..Caption
 #: UConfiguration.dfm:923
-#: UConfiguration.pas:8787
+#: UConfiguration.pas:8793
 msgid "Jar"
 msgstr ""
 
@@ -1523,7 +1543,7 @@ msgstr ""
 #: UConfiguration.dfm:1617
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJava..Caption
 #: UJava.dfm:2458
-#: UConfiguration.pas:8781
+#: UConfiguration.pas:8787
 msgid "Java"
 msgstr ""
 
@@ -1586,14 +1606,14 @@ msgid "JavaFX"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJButton..Hint
-#: UJava.dfm:2009
+#: UJava.dfm:1583
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJButton..Caption
 #: UJava.dfm:3424
 msgid "JButton"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJCheckbox..Hint
-#: UJava.dfm:2024
+#: UJava.dfm:1598
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJCheckbox..Caption
 #: UJava.dfm:3429
 msgid "JCheckbox"
@@ -1605,21 +1625,21 @@ msgid "JCheckBoxGroup"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJColorChooser..Hint
-#: UJava.dfm:1246
+#: UJava.dfm:2342
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJColorChooser..Caption
 #: UJava.dfm:3598
 msgid "JColorChooser"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJComboBox..Hint
-#: UJava.dfm:2069
+#: UJava.dfm:1643
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJComboBox..Caption
 #: UJava.dfm:3449
 msgid "JComboBox"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJDesktopPane..Hint
-#: UJava.dfm:1186
+#: UJava.dfm:2282
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJDesktopPane..Caption
 #: UJava.dfm:3578
 msgid "JDesktopPane"
@@ -1628,7 +1648,7 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateJDialog..Caption
 #: UConfiguration.dfm:1841
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBJDialog..Hint
-#: UJava.dfm:2339
+#: UJava.dfm:1913
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJDialog..Caption
 #: UJava.dfm:2523
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIJDialog..Caption
@@ -1643,7 +1663,7 @@ msgid "je2java"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJEditorPane..Hint
-#: UJava.dfm:1141
+#: UJava.dfm:2237
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJEditorPane..Caption
 #: UJava.dfm:3563
 msgid "JEditorPane"
@@ -1660,17 +1680,17 @@ msgid "JFileChooser save"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJFileOpen..Hint
-#: UJava.dfm:1216
+#: UJava.dfm:2312
 msgid "JFileChooser|Open"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJFileSave..Hint
-#: UJava.dfm:1231
+#: UJava.dfm:2327
 msgid "JFileChooser|Save"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJFormattedTextField..Hint
-#: UJava.dfm:1126
+#: UJava.dfm:2222
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJFormattedTextField..Caption
 #: UJava.dfm:3558
 msgid "JFormattedTextField"
@@ -1679,7 +1699,7 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateJFrame..Caption
 #: UConfiguration.dfm:1813
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBJFrame..Hint
-#: UJava.dfm:2328
+#: UJava.dfm:1902
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJFrame..Caption
 #: UJava.dfm:2518
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIJFrame..Caption
@@ -1688,56 +1708,56 @@ msgid "JFrame"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TJInternalFrame..Hint
-#: UJava.dfm:1201
+#: UJava.dfm:2297
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJInternalFrame..Caption
 #: UJava.dfm:3583
 msgid "JInternalFrame"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJLabel..Hint
-#: UJava.dfm:1949
+#: UJava.dfm:1523
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJLabel..Caption
 #: UJava.dfm:3404
 msgid "JLabel"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJLayeredPane..Hint
-#: UJava.dfm:1171
+#: UJava.dfm:2267
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJLayeredPane..Caption
 #: UJava.dfm:3573
 msgid "JLayeredPane"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJList..Hint
-#: UJava.dfm:2054
+#: UJava.dfm:1628
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJList..Caption
 #: UJava.dfm:3444
 msgid "JList"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJMenu..Hint
-#: UJava.dfm:2191
+#: UJava.dfm:1765
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJMenu..Caption
 #: UJava.dfm:3489
 msgid "JMenu"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJMenuBar..Hint
-#: UJava.dfm:2176
+#: UJava.dfm:1750
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJMenuBar..Caption
 #: UJava.dfm:3484
 msgid "JMenuBar"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJNumberField..Hint
-#: UJava.dfm:1979
+#: UJava.dfm:1553
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJNumberField..Caption
 #: UJava.dfm:3414
 msgid "JNumberField"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJOptionPane..Hint
-#: UJava.dfm:1261
+#: UJava.dfm:2357
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJOptionPane..Caption
 #: UJava.dfm:3603
 msgid "JOptionPane"
@@ -1749,7 +1769,7 @@ msgid "JPanel"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJPasswordField..Hint
-#: UJava.dfm:1111
+#: UJava.dfm:2207
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJPasswordField..Caption
 #: UJava.dfm:3553
 msgid "JPasswordField"
@@ -1762,7 +1782,7 @@ msgid "JPEG and GIF|*.jpg;*.jpeg;*.gif|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|GIF "
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJPopupMenu..Hint
-#: UJava.dfm:2206
+#: UJava.dfm:1780
 msgid "JPopupMenu"
 msgstr ""
 
@@ -1772,7 +1792,7 @@ msgid "JPopUpMenu"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJProgressBar..Hint
-#: UJava.dfm:991
+#: UJava.dfm:2087
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJProgressBar..Caption
 #: UJava.dfm:3513
 msgid "JProgressBar"
@@ -1789,26 +1809,26 @@ msgid "JScrollbar"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJScrollBar..Hint
-#: UJava.dfm:2099
+#: UJava.dfm:1673
 msgid "JScrollBar"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJScrollPane..Hint
-#: UJava.dfm:2114
+#: UJava.dfm:1688
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJScrollPane..Caption
 #: UJava.dfm:3464
 msgid "JScrollPane"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TJSeparator..Hint
-#: UJava.dfm:1081
+#: UJava.dfm:2177
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJSeparator..Caption
 #: UJava.dfm:3543
 msgid "JSeparator"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJSlider..Hint
-#: UJava.dfm:976
+#: UJava.dfm:2072
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJSlider..Caption
 #: UJava.dfm:3508
 msgid "JSlider"
@@ -1820,56 +1840,56 @@ msgid "Jsp (*.jsp)"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJSpinner..Hint
-#: UJava.dfm:2084
+#: UJava.dfm:1658
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJSpinner..Caption
 #: UJava.dfm:3454
 msgid "JSpinner"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJSplitPane..Hint
-#: UJava.dfm:1006
+#: UJava.dfm:2102
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJSplitPane..Caption
 #: UJava.dfm:3518
 msgid "JSplitPane"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJTabbedPane..Hint
-#: UJava.dfm:1021
+#: UJava.dfm:2117
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJTabbedPane..Caption
 #: UJava.dfm:3523
 msgid "JTabbedPane"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJTable..Hint
-#: UJava.dfm:1036
+#: UJava.dfm:2132
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJTable..Caption
 #: UJava.dfm:3528
 msgid "JTable"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJTextArea..Hint
-#: UJava.dfm:1994
+#: UJava.dfm:1568
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJTextArea..Caption
 #: UJava.dfm:3419
 msgid "JTextArea"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJTextField..Hint
-#: UJava.dfm:1964
+#: UJava.dfm:1538
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJTextField..Caption
 #: UJava.dfm:3409
 msgid "JTextField"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJTextPane..Hint
-#: UJava.dfm:1156
+#: UJava.dfm:2252
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJTextPane..Caption
 #: UJava.dfm:3568
 msgid "JTextPane"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TJToggleButton..Hint
-#: UJava.dfm:1096
+#: UJava.dfm:2192
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJToggleButton..Caption
 #: UJava.dfm:3548
 msgid "JToggleButton"
@@ -1881,35 +1901,35 @@ msgid "JToolbar"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJToolBar..Hint
-#: UJava.dfm:1066
+#: UJava.dfm:2162
 msgid "JToolBar"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..ToolbarSwing2..TBJTree..Hint
-#: UJava.dfm:1051
+#: UJava.dfm:2147
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..MIJTree..Caption
 #: UJava.dfm:3533
 msgid "JTree"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..Caption
-#: UConfiguration.dfm:5467
+#: UConfiguration.dfm:5487
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..LJUnit..Caption
-#: UConfiguration.dfm:5473
+#: UConfiguration.dfm:5493
 #. FJava..TBXDockTop..MainMenu..MITools..MIJUnit..Caption
 #: UJava.dfm:3157
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIJunitManual..Caption
 #: UJava.dfm:3769
 #. FJUnitTests..Caption
 #: UJUnitTest.dfm:5
-#: UConfiguration.pas:8816
+#: UConfiguration.pas:8822
 msgid "JUnit"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBLabel..Hint
 #: UJava.dfm:336
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXLabel..Hint
-#: UJava.dfm:1638
+#: UJava.dfm:1212
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MILabel..Caption
 #: UJava.dfm:3306
 msgid "Label"
@@ -1932,7 +1952,7 @@ msgid "List"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXListView..Hint
-#: UJava.dfm:1744
+#: UJava.dfm:1318
 msgid "ListView"
 msgstr ""
 
@@ -1976,7 +1996,7 @@ msgid "Matte border"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXMediaView..Hint
-#: UJava.dfm:1569
+#: UJava.dfm:1143
 msgid "MediaView"
 msgstr ""
 
@@ -1985,7 +2005,7 @@ msgstr ""
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBMenu..Hint
 #: UJava.dfm:563
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXMenu..Hint
-#: UJava.dfm:1865
+#: UJava.dfm:1439
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIMenu..Caption
 #: UJava.dfm:3371
 msgid "Menu"
@@ -1994,14 +2014,14 @@ msgstr ""
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBMenuBar..Hint
 #: UJava.dfm:548
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXMenuBar..Hint
-#: UJava.dfm:1850
+#: UJava.dfm:1424
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIMenuBar..Caption
 #: UJava.dfm:3386
 msgid "MenuBar"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXMenuButton..Hint
-#: UJava.dfm:1895
+#: UJava.dfm:1469
 msgid "MenuButton"
 msgstr ""
 
@@ -2011,7 +2031,7 @@ msgstr ""
 #: UDlgMindstorms.dfm:4
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIMindstormsHelp..Caption
 #: UJava.dfm:3789
-#: UConfiguration.pas:8801
+#: UConfiguration.pas:8807
 msgid "Mindstorms"
 msgstr ""
 
@@ -2064,15 +2084,15 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PRestrictions..LRestrictions..Font.Name
 #: UConfiguration.dfm:4250
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LGitFolder..Font.Name
-#: UConfiguration.dfm:5368
+#: UConfiguration.dfm:5388
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..LJUnit..Font.Name
-#: UConfiguration.dfm:5477
+#: UConfiguration.dfm:5497
 #. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..LCheckstyle..Font.Name
-#: UConfiguration.dfm:5653
+#: UConfiguration.dfm:5673
 #. FConfiguration..PMain..PPanelRight..PageList..PJalopy..LJalopy..Font.Name
-#: UConfiguration.dfm:5767
+#: UConfiguration.dfm:5787
 #. FConfiguration..PMain..PPanelRight..PageList..PSubversion..LSVN..Font.Name
-#: UConfiguration.dfm:5875
+#: UConfiguration.dfm:5895
 #. FAbout..Font.Name
 #: UDlgAbout.dfm:13
 #. FClassEditor..TreeView..Font.Name
@@ -2087,6 +2107,10 @@ msgstr ""
 #: UObjectGenerator.dfm:90
 #. FUMLForm..Panel..PDiagramPanel..Font.Name
 #: EssModel/System/UUMLForm.dfm:41
+#. FMemo..Font.Name
+#: Setup/UMemo.dfm:12
+#. FSetup..Font.Name
+#: Setup/USetup.dfm:12
 msgid "MS Sans Serif"
 msgstr ""
 
@@ -2098,7 +2122,7 @@ msgstr ""
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBNumberField..Hint
 #: UJava.dfm:366
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXNumberField..Hint
-#: UJava.dfm:1668
+#: UJava.dfm:1242
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MINumberField..Caption
 #: UJava.dfm:3316
 msgid "NumberField"
@@ -2112,14 +2136,14 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
 #: UConfiguration.dfm:4982
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
-#: UConfiguration.dfm:5111
+#: UConfiguration.dfm:5121
 msgid "Ollama"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
 #: UConfiguration.dfm:4980
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
-#: UConfiguration.dfm:5109
+#: UConfiguration.dfm:5119
 msgid "OpenAI"
 msgstr ""
 
@@ -2144,7 +2168,7 @@ msgid "PAndroid"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXPane..Hint
-#: UJava.dfm:1804
+#: UJava.dfm:1378
 msgid "Pane"
 msgstr ""
 
@@ -2159,7 +2183,7 @@ msgid "PAsso"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXPasswordField..Hint
-#: UJava.dfm:1389
+#: UJava.dfm:963
 msgid "PasswordField"
 msgstr ""
 
@@ -2285,12 +2309,12 @@ msgid "PMindstorms"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXPolygon..Hint
-#: UJava.dfm:763
+#: UJava.dfm:661
 msgid "Polygon"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXPolyline..Hint
-#: UJava.dfm:778
+#: UJava.dfm:676
 msgid "Polyline"
 msgstr ""
 
@@ -2335,12 +2359,12 @@ msgid "ProgressBae"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXProgressBar..Hint
-#: UJava.dfm:1314
+#: UJava.dfm:888
 msgid "ProgressBar"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXProgressIndicator..Hint
-#: UJava.dfm:1329
+#: UJava.dfm:903
 msgid "ProgressIndicator"
 msgstr ""
 
@@ -2438,7 +2462,7 @@ msgid "PVisibili"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXQuadCurve..Hint
-#: UJava.dfm:838
+#: UJava.dfm:736
 msgid "QuadCurve"
 msgstr ""
 
@@ -2460,7 +2484,7 @@ msgid "RCX"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXRectangle..Hint
-#: UJava.dfm:733
+#: UJava.dfm:631
 msgid "Rectangle"
 msgstr ""
 
@@ -2487,12 +2511,12 @@ msgid "Remove"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LLocalRepository..Caption
-#: UConfiguration.dfm:5380
+#: UConfiguration.dfm:5400
 msgid "Repository local"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LRemoteRepository..Caption
-#: UConfiguration.dfm:5394
+#: UConfiguration.dfm:5414
 msgid "Repository remote"
 msgstr ""
 
@@ -2523,7 +2547,7 @@ msgstr ""
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBScrollPane..Hint
 #: UJava.dfm:486
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXScrollPane..Hint
-#: UJava.dfm:1789
+#: UJava.dfm:1363
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIScrollPane..Caption
 #: UJava.dfm:3361
 msgid "ScrollPane"
@@ -2590,6 +2614,8 @@ msgstr ""
 #: UJava.dfm:14
 #. FJUnitTests..Font.Name
 #: UJUnitTest.dfm:15
+#. LLMChatForm..Font.Name
+#: ULLMChatForm.dfm:12
 #. SuggestWindow..Font.Name
 #: ULLMSuggestForm.dfm:13
 #. SuggestWindow..SpTBXDock..SpTBXToolbar..Font.Name
@@ -2646,7 +2672,7 @@ msgid "Segoe UI"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXSeparator..Hint
-#: UJava.dfm:1359
+#: UJava.dfm:933
 msgid "Separator"
 msgstr ""
 
@@ -2656,7 +2682,7 @@ msgid "short"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXSlider..Hint
-#: UJava.dfm:1299
+#: UJava.dfm:873
 msgid "Slider"
 msgstr ""
 
@@ -2667,12 +2693,12 @@ msgid "sourceforge.net/forum/forum.php?forum_id=241877"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXSpinner..Hint
-#: UJava.dfm:1774
+#: UJava.dfm:1348
 msgid "Spinner"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXSplitMenuButton..Hint
-#: UJava.dfm:1910
+#: UJava.dfm:1484
 msgid "SplitMenuButton"
 msgstr ""
 
@@ -2708,15 +2734,15 @@ msgid "String"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PSubversion..Caption
-#: UConfiguration.dfm:5858
+#: UConfiguration.dfm:5878
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..Caption
 #: UJava.dfm:3046
-#: UConfiguration.pas:8819
+#: UConfiguration.pas:8825
 msgid "Subversion"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXSVGPath..Hint
-#: UJava.dfm:868
+#: UJava.dfm:766
 msgid "SVGPath"
 msgstr ""
 
@@ -2732,9 +2758,9 @@ msgstr ""
 
 #  Doesn't look like text
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabSwing1..Caption
-#: UJava.dfm:283
+#: UJava.dfm:282
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..Caption
-#: UJava.dfm:1928
+#: UJava.dfm:1502
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..Caption
 #: UJava.dfm:3401
 msgid "Swing1"
@@ -2742,9 +2768,9 @@ msgstr ""
 
 #  Doesn't look like text
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabSwing2..Caption
-#: UJava.dfm:287
+#: UJava.dfm:286
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing2..Caption
-#: UJava.dfm:955
+#: UJava.dfm:2051
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing2..Caption
 #: UJava.dfm:3505
 msgid "Swing2"
@@ -2768,7 +2794,7 @@ msgid "TabDockHost"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXTableView..Hint
-#: UJava.dfm:1584
+#: UJava.dfm:1158
 msgid "TableView"
 msgstr ""
 
@@ -2777,6 +2803,12 @@ msgstr ""
 #: UDlgStringsEditor.dfm:11
 #. FJe2Java..Font.Name
 #: UJe2Java.dfm:11
+#. FUpdater..Font.Name
+#: Setup/UUpdater.dfm:12
+#. Fwait..Font.Name
+#: Setup/UWait.dfm:11
+#. Fwait..Label1..Font.Name
+#: Setup/UWait.dfm:24
 #. DlgMessage..LMessage..Font.Name
 #: Util/UDlgMessage.dfm:141
 msgid "Tahoma"
@@ -2798,7 +2830,7 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PUML..RGVisibilityDisplay....Items.Strings
 #: UConfiguration.dfm:4695
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXText..Hint
-#: UJava.dfm:823
+#: UJava.dfm:721
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewText..Caption
 #: UJava.dfm:2466
 #. AFrameDiagram..PopMenuClass..MIClassPopupVisibility..MIClassPopupVisibilityText..Caption
@@ -2820,7 +2852,7 @@ msgstr ""
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBTextArea..Hint
 #: UJava.dfm:381
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXTextArea..Hint
-#: UJava.dfm:1683
+#: UJava.dfm:1257
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MITextArea..Caption
 #: UJava.dfm:3321
 msgid "TextArea"
@@ -2829,14 +2861,14 @@ msgstr ""
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBTextField..Hint
 #: UJava.dfm:351
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXTextField..Hint
-#: UJava.dfm:1653
+#: UJava.dfm:1227
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MITextField..Caption
 #: UJava.dfm:3311
 msgid "TextField"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSUtilities..ToolBarUtilities..TBTimer..Hint
-#: UJava.dfm:937
+#: UJava.dfm:835
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MITimer..Caption
 #: UJava.dfm:3391
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJTimer..Caption
@@ -2857,19 +2889,19 @@ msgid "Titled border"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXToggleButton..Hint
-#: UJava.dfm:1374
+#: UJava.dfm:948
 msgid "ToggleButton"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXButtonGroup..Caption
-#: UJava.dfm:1729
+#: UJava.dfm:1303
 msgid "ToggleGroup"
 msgstr ""
 
 #. FBrowser..PBrowser..ToolBar..Caption
 #: UBrowserForm.dfm:111
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXToolbar..Hint
-#: UJava.dfm:1344
+#: UJava.dfm:918
 msgid "ToolBar"
 msgstr ""
 
@@ -2886,7 +2918,7 @@ msgid "ToolbarSwing2"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXTreeView..Hint
-#: UJava.dfm:1599
+#: UJava.dfm:1173
 msgid "TreeView"
 msgstr ""
 
@@ -2898,11 +2930,11 @@ msgstr ""
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBATurtle..Hint
 #: UJava.dfm:533
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSUtilities..ToolBarUtilities..TBTurtle..Hint
-#: UJava.dfm:922
+#: UJava.dfm:820
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXTurtle..Hint
-#: UJava.dfm:1835
+#: UJava.dfm:1409
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJTurtle..Hint
-#: UJava.dfm:2161
+#: UJava.dfm:1735
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MITurtle..Caption
 #: UJava.dfm:3381
 #. FJava..TBXDockTop..MainMenu..MIComponents..MISwing1..MIJTurtle..Caption
@@ -2911,7 +2943,7 @@ msgid "Turtle"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSUtilities..ToolBarUtilities..TBPlayground..Hint
-#: UJava.dfm:907
+#: UJava.dfm:805
 msgid "Turtle playground"
 msgstr ""
 
@@ -2924,7 +2956,7 @@ msgstr ""
 #: UConfiguration.dfm:4450
 #. FUMLForm..Caption
 #: EssModel/System/UUMLForm.dfm:5
-#: UConfiguration.pas:8808
+#: UConfiguration.pas:8814
 msgid "UML"
 msgstr ""
 
@@ -2961,12 +2993,12 @@ msgid "USB"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LUserEMail..Caption
-#: UConfiguration.dfm:5401
+#: UConfiguration.dfm:5421
 msgid "user.email"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LUserName..Caption
-#: UConfiguration.dfm:5387
+#: UConfiguration.dfm:5407
 msgid "user.name"
 msgstr ""
 
@@ -2995,7 +3027,7 @@ msgstr ""
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabUtilities..Caption
 #: UJava.dfm:295
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSUtilities..Caption
-#: UJava.dfm:886
+#: UJava.dfm:784
 msgid "Utilities"
 msgstr ""
 
@@ -3018,7 +3050,7 @@ msgid "W"
 msgstr ""
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXWebView..Hint
-#: UJava.dfm:1449
+#: UJava.dfm:1023
 msgid "WebView"
 msgstr ""
 

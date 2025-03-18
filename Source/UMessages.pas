@@ -1776,8 +1776,8 @@ begin
 end;
 
 procedure TFMessages.FormPaint(Sender: TObject);
-var
-  Msg: TWMMove;
+//var
+//  Msg: TWMMove;
 begin
   if FUndocking then
   begin

@@ -426,6 +426,7 @@ uses
   Math,
   Consts,
   Menus,
+  System.Types,
   Winapi.Wincodec,
   SynEditKeyConst,
   SynEditMiscProcs,
