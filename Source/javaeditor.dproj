@@ -8,7 +8,7 @@
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
         <ProjectVersion>20.1</ProjectVersion>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">javaeditor</ProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -171,6 +171,7 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <DCC_ImportedDataReferences>false</DCC_ImportedDataReferences>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
+        <DCC_UnitSearchPath>D:\Sicherung\DelphiPipes\src;D:\GitProjekte\SpTBXLib\Source;D:\GitProjekte\jcl\jcl\source\include;D:\GitProjekte\jvcl\jvcl\run;D:\GitProjekte\jvcl\jvcl\common;D:\GitProjekte\jcl\jcl\source\common;D:\GitProjekte\jcl\jcl\source\windows;D:\GitProjekte\SVGIconImageList\Source;D:\GitProjekte\SVGIconImageList\Image32\source;D:\GitProjekte\MustangPeak\VirtualShellTools\Source;D:\GitProjekte\MustangPeak\CommonLib\Source;D:\GitProjekte\jvcl\jvcl\resources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <DCC_ExeOutput>.\$(Config)\$(Platform)</DCC_ExeOutput>
@@ -572,14 +573,21 @@
         <DCCReference Include="EssModel\Components\UConnection.pas"/>
         <DCCReference Include="SynEdit\SynDWrite.pas"/>
         <DCCReference Include="ULLMSupport.pas"/>
-        <DCCReference Include="ULLMChatForm.pas">
-            <Form>LLMChatForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="ULLMSuggestForm.pas">
             <Form>SuggestWindow</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="ULLMChatForm.pas">
+            <Form>LLMChatForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\delphi-markdown\source\MarkdownCommonMark.pas"/>
+        <DCCReference Include="..\..\delphi-markdown\source\MarkdownDaringFireball.pas"/>
+        <DCCReference Include="..\..\delphi-markdown\source\MarkdownMathCode.pas"/>
+        <DCCReference Include="..\..\delphi-markdown\source\MarkdownProcessor.pas"/>
+        <DCCReference Include="..\..\delphi-markdown\source\MarkdownTables.pas"/>
+        <DCCReference Include="..\..\delphi-markdown\source\MarkdownTxtMark.pas"/>
+        <DCCReference Include="..\..\delphi-markdown\source\MarkdownUtils.pas"/>
         <None Include="version.txt">
             <ContainerId>File</ContainerId>
         </None>

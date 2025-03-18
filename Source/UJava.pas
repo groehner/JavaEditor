@@ -916,6 +916,7 @@ type
     procedure ChangeLanguage(LangCode: string);
     procedure SetMenuKeyCaps;
     procedure SetDockTopPanel;
+    procedure ShowAWTSwingOrFX(FrameType: integer);
     property ActiveTool: integer read FActiveTool write setActiveTool;
   end;
 
@@ -6525,6 +6526,7 @@ begin
   FMessages.ChangeStyle;
   FGUIDesigner.ChangeStyle;
   FTooltip.ChangeStyle;
+  FLLMChatForm.ChangeStyle;
   if assigned(FObjectInspector) then
     FObjectInspector.ChangeStyle;
   if assigned(FJUnitTests) then
@@ -6777,6 +6779,27 @@ begin
   MenuKeyCaps[mkcShift]:= _('Shift+');
   MenuKeyCaps[mkcCtrl]:= _('Ctrl+');
   MenuKeyCaps[mkcAlt]:= _('Alt+');
+end;
+
+procedure TFJava.ShowAWTSwingOrFX(FrameType: integer);
+  var i, api: integer; TC: TSpTBXTabControl;
+begin
+  TC:= FJava.TabsControl;
+  api:= TC.ActiveTabIndex;
+  for i:= 1 to maxTab do  // 0 is tab Program
+    if FConfiguration.vistabs[i] then
+      case i of
+        1:       TC.Items[i].Visible:= (FrameType in [0, 1, 2, 3, 4]);  // Frame, Dialog, Applet
+        2, 3:    TC.Items[i].Visible:= (FrameType in [0, 1, 5, 6, 7]);  // JFrame, JDialog, JApplet
+        4, 5:    TC.Items[i].Visible:= (FrameType < 8);                 // Layout, Utilities
+        6, 7, 8: TC.Items[i].Visible:= (FrameType in [0, 1, 8]);        // FX Base, FX Controls, FX Shapes
+      end;
+  case FrameType of
+    2..4: TC.ActiveTabIndex:= 1;
+    5..7: if (api < 2) or (api > 3) then TC.ActiveTabIndex:= 2;
+    8:    if api < 6 then TC.ActiveTabIndex:= 6;
+    else  TC.ActiveTabIndex:= 0;
+  end;
 end;
 
 {--- Debugging ----------------------------------------------------------------}

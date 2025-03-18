@@ -267,12 +267,11 @@ object FJava: TFJava
         Width = 595
         Height = 55
         Color = clBtnFace
-        ActiveTabIndex = 0
+        ActiveTabIndex = 4
         TabAutofitMaxSize = 80
         HiddenItems = <>
         object TabProgram: TSpTBXTabItem
           Caption = 'Program'
-          Checked = True
           CustomWidth = 65
         end
         object TabAWT: TSpTBXTabItem
@@ -289,6 +288,7 @@ object FJava: TFJava
         end
         object TabLayout: TSpTBXTabItem
           Caption = 'Layout'
+          Checked = True
           CustomWidth = 60
         end
         object TabUtilities: TSpTBXTabItem
@@ -585,108 +585,6 @@ object FJava: TFJava
               OnClick = TBSwingClick
               OnMouseDown = ToolbuttonMouseDown
               OnStartDrag = ToolbuttonStartDrag
-            end
-          end
-        end
-        object TSLayout: TSpTBXTabSheet
-          Left = 0
-          Top = 25
-          Width = 595
-          Height = 30
-          Caption = 'Layout'
-          ImageIndex = -1
-          TabItem = 'TabLayout'
-          object ToolBarLayout: TToolBar
-            Left = 2
-            Top = 0
-            Width = 589
-            Height = 26
-            Align = alClient
-            AutoSize = True
-            ButtonHeight = 27
-            ButtonWidth = 26
-            Customizable = True
-            EdgeInner = esNone
-            EdgeOuter = esNone
-            Images = vilLayoutLight
-            TabOrder = 0
-            object TBBorderLayout: TToolButton
-              Left = 0
-              Top = 0
-              Hint = 'BorderLayout'
-              Down = True
-              Grouped = True
-              ImageIndex = 0
-              ImageName = 'BorderLayout'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBLayoutClick
-            end
-            object TBFlowLayout: TToolButton
-              Tag = 1
-              Left = 26
-              Top = 0
-              Hint = 'FlowLayout'
-              Grouped = True
-              ImageIndex = 1
-              ImageName = 'FlowLayout'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBLayoutClick
-            end
-            object TBGridLayout: TToolButton
-              Tag = 2
-              Left = 52
-              Top = 0
-              Hint = 'GridLayout'
-              Grouped = True
-              ImageIndex = 4
-              ImageName = 'GridLayout'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBLayoutClick
-            end
-            object TBCardLayout: TToolButton
-              Tag = 3
-              Left = 78
-              Top = 0
-              Hint = 'CardLayout'
-              Grouped = True
-              ImageIndex = 2
-              ImageName = 'CardLayout'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBLayoutClick
-            end
-            object TBGridBagLayout: TToolButton
-              Tag = 4
-              Left = 104
-              Top = 0
-              Hint = 'GridBagLayout'
-              Grouped = True
-              ImageIndex = 3
-              ImageName = 'GridBagLayout'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBLayoutClick
-            end
-            object TBAbsoluteLayout: TToolButton
-              Tag = 5
-              Left = 130
-              Top = 0
-              Hint = 'AbsoluteLayout'
-              Grouped = True
-              ImageIndex = 5
-              ImageName = 'AbsoluteLayout'
-              ParentShowHint = False
-              ShowHint = True
-              Style = tbsCheck
-              OnClick = TBLayoutClick
             end
           end
         end
@@ -2364,6 +2262,108 @@ object FJava: TFJava
               ParentShowHint = False
               ShowHint = True
               OnClick = SBGUIFrameClick
+            end
+          end
+        end
+        object TSLayout: TSpTBXTabSheet
+          Left = 0
+          Top = 25
+          Width = 595
+          Height = 30
+          Caption = 'Layout'
+          ImageIndex = -1
+          TabItem = 'TabLayout'
+          object ToolBarLayout: TToolBar
+            Left = 2
+            Top = 0
+            Width = 589
+            Height = 26
+            Align = alClient
+            AutoSize = True
+            ButtonHeight = 27
+            ButtonWidth = 26
+            Customizable = True
+            EdgeInner = esNone
+            EdgeOuter = esNone
+            Images = vilLayoutLight
+            TabOrder = 0
+            object TBBorderLayout: TToolButton
+              Left = 0
+              Top = 0
+              Hint = 'BorderLayout'
+              Down = True
+              Grouped = True
+              ImageIndex = 0
+              ImageName = 'BorderLayout'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBLayoutClick
+            end
+            object TBFlowLayout: TToolButton
+              Tag = 1
+              Left = 26
+              Top = 0
+              Hint = 'FlowLayout'
+              Grouped = True
+              ImageIndex = 1
+              ImageName = 'FlowLayout'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBLayoutClick
+            end
+            object TBGridLayout: TToolButton
+              Tag = 2
+              Left = 52
+              Top = 0
+              Hint = 'GridLayout'
+              Grouped = True
+              ImageIndex = 4
+              ImageName = 'GridLayout'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBLayoutClick
+            end
+            object TBCardLayout: TToolButton
+              Tag = 3
+              Left = 78
+              Top = 0
+              Hint = 'CardLayout'
+              Grouped = True
+              ImageIndex = 2
+              ImageName = 'CardLayout'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBLayoutClick
+            end
+            object TBGridBagLayout: TToolButton
+              Tag = 4
+              Left = 104
+              Top = 0
+              Hint = 'GridBagLayout'
+              Grouped = True
+              ImageIndex = 3
+              ImageName = 'GridBagLayout'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBLayoutClick
+            end
+            object TBAbsoluteLayout: TToolButton
+              Tag = 5
+              Left = 130
+              Top = 0
+              Hint = 'AbsoluteLayout'
+              Grouped = True
+              ImageIndex = 5
+              ImageName = 'AbsoluteLayout'
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsCheck
+              OnClick = TBLayoutClick
             end
           end
         end

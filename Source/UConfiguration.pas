@@ -673,6 +673,8 @@ type
     LChatTemperature: TLabel;
     LLLMTemperature: TLabel;
     ELLMTemperature: TEdit;
+    BLLMChatDefault: TButton;
+    BLLMAssistantDefault: TButton;
     {$WARNINGS ON}
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -804,6 +806,8 @@ type
     procedure CBProviderSelect(Sender: TObject);
     procedure CBChatProviderDropDown(Sender: TObject);
     procedure CBChatProviderSelect(Sender: TObject);
+    procedure BLLMChatDefaultClick(Sender: TObject);
+    procedure BLLMAssistantDefaultClick(Sender: TObject);
   private
     MyRegistry: TRegistry;
     FPreview: TVclStylesPreview;
@@ -848,10 +852,12 @@ type
     procedure ReadProviders(Name: string; var Providers: TLLMProviders);
     procedure WriteProviders(Name: string; Providers: TLLMProviders);
     procedure CopyProviders(From: TLLMProviders; var Toward: TLLMProviders);
-    procedure LLMAssistantModelToView;
+    procedure LLMAssistantModelToView(Settings: TLLMSettings);
+    procedure LLMChatModelToView(Settings: TLLMSettings);
     procedure LLMAssistantViewToModel;
-    procedure LLMChatModelToView;
     procedure LLMChatViewToModel;
+    function LLMAssistantSettings: TLLMSettings;
+    function LLMChatSettings: TLLMSettings;
   public
     ODSelect: TOpenDialog;
     LNGTVItems: TStringList;
@@ -4105,11 +4111,11 @@ begin
     // tab LLM Assistant
     CopyProviders(LLMAssistant.Providers, TempProviders);
     CBProvider.ItemIndex:= Integer(TempProviders.Provider);
-    LLMAssistantModelToView;
+    LLMAssistantModelToView(LLMAssistantSettings);
 
     CopyProviders(FLLMChatForm.LLMChat.Providers, TempChatProviders);
     CBChatProvider.ItemIndex:= Integer(TempChatProviders.Provider);
-    LLMChatModelToView;
+    LLMChatModelToView(LLMChatSettings);
 
     // tab SVN
     ShortenPath(ESVNFolder, SVNFolder);
@@ -5906,7 +5912,7 @@ end;
 
 procedure TFConfiguration.CBProviderSelect(Sender: TObject);
 begin
-  LLMAssistantModelToView;
+  LLMAssistantModelToView(LLMAssistantSettings);
 end;
 
 procedure TFConfiguration.CBChatProviderDropDown(Sender: TObject);
@@ -5916,7 +5922,7 @@ end;
 
 procedure TFConfiguration.CBChatProviderSelect(Sender: TObject);
 begin
-  LLMChatModelToView;
+  LLMChatModelToView(LLMChatSettings);
 end;
 
 procedure TFConfiguration.CBColorBoxChange(Sender: TObject);
@@ -8895,6 +8901,7 @@ begin
   ReadProvider('Gemini', Providers.Gemini);
   ReadProvider('Ollama', Providers.Ollama);
   ReadProvider('DeepSeek', Providers.DeepSeek);
+  ReadProvider('Grok', Providers.Grok);
 end;
 
 procedure TFConfiguration.WriteProviders(Name: string; Providers: TLLMProviders);
@@ -8917,8 +8924,8 @@ begin
   WriteProvider('Gemini', Providers.Gemini);
   WriteProvider('Ollama', Providers.Ollama);
   WriteProvider('DeepSeek', Providers.DeepSeek);
+  WriteProvider('Grok', Providers.Grok);
 end;
-
 
 procedure TFConfiguration.CopyProviders(From: TLLMProviders; var Toward: TLLMProviders);
 
@@ -8939,17 +8946,11 @@ begin
   CopyProvider(From.Gemini, Toward.Gemini);
   CopyProvider(From.Ollama, Toward.Ollama);
   CopyProvider(From.DeepSeek, Toward.DeepSeek);
+  CopyProvider(From.Grok, Toward.Grok);
 end;
 
-procedure TFConfiguration.LLMAssistantModelToView;
-  var Settings: TLLMSettings;
+procedure TFConfiguration.LLMAssistantModelToView(Settings: TLLMSettings);
 begin
-  case CBProvider.ItemIndex of
-    0: Settings := TempProviders.OpenAI;
-    1: Settings := TempProviders.Gemini;
-    2: Settings := TempProviders.Ollama;
-    3: Settings := TempProviders.DeepSeek;
-  end;
   EEndPoint.text:= Settings.EndPoint;
   EModel.text:= Settings.Model;
   EAPIKey.text:= Settings.ApiKey;
@@ -8979,18 +8980,12 @@ begin
     1: TempProviders.Gemini:= Settings;
     2: TempProviders.Ollama:= Settings;
     3: TempProviders.DeepSeek:= Settings;
+    4: TempProviders.Grok:= Settings;
   end;
 end;
 
-procedure TFConfiguration.LLMChatModelToView;
-  var Settings: TLLMSettings;
+procedure TFConfiguration.LLMChatModelToView(Settings: TLLMSettings);
 begin
-  case CBChatProvider.ItemIndex of
-    0: Settings := TempChatProviders.OpenAI;
-    1: Settings := TempChatProviders.Gemini;
-    2: Settings := TempChatProviders.Ollama;
-    3: Settings := TempChatProviders.DeepSeek;
-  end;
   EChatEndPoint.text:= Settings.EndPoint;
   EChatModel.text:= Settings.Model;
   EChatAPIKey.text:= Settings.ApiKey;
@@ -8998,6 +8993,42 @@ begin
   EChatMaxTokens.text:= Settings.MaxTokens.toString;
   EChatTimeout.text:= (Settings.TimeOut div 1000).toString;
   EChatTemperature.text:= Settings.Temperature.toString;
+end;
+
+function TFConfiguration.LLMChatSettings: TLLMSettings;
+begin
+  case CBChatProvider.ItemIndex of
+    0: Result := TempChatProviders.OpenAI;
+    1: Result := TempChatProviders.Gemini;
+    2: Result := TempChatProviders.Ollama;
+    3: Result := TempChatProviders.DeepSeek;
+    4: Result := TempChatProviders.Grok;
+  end;
+end;
+
+function TFConfiguration.LLMAssistantSettings: TLLMSettings;
+begin
+  case CBProvider.ItemIndex of
+    0: Result := TempProviders.OpenAI;
+    1: Result := TempProviders.Gemini;
+    2: Result := TempProviders.Ollama;
+    3: Result := TempProviders.DeepSeek;
+    4: Result := TempProviders.Grok;
+  end;
+end;
+
+procedure TFConfiguration.BLLMAssistantDefaultClick(Sender: TObject);
+begin
+  var Settings:= LLMAssistant.DefaultAssistantSettings(CBProvider.ItemIndex);
+  Settings.ApiKey:= LLMAssistantSettings.ApiKey;
+  LLMAssistantModelToView(Settings);
+end;
+
+procedure TFConfiguration.BLLMChatDefaultClick(Sender: TObject);
+begin
+  var Settings:= FLLMChatForm.LLMChat.DefaultChatSettings(CBChatProvider.ItemIndex);
+  Settings.ApiKey:= LLMChatSettings.ApiKey;
+  LLMChatModelToView(Settings);
 end;
 
 procedure TFConfiguration.LLMChatViewToModel;
@@ -9020,6 +9051,7 @@ begin
     1: TempChatProviders.Gemini:= Settings;
     2: TempChatProviders.Ollama:= Settings;
     3: TempChatProviders.DeepSeek:= Settings;
+    4: TempChatProviders.Grok:= Settings;
   end;
 end;
 

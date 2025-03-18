@@ -10,5 +10,7 @@ object FForm: TFForm
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poOwnerFormCenter
+  OnActivate = FormActivate
+  OnDeactivate = FormDeactivate
   TextHeight = 15
 end

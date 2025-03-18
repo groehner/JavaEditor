@@ -1239,6 +1239,7 @@ begin
       var aInteger:= TInteger(TVFileStructure.Items[i].Data);
       FreeAndNil(aInteger);
     end;
+    FJava.ShowAWTSwingOrFX(0);
   finally
     inherited;
     if FJava.TDIFormsList.Count = 0 then
@@ -1449,7 +1450,6 @@ begin
 end;
 
 procedure TFEditForm.Enter(Sender: TObject);
-  var i, api: integer; TC: TSpTBXTabControl;
 begin
   if LockEnter then exit;
   FJava.scpSetEditForm(Self);
@@ -1461,22 +1461,7 @@ begin
   if assigned(TVFileStructure) and (FFileStructure.myForm <> self) and
     assigned(TVFileStructure.Items) then
     FFileStructure.init(TVFileStructure.Items, Self);
-  TC:= FJava.TabsControl;
-  api:= TC.ActiveTabIndex;
-  for i:= 1 to maxTab do  // 0 is tab Program
-    if FConfiguration.vistabs[i] then
-      case i of
-        1:       TC.Items[i].Visible:= (FrameType in [0, 1, 2, 3, 4]);  // Frame, Dialog, Applet
-        2, 3:    TC.Items[i].Visible:= (FrameType in [0, 1, 5, 6, 7]);  // JFrame, JDialog, JApplet
-        4, 5:    TC.Items[i].Visible:= (FrameType < 8);                 // Layout, Utilities
-        6, 7, 8: TC.Items[i].Visible:= (FrameType in [0, 1, 8]);        // FX Base, FX Controls, FX Shapes
-      end;
-  case FrameType of
-    2..4: TC.ActiveTabIndex:= 1;
-    5..7: if (api < 2) or (api > 3) then TC.ActiveTabIndex:= 2;
-    8:    if api < 6 then TC.ActiveTabIndex:= 6;
-    else  TC.ActiveTabIndex:= 0;
-  end;
+  FJava.ShowAwtSwingOrFX(Frametype);
 end;
 
 procedure TFEditForm.Statusline(i: Integer; const s: string);

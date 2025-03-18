@@ -43,6 +43,8 @@ type
     procedure FormMouseActivate(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y, HitTest: Integer;
       var MouseActivate: TMouseActivate);
+    procedure FormActivate(Sender: TObject);
+    procedure FormDeactivate(Sender: TObject);
     {$ENDIF}
   private
     FModified: boolean;
@@ -65,6 +67,7 @@ type
     AlreadySavedAs: boolean;
     FormTag: integer;
     LockEnter: boolean;
+    HasFocus : Boolean;
     constructor Create(AOwner: TComponent); override;
     procedure SetOptions; virtual;
     function getState: string; virtual;
@@ -132,6 +135,11 @@ begin
   Position:= poScreenCenter;
 end;
 
+procedure TFForm.FormActivate(Sender: TObject);
+begin
+  HasFocus := True;
+end;
+
 procedure TFForm.FormClose(Sender: TObject; var aAction: TCloseAction);
 begin
   try
@@ -145,6 +153,11 @@ begin
       else FJava.ActiveTDIChild:= nil;
     aAction:= caFree;
   end;
+end;
+
+procedure TFForm.FormDeactivate(Sender: TObject);
+begin
+  HasFocus := False;
 end;
 
 procedure TFForm.FormMouseActivate(Sender: TObject; Button: TMouseButton;

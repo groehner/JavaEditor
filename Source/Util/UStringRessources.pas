@@ -113,6 +113,10 @@ Const
   LNGNone= 'none';
   LNGFileAlreadyExists= '%s already exists. Overwrite?';
 
+  SWebView2Error = 'The WebView2 control creation failed.' + SLineBreak +  'Please install the WebView2 runtime.';
+  SWebNavigationError = 'Error in loading html in the browser';
+  SEdCmdCopy = 'Copy';
+
 
 {
 

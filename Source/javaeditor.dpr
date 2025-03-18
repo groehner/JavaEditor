@@ -274,8 +274,15 @@ uses
   UConnection in 'EssModel\Components\UConnection.pas',
   SynDWrite in 'SynEdit\SynDWrite.pas',
   ULLMSupport in 'ULLMSupport.pas',
+  ULLMSuggestForm in 'ULLMSuggestForm.pas' {SuggestWindow},
   ULLMChatForm in 'ULLMChatForm.pas' {LLMChatForm},
-  ULLMSuggestForm in 'ULLMSuggestForm.pas' {SuggestWindow};
+  MarkdownCommonMark in '..\..\delphi-markdown\source\MarkdownCommonMark.pas',
+  MarkdownDaringFireball in '..\..\delphi-markdown\source\MarkdownDaringFireball.pas',
+  MarkdownMathCode in '..\..\delphi-markdown\source\MarkdownMathCode.pas',
+  MarkdownProcessor in '..\..\delphi-markdown\source\MarkdownProcessor.pas',
+  MarkdownTables in '..\..\delphi-markdown\source\MarkdownTables.pas',
+  MarkdownTxtMark in '..\..\delphi-markdown\source\MarkdownTxtMark.pas',
+  MarkdownUtils in '..\..\delphi-markdown\source\MarkdownUtils.pas';
 
 {$R *.RES}
 

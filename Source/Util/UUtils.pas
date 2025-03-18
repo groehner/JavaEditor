@@ -258,11 +258,21 @@ function StringTimesN(s: string; n: integer): string;
 function GetUsersWindowsLanguage: string;
 function Obfuscate(const s: string): string;
 function StringZuSingle(S: string): Single;
+{ Styled MessageDlg (do not use TaskDialog) }
+function StyledMessageDlg(const Msg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer; overload;
+function StyledMessageDlg(const Msg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): Integer; overload;
+function HTMLEncode(const Str: string): string;
+function ColorToHTML(Color: TColor): string;
+function IsColorDark(AColor : TColor) : Boolean;
+function LightenColor(Color:TColor; Percentage:Integer):TColor;
+function DarkenColor(Color:TColor; Percentage:Integer):TColor;
 
 implementation
 
 uses Registry, Messages, Dialogs, URLMon, WinInet, Printers, Math, StrUtils,
-     Character, TlHelp32, Winapi.SHFolder;
+     Character, TlHelp32, Winapi.SHFolder, Winapi.ShLwApi;
 
 function isAscii(const s: string): boolean;
 begin
@@ -2258,6 +2268,76 @@ begin
     on E: EConvertError do
       Result := 0.0; // Fallback-Wert, falls ungültige Eingabe
   end;
+end;
+
+function StyledMessageDlg(const Msg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+begin
+  UseLatestCommonDialogs := False;
+  Result := Dialogs.MessageDlg(Msg, DlgType, Buttons, HelpCtx);
+  UseLatestCommonDialogs := True;
+end;
+
+function StyledMessageDlg(const Msg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): Integer;
+begin
+  UseLatestCommonDialogs := False;
+  Result := Dialogs.MessageDlg(Msg, DlgType, Buttons, HelpCtx, DefaultButton);
+  UseLatestCommonDialogs := True;
+end;
+
+function HTMLEncode(const Str: string): string;
+var
+  Chr: Char;
+  SB: TStringBuilder;
+begin
+  if Str = '' then Exit('');
+
+  SB := TStringBuilder.Create(Length(Str) * 2); // Initial capacity estimate
+  try
+    for Chr in Str do
+    begin
+      case Chr of
+        '&': SB.Append('&amp;');
+        '"': SB.Append('&quot;');
+        '<': SB.Append('&lt;');
+        '>': SB.Append('&gt;');
+        else SB.Append(Chr);
+      end;
+    end;
+    Result := SB.ToString;
+  finally
+    SB.Free;
+  end;
+end;
+
+function ColorToHTML(Color: TColor): string;
+var
+  R: TColorRef;
+begin
+  R := ColorToRGB(Color);
+  Result := Format('#%.2x%.2x%.2x', [GetRValue(R), GetGValue(R), GetBValue(R)]);
+end;
+
+function IsColorDark(AColor : TColor) : Boolean;
+var
+  ACol: Longint;
+begin
+  ACol := ColorToRGB(AColor) and $00FFFFFF;
+  Result := ((2.99 * GetRValue(ACol) + 5.87 * GetGValue(ACol) +
+                 1.14 * GetBValue(ACol)) < $400);
+end;
+
+function LightenColor(Color:TColor; Percentage:Integer):TColor;
+begin
+   Result := Winapi.ShLwApi.ColorAdjustLuma(ColorToRGB(Color),
+     Percentage * 10, True);
+end;
+
+function DarkenColor(Color:TColor; Percentage:Integer):TColor;
+begin
+   Result := Winapi.ShLwApi.ColorAdjustLuma(ColorToRGB(Color),
+      -Percentage * 10, True);
 end;
 
 { TMatchHelper }

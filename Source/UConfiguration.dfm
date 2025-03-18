@@ -202,7 +202,7 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 629
         Height = 424
-        ActivePage = PLLMChat
+        ActivePage = PLLMAssistant
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
@@ -4980,7 +4980,8 @@ object FConfiguration: TFConfiguration
               'OpenAI'
               'Gemini'
               'Ollama'
-              'DeepSeek')
+              'DeepSeek'
+              'Grok')
           end
           object EEndPoint: TEdit
             Left = 160
@@ -5035,6 +5036,15 @@ object FConfiguration: TFConfiguration
             Height = 23
             TabOrder = 7
             Text = '1.0'
+          end
+          object BLLMAssistantDefault: TButton
+            Left = 160
+            Top = 280
+            Width = 75
+            Height = 25
+            Caption = 'Default'
+            TabOrder = 8
+            OnClick = BLLMAssistantDefaultClick
           end
         end
         object PLLMChat: TTabSheet
@@ -5109,7 +5119,8 @@ object FConfiguration: TFConfiguration
               'OpenAI'
               'Gemini'
               'Ollama'
-              'DeepSeek')
+              'DeepSeek'
+              'Grok')
           end
           object EChatEndPoint: TEdit
             Left = 160
@@ -5164,6 +5175,15 @@ object FConfiguration: TFConfiguration
             Height = 23
             TabOrder = 7
             Text = '1.0'
+          end
+          object BLLMChatDefault: TButton
+            Left = 160
+            Top = 280
+            Width = 75
+            Height = 25
+            Caption = 'Default'
+            TabOrder = 8
+            OnClick = BLLMChatDefaultClick
           end
         end
         object PVisibility: TTabSheet

@@ -282,13 +282,10 @@ begin
 end;
 
 procedure TFGUIForm.Enter(Sender: TObject);
-  var i, ap: integer; TC: TSpTBXTabControl; Form: TFForm;
 begin
   FJava.DisableUpdateMenuItems;
-  TC:= FJava.TabsControl;
-  ap:= TC.ActiveTabIndex;
   if assigned(Partner) then begin
-    Form:= FJava.getTDIWindow(Partner.Pathname);
+    var Form:= FJava.getTDIWindow(Partner.Pathname);
     if assigned(Form) then
       FJava.SetSelectedTabAndWindow(Form.Number);
     FJava.myTabBarClick(Self);
@@ -298,23 +295,7 @@ begin
   inherited;
   if (FGUIDesigner.ELDesigner.DesignControl <> Self) or not FGUIDesigner.ELDesigner.Active then
     FGUIDesigner.ChangeTo(Self);
-  LockWindow(FJava.Handle);
-  for i:= 1 to maxTab do begin // 0 is tab Program
-    if FConfiguration.vistabs[i] then
-      case i of
-        1:       TC.Items[i].Visible:= isAWT();  // Frame, Dialog, Applet
-        2, 3:    TC.Items[i].Visible:= isSwing();  // JFrame, JDialog, JApplet
-        4, 5:    TC.Items[i].Visible:= (FrameType < 8);           // Layout, Utilities
-        6, 7, 8: TC.Items[i].Visible:= isJavaFX();           // FX Base, FX Controls, FX Shapes
-      end;
-  end;
-  for i:= 1 to maxTab do
-    if TC.Items[i].Visible and not TC.Items[ap].Visible then begin
-      TC.ActiveTabIndex:= i;
-      break;
-    end;
-  FJava.TBTimer.Visible:= (FrameType in [5, 6, 7]); // Timer not available in AWT
-  UnLockWindow;
+  FJava.ShowAWTSwingOrFX(Partner.FrameType);
   FJava.EnableUpdateMenuItems;
 end;
 

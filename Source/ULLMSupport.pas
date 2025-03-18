@@ -23,8 +23,9 @@ type
   TLLMProvider = (
     llmProviderOpenAI,
     llmProviderGemini,
+    llmProviderOllama,
     llmProviderDeepSeek,
-    llmProviderOllama);
+    llmProviderGrok);
 
   TEndpointType = (
     etUnsupported,
@@ -57,10 +58,11 @@ type
 
   TLLMProviders = record
     Provider: TLLMProvider;
-    DeepSeek: TLLMSettings;
     OpenAI: TLLMSettings;
     Gemini: TLLMSettings;
     Ollama: TLLMSettings;
+    DeepSeek: TLLMSettings;
+    Grok: TLLMSettings;
   end;
 
   TQAItem = record
@@ -109,6 +111,8 @@ type
     function ValidationErrMsg(Validation: TLLMSettingsValidation): string;
     constructor Create;
     destructor Destroy; override;
+    function DefaultAssistantSettings(Nr: integer): TLLMSettings;
+    function DefaultChatSettings(Nr: integer): TLLMSettings;
 
     procedure Ask(const Prompt: string; const Suffix: string = '');
     procedure CancelRequest;
@@ -177,7 +181,7 @@ const
     ApiKey: '';
     Model: 'gpt-4o';
     TimeOut: 20000;
-    MaxTokens: 1000;
+    MaxTokens: 2000;
     Temperature: 1.0;
     SystemPrompt: DefaultSystemPrompt);
 
@@ -193,9 +197,9 @@ const
   GeminiSettings: TLLMSettings = (
     EndPoint: 'https://generativelanguage.googleapis.com/v1beta';
     ApiKey: '';
-    Model: 'gemini-1.5-flash';
+    Model: 'gemini-2.0-flash';
     TimeOut: 20000;
-    MaxTokens: 1000;
+    MaxTokens: 2000;
     Temperature: 1.0;
     SystemPrompt: DefaultSystemPrompt);
 
@@ -225,7 +229,7 @@ const
     //Model: 'starcoder2';
     //Model: 'stable-code';
     TimeOut: 60000;
-    MaxTokens: 1000;
+    MaxTokens: 2000;
     Temperature: 1.0;
     SystemPrompt: DefaultSystemPrompt);
 
@@ -238,14 +242,32 @@ const
     Temperature: 0.2;
     SystemPrompt: DefaultSystemPrompt);
 
+  GrokChatSettings: TLLMSettings = (
+    EndPoint: 'https://api.x.ai/v1/chat/completions';
+    ApiKey: '';
+    Model: 'grok-2-latest';
+    TimeOut: 20000;
+    MaxTokens: 3000;
+    Temperature: 1.0;
+    SystemPrompt: DefaultSystemPrompt);
+
+  GrokCompletionSettings: TLLMSettings = (
+    EndPoint: 'https://api.x.ai/v1/completions';
+    ApiKey: '';
+    Model: 'grok-2-latest';
+    TimeOut: 20000;
+    MaxTokens: 1000;
+    Temperature: 0;
+    SystemPrompt: '');
+
 implementation
 
 uses
   System.Math,
   System.IOUtils,
+  JvGnugettext,
   Vcl.Forms,
   Vcl.Dialogs,
-  JvGnugettext,
   SynUnicode,
   ULLMSuggestForm,
   UJava,
@@ -257,7 +279,7 @@ resourcestring
   sNoResponse = 'No response from the LLM Server.';
   sNoAPIKey = 'The LLM API key is missing.';
   sNoModel = 'The LLM model has not been set.';
-  sInvalidTemperature = 'Invalid temperature: It should be a decimal number between 0.0 and 2.0';
+  sInvalidTemperature = 'Invalid temperature: It should be a decimal number between 0.0 and 2.0.';
   sUnsupportedEndpoint = 'The LLM endpoint is missing or not supported.';
   sUnsupportedModel = 'The LLM model is not supported.';
   sUnexpectedResponse = 'Unexpected response from the LLM Server.';
@@ -268,10 +290,10 @@ procedure TLLMBase.AddGeminiSystemPrompt(Params: TJSONObject);
 begin
   if Settings.SystemPrompt <> '' then
   begin
-    var JsonText := TJsonObject.Create();
+    var JsonText := TJSONObject.Create;
     JsonText.AddPair('text', Settings.SystemPrompt);
 
-    var JsonParts := TJsonObject.Create();
+    var JsonParts := TJSONObject.Create;
     JsonParts.AddPair('parts', JsonText);
 
     Params.AddPair('system_instruction', JsonParts);
@@ -346,6 +368,28 @@ begin
   FSerializer := TJsonSerializer.Create;
 end;
 
+function TLLMBase.DefaultAssistantSettings(Nr: integer): TLLMSettings;
+begin
+  case Nr of
+    0: Result := OpenaiCompletionSettings;
+    1: Result := GeminiSettings;
+    2: Result := OllamaCompletionSettings;
+    3: Result := DeepSeekCompletionSettings;
+    4: Result := GrokCompletionSettings;
+  end;
+end;
+
+function TLLMBase.DefaultChatSettings(Nr: integer): TLLMSettings;
+begin
+  case Nr of
+    0: Result := OpenaiChatSettings;
+    1: Result := GeminiSettings;
+    2: Result := OllamaChatSettings;
+    3: Result := DeepSeekChatSettings;
+    4: Result := GrokChatSettings;
+  end;
+end;
+
 destructor TLLMBase.Destroy;
 begin
   FSerializer.Free;
@@ -369,11 +413,11 @@ begin
   // Do nothing
 end;
 
-function TLLMBase.GeminiMessage(const Role, Content: string): TJsonObject;
+function TLLMBase.GeminiMessage(const Role, Content: string): TJSONObject;
 begin
-  Result := TJsonObject.Create;
+  Result := TJSONObject.Create;
   Result.AddPair('role', Role);
-  var Parts := TJsonObject.Create;
+  var Parts := TJSONObject.Create;
   Parts.AddPair('text', Content);
   Result.AddPair('parts', Parts);
 end;
@@ -386,10 +430,11 @@ end;
 function TLLMBase.GetLLMSettings: TLLMSettings;
 begin
   case Providers.Provider of
-    llmProviderDeepSeek: Result := Providers.DeepSeek;
     llmProviderOpenAI: Result := Providers.OpenAI;
     llmProviderOllama: Result := Providers.Ollama;
     llmProviderGemini: Result := Providers.Gemini;
+    llmProviderDeepSeek: Result := Providers.DeepSeek;
+    llmProviderGrok: Result := Providers.Grok;
   end;
 end;
 
@@ -409,7 +454,7 @@ begin
   begin
     SetLength(ResponseData, AResponse.ContentStream.Size);
     AResponse.ContentStream.Read(ResponseData, AResponse.ContentStream.Size);
-    var JsonResponse := TJsonValue.ParseJSONValue(ResponseData, 0);
+    var JsonResponse := TJSONValue.ParseJSONValue(ResponseData, 0);
     //GI_PyIDEServices.Logger.Write(JsonResponse.ToJSON);
     try
       if not (JsonResponse.TryGetValue('error.message', ErrMsg)
@@ -485,19 +530,19 @@ end;
 
 procedure TLLMChat.ClearTopic;
 begin
-  ChatTopics[ActiveTopicIndex] := default(TChatTopic);
+  ChatTopics[ActiveTopicIndex] := Default(TChatTopic);
 end;
 
 constructor TLLMChat.Create;
 begin
   inherited;
   Providers.Provider := llmProviderOpenAI;
-  Providers.DeepSeek := DeepSeekChatSettings;
   Providers.OpenAI := OpenaiChatSettings;
   Providers.Ollama := OllamaChatSettings;
   Providers.Gemini := GeminiSettings;
-
-  ChatTopics := [default(TChatTopic)];
+  Providers.DeepSeek := DeepSeekChatSettings;
+  Providers.Grok := GrokChatSettings;
+  ChatTopics := [Default(TChatTopic)];
   ActiveTopicIndex := 0;
 end;
 
@@ -522,7 +567,7 @@ begin
   if Length(ActiveTopic.QAItems) = 0 then
     Exit;
   if Length(ChatTopics[High(ChatTopics)].QAItems) > 0 then
-    ChatTopics := ChatTopics + [default(TChatTopic)];
+    ChatTopics := ChatTopics + [Default(TChatTopic)];
   ActiveTopicIndex := High(ChatTopics);
 end;
 
@@ -559,7 +604,7 @@ function TLLMChat.RequestParams(const Prompt: string; const Suffix: string = '')
     JSON.AddPair('contents', Contents);
 
     // now add parameters
-    var GenerationConfig := TJsonObject.Create();
+    var GenerationConfig := TJSONObject.Create();
     GenerationConfig.AddPair('temperature', Settings.Temperature);
     GenerationConfig.AddPair('maxOutputTokens', Settings.MaxTokens);
     JSON.AddPair('generationConfig', GenerationConfig);
@@ -645,7 +690,7 @@ function TLLMChat.ValidateSettings: TLLMSettingsValidation;
 begin
   Result := Settings.Validate;
   if (Result = svValid) and
-    not (Settings.EndPointType in [etOllamaChat, etGemini, etOpenAIChatCompletion])
+    not (Settings.EndpointType in [etOllamaChat, etGemini, etOpenAIChatCompletion])
   then
     Result := svInvalidEndpoint;
 end;
@@ -666,7 +711,9 @@ begin
   Result := etUnsupported;
   if EndPoint.Contains('googleapis') then
     Result := etGemini
-  else if EndPoint.Contains('openai') or EndPoint.Contains('deepseek') then
+  else if EndPoint.Contains('openai') or EndPoint.Contains('deepseek') or
+    EndPoint.Contains('x.ai')
+  then
   begin
     if EndPoint.EndsWith('chat/completions') then
       Result := etOpenAIChatCompletion
@@ -735,11 +782,12 @@ begin
   inherited;
   OnLLMError := ShowError;
   Providers.Provider := llmProviderOpenAI;
-  Providers.DeepSeek := DeepSeekCompletionSettings;
   Providers.OpenAI := OpenaiCompletionSettings;
   Providers.Ollama := OllamaCompletionSettings;
   Providers.Gemini := GeminiSettings;
   Providers.Gemini.Temperature := 0.2;
+  Providers.DeepSeek := DeepSeekCompletionSettings;
+  Providers.Grok := GrokCompletionSettings;
 end;
 
 procedure TLLMAssistant.DoCancelRequest(Sender: TObject);
