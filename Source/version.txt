@@ -1,3 +1,7 @@
+23.04, 2ß25-04.16
+improved code folding
+bugfix for "same width" in messages window
+
 23.05, 2025.03.18
 improved chat form
 improved handling of gui tabs

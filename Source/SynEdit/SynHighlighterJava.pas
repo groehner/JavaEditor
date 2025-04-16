@@ -726,59 +726,43 @@ var
   CurLine: string;
   Line: Integer;
 
-  function LineHasChar(Line: Integer; character: char;
-  StartCol : Integer): boolean; // faster than Pos!
-  var
-    i: Integer;
+  function InsideComment(Line: Integer; Col: Integer): Boolean;
   begin
-    result := false;
-    for I := StartCol to Length(CurLine) do begin
-      if CurLine[i] = character then begin
-        // Char must have proper highlighting (ignore stuff inside comments...)
-        if GetHighlighterAttriAtRowCol(LinesToScan, Line, I) <> fCommentAttri then begin
-          result := true;
-          break;
-        end;
+    Result := GetHighlighterAttriAtRowCol(LinesToScan, Line, Col) = fCommentAttri;
+  end;
+
+  function LineHasChar(Line: Integer; character: char;
+  StartCol: Integer): Boolean; // faster than Pos!
+  begin
+    Result := False;
+    for var I := StartCol to Length(CurLine) do begin
+      if (CurLine[I] = character) and not InsideComment(Line, I)
+      then begin
+        Result := True;
+        Break;
       end;
     end;
   end;
 
-  function FindBraces(Line: Integer) : Boolean;
-  var
-    Col : Integer;
+  function FindBraces(Line: Integer): Boolean;
   begin
     Result := False;
-
-    for Col := 1 to Length(CurLine) do
+    for var Col := 1 to Length(CurLine) do
     begin
-      // We've found a starting character
-      if CurLine[col] = '{' then
-      begin
-        // Char must have proper highlighting (ignore stuff inside comments...)
-        if GetHighlighterAttriAtRowCol(LinesToScan, Line, Col) <> fCommentAttri then
-        begin
-          // And ignore lines with both opening and closing chars in them
-          if not LineHasChar(Line, '}', col + 1) then begin
-            FoldRanges.StartFoldRange(Line + 1, 1);
-            Result := True;
-          end;
-          // Skip until a newline
-          break;
+      if (CurLine[col] = '{') and not InsideComment(Line, Col)
+      then begin
+        if not LineHasChar(Line, '}', col + 1) or LineHasChar(Line, '{', col + 1)
+        then begin
+          FoldRanges.StartFoldRange(Line + 1, 1);
+          Result := True;
         end;
-      end else if CurLine[col] = '}' then
-      begin
-        if GetHighlighterAttriAtRowCol(LinesToScan, Line, Col) <> fCommentAttri then
-        begin
-          // And ignore lines with both opening and closing chars in them
-          if not LineHasChar(Line, '{', col + 1) then begin
-            FoldRanges.StopFoldRange(Line + 1, 1);
-            Result := True;
-          end;
-          // Skip until a newline
-          break;
-        end;
+        Break;
+      end else if (CurLine[col] = '}') and not InsideComment(Line, Col)
+      then begin
+        FoldRanges.StopFoldRange(Line + 1, 1);
+        Result := True;
       end;
-    end; // for Col
+    end;
   end;
 
   function FoldRegion(Line: Integer): Boolean;

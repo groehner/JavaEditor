@@ -1807,22 +1807,27 @@ begin
 end;
 
 procedure TFMessages.MISameWidthClick(Sender: TObject);
+  var aWidth: integer;
 begin
-  var
-  Width := PMain.Width div 4;
-  PDebuggerLeft.Width := Width;
-  PDebuggerCenterLeft.Width := Width;
-  PDebuggerCenterRight.Width := Width;
-  PDebuggerRight.Width := Width;
-  Width := ClientWidth div 3;
-  PInteractiveLeft.Width := Width;
-  PInteractiveMiddle.Width := Width;
-  PInteractiveRight.Width := Width;
+  if Floating
+    then aWidth:= (Self.Width - DebuggerToolbar.Width) div 4
+    else aWidth:= (FJava.ClientWidth - DebuggerToolbar.Width) div 4;
+  PDebuggerLeft.Width := aWidth;
+  PDebuggerCenterLeft.Width := aWidth;
+  PDebuggerCenterRight.Width := aWidth;
+  PDebuggerRight.Width := aWidth;
+
+  if Floating
+    then aWidth:= Self.Width div 3
+    else aWidth:= FJava.ClientWidth div 3;
+  PInteractiveLeft.Width := aWidth;
+  PInteractiveMiddle.Width := aWidth;
+  PInteractiveRight.Width := aWidth;
   for var I := 0 to FInteractiveVariables.Count - 1 do
   begin
-    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[0] := Width div 3;
-    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[1] := Width div 3;
-    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[2] := Width div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[0] := aWidth div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[1] := aWidth div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[2] := aWidth div 3;
   end;
 end;
 
