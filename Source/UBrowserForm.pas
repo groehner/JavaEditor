@@ -92,9 +92,9 @@ type
     procedure CutToClipboard; override;
     procedure CopyToClipboard; override;
     procedure PasteFromClipboard; override;
-    function getFormType: string; override;
-    function getState: string; override;
-    procedure setState(var s: string); override;
+    function GetFormType: string; override;
+    function GetState: string; override;
+    procedure SetState(var s: string); override;
     procedure SetFontSize(Delta: integer); override;
     procedure UploadFilesHttpPost(const URLstring: string; names, values, nFiles, vFiles: array of string);
     procedure ChangeStyle; override;

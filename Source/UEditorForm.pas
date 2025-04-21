@@ -233,7 +233,7 @@ type
     function getJavaCodeAt(Caret: TPoint): string;
     procedure CreateTooltip(Caret, P: TPoint; const Token: string);
   protected
-    function getFrameType: Integer; override;
+    function GetFrameType: Integer; override;
   public
     Editor: TSynEditEx;
     SynEditPrint: TSynEditPrint;
@@ -423,9 +423,9 @@ type
     function isCSS: boolean;
     function IsHTMLApplet: Boolean;
 
-    function getFormType: string; override;
-    function getState: string; override;
-    procedure setState(var s: string); override;
+    function GetFormType: string; override;
+    function GetState: string; override;
+    procedure SetState(var s: string); override;
     function EncodingAsString(const aEncoding: string): string;
     function LinebreakAsString: string;
     function LinebreakAsCtrls(const s: string): string;
@@ -437,8 +437,8 @@ type
     function getPackage: string;
     procedure CheckAge;
     procedure AddShortcutsToHints;
-    function getAllPathnames: TStringList; override;
-    function getAllClassnames: TStringList; override;
+    function GetAllPathnames: TStringList; override;
+    function GetAllClassnames: TStringList; override;
     function ClassnameDifferentFromAncestors(const aClassname: string): boolean;
     procedure InitShowCompileErrors;
     procedure setErrorMark(line, column: integer; const error: string);
@@ -3881,13 +3881,13 @@ end;
 
 function TFEditForm.getFrameType: Integer;
 begin
-  if (FFrameType = 0) and ((FileExtension = '.java') or (FileExtension = '.~ava')) then begin
+  if (FrameType = 0) and ((FileExtension = '.java') or (FileExtension = '.~ava')) then begin
     var JavaScanner:= TJavaScanner.create;
     JavaScanner.Init(Editor.Text);
-    FFrameType:= JavaScanner.GetFrameType;
+    FrameType:= JavaScanner.GetFrameType;
     JavaScanner.Destroy;
   end;
-  Result:= FFrameType;
+  Result:= FrameType;
 end;
 
 procedure TFEditForm.DeleteTryCatch(const key: string);

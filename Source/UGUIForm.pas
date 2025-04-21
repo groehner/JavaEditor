@@ -67,7 +67,7 @@ type
     procedure SetGridOptions;
     procedure getFontSize;
   protected
-    function getFrameType: Integer; override;
+    function GetFrameType: Integer; override;
   public
     ReadOnly: boolean;
     constructor Create(AOwner: TComponent); override;
@@ -81,7 +81,7 @@ type
     procedure Change(const NewFilename: string);
     function GetSaveAsName: string; override;
     procedure SaveAs(const Filename: string); override;
-    function getFormType: string; override;
+    function GetFormType: string; override;
     procedure Print; override;
     procedure UpdateState; override;
     procedure Zooming(_in: boolean);

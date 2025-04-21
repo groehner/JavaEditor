@@ -170,7 +170,7 @@ type
     procedure Print; override;
     procedure FromText(const s: string);
     procedure RenewFromText(const s: string);
-    function getFormType: string; override;
+    function GetFormType: string; override;
     procedure SetOptions; override;
     procedure CutToClipboard; override;
     procedure CopyToClipboard; override;

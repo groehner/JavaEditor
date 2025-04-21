@@ -38,54 +38,52 @@ type
   { TFForm }
 
   TFForm = class(TForm)
-    {$IFNDEF POSIX}
     procedure WMSize(var Msg: TMessage); message WM_SIZE;
     procedure FormMouseActivate(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y, HitTest: Integer;
       var MouseActivate: TMouseActivate);
     procedure FormActivate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
-    {$ENDIF}
   private
-    FModified: boolean;
-    class var FormNumber: integer; // class attribute
+    FModified: Boolean;
+    FNumber: Integer;
+    FPathname: string;
+    FPartner: TFForm;
+    FFormTag: Integer;
+    FLockEnter: Boolean;
+    FHasFocus : Boolean;
+    FAlreadySavedAs: Boolean;
+    FFrameType: Integer; // 1..8, look in UEditorForm
+    class var FFormNumber: Integer; // class attribute
   protected
-    FFrameType: integer; // 1..8, look in UEditorForm
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction); virtual;
+    procedure FormClose(Sender: TObject; var AAction: TCloseAction); virtual;
     procedure UpdateState; virtual;
-    function GetModified: boolean; virtual;
-    procedure ReleaseWindow(aFree: boolean); virtual;
+    function GetModified: Boolean; virtual;
+    procedure ReleaseWindow(AFree: Boolean); virtual;
     procedure MIReleaseWindowClick(Sender: TObject); virtual;
-    procedure GotoLine(i: integer); virtual;
-    procedure SetModified(Modified: boolean); virtual;
-    function getFrameType: Integer; virtual;
-    procedure setFrameType(value: integer);
+    procedure GotoLine(Line: Integer); virtual;
+    procedure SetModified(Modified: Boolean); virtual;
+    function GetFrameType: Integer; virtual;
+    procedure SetFrameType(Value: Integer);
   public
-    Number: integer;
-    Pathname: string;
-    Partner: TFForm;
-    AlreadySavedAs: boolean;
-    FormTag: integer;
-    LockEnter: boolean;
-    HasFocus : Boolean;
     constructor Create(AOwner: TComponent); override;
     procedure SetOptions; virtual;
-    function getState: string; virtual;
-    function getFormType: string; virtual;
-    function DefaultFilename: boolean;
+    function GetState: string; virtual;
+    function GetFormType: string; virtual;
+    function DefaultFilename: Boolean;
     procedure OpenWindow(Sender: TObject); virtual;
     function FrameTypToString: string;
-    procedure CollectClasses(SL: TStringList); virtual;
-    function isApplet: boolean;
-    function isAWT: boolean;
-    function isSwing: boolean;
-    function isJavaFX: boolean;
+    procedure CollectClasses(StringList: TStringList); virtual;
+    function IsApplet: Boolean;
+    function IsAWT: Boolean;
+    function IsSwing: Boolean;
+    function IsJavaFX: Boolean;
     procedure ToMainPanel;
-    procedure SetActiveControl(aControl: TWinControl);
-    function myActiveControl: TWinControl;
+    procedure SetActiveControl(AControl: TWinControl);
+    function MyActiveControl: TWinControl;
     procedure SaveIn(const Dir: string); virtual;
     function GetSaveAsName: string; virtual;
-    procedure Save(MitBackup: boolean); virtual;
+    procedure Save(MitBackup: Boolean); virtual;
     procedure SaveAs(const Filename: string); virtual;
     procedure DoExport; virtual;
     procedure Print; virtual;
@@ -97,18 +95,25 @@ type
     procedure CutToClipboard; virtual;
     procedure CopyToClipboard; virtual;
     procedure PasteFromClipboard; virtual;
-    procedure SetFont(aFont: TFont); virtual;
+    procedure SetFont(AFont: TFont); virtual;
     function  GetFont: TFont; virtual;
-    procedure SetFontSize(Delta: integer); virtual;
+    procedure SetFontSize(Delta: Integer); virtual;
     procedure Enter(Sender: TObject); virtual;
-    procedure setState(var s: string); virtual;
-    function getAllPathnames: TStringList; virtual;
-    function getAllClassnames: TStringList; virtual;
+    procedure SetState(var State: string); virtual;
+    function GetAllPathnames: TStringList; virtual;
+    function GetAllClassnames: TStringList; virtual;
     procedure ChangeStyle; virtual;
     procedure DPIChanged; virtual;
-  published
-    property FrameType: integer read getFrameType write setFrameType;
-    property Modified: boolean read getModified write setModified;
+
+    property Number: Integer read FNumber;
+    property HasFocus: Boolean read FHasFocus;
+    property Pathname: string read FPathname write FPathname;
+    property Partner: TFForm read FPartner write FPartner;
+    property FormTag: Integer read FFormTag write FFormTag;
+    property LockEnter: Boolean read FLockEnter write FLockEnter;
+    property AlreadySavedAs: Boolean read FAlreadySavedAs write FAlreadySavedAs;
+    property FrameType: Integer read GetFrameType write SetFrameType;
+    property Modified: Boolean read GetModified write SetModified;
   end;
 
 implementation
@@ -120,15 +125,15 @@ uses Windows, SysUtils, JvGnugettext, UStringRessources,
 
 constructor TFForm.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Partner:= nil;
-  inc(FormNumber);
-  Number:= FormNumber;
-  AlreadySavedAs:= false;
-  Lockenter:= false;
-  onClose:= FormClose;
-  onMouseActivate:= FormMouseActivate;
-  ParentFont:= false;
+  inherited Create(AOwner);
+  FPartner:= nil;
+  Inc(FFormNumber);
+  FNumber:= FFormNumber;
+  FAlreadySavedAs:= False;
+  FLockEnter:= False;
+  OnClose:= FormClose;
+  OnMouseActivate:= FormMouseActivate;
+  ParentFont:= False;
   // this garanties, that the form is scaled to effectiv dpi
   // scaling is not done fore every position, see: procedure TCustomForm.SetWindowToMonitor
   // SetBounds calls TCustomForm.WMDpiChanged
@@ -137,27 +142,27 @@ end;
 
 procedure TFForm.FormActivate(Sender: TObject);
 begin
-  HasFocus := True;
+  FHasFocus := True;
 end;
 
-procedure TFForm.FormClose(Sender: TObject; var aAction: TCloseAction);
+procedure TFForm.FormClose(Sender: TObject; var AAction: TCloseAction);
 begin
   try
     FJava.DeleteTabAndWindow(Number);
-    if not DefaultFilename and (FJava.Projectfilename = '') then
+    if not DefaultFilename and (FJava.ProjectFilename = '') then
       FJava.RearrangeFileHistory(Pathname);
   finally
     FJava.TDIFormsList.Remove(Self);
-    if assigned(FJava.myTabBar.SelectedTab) and assigned(FJava.myTabBar.SelectedTab.Data)
+    if Assigned(FJava.myTabBar.SelectedTab) and Assigned(FJava.myTabBar.SelectedTab.Data)
       then FJava.ActiveTDIChild:= TTabObject(FJava.myTabBar.SelectedTab.Data).Form
       else FJava.ActiveTDIChild:= nil;
-    aAction:= caFree;
+    AAction:= caFree;
   end;
 end;
 
 procedure TFForm.FormDeactivate(Sender: TObject);
 begin
-  HasFocus := False;
+  FHasFocus := False;
 end;
 
 procedure TFForm.FormMouseActivate(Sender: TObject; Button: TMouseButton;
@@ -165,11 +170,11 @@ procedure TFForm.FormMouseActivate(Sender: TObject; Button: TMouseButton;
   var MouseActivate: TMouseActivate);
 begin
   if (FJava.ActiveTDIChild <> Self) or (FJava.ActiveTool > 0) then
-    enter(self);
+    Enter(Self);
   MouseActivate:= maActivate;
 end;
 
-procedure TFForm.ReleaseWindow(aFree: boolean);
+procedure TFForm.ReleaseWindow(AFree: Boolean);
 begin
 end;
 
@@ -177,7 +182,7 @@ procedure TFForm.MIReleaseWindowClick(Sender: TObject);
 begin
 end;
 
-procedure TFForm.Save(MitBackup: boolean);
+procedure TFForm.Save(MitBackup: Boolean);
 begin
 end;
 
@@ -204,22 +209,22 @@ begin
   inherited Print; // because of GUI-Formular-Print
 end;
 
-function TFForm.isApplet: boolean;
+function TFForm.IsApplet: Boolean;
 begin
   Result:= (FrameType in [4, 7]);
 end;
 
-function TFForm.isAWT: boolean;
+function TFForm.IsAWT: Boolean;
 begin
   Result:= FrameType in [2, 3, 4];
 end;
 
-function TFForm.isSwing: boolean;
+function TFForm.IsSwing: Boolean;
 begin
   Result:= FrameType in [5, 6, 7];
 end;
 
-function TFForm.isJavaFX: boolean;
+function TFForm.IsJavaFX: Boolean;
 begin
   Result:= FrameType = 8;
 end;
@@ -232,29 +237,29 @@ begin
   if Parent = nil then Result:= Result + 'nil)';
 end;
 
-procedure TFForm.setState(var s: string);
-  var l, t, w, h, p: integer; WS: TWindowState;
+procedure TFForm.SetState(var State: string);
+  var l, t, w, h, p: Integer; WS: TWindowState;
 begin
-  if s = '' then exit;
-  if copy(s, 1, 1) = 'W' then begin
-    p:= Pos(')', s); l:= StrToInt(Copy(s, 2, p-2)); delete(s, 1, p);
-    p:= Pos(')', s); t:= StrToInt(Copy(s, 1, p-1)); delete(s, 1, p);
-    p:= Pos(')', s); w:= StrToInt(Copy(s, 1, p-1)); delete(s, 1, p);
-    p:= Pos(')', s); h:= StrToInt(Copy(s, 1, p-1)); delete(s, 1, p);
-    p:= Pos(')', s); WS:= StrToWindowState(Copy(s, 1, p-1)); delete(s, 1, p);
-    p:= Pos(')', s);
-    if copy(s, 1, p) = 'nil)' then begin
-      delete(s, 1, p);
-      ReleaseWindow(true);
+  if State = '' then Exit;
+  if Copy(State, 1, 1) = 'W' then begin
+    p:= Pos(')', State); l:= StrToInt(Copy(State, 2, p-2)); Delete(State, 1, p);
+    p:= Pos(')', State); t:= StrToInt(Copy(State, 1, p-1)); Delete(State, 1, p);
+    p:= Pos(')', State); w:= StrToInt(Copy(State, 1, p-1)); Delete(State, 1, p);
+    p:= Pos(')', State); h:= StrToInt(Copy(State, 1, p-1)); Delete(State, 1, p);
+    p:= Pos(')', State); WS:= StrToWindowState(Copy(State, 1, p-1)); Delete(State, 1, p);
+    p:= Pos(')', State);
+    if Copy(State, 1, p) = 'nil)' then begin
+      Delete(State, 1, p);
+      ReleaseWindow(True);
       SetBounds(l, t, w, h);
     end else
-      WindowState:= TWindowState(WS);
+      WindowState:= WS;
   end;
 end;
 
-procedure TFForm.SetFont(aFont: TFont);
+procedure TFForm.SetFont(AFont: TFont);
 begin
-  Font.Assign(aFont);
+  Font.Assign(AFont);
 end;
 
 function TFForm.GetFont: TFont;
@@ -262,11 +267,11 @@ begin
   Result:= Font;
 end;
 
-procedure TFForm.SetFontSize(Delta: integer);
+procedure TFForm.SetFontSize(Delta: Integer);
 begin
   Font.Size:= Font.Size + Delta;
   if Font.Size < 6 then Font.Size:= 6;
-  setFont(Font);
+  SetFont(Font);
 end;
 
 procedure TFForm.SetOptions;
@@ -305,29 +310,29 @@ procedure TFForm.Redo;
 begin
 end;
 
-procedure TFForm.GotoLine(i: integer);
+procedure TFForm.GotoLine(Line: Integer);
 begin
 end;
 
 procedure TFForm.OpenWindow(Sender: TObject);
-  var Animation: boolean;
+  var Animation: Boolean;
 begin
   try
     LockWindow(Self.Handle);
     try
       Animation:= GetAnimation;
       if Animation then
-        SetAnimation(false);
+        SetAnimation(False);
       if Parent = FJava.MainPanel then begin
         if Left > FJava.Width - 200 then
           Left:= FJava.Width - 200;
       end;
       if not Visible then begin
-        Visible:= true;
+        Visible:= True;
         FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
       end;
       if Animation then
-        SetAnimation(true);
+        SetAnimation(True);
       BringToFront;
       Enter(Self);
     except on e: Exception do
@@ -377,7 +382,7 @@ begin
   end;
 end;
 
-procedure TFForm.SetModified(Modified: boolean);
+procedure TFForm.SetModified(Modified: Boolean);
 begin
   if FModified <> Modified then begin
     FModified:= Modified;
@@ -385,7 +390,7 @@ begin
   end;
 end;
 
-function TFForm.GetModified: boolean;
+function TFForm.GetModified: Boolean;
 begin
   Result:= FModified;
 end;
@@ -403,35 +408,35 @@ procedure TFForm.DoExport;
 begin
 end;
 
-procedure TFForm.CollectClasses(SL: TStringList);
+procedure TFForm.CollectClasses(StringList: TStringList);
 begin
 end;
 
-function TFForm.DefaultFilename: boolean;
+function TFForm.DefaultFilename: Boolean;
  var i, p: Integer; s, Default: string;
 begin
-  Result:= false;
-  if assigned(FConfiguration) then
+  Result:= False;
+  if Assigned(FConfiguration) then
     if not FConfiguration.AcceptDefaultname then begin
-      Default:= Uppercase(_(LNGFile));
-      s:= Uppercase(ExtractFilename(Pathname));
+      Default:= UpperCase(_(LNGFile));
+      s:= UpperCase(ExtractFileName(Pathname));
       if Copy(s, 1, Length(Default)) = Default then begin
-        delete(s, 1, Length(Default));
+        Delete(s, 1, Length(Default));
         p:= Pos('.', s);
-        delete(s, p,length(s));
+        Delete(s, p, Length(s));
         Result:= TryStrToInt(s, i);
         end
       else
-        Result:= false;
+        Result:= False;
     end;
 end;
 
-function TFForm.getAllPathNames: TStringList;
+function TFForm.GetAllPathnames: TStringList;
 begin
   Result:= TStringList.Create;
 end;
 
-function TFForm.getAllClassNames: TStringList;
+function TFForm.GetAllClassnames: TStringList;
 begin
   Result:= TStringList.Create;
 end;
@@ -440,7 +445,7 @@ procedure TFForm.WMSize(var Msg: TMessage);
 begin
   inherited;
   if Msg.WParam  = SIZE_MAXIMIZED then
-    FConfiguration.WindowStateMaximized:= true;
+    FConfiguration.WindowStateMaximized:= True;
 end;
 
 procedure TFForm.ToMainPanel;
@@ -451,31 +456,30 @@ begin
   Parent:= FJava.MainPanel;
 end;
 
-function TFForm.myActiveControl: TWinControl;
+function TFForm.MyActiveControl: TWinControl;
 // https://de.comp.lang.delphi.misc.narkive.com/AU1p5kiy/activecontrol-nil
 begin
-  Result:= Application.Mainform.ActiveControl;
+  Result:= Application.MainForm.ActiveControl;
 end;
 
-procedure TFForm.SetActiveControl(aControl: TWinControl);
+procedure TFForm.SetActiveControl(AControl: TWinControl);
 begin
-  if assigned(Parent) then
-    Application.Mainform.ActiveControl:= aControl;
+  if Assigned(Parent) then
+    Application.MainForm.ActiveControl:= AControl;
 end;
 
-function TFForm.getFrameType: Integer;
+function TFForm.GetFrameType: Integer;
 begin
   Result:= FFrameType;
 end;
 
-procedure TFForm.setFrameType(value: integer);
+procedure TFForm.SetFrameType(Value: Integer);
 begin
-  FFrameType:= value;
+  FFrameType:= Value;
 end;
 
 initialization
 
-  TFForm.FormNumber:= 0;
-
+  TFForm.FFormNumber:= 0;
 
 end.

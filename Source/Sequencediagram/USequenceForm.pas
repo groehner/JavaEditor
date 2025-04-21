@@ -134,7 +134,7 @@ type
     procedure SetFont(aFont: TFont); override;
     procedure SetFontSize(Delta: integer); override;
     procedure setPanelFont(aFont: TFont);
-    function getFormType: string; override;
+    function GetFormType: string; override;
     procedure TranslateDiagram;
     procedure CalculateXPositions;
     procedure CalculateDiagram;

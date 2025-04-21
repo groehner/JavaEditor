@@ -589,7 +589,10 @@ begin
   // Insert keeping the list sorted
   if fFoldInfoList.BinarySearch(LineFoldInfo, Index) then
   begin
-    if (fFoldInfoList.List[Index].FoldOpenClose <> AFoldOpenClose) or
+    fFoldInfoList.Insert(Index+1, LineFoldInfo);
+    fRangesNeedFixing := True;
+
+    {if (fFoldInfoList.List[Index].FoldOpenClose <> AFoldOpenClose) or
        (fFoldInfoList.List[Index].FoldType <> AFoldType) or
        (fFoldInfoList.List[Index].Indent <> AIndent) then
     begin
@@ -597,7 +600,7 @@ begin
       fFoldInfoList.List[Index].FoldType := AFoldType;
       fFoldInfoList.List[Index].Indent := AIndent;
       fRangesNeedFixing := True;
-    end;
+    end;}
   end
   else begin
     fFoldInfoList.Insert(Index, LineFoldInfo);

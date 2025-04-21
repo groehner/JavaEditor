@@ -137,7 +137,7 @@ type
     procedure CopyToClipboard; override;
     procedure PasteFromClipboard; override;
     procedure ChangeStyle; override;
-    function getFormType: string; override;
+    function GetFormType: string; override;
     procedure DPIChanged; override;
   end;
 

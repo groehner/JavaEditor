@@ -82,9 +82,9 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure New(const Filename: string; Zustand: string);
     procedure UpdateState;  override;
-    function getFormType: string; override;
-    function getState: string; override;
-    procedure setState(var s: string); override;
+    function GetFormType: string; override;
+    function GetState: string; override;
+    procedure SetState(var s: string); override;
     procedure PasteFromClipboard; override;
     procedure CutToClipboard; override;
     procedure CopyToClipboard; override;
