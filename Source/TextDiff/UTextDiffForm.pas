@@ -124,7 +124,7 @@ type
     procedure Replace; override;
     procedure Undo; override;
     procedure Redo; override;
-    procedure GotoLine(i: integer); override;
+    procedure GotoLine(i: integer);
     procedure DoSaveBoth;
     procedure ShowFileNames;
     function GetCodeEdit: TSynEditExDiff;

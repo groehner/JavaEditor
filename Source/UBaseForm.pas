@@ -53,18 +53,12 @@ type
     FLockEnter: Boolean;
     FHasFocus : Boolean;
     FAlreadySavedAs: Boolean;
-    FFrameType: Integer; // 1..8, look in UEditorForm
     class var FFormNumber: Integer; // class attribute
   protected
     procedure FormClose(Sender: TObject; var AAction: TCloseAction); virtual;
     procedure UpdateState; virtual;
     function GetModified: Boolean; virtual;
-    procedure ReleaseWindow(AFree: Boolean); virtual;
-    procedure MIReleaseWindowClick(Sender: TObject); virtual;
-    procedure GotoLine(Line: Integer); virtual;
     procedure SetModified(Modified: Boolean); virtual;
-    function GetFrameType: Integer; virtual;
-    procedure SetFrameType(Value: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetOptions; virtual;
@@ -72,19 +66,13 @@ type
     function GetFormType: string; virtual;
     function DefaultFilename: Boolean;
     procedure OpenWindow(Sender: TObject); virtual;
-    function FrameTypToString: string;
     procedure CollectClasses(StringList: TStringList); virtual;
-    function IsApplet: Boolean;
-    function IsAWT: Boolean;
-    function IsSwing: Boolean;
-    function IsJavaFX: Boolean;
     procedure ToMainPanel;
     procedure SetActiveControl(AControl: TWinControl);
     function MyActiveControl: TWinControl;
     procedure SaveIn(const Dir: string); virtual;
     function GetSaveAsName: string; virtual;
     procedure Save(MitBackup: Boolean); virtual;
-    procedure SaveAs(const Filename: string); virtual;
     procedure DoExport; virtual;
     procedure Print; virtual;
     procedure Search; virtual;
@@ -112,7 +100,6 @@ type
     property FormTag: Integer read FFormTag write FFormTag;
     property LockEnter: Boolean read FLockEnter write FLockEnter;
     property AlreadySavedAs: Boolean read FAlreadySavedAs write FAlreadySavedAs;
-    property FrameType: Integer read GetFrameType write SetFrameType;
     property Modified: Boolean read GetModified write SetModified;
   end;
 
@@ -174,14 +161,6 @@ begin
   MouseActivate:= maActivate;
 end;
 
-procedure TFForm.ReleaseWindow(AFree: Boolean);
-begin
-end;
-
-procedure TFForm.MIReleaseWindowClick(Sender: TObject);
-begin
-end;
-
 procedure TFForm.Save(MitBackup: Boolean);
 begin
 end;
@@ -200,33 +179,9 @@ begin
   Result:= '';
 end;
 
-procedure TFForm.SaveAs(const Filename: string);
-begin
-end;
-
 procedure TFForm.Print;
 begin
   inherited Print; // because of GUI-Formular-Print
-end;
-
-function TFForm.IsApplet: Boolean;
-begin
-  Result:= (FrameType in [4, 7]);
-end;
-
-function TFForm.IsAWT: Boolean;
-begin
-  Result:= FrameType in [2, 3, 4];
-end;
-
-function TFForm.IsSwing: Boolean;
-begin
-  Result:= FrameType in [5, 6, 7];
-end;
-
-function TFForm.IsJavaFX: Boolean;
-begin
-  Result:= FrameType = 8;
 end;
 
 function TFForm.GetState: string;
@@ -234,26 +189,19 @@ begin
   Result:= 'W' + IntToStr(Left) + ')' + IntToStr(Top) + ')' +
                  IntToStr(Width) + ')' + IntToStr(Height) + ')' +
                  WindowStateToStr(WindowState) + ')';
-  if Parent = nil then Result:= Result + 'nil)';
 end;
 
 procedure TFForm.SetState(var State: string);
-  var l, t, w, h, p: Integer; WS: TWindowState;
+  var p: Integer; WS: TWindowState;
 begin
   if State = '' then Exit;
   if Copy(State, 1, 1) = 'W' then begin
-    p:= Pos(')', State); l:= StrToInt(Copy(State, 2, p-2)); Delete(State, 1, p);
-    p:= Pos(')', State); t:= StrToInt(Copy(State, 1, p-1)); Delete(State, 1, p);
-    p:= Pos(')', State); w:= StrToInt(Copy(State, 1, p-1)); Delete(State, 1, p);
-    p:= Pos(')', State); h:= StrToInt(Copy(State, 1, p-1)); Delete(State, 1, p);
-    p:= Pos(')', State); WS:= StrToWindowState(Copy(State, 1, p-1)); Delete(State, 1, p);
-    p:= Pos(')', State);
-    if Copy(State, 1, p) = 'nil)' then begin
-      Delete(State, 1, p);
-      ReleaseWindow(True);
-      SetBounds(l, t, w, h);
-    end else
-      WindowState:= WS;
+    p:= Pos(')', State); Delete(State, 1, p);
+    p:= Pos(')', State); Delete(State, 1, p);
+    p:= Pos(')', State); Delete(State, 1, p);
+    p:= Pos(')', State); Delete(State, 1, p);
+    p:= Pos(')', State); WS:= StrToWindowState(Copy(State, 1, p-1));
+    WindowState:= WS;
   end;
 end;
 
@@ -310,10 +258,6 @@ procedure TFForm.Redo;
 begin
 end;
 
-procedure TFForm.GotoLine(Line: Integer);
-begin
-end;
-
 procedure TFForm.OpenWindow(Sender: TObject);
   var Animation: Boolean;
 begin
@@ -365,20 +309,6 @@ begin
     DisableMI(MICopyHTMLAsText);
     DisableMI(MICopyNumbered);
     DisableMI(MICopyRtfNumbered);
-  end;
-end;
-
-function TFForm.FrameTypToString: string;
-begin
-  case FrameType of
-    8: Result:= 'Application';
-    7: Result:= 'JApplet';
-    6: Result:= 'JDialog';
-    5: Result:= 'JFrame';
-    4: Result:= 'Applet';
-    3: Result:= 'Dialog';
-    2: Result:= 'Frame';
-  else Result:= '';
   end;
 end;
 
@@ -466,16 +396,6 @@ procedure TFForm.SetActiveControl(AControl: TWinControl);
 begin
   if Assigned(Parent) then
     Application.MainForm.ActiveControl:= AControl;
-end;
-
-function TFForm.GetFrameType: Integer;
-begin
-  Result:= FFrameType;
-end;
-
-procedure TFForm.SetFrameType(Value: Integer);
-begin
-  FFrameType:= Value;
 end;
 
 initialization

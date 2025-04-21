@@ -1320,20 +1320,20 @@ procedure TFJava.EditorSaveAs(aForm: TFForm; Hidden: boolean);
       SaveDialog: TExtSaveDialog;
       OpenGuiForm: boolean;
 begin
-  if aForm.AlreadySavedAs then exit;
+  EditForm:= aForm as TFEditForm;
+  if EditForm.AlreadySavedAs then exit;
   if Hidden
-    then aForm.Hide
-    else SwitchToWindow(aForm.Number);
+    then EditForm.Hide
+    else SwitchToWindow(EditForm.Number);
   SaveDialog:= TExtSaveDialog.CreateWith(Self,
-      (aForm as TFEditForm).Encoding + '/' +
-      (aForm as TFEditForm).LinebreakAsString, _('Encoding') + ':');
+      EditForm.Encoding + '/' +
+      EditForm.LinebreakAsString, _('Encoding') + ':');
   try
     with SaveDialog do begin
       Title:= _(LNGSaveAs);
       Filter:= 'Java (*.java)|*.java|HTML (*.html)|*.html;*.htm|Text (*.txt)|*.txt|' + _(LNGAll) + ' (*.*)|*.*';
       Ext:= '.java';
-      EditForm:= aForm as TFEditForm;
-      SaveAsName:= aForm.GetSaveAsName;
+      SaveAsName:= EditForm.GetSaveAsName;
       Filename:= SaveAsName;
       FilterIndex:= getFilterIndex(Filter, Filename);
       dir:= ExtractFilePath(Filename);
@@ -1350,7 +1350,7 @@ begin
           Filename:= SaveAsName;
 
         Form2:= getTDIWindowType(Filename, '%E%');
-        if assigned(Form2) and (Form2 <> aForm) and not Form2.visible then begin
+        if assigned(Form2) and (Form2 <> EditForm) and not Form2.visible then begin
           Form2.Close;
           Form2:= nil;
         end;
@@ -1358,18 +1358,18 @@ begin
            ErrorMsg(_('Invalid class name') + ': ' + ChangeFileExt(fName, ''))
         else if not EditForm.ClassnameDifferentFromAncestors(ChangeFileExt(fName, '')) then
            ErrorMsg(_('Invalid class name') + ': ' + ChangeFileExt(fName, ''))
-        else if assigned(Form2) and (Form2 <> aForm) then
+        else if assigned(Form2) and (Form2 <> EditForm) then
           InformationMsg(Format(_(LNGFileAlreadyOpen), [Filename]))
         else if IsWriteProtected(Filename) then
           ErrorMsg(Filename + ' ' + _(LNGWriteprotected))
         else if IsWriteProtected(ChangeFileExt(Filename, '.jfm')) then
           ErrorMsg(ChangeFileExt(Filename, '.jfm') + ' ' + _(LNGWriteprotected))
-        else if not FileExists(Filename) or (aForm.Pathname = Filename) or FileExists(Filename) and
+        else if not FileExists(Filename) or (EditForm.Pathname = Filename) or FileExists(Filename) and
             (MessageDlg(Format(_(LNGFileAlreadyExists), [Filename]),
                          mtConfirmation, mbYesNoCancel, 0) = mrYes)
         then begin
-          (aForm as TFEditForm).SetEncoding(Encoding);
-          OldPartner:= ChangeFileExt(aForm.Pathname, '.jfm');
+          EditForm.SetEncoding(Encoding);
+          OldPartner:= ChangeFileExt(EditForm.Pathname, '.jfm');
           NewPartner:= ChangeFileExt(Filename, '.jfm');
           GuiForm:= getGuiForm(OldPartner);
           OpenGuiForm:= assigned(GuiForm);
@@ -1379,7 +1379,7 @@ begin
             FreeAndNil(GuiForm);
           end else if FileExists(OldPartner) and (ExtractFileExt(OldPartner) = '.jfm') then
             CopyFile(PChar(OldPartner), PChar(NewPartner), false);
-          aForm.SaveAs(Filename);
+          EditForm.SaveAs(Filename);
           if OpenGuiForm then
             Open(NewPartner);
           FConfiguration.Sourcepath:= ExtractFilePath(Filename);
@@ -1495,7 +1495,7 @@ procedure TFJava.MIExportClick(Sender: TObject);
 begin
   DisableUpdateMenuItems;
   if assigned(ActiveTDIChild) then
-    (ActiveTDIChild as TFForm).DoExport;
+    ActiveTDIChild.DoExport;
   EnableUpdateMenuItems;
 end;
 

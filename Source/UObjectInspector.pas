@@ -215,14 +215,15 @@ begin
 end;
 
 procedure TFObjectInspector.RefreshCB(newname: string = '');
-  var i, index: integer; typ, nam, namtyp: string; Form: TFForm;
+  var i, index: integer; typ, nam, namtyp: string; Form: TFForm; Partner: TFEditForm;
 begin
   if not FGUIDesigner.ELDesigner.Active then exit;
   Form:= TFForm(FGUIDesigner.ELDesigner.DesignControl);
+  Partner:= TFEditForm(Form.Partner);
   if Assigned(Form) then begin
     index:= CBObjects.ItemIndex;
     CBObjects.Clear;
-    CBObjects.Items.AddObject(Form.Name + ': ' + Form.FrameTypToString, Form);
+    CBObjects.Items.AddObject(Form.Name + ': ' + Partner.FrameTypToString, Form);
     for i:= 0 to Form.ComponentCount - 1 do begin
       nam:= Form.Components[i].Name;
       if Form.Components[i] is TJEComponent then

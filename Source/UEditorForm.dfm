@@ -2541,11 +2541,6 @@ object FEditForm: TFEditForm
     end
     object MILine4: TSpTBXSeparatorItem
     end
-    object MIReleaseWindow: TSpTBXItem
-      Caption = 'Release window'
-      Visible = False
-      OnClick = MIReleaseWindowClick
-    end
     object MIFont: TSpTBXItem
       Caption = 'Font'
       ImageIndex = 0

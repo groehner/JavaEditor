@@ -137,7 +137,7 @@ procedure TTemplates.FrameDialogApplet(EditForm: TFEditForm; Nr: integer);
   var s: string;
 begin
   with EditForm do begin
-    Frametype:= Nr;
+    FrameType:= Nr;
     var FName:= ChangeFileExt(ExtractFilename(Pathname), '');
     s:= GetTemplate(FName, Nr);
     if s = '' then

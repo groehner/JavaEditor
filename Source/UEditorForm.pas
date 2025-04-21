@@ -118,7 +118,6 @@ type
     MIUnindent: TSpTBXItem;
     MIIndent: TSpTBXItem;
     MILine4: TSpTBXSeparatorItem;
-    MIReleaseWindow: TSpTBXItem;
     MIFont: TSpTBXItem;
     MIConfiguration: TSpTBXItem;
     MIClose: TSpTBXItem;
@@ -208,8 +207,6 @@ type
     procedure MIGitViewerClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure MIConfigurationClick(Sender: TObject);
-    procedure ReleaseWindow(aFree: boolean); override;
-    procedure MIReleaseWindowClick(Sender: TObject); override;
     procedure DesignButtonClick(Sender: TObject);
     procedure mnAssistanSuggestClick(Sender: TObject);
     procedure mnAssistantExplainClick(Sender: TObject);
@@ -225,6 +222,8 @@ type
     ModifiedStrs: array[boolean] of string;
     InsertModeStrs: array[boolean] of string;
     ToolButtons: array[0..29] of TToolButton;
+    FFrameType: Integer; // 1..8, look in UEditorForm
+
     procedure Translate;
     procedure Statusline(i: Integer; const s: string);
     procedure CalculateStatusline;
@@ -232,8 +231,7 @@ type
     procedure setFileExtension(value: string);
     function getJavaCodeAt(Caret: TPoint): string;
     procedure CreateTooltip(Caret, P: TPoint; const Token: string);
-  protected
-    function GetFrameType: Integer; override;
+    function getFrameType: Integer;
   public
     Editor: TSynEditEx;
     SynEditPrint: TSynEditPrint;
@@ -257,7 +255,7 @@ type
     procedure Open(const FileName: string; Zustand: string);
     procedure Save(withBackup: boolean); override;
     procedure SaveIn(const Dir: string); override;
-    procedure SaveAs(const Filename: string); override;
+    procedure SaveAs(const Filename: string);
     function GetSaveAsName: string; override;
     procedure SetHighlighter;
     procedure SetToolButtons;
@@ -283,12 +281,12 @@ type
 
     function  CBSearchClassOrMethod(Stop: Boolean; line: Integer): string;
     function  SourceContainsClass(const aClassname: string): boolean;
+    procedure GotoLine(i: integer);
     procedure CutToClipboard; override;
     procedure CopyToClipboard; override;
     procedure PasteFromClipboard; override;
     procedure Undo; override;
     procedure Redo; override;
-    procedure GotoLine(i: integer); override;
     procedure SetModified(aModified: boolean); override;
     function GetModified: boolean; override;
     procedure DoExport; override;
@@ -433,7 +431,7 @@ type
     procedure SetEncoding(aEncoding: string);
     procedure AutomatedCompleteImports;
     procedure SetNewActionEventFormat;
-    procedure CollectClasses(SL: TStringList); override;
+    procedure CollectClasses(StringList: TStringList); override;
     function getPackage: string;
     procedure CheckAge;
     procedure AddShortcutsToHints;
@@ -459,9 +457,13 @@ type
     function CountClassOrInterface: integer;
     procedure SetActivityIndicator(TurnOn: Boolean; Hint: string = ''; OnClick: TNotifyEvent = nil);
     procedure ShowAssistantError(Msg: string);
+    function IsApplet: Boolean;
+    function IsAWT: Boolean;
+    function FrameTypToString: string;
 
     property NeedsParsing: boolean read FNeedsParsing write setNeedsParsing;
     property FileExtension: string read fFileExtension write setFileExtension;
+    property FrameType: integer read GetFrameType write FFrameType;
   end;
 
   TInteger = class
@@ -1790,33 +1792,6 @@ begin
   Redo;
 end;
 
-procedure TFEditForm.ReleaseWindow(aFree: boolean);
-begin
-  if aFree then begin
-    Parent:= nil;
-    Align:= alNone;
-    BorderStyle:= bsSizeable;
-    BorderIcons:= [biSystemMenu, biMaximize];
-    MIReleaseWindow.Caption:= 'Fenster reinholen';
-    SetBounds(Random(200), Random(200), FJava.MainPanel.Width, FJava.MainPanel.Height);
-    FJava.DeleteTab(Number);
-  end else begin
-    Parent:= FJava.MainPanel;
-    Align:= alClient;
-    BorderStyle:= bsNone;
-    BorderIcons:= [];
-    MIReleaseWindow.Caption:= 'Fenster freigeben';
-    FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
-  end;
-end;
-
-procedure TFEditForm.MIReleaseWindowClick(Sender: TObject);
-begin
-  if Parent = FJava.MainPanel
-    then ReleaseWindow(true)
-    else ReleaseWindow(false);
-end;
-
 procedure TFEditForm.MICutClick(Sender: TObject);
 begin
   CutToClipboard;
@@ -2460,7 +2435,7 @@ begin
   Result:= false;
 end;
 
-procedure TFEditForm.CollectClasses(SL: TStringList);
+procedure TFEditForm.CollectClasses(StringList: TStringList);
 begin
   if IsJava then begin
     ParseSourcecode(false);
@@ -2468,7 +2443,7 @@ begin
     while Ci.HasNext do begin
       var cent:= Ci.Next;
       if (cent is TClass) or (cent is TInterface) then
-        SL.Add(WithoutArray(cent.Name));
+        StringList.Add(WithoutArray(cent.Name));
     end;
   end;
 end;
@@ -3881,13 +3856,13 @@ end;
 
 function TFEditForm.getFrameType: Integer;
 begin
-  if (FrameType = 0) and ((FileExtension = '.java') or (FileExtension = '.~ava')) then begin
+  if (FFrameType = 0) and ((FileExtension = '.java') or (FileExtension = '.~ava')) then begin
     var JavaScanner:= TJavaScanner.create;
     JavaScanner.Init(Editor.Text);
     FrameType:= JavaScanner.GetFrameType;
     JavaScanner.Destroy;
   end;
-  Result:= FrameType;
+  Result:= FFrameType;
 end;
 
 procedure TFEditForm.DeleteTryCatch(const key: string);
@@ -5205,6 +5180,30 @@ end;
 procedure TFEditForm.ShowAssistantError(Msg: string);
 begin
   ShowMessage(Msg);
+end;
+
+function TFEditForm.IsApplet: Boolean;
+begin
+  Result:= (FrameType in [4, 7]);
+end;
+
+function TFEditForm.IsAWT: Boolean;
+begin
+  Result:= FrameType in [2, 3, 4];
+end;
+
+function TFEditForm.FrameTypToString: string;
+begin
+  case FrameType of
+    8: Result:= 'Application';
+    7: Result:= 'JApplet';
+    6: Result:= 'JDialog';
+    5: Result:= 'JFrame';
+    4: Result:= 'Applet';
+    3: Result:= 'Dialog';
+    2: Result:= 'Frame';
+  else Result:= '';
+  end;
 end;
 
 end.

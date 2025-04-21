@@ -38,7 +38,6 @@ object FObjectInspector: TFObjectInspector
     TabIndex = 0
     OnChange = TCAttributesEventsChange
     OnMouseDown = TCAttributesEventsMouseDown
-    ExplicitWidth = 255
   end
   object PObjects: TPanel
     Left = 0

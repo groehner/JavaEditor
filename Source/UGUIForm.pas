@@ -66,8 +66,6 @@ type
     function toJavaColor(col: string): string;
     procedure SetGridOptions;
     procedure getFontSize;
-  protected
-    function GetFrameType: Integer; override;
   public
     ReadOnly: boolean;
     constructor Create(AOwner: TComponent); override;
@@ -80,7 +78,7 @@ type
     procedure SaveIn(const Dir: string); override;
     procedure Change(const NewFilename: string);
     function GetSaveAsName: string; override;
-    procedure SaveAs(const Filename: string); override;
+    procedure SaveAs(const Filename: string);
     function GetFormType: string; override;
     procedure Print; override;
     procedure UpdateState; override;
@@ -96,6 +94,7 @@ type
     procedure DPIChanged; override;
     procedure Scale(NewPPI, OldPPI: integer);
     procedure EndOfResizeMoveDetected(var Msg: Tmessage); message WM_EXITSIZEMOVE;
+    function GetFrameType: Integer;
   published
     property Resizable: boolean read FResizable write FResizable;
     property Undecorated: boolean read FUndecorated write FUndecorated;
@@ -171,14 +170,14 @@ begin
   Modified:= false;
   OnMouseActivate:= FormMouseActivate;
 
-  if isAWT then Background:= clWhite;
   FJava.ConnectGUIAndJavaWindow(Self);
+  if (Partner as TFEditForm).isAWT then Background:= clWhite;
   SetState(State);
   Enter(Self); // must stay!
   if Animation then
     SetAnimation(true);
   ReadOnly:= IsWriteProtected(Filename);
-  if Frametype in [4, 7] then Caption:= '';
+  if GetFrametype in [4, 7] then Caption:= '';
   if FontSize = 0 then
     GetFontSize;
 end;
@@ -295,7 +294,7 @@ begin
   inherited;
   if (FGUIDesigner.ELDesigner.DesignControl <> Self) or not FGUIDesigner.ELDesigner.Active then
     FGUIDesigner.ChangeTo(Self);
-  FJava.ShowAWTSwingOrFX(Partner.FrameType);
+  FJava.ShowAWTSwingOrFX(GetFrameType);
   FJava.EnableUpdateMenuItems;
 end;
 
@@ -336,14 +335,14 @@ procedure TFGUIForm.SetBoundsForFormular;
   var s1, s2: string; EditForm, HTMLPartner: TFEditForm;
 begin
   EditForm:= Partner as TFEditForm;
-  if FrameType in [2, 3, 5, 6] then begin
+  if GetFrameType in [2, 3, 5, 6] then begin
     s1:= 'int frameWidth';
     s2:= FConfiguration.Indent2 + 'int frameWidth = ' + IntToStr(PPIUnScale(Width)) + '; ';
     EditForm.ReplaceLine(s1, s2);
     s1:= 'int frameHeight';
     s2:= FConfiguration.Indent2 + 'int frameHeight = ' + IntToStr(PPIUnScale(Height)) + ';';
     EditForm.ReplaceLine(s1, s2);
-  end else if FrameType in [4, 7] then begin // Applet, JApplet
+  end else if GetFrameType in [4, 7] then begin // Applet, JApplet
     s1:= ' cp.setBounds(';
     s2:= FConfiguration.Indent2 + 'cp.setBounds(0, 0, ' + IntToStr(PPIUnScale(Width)) + ', ' +
          IntToStr(PPIUnScale(Height)) + ');';
@@ -352,7 +351,7 @@ begin
     HTMLPartner:= TFEditForm(FJava.getTDIWindowType(s1, '%E%'));
     if Assigned(HTMLPartner) then
       HTMLPartner.ReplaceWidthHeight(Width, Height);
-  end else if FrameType = 8 then begin // JavaFX
+  end else if GetFrameType = 8 then begin // JavaFX
     s1:= 'Scene scene = new Scene(root';
     s2:= FConfiguration.Indent2 + 'Scene scene = new Scene(root, ' +
            IntToStr(PPIUnScale(Width-16)) + ', ' + IntToStr(PPIUnScale(Height-38)) + ');';
@@ -462,7 +461,7 @@ begin
                 HierarchyEvents + InputMethodEvents + PropertyEvents +
                 AncestorEvents1 + CaretEvents + ComponentEvents;
   end;
-  if not FrameType in [4, 7] then
+  if not GetFrameType in [4, 7] then
     Result:= Result + WindowEvents;
   Result:= Result + '|';
 end;
