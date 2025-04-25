@@ -31,7 +31,6 @@ object FTextDiff: TFTextDiff
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    ExplicitWidth = 708
     object TBClose: TToolButton
       Left = 4
       Top = 0
@@ -153,8 +152,6 @@ object FTextDiff: TFTextDiff
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 708
-    ExplicitHeight = 291
     object Splitter: TSplitter
       Left = 315
       Top = 0
@@ -170,7 +167,6 @@ object FTextDiff: TFTextDiff
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitHeight = 291
       object PCaptionLeft: TPanel
         Left = 0
         Top = 0
@@ -190,8 +186,6 @@ object FTextDiff: TFTextDiff
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 390
-      ExplicitHeight = 291
       object PCaptionRight: TPanel
         Left = 0
         Top = 0
@@ -201,7 +195,6 @@ object FTextDiff: TFTextDiff
         Alignment = taLeftJustify
         BevelOuter = bvLowered
         TabOrder = 0
-        ExplicitWidth = 390
       end
     end
   end
@@ -210,8 +203,6 @@ object FTextDiff: TFTextDiff
     Top = 318
     Width = 712
     Height = 25
-    ExplicitTop = 317
-    ExplicitWidth = 708
     object liLineColumn: TSpTBXLabelItem
       Caption = '0000: 000'
       Alignment = taCenter

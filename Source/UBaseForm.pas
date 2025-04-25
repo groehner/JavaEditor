@@ -163,6 +163,7 @@ end;
 
 procedure TFForm.Save(MitBackup: Boolean);
 begin
+  // in some descendet classes Save isn't needed
 end;
 
 procedure TFForm.SaveIn(const Dir: string);
@@ -192,16 +193,16 @@ begin
 end;
 
 procedure TFForm.SetState(var State: string);
-  var p: Integer; WS: TWindowState;
+  var Posi: Integer;
 begin
   if State = '' then Exit;
   if Copy(State, 1, 1) = 'W' then begin
-    p:= Pos(')', State); Delete(State, 1, p);
-    p:= Pos(')', State); Delete(State, 1, p);
-    p:= Pos(')', State); Delete(State, 1, p);
-    p:= Pos(')', State); Delete(State, 1, p);
-    p:= Pos(')', State); WS:= StrToWindowState(Copy(State, 1, p-1));
-    WindowState:= WS;
+    Posi:= Pos(')', State); Delete(State, 1, Posi);
+    Posi:= Pos(')', State); Delete(State, 1, Posi);
+    Posi:= Pos(')', State); Delete(State, 1, Posi);
+    Posi:= Pos(')', State); Delete(State, 1, Posi);
+    Posi:= Pos(')', State);
+    WindowState:= StrToWindowState(Copy(State, 1, Posi - 1));
   end;
 end;
 
@@ -343,18 +344,18 @@ begin
 end;
 
 function TFForm.DefaultFilename: Boolean;
- var i, p: Integer; s, Default: string;
+ var Int, Posi: Integer; Str, Default: string;
 begin
   Result:= False;
   if Assigned(FConfiguration) then
     if not FConfiguration.AcceptDefaultname then begin
       Default:= UpperCase(_(LNGFile));
-      s:= UpperCase(ExtractFileName(Pathname));
-      if Copy(s, 1, Length(Default)) = Default then begin
-        Delete(s, 1, Length(Default));
-        p:= Pos('.', s);
-        Delete(s, p, Length(s));
-        Result:= TryStrToInt(s, i);
+      Str:= UpperCase(ExtractFileName(Pathname));
+      if Copy(Str, 1, Length(Default)) = Default then begin
+        Delete(Str, 1, Length(Default));
+        Posi:= Pos('.', Str);
+        Delete(Str, Posi, Length(Str));
+        Result:= TryStrToInt(Str, Int);
         end
       else
         Result:= False;

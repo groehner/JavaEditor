@@ -171,13 +171,15 @@ begin
   OnMouseActivate:= FormMouseActivate;
 
   FJava.ConnectGUIAndJavaWindow(Self);
-  if (Partner as TFEditForm).isAWT then Background:= clWhite;
+  if (Partner as TFEditForm).isAWT then
+    Background:= clWhite;
   SetState(State);
   Enter(Self); // must stay!
   if Animation then
     SetAnimation(true);
   ReadOnly:= IsWriteProtected(Filename);
-  if GetFrametype in [4, 7] then Caption:= '';
+  if GetFrametype in [4, 7] then
+    Caption:= '';
   if FontSize = 0 then
     GetFontSize;
 end;

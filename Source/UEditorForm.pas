@@ -231,7 +231,7 @@ type
     procedure setFileExtension(value: string);
     function getJavaCodeAt(Caret: TPoint): string;
     procedure CreateTooltip(Caret, P: TPoint; const Token: string);
-    function getFrameType: Integer;
+    function GetFrameType: Integer;
   public
     Editor: TSynEditEx;
     SynEditPrint: TSynEditPrint;
@@ -3854,7 +3854,7 @@ begin
   end;
 end;
 
-function TFEditForm.getFrameType: Integer;
+function TFEditForm.GetFrameType: Integer;
 begin
   if (FFrameType = 0) and ((FileExtension = '.java') or (FileExtension = '.~ava')) then begin
     var JavaScanner:= TJavaScanner.create;

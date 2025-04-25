@@ -1385,7 +1385,7 @@ type
     procedure CheckMindstorms;
     function GetFrameType(JavaProgramm: string; Startclass: boolean = false): integer;
     function GetPackage(JavaProgram: string; Startclass: boolean = false): string;
-    function getCompilerCall(const Pathname, Package, Encoding: string): string;
+    function GetCompileParameter(const Pathname, Package, Encoding: string): string;
     procedure SetPrinter(const s: string);
     function getDumpText: string;
     function PathForSystemClass(const Path: string): boolean;
@@ -8008,7 +8008,7 @@ begin
   end;
 end;
 
-function TFConfiguration.getCompilerCall(const Pathname, Package, Encoding: string): string;
+function TFConfiguration.GetCompileParameter(const Pathname, Package, Encoding: string): string;
   var s: string;
 begin
   if MindstormsMode then

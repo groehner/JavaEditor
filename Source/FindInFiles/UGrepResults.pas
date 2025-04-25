@@ -200,7 +200,8 @@ procedure TFGrepResults.Execute;
             if (Search.Name <> '.') and (Search.Name <> '..') then
               DirGrep(Dir + Search.Name + '\', Uppercase(Mask));
         end
-        else if (Pos(Uppercase(ExtractFileExt(Search.Name)), Mask) > 0) or (Mask = '*.*')
+        else if ((Pos(Uppercase(ExtractFileExt(Search.Name)), Mask) > 0) or (Mask = '*.*')) and
+                ((Search.Attr and faReadOnly) = 0)
         then begin
           Results:= nil;
           Pathname:= Dir + Search.Name;
@@ -224,7 +225,7 @@ procedure TFGrepResults.Execute;
               if mySearchOptions.ExcludeCommentsAndStrings then
                 myEditor.Highlighter:= FConfiguration.GetHighlighter(Pathname);
               BeginSearch(myEditor, Pathname);
-              myEditor.ReplaceTabs(FConfiguration.TabWidth);
+              // myEditor.ReplaceTabs(FConfiguration.TabWidth);
               if mySearchOptions.RegEx
                 then MyRegExSearch.DoGrepRegSearchReplace(Editor)
                 else DoSearchReplace(MySearchOptions.SearchText, MySearchOptions.ReplaceText);
@@ -232,7 +233,7 @@ procedure TFGrepResults.Execute;
               if MySearchOptions.Replace and myEditor.Modified then
                 myEditor.Lines.SaveToFile(Pathname, myEditor.Lines.Encoding);
             finally
-             FreeAndNil(myEditor);
+              FreeAndNil(myEditor);
             end;
           end;
           inc(FileCount);

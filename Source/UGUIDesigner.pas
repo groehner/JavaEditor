@@ -95,6 +95,8 @@ type
     procedure ComponentToForeground(aPartner: TFEditForm; Control: TControl);
     function GetPixelsPerInchOfFile(Filename: string): integer;
     procedure RemovePixelsPerInch0(Filename: string);
+    procedure RemoveMDIChild(Filename: string);
+    procedure RemoveFrameType(Filename: string);
   public
     ELDesigner: TELDesigner;
     DesignForm: TFGuiForm;
@@ -828,6 +830,46 @@ begin
   end;
 end;
 
+procedure TFGUIDesigner.RemoveMDIChild(Filename: string);
+begin
+  var SL:= TStringList.Create;
+  try
+    SL.LoadFromFile(Filename);
+    for var i:= 0 to SL.Count -1 do begin
+      var s:= SL[i];
+      var p:= Pos('FormStyle = fsMDIChild', s);
+      if p > 0 then begin
+        SL.Delete(i);
+        SL.SaveToFile(Filename);
+        Break;
+      end else if Pos('  object', s) > 0 then
+        Break;
+    end;
+  finally
+    FreeAndNil(SL);
+  end;
+end;
+
+procedure TFGUIDesigner.RemoveFrameType(Filename: string);
+begin
+  var SL:= TStringList.Create;
+  try
+    SL.LoadFromFile(Filename);
+    for var i:= 0 to SL.Count -1 do begin
+      var s:= SL[i];
+      var p:= Pos('FrameType =', s);
+      if p > 0 then begin
+        SL.Delete(i);
+        SL.SaveToFile(Filename);
+        Break;
+      end else if Pos('  object', s) > 0 then
+        Break;
+    end;
+  finally
+    FreeAndNil(SL);
+  end;
+end;
+
 function TFGUIDesigner.GetPixelsPerInchOfFile(Filename: string): integer;
 begin
   Result:= 96;
@@ -888,6 +930,8 @@ begin
     RemovePixelsPerInch0(Filename);
     PPI:= 96;
   end;
+  RemoveMDIChild(Filename);
+  RemoveFrameType(Filename);
   JavaForm := TFEditForm(FJava.getTDIWindow(JavaFilename));
   FObjectGenerator.Partner := JavaForm;
   FilStream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);

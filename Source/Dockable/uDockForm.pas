@@ -25,14 +25,14 @@ type
   private
     FUndockLeft: Integer;
     FUndockTop: Integer;
-    FFloatOnCloseDock: boolean;
+    FFloatOnCloseDock: Boolean;
     function ComputeDockingRect(var DockRect: TRect; MousePos: TPoint): TAlign;
     procedure WMNCLButtonDown(var Msg: TMessage); message WM_NCLBUTTONDOWN;
     procedure CMDockClient(var Message: TCMDockClient); message CM_DOCKCLIENT;
   public
     property UndockLeft: Integer read FUndockLeft write FUndockLeft;
     property UndockTop: Integer read FUndockTop write FUndockTop;
-    property FloatOnCloseDock: boolean read FFloatOnCloseDock write FFloatOnCloseDock;
+    property FloatOnCloseDock: Boolean read FFloatOnCloseDock write FFloatOnCloseDock;
   end;
 
 implementation
@@ -49,7 +49,7 @@ var
   ARect: TRect;
 begin
   Accept := (Source.Control is TDockableForm);
-  if (Sender is TFMessages) and (Source.Control is TFFileStructure) then Accept:= false;
+  if (Sender is TFMessages) and (Source.Control is TFFileStructure) then Accept:= False;
   //Draw dock preview depending on where the cursor is relative to our client area
   if Accept and (ComputeDockingRect(ARect, Point(X, Y)) <> alNone) then
   begin

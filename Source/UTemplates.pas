@@ -141,7 +141,7 @@ begin
     var FName:= ChangeFileExt(ExtractFilename(Pathname), '');
     s:= GetTemplate(FName, Nr);
     if s = '' then
-      case Frametype of
+      case FrameType of
         2: s:= GetFrameCode(FName, true);
         3: s:= GetDialogCode(FName, true);
         4: s:= GetAppletCode(FName, true);
