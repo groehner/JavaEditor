@@ -219,7 +219,7 @@ end;
 procedure TStCustomDropFiles.TargetWndProc(var Msg : TMessage);
 var
   DropHandle : Integer;
-  I          : Integer;
+  Int          : Integer;
   Buff       : array [0..MAX_PATH - 1] of Char;
   Point      : TPoint;
 begin
@@ -229,8 +229,8 @@ begin
       FCount := DragQueryFile(DropHandle, Cardinal(-1), nil, 0);
       if FCount > 0 then begin
         FFiles.Clear;
-        for I := 0 to Pred(FCount) do begin
-          DragQueryFile(DropHandle, I, Buff, Length(Buff));
+        for Int := 0 to Pred(FCount) do begin
+          DragQueryFile(DropHandle, Int, Buff, Length(Buff));
           FFiles.Add(Buff);
         end;
         DragQueryPoint(DropHandle, Point);

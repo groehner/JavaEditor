@@ -2,104 +2,125 @@ unit UJavaScanner;
 
 interface
 
-  uses Classes;
+uses Classes;
 
-  type
+type
 
   TJavaScanner = class
+  private
+    FColumn: Integer; // current column
+    FComment: string;
+    FCommentLineE: Integer;
+    FCommentLineS: Integer;
+    FCompoundTokens: Boolean;
+    FCurrPos: PChar;
+    FGenericToken: Integer; // Pocket<Pocket<String>> versus a >> b
+    FLastToken: string;
+    FLastTokenColumn: Integer;
+    FLastTokenLine: Integer;
+    FLine: Integer; // current line, calculated by GetNextToken
+    FScanStr: string;
+    FStartPos: PChar;
+    FStream: TMemoryStream;
+    FToken: string;
+    FTokenColumn: Integer;
+    FTokenLine: Integer;
+    FTokenTyp: string;
   public
-    Stream: TMemoryStream;
-    Comment: string; // Accumulated comment string used for documentation of entities.
-    CommentLineS: integer;
-    CommentLineE: integer;
-    Line: Integer;               // current line, calculated by GetNextToken
-    Column: integer;             // current column
-    LastTokenLine: integer;
-    LastTokenColumn: integer;
-    TokenLine: integer;
-    TokenColumn: integer;
-    StartPos: PChar;
-    CurrPos: PChar;
-    ScanStr: string;
-    LastToken: string;
-    Token: string;
-    TokenTyp: string;
-    CompoundTokens: boolean;
-    GenericToken: integer;   // Pocket<Pocket<String>> versus a >> b
-    constructor create;
-    procedure Init(const s: string); overload;  // simple scanning of a string
-    procedure Init(aStream: TStream); overload;
+    constructor Create;
+    procedure Init(const Str: string); overload; // simple scanning of a string
+    procedure Init(Stream: TStream); overload;
     destructor Destroy; override;
-
-    function GetChar: char;
+    function GetChar: Char;
     procedure EatWhiteSpace;
     function GetNextToken: string;
     function LookAheadToken: string; overload;
     function LookAheadToken(Tokens: string): string; overload;
     function LookDoubleAheadToken: string;
-    function getPackage(const s: string): string;
+    function GetPackage(const Str: string): string;
     function GetGeneric: string; overload;
-    function GetGeneric(s: string): string; overload;
-    function IsInterface(const s: string): boolean;
-    function getExtends: string;
-    function SkipToken(const what: string): Boolean;
-    procedure SkipTo(ch: char);
-    procedure SkipPair(const open, close: string);
-    procedure SkipPairTo(const open, close: string);
-    procedure SkipPairStopAt(const open, close, stopAt: string);
+    function GetGeneric(Str: string): string; overload;
+    function IsInterface(const Str: string): Boolean;
+    function GetExtends: string;
+    function SkipToken(const What: string): Boolean;
+    procedure SkipTo(Chr: Char);
+    procedure SkipPair(const Open, Close: string);
+    procedure SkipPairTo(const Open, Close: string);
+    procedure SkipPairStopAt(const Open, Close, StopAt: string);
     procedure SkipCondition;
     procedure ParseAnnotations;
     procedure ParseModifiers;
-    function empty: boolean;
+    function Empty: Boolean;
     function GetTypeArgument: string;
     function GetTypeName: string;
-    function IsIdentifier(const s: string): boolean;
-    function getFilename: string;
-    function GetFrameType: integer;
-    function NeedsJavaFX(s: string): boolean;
+    function IsIdentifier(const Str: string): Boolean;
+    function GetFilename: string;
+    function GetFrameType: Integer;
+    function NeedsJavaFX(Str: string): Boolean;
+
+    property Comment: string read FComment write FComment;
+    property CommentLineE: Integer read FCommentLineE write FCommentLineE;
+    property CommentLineS: Integer read FCommentLineS write FCommentLineS;
+    property CompoundTokens: Boolean read FCompoundTokens write FCompoundTokens;
+    property CurrPos: PChar read FCurrPos;
+    property LastToken: string read FLastToken;
+    property LastTokenColumn: Integer read FLastTokenColumn;
+    property LastTokenLine: Integer read FLastTokenLine;
+    property Line: Integer read FLine;
+    property StartPos: PChar read FStartPos write FStartPos;
+    property Token: string read FToken write FToken;
+    property TokenColumn: Integer read FTokenColumn;
+    property TokenLine: Integer read FTokenLine;
+    property TokenTyp: string read FTokenTyp;
   end;
 
 implementation
 
-uses SysUtils, Character, UUtils;
+uses
+  SysUtils,
+  Character,
+  UUtils;
 
-{--- Scanner ------------------------------------------------------------------}
+{ --- Scanner ------------------------------------------------------------------ }
 
-constructor TJavaScanner.create;
+constructor TJavaScanner.Create;
 begin
-  Line:= 1;
-  Column:= 1;
-  GenericToken:= 0;
-  LastTokenLine:= -1;
+  FLine := 1;
+  FColumn := 1;
+  FGenericToken := 0;
+  FLastTokenLine := -1;
 end;
 
-function TJavaScanner.empty: boolean;
+function TJavaScanner.Empty: Boolean;
 begin
-  Result:= (CurrPos^ = #0);
+  Result := (FCurrPos^ = #0);
 end;
 
-function TJavaScanner.GetChar: char;
+function TJavaScanner.GetChar: Char;
 begin
-  Result:= CurrPos^;
-  if (CurrPos^ = #10) or ((CurrPos^ = #13) and ((CurrPos+1)^ <> #10)) then begin
-    inc(Line);
-    Column:= 0;
+  Result := FCurrPos^;
+  if (FCurrPos^ = #10) or ((FCurrPos^ = #13) and ((FCurrPos + 1)^ <> #10)) then
+  begin
+    Inc(FLine);
+    FColumn := 0;
   end;
-  if Result <> #0 then begin
-    inc(CurrPos);
-    inc(Column);
+  if Result <> #0 then
+  begin
+    Inc(FCurrPos);
+    Inc(FColumn);
   end;
 end;
 
 procedure TJavaScanner.EatWhiteSpace;
 var
-  inComment, continueLastComment, State: Boolean;
+  InComment, ContinueLastComment, State: Boolean;
 
   procedure EatOne;
   begin
-    if inComment
-      then Comment:= Comment + GetChar
-      else GetChar;
+    if InComment then
+      FComment := FComment + GetChar
+    else
+      GetChar;
   end;
 
   procedure DelOne;
@@ -109,66 +130,73 @@ var
 
   function EatWhite: Boolean;
   begin
-    Result:= False;
-    while not CharInSet(CurrPos^, [#0, #33..#255]) do
+    Result := False;
+    while not CharInSet(FCurrPos^, [#0, #33 .. #255]) do
     begin
-      Result:= True;
+      Result := True;
       EatOne;
     end;
   end;
 
   function EatStarComment: Boolean;
   begin
-    Result:= True;
-    while (not ((CurrPos^ = '*') and ((CurrPos + 1)^ = '/'))) and (CurrPos^ <> #0) do
+    Result := True;
+    while (not((FCurrPos^ = '*') and ((FCurrPos + 1)^ = '/'))) and
+      (FCurrPos^ <> #0) do
       EatOne;
-    continueLastComment:= False;
+    ContinueLastComment := False;
     EatOne;
     EatOne;
   end;
 
   function EatSlashComment: Boolean;
   begin
-    Result:= True;
-    while (CurrPos^ <> #13) and (CurrPos^ <> #10) and (CurrPos^ <> #0) do begin
-      Result:= True;
+    Result := True;
+    while (FCurrPos^ <> #13) and (FCurrPos^ <> #10) and (FCurrPos^ <> #0) do
+    begin
+      Result := True;
       DelOne;
     end;
-    continueLastComment:= True;
-    inComment:= False;
-    while CharInSet(CurrPos^, [#13, #10]) do
+    ContinueLastComment := True;
+    InComment := False;
+    while CharInSet(FCurrPos^, [#13, #10]) do
       DelOne;
   end;
 
 begin
-  inComment:= False;
-  continueLastComment:= False;
-  State:= True;
-  CommentLineS:= -1;
-  while State do begin
-    State:= False;
-    if (CurrPos^ = #10) or ((CurrPos^ = #13) and ((CurrPos + 1)^ = #10)) then
-      continueLastComment:= False;
-    if not CharInSet(CurrPos^, [#0, #33..#255]) then State:= EatWhite;
-    if (CurrPos^ = '/') and ((CurrPos + 1)^ = '*') then begin
-      CommentLineS:= Line;
-      inComment:= true;
-      Comment:= '';
+  InComment := False;
+  ContinueLastComment := False;
+  State := True;
+  FCommentLineS := -1;
+  while State do
+  begin
+    State := False;
+    if (FCurrPos^ = #10) or ((FCurrPos^ = #13) and ((FCurrPos + 1)^ = #10)) then
+      ContinueLastComment := False;
+    if not CharInSet(FCurrPos^, [#0, #33 .. #255]) then
+      State := EatWhite;
+    if (FCurrPos^ = '/') and ((FCurrPos + 1)^ = '*') then
+    begin
+      FCommentLineS := FLine;
+      InComment := True;
+      FComment := '';
       EatOne;
       EatOne;
-      State:= EatStarComment;
-      inComment:= False;
-      CommentLineE:= Line;
+      State := EatStarComment;
+      InComment := False;
+      FCommentLineE := FLine;
     end;
-    if (CurrPos^ = '/') and ((CurrPos + 1)^ = '/') then begin
-      if not continueLastComment
-        then Comment:= ''
-        else Comment:= Comment + #13#10;
+    if (FCurrPos^ = '/') and ((FCurrPos + 1)^ = '/') then
+    begin
+      if not ContinueLastComment then
+        FComment := ''
+      else
+        FComment := FComment + #13#10;
       EatOne;
       EatOne; // Skip the double slashes
-      inComment:= true;
-      State:= EatSlashComment;
-      inComment:= false;
+      InComment := True;
+      State := EatSlashComment;
+      InComment := False;
     end;
   end;
 end;
@@ -177,520 +205,619 @@ function TJavaScanner.GetNextToken: string;
 
   procedure AddOne;
   begin
-    Token:= Token + GetChar;
+    FToken := FToken + GetChar;
   end;
 
 begin
-  LastToken:= Token;
-  Token:= '';
-  TokenTyp:= '';
+  FLastToken := FToken;
+  FToken := '';
+  FTokenTyp := '';
   EatWhiteSpace;
-  if LastTokenLine = -1 then begin
-    LastTokenLine:= Line;
-    LastTokenColumn:= Column;
-  end else begin
-    LastTokenLine:= TokenLine;
-    LastTokenColumn:= TokenColumn;
+  if FLastTokenLine = -1 then
+  begin
+    FLastTokenLine := FLine;
+    FLastTokenColumn := FColumn;
+  end
+  else
+  begin
+    FLastTokenLine := FTokenLine;
+    FLastTokenColumn := FTokenColumn;
   end;
-  TokenLine:= Line;
-  TokenColumn:= Column;
-  if CurrPos^ = '"' then begin // Parse String
+  FTokenLine := FLine;
+  FTokenColumn := FColumn;
+  if FCurrPos^ = '"' then
+  begin // Parse String
     AddOne;
-    while not CharInSet(CurrPos^, ['"', #0]) do begin
-      if ((CurrPos^ = '\') and CharInSet((CurrPos + 1)^, ['"', '\'])) then AddOne;
-      AddOne;
-    end;
-    AddOne;
-    TokenTyp:= 'String';
-  end else if CurrPos^ = '''' then begin // Parse char
-    AddOne;
-    while not CharInSet(CurrPos^, ['''', #0]) do begin
-      if ((CurrPos^ = '\') and CharInSet((CurrPos + 1)^, ['''', '\'])) then AddOne;
-      AddOne;
-    end;
-    AddOne;
-    TokenTyp:= 'int'; // insteas of char
-  end else if CurrPos^.isLetter or (Pos(CurrPos^, '_$') > 0) then begin
-    AddOne;
-    while true do begin
-      while CurrPos^.isLetterOrDigit or (CurrPos^ = '_') do
+    while not CharInSet(FCurrPos^, ['"', #0]) do
+    begin
+      if ((FCurrPos^ = '\') and CharInSet((FCurrPos + 1)^, ['"', '\'])) then
         AddOne;
-      if CompoundTokens and (CurrPos^ = '.') then begin
+      AddOne;
+    end;
+    AddOne;
+    FTokenTyp := 'String';
+  end
+  else if FCurrPos^ = '''' then
+  begin // Parse char
+    AddOne;
+    while not CharInSet(FCurrPos^, ['''', #0]) do
+    begin
+      if ((FCurrPos^ = '\') and CharInSet((FCurrPos + 1)^, ['''', '\'])) then
+        AddOne;
+      AddOne;
+    end;
+    AddOne;
+    FTokenTyp := 'int'; // insteas of char
+  end
+  else if FCurrPos^.IsLetter or (Pos(FCurrPos^, '_$') > 0) then
+  begin
+    AddOne;
+    while True do
+    begin
+      while FCurrPos^.IsLetterOrDigit or (FCurrPos^ = '_') do
+        AddOne;
+      if FCompoundTokens and (FCurrPos^ = '.') then
+      begin
         AddOne;
         Continue;
       end;
       Break;
     end;
-    while CurrPos^ = '[' do begin
-      var bracket:= 1;
+    while FCurrPos^ = '[' do
+    begin
+      var
+      Bracket := 1;
       AddOne;
-      while (bracket > 0) and (CurrPos^ <> #0) and (CurrPos^ <> '}') and (CurrPos^ <> ';') do begin
-        if CurrPos^ = '['
-          then inc(bracket)
-        else if CurrPos^ = ']'
-          then dec(bracket);
+      while (Bracket > 0) and (FCurrPos^ <> #0) and (FCurrPos^ <> '}') and
+        (FCurrPos^ <> ';') do
+      begin
+        if FCurrPos^ = '[' then
+          Inc(Bracket)
+        else if FCurrPos^ = ']' then
+          Dec(Bracket);
         AddOne;
       end;
     end;
   end
-  else if CharInSet(CurrPos^, [';', '{', '}', '(', ')', ',', ':', '.', '?', '@']) then begin
-    //single chars to test
+  else if CharInSet(FCurrPos^, [';', '{', '}', '(', ')', ',', ':', '.', '?',
+    '@']) then
+  begin
+    // single chars to test
     AddOne;
-    if CurrPos^= ':' then  // double colon operator
+    if FCurrPos^ = ':' then // double colon operator
       AddOne
-    else if (CurrPos^= '.') and ((CurrPos+1)^ = '.') then begin
+    else if (FCurrPos^ = '.') and ((FCurrPos + 1)^ = '.') then
+    begin
       AddOne;
       AddOne;
-    end
-  end else if CurrPos^ = '=' then begin //single chars to test
-    AddOne;
-    while CurrPos^ = '=' do AddOne;
-  end
-  else if CurrPos^ = '[' then begin  // loose brackets
-    AddOne;
-    EatWhitespace;
-    if CurrPos^ = ']' then AddOne;
-  end
-  else if CharInSet(CurrPos^, ['*', '/', '%', '+', '-', '<', '>', '&', '^', '|']) then begin // operators
-    AddOne;
-    if GenericToken = 0 then
-      while CharInSet(CurrPos^, ['<', '>']) do AddOne;
-    if CharInSet(CurrPos^,  ['=', '+', '-']) then AddOne;
-  end else if CharInSet(CurrPos^, ['0'..'9']) then begin
-    AddOne;
-    TokenTyp:= 'int';
-    while CharInSet(CurrPos^, ['0'..'9', '.', 'E', 'e']) do begin
-      AddOne;
-      TokenTyp:= 'double';
     end;
-  end else
-    while not CharInSet(CurrPos^, [#0, #9, #10, #12, #13, #32, ',', '=', ';', '{', '}', '(', ')', '"', '''']) do
+  end
+  else if FCurrPos^ = '=' then
+  begin // single chars to test
+    AddOne;
+    while FCurrPos^ = '=' do
       AddOne;
-  Result:= Token;
-  //FJava.Memo1.Lines.Add( TimeToStr(Now) + ' Line: ' + IntTostr(LIne) + '  Token: ' + Result);
+  end
+  else if FCurrPos^ = '[' then
+  begin // loose brackets
+    AddOne;
+    EatWhiteSpace;
+    if FCurrPos^ = ']' then
+      AddOne;
+  end
+  else if CharInSet(FCurrPos^, ['*', '/', '%', '+', '-', '<', '>', '&', '^',
+    '|']) then
+  begin // operators
+    AddOne;
+    if FGenericToken = 0 then
+      while CharInSet(FCurrPos^, ['<', '>']) do
+        AddOne;
+    if CharInSet(FCurrPos^, ['=', '+', '-']) then
+      AddOne;
+  end
+  else if CharInSet(FCurrPos^, ['0' .. '9']) then
+  begin
+    AddOne;
+    FTokenTyp := 'int';
+    while CharInSet(FCurrPos^, ['0' .. '9', '.', 'E', 'e']) do
+    begin
+      AddOne;
+      FTokenTyp := 'double';
+    end;
+  end
+  else
+    while not CharInSet(FCurrPos^, [#0, #9, #10, #12, #13, #32, ',', '=', ';',
+      '{', '}', '(', ')', '"', '''']) do
+      AddOne;
+  Result := FToken;
 end;
 
 function TJavaScanner.LookAheadToken: string;
-  var SaveCurrPos: PChar;
-      SaveLastToken: string;
-      SaveToken: string;
-      SaveLine: integer;
+var
+  SaveCurrPos: PChar;
+  SaveLastToken: string;
+  SaveToken: string;
+  SaveLine: Integer;
 begin
-  SaveCurrPos:= CurrPos;
-  SaveLastToken:= LastToken;
-  SaveToken:= Token;
-  SaveLine:= Line;
-  Result:= GetNextToken;
-  LastToken:= SaveLastToken;
-  Token:= SaveToken;
-  CurrPos:= SaveCurrPos;
-  Line:= SaveLine;
+  SaveCurrPos := FCurrPos;
+  SaveLastToken := FLastToken;
+  SaveToken := FToken;
+  SaveLine := FLine;
+  Result := GetNextToken;
+  FLastToken := SaveLastToken;
+  FToken := SaveToken;
+  FCurrPos := SaveCurrPos;
+  FLine := SaveLine;
 end;
 
 function TJavaScanner.LookAheadToken(Tokens: string): string;
-  var SaveCurrPos: PChar;
-      SaveLastToken: string;
-      SaveToken: string;
-      SaveLine, p: integer;
+var
+  SaveCurrPos: PChar;
+  SaveLastToken: string;
+  SaveToken: string;
+  SaveLine, Posi: Integer;
 begin
-  Result:= '';
-  SaveCurrPos:= CurrPos;
-  SaveLastToken:= LastToken;
-  SaveToken:= Token;
-  SaveLine:= Line;
+  Result := '';
+  SaveCurrPos := FCurrPos;
+  SaveLastToken := FLastToken;
+  SaveToken := FToken;
+  SaveLine := FLine;
   repeat
-    Result:= getNextToken;
-    p:= Pos(Result, Tokens);
-  until (p > 0) or empty;
-  LastToken:= SaveLastToken;
-  Token:= SaveToken;
-  CurrPos:= SaveCurrPos;
-  Line:= SaveLine;
+    Result := GetNextToken;
+    Posi := Pos(Result, Tokens);
+  until (Posi > 0) or Empty;
+  FLastToken := SaveLastToken;
+  FToken := SaveToken;
+  FCurrPos := SaveCurrPos;
+  FLine := SaveLine;
 end;
 
 function TJavaScanner.LookDoubleAheadToken: string;
-  var SaveCurrPos: PChar;
-      SaveLastToken: string;
-      SaveToken: string;
-      SaveLine: integer;
+var
+  SaveCurrPos: PChar;
+  SaveLastToken: string;
+  SaveToken: string;
+  SaveLine: Integer;
 begin
-  SaveCurrPos:= CurrPos;
-  SaveLastToken:= LastToken;
-  SaveToken:= Token;
-  SaveLine:= Line;
+  SaveCurrPos := FCurrPos;
+  SaveLastToken := FLastToken;
+  SaveToken := FToken;
+  SaveLine := FLine;
   GetNextToken;
-  Result:= GetNextToken;
-  LastToken:= SaveLastToken;
-  Token:= SaveToken;
-  CurrPos:= SaveCurrPos;
-  Line:= SaveLine;
+  Result := GetNextToken;
+  FLastToken := SaveLastToken;
+  FToken := SaveToken;
+  FCurrPos := SaveCurrPos;
+  FLine := SaveLine;
 end;
 
-function TJavaScanner.getPackage(const s: string): string;
+function TJavaScanner.GetPackage(const Str: string): string;
 begin
-  Result:= '';
-  CurrPos:= PChar(s);
+  Result := '';
+  FCurrPos := PChar(Str);
   GetNextToken;
-  if Token = 'package' then begin
+  if FToken = 'package' then
+  begin
     GetNextToken;
-    while (Token <> ';') and (Token <> '') do begin
-      Result:= Result + Token;
+    while (FToken <> ';') and (FToken <> '') do
+    begin
+      Result := Result + FToken;
       GetNextToken;
     end;
   end;
 end;
 
-function TJavaScanner.IsInterface(const s: string): boolean;
+function TJavaScanner.IsInterface(const Str: string): Boolean;
 begin
-  CurrPos:= PChar(s);
+  FCurrPos := PChar(Str);
   GetNextToken;
-  if Token = 'package' then begin
+  if FToken = 'package' then
+  begin
     GetNextToken;
     SkipToken(';');
   end;
 
-  while Token = 'import' do begin
+  while FToken = 'import' do
+  begin
     SkipTo(';');
     GetNextToken;
   end;
   ParseAnnotations;
   ParseModifiers;
-  Result:= Token = 'interface';
+  Result := FToken = 'interface';
 end;
 
-function TJavaScanner.getExtends: string;
+function TJavaScanner.GetExtends: string;
 begin
-  Result:= '';
+  Result := '';
   GetNextToken;
-  if Token = 'package' then begin
+  if FToken = 'package' then
+  begin
     GetNextToken;
     SkipToken(';');
   end;
 
-  while (Token = 'import') or (Token = ';') do begin
+  while (FToken = 'import') or (FToken = ';') do
+  begin
     SkipTo(';');
     GetNextToken;
   end;
   ParseAnnotations;
   ParseModifiers;
-  if Token = 'class' then begin
+  if FToken = 'class' then
+  begin
     GetNextToken;
     GetNextToken;
-    if Token = '<' then
+    if FToken = '<' then
       GetGeneric;
-    if Token = 'extends' then
-      Result:= GetNextToken;
+    if FToken = 'extends' then
+      Result := GetNextToken;
   end;
 end;
 
 destructor TJavaScanner.Destroy;
 begin
   inherited;
-  FreeAndNil(Stream);
+  FreeAndNil(FStream);
 end;
 
-procedure TJavaScanner.Init(const s: string);
+procedure TJavaScanner.Init(const Str: string);
 begin
-  ScanStr:= s;
-  CurrPos := PChar(ScanStr);
-  StartPos:= PChar(ScanStr);
-  CompoundTokens:= false;
+  FScanStr := Str;
+  FCurrPos := PChar(FScanStr);
+  FStartPos := PChar(FScanStr);
+  FCompoundTokens := False;
 end;
 
-procedure TJavaScanner.Init(aStream: TStream);
+procedure TJavaScanner.Init(Stream: TStream);
 begin
-  if Assigned(Stream) then
-    FreeAndNil(Stream);
-  Stream:= TMemoryStream(aStream);
-  CurrPos:= Stream.Memory;
-  StartPos:= Stream.Memory;
-  CompoundTokens:= true;
+  FreeAndNil(FStream);
+  FStream := TMemoryStream(Stream);
+  FCurrPos := FStream.Memory;
+  FStartPos := FStream.Memory;
+  FCompoundTokens := True;
 end;
 
-function TJavaScanner.SkipToken(const what: string): Boolean;
+function TJavaScanner.SkipToken(const What: string): Boolean;
 begin
-  Result:= False;
+  Result := False;
   GetNextToken;
-  if Token = what then begin
+  if FToken = What then
+  begin
     GetNextToken;
-    Result:= True;
+    Result := True;
   end;
 end;
 
-procedure TJavaScanner.SkipTo(ch: char);
+procedure TJavaScanner.SkipTo(Chr: Char);
 begin
-  while (Token <> ch) and (Token <> '') do begin
-    if Token = '{'
-      then SkipPairTo('{', '}')
-    else if Token = '('
-      then SkipPairTo('(', ')')
-    else GetNextToken;
+  while (FToken <> Chr) and (FToken <> '') do
+  begin
+    if FToken = '{' then
+      SkipPairTo('{', '}')
+    else if FToken = '(' then
+      SkipPairTo('(', ')')
+    else
+      GetNextToken;
   end;
 end;
 
 procedure TJavaScanner.ParseAnnotations;
 begin
-  while Token = '@' do begin
+  while FToken = '@' do
+  begin
     GetNextToken;
     GetNextToken;
-    if Token = '(' then
+    if FToken = '(' then
       SkipPair('(', ')');
   end;
 end;
 
 procedure TJavaScanner.ParseModifiers;
 (*
-ModifiersOpt:
-    { Modifier }
+  ModifiersOpt:
+  { Modifier }
 
-Modifier:
-    public
-    protected
-    private
-    static
-    abstract
-    final
-    native
-    synchronized
-    transient
-    volatile
-    strictfp
-    < T1, T2, ... >
+  Modifier:
+  public
+  protected
+  private
+  static
+  abstract
+  final
+  native
+  synchronized
+  transient
+  volatile
+  strictfp
+  < T1, T2, ... >
 *)
 begin
-  while True do begin
-    if Token = 'public' then
+  while True do
+  begin
+    if FToken = 'public' then
       GetNextToken
-    else if Token = 'protected' then
+    else if FToken = 'protected' then
       GetNextToken
-    else if Token = 'private' then
+    else if FToken = 'private' then
       GetNextToken
-    else if Token = 'static' then
+    else if FToken = 'static' then
       GetNextToken
-    else if Token = 'abstract' then
+    else if FToken = 'abstract' then
       GetNextToken
-    else if Token = 'final' then
+    else if FToken = 'final' then
       GetNextToken
-    else if Token = '<' then begin
+    else if FToken = '<' then
+    begin
       SkipPair('<', '>');
-      break
+      Break;
     end
-    else if (Token = 'native') or (Token = 'synchronized') or (Token = 'transient') or
-            (Token = 'volatile') or (Token = 'strictfp') then
-           GetNextToken
+    else if (FToken = 'native') or (FToken = 'synchronized') or
+      (FToken = 'transient') or (FToken = 'volatile') or (FToken = 'strictfp')
+    then
+      GetNextToken
     else
       Break;
   end;
 end;
 
-procedure TJavaScanner.SkipPair(const open, close: string);
+procedure TJavaScanner.SkipPair(const Open, Close: string);
 begin
-  if open = '<' then Inc(GenericToken);
-  var Count:= 1;
-  while (Count > 0) and (Token <> '') do begin
+  if Open = '<' then
+    Inc(FGenericToken);
+  var
+  Count := 1;
+  while (Count > 0) and (FToken <> '') do
+  begin
     GetNextToken;
-    if Token = open
-      then Inc(Count)
-    else if Token = close
-      then Dec(Count);
+    if FToken = Open then
+      Inc(Count)
+    else if FToken = Close then
+      Dec(Count);
   end;
   GetNextToken;
-  if open = '<' then Dec(GenericToken);
+  if Open = '<' then
+    Dec(FGenericToken);
 end;
 
-procedure TJavaScanner.SkipPairStopAt(const open, close, stopAt: string);
+procedure TJavaScanner.SkipPairStopAt(const Open, Close, StopAt: string);
 begin
-  if open = '<' then Inc(GenericToken);
-  var Count:= 1;
-  while (Count > 0) and (Token <> '') and (Pos(Token, stopAt) = 0) do begin
+  if Open = '<' then
+    Inc(FGenericToken);
+  var
+  Count := 1;
+  while (Count > 0) and (FToken <> '') and (Pos(FToken, StopAt) = 0) do
+  begin
     GetNextToken;
-    if Token = open
-      then Inc(Count)
-    else if Token = close
-      then Dec(Count);
+    if FToken = Open then
+      Inc(Count)
+    else if FToken = Close then
+      Dec(Count);
   end;
-  if (Pos(Token, stopAt) = 0) then
+  if (Pos(FToken, StopAt) = 0) then
     GetNextToken;
-  if open = '<' then Dec(GenericToken);
+  if Open = '<' then
+    Dec(FGenericToken);
 end;
 
-procedure TJavaScanner.SkipPairTo(const open, close: string);
+procedure TJavaScanner.SkipPairTo(const Open, Close: string);
 begin
-  if open = '<' then Inc(GenericToken);
-  var Count:= 1;
-  while (Count > 0) and (Token <> '') do begin
+  if Open = '<' then
+    Inc(FGenericToken);
+  var
+  Count := 1;
+  while (Count > 0) and (FToken <> '') do
+  begin
     GetNextToken;
-    if Token = open
-      then Inc(Count)
-    else if Token = close
-      then Dec(Count);
+    if FToken = Open then
+      Inc(Count)
+    else if FToken = Close then
+      Dec(Count);
   end;
-  if open = '<' then Dec(GenericToken);
+  if Open = '<' then
+    Dec(FGenericToken);
 end;
 
 procedure TJavaScanner.SkipCondition;
 begin
-  var Count:= 1;
-  while (Count > 0) and (Token <> '') do begin
+  var
+  Count := 1;
+  while (Count > 0) and (FToken <> '') do
+  begin
     GetNextToken;
-    if Token = '('
-      then Inc(Count)
-    else if Token = ')'
-      then Dec(Count)
-    else if (Token = '{') or (Token = '}')  then
-      exit;
+    if FToken = '(' then
+      Inc(Count)
+    else if FToken = ')' then
+      Dec(Count)
+    else if (FToken = '{') or (FToken = '}') then
+      Exit;
   end;
   GetNextToken;
 end;
 
-function TJavaScanner.GetGeneric(s: string): string;
+function TJavaScanner.GetGeneric(Str: string): string;
 begin
-  var Depth:= 1;
-  s:= s + Token;
+  var
+  Depth := 1;
+  Str := Str + FToken;
   repeat
     GetNextToken;
-    if (Pos(s[length(s)], '<.[') > 0) or (Token = ',') or (copy(Token, length(Token),1) = '>')
-      then s:= s + Token
-      else s:= s + ' ' + Token;
-    for var i:= 1 to length(Token) do begin
-      if Token[i] = '<' then inc(Depth);
-      if Token[i] = '>' then dec(Depth);
+    if (Pos(Str[Length(Str)], '<.[') > 0) or (FToken = ',') or
+      (Copy(FToken, Length(FToken), 1) = '>') then
+      Str := Str + FToken
+    else
+      Str := Str + ' ' + FToken;
+    for var I := 1 to Length(FToken) do
+    begin
+      if FToken[I] = '<' then
+        Inc(Depth);
+      if FToken[I] = '>' then
+        Dec(Depth);
     end;
-  until (Depth = 0) or (Token = '');
+  until (Depth = 0) or (FToken = '');
   GetNextToken;
-  Result:= s;
+  Result := Str;
 end;
 
 function TJavaScanner.GetGeneric: string;
 begin
-  var s:= getGeneric('');
-  Result:= copy(s, 2, length(s)-2);
+  var
+  Str := GetGeneric('');
+  Result := Copy(Str, 2, Length(Str) - 2);
 end;
 
 function TJavaScanner.GetTypeArgument: string;
 (*
   TypeArgument:
-    ReferenceType
-    ? [( extends |super ) ReferenceType]
+  ReferenceType
+  ? [( extends |super ) ReferenceType]
 *)
 begin
-  if Token = '?' then begin
-    Result:= '?';
+  if FToken = '?' then
+  begin
+    Result := '?';
     GetNextToken;
-    if (Token = 'extends') or (Token = 'super') then begin
-      Result:= Result + ' ' + Token;
+    if (FToken = 'extends') or (FToken = 'super') then
+    begin
+      Result := Result + ' ' + FToken;
       GetNextToken;
     end;
-    Result:= Result + ' ' + GetTypeName;
-  end else
-    Result:= GetTypeName;
+    Result := Result + ' ' + GetTypeName;
+  end
+  else
+    Result := GetTypeName;
 end;
 
 function TJavaScanner.GetTypeName: string;
 (*
   UnannPrimitiveType:  byte|short|int|long|char|float|double|boolean  (void)
   UnannReferenceType:
-    UnannClassOrInterfaceType
-    UnannTypeVariable (Identifier)
-    UnannArrayType    (UnannType with []s)
+  UnannClassOrInterfaceType
+  UnannTypeVariable (Identifier)
+  UnannArrayType    (UnannType with []s)
 
   UnannClassOrInterfaceType (=UnannClassType):
-    TypeIdentifier [TypeArguments]
-    PackageName . {Annotation} TypeIdentifier [TypeArguments]
-    UnannClassOrInterfaceType . {Annotation} TypeIdentifier [TypeArguments]
+  TypeIdentifier [TypeArguments]
+  PackageName . {Annotation} TypeIdentifier [TypeArguments]
+  UnannClassOrInterfaceType . {Annotation} TypeIdentifier [TypeArguments]
 
   TypeArguments:
-    < TypeArgument {, TypeArgument} >
+  < TypeArgument {, TypeArgument} >
 *)
 
 begin
-  inc(GenericToken);
-  Result:= Token;
+  Inc(FGenericToken);
+  Result := FToken;
   GetNextToken;
-  while Token <> '' do begin
-    if Token = '<' then begin
-      Result:= Result + '<';
+  while FToken <> '' do
+  begin
+    if FToken = '<' then
+    begin
+      Result := Result + '<';
       GetNextToken;
-      Result:= Result + GetTypeArgument;
-      while Token = ',' do begin
+      Result := Result + GetTypeArgument;
+      while FToken = ',' do
+      begin
         GetNextToken;
-        Result:= Result + ', ' + GetTypeArgument;
+        Result := Result + ', ' + GetTypeArgument;
       end;
-    end else if Token = '.' then begin
-      Result:= Result + Token;
+    end
+    else if FToken = '.' then
+    begin
+      Result := Result + FToken;
       GetNextToken;
-      Result:= Result + GetTypeName;
-    end else if Token = '>' then begin
-      Result:= Result + Token;
+      Result := Result + GetTypeName;
+    end
+    else if FToken = '>' then
+    begin
+      Result := Result + FToken;
       GetNextToken;
-      break;
-    end else if Token = '...' then begin
-      Result:= Result + Token;
+      Break;
+    end
+    else if FToken = '...' then
+    begin
+      Result := Result + FToken;
       GetNextToken;
-      break;
-    end else
-      break;
+      Break;
+    end
+    else
+      Break;
   end;
-  while Token = '[]' do begin
-    Result:= Result + Token;
+  while FToken = '[]' do
+  begin
+    Result := Result + FToken;
     GetNextToken;
   end;
-  dec(GenericToken);
+  Dec(FGenericToken);
 end;
 
-function TJavaScanner.IsIdentifier(const s: string): boolean;
+function TJavaScanner.IsIdentifier(const Str: string): Boolean;
 begin
-  Result:= false;
-  if Length(s) = 0 then exit;
-  if not (s[1].isLetter or (Pos(s[1], '_$') > 0)) then
-    exit;
-  for var i:= 2 to length(s) do
-    if not (s[i].isLetterOrDigit or (s[i] = '_')) then
-      exit;
-  Result:= true;
+  Result := False;
+  if Length(Str) = 0 then
+    Exit;
+  if not(Str[1].IsLetter or (Pos(Str[1], '_$') > 0)) then
+    Exit;
+  for var I := 2 to Length(Str) do
+    if not(Str[I].IsLetterOrDigit or (Str[I] = '_')) then
+      Exit;
+  Result := True;
 end;
 
-function TJavaScanner.getFilename: string;
+function TJavaScanner.GetFilename: string;
 begin
-  getNextToken;
+  GetNextToken;
   ParseAnnotations;
   ParseModifiers;
   GetTypeName;
-  Result:= Token;
+  if IsIdentifier(FToken) then
+    Result := FToken
+  else
+    Result := '';
 end;
 
-function TJavaScanner.GetFrameType: integer;
+function TJavaScanner.GetFrameType: Integer;
 begin
-  CompoundTokens:= true;
-  var Typ:= GetShortType(getExtends);
-  if Typ = 'Application' then Result:= 8 else
-  if Typ = 'JApplet'     then Result:= 7 else
-  if Typ = 'JDialog'     then Result:= 6 else
-  if Typ = 'JFrame'      then Result:= 5 else
-  if Typ = 'Applet'      then Result:= 4 else
-  if Typ = 'Dialog'      then Result:= 3 else
-  if Typ = 'Frame'       then Result:= 2 else
-                              Result:= 1;
+  FCompoundTokens := True;
+  var
+  Typ := GetShortType(GetExtends);
+  if Typ = 'Application' then
+    Result := 8
+  else if Typ = 'JApplet' then
+    Result := 7
+  else if Typ = 'JDialog' then
+    Result := 6
+  else if Typ = 'JFrame' then
+    Result := 5
+  else if Typ = 'Applet' then
+    Result := 4
+  else if Typ = 'Dialog' then
+    Result := 3
+  else if Typ = 'Frame' then
+    Result := 2
+  else
+    Result := 1;
 end;
 
-function TJavaScanner.NeedsJavaFX(s: string): boolean;
+function TJavaScanner.NeedsJavaFX(Str: string): Boolean;
 begin
-  Init(s);
-  Result:= false;
+  Init(Str);
+  Result := False;
   GetNextToken;
-  if Token = 'package' then begin
+  if FToken = 'package' then
+  begin
     GetNextToken;
     SkipToken(';');
   end;
 
-  while Token = 'import' do begin
+  while FToken = 'import' do
+  begin
     GetNextToken;
-    if Token = 'javafx' then
-      exit(true);
+    if FToken = 'javafx' then
+      Exit(True);
     SkipTo(';');
     GetNextToken;
   end;
 end;
-
 
 end.

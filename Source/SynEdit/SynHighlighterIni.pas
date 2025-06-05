@@ -93,12 +93,12 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;   
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;   
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -157,23 +157,23 @@ begin
   if Run > 0 then
   begin
     fTokenID := tkText;
-    inc(Run);
+    Inc(Run);
     Exit;
   end;
 
   // this is column 0 ok it is a Section
   fTokenID := tkSection;
-  inc(Run);
+  Inc(Run);
   while FLine[Run] <> #0 do
     case FLine[Run] of
       ']':
         begin
-          inc(Run);
-          break
+          Inc(Run);
+          Break
         end;
-      #10: break;
-      #13: break;
-    else inc(Run);
+      #10: Break;
+      #13: Break;
+    else Inc(Run);
     end;
 end;
 
@@ -181,27 +181,27 @@ procedure TSynIniSyn.CRProc;
 begin
   fTokenID := tkSpace;
   case FLine[Run + 1] of
-    #10: inc(Run, 2);
-    else inc(Run);
+    #10: Inc(Run, 2);
+    else Inc(Run);
   end;
 end;
 
 procedure TSynIniSyn.EqualProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynIniSyn.KeyProc;
 begin
   fTokenID := tkKey;
-  inc(Run);
+  Inc(Run);
   while FLine[Run] <> #0 do
     case FLine[Run] of
-      '=': break;
-      #10: break;
-      #13: break;
-      else inc(Run);
+      '=': Break;
+      #10: Break;
+      #13: Break;
+      else Inc(Run);
     end;
 end;
 
@@ -223,25 +223,25 @@ begin
   else
   begin
     fTokenID := tkText;
-    inc(Run);
+    Inc(Run);
     while FLine[Run] <> #0 do
       if IsTextChar then
-        inc(Run)
+        Inc(Run)
       else
-        break;
+        Break;
   end;
 end;
 
 procedure TSynIniSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynIniSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynIniSyn.NumberProc;
@@ -271,9 +271,9 @@ begin
     KeyProc
   else
   begin
-    inc(Run);
+    Inc(Run);
     fTokenID := tkNumber;
-    while IsNumberChar do inc(Run);
+    while IsNumberChar do Inc(Run);
     if IsAlphaChar then TextProc;
   end;
 end;
@@ -285,54 +285,54 @@ begin
   if Run > 0 then
   begin
     fTokenID := tkText;
-    inc(Run);
+    Inc(Run);
     Exit;
   end;
 
   // this is column 0 ok it is a comment
   fTokenID := tkComment;
-  inc(Run);
+  Inc(Run);
   while FLine[Run] <> #0 do
     case FLine[Run] of
-      #10: break;
-      #13: break;
-      else inc(Run);
+      #10: Break;
+      #13: Break;
+      else Inc(Run);
     end;
 end;
 
 procedure TSynIniSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 // ""
 procedure TSynIniSyn.StringProc;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then inc(Run, 2);
+  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then Inc(Run, 2);
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #34;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 // ''
 procedure TSynIniSyn.StringProc1;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then inc(Run, 2);
+  if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then Inc(Run, 2);
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #39;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynIniSyn.Next;
@@ -354,7 +354,7 @@ begin
   inherited;
 end;
 
-function TSynIniSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynIniSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -393,7 +393,7 @@ begin
   end;
 end;
 
-function TSynIniSyn.GetTokenKind: integer;
+function TSynIniSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

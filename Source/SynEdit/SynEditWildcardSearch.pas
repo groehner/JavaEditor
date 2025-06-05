@@ -80,7 +80,7 @@ begin
   inherited;
 end;
 
-function TSynEditWildcardSearch.FindAll(const NewText: UnicodeString): integer;
+function TSynEditWildcardSearch.FindAll(const NewText: UnicodeString): Integer;
 begin
   Result := inherited FindAll(NewText);
 end;
@@ -100,12 +100,12 @@ begin
   Result := fPattern;
 end;
 
-function TSynEditWildcardSearch.GetResult(Index: integer): integer;
+function TSynEditWildcardSearch.GetResult(Index: Integer): Integer;
 begin
   Result := inherited GetResult(Index);
 end;
 
-function TSynEditWildcardSearch.GetResultCount: integer;
+function TSynEditWildcardSearch.GetResultCount: Integer;
 begin
   Result := inherited GetResultCount;
 end;
@@ -125,15 +125,15 @@ end;
 function TSynEditWildcardSearch.WildCardToRegExpr(
   AWildCard: UnicodeString): UnicodeString;
 var
-  i: Integer;
+  Int: Integer;
 begin
   Result := '';
 
-  for i := 1 to Length(AWildCard) do
-    case AWildCard[i] of
+  for Int := 1 to Length(AWildCard) do
+    case AWildCard[Int] of
       '*': Result := Result + '.*';
       '?': Result := Result + '.?';
-      else Result := Result + AWildCard[i];
+      else Result := Result + AWildCard[Int];
     end;
 end;
 

@@ -148,14 +148,14 @@ uses
 function FindWinFromRoot(Root: HWND; ClassName: PChar): HWND;
 var
   Next, Child: HWND;
-  S: string;
+  Str: string;
 begin
   Result := 0;
   Next := GetWindow(Root, GW_CHILD or GW_HWNDFIRST);
   while (Next > 0) do
   begin
-    S := GetWindowClassName(Next);
-    if S = string(ClassName) then
+    Str := GetWindowClassName(Next);
+    if Str = string(ClassName) then
       Exit(Next);
     Next := GetWindow(Next, GW_HWNDNEXT);
     Child := GetWindow(Next, GW_CHILD or GW_HWNDFIRST);

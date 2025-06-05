@@ -19,27 +19,22 @@ uses
   Vcl.Buttons,
   Vcl.ImgList,
   Vcl.VirtualImageList,
-  Vcl.WinXPanels,
   Vcl.WinXCtrls,
   Vcl.ActnList,
-  Vcl.AppEvnts,
   Vcl.BaseImageCollection,
   Vcl.Edge,
   SynEdit,
   SynEditHighlighter,
   SynHighlighterMulti,
-  JvComponentBase,
-  JvDockControlForm,
   SpTBXItem,
   SpTBXDkPanels,
   TB2Dock,
   TB2Toolbar,
   TB2Item,
-  SpTBXEditors,
   SpTBXSkins,
   MarkdownProcessor,
-  uLLMSupport,
-  SVGIconImageCollection, UBaseForm;
+  SVGIconImageCollection,
+  ULLMSupport;
 
 type
   TLLMChatForm = class(TForm)
@@ -116,15 +111,16 @@ type
     FCodeBlocksRE: TRegEx;
     FBrowserReady: Boolean;
     FMarkdownProcessor: TMarkdownProcessor;
-    SynQuestion: TSynEdit;
+    FSynQuestion: TSynEdit;
     FHasFocus: Boolean;
+    FLLMChat: TLLMChat;
     procedure CopyToNewEditor(const Code: string);
     procedure ClearConversation;
     procedure DisplayActiveChatTopic;
     procedure DisplayQA(const Prompt, Answer, Reason: string);
     procedure DisplayTopicTitle(Title: string);
     procedure LoadBoilerplate;
-    function MarkdownToHTML(const MD: string): string;
+    function MarkdownToHTML(const MarkDown: string): string;
     function NavigateToString(Html: string): Boolean;
     procedure PythonHighlighterChange(Sender: TObject);
     procedure SetBrowserColorScheme;
@@ -136,8 +132,8 @@ type
     procedure WMDestroy(var Message: TWMDestroy); message WM_DESTROY;
     procedure WMSpSkinChange(var Message: TMessage); message WM_SPSKINCHANGE;
   public
-    LLMChat: TLLMChat;
     procedure ChangeStyle;
+    property LLMChat: TLLMChat read FLLMChat;
   end;
 
 var
@@ -150,28 +146,24 @@ implementation
 uses
   System.UITypes,
   System.SysUtils,
-  System.Math,
   System.IOUtils,
   Vcl.Dialogs,
   Vcl.StdCtrls,
   Vcl.Themes,
   Vcl.Clipbrd,
-  SpTBXControls,
   MarkdownUtils,
-  SynEditMiscProcs,
   SynEditKeyCmds,
-  JvDockGlobals,
   JvGnugettext,
   UJava,
   UEditorForm,
   UUtils,
   UStringRessources,
-  UConfiguration;
+  UConfiguration,
+  UBaseForm;
 
 resourcestring
   SQuestionHintValid = 'Ask me anything';
   SQuestionHintInvalid = 'Chat setup incomplete';
-
 
 {$REGION 'HTML templates'}
 
@@ -181,20 +173,20 @@ const
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta Name="viewport" content="Width=device-Width, initial-scale=1.0">
     <title>LLM Chat</title>
-%s
+%Str
 </head>
 <body>
     <!-- svgs -->
-%s
+%Str
     <!-- Title and other Content -->
-%s
+%Str
     <!-- Container where Q&A will be added -->
     <div id="qa-list">
     </div>
     <!-- Scripts -->
-%s
+%Str
 </body>
 </html>
 ''';
@@ -283,7 +275,6 @@ const
 
 ''';
 
-const
   CodeStyleSheetTemplate = '''
     <style>
         .code-box {
@@ -376,7 +367,7 @@ const
             color: %s
         }
 
-        .token.attr-name{
+        .token.attr-Name{
             color: %s
         }
 
@@ -387,16 +378,16 @@ const
         }
 
         .token.function,
-        .token.function-name {
+        .token.function-Name {
             color: %s
         }
 
-        .token.boolean,
+        .token.Boolean,
         .token.number {
             color: %s
         }
 
-        .token.class-name,
+        .token.class-Name,
         .token.constant,
         .token.property,
         .token.symbol {
@@ -412,7 +403,7 @@ const
         }
 
         .token.attr-value,
-        .token.char,
+        .token.Char,
         .token.regex,
         .token.string,
         .token.variable {
@@ -478,20 +469,20 @@ const
   CodeBlock = '''
       <div class="code-box">
           <div class="code-header">
-              %s
-              <button class="code-header-button" title="%s" onclick="copyCode('code%s')">
-                  <svg width="24" height="24">
-                      <use href="#copy-icon">
+              %Str
+              <button class="code-header-button" title="%Str" onclick="copyCode('code%s')">
+                  <svg Width="24" Height="24">
+                      <use href="#Copy-icon">
                   </svg>
               </button>
-              <button class="code-header-button" title="%s" onclick="codeToEditor('code%2:s')">
-                  <svg width="24" height="24">
+              <button class="code-header-button" title="%Str" onclick="codeToEditor('code%2:s')">
+                  <svg Width="24" Height="24">
                       <use href="#new-editor-icon">
                   </svg>
               </button>
           </div>
-          <div class="code-container" id="code%2:s">
-              <pre><code class="language-%4:s">%5:s</code></pre>
+          <div class="code-container" id="code%2:Str">
+              <pre><code class="language-%4:Str">%5:Str</code></pre>
           </div>
       </div>
 
@@ -502,7 +493,7 @@ const
     <svg style="display: none;">
         <symbol id="question-icon" viewBox="0 0 24 24" fill="none" stroke=currentColor>
             <path opacity="0.8" d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" fill="cornflowerblue" />
-            <path d="M20.9531 13V12.995M19 7.4C19.2608 6.58858 20.0366 6 20.9531 6C22.0836 6 23 6.89543 23 8C23 9.60675 21.2825 8.81678 21 10.5M8 15H16C18.2091 15 20 16.7909 20 19V21H4V19C4 16.7909 5.79086 15 8 15ZM16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.9531 13V12.995M19 7.4C19.2608 6.58858 20.0366 6 20.9531 6C22.0836 6 23 6.89543 23 8C23 9.60675 21.2825 8.81678 21 10.5M8 15H16C18.2091 15 20 16.7909 20 19V21H4V19C4 16.7909 5.79086 15 8 15ZM16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke-Width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </symbol>
 
         <symbol id="assistant-icon" viewBox="0 -960 960 960" fill=currentColor>
@@ -511,7 +502,7 @@ const
             <path d="M160-120v-200q0-33 23.5-56.5T240-400h480q33 0 56.5 23.5T800-320v200H160Zm200-320q-83 0-141.5-58.5T160-640q0-83 58.5-141.5T360-840h240q83 0 141.5 58.5T800-640q0 83-58.5 141.5T600-440H360ZM240-200h480v-120H240v120Zm120-320h240q50 0 85-35t35-85q0-50-35-85t-85-35H360q-50 0-85 35t-35 85q0 50 35 85t85 35Z" />
         </symbol>
 
-        <symbol id="copy-icon" viewBox="0 0 24 24" fill=currentColor>
+        <symbol id="Copy-icon" viewBox="0 0 24 24" fill=currentColor>
         <path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
         </symbol>
 
@@ -626,9 +617,7 @@ begin
 
   // Remove the common indentation from each line
   for var I := Low(Lines) to High(Lines) do
-  begin
     Lines[I] := Copy(Lines[I], MinIndent + 1);
-  end;
 
   // Combine the lines back into a single string
   Result := string.Join(#13#10, Lines);
@@ -644,7 +633,7 @@ end;
 
 procedure TLLMChatForm.FormDeactivate(Sender: TObject);
 begin
-  FHasFocus:= false;
+  FHasFocus:= False;
 end;
 
 procedure TLLMChatForm.FormDestroy(Sender: TObject);
@@ -670,22 +659,21 @@ end;
 procedure TLLMChatForm.ClearConversation;
 begin
   FBlockCount := 0;
-  EdgeBrowser.ExecuteScript('clearQA()')
+  EdgeBrowser.ExecuteScript('clearQA()');
 end;
 
 procedure TLLMChatForm.CopyToNewEditor(const Code: string);
 begin
   var EditForm:= TFEditForm(FJava.FormFactory(fkEditor));
   EditForm.Editor.Text := Code;
-  EditForm.New(FJava.getFilename('.java'));
-//  EditForm.Activate;
+  EditForm.New(FJava.GetFilename('.java'));
 end;
 
 procedure TLLMChatForm.DisplayQA(const Prompt, Answer, Reason: string);
 const
   QAScriptCode = '''
-  var question = `%s`;
-  var answer = `%s`;
+  var question = `%Str`;
+  var answer = `%Str`;
   addQA(question, answer);
   Prism.highlightAll();
   window.scroll(0,100000);
@@ -693,9 +681,9 @@ const
   ReasonTemplate = '''
   <details>
   <summary><b>Reasoning</b></summary>
-  <blockquote>%s</blockquote>
+  <blockquote>%Str</blockquote>
   </details>
-  <p>
+  <Posi>
   ''';
 begin
   if not FBrowserReady then Exit;
@@ -728,8 +716,8 @@ begin
   for var QAItem in LLMChat.ActiveTopic.QAItems do
     DisplayQA(QAItem.Prompt, QAItem.Answer, QAItem.Reason);
 
-  if SynQuestion.HandleAllocated and FHasFocus then
-    SynQuestion.SetFocus;
+  if FSynQuestion.HandleAllocated and FHasFocus then
+    FSynQuestion.SetFocus;
 end;
 
 procedure TLLMChatForm.FormActivate(Sender: TObject);
@@ -741,9 +729,8 @@ procedure TLLMChatForm.FormCreate(Sender: TObject);
 const
   CodeRegEx = '```(\w+)?\s*\n([\s\S]*?)\n?```';
 begin
-  inherited;
-  SynQuestion:= TSynEdit.Create(Self);
-  with SynQuestion do begin
+  FSynQuestion:= TSynEdit.Create(Self);
+  with FSynQuestion do begin
     Parent:= pnlQuestion;
     Top:= 4;
     Left:= 4;
@@ -771,14 +758,14 @@ begin
     ScrollBars:= ssBoth;
     WordWrap:= True;
     RightEdge:= 0;
-    UseCodeFolding := false;
+    UseCodeFolding := False;
     Options:= [eoAutoIndent,eoDragDropEditing,eoDropFiles,eoEnhanceHomeKey,
       eoEnhanceEndKey,eoGroupUndo,eoKeepCaretX,eoSmartTabDelete,eoTabIndent,
       eoTabsToSpaces,eoShowLigatures];
   end;
 
   FDefaultLang := 'java';
-  FHasFocus := false;
+  FHasFocus := False;
   FCodeBlocksRE := CompiledRegEx(CodeRegEx);
   FMarkdownProcessor := TMarkdownProcessor.CreateDialect(mdCommonMark);
 
@@ -792,14 +779,14 @@ begin
   SynMultiSyn.Schemes[1].MarkerAttri.Foreground :=
     FConfiguration.JavaHighlighter.IdentifierAttri.Foreground;
   FConfiguration.JavaHighlighter.HookAttrChangeEvent(PythonHighlighterChange);
-  LLMChat := TLLMChat.Create;
-  LLMChat.OnLLMError := OnLLMError;
-  LLMChat.OnLLMResponse := OnLLMResponse;
+  FLLMChat := TLLMChat.Create;
+  FLLMChat.OnLLMError := OnLLMError;
+  FLLMChat.OnLLMResponse := OnLLMResponse;
 
   // Restore settings and history
   var FileName := TPath.Combine(FConfiguration.HomeDir, 'Chat history.json');
   try
-    LLMChat.LoadChat(FileName);
+    FLLMChat.LoadChat(FileName);
   except
     StyledMessageDlg(_('Could not read the Chat history'), TMsgDlgType.mtError,
       [TMsgDlgBtn.mbOK], 0);
@@ -817,26 +804,26 @@ end;
 
 procedure TLLMChatForm.OnLLMResponse(Sender: TObject; const Prompt,
   Answer, Reason: string);
-var nPrompt: string;
+var FPrompt: string;
 begin
   if Pos('Answer in German. ', Prompt) > 0 then
-    nPrompt:= copy(Prompt, Length('Answer in German. '), Length(Prompt))
+    FPrompt:= Copy(Prompt, Length('Answer in German. '), Length(Prompt))
   else
-    nPrompt:= Prompt;
-  DisplayQA(nPrompt, Answer, Reason);
-  SynQuestion.Clear;
+    FPrompt:= Prompt;
+  DisplayQA(FPrompt, Answer, Reason);
+  FSynQuestion.Clear;
 end;
 
 procedure TLLMChatForm.synQuestionKeyDown(Sender: TObject; var Key: Word; Shift:
     TShiftState);
 begin
-  if SynQuestion.Text = SQuestionHintValid then
-    SynQuestion.Text := '';
+  if FSynQuestion.Text = SQuestionHintValid then
+    FSynQuestion.Text := '';
 
   if Key = vkReturn then
   begin
     if Shift * [ssShift, ssCtrl] <> [] then
-      SynQuestion.ExecuteCommand(ecLineBreak, ' ', nil)
+      FSynQuestion.ExecuteCommand(ecLineBreak, ' ', nil)
     else
       actAskQuestion.Execute;
     Key := 0;
@@ -845,13 +832,13 @@ end;
 
 procedure TLLMChatForm.actAskQuestionExecute(Sender: TObject);
 begin
-  if synQuestion.Text = '' then
+  if FSynQuestion.Text = '' then
     Exit;
 
   if FConfiguration.LanguageCode = 'de' then
-    LLMChat.Ask('Answer in German. ' + synQuestion.Text)
+    LLMChat.Ask('Answer in German. ' + FSynQuestion.Text)
   else
-    LLMChat.Ask(synQuestion.Text);
+    LLMChat.Ask(FSynQuestion.Text);
 end;
 
 procedure TLLMChatForm.actCancelRequestExecute(Sender: TObject);
@@ -999,16 +986,16 @@ begin
   Result := True;
 end;
 
-function TLLMChatForm.MarkdownToHTML(const MD: string): string;
+function TLLMChatForm.MarkdownToHTML(const MarkDown: string): string;
 begin
   Result := '';
-  var Matches := FCodeBlocksRE.Matches(MD);
+  var Matches := FCodeBlocksRE.Matches(MarkDown);
   if Matches.Count > 0 then
   begin
     var CodeEnd := 1;
     for var Match in Matches do
     begin
-      var TextBefore := Copy(MD, CodeEnd, Match.Index - CodeEnd);
+      var TextBefore := Copy(MarkDown, CodeEnd, Match.Index - CodeEnd);
       if TextBefore <> '' then
         Result := Result + FMarkdownProcessor.process(TextBefore);
       Inc(FBlockCount);
@@ -1032,12 +1019,12 @@ begin
         Code]);
       CodeEnd := Match.Index + Match.Length;
     end;
-    var TextAfter := Copy(MD, CodeEnd);
+    var TextAfter := Copy(MarkDown, CodeEnd);
     if TextAfter <> '' then
       Result := Result + FMarkdownProcessor.process(TextAfter);
   end
   else
-    Result := FMarkdownProcessor.process(MD);
+    Result := FMarkdownProcessor.process(MarkDown);
 
   if Result.StartsWith('<p>') then
     Delete(Result, 1, 3);
@@ -1065,12 +1052,12 @@ begin
   var Validation := LLMChat.ValidateSettings;
 
   if Validation = svValid then begin
-    synQuestion.Text := SQuestionHintValid;
-    synQuestion.CaretX:= Length(SQuestionHintValid) + 1;
+    FSynQuestion.Text := SQuestionHintValid;
+    FSynQuestion.CaretX:= Length(SQuestionHintValid) + 1;
   end
   else
-    synQuestion.Text := SQuestionHintInvalid + ': ' + LLMChat.ValidationErrMsg(Validation);
-  SynQuestion.Invalidate;
+    FSynQuestion.Text := SQuestionHintInvalid + ': ' + LLMChat.ValidationErrMsg(Validation);
+  FSynQuestion.Invalidate;
 end;
 
 procedure TLLMChatForm.StyleWebPage;
@@ -1080,9 +1067,9 @@ var
   CodeHeaderBkg, CodeHeaderFg: string;
   ThumbColor, ThumbHoverColor: string;
 begin
-  if TFConfiguration.isDark then
+  if TFConfiguration.IsDark then
   begin
-    LinkColor :=  TColors.LightBlue;
+    LinkColor :=  TColors.Lightblue;
     CodeHeaderBkg := '#2d2d2d';
     CodeHeaderFg := '#f4f4f4';
     ThumbColor := '#666';
@@ -1099,11 +1086,11 @@ begin
 
   // Style the main sheet
   MainStyleSheet := Format(MainStyleSheetTemplate, [
-    ColorToHtml(StyleServices.GetSystemColor(clWindow)),
+    ColorToHTML(StyleServices.GetSystemColor(clWindow)),
     ThumbColor,
     ThumbHoverColor,
-    ColorToHtml(StyleServices.GetSystemColor(clWindowText)),
-    ColorToHtml(LinkColor)]);
+    ColorToHTML(StyleServices.GetSystemColor(clWindowText)),
+    ColorToHTML(LinkColor)]);
 
 
   // style the display of code to make it compatible with the PyScripter Editor
@@ -1115,19 +1102,19 @@ begin
     CodeStyleSheet := Format(CodeStyleSheetTemplate,[
         CodeHeaderBkg,
         CodeHeaderFg,
-        ColorToHtml(FConfiguration.JavaHighlighter.WhitespaceAttribute.Background),
-        ColorToHtml(FConfiguration.JavaHighlighter.CommentAttri.Foreground),
-        ColorToHtml(FConfiguration.JavaHighlighter.SymbolAttri.Foreground),
-        ColorToHtml(FConfiguration.HTMLHighlighter.SymbolAttri.Foreground),
-        ColorToHtml(FConfiguration.HTMLHighlighter.SymbolAttri.Foreground),
-        ColorToHtml(FConfiguration.JavaHighlighter.CommentAttri.Foreground),
-        ColorToHtml(FConfiguration.JavaHighlighter.NumberAttri.Foreground),
-        ColorToHtml(FConfiguration.JavaHighlighter.CommentAttri.Foreground),
-        ColorToHtml(FConfiguration.JavaHighlighter.KeyAttri.Foreground),
-        ColorToHtml(FConfiguration.JavaHighlighter.StringAttri.Foreground),
-        ColorToHtml(FConfiguration.JavaHighlighter.CommentAttri.Foreground),
-        ColorToHtml(FConfiguration.HTMLHighlighter.SymbolAttri.Foreground),
-        ColorToHtml(TextColor)
+        ColorToHTML(FConfiguration.JavaHighlighter.WhitespaceAttribute.Background),
+        ColorToHTML(FConfiguration.JavaHighlighter.CommentAttri.Foreground),
+        ColorToHTML(FConfiguration.JavaHighlighter.SymbolAttri.Foreground),
+        ColorToHTML(FConfiguration.HTMLHighlighter.SymbolAttri.Foreground),
+        ColorToHTML(FConfiguration.HTMLHighlighter.SymbolAttri.Foreground),
+        ColorToHTML(FConfiguration.JavaHighlighter.CommentAttri.Foreground),
+        ColorToHTML(FConfiguration.JavaHighlighter.NumberAttri.Foreground),
+        ColorToHTML(FConfiguration.JavaHighlighter.CommentAttri.Foreground),
+        ColorToHTML(FConfiguration.JavaHighlighter.KeyAttri.Foreground),
+        ColorToHTML(FConfiguration.JavaHighlighter.StringAttri.Foreground),
+        ColorToHTML(FConfiguration.JavaHighlighter.CommentAttri.Foreground),
+        ColorToHTML(FConfiguration.HTMLHighlighter.SymbolAttri.Foreground),
+        ColorToHTML(TextColor)
       ]);
 end;
 
@@ -1154,12 +1141,12 @@ end;
 
 procedure TLLMChatForm.ChangeStyle;
 begin
-  synQuestion.Font.Color := StyleServices.GetSystemColor(clWindowText);
-  synQuestion.Color := StyleServices.GetSystemColor(clWindow);
+  FSynQuestion.Font.Color := StyleServices.GetSystemColor(clWindowText);
+  FSynQuestion.Color := StyleServices.GetSystemColor(clWindow);
   {$IF CompilerVersion >= 36}
   aiBusy.IndicatorColor := aicCustom;
   aiBusy.IndicatorCustomColor := StyleServices.GetSystemColor(clWindowText);
-  {$ENDIF};
+  {$ENDIF}
   if TFConfiguration.IsDark then begin
     SpTBXToolbar.Images := vilImagesDark;
     sbAsk.Images := vilImagesDark;

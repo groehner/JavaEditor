@@ -54,7 +54,6 @@ object FOpenFolderDialog: TFOpenFolderDialog
     Anchors = [akLeft, akBottom]
     TabOrder = 2
     TabStop = False
-    ExplicitTop = 334
   end
   object CBWithSubFolder: TCheckBox
     Left = 1
@@ -66,8 +65,6 @@ object FOpenFolderDialog: TFOpenFolderDialog
     Checked = True
     State = cbChecked
     TabOrder = 3
-    ExplicitLeft = -3
-    ExplicitTop = 369
   end
   object CBPath: TComboBox
     Left = 14

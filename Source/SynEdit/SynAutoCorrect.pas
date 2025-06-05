@@ -240,20 +240,20 @@ end;
 function TCustomSynAutoCorrect.HalfString(Str: string;
   GetFirstHalf: Boolean): string;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  i := LastDelimiter(FItemSepChar, Str);
-  if i = 0 then i := Pred(MaxInt);
+  Int := LastDelimiter(FItemSepChar, Str);
+  if Int = 0 then Int := Pred(MaxInt);
 
   if GetFirstHalf then
-    Result := Copy(Str, 1, Pred(i))
+    Result := Copy(Str, 1, Pred(Int))
   else
-    Result := Copy(Str, Succ(i), MaxInt);
+    Result := Copy(Str, Succ(Int), MaxInt);
 end;
 
 procedure TCustomSynAutoCorrect.LoadFromIni(AFileName, ASection: string);
 var
-  i: Integer;
+  Int: Integer;
   Original, Correction: string;
   Reg: TMemIniFile;
 begin
@@ -261,10 +261,10 @@ begin
   try
     FItems.Clear;
     with Reg do
-      for i := 0 to Pred(ReadInteger(ASection, 'Count', 0)) do
+      for Int := 0 to Pred(ReadInteger(ASection, 'Count', 0)) do
       begin
-        Original := ReadString(ASection, 'Original' + IntToStr(i), '');
-        Correction := ReadString(ASection, 'Correction' + IntToStr(i), '');
+        Original := ReadString(ASection, 'Original' + IntToStr(Int), '');
+        Correction := ReadString(ASection, 'Correction' + IntToStr(Int), '');
         if not ((Original = '') and (Correction = '')) then
           FItems.Add(Original + FItemSepChar + Correction);
       end;
@@ -275,7 +275,7 @@ end;
 
 procedure TCustomSynAutoCorrect.SaveToIni(AFileName, ASection: string);
 var
-  i: Integer;
+  Int: Integer;
   Reg: TMemIniFile;
 begin
   Reg := TMemIniFile.Create(AFileName);
@@ -283,12 +283,12 @@ begin
     with Reg do
     begin
       WriteInteger(ASection, 'Count', FItems.Count);
-      for i := 0 to Pred(FItems.Count) do
+      for Int := 0 to Pred(FItems.Count) do
       begin
-        WriteString(ASection, 'Original' + IntToStr(i),
-          HalfString(FItems[i], True));
-        WriteString(ASection, 'Correction' + IntToStr(i),
-          HalfString(FItems[i], False));
+        WriteString(ASection, 'Original' + IntToStr(Int),
+          HalfString(FItems[Int], True));
+        WriteString(ASection, 'Correction' + IntToStr(Int),
+          HalfString(FItems[Int], False));
       end;
     end;
   finally
@@ -314,7 +314,7 @@ end;
 
 procedure TCustomSynAutoCorrect.LoadFromRegistry(ARoot: DWORD; AKey: string);
 var
-  i: Integer;
+  Int: Integer;
   Original, Correction: string;
   Reg: TRegIniFile;
 begin
@@ -325,10 +325,10 @@ begin
       RootKey := ARoot;
       TBetterRegistry(Reg).OpenKeyReadOnly(AKey);
       FItems.Clear;
-      for i := 0 to Pred(ReadInteger('', 'Count', 0)) do
+      for Int := 0 to Pred(ReadInteger('', 'Count', 0)) do
       begin
-        Original := ReadString('', 'Original' + IntToStr(i), '');
-        Correction := ReadString('', 'Correction' + IntToStr(i), '');
+        Original := ReadString('', 'Original' + IntToStr(Int), '');
+        Correction := ReadString('', 'Correction' + IntToStr(Int), '');
         if not ((Original = '') and (Correction = '')) then
           FItems.Add(Original + FItemSepChar + Correction);
       end;
@@ -340,7 +340,7 @@ end;
 
 procedure TCustomSynAutoCorrect.SaveToRegistry(ARoot: DWORD; AKey: string);
 var
-  i: Integer;
+  Int: Integer;
   Reg: TRegIniFile;
 begin
   Reg := TRegIniFile.Create('');
@@ -350,11 +350,11 @@ begin
       RootKey := ARoot;
       OpenKey(AKey, True);
       WriteInteger('', 'Count', FItems.Count);
-      for i := 0 to Pred(FItems.Count) do
+      for Int := 0 to Pred(FItems.Count) do
       begin
-        WriteString('', 'Original' + IntToStr(i), HalfString(FItems[i], True));
-        WriteString('', 'Correction' + IntToStr(i),
-          HalfString(FItems[i], False));
+        WriteString('', 'Original' + IntToStr(Int), HalfString(FItems[Int], True));
+        WriteString('', 'Correction' + IntToStr(Int),
+          HalfString(FItems[Int], False));
       end;
     end;
   finally
@@ -369,30 +369,30 @@ end;
 
 function TCustomSynAutoCorrect.AutoCorrectAll: Boolean;
 var
-  i, cx: Integer;
-  s, Original, Correction, CurrText: string;
+  Int, cx: Integer;
+  Str, Original, Correction, CurrText: string;
 begin
   Result := False;
   if Assigned(Editor) then
   begin
-    s := Editor.Lines.Text;
+    Str := Editor.Lines.Text;
     cx := -1;
 
-    for i := 0 to Pred(FItems.Count) do
+    for Int := 0 to Pred(FItems.Count) do
     begin
-      CurrText := FItems[i];
+      CurrText := FItems[Int];
       Original := HalfString(CurrText, True);
       Correction := HalfString(CurrText, False);
-      FindAndCorrect(s, Original, Correction, cx);
+      FindAndCorrect(Str, Original, Correction, cx);
     end;
-    Editor.Lines.Text := s;
+    Editor.Lines.Text := Str;
   end;
 end;
 
 function TCustomSynAutoCorrect.CorrectItemStart(EditLine, SearchString: string;
   StartPos: Integer; MatchCase, WholeWord: Boolean): Integer;
 var
-  SearchCount, I: Integer;
+  SearchCount, Int: Integer;
   CurBuf, Buf: PWideChar;
   BufLen: Integer;
 
@@ -434,14 +434,14 @@ var
     begin
       if WholeWord and (FirstWord = False) then
         if not FindNextWordStart(BufPtr) then Break;
-      I := 0;
-      while (BufPtr[I] = SearchString[I + 1]) do
+      Int := 0;
+      while (BufPtr[Int] = SearchString[Int + 1]) do
       begin
-        Inc(I);
-        if I >= Length(SearchString) then
+        Inc(Int);
+        if Int >= Length(SearchString) then
         begin
           if not WholeWord or (SearchCount = 0) or
-            Editor.IsWordBreakChar(BufPtr[I]) then
+            Editor.IsWordBreakChar(BufPtr[Int]) then
           begin
             Result := True;
             Exit;
@@ -510,8 +510,8 @@ procedure TCustomSynAutoCorrect.KeyboardHandler(Sender: TObject; AfterProcessing
   Data: Pointer; HandlerData: Pointer);
 var
   b: Boolean;
-  i, cx: Integer;
-  s, Original, Correction, CurrText: string;
+  Int, cx: Integer;
+  Str, Original, Correction, CurrText: string;
 begin
   if Enabled and not AfterProcessing and not Handled then
   begin
@@ -522,16 +522,16 @@ begin
           if (Command = ecChar) and not Editor.IsWordBreakChar(AChar) then
             Exit;
           b := False;
-          s := PreviousToken;
-          if s <> '' then
+          Str := PreviousToken;
+          if Str <> '' then
           begin
             cx := Editor.CaretX;
-            for i := 0 to Pred(FItems.Count) do
+            for Int := 0 to Pred(FItems.Count) do
             begin
-              CurrText := FItems[i];
+              CurrText := FItems[Int];
               Original := HalfString(CurrText, True);
               Correction := HalfString(CurrText, False);
-              b := b or FindAndCorrect(s, Original, Correction, cx);
+              b := b or FindAndCorrect(Str, Original, Correction, cx);
             end;
 
             if Assigned(OnCorrected) then
@@ -547,23 +547,23 @@ procedure TCustomSynAutoCorrect.MouseDownHandler(Sender: TObject;
 var
   Action: TAutoCorrectAction;
   b: Boolean;
-  i, cx: Integer;
-  s, Original, Correction, CurrText: string;
+  Int, cx: Integer;
+  Str, Original, Correction, CurrText: string;
 begin
   if ascoCorrectOnMouseDown in FOptions then
   begin
     if Assigned(Editor) and Enabled and (FPrevLine <> -1) then
     begin
       b := False;
-      s := Editor.Lines[Pred(FPrevLine)];
+      Str := Editor.Lines[Pred(FPrevLine)];
       cx := -1;
 
-      for i := 0 to Pred(FItems.Count) do
+      for Int := 0 to Pred(FItems.Count) do
       begin
-        CurrText := FItems[i];
+        CurrText := FItems[Int];
         Original := HalfString(CurrText, True);
         Correction := HalfString(CurrText, False);
-        b := b or FindAndCorrect(s, Original, Correction, cx);
+        b := b or FindAndCorrect(Str, Original, Correction, cx);
       end;
 
       if b then
@@ -571,11 +571,11 @@ begin
         if Assigned(FOnAutoCorrect) then
         begin
           Action := aaCorrect;
-          FOnAutoCorrect(Self, Editor.Lines[Pred(FPrevLine)], s, Editor.CaretY,
+          FOnAutoCorrect(Self, Editor.Lines[Pred(FPrevLine)], Str, Editor.CaretY,
             0, Action);
           if Action = aaAbort then Exit;
         end;
-        Editor.Lines[Pred(FPrevLine)] := s;
+        Editor.Lines[Pred(FPrevLine)] := Str;
         
         if Assigned(OnCorrected) then
           OnCorrected(Self);
@@ -590,18 +590,18 @@ var
   StartPos: Integer;
   EndPos: Integer;
   FoundText, ReplaceDefText: string;
-  p: TBufferCoord;
+  Posi: TBufferCoord;
   Action: TAutoCorrectAction;
 
-  function FirstCapCase(s: string): string;
+  function FirstCapCase(Str: string): string;
   begin
-    if s <> '' then
+    if Str <> '' then
     begin
-      s := SysUtils.AnsiLowerCase(s);
-      s[1] := SysUtils.AnsiUpperCase(s[1])[1];
+      Str := SysUtils.AnsiLowerCase(Str);
+      Str[1] := SysUtils.AnsiUpperCase(Str[1])[1];
     end;
 
-    Result := s;
+    Result := Str;
   end;
 
 begin
@@ -638,11 +638,11 @@ begin
 
       if CurrentX > - 1 then
       begin
-        p := Editor.CaretXY;
+        Posi := Editor.CaretXY;
         if Assigned(FOnAutoCorrect) then
         begin
           Action := aaCorrect;
-          FOnAutoCorrect(Self, Original, Correction, P.Line, P.Char, Action);
+          FOnAutoCorrect(Self, Original, Correction, Posi.Line, Posi.Char, Action);
 
           if Action = aaAbort then Break;
         end;
@@ -650,13 +650,13 @@ begin
         Editor.BeginUpdate;
 
         try
-          if p.Char = 0 then
-            Editor.BlockBegin := BufferCoord(p.Char - 1 - EndPos, p.Line)
+          if Posi.Char = 0 then
+            Editor.BlockBegin := BufferCoord(Posi.Char - 1 - EndPos, Posi.Line)
           else
-            Editor.BlockBegin := BufferCoord(p.Char - EndPos, p.Line);
+            Editor.BlockBegin := BufferCoord(Posi.Char - EndPos, Posi.Line);
 
-          Editor.BlockEnd := p;
-          p := Editor.BlockBegin;
+          Editor.BlockEnd := Posi;
+          Posi := Editor.BlockBegin;
           Editor.SelText := Correction;
           Result := True;
         finally
@@ -695,17 +695,17 @@ end;
 
 function TCustomSynAutoCorrect.PreviousToken: string;
 var
-  i, cx: Integer;
+  Int, cx: Integer;
 begin
   Result := Editor.LineText;
   cx := Editor.CaretX;
-  i := Pred(cx);
+  Int := Pred(cx);
 
-  if i <= Length(Result) then
+  if Int <= Length(Result) then
   begin
-    while (i > 0) and not Editor.IsWordBreakChar(Result[i]) do Dec(i);
-    Inc(i);
-    Result := Copy(Result, i, cx - i);
+    while (Int > 0) and not Editor.IsWordBreakChar(Result[Int]) do Dec(Int);
+    Inc(Int);
+    Result := Copy(Result, Int, cx - Int);
   end
   else
     Result := '';

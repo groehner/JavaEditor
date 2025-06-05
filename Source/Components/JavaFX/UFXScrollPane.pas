@@ -10,45 +10,45 @@ type
   TFXScrollPane = class (TFXControl)
   private
     FContent: string;
-    FFitToHeight: boolean;
-    FFitToWidth: boolean;
+    FFitToHeight: Boolean;
+    FFitToWidth: Boolean;
     FHbarPolicy: TScrollBarPolicy;
     FVbarPolicy: TScrollBarPolicy;
-    FHmax: double;
-    FHMin: double;
-    FHvalue: double;
-    FMinViewportHeight: double;
-    FMinViewportWidth: double;
-    FPannable: boolean;
-    FPrefViewportHeight: double;
-    FPrefViewportWidth: double;
-    FVMax: double;
-    FVmin: double;
-    FVvalue: double;
+    FHmax: Double;
+    FHMin: Double;
+    FHvalue: Double;
+    FMinViewportHeight: Double;
+    FMinViewportWidth: Double;
+    FPannable: Boolean;
+    FPrefViewportHeight: Double;
+    FPrefViewportWidth: Double;
+    FVMax: Double;
+    FVmin: Double;
+    FVvalue: Double;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure MakeFont; override;
   published
     property Content: string read FContent write FContent;
-    property FitToHeight: boolean read FFitToHeight write FFitToHeight;
-    property FitToWidth: boolean read FFitToWidth write FFitToWidth;
+    property FitToHeight: Boolean read FFitToHeight write FFitToHeight;
+    property FitToWidth: Boolean read FFitToWidth write FFitToWidth;
     property HbarPolicy: TScrollBarPolicy read FHbarPolicy write FHbarPolicy;
     property VbarPolicy: TScrollBarPolicy read FVbarPolicy write FVbarPolicy;
-    property Hmax: double read FHmax write FHmax;
-    property HMin: double read FHMin write FHMin;
-    property Hvalue: double read FHvalue write FHvalue;
-    property MinViewportHeight: double read FMinViewportHeight write FMinViewportHeight;
-    property MinViewportWidth: double read FMinViewportWidth write FMinViewportWidth;
-    property Pannable: boolean read FPannable write FPannable;
-    property PrefViewportHeight: double read FPrefViewportHeight write FPrefViewportHeight;
-    property PrefViewportWidth: double read FPrefViewportWidth write FPrefViewportWidth;
-    property VMax: double read FVMax write FVMax;
-    property Vmin: double read FVmin write FVmin;
-    property Vvalue: double read FVvalue write FVvalue;
+    property Hmax: Double read FHmax write FHmax;
+    property HMin: Double read FHMin write FHMin;
+    property Hvalue: Double read FHvalue write FHvalue;
+    property MinViewportHeight: Double read FMinViewportHeight write FMinViewportHeight;
+    property MinViewportWidth: Double read FMinViewportWidth write FMinViewportWidth;
+    property Pannable: Boolean read FPannable write FPannable;
+    property PrefViewportHeight: Double read FPrefViewportHeight write FPrefViewportHeight;
+    property PrefViewportWidth: Double read FPrefViewportWidth write FPrefViewportWidth;
+    property VMax: Double read FVMax write FVMax;
+    property Vmin: Double read FVmin write FVmin;
+    property Vvalue: Double read FVvalue write FVvalue;
    // property Border;
   end;
 
@@ -87,12 +87,12 @@ begin
 end;
 
 procedure TFXScrollPane.SetAttribute(Attr, Value, Typ: string);
-  var s1, s2: string;
+  var Str1, Str2: string;
 begin
   if Typ = 'TScrollBarPolicy' then begin
-    s1:= Name + '.set' + Attr;
-    s2:=  s1 + '(ScrollPane.ScrollBarPolicy.' + Value + ');';
-    setAttributValue(s1, s2);
+    Str1:= Name + '.set' + Attr;
+    Str2:=  Str1 + '(ScrollPane.ScrollBarPolicy.' + Value + ');';
+    SetAttributValue(Str1, Str2);
   end else begin
     if Attr = 'Content' then
       Typ:= 'Identifier';
@@ -105,7 +105,7 @@ begin
   // no font
 end;
 
-function TFXScrollPane.getAttributes(ShowAttributes: integer): string;
+function TFXScrollPane.GetAttributes(ShowAttributes: Integer): string;
   const Attributes1 = '|Content|HbarPolicy|VbarPolicy|Pannable|Name';
         Attributes2 = Attributes1 +
                       '|FitToHeight|FitToWidth|HMax|HMin|Hvalue|MinViewportHeight' +
@@ -113,8 +113,8 @@ function TFXScrollPane.getAttributes(ShowAttributes: integer): string;
                       '|VMax|Vmin|Vvalue';
 begin
   if ShowAttributes = 1
-    then Result:= Attributes1 + inherited getAttributes(ShowAttributes)
-    else Result:= Attributes2 + inherited getAttributes(ShowAttributes);
+    then Result:= Attributes1 + inherited GetAttributes(ShowAttributes)
+    else Result:= Attributes2 + inherited GetAttributes(ShowAttributes);
 end;
 
 

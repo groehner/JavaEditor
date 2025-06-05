@@ -375,12 +375,10 @@ const
 
 
 function ShellShockStr(Index : Integer) : string;
-var
-  i : Integer;
 begin
-  for i := Low(ShellShockStrArray) to High(ShellShockStrArray) do
-    if ShellShockStrArray[i].ID = Index then
-      Result := ShellShockStrArray[i].Str;
+  for var I := Low(ShellShockStrArray) to High(ShellShockStrArray) do
+    if ShellShockStrArray[I].ID = Index then
+      Result := ShellShockStrArray[I].Str;
 end;
 
 

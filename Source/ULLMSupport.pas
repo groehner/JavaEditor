@@ -3,14 +3,7 @@ unit ULLMSupport;
 interface
 
 uses
-  Winapi.Windows,
-  Winapi.Messages,
-  System.UITypes,
-  System.SysUtils,
   System.Classes,
-  System.ImageList,
-  System.Actions,
-  System.Generics.Collections,
   System.JSON,
   System.JSON.Serializers,
   System.Net.HttpClient,
@@ -83,6 +76,8 @@ type
 
   TLLMBase = class
   private
+    FActiveTopicIndex: Integer;
+    FChatTopics: TArray<TChatTopic>;
     FHttpClient: TNetHTTPClient;
     FHttpResponse: IHTTPResponse;
     FSourceStream: TStringStream;
@@ -100,23 +95,20 @@ type
     procedure DoResponseCreated(const AResponse: IHTTPResponse); virtual;
     procedure DoResponseOK(const Msg, Reason: string); virtual;
     function RequestParams(const Prompt: string; const Suffix: string = ''): string; virtual; abstract;
-    // Gemini support
     procedure AddGeminiSystemPrompt(Params: TJSONObject);
-    function GeminiMessage(const Role, Content: string): TJsonObject;
+    function GeminiMessage(const Role, Content: string): TJSONObject;
   public
-    Providers: TLLMProviders;
-    ActiveTopicIndex: Integer;
-    ChatTopics: TArray<TChatTopic>;
+    Providers: TLLMProviders;  // doesn't work as property
     function ValidateSettings: TLLMSettingsValidation; virtual;
     function ValidationErrMsg(Validation: TLLMSettingsValidation): string;
     constructor Create;
     destructor Destroy; override;
-    function DefaultAssistantSettings(Nr: integer): TLLMSettings;
-    function DefaultChatSettings(Nr: integer): TLLMSettings;
-
+    function DefaultAssistantSettings(Num: Integer): TLLMSettings;
+    function DefaultChatSettings(Num: Integer): TLLMSettings;
     procedure Ask(const Prompt: string; const Suffix: string = '');
     procedure CancelRequest;
-
+    property ActiveTopicIndex: Integer read FActiveTopicIndex;
+    property ChatTopics: TArray<TChatTopic> read FChatTopics;
     property Settings: TLLMSettings read GetLLMSettings;
     property IsBusy: Boolean read GetIsBusy;
     property OnLLMResponse: TOnLLMResponseEvent read FOnLLMResponse write FOnLLMResponse;
@@ -124,24 +116,25 @@ type
   end;
 
   TLLMChat = class(TLLMBase)
+  private
+    FActiveTopicIndex: Integer;
+    FChatTopics: TArray<TChatTopic>;
   protected
     procedure DoResponseOK(const Msg, Reason: string); override;
     function RequestParams(const Prompt: string; const Suffix: string = ''): string; override;
   public
-    ActiveTopicIndex: Integer;
-    ChatTopics: TArray<TChatTopic>;
     function ValidateSettings: TLLMSettingsValidation; override;
     constructor Create;
-
     function ActiveTopic: TChatTopic;
     procedure NextTopic;
     procedure PreviousTopic;
     procedure ClearTopic;
     procedure RemoveTopic;
     procedure NewTopic;
-
     procedure SaveChat(const FName: string);
     procedure LoadChat(const FName: string);
+    property ActiveTopicIndex: Integer read FActiveTopicIndex;
+    property ChatTopics: TArray<TChatTopic> read FChatTopics;
   end;
 
   TLLMAssistant = class(TLLMBase)
@@ -153,8 +146,9 @@ type
     FStopSequence: TArray<string>;
     procedure DoCancelRequest(Sender: TObject);
   protected
-    const MaxPrefixLines = 100;
-    const MaxSuffixLines = 50;
+    const
+      MaxPrefixLines = 100;
+      MaxSuffixLines = 50;
     procedure DoResponseCompleted(const AResponse: IHTTPResponse); override;
     procedure DoResponseCreated(const AResponse: IHTTPResponse); override;
     procedure DoResponseOK(const Msg, Reason: string); override;
@@ -163,7 +157,6 @@ type
   public
     function ValidateSettings: TLLMSettingsValidation; override;
     constructor Create;
-
     procedure Suggest;
     procedure Optimize;
     procedure FixBugs;
@@ -266,8 +259,7 @@ uses
   System.Math,
   System.IOUtils,
   JvGnugettext,
-  Vcl.Forms,
-  Vcl.Dialogs,
+  System.SysUtils,
   SynUnicode,
   ULLMSuggestForm,
   UJava,
@@ -275,14 +267,14 @@ uses
   UUtils;
 
 resourcestring
-  sLLMBusy = 'The LLM client is busy.';
-  sNoResponse = 'No response from the LLM Server.';
-  sNoAPIKey = 'The LLM API key is missing.';
-  sNoModel = 'The LLM model has not been set.';
-  sInvalidTemperature = 'Invalid temperature: It should be a decimal number between 0.0 and 2.0.';
-  sUnsupportedEndpoint = 'The LLM endpoint is missing or not supported.';
-  sUnsupportedModel = 'The LLM model is not supported.';
-  sUnexpectedResponse = 'Unexpected response from the LLM Server.';
+  CLLMBusy = 'The LLM client is busy.';
+  CNoResponse = 'No response from the LLM Server.';
+  CNoAPIKey = 'The LLM API key is missing.';
+  CNoModel = 'The LLM model has not been set.';
+  CInvalidTemperature = 'Invalid temperature: It should be a decimal number between 0.0 and 2.0.';
+  CUnsupportedEndpoint = 'The LLM endpoint is missing or not supported.';
+  CUnsupportedModel = 'The LLM model is not supported.';
+  CUnexpectedResponse = 'Unexpected response from the LLM Server.';
 
 { TLLMBase }
 
@@ -308,7 +300,7 @@ begin
   if Prompt = '' then Exit;
 
   if Assigned(FHttpResponse) then
-    ErrMsg := sLLMBusy
+    ErrMsg := CLLMBusy
   else
   begin
     var Validation := ValidateSettings;
@@ -368,9 +360,9 @@ begin
   FSerializer := TJsonSerializer.Create;
 end;
 
-function TLLMBase.DefaultAssistantSettings(Nr: integer): TLLMSettings;
+function TLLMBase.DefaultAssistantSettings(Num: Integer): TLLMSettings;
 begin
-  case Nr of
+  case Num of
     0: Result := OpenaiCompletionSettings;
     1: Result := GeminiSettings;
     2: Result := OllamaCompletionSettings;
@@ -379,9 +371,9 @@ begin
   end;
 end;
 
-function TLLMBase.DefaultChatSettings(Nr: integer): TLLMSettings;
+function TLLMBase.DefaultChatSettings(Num: Integer): TLLMSettings;
 begin
-  case Nr of
+  case Num of
     0: Result := OpenaiChatSettings;
     1: Result := GeminiSettings;
     2: Result := OllamaChatSettings;
@@ -455,7 +447,6 @@ begin
     SetLength(ResponseData, AResponse.ContentStream.Size);
     AResponse.ContentStream.Read(ResponseData, AResponse.ContentStream.Size);
     var JsonResponse := TJSONValue.ParseJSONValue(ResponseData, 0);
-    //GI_PyIDEServices.Logger.Write(JsonResponse.ToJSON);
     try
       if not (JsonResponse.TryGetValue('error.message', ErrMsg)
         or JsonResponse.TryGetValue('error', ErrMsg))
@@ -480,7 +471,7 @@ begin
       JsonResponse.Free;
     end;
   end else
-    ErrMsg := sNoResponse;
+    ErrMsg := CNoResponse;
 
   if ResponseOK then
   begin
@@ -491,7 +482,7 @@ begin
   else
   begin
     if ErrMsg = '' then
-      ErrMsg := sUnexpectedResponse;
+      ErrMsg := CUnexpectedResponse;
     if Assigned(FOnLLMError) then
       FOnLLMError(Self, ErrMsg);
   end;
@@ -513,11 +504,11 @@ function TLLMBase.ValidationErrMsg(Validation: TLLMSettingsValidation): string;
 begin
   case Validation of
     svValid: Result := '';
-    svModelEmpty: Result := sNoModel;
-    svInvalidEndpoint: Result := sUnsupportedEndpoint;
-    svInvalidModel: Result := sUnsupportedModel;
-    svAPIKeyMissing: Result := sNoAPIKey;
-    svInvalidTemperature: Result := sInvalidTemperature;
+    svModelEmpty: Result := CNoModel;
+    svInvalidEndpoint: Result := CUnsupportedEndpoint;
+    svInvalidModel: Result := CUnsupportedModel;
+    svAPIKeyMissing: Result := CNoAPIKey;
+    svInvalidTemperature: Result := CInvalidTemperature;
   end;
 end;
 
@@ -542,8 +533,8 @@ begin
   Providers.Gemini := GeminiSettings;
   Providers.DeepSeek := DeepSeekChatSettings;
   Providers.Grok := GrokChatSettings;
-  ChatTopics := [Default(TChatTopic)];
-  ActiveTopicIndex := 0;
+  FChatTopics := [Default(TChatTopic)];
+  FActiveTopicIndex := 0;
 end;
 
 procedure TLLMChat.DoResponseOK(const Msg, Reason: string);
@@ -555,10 +546,10 @@ procedure TLLMChat.LoadChat(const FName: string);
 begin
   if FileExists(FName) then
   begin
-    ChatTopics :=
+    FChatTopics :=
       FSerializer.Deserialize<TArray<TChatTopic>>(
       TFile.ReadAllText(FName, TEncoding.UTF8));
-    ActiveTopicIndex := High(ChatTopics);
+    FActiveTopicIndex := High(ChatTopics);
   end;
 end;
 
@@ -567,20 +558,20 @@ begin
   if Length(ActiveTopic.QAItems) = 0 then
     Exit;
   if Length(ChatTopics[High(ChatTopics)].QAItems) > 0 then
-    ChatTopics := ChatTopics + [Default(TChatTopic)];
-  ActiveTopicIndex := High(ChatTopics);
+    FChatTopics := ChatTopics + [Default(TChatTopic)];
+  FActiveTopicIndex := High(ChatTopics);
 end;
 
 procedure TLLMChat.NextTopic;
 begin
   if ActiveTopicIndex < Length(ChatTopics) - 1 then
-    Inc(ActiveTopicIndex);
+    Inc(FActiveTopicIndex);
 end;
 
 procedure TLLMChat.PreviousTopic;
 begin
   if ActiveTopicIndex > 0 then
-    Dec(ActiveTopicIndex);
+    Dec(FActiveTopicIndex);
 end;
 
 function TLLMChat.RequestParams(const Prompt: string; const Suffix: string = ''): string;
@@ -604,7 +595,7 @@ function TLLMChat.RequestParams(const Prompt: string; const Suffix: string = '')
     JSON.AddPair('contents', Contents);
 
     // now add parameters
-    var GenerationConfig := TJSONObject.Create();
+    var GenerationConfig := TJSONObject.Create;
     GenerationConfig.AddPair('temperature', Settings.Temperature);
     GenerationConfig.AddPair('maxOutputTokens', Settings.MaxTokens);
     JSON.AddPair('generationConfig', GenerationConfig);
@@ -670,14 +661,14 @@ end;
 
 procedure TLLMChat.RemoveTopic;
 begin
-  Delete(ChatTopics, ActiveTopicIndex, 1);
+  Delete(FChatTopics, FActiveTopicIndex, 1);
 
   if ActiveTopicIndex > High(ChatTopics) then
   begin
     if ActiveTopicIndex > 0 then
-      Dec(ActiveTopicIndex)
+      Dec(FActiveTopicIndex)
     else
-      ChatTopics := [default(TChatTopic)];
+      FChatTopics := [Default(TChatTopic)];
   end;
 end;
 
@@ -761,7 +752,7 @@ const
      'code. The final output should be valid java code.'#$A#$A +
      'Here is the source code that needs comments:'#$A'```'#$A'%s'#$A'```';
 begin
-  FEditForm:= FJava.getActiveEditor;
+  FEditForm:= FJava.GetActiveEditor;
   if IsBusy or not Assigned(FEditForm) then Exit;
 
   FActiveEditor := FEditForm.Editor;
@@ -810,21 +801,21 @@ end;
 
 procedure TLLMAssistant.DoResponseOK(const Msg, Reason: string);
 
-  procedure RemoveLeadingLB(var S: string);
+  procedure RemoveLeadingLB(var Str: string);
   var
     Count: Integer;
   begin
     Count := 0;
-    if S.StartsWith(#13) then
+    if Str.StartsWith(#13) then
       Inc(Count);
-    if S.StartsWith(#10) then
+    if Str.StartsWith(#10) then
       Inc(Count);
     if Count > 0 then
-      S := Copy(S, Count + 1);
+      Str := Copy(Str, Count + 1);
   end;
 
 begin
-  FEditForm:= FJava.getActiveEditor;
+  FEditForm:= FJava.GetActiveEditor;
   if not Assigned(FEditForm) or
     (FActiveEditor <> FEditForm.Editor) or
     (FCaret <> FEditForm.Editor.CaretXY) or
@@ -847,7 +838,6 @@ begin
     Code := Copy(Code, 5);
     RemoveLeadingLB(Code);
   end;
-  //Code := Code.TrimLeft;
   if Code <> '' then
     ShowSuggestion(Code, FEditForm.Editor);
 end;
@@ -862,7 +852,7 @@ const
     'of the original issues and how they were resolved.'#$A#$A +
     'Here is the source code that needs fixing:'#$A'```'#$A'%s'#$A'```';
 begin
-  FEditForm:= FJava.getActiveEditor;
+  FEditForm:= FJava.GetActiveEditor;
   if IsBusy or not Assigned(FEditForm) then Exit;
 
   FActiveEditor := FEditForm.Editor;
@@ -887,7 +877,7 @@ const
     'and should be complete and ready to run.'#$A#$A +
     'Here is the source code that needs optimization:'#$A'```'#$A'%s'#$A'```';
 begin
-  FEditForm:= FJava.getActiveEditor;
+  FEditForm:= FJava.GetActiveEditor;
   if IsBusy or not Assigned(FEditForm) then Exit;
 
   FActiveEditor := FEditForm.Editor;
@@ -998,7 +988,7 @@ const
   end;
 
 begin
-  FEditForm:= FJava.getActiveEditor;
+  FEditForm:= FJava.GetActiveEditor;
   if IsBusy or not Assigned(FEditForm) then Exit;
 
   FActiveEditor := FEditForm.Editor;
@@ -1007,7 +997,7 @@ begin
 
   if FSelText <> '' then Exit;
 
-  case Settings.EndPointType of
+  case Settings.EndpointType of
     etOpenAICompletion:
       begin
         var Prompt := Format(OpenAISuggestPrompt, [GetPrefix]);
@@ -1035,9 +1025,9 @@ function TLLMAssistant.ValidateSettings: TLLMSettingsValidation;
 begin
   Result := Settings.Validate;
   if (Result = svValid) and
-    not (Settings.EndPointType in [etOllamaGenerate, etOpenAICompletion, etGemini])
+    not (Settings.EndpointType in [etOllamaGenerate, etOpenAICompletion, etGemini])
   then
-    Result := svInvalidEndpoint
+    Result := svInvalidEndpoint;
 end;
 
 initialization

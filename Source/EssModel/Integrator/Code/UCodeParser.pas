@@ -21,11 +21,15 @@ unit UCodeParser;
 
 interface
 
-uses Classes, uModel, uParseThread;
+uses
+  Classes,
+  UModel,
+  UParseThread;
 
 type
 
-  TNeedPackageEvent = procedure (var AName: string; Packagename: string; var AStream: TStream; OnlyLookUp: Boolean = False) of object;
+  TNeedPackageEvent = procedure(var AName: string; Packagename: string;
+    var AStream: TStream; OnlyLookUp: Boolean = False) of object;
 
   {
     Baseclass for a code parser.
@@ -33,20 +37,22 @@ type
   TCodeParser = class(TObject)
   private
     FNeedPackage: TNeedPackageEvent;
+    FThread: TParseThread;
   protected
     FModel: TAbstractPackage;
     // Moves data from a stream to a memory stream and adds a terminating #0 for codeparsers.
-    function StreamToMemory(AStream : TStream) : TMemoryStream;
+    function StreamToMemory(AStream: TStream): TMemoryStream;
   public
-    Thread: TParseThread;
     // Parse the given stream into the AOM model with AModel as a 'dump' for unresolved objects.
-    procedure ParseStream(AStream: TStream; AModel: TAbstractPackage; AOM: TObjectModel;
-              filename: string; inner: boolean; withoutNeedSource: boolean); virtual; abstract;
+    procedure ParseStream(AStream: TStream; AModel: TAbstractPackage;
+      AOM: TObjectModel; Filename: string; Inner: Boolean;
+      WithoutNeedSource: Boolean); virtual; abstract;
 
+    property Thread: TParseThread read FThread write FThread;
     // Used to call the providers function to retrieve a package in a stream.
-    property NeedPackage: TNeedPackageEvent read FNeedPackage write FNeedPackage;
+    property NeedPackage: TNeedPackageEvent read FNeedPackage
+      write FNeedPackage;
   end;
-
 
 implementation
 
@@ -56,11 +62,11 @@ uses SysUtils;
 
 function TCodeParser.StreamToMemory(AStream: TStream): TMemoryStream;
 begin
-  Result:= TMemoryStream.Create;
+  Result := TMemoryStream.Create;
   Result.LoadFromStream(AStream);
   FreeAndNil(AStream);
   Result.SetSize(Result.Size + 1);
-  PChar(Result.Memory)[Result.Size]:= #0;
+  PChar(Result.Memory)[Result.Size] := #0;
 end;
 
 end.

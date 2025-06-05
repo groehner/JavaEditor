@@ -3,7 +3,14 @@ unit UDlgDownload;
 interface
 
 uses
-  Classes, Forms, Dialogs, StdCtrls, ComCtrls, ExtCtrls, Buttons, Vcl.Controls;
+  Classes,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  ComCtrls,
+  ExtCtrls,
+  Buttons,
+  Vcl.Controls;
 
 type
   TFDownload = class(TForm)
@@ -24,157 +31,182 @@ type
     procedure SPOpenClick(Sender: TObject);
     procedure BCancelClick(Sender: TObject);
   private
-    fileURL: string;
-    fileName: string;
-    Cancel: boolean;
+    FFileURL: string;
+    FFileName: string;
+    FCancel: Boolean;
+    FDownloadIsOK: Boolean;
   public
-    DownloadIsOK: boolean;
-    procedure SetUrlAndFile(const u, f: string);
-    function GetInetFile(const aFileURL, aFileName: string; const Progress: TProgressBar): boolean;
+    procedure SetUrlAndFile(const Url, Filename: string);
+    function GetInetFile(const AFileURL, AFileName: string;
+      const Progress: TProgressBar): Boolean;
     function GetDownloadFiles(const Section: string): TStringList;
+    property DownloadIsOK: Boolean read FDownloadIsOK;
   end;
 
 implementation
 
 {$R *.dfm}
 
-uses Windows, SysUtils, IniFiles, WinINet, JvGnugettext,
-     UStringRessources, UDlgUpdate, UConfiguration, UUtils;
+uses
+  Windows,
+  SysUtils,
+  IniFiles,
+  WinInet,
+  JvGnugettext,
+  UStringRessources,
+  UDlgUpdate,
+  UConfiguration,
+  UUtils;
 
-procedure TFDownload.SetUrlAndFile(const u, f: string);
+procedure TFDownload.SetUrlAndFile(const Url, Filename: string);
 begin
-  fileURL:= u;
-  fileName:= f;
-  EUrl.Text:= u;
-  EUrl.Hint:= u;
-  EFile.Text:= f;
-  EFile.Hint:= f;
+  FFileURL := Url;
+  FFileName := Filename;
+  EUrl.Text := Url;
+  EUrl.Hint := Url;
+  EFile.Text := Filename;
+  EFile.Hint := Filename;
 end;
 
 procedure TFDownload.SPOpenClick(Sender: TObject);
 begin
-  SaveDialog.FileName:= ExtractFileName(EFile.Text);
-  SaveDialog.InitialDir:= ExtractFilePath(EFile.Text);
-  if SaveDialog.Execute then begin
-    Filename:= SaveDialog.FileName;
-    EFile.Text:= FileName;
-    EFile.Hint:= FileName;
+  SaveDialog.FileName := ExtractFileName(EFile.Text);
+  SaveDialog.InitialDir := ExtractFilePath(EFile.Text);
+  if SaveDialog.Execute then
+  begin
+    FFileName := SaveDialog.FileName;
+    EFile.Text := FFileName;
+    EFile.Hint := FFileName;
   end;
 end;
 
-function TFDownload.GetInetFile(const aFileURL, aFileName: string; const Progress: TProgressBar): boolean;
+function TFDownload.GetInetFile(const AFileURL, AFileName: string;
+  const Progress: TProgressBar): Boolean;
 const
-  BufferSize = 1024; 
+  BufferSize = 1024;
 var
-  hSession, hURL: HInternet;
-  Buffer: array[0..BufferSize+1] of Byte;
-  code : array[1..20] of Char;
-  codes: string;
-  Value: integer;
-  BufferLen,
-  Index,
-  CodeLen: DWord;
-  sAppName: string;
-  aFile: TFileStream;
-  KnowSize: boolean;
+  HSession, HURL: HINTERNET;
+  Buffer: array [0 .. BufferSize + 1] of Byte;
+  Code: array [1 .. 20] of Char;
+  Codes: string;
+  Value: Integer;
+  BufferLen, Index, CodeLen: DWORD;
+  SAppName: string;
+  AFile: TFileStream;
+  KnowSize: Boolean;
 begin
-  result := false;
-  sAppName := ExtractFileName(Application.ExeName) ;
-  hSession := InternetOpen(PChar(sAppName), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0) ;
+  Result := False;
+  SAppName := ExtractFileName(Application.ExeName);
+  HSession := InternetOpen(PChar(SAppName), INTERNET_OPEN_TYPE_PRECONFIG,
+    nil, nil, 0);
   try
     try
-      hURL:= InternetOpenURL(hSession, PChar(aFileURL), nil, 0, INTERNET_FLAG_DONT_CACHE, 0);
-      if assigned(hURL) then
+      HURL := InternetOpenUrl(HSession, PChar(AFileURL), nil, 0,
+        INTERNET_FLAG_DONT_CACHE, 0);
+      if Assigned(HURL) then
         try
           try
             // get HTTP state
-            Index:= 0;
-            CodeLen:= Length(code);
-            if HttpQueryInfo(hURL, HTTP_QUERY_STATUS_CODE, @code, CodeLen, Index) then begin
-              codes:= string(code); // 200, 401, 404 or 500
-              codes:= copy(codes, 1, 3);
-              if codes <> '200' then exit(false);
+            Index := 0;
+            CodeLen := Length(Code);
+            if HttpQueryInfo(HURL, HTTP_QUERY_STATUS_CODE, @Code, CodeLen, Index)
+            then
+            begin
+              Codes := string(Code); // 200, 401, 404 or 500
+              Codes := Copy(Codes, 1, 3);
+              if Codes <> '200' then
+                Exit(False);
             end;
 
             // get file size
-            KnowSize:= false;
-            if Progress <> nil then begin
-              KnowSize:= true;
+            KnowSize := False;
+            if Assigned(Progress) then
+            begin
+              KnowSize := True;
               Index := 0;
-              CodeLen := Length(code);
-              HttpQueryInfo(hURL, HTTP_QUERY_CONTENT_LENGTH, @code, codeLen, Index);
-              codes:= string(code);
-              if TryStrToInt(codes, Value)
-                then Progress.Max:= Value
-                else KnowSize:= false;
+              CodeLen := Length(Code);
+              HttpQueryInfo(HURL, HTTP_QUERY_CONTENT_LENGTH, @Code,
+                CodeLen, Index);
+              Codes := string(Code);
+              if TryStrToInt(Codes, Value) then
+                Progress.Max := Value
+              else
+                KnowSize := False;
             end;
-            BCancel.Enabled:= true;
+            BCancel.Enabled := True;
 
             // get file
-            aFile:= TFileStream.Create(aFileName, fmCreate or fmShareExclusive);
+            AFile := TFileStream.Create(AFileName,
+              fmCreate or fmShareExclusive);
             repeat
-              InternetReadFile(hURL, @Buffer, SizeOf(Buffer), BufferLen);
-              aFile.Write(Buffer[0], BufferLen);
-              if (Progress <> nil) and KnowSize then
+              InternetReadFile(HURL, @Buffer, SizeOf(Buffer), BufferLen);
+              AFile.Write(Buffer[0], BufferLen);
+              if Assigned(Progress) and KnowSize then
                 Progress.StepBy(SizeOf(Buffer));
               Application.ProcessMessages;
-            until Cancel or (BufferLen = 0);
-            FreeAndNil(aFile);
+            until FCancel or (BufferLen = 0);
+            FreeAndNil(AFile);
 
-            result:= not Cancel;
-          except on e: Exception do
-            EFile.Text:= Format(_(LNGCanNotCreateFile), [aFilename, e.Message]);
-          end
+            Result := not FCancel;
+          except
+            on e: Exception do
+              EFile.Text := Format(_(LNGCanNotCreateFile),
+                [AFileName, e.Message]);
+          end;
         finally
-          InternetCloseHandle(hURL)
+          InternetCloseHandle(HURL);
         end
       else
-        ErrorMsg(_(LNGNoInternetConnection) + ' ' + SysErrorMessage(GetLastError));
+        ErrorMsg(_(LNGNoInternetConnection) + ' ' +
+          SysErrorMessage(GetLastError));
     except
-      ErrorMsg(_(LNGNoInternetConnection) + ' ' + SysErrorMessage(GetLastError));
+      ErrorMsg(_(LNGNoInternetConnection) + ' ' +
+        SysErrorMessage(GetLastError));
     end;
   finally
-    InternetCloseHandle(hSession);
-    BCancel.Enabled:= true;
+    InternetCloseHandle(HSession);
+    BCancel.Enabled := True;
   end;
 end;
 
 procedure TFDownload.FormShow(Sender: TObject);
 begin
-  DownloadIsOK:= false;
-  BCancel.Enabled:= false;
-  ProgressBar.Position:= 0;
-  Cancel:= false;
+  FDownloadIsOK := False;
+  BCancel.Enabled := False;
+  ProgressBar.Position := 0;
+  FCancel := False;
 end;
 
 procedure TFDownload.TimerDownloadTimer(Sender: TObject);
 begin
-  TimerDownload.Enabled:= false;
+  TimerDownload.Enabled := False;
   try
-    Screen.Cursor:= crHourglass;
-    DownloadIsOK:= GetInetFile(fileUrl, fileName, ProgressBar);
+    Screen.Cursor := crHourGlass;
+    FDownloadIsOK := GetInetFile(FFileURL, FFileName, ProgressBar);
   finally
-    Screen.Cursor:= crDefault;
+    Screen.Cursor := crDefault;
   end;
-  if DownloadIsOK then BCancel.Caption:= _('&OK');
-  BDownload.Enabled:= true;
+  if DownloadIsOK then
+    BCancel.Caption := _('&OK');
+  BDownload.Enabled := True;
 end;
 
 procedure TFDownload.BCancelClick(Sender: TObject);
 begin
-  Cancel:= true;
+  FCancel := True;
 end;
 
 procedure TFDownload.BDownloadClick(Sender: TObject);
 begin
-  BDownload.Enabled:= false;
-  BCancel.Enabled:= false;
-  FileUrl:= EUrl.Text;
-  FileName:= EFile.Text;
-  var dir:= ExtractFilePath(Filename);
-  if not DirectoryExists(dir) then
-    ForceDirectories(dir);
-  TimerDownload.Enabled:= true;
+  BDownload.Enabled := False;
+  BCancel.Enabled := False;
+  FFileURL := EUrl.Text;
+  FFileName := EFile.Text;
+  var
+  Dir := ExtractFilePath(FFileName);
+  if not DirectoryExists(Dir) then
+    ForceDirectories(Dir);
+  TimerDownload.Enabled := True;
 end;
 
 procedure TFDownload.FormCreate(Sender: TObject);
@@ -183,22 +215,24 @@ begin
 end;
 
 function TFDownload.GetDownloadFiles(const Section: string): TStringList;
-  var ini: TMemIniFile; Source, Dest: string;
+var
+  Ini: TMemIniFile;
+  Source, Dest: string;
 begin
-  Source:= Server + 'download.txt';
-  Dest  := FConfiguration.TempDir + 'download.txt';
-  Result:= TStringList.Create;
+  Source := Server + 'download.txt';
+  Dest := FConfiguration.TempDir + 'download.txt';
+  Result := TStringList.Create;
   try
-    Screen.Cursor:= crHourglass;
-    if DownloadFile(Source, Dest) then begin
-      Ini:= TMemIniFile.Create(Dest);
+    Screen.Cursor := crHourGlass;
+    if DownloadFile(Source, Dest) then
+    begin
+      Ini := TMemIniFile.Create(Dest);
       Ini.ReadSectionValues(Section, Result);
       FreeAndNil(Ini);
     end;
   finally
-    Screen.Cursor:= crDefault;
+    Screen.Cursor := crDefault;
   end;
 end;
 
 end.
-

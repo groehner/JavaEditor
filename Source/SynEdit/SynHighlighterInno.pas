@@ -93,7 +93,7 @@ type
     procedure SemiColonProc;
     procedure StringProc;
     procedure UnknownProc;
-    procedure DoAddKeyword(AKeyword: string; AKind: integer);
+    procedure DoAddKeyword(AKeyword: string; AKind: Integer);
   protected
     function IsCurrentToken(const Token: string): Boolean; override;
     function IsFilterStored: Boolean; override;
@@ -108,7 +108,7 @@ type
     function GetEol: Boolean; override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenID: TtkTokenKind;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
   published
     property ConstantAttri: TSynHighlighterAttributes read fConstantAttri
@@ -214,7 +214,7 @@ begin
 {$ELSE}
     Result := (7 * Result + GetOrd) and $FFFFFF;
 {$ENDIF}
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result and $1FF; // 511
   fStringLen := Str - fToIdent;
@@ -229,12 +229,12 @@ begin
   while Assigned(Entry) do
   begin
     if Entry.KeywordLen > fStringLen then
-      break
+      Break
     else if Entry.KeywordLen = fStringLen then
       if IsCurrentToken(Entry.Keyword) then
       begin
         Result := TtkTokenKind(Entry.Kind);
-        exit;
+        Exit;
       end;
     Entry := Entry.Next;
   end;
@@ -243,21 +243,21 @@ end;
 
 function TSynInnoSyn.IsCurrentToken(const Token: string): Boolean;
   var
-  I: Integer;
+  Int: Integer;
   Temp: PWideChar;
 begin
   Temp := fToIdent;
   if Length(Token) = fStringLen then
   begin
     Result := True;
-    for i := 1 to fStringLen do
+    for Int := 1 to fStringLen do
     begin
-      if SysUtils.AnsiLowerCase(Temp^)[1] <> SysUtils.AnsiLowerCase(Token[i])[1] then
+      if SysUtils.AnsiLowerCase(Temp^)[1] <> SysUtils.AnsiLowerCase(Token[Int])[1] then
       begin
         Result := False;
-        break;
+        Break;
       end;
-      inc(Temp);
+      Inc(Temp);
     end;
   end
   else
@@ -334,14 +334,14 @@ end;
 procedure TSynInnoSyn.SymbolProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynInnoSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
-  if fLine[Run] = #10 then inc(Run);
+  Inc(Run);
+  if fLine[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynInnoSyn.EqualProc;
@@ -355,17 +355,17 @@ begin
     if fLine[Run] = ';' then
     begin
       Inc(Run);
-      break;
+      Break;
     end;
   until IsLineEnd(Run);
 end;
 
 procedure TSynInnoSyn.IdentProc;
 var
-  LookAhead: integer;
+  LookAhead: Integer;
 begin
   fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
+  Inc(Run, fStringLen);
   if fTokenID = tkKeyOrParameter then
   begin
     LookAhead := Run;
@@ -384,7 +384,7 @@ begin
   if Run > 0 then
   begin
     fTokenID := tkUnknown;
-    inc(Run);
+    Inc(Run);
     Exit;
   end;
 
@@ -395,7 +395,7 @@ begin
     if fLine[Run] = ']' then
     begin
       Inc(Run);
-      break;
+      Break;
     end;
   until IsLineEnd(Run);
 end;
@@ -403,13 +403,13 @@ end;
 procedure TSynInnoSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynInnoSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynInnoSyn.NumberProc;
@@ -471,14 +471,14 @@ end;
 
 procedure TSynInnoSyn.SemiColonProc;
 var
-  I: Integer;
+  Int: Integer;
 begin
-  for I := Run-1 downto 0 do
-    if fLine[I] > ' ' then begin
+  for Int := Run-1 downto 0 do
+    if fLine[Int] > ' ' then begin
       // If the semicolon is not the first non-whitespace character on the
       // line, then it isn't the start of a comment.
       fTokenID := tkUnknown;
-      inc(Run);
+      Inc(Run);
       Exit;
     end;
   fTokenID := tkComment;
@@ -495,14 +495,14 @@ begin
     if fLine[Run] = '"' then begin
       Inc(Run);
       if fLine[Run] <> '"' then // embedded "" does not end the string
-        break;
+        Break;
     end;
   until IsLineEnd(Run);
 end;
 
 procedure TSynInnoSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -527,7 +527,7 @@ begin
   inherited;
 end;
 
-function TSynInnoSyn.GetDefaultAttribute(Index: integer):
+function TSynInnoSyn.GetDefaultAttribute(Index: Integer):
   TSynHighlighterAttributes;
 begin
   case Index of
@@ -566,7 +566,7 @@ begin
   end;
 end;
 
-function TSynInnoSyn.GetTokenKind: integer;
+function TSynInnoSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;
@@ -586,7 +586,7 @@ begin
   Result := SYNS_LangInno;
 end;
 
-procedure TSynInnoSyn.DoAddKeyword(AKeyword: string; AKind: integer);
+procedure TSynInnoSyn.DoAddKeyword(AKeyword: string; AKind: Integer);
 var
   HashValue: Integer;
 begin

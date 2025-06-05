@@ -544,8 +544,6 @@ begin
 end;
 
 procedure TJvCustomTabBar.Notification(Component: TComponent; Operation: TOperation);
-var
-  I: Integer;
 begin
   inherited Notification(Component, Operation);
   if Operation = opRemove then
@@ -560,7 +558,7 @@ begin
       PageList := nil;
   end;
   if FTabs <> nil then
-    for I := Tabs.Count - 1 downto 0 do
+    for var I := Tabs.Count - 1 downto 0 do
       Tabs[I].Notification(Component, Operation);
 end;
 
@@ -1268,13 +1266,11 @@ begin
 end;
 
 function TJvCustomTabBar.FindTab(const Caption: string): TJvTabBarItem;
-var
-  i: Integer;
 begin
-  for i := 0 to Tabs.Count - 1 do
-    if Caption = Tabs[i].Caption then
+  for var I := 0 to Tabs.Count - 1 do
+    if Caption = Tabs[I].Caption then
     begin
-      Result := Tabs[i];
+      Result := Tabs[I];
       Exit;
     end;
   Result := nil;
@@ -1282,7 +1278,7 @@ end;
 
 procedure TJvCustomTabBar.CalcTabsRects;
 var
-  I, X: Integer;
+  X: Integer;
   Tab: TJvTabBarItem;
   Offset: Integer;
   Index: Integer;
@@ -1293,7 +1289,7 @@ begin
   Offset := 0;
   X := Margin;  // adjust for scrolled area
   Index := 0;
-  for I := 0 to Tabs.Count - 1 do
+  for var I := 0 to Tabs.Count - 1 do
   begin
     Tab := Tabs[I];
     if Tab.Visible then
@@ -1319,7 +1315,6 @@ end;
 
 procedure TJvCustomTabBar.Paint;
 var
-  I: Integer;
   Bmp: TBitmap;
   R: TRect;
 begin
@@ -1343,7 +1338,7 @@ begin
     end;
 
     if FBarWidth > 0 then
-      for I := 0 to Tabs.Count - 1 do
+      for var I := 0 to Tabs.Count - 1 do
         if Tabs[I].Visible then
           PaintTab(Bmp.Canvas, Tabs[I]);
     Canvas.Draw(0, 0, Bmp);
@@ -1399,14 +1394,13 @@ end;
 
 function TJvCustomTabBar.TabAt(X, Y: Integer): TJvTabBarItem;
 var
-  I: Integer;
   Pt: TPoint;
 begin
   if (FBtnLeftScroll.State = sbsHidden) or (X < FBarWidth) then
   begin
     CalcTabsRects;
     Pt := Point(X, Y);
-    for I := 0 to Tabs.Count - 1 do
+    for var I := 0 to Tabs.Count - 1 do
       if PtInRect(Tabs[I].DisplayRect, Pt) then
       begin
         Result := Tabs[I];
@@ -1593,10 +1587,8 @@ begin
 end;
 
 function TJvCustomTabBar.FindData(Data: TObject): TJvTabBarItem;
-var
-  I: Integer;
 begin
-  for I := 0 to Tabs.Count - 1 do
+  for var I := 0 to Tabs.Count - 1 do
     if Tabs[I].Data = Data then
     begin
       Result := Tabs[I];
@@ -1823,10 +1815,8 @@ begin
 end;
 
 function TJvTabBarItem.GetNextVisible: TJvTabBarItem;
-var
-  I: Integer;
 begin
-  for I := Index + 1 to TabBar.Tabs.Count - 1 do
+  for var I := Index + 1 to TabBar.Tabs.Count - 1 do
     if TabBar.Tabs[I].Visible then
     begin
       Result := TabBar.Tabs[I];
@@ -1836,10 +1826,8 @@ begin
 end;
 
 function TJvTabBarItem.GetPreviousVisible: TJvTabBarItem;
-var
-  I: Integer;
 begin
-  for I := Index - 1 downto 0 do
+  for var I := Index - 1 downto 0 do
     if TabBar.Tabs[I].Visible then
     begin
       Result := TabBar.Tabs[I];
@@ -1924,11 +1912,9 @@ begin
 end;
 
 function TJvTabBarItems.Find(const AName: string): TJvTabBarItem;
-var
-  I: Integer;
 begin
   Result := nil;
-  for I := 0 to Count - 1 do
+  for var I := 0 to Count - 1 do
     if Items[I].Name = AName then
     begin
       Result := Items[I];
@@ -2010,11 +1996,9 @@ begin
 end;
 
 procedure TJvTabBarPainter.Changed;
-var
-  i: Integer;
 begin
-  for i := 0 to FOnChangeList.Count - 1 do
-    TJvCustomTabBar(FOnChangeList[i]).ImagesChanged(Self);
+  for var I := 0 to FOnChangeList.Count - 1 do
+    TJvCustomTabBar(FOnChangeList[I]).ImagesChanged(Self);
 end;
 
 procedure TJvTabBarPainter.GetScrollButtons(TabBar: TJvCustomTabBar; var LeftButton, RightButton: TRect);
@@ -2238,7 +2222,7 @@ begin
 
       // close qudratic cross
       Pen.Width:= 2;
-      var q:= min(CloseR.Width-6, closeR.Height-6);
+      var q:= Min(CloseR.Width-6, closeR.Height-6);
       var dx:= (CloseR.Width - q) div 2;
       var dy:= (CloseR.Height - q) div 2;
       MoveTo(CloseR.Left + dx, CloseR.Top + dy);

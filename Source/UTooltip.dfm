@@ -107,7 +107,6 @@ object FTooltip: TFTooltip
     Top = 228
     Width = 404
     Height = 26
-    ExplicitTop = 231
   end
   object CloseTooltipTimer: TTimer
     Enabled = False

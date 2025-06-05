@@ -1,26 +1,28 @@
 unit UAPanel;
 
 { Classes
-    TAPanel = class (TAWTComponent)
-      TASubPanel
-    TACanvas = class(TAWTComponent)
-      TASubCanvas
-      TATurtle
+  TAPanel = class (TAWTComponent)
+  TASubPanel
+  TACanvas = class(TAWTComponent)
+  TASubCanvas
+  TATurtle
 }
 
 interface
 
 uses
-  Classes, ExtCtrls, UAComponents;
+  Classes,
+  ExtCtrls,
+  UAComponents;
 
 type
 
-  TAPanel = class (TAWTComponent)
+  TAPanel = class(TAWTComponent)
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aPanel: TPanel);
-    function getAttributes(ShowAttributes: integer): string; override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor CreateFrom(APanel: TPanel);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure Paint; override;
   published
@@ -44,9 +46,9 @@ type
   TACanvas = class(TAWTComponent)
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aPanel: TPanel);
-    function getAttributes(ShowAttributes: integer): string; override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor CreateFrom(APanel: TPanel);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure Paint; override;
   end;
@@ -65,69 +67,74 @@ type
 
   TATurtle = class(TACanvas)
   private
-    FOriginX: integer;
-    FOriginY: integer;
-    FDrawDynamic: boolean;
-    FSleepTime: integer;
-    FTurtleX: integer;
-    FTurtleY: integer;
-    FTurtleW: integer;
+    FOriginX: Integer;
+    FOriginY: Integer;
+    FDrawDynamic: Boolean;
+    FSleepTime: Integer;
+    FTurtleX: Integer;
+    FTurtleY: Integer;
+    FTurtleW: Integer;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aPanel: TPanel);
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor CreateFrom(APanel: TPanel);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
   published
-    property OriginX: integer read FOriginX write FOriginX;
-    property OriginY: integer read FOriginY write FOriginY;
-    property DrawDynamic: boolean read FDrawDynamic write FDrawDynamic;
-    property SleepTime: integer read FSleeptime write FSleepTime;
-    property TurtleX: integer read FTurtleX write FTurtleX;
-    property TurtleY: integer read FTurtleY write FTurtleY;
-    property TurtleW: integer read FTurtleW write FTurtleW;
+    property OriginX: Integer read FOriginX write FOriginX;
+    property OriginY: Integer read FOriginY write FOriginY;
+    property DrawDynamic: Boolean read FDrawDynamic write FDrawDynamic;
+    property SleepTime: Integer read FSleepTime write FSleepTime;
+    property TurtleX: Integer read FTurtleX write FTurtleX;
+    property TurtleY: Integer read FTurtleY write FTurtleY;
+    property TurtleW: Integer read FTurtleW write FTurtleW;
   end;
 
 implementation
 
-uses SysUtils, Graphics, Controls, UITypes, ULink;
+uses
+  SysUtils,
+  Graphics,
+  Controls,
+  UITypes,
+  ULink;
 
-{--- TAPanel ------------------------------------------------------------------}
+{ --- TAPanel ------------------------------------------------------------------ }
 
 constructor TAPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := [csAcceptsControls];
-  HelpType:= htContext;
-  Width:= 120;
-  Height:= 80;
-  Tag:= -12;
-  Background:= clBtnFace;
-  ShowFont:= false;
-  JavaType:= 'Panel';
+  HelpType := htContext;
+  Width := 120;
+  Height := 80;
+  Tag := -12;
+  Background := clBtnFace;
+  ShowFont := False;
+  JavaType := 'Panel';
 end;
 
-constructor TAPanel.CreateFrom(aPanel: TPanel);
+constructor TAPanel.CreateFrom(APanel: TPanel);
 begin
-  Create(aPanel.Owner);
-  CreateFromA(aPanel);
-  Background:= aPanel.Color;
-  if Background = clBtnFace then Background:= clWhite;
+  Create(APanel.Owner);
+  CreateFromA(APanel);
+  Background := APanel.Color;
+  if Background = clBtnFace then
+    Background := clWhite;
 end;
 
-function TAPanel.getAttributes(ShowAttributes: integer): string;
+function TAPanel.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Background' + inherited;
+  Result := '|Background' + inherited;
 end;
 
-function TAPanel.getEvents(ShowEvents: integer): string;
+function TAPanel.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|componentAdded|componentRemoved|propertyChange' +
-           MouseEvents;
+  Result := '|componentAdded|componentRemoved|propertyChange' + MouseEvents;
   if ShowEvents = 3 then
-    Result:= Result + ContainerComponentEvents;
-  Result:= Result + inherited;
+    Result := Result + ContainerComponentEvents;
+  Result := Result + inherited;
 end;
 
 procedure TAPanel.NewControl;
@@ -139,33 +146,36 @@ end;
 procedure TAPanel.Paint;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= Background;
-  if Background = ColorNone
-    then Canvas.Brush.Color:= (Parent as TWinControl).Brush.Color
-    else Canvas.Brush.Color:= Background;
+  Canvas.Pen.Color := Background;
+  if Background = ColorNone then
+    Canvas.Brush.Color := Parent.Brush.Color
+  else
+    Canvas.Brush.Color := Background;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
 end;
 
-{--- TASubPanel -----------------------------------------------------------------}
+{ --- TASubPanel ----------------------------------------------------------------- }
 
 constructor TASubPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= -38;
-  SubType:= ULink.PanelCanvasType;
-  JavaType:= SubType;
+  Tag := -38;
+  SubType := ULink.PanelCanvasType;
+  JavaType := SubType;
 end;
 
 procedure TASubPanel.NewControl;
 begin
   DefaultComponent;
-  InsertNewVariable('private ' + SubType + ' ' + Name + ' = new ' + SubType + '();');
+  InsertNewVariable('private ' + SubType + ' ' + Name + ' = new ' +
+    SubType + '();');
 end;
 
 procedure TASubPanel.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteAttribute('private ' + SubType + ' ' + Name + ' = new ' + SubType);
+  FPartner.DeleteAttribute('private ' + SubType + ' ' + Name + ' = new '
+    + SubType);
 end;
 
 procedure TASubPanel.MakeUniqueName(FromText: string = '');
@@ -173,34 +183,34 @@ begin
   inherited MakeUniqueName(SubType);
 end;
 
-{--- TACanvas -----------------------------------------------------------------}
+{ --- TACanvas ----------------------------------------------------------------- }
 
 constructor TACanvas.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Width:= 120;
-  Height:= 80;
-  Tag:= -13;
-  Background:= clBtnFace;
-  ShowFont:= false;
-  JavaType:= 'Canvas';
+  Width := 120;
+  Height := 80;
+  Tag := -13;
+  Background := clBtnFace;
+  ShowFont := False;
+  JavaType := 'Canvas';
 end;
 
-constructor TACanvas.CreateFrom(aPanel: TPanel);
+constructor TACanvas.CreateFrom(APanel: TPanel);
 begin
-  Create(aPanel.Owner);
-  CreateFromA(aPanel);
-  Background:= aPanel.Color;
+  Create(APanel.Owner);
+  CreateFromA(APanel);
+  Background := APanel.Color;
 end;
 
-function TACanvas.getAttributes(ShowAttributes: integer): string;
+function TACanvas.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Background' + inherited;
+  Result := '|Background' + inherited;
 end;
 
-function TACanvas.getEvents(ShowEvents: integer): string;
+function TACanvas.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= MouseEvents + inherited;
+  Result := MouseEvents + inherited;
 end;
 
 procedure TACanvas.NewControl;
@@ -212,33 +222,36 @@ end;
 procedure TACanvas.Paint;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= Background;
-  if Background = ColorNone
-    then Canvas.Brush.Color:= (Parent as TWinControl).Brush.Color
-    else Canvas.Brush.Color:= Background;
+  Canvas.Pen.Color := Background;
+  if Background = ColorNone then
+    Canvas.Brush.Color := Parent.Brush.Color
+  else
+    Canvas.Brush.Color := Background;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
 end;
 
-{--- TASubCanvas --------------------------------------------------------------}
+{ --- TASubCanvas -------------------------------------------------------------- }
 
 constructor TASubCanvas.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= -39;
-  SubType:= ULink.PanelCanvasType;
-  JavaType:= SubType;
+  Tag := -39;
+  SubType := ULink.PanelCanvasType;
+  JavaType := SubType;
 end;
 
 procedure TASubCanvas.NewControl;
 begin
   DefaultComponent;
-  InsertNewVariable('private ' + SubType + ' ' + Name + ' = new ' + SubType + '();');
+  InsertNewVariable('private ' + SubType + ' ' + Name + ' = new ' +
+    SubType + '();');
 end;
 
 procedure TASubCanvas.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteAttribute('private ' + SubType + ' ' + Name + ' = new ' + SubType);
+  FPartner.DeleteAttribute('private ' + SubType + ' ' + Name + ' = new '
+    + SubType);
 end;
 
 procedure TASubCanvas.MakeUniqueName(FromText: string = '');
@@ -246,46 +259,46 @@ begin
   inherited MakeUniqueName(SubType);
 end;
 
-{--- TATurtle -----------------------------------------------------------------}
+{ --- TATurtle ----------------------------------------------------------------- }
 
 constructor TATurtle.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Background:= clWhite;
-  ShowFont:= false;
-  Tag:= -14;
-  JavaType:= 'Turtle';
+  inherited Create(AOwner);
+  Background := clWhite;
+  ShowFont := False;
+  Tag := -14;
+  JavaType := 'Turtle';
 end;
 
-constructor TATurtle.CreateFrom(aPanel: TPanel);
+constructor TATurtle.CreateFrom(APanel: TPanel);
 begin
-  Create(aPanel.Owner);
-  CreateFromA(aPanel);
-  Background:= aPanel.Color;
+  Create(APanel.Owner);
+  CreateFromA(APanel);
+  Background := APanel.Color;
 end;
 
-function TATurtle.getAttributes(ShowAttributes: integer): string;
+function TATurtle.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Background|OriginX|OriginY|DrawDynamic|SleepTime' +
-           '|TurtleX|TurtleY|TurtleW' + inherited;
+  Result := '|Background|OriginX|OriginY|DrawDynamic|SleepTime' +
+    '|TurtleX|TurtleY|TurtleW' + inherited;
 end;
 
-procedure TATurtle.setAttribute(Attr, Value, Typ: string);
+procedure TATurtle.SetAttribute(Attr, Value, Typ: string);
 begin
   if (Attr = 'OriginX') or (Attr = 'OriginY') then
-    MakeAttribut('Origin', intToStr(OriginX) + ', ' + intToStr(OriginY))
+    MakeAttribut('Origin', IntToStr(OriginX) + ', ' + IntToStr(OriginY))
   else
     inherited;
 end;
 
-function TATurtle.getEvents(ShowEvents: integer): string;
+function TATurtle.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= MouseEvents + inherited;
+  Result := MouseEvents + inherited;
 end;
 
 procedure TATurtle.NewControl;
 begin
-  Partner.InsertImport('je.util.Turtle');
+  FPartner.InsertImport('je.util.Turtle');
   DefaultComponent;
   InsertNewVariable('private Turtle ' + Name + ' = new Turtle();');
   MakeAttribut('Background', 'Color.WHITE');

@@ -220,8 +220,7 @@ var
   var
     SrcList : TStringList;
     DstList : TStringList;
-    I       : Integer;
-    S1, S2  : string;
+    Str1, Str2  : string;
   begin
     { No mappings? Then just build the file list. }
     if Pos('=', FSourceFiles.Text) = 0 then begin
@@ -242,19 +241,19 @@ var
     {$ENDIF}
     FileCount := FSourceFiles.Count;
     try
-      for I := 0 to Pred(FSourceFiles.Count) do begin
+      for var I := 0 to Pred(FSourceFiles.Count) do begin
         { If a particular line doesn't have a mapping then }
         { create one with Destination as the directory.    }
-        S1 := FSourceFiles[I];
-        if S1 = '' then begin
+        Str1 := FSourceFiles[I];
+        if Str1 = '' then begin
           { Blank line, decrement the file count. }
           Dec(FileCount);
           Continue;
         end;
-        if (Pos('=', S1) = 0) then begin
-          S2 := FSourceFiles[I]
-            + '=' + FDestination + '\' + ExtractFileName(S1);
-          FSourceFiles[I] := S2;
+        if (Pos('=', Str1) = 0) then begin
+          Str2 := FSourceFiles[I]
+            + '=' + FDestination + '\' + ExtractFileName(Str1);
+          FSourceFiles[I] := Str2;
         end;
 
         SrcList.Add(FSourceFiles.Names[I]);
@@ -384,8 +383,7 @@ end;
 function TStCustomFileOperation.BuildFileList(var Dest : PChar;
                                               Source : TStrings) : Boolean;
 var
-  Index : Integer;
-  I     : Integer;
+  Int, Index : Integer;
   Temp  : PChar;
 begin
   Result := True;
@@ -393,9 +391,9 @@ begin
   { a buffer for the files and add 1 characters for the double}
   { null. Fill the buffer with zeros and then copy the files  }
   { to the buffer one at a time. }
-  I := Length(Source.Text) + Source.Count + 1;
-  Dest := StrAlloc(I); // GetMem(Dest, I);
-  FillChar(Dest^, I, 0);
+  Int := Length(Source.Text) + Source.Count + 1;
+  Dest := StrAlloc(Int); // GetMem(Dest, I);
+  FillChar(Dest^, Int, 0);
   if Source.Count = 1 then begin
     StrCopy(Dest, PChar(Source[0]));
     if FConfirmFiles then
@@ -403,8 +401,8 @@ begin
         Result := False;
   end else begin
     Index := 0;
-    for I := 0 to Pred(Source.Count) do begin
-      Temp := PChar(Source[i]);
+    for var I := 0 to Pred(Source.Count) do begin
+      Temp := PChar(Source[I]);
       { If any of the source files doesn't exists then return     }
       { False so we can RaiseStError(an exception in the Execute method. }
       if FConfirmFiles then

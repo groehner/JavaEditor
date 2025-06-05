@@ -8,7 +8,7 @@
 // and is subject to that software license agreement.
 
 //---------------------------------------------------------------------------
-unit uDockForm;
+unit UDockForm;
 
 interface
 
@@ -19,7 +19,7 @@ uses
 type
   TDockableForm = class(TForm)
     procedure FormDockOver(Sender: TObject; Source: TDragDockObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var AAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure FormStartDock(Sender: TObject; var DragObject: TDragDockObject);
   private
@@ -129,11 +129,11 @@ begin
 end;
 
 procedure TDockableForm.FormClose(Sender: TObject;
-  var aAction: TCloseAction);
+  var AAction: TCloseAction);
 begin
   //the action taken depends on how the form is docked.
 
-  if assigned(HostDockSite) then begin
+  if Assigned(HostDockSite) then begin
 
     if (HostDockSite is TConjoinDockHost) then
     begin
@@ -153,7 +153,7 @@ begin
       FJava.ShowDockPanel(HostDockSite as TPanel, False, nil);
   end;
 
-  aAction := caHide;
+  AAction := caHide;
 
   if not Floating and FloatOnCloseDock then
   begin

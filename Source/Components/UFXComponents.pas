@@ -1,46 +1,50 @@
 unit UFXComponents;
 
 { Classes
-    TFXNode = class (TJEComponent)
-      TFXRegion
-        TFXControl
+  TFXNode = class (TJEComponent)
+  TFXRegion
+  TFXControl
 }
 
 interface
 
 uses
-  Windows, Classes, Graphics, Controls, UJEComponents;
+  Windows,
+  Classes,
+  Graphics,
+  Controls,
+  UJEComponents;
 
 const
   CrLf = #13#10;
   CornerRadius = 5;
   ColorNone = clBtnFace;
 
-  DragDropEvents = '|dragDetected|dragDone|dragDropped|dragEntered|dragExited'+
-                   '|dragOver|mouseDragEntered|mouseDragExited|mouseDragOver|mouseDragReleased';
+  DragDropEvents = '|dragDetected|dragDone|dragDropped|dragEntered|dragExited' +
+    '|dragOver|mouseDragEntered|mouseDragExited|mouseDragOver|mouseDragReleased';
   RotationEvents = '|rotate|rotationFinished|rotationStarted';
   ScrollEvents = '|scroll|scrollFinished|scrollStarted';
-  SwipeEvents =  '|swipeDown|swipeLeft|swipeRight|swipeUp';
-  ZoomEvents =   '|zoom|zoomFinished|zoomStarted';
+  SwipeEvents = '|swipeDown|swipeLeft|swipeRight|swipeUp';
+  ZoomEvents = '|zoom|zoomFinished|zoomStarted';
   GestureEvents = RotationEvents + ScrollEvents + SwipeEvents + ZoomEvents;
   KeyboardEvents = '|inputMethodTextChanged|keyPressed|keyReleased|keyTyped';
   MouseEvents = '|contextMenuRequested|mouseClicked|mouseDragged|mouseEntered' +
-                '|mouseExited|mouseMoved|mousePressed|mouseReleased';
+    '|mouseExited|mouseMoved|mousePressed|mouseReleased';
   TouchEvents = '|touchMoved|touchPressed|touchReleased|touchStationary';
-  NodeEvents =  DragDropEvents + GestureEvents + KeyboardEvents + MouseEvents + TouchEvents;
+  NodeEvents = DragDropEvents + GestureEvents + KeyboardEvents + MouseEvents +
+    TouchEvents;
 
 type
 
   // used in TextInput and Labeled
-  TAlignment = (BASELINE_CENTER, BASELINE_LEFT, BASELINE_RIGHT,
-                TOP_CENTER,      TOP_LEFT,      TOP_RIGHT,
-                CENTER,          CENTER_LEFT,   CENTER_RIGHT,
-                BOTTOM_CENTER,   BOTTOM_LEFT,   BOTTOM_RIGHT);
+  TAlignment = (BASELINE_CENTER, BASELINE_LEFT, BASELINE_RIGHT, TOP_CENTER,
+    TOP_LEFT, TOP_RIGHT, CENTER, CENTER_LEFT, CENTER_RIGHT, BOTTOM_CENTER,
+    BOTTOM_LEFT, BOTTOM_RIGHT);
 
   // used in Text and Labeled
   TTextAlignment = (_TA_CENTER, _TA_JUSTIFY, _TA_LEFT, _TA_RIGHT);
 
-  TFXNode = class (TJEComponent)   // Node
+  TFXNode = class(TJEComponent) // Node
   private
     FDarkShadow: TColor;
     FDefaultBackground: TColor;
@@ -48,8 +52,8 @@ type
     FBlueColor: TColor;
     FDefaultBorderColor: TColor;
 
-    FDisable: boolean;
-    FCache: boolean;
+    FDisable: Boolean;
+    FCache: Boolean;
     FStyle: string;
 
     // events
@@ -96,50 +100,52 @@ type
     FtouchReleased: string;
     FtouchStationary: string;
 
-    procedure setX(aValue: integer);
-    function getX: integer;
-    procedure setY(aValue: integer);
-    function getY: integer;
+    procedure SetX(AValue: Integer);
+    function GetX: Integer;
+    procedure SetY(AValue: Integer);
+    function GetY: Integer;
     procedure MakeOrientation(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
     procedure CreateFromJ(Control: TControl);
     function FXContainer: string;
-    function getLayoutXCode: string;
-    function getLayoutYCode: string;
-    function getWidthCode: string;
-    function getHeightCode: string;
+    function GetLayoutXCode: string;
+    function GetLayoutYCode: string;
+    function GetWidthCode: string;
+    function GetHeightCode: string;
     procedure SetPositionAndSize; override;
     procedure InsertNewVariable(const Variable: string);
-    procedure InsertAttributValue(s: string);
+    procedure InsertAttributValue(Str: string);
     function GetContainerAdd: string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    procedure ChangeAttributValue(const key: string; s: string);
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    procedure ChangeAttributValue(const Key: string; Str: string);
     function AddFXVariable: string;
     procedure DefaultComponent;
-    procedure SetBackgroundAsString(const aColor: string);
-    function isFontAttribute(const s: string): boolean;
-    procedure MakeFont;  override;
+    procedure SetBackgroundAsString(const AColor: string);
+    function IsFontAttribute(const Str: string): Boolean;
+    procedure MakeFont; override;
     procedure DoMakeFont;
     procedure DoMakeFontWithStyle;
     procedure MakeCursor(const Value: string);
     procedure MakeColor(const Attr, Value: string);
-    function getAttrColor(const Value: string): string;
-    procedure CalculateMenus(MenuItems, Menu, ConstructMenu, Methods: TStrings; newMenuBar: boolean = false);
-    procedure MakeMenuItems(OldItems, NewItems: TStrings; newMenuBar: boolean = false);
+    function GetAttrColor(const Value: string): string;
+    procedure CalculateMenus(MenuItems, Menu, ConstructMenu, Methods: TStrings;
+      NewMenuBar: Boolean = False);
+    procedure MakeMenuItems(OldItems, NewItems: TStrings;
+      NewMenuBar: Boolean = False);
     procedure RenameMenu(const OldName, NewName: string);
     procedure DeleteMenuItems(MenuItemsOld, MenuItems: TStrings);
     procedure Paint; override;
-    function getEvents(ShowEvents: integer): string; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    function getListener(const event: string): string; override;
-    procedure DeleteListener(const event: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    function GetListener(const Event: string): string; override;
+    procedure DeleteListener(const Event: string); override;
     procedure Rename(const OldName, NewName, Events: string); override;
-    function surroundFix(s: string): string;
-    function surroundFix2(s: string): string;
-    function MakeEventProcedure(const event: string ): string; override;
-    function EventToEventtype(const event: string): string;
-    procedure InsertImport(const s: string);
+    function SurroundFix(Str: string): string;
+    function SurroundFix2(Str: string): string;
+    function MakeEventProcedure(const Event: string): string; override;
+    function EventToEventtype(const Event: string): string;
+    procedure InsertImport(const Str: string);
     procedure MakeGraphic(const Attr, Value, Typ: string);
 
     property DefaultBackground: TColor read FDefaultBackground;
@@ -149,25 +155,26 @@ type
     property BlueColor: TColor read FBlueColor;
 
   published
-    property LayoutX: integer read getX write setX;
-    property LayoutY: integer read getY write setY;
-    property Disable: boolean read FDisable write FDisable;
-    property Cache: boolean read FCache write FCache;
+    property LayoutX: Integer read GetX write SetX;
+    property LayoutY: Integer read GetY write SetY;
+    property Disable: Boolean read FDisable write FDisable;
+    property Cache: Boolean read FCache write FCache;
     property Style: string read FStyle write FStyle;
     property Visible;
 
-    property contextMenuRequested: string read FcontextMenuRequested write FcontextMenuRequested;
+    property contextMenuRequested: string read FcontextMenuRequested
+      write FcontextMenuRequested;
     property dragDone: string read FdragDone write FdragDone;
     property dragDropped: string read FdragDropped write FdragDropped;
     property dragEntered: string read FdragEntered write FdragEntered;
     property dragExited: string read FdragExited write FdragExited;
-    {$WARNINGS OFF}
     property dragOver: string read FdragOver write FdragOver;
-    {$WARNINGS ON}
 
     property rotate: string read Frotate write Frotate;
-    property rotationFinished: string read FrotationFinished write FrotationFinished;
-    property rotationStarted: string read FrotationStarted write FrotationStarted;
+    property rotationFinished: string read FrotationFinished
+      write FrotationFinished;
+    property rotationStarted: string read FrotationStarted
+      write FrotationStarted;
     property scroll: string read Fscroll write Fscroll;
     property scrollFinished: string read FscrollFinished write FscrollFinished;
     property scrollStarted: string read FscrollStarted write FscrollStarted;
@@ -179,11 +186,12 @@ type
     property zoomFinished: string read FzoomFinished write FzoomFinished;
     property zoomStarted: string read FzoomStarted write FzoomStarted;
 
-    property inputMethodTextChanged: string read FinputMethodTextChanged write FinputMethodTextChanged;
+    property inputMethodTextChanged: string read FinputMethodTextChanged
+      write FinputMethodTextChanged;
     property keyPressed: string read FkeyPressed write FkeyPressed;
     property keyReleased: string read FkeyReleased write FkeyReleased;
     property keyTyped: string read FkeyTyped write FkeyTyped;
-    property dragDetected: string read FdragDetected write FdragDetected;
+    property dragDetected: string read FDragDetected write FDragDetected;
     property mouseClicked: string read FmouseClicked write FmouseClicked;
     property mouseDragged: string read FmouseDragged write FmouseDragged;
     property mouseEntered: string read FmouseEntered write FmouseEntered;
@@ -192,38 +200,42 @@ type
     property mouseReleased: string read FmouseReleased write FmouseReleased;
     property mouseMoved: string read FmouseMoved write FmouseMoved;
 
-    property mouseDragEntered: string read FmouseDragEntered write FmouseDragEntered;
-    property mouseDragExited: string read FmouseDragExited write FmouseDragExited;
+    property mouseDragEntered: string read FmouseDragEntered
+      write FmouseDragEntered;
+    property mouseDragExited: string read FmouseDragExited
+      write FmouseDragExited;
     property mouseDragOver: string read FmouseDragOver write FmouseDragOver;
-    property mouseDragReleased: string read FmouseDragReleased write FmouseDragReleased;
+    property mouseDragReleased: string read FmouseDragReleased
+      write FmouseDragReleased;
     property touchMoved: string read FtouchMoved write FtouchMoved;
     property touchPressed: string read FtouchPressed write FtouchPressed;
     property touchReleased: string read FtouchReleased write FtouchReleased;
-    property touchStationary: string read FtouchStationary write FtouchStationary;
+    property touchStationary: string read FtouchStationary
+      write FtouchStationary;
   end;
 
   TFXRegion = class(TFXNode)
   private
-    FPrefHeight: integer;
-    FPrefWidth: integer;
+    FPrefHeight: Integer;
+    FPrefWidth: Integer;
     FBackground: TColor;
-    FSnapToPixel: boolean;
-    procedure SetBackground(aColor: TColor);
-    procedure SetPrefWidth(aValue: integer);
-    function getPrefWidth: integer;
-    procedure SetPrefHeight(aValue: integer);
-    function getPrefHeight: integer;
-    function getPrefHeightCode: string;
-    function getPrefWidthCode: string;
+    FSnapToPixel: Boolean;
+    procedure SetBackground(AColor: TColor);
+    procedure SetPrefWidth(AValue: Integer);
+    function GetPrefWidth: Integer;
+    procedure SetPrefHeight(AValue: Integer);
+    function GetPrefHeight: Integer;
+    function GetPrefHeightCode: string;
+    function GetPrefWidthCode: string;
   public
     constructor Create(AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetPositionAndSize; override;
   published
-    property PrefHeight: integer read getPrefHeight write setPrefHeight;
-    property PrefWidth: integer read getPrefWidth write setPrefWidth;
-    property Background: TColor read FBackground write setBackground;
-    property SnapToPixel: boolean read FSnapToPixel write FSnapToPixel;
+    property PrefHeight: Integer read GetPrefHeight write SetPrefHeight;
+    property PrefWidth: Integer read GetPrefWidth write SetPrefWidth;
+    property Background: TColor read FBackground write SetBackground;
+    property SnapToPixel: Boolean read FSnapToPixel write FSnapToPixel;
   end;
 
   TFXControl = class(TFXRegion)
@@ -231,8 +243,8 @@ type
     FTooltip: string;
     FContextMenu: string;
   public
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
   published
     property Tooltip: string read FTooltip write FTooltip;
     property ContextMenu: string read FContextMenu write FContextMenu;
@@ -240,195 +252,227 @@ type
 
 implementation
 
-uses SysUtils, UBaseForm, UEditorForm, UImages, UUtils, TypInfo, JvGnugettext,
-     UStringRessources, UJava,
-     UObjectInspector, UGuiForm, UConfiguration, ULink, UITypes;
+uses
+  SysUtils,
+  UEditorForm,
+  UUtils,
+  JvGnugettext,
+  UStringRessources,
+  UObjectInspector,
+  UGUIForm,
+  UConfiguration,
+  ULink,
+  UITypes;
 
-{--- TFXNode ------------------------------------------------------------------}
+{ --- TFXNode ------------------------------------------------------------------ }
 
 constructor TFXNode.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDefaultBackground:= RGB(244, 244, 244);        // F4F4F4
-  FDefaultForeground:= RGB(51, 51, 51);           // 333333  FOREGROUND
-  FDarkShadow := RGB(122, 138, 153);              // border color
-  FBlueColor:= RGB(99, 130, 191);
-  FDefaultBorderColor:= $C8C8C8;
-  if (AOwner is TFGuiForm) then
-    Partner:= (AOwner as TFGuiForm).Partner as TFEditForm;
-  Width:= 120;
-  Height:= 80;
-  Sizeable:= true;
-  HelpType:= htContext;
-  Font.Name:= FConfiguration.GUIFontName; // Dialog
-  Font.Size:= FConfiguration.GUIFontSize;
-  Font.Style:= [];
+  FDefaultBackground := RGB(244, 244, 244); // F4F4F4
+  FDefaultForeground := RGB(51, 51, 51); // 333333  FOREGROUND
+  FDarkShadow := RGB(122, 138, 153); // border color
+  FBlueColor := RGB(99, 130, 191);
+  FDefaultBorderColor := $C8C8C8;
+  if (AOwner is TFGUIForm) then
+    FPartner := (AOwner as TFGUIForm).Partner as TFEditForm;
+  Width := 120;
+  Height := 80;
+  Sizeable := True;
+  HelpType := htContext;
+  Font.Name := FConfiguration.GUIFontName; // Dialog
+  Font.Size := FConfiguration.GUIFontSize;
+  Font.Style := [];
 end;
 
 procedure TFXNode.CreateFromJ(Control: TControl);
 begin
-  Tag:= Control.Tag;
-  Visible:= Control.Visible;
+  Tag := Control.Tag;
+  Visible := Control.Visible;
   SetBounds(Control.Left, Control.Top, Control.Width, Control.Height);
 end;
 
-procedure TFXNode.setX(aValue: integer);
+procedure TFXNode.SetX(AValue: Integer);
 begin
-  if aValue <> Top then begin
-    Left:= aValue;
+  if AValue <> Top then
+  begin
+    Left := AValue;
     Invalidate;
   end;
 end;
 
-function TFXNode.getX: integer;
+function TFXNode.GetX: Integer;
 begin
-  Result:= Left;
+  Result := Left;
 end;
 
-procedure TFXNode.setY(aValue: integer);
+procedure TFXNode.SetY(AValue: Integer);
 begin
-  if aValue <> Top then begin
-    Top:= aValue;
+  if AValue <> Top then
+  begin
+    Top := AValue;
     Invalidate;
   end;
 end;
 
-function TFXNode.getY: integer;
+function TFXNode.GetY: Integer;
 begin
-  Result:= Top;
+  Result := Top;
 end;
 
 function TFXNode.FXContainer: string;
 begin
-  if (Parent = nil) or (Parent is TFGUIForm)
-    then Result:= 'root'
-    else Result:= Parent.Name;
+  if (Parent = nil) or (Parent is TFGUIForm) then
+    Result := 'root'
+  else
+    Result := Parent.Name;
 end;
 
-function TFXNode.getLayoutXCode: string;
+function TFXNode.GetLayoutXCode: string;
 begin
-  Result:= Name + '.setLayoutX(' + IntToStr(PPIUnScale(Left)) + ');';
+  Result := Name + '.setLayoutX(' + IntToStr(PPIUnScale(Left)) + ');';
 end;
 
-function TFXNode.getLayoutYCode: string;
+function TFXNode.GetLayoutYCode: string;
 begin
-  Result:= Name + '.setLayoutY(' + IntToStr(PPIUnScale(Top)) + ');';
+  Result := Name + '.setLayoutY(' + IntToStr(PPIUnScale(Top)) + ');';
 end;
 
-function TFXNode.getWidthCode: string;
+function TFXNode.GetWidthCode: string;
 begin
-  Result:= Name + '.setWidth(' + IntToStr(PPIUnScale(Width)) + ');';
+  Result := Name + '.setWidth(' + IntToStr(PPIUnScale(Width)) + ');';
 end;
 
-function TFXNode.getHeightCode: string;
+function TFXNode.GetHeightCode: string;
 begin
-  Result:= Name + '.setHeight(' + IntToStr(PPIUnScale(Height)) + ');';
+  Result := Name + '.setHeight(' + IntToStr(PPIUnScale(Height)) + ');';
 end;
 
 procedure TFXNode.SetPositionAndSize;
 begin
-  if Sizeable then begin
-    setAttributValue(Name + '.setLayoutX(', getLayoutXCode);
-    setAttributValue(Name + '.setLayoutY(', getLayoutYCode);
-  end else begin
-    Width:= PPIScale(32);
-    Height:= PPIScale(28);
+  if Sizeable then
+  begin
+    SetAttributValue(Name + '.setLayoutX(', GetLayoutXCode);
+    SetAttributValue(Name + '.setLayoutY(', GetLayoutYCode);
+  end
+  else
+  begin
+    Width := PPIScale(32);
+    Height := PPIScale(28);
   end;
 end;
 
 procedure TFXNode.InsertNewVariable(const Variable: string);
 begin
-  Partner.InsertAttribute(FXContainer, GetIndentation, Variable, true);
+  FPartner.InsertAttribute(FXContainer, GetIndentation, Variable, True);
 end;
 
-procedure TFXNode.InsertAttributValue(s: string);
+procedure TFXNode.InsertAttributValue(Str: string);
 begin
-  Partner.InsertAttribute(FXContainer, GetIndentation, s, true);
-  exit;
+  FPartner.InsertAttribute(FXContainer, GetIndentation, Str, True);
+  Exit;
 
   // ToDo
-  if Pos(GetIndentation, s) = 0 then
-    s:= GetIndentation + s;
-  Partner.insertAttributValue(Name, s, 1);
+  if Pos(GetIndentation, Str) = 0 then
+    Str := GetIndentation + Str;
+  FPartner.InsertAttributValue(Name, Str, 1);
 end;
 
 procedure TFXNode.SetAttribute(Attr, Value, Typ: string);
 begin
-  if Attr = 'Background'   then SetBackgroundAsString(getAttrColor(Value)) else
-  if Attr = 'Orientation'  then MakeOrientation(Value) else   // ok
-  if isFontAttribute(Attr) then MakeFont else
-  if Typ = 'string'  then MakeAttribut(Attr, asString(Value)) else
-  if Typ = 'TCursor' then MakeCursor(Value) else
-  if Typ = 'TColor'  then MakeColor(Attr, Value) else
-    MakeAttribut(Attr, Value);
+  if Attr = 'Background' then
+    SetBackgroundAsString(GetAttrColor(Value))
+  else if Attr = 'Orientation' then
+    MakeOrientation(Value)
+  else // ok
+    if IsFontAttribute(Attr) then
+      MakeFont
+    else if Typ = 'string' then
+      MakeAttribut(Attr, AsString(Value))
+    else if Typ = 'TCursor' then
+      MakeCursor(Value)
+    else if Typ = 'TColor' then
+      MakeColor(Attr, Value)
+    else
+      MakeAttribut(Attr, Value);
 end;
 
 function TFXNode.GetContainerAdd: string;
 begin
-  var s:= FXContainer;
-  if s = ''
-    then Result:= 'add(' + name + ');'
-    else Result:= s + '.getChildren().add(' + name + ');';
+  var
+  Str := FXContainer;
+  if Str = '' then
+    Result := 'add(' + Name + ');'
+  else
+    Result := Str + '.getChildren().add(' + Name + ');';
 end;
 
 function TFXNode.AddFXVariable: string;
 begin
-  Result:= FXContainer + '.getChildren().add(' + Name + ');'
+  Result := FXContainer + '.getChildren().add(' + Name + ');';
 end;
 
 procedure TFXNode.DefaultComponent;
 begin
   SetPositionAndSize;
-  Partner.InsertComponent(Indent2 + AddFXVariable + CrLf);
-  Partner.InsertImport('javafx.scene.control.*');
+  FPartner.InsertComponent(Indent2 + AddFXVariable + CrLf);
+  FPartner.InsertImport('javafx.scene.control.*');
 end;
 
-procedure TFXNode.ChangeAttributValue(const key: string; s: string);
+procedure TFXNode.ChangeAttributValue(const Key: string; Str: string);
 begin
-  if Pos(Indent2, s) = 0 then
-    s:= Indent2 + s;
-  Partner.ChangeAttributValue(GetContainerAdd, key, s);
+  if Pos(Indent2, Str) = 0 then
+    Str := Indent2 + Str;
+  FPartner.ChangeAttributValue(GetContainerAdd, Key, Str);
 end;
 
-procedure TFXNode.SetBackgroundAsString(const aColor: string);
+procedure TFXNode.SetBackgroundAsString(const AColor: string);
 begin
-  Partner.SetFXBackgroundAsString(GetContainerAdd, Name, aColor);
+  FPartner.SetFXBackgroundAsString(GetContainerAdd, Name, AColor);
 end;
 
-function TFXNode.isFontAttribute(const s: string): boolean;
+function TFXNode.IsFontAttribute(const Str: string): Boolean;
 begin
-  Result:= Pos(s, ' Font Name Size Bold Italic') > 0;
+  Result := Pos(Str, ' Font Name Size Bold Italic') > 0;
 end;
 
 procedure TFXNode.MakeFont;
 begin
-  DoMakeFontWithStyle
+  DoMakeFontWithStyle;
 end;
 
 procedure TFXNode.DoMakeFont;
-  var s, map: string; intstyle: integer;
+var
+  Str, Map: string;
+  IntStyle: Integer;
 begin
   if (Name = '') or (Tag in [116, 117]) then
     Exit;
-  map:= Name + '_map';
-  Partner.DeleteAttributeValues(map);
-  Partner.DeleteAttributeValue(Name + '.setFont');
+  Map := Name + '_map';
+  FPartner.DeleteAttributeValues(Map);
+  FPartner.DeleteAttributeValue(Name + '.setFont');
 
-  s:= Name + '.setFont(Font.font("' + Font.Name + '"';
-  intstyle:= 0;
-  if fsBold   in Font.Style then inc(intstyle, 1);
-  if fsItalic in Font.Style then inc(intstyle, 2);
-  case intstyle of
-    1: s:= s + ', FontWeight.BOLD';
-    2: s:= s + ', FontPosture.ITALIC';
-    3: s:= s + ', FontWeight.BOLD, FontPosture.ITALIC';
+  Str := Name + '.setFont(Font.font("' + Font.Name + '"';
+  IntStyle := 0;
+  if fsBold in Font.Style then
+    Inc(IntStyle, 1);
+  if fsItalic in Font.Style then
+    Inc(IntStyle, 2);
+  case IntStyle of
+    1:
+      Str := Str + ', FontWeight.BOLD';
+    2:
+      Str := Str + ', FontPosture.ITALIC';
+    3:
+      Str := Str + ', FontWeight.BOLD, FontPosture.ITALIC';
   end;
-  s:= s + ', ' + IntToStr(Font.Size) + '));';
-  setAttributValue(Name + '.setFont', s);
+  Str := Str + ', ' + IntToStr(Font.Size) + '));';
+  SetAttributValue(Name + '.setFont', Str);
   InsertImport('javafx.scene.text.*');
-  if fsUnderline in Font.Style
-    then MakeAttribut('Underline', 'true')
-    else MakeAttribut('Underline', '');
+  if fsUnderline in Font.Style then
+    MakeAttribut('Underline', 'true')
+  else
+    MakeAttribut('Underline', '');
   SizeToText;
   InsertImport('javafx.scene.text.Font');
 end;
@@ -437,19 +481,20 @@ procedure TFXNode.DoMakeFontWithStyle;
 begin
   if (Name = '') or (Tag in [115, 116, 117, 124]) then
     Exit;
-  Partner.DeleteAttributeValue(Name + '.setFont');
-  var s:= Name + '.setStyle("-fx-font-family: '''+ Font.Name + '''; ';
-  s:= 'fx-font-family: '''+ Font.Name + '''; ';
-  s:= s + '-fx-font-size: ' + IntToStr(Font.Size) + 'px; ';
-  if fsBold in Font.Style  then
-    s:= s + '-fx-font-weight: bold; ';
+  FPartner.DeleteAttributeValue(Name + '.setFont');
+  var
+  Str := Name + '.setStyle("-fx-font-family: ''' + Font.Name + '''; ';
+  Str := 'fx-font-family: ''' + Font.Name + '''; ';
+  Str := Str + '-fx-font-size: ' + IntToStr(Font.Size) + 'px; ';
+  if fsBold in Font.Style then
+    Str := Str + '-fx-font-weight: bold; ';
   if fsItalic in Font.Style then
-    s:= s + '-fx-font-style: italic; ';
+    Str := Str + '-fx-font-style: italic; ';
   if fsUnderline in Font.Style then
-    s:= s + '-fx-text-decoration: underline; ';
-  Style:= s;
-  s:= Name + '.setStyle("' + s + '");';
-  setAttributValue(Name + '.setStyle', s);
+    Str := Str + '-fx-text-decoration: underline; ';
+  Style := Str;
+  Str := Name + '.setStyle("' + Str + '");';
+  SetAttributValue(Name + '.setStyle', Str);
   SizeToText;
 end;
 
@@ -457,7 +502,8 @@ procedure TFXNode.MakeCursor(const Value: string);
 begin
   if Value = 'DEFAULT' then
     MakeAttribut('Cursor', '')
-  else begin
+  else
+  begin
     InsertImport('javafx.scene.Cursor');
     MakeAttribut('Cursor', 'Cursor.' + Value);
   end;
@@ -467,127 +513,143 @@ procedure TFXNode.MakeColor(const Attr, Value: string);
 begin
   if Value = '(NONE)' then
     MakeAttribut(Attr, '')
-  else begin
+  else
+  begin
     InsertImport('javafx.scene.paint.Color');
-    MakeAttribut(Attr, getAttrColor(Value));
+    MakeAttribut(Attr, GetAttrColor(Value));
   end;
 end;
 
-function TFXNode.getAttrColor(const Value: string): string;
-  var s, DValue: string;
+function TFXNode.GetAttrColor(const Value: string): string;
+var
+  Str, DValue: string;
 begin
-  DValue:= Java2DelphiColors(Value);
-  if copy(DValue, 1, 3) = '$00' then
-     s:= 'Color.web("' + turnRGB('0x' + copy(DValue,4, 6)) + '")'
-  else if copy(Value, 1, 2) = '0x'
-    then s:= 'Color.web("' + Value + '")'
-    else s:= 'Color.' + Value;
-  if (Value = '(NONE)') or (Value = '(none)')
-    then Result:= ''
-    else Result:= s;
+  DValue := Java2DelphiColors(Value);
+  if Copy(DValue, 1, 3) = '$00' then
+    Str := 'Color.web("' + TurnRGB('0x' + Copy(DValue, 4, 6)) + '")'
+  else if Copy(Value, 1, 2) = '0x' then
+    Str := 'Color.web("' + Value + '")'
+  else
+    Str := 'Color.' + Value;
+  if (Value = '(NONE)') or (Value = '(none)') then
+    Result := ''
+  else
+    Result := Str;
 end;
 
-procedure TFXNode.CalculateMenus(MenuItems, Menu, ConstructMenu, Methods: TStrings;
-                                 newMenuBar: boolean = false);
-  var i, Indent, p, Separator: integer;
-      IndentAsstring, ts, ShortCut, s: string;
-      MenuName: array[-1..10] of string;
+procedure TFXNode.CalculateMenus(MenuItems, Menu, ConstructMenu,
+  Methods: TStrings; NewMenuBar: Boolean = False);
+var
+  Indent, Posi, Separator: Integer;
+  IndentAsString, TrimS, ShortCut, Str: string;
+  MenuName: array [-1 .. 10] of string;
 
-  function hasSubMenu(Items: TStrings; i: integer): boolean;
+  function hasSubMenu(Items: TStrings; Int: Integer): Boolean;
   begin
-    Result:= (i < Items.count - 1) and
-             (LeftSpaces(Items[i], 2) < LeftSpaces(Items[i+1], 2));
+    Result := (Int < Items.Count - 1) and
+      (LeftSpaces(Items[Int], 2) < LeftSpaces(Items[Int + 1], 2));
   end;
 
-  function getShortCut(s: string): string;
+  function getShortCut(Str: string): string;
   begin
-    Result:= '.setAccelerator(KeyCombination.keyCombination("' + s + '"));';
+    Result := '.setAccelerator(KeyCombination.keyCombination("' + Str + '"));';
   end;
 
 begin
-  Separator:= 1;
-  MenuName[-1]:= Name;
-  if newMenuBar then
-    ConstructMenu.add(Indent2 + 'root.getChildren().add(' + Name + ');');
-  for i:= 0 to MenuItems.Count - 1 do begin
-    s:= MenuItems[i];
-    p:= Pos(',', s);
-    if p > 0 then begin
-      ShortCut:= getShortcut(trim(copy(s, p+1, length(s))));
-      s:= copy(s, 1, p-1);
-    end else
-      Shortcut:= '';
-    ts:= trim(s);
-    Indent:= LeftSpaces(MenuItems[i], 2) div 2;
-    IndentAsString:= Indent1 + StringOfChar(' ', Indent*2);
-    MenuName[Indent]:= MenuName[Indent-1] + '_' + OnlyCharsAndDigits(ts);
-    if hasSubMenu(MenuItems, i) then begin
+  Separator := 1;
+  MenuName[-1] := Name;
+  if NewMenuBar then
+    ConstructMenu.Add(Indent2 + 'root.getChildren().add(' + Name + ');');
+  for var I := 0 to MenuItems.Count - 1 do
+  begin
+    Str := MenuItems[I];
+    Posi := Pos(',', Str);
+    if Posi > 0 then
+    begin
+      ShortCut := getShortCut(Trim(Copy(Str, Posi + 1, Length(Str))));
+      Str := Copy(Str, 1, Posi - 1);
+    end
+    else
+      ShortCut := '';
+    TrimS := Trim(Str);
+    Indent := LeftSpaces(MenuItems[I], 2) div 2;
+    IndentAsString := Indent1 + StringOfChar(' ', Indent * 2);
+    MenuName[Indent] := MenuName[Indent - 1] + '_' + OnlyCharsAndDigits(TrimS);
+    if hasSubMenu(MenuItems, I) then
+    begin
       Menu.Add(IndentAsString + 'private Menu ' + MenuName[Indent] +
-               ' = new Menu("' + ts + '");');
-    end else begin
-      if ts = '-' then begin
-        MenuName[Indent]:= MenuName[-1] + '_Separator' + IntToStr(Separator);
-        Menu.Add(IndentAsString + 'private SeparatorMenuItem ' + MenuName[Indent] +
-                 ' = new SeparatorMenuItem();');
-        inc(Separator);
-      end else begin
+        ' = new Menu("' + TrimS + '");');
+    end
+    else
+    begin
+      if TrimS = '-' then
+      begin
+        MenuName[Indent] := MenuName[-1] + '_Separator' + IntToStr(Separator);
+        Menu.Add(IndentAsString + 'private SeparatorMenuItem ' +
+          MenuName[Indent] + ' = new SeparatorMenuItem();');
+        Inc(Separator);
+      end
+      else
+      begin
         Menu.Add(IndentAsString + 'private MenuItem ' + MenuName[Indent] +
-                 ' = new MenuItem("' + ts + '");');
+          ' = new MenuItem("' + TrimS + '");');
         Methods.Add(MenuName[Indent]);
       end;
     end;
-    if newMenuBar and (Indent = 0)
-      then s:= '.getMenus().add(' + MenuName[Indent] + ');'
-      else s:= '.getItems().add(' + MenuName[Indent] + ');';
-    ConstructMenu.Add(Indent2 + MenuName[Indent-1] + s);
-    if Shortcut <> '' then
+    if NewMenuBar and (Indent = 0) then
+      Str := '.getMenus().add(' + MenuName[Indent] + ');'
+    else
+      Str := '.getItems().add(' + MenuName[Indent] + ');';
+    ConstructMenu.Add(Indent2 + MenuName[Indent - 1] + Str);
+    if ShortCut <> '' then
       ConstructMenu.Add(Indent2 + MenuName[Indent] + ShortCut);
   end;
 end;
 
-procedure TFXNode.MakeMenuItems(OldItems, NewItems: TStrings; newMenuBar: boolean = false);
-  var i: integer;
-      OldMenu: TStringList;
-      OldConstructMenu: TStringList;
-      OldMethods: TStringList;
-      NewMenu: TStringList;
-      NewConstructMenu: TStringList;
-      NewMethods: TStringList;
+procedure TFXNode.MakeMenuItems(OldItems, NewItems: TStrings;
+  NewMenuBar: Boolean = False);
+var
+  OldMenu: TStringList;
+  OldConstructMenu: TStringList;
+  OldMethods: TStringList;
+  NewMenu: TStringList;
+  NewConstructMenu: TStringList;
+  NewMethods: TStringList;
 
   function getListener(Method: string): string;
   begin
-    Result:= Indent2 + Method + '.setOnAction(' + CrLf +
-             Indent3 + '(event) -> {' + Method + '_Action(event);} ' + CrLf +
-             Indent2 + ');' + CrLf;
+    Result := Indent2 + Method + '.setOnAction(' + CrLf + Indent3 +
+      '(event) -> {' + Method + '_Action(event);} ' + CrLf + Indent2 +
+      ');' + CrLf;
   end;
 
 begin
-  Partner.Editor.BeginUpdate;
-  Partner.insertImport('javafx.event.Event');
+  FPartner.Editor.BeginUpdate;
+  FPartner.InsertImport('javafx.event.Event');
   FormatItems(NewItems);
-  OldMenu:= TStringList.Create;
-  OldConstructMenu:= TStringList.Create;
-  OldMethods:= TStringList.Create;
-  NewMenu:= TStringList.Create;
-  NewConstructMenu:= TStringList.Create;
-  NewMethods:= TStringList.Create;
+  OldMenu := TStringList.Create;
+  OldConstructMenu := TStringList.Create;
+  OldMethods := TStringList.Create;
+  NewMenu := TStringList.Create;
+  NewConstructMenu := TStringList.Create;
+  NewMethods := TStringList.Create;
 
   try
-    CalculateMenus(OldItems, OldMenu, OldConstructMenu, OldMethods, newMenuBar);
-    CalculateMenus(NewItems, NewMenu, NewConstructMenu, NewMethods, newMenuBar);
-    Partner.DeleteFXOldAddNewMethods(OldMethods, NewMethods);
-    for i:= 0 to OldConstructMenu.Count - 1 do
-      Partner.DeleteAttributeValue(OldConstructMenu[i]);
-    for i:= 0 to OldMenu.Count - 1 do
-      Partner.DeleteAttribute(OldMenu[i]);
-    for i:= 0 to OldMethods.Count - 1 do
-      Partner.deleteFXListener(getListener(OldMethods[i]));
+    CalculateMenus(OldItems, OldMenu, OldConstructMenu, OldMethods, NewMenuBar);
+    CalculateMenus(NewItems, NewMenu, NewConstructMenu, NewMethods, NewMenuBar);
+    FPartner.DeleteFXOldAddNewMethods(OldMethods, NewMethods);
+    for var I := 0 to OldConstructMenu.Count - 1 do
+      FPartner.DeleteAttributeValue(OldConstructMenu[I]);
+    for var I := 0 to OldMenu.Count - 1 do
+      FPartner.DeleteAttribute(OldMenu[I]);
+    for var I := 0 to OldMethods.Count - 1 do
+      FPartner.DeleteFXListener(getListener(OldMethods[I]));
 
-    for i:= 0 to NewMenu.Count -1 do
-      InsertAttributValue(NewMenu[i]);
-    Partner.InsertComponent(NewConstructMenu.Text);
-    for i:= 0 to NewMethods.Count - 1 do
-      Partner.InsertComponent(getListener(NewMethods[i]));
+    for var I := 0 to NewMenu.Count - 1 do
+      InsertAttributValue(NewMenu[I]);
+    FPartner.InsertComponent(NewConstructMenu.Text);
+    for var I := 0 to NewMethods.Count - 1 do
+      FPartner.InsertComponent(getListener(NewMethods[I]));
 
   finally
     FreeAndNil(OldMenu);
@@ -596,340 +658,371 @@ begin
     FreeAndNil(NewMenu);
     FreeAndNil(NewConstructMenu);
     FreeAndNil(NewMethods);
-    Partner.Editor.EndUpdate;
+    FPartner.Editor.EndUpdate;
   end;
 end;
 
 procedure TFXNode.RenameMenu(const OldName, NewName: string);
-  var AttributeS, AttributeE, ComponentS, ComponentE, MethodsS, MethodsE: integer;
+var
+  AttributeS, AttributeE, ComponentS, ComponentE, MethodsS, MethodsE: Integer;
 begin
-  Partner.Editor.BeginUpdate;
-  AttributeS:= Partner.getLNGStartAttributes;
-  AttributeE:= Partner.getLNGEndAttributes;
+  FPartner.Editor.BeginUpdate;
+  AttributeS := FPartner.GetLNGStartAttributes;
+  AttributeE := FPartner.GetLNGEndAttributes;
 
-  ComponentS:= Partner.getLNGStartComponents;
-  ComponentE:= Partner.getLNGEndComponents;
+  ComponentS := FPartner.GetLNGStartComponents;
+  ComponentE := FPartner.GetLNGEndComponents;
 
-  MethodsS:= Partner.getLNGStartEventMethods;
-  MethodsE:= Partner.getLNGEndEventMethods;
+  MethodsS := FPartner.GetLNGStartEventMethods;
+  MethodsE := FPartner.GetLNGEndEventMethods;
 
   // event methods
-  Partner.ReplaceTextWithRegex('public void ' + OldName + '_(.*)\(Event evt\)',
-                               'public void ' + NewName + '_$1(Event evt)',
-                               true, MethodsS, MethodsE);
-  Partner.ReplaceTextWithRegex('// end of ' + OldName + '(.*)',
-                               '// end of ' + NewName + '$1',
-                               true, MethodsS, MethodsE);
+  FPartner.ReplaceTextWithRegex('public void ' + OldName + '_(.*)\(Event evt\)',
+    'public void ' + NewName + '_$1(Event evt)', True, MethodsS, MethodsE);
+  FPartner.ReplaceTextWithRegex('// end of ' + OldName + '(.*)',
+    '// end of ' + NewName + '$1', True, MethodsS, MethodsE);
 
   // listener
-  Partner.ReplaceTextWithRegex(OldName + '_(.*).setOnAction\(',
-                               NewName + '_$1.setOnAction(',
-                               true, ComponentS, ComponentE);
-  Partner.ReplaceTextWithRegex(OldName + '_(.*)_Action\(event\)',
-                               NewName + '_$1_Action(event)',
-                               true, ComponentS, ComponentE);
+  FPartner.ReplaceTextWithRegex(OldName + '_(.*).setOnAction\(',
+    NewName + '_$1.setOnAction(', True, ComponentS, ComponentE);
+  FPartner.ReplaceTextWithRegex(OldName + '_(.*)_Action\(event\)',
+    NewName + '_$1_Action(event)', True, ComponentS, ComponentE);
 
   // declaration of menu variables
-  Partner.ReplaceTextWithRegex('private Menu ' + OldName + '_(.*) = new ',
-                               'private Menu ' + NewName + '_$1 = new ',
-                               true, AttributeS, AttributeE);
-  Partner.ReplaceTextWithRegex('private Image ' + OldName + 'Graphic = new Image',
-                               'private Image ' + NewName + 'Graphic = new Image',
-                               true, AttributeS, AttributeE);
-  Partner.ReplaceTextWithRegex('private MenuItem ' + OldName + '_(.*) = new ',
-                               'private MenuItem ' + NewName + '_$1 = new ',
-                               true, AttributeS, AttributeE);
-  Partner.ReplaceTextWithRegex('private SeparatorMenuItem ' + OldName + '_(.*) = new ',
-                               'private SeparatorMenuItem ' + NewName + '_$1 = new ',
-                               true, AttributeS, AttributeE);
+  FPartner.ReplaceTextWithRegex('private Menu ' + OldName + '_(.*) = new ',
+    'private Menu ' + NewName + '_$1 = new ', True, AttributeS, AttributeE);
+  FPartner.ReplaceTextWithRegex('private Image ' + OldName +
+    'Graphic = new Image', 'private Image ' + NewName + 'Graphic = new Image',
+    True, AttributeS, AttributeE);
+  FPartner.ReplaceTextWithRegex('private MenuItem ' + OldName + '_(.*) = new ',
+    'private MenuItem ' + NewName + '_$1 = new ', True, AttributeS, AttributeE);
+  FPartner.ReplaceTextWithRegex('private SeparatorMenuItem ' + OldName +
+    '_(.*) = new ', 'private SeparatorMenuItem ' + NewName + '_$1 = new ', True,
+    AttributeS, AttributeE);
 
   // creation of menu
-  Partner.ReplaceTextWithRegex(OldName + '(.*).getItems', NewName + '$1.getItems',
-                               true, ComponentS, ComponentE);
-  Partner.ReplaceTextWithRegex('\(' + OldName + '(.*)\);', '(' + NewName + '$1);',
-                               true, ComponentS, ComponentE);
-  Partner.ReplaceTextWithRegex(OldName + '(.*).setAccelerator', NewName + '$1.setAccelerator',
-                               true, ComponentS, ComponentE);
+  FPartner.ReplaceTextWithRegex(OldName + '(.*).getItems',
+    NewName + '$1.getItems', True, ComponentS, ComponentE);
+  FPartner.ReplaceTextWithRegex('\(' + OldName + '(.*)\);',
+    '(' + NewName + '$1);', True, ComponentS, ComponentE);
+  FPartner.ReplaceTextWithRegex(OldName + '(.*).setAccelerator',
+    NewName + '$1.setAccelerator', True, ComponentS, ComponentE);
 end;
 
 procedure TFXNode.DeleteMenuItems(MenuItemsOld, MenuItems: TStrings);
 begin
-  MenuItemsOld.Text:= MenuItems.Text;
+  MenuItemsOld.Text := MenuItems.Text;
   MenuItems.Clear;
   MakeMenuItems(MenuItemsOld, MenuItems);
 end;
 
 procedure TFXNode.Paint;
 begin
-  Canvas.Pen.Color:= Background;
-  Canvas.Brush.Color:= Background;
-  Canvas.Rectangle(Rect(0, 0, Width-1, Height-1));
+  Canvas.Pen.Color := Background;
+  Canvas.Brush.Color := Background;
+  Canvas.Rectangle(Rect(0, 0, Width - 1, Height - 1));
 end;
 
-function TFXNode.getAttributes(ShowAttributes: integer): string;
+function TFXNode.GetAttributes(ShowAttributes: Integer): string;
 begin
-  if ShowAttributes = 3
-    then Result:= '|Cursor|Disable|Cache|LayoutX|LayoutY|Visible|Style|Name'
-    else Result:= '|Name';
+  if ShowAttributes = 3 then
+    Result := '|Cursor|Disable|Cache|LayoutX|LayoutY|Visible|Style|Name'
+  else
+    Result := '|Name';
 end;
 
-function TFXNode.getEvents(ShowEvents: integer): string;
+function TFXNode.GetEvents(ShowEvents: Integer): string;
 begin
   case ShowEvents of
-    1: Result:= '';
-    2: Result:= KeyboardEvents + MouseEvents;
-    3: Result:= NodeEvents;
+    1:
+      Result := '';
+    2:
+      Result := KeyboardEvents + MouseEvents;
+    3:
+      Result := NodeEvents;
   end;
-  Result:= Result + '|';
+  Result := Result + '|';
 end;
 
-function TFXNode.getListener(const event: string): string;
+function TFXNode.GetListener(const Event: string): string;
 begin
-  Result:= Indent2 + Name + '.setOn' + UpperLower(Event) + '(' + CrLf +
-           Indent3 + '(event) -> {' + MakeEventProcedureName(Event) + '(event);} ' + CrLf +
-           Indent2 + ');' + CrLf;
+  Result := Indent2 + Name + '.setOn' + UpperLower(Event) + '(' + CrLf + Indent3
+    + '(event) -> {' + MakeEventProcedureName(Event) + '(event);} ' + CrLf +
+    Indent2 + ');' + CrLf;
 end;
 
-function TFXNode.EventToEventtype(const event: string): string;
+function TFXNode.EventToEventtype(const Event: string): string;
 begin
-  if      Event = 'action' then  Result:= ''  // Action
-  else if Event = 'contextMenuRequested' then     Result:= 'ContextMenu'
-  else if Event = 'dragDetected' then Result:=  'Mouse'
-  else if Pos('drag', Event) = 1 then Result:=  'Drag'
-  else if Pos('rotat', Event) = 1 then Result:=  'Rotate'
-  else if Pos('scroll', Event) = 1 then Result:=  'Scroll'
-  else if Pos('swipe', Event) = 1 then Result:=  'Swipe'
-  else if Pos('swipe', Event) = 1 then Result:=  'Swipe'
-  else if Pos('zoom', Event) = 1 then Result:=  'Zoom'
-  else if Event = 'inputMethodTextChanged' then Result:=  'InputMethod'
-  else if Pos('key', Event) = 1 then Result:=  'Key'
-  else if (Pos('mouseDrag', Event) = 1) and (Event <> 'mouseDragged') then Result:=  'MouseDrag'
-  else if Pos('mouse', Event) = 1 then Result:=  'Mouse'
-  else if Pos('touch', Event) = 1 then Result:=  'Touch'
-  else if Pos('window', Event) = 1 then Result:=  'Window';
-  Result:= Result + 'Event';
+  if Event = 'action' then
+    Result := '' // Action
+  else if Event = 'contextMenuRequested' then
+    Result := 'ContextMenu'
+  else if Event = 'dragDetected' then
+    Result := 'Mouse'
+  else if Pos('drag', Event) = 1 then
+    Result := 'Drag'
+  else if Pos('rotat', Event) = 1 then
+    Result := 'Rotate'
+  else if Pos('scroll', Event) = 1 then
+    Result := 'Scroll'
+  else if Pos('swipe', Event) = 1 then
+    Result := 'Swipe'
+  else if Pos('swipe', Event) = 1 then
+    Result := 'Swipe'
+  else if Pos('zoom', Event) = 1 then
+    Result := 'Zoom'
+  else if Event = 'inputMethodTextChanged' then
+    Result := 'InputMethod'
+  else if Pos('key', Event) = 1 then
+    Result := 'Key'
+  else if (Pos('mouseDrag', Event) = 1) and (Event <> 'mouseDragged') then
+    Result := 'MouseDrag'
+  else if Pos('mouse', Event) = 1 then
+    Result := 'Mouse'
+  else if Pos('touch', Event) = 1 then
+    Result := 'Touch'
+  else if Pos('window', Event) = 1 then
+    Result := 'Window';
+  Result := Result + 'Event';
 end;
 
-function TFXNode.MakeEventProcedure(const event: string ): string;
-  var s: string;
+function TFXNode.MakeEventProcedure(const Event: string): string;
+var
+  Str: string;
 begin
-  //  Example:
-  //  public void button1_Action(Action event) {
-  //    // TODO add your code here
-  //  }
+  // Example:
+  // public void button1_Action(Action event) {
+  // // TODO add your code here
+  // }
 
-  s:= MakeEventProcedureName(Event);
-  Result:= Indent1 + 'public void ' + s + '(';
-  Result:= Result + EventToEventtype(Event);
-  Result:= Result + ' evt) {' + CrLf + Indent2 + _(LNGTODO) + CrLf + Indent2 + CrLf;
-  Result:= Result + Indent1 + '}';
+  Str := MakeEventProcedureName(Event);
+  Result := Indent1 + 'public void ' + Str + '(';
+  Result := Result + EventToEventtype(Event);
+  Result := Result + ' evt) {' + CrLf + Indent2 + _(LNGTODO) + CrLf +
+    Indent2 + CrLf;
+  Result := Result + Indent1 + '}';
   if FConfiguration.CommentClosingBrackets then
-    Result:= Result + ' // end of ' + s;
-  Result:= Result + CrLf + CrLf;
+    Result := Result + ' // end of ' + Str;
+  Result := Result + CrLf + CrLf;
 end;
 
-procedure TFXNode.DeleteListener(const event: string);
-  var EventMethod, Listener: string;
+procedure TFXNode.DeleteListener(const Event: string);
+var
+  EventMethod, Listener: string;
 begin
-  EventMethod:= MakeEventProcedureName(Event);
-  Partner.DeleteMethod(EventMethod);
-  Listener:= getListener(Event);
-  Partner.DeleteFXListener(Listener);
+  EventMethod := MakeEventProcedureName(Event);
+  FPartner.DeleteMethod(EventMethod);
+  Listener := GetListener(Event);
+  FPartner.DeleteFXListener(Listener);
 end;
 
 procedure TFXNode.Rename(const OldName, NewName, Events: string);
 
-  procedure rename(var name: string);
+  procedure Rename(var Name: string);
   begin
-    if name <> '' then
-      name:= NewName + UUtils.Right(name, Length(OldName) + 1);
+    if Name <> '' then
+      Name := NewName + UUtils.Right(Name, Length(OldName) + 1);
   end;
 
 begin
   inherited;
 
-  rename(FcontextMenuRequested);
-  rename(FdragDetected);
-  rename(FdragDone);
-  rename(FdragDropped);
-  rename(FdragEntered);
-  rename(FdragExited);
-  rename(FdragOver);
+  Rename(FcontextMenuRequested);
+  Rename(FDragDetected);
+  Rename(FdragDone);
+  Rename(FdragDropped);
+  Rename(FdragEntered);
+  Rename(FdragExited);
+  Rename(FdragOver);
 
-  rename(FinputMethodTextChanged);
-  rename(FkeyPressed);
-  rename(FkeyReleased);
-  rename(FkeyTyped);
-  rename(FmouseClicked);
-  rename(FmouseDragged);
-  rename(FmouseEntered);
-  rename(FmouseExited);
-  rename(FmouseMoved);
-  rename(FmousePressed);
-  rename(FmouseReleased);
+  Rename(FinputMethodTextChanged);
+  Rename(FkeyPressed);
+  Rename(FkeyReleased);
+  Rename(FkeyTyped);
+  Rename(FmouseClicked);
+  Rename(FmouseDragged);
+  Rename(FmouseEntered);
+  Rename(FmouseExited);
+  Rename(FmouseMoved);
+  Rename(FmousePressed);
+  Rename(FmouseReleased);
 
-  rename(Frotate);
-  rename(FrotationFinished);
-  rename(FrotationStarted);
-  rename(Fscroll);
-  rename(FscrollFinished);
-  rename(FscrollStarted);
-  rename(FswipeDown);
-  rename(FswipeLeft);
-  rename(FswipeRight);
-  rename(FswipeUp);
-  rename(Fzoom);
-  rename(FzoomFinished);
-  rename(FzoomStarted);
+  Rename(Frotate);
+  Rename(FrotationFinished);
+  Rename(FrotationStarted);
+  Rename(Fscroll);
+  Rename(FscrollFinished);
+  Rename(FscrollStarted);
+  Rename(FswipeDown);
+  Rename(FswipeLeft);
+  Rename(FswipeRight);
+  Rename(FswipeUp);
+  Rename(Fzoom);
+  Rename(FzoomFinished);
+  Rename(FzoomStarted);
 
-  rename(FmouseDragEntered);
-  rename(FmouseDragExited);
-  rename(FmouseDragOver);
-  rename(FmouseDragReleased);
-  rename(FtouchMoved);
-  rename(FtouchPressed);
-  rename(FtouchReleased);
-  rename(FtouchStationary);
+  Rename(FmouseDragEntered);
+  Rename(FmouseDragExited);
+  Rename(FmouseDragOver);
+  Rename(FmouseDragReleased);
+  Rename(FtouchMoved);
+  Rename(FtouchPressed);
+  Rename(FtouchReleased);
+  Rename(FtouchStationary);
 end;
 
-function TFXNode.surroundFix(s: string): string;
+function TFXNode.SurroundFix(Str: string): string;
 begin
-  Result:= Indent1 + s + #13#10;
+  Result := Indent1 + Str + #13#10;
 end;
 
-function TFXNode.surroundFix2(s: string): string;
+function TFXNode.SurroundFix2(Str: string): string;
 begin
-  Result:= Indent2 + s + #13#10;
+  Result := Indent2 + Str + #13#10;
 end;
 
 procedure TFXNode.MakeOrientation(const Value: string);
 begin
-  Partner.InsertImport('javafx.geometry.Orientation');
+  FPartner.InsertImport('javafx.geometry.Orientation');
   MakeAttribut('Orientation', 'Orientation.' + Value);
-  setPositionAndSize;
+  SetPositionAndSize;
 end;
 
-procedure TFXNode.InsertImport(const s: string);
+procedure TFXNode.InsertImport(const Str: string);
 begin
-  Partner.InsertImport(s);
+  FPartner.InsertImport(Str);
 end;
 
 procedure TFXNode.MakeGraphic(const Attr, Value, Typ: string);
-  var s, key, at, Dest, filename, Path: string;
+var
+  Str, Key, AtPos, Dest, Filename, Path: string;
 begin
-  if (Value = '(Graphic)') or (Value = '(Icon)') then begin
-    key:= 'private Image ' + Name + Attr;
-    Partner.DeleteAttribute(key);
-    Partner.DeleteAttributeValue(Name + '.set' + Attr + '(');
-  end else begin
+  if (Value = '(Graphic)') or (Value = '(Icon)') then
+  begin
+    Key := 'private Image ' + Name + Attr;
+    FPartner.DeleteAttribute(Key);
+    FPartner.DeleteAttributeValue(Name + '.set' + Attr + '(');
+  end
+  else
+  begin
     InsertImport('javafx.scene.image.*');
-    filename:= ExtractFileName(Value);
-    if Pos('images/', filename) = 1 then
-      System.delete(filename, 1, 7);
-    Path:= ExtractFilePath(Partner.Pathname);
-    Dest:= Path + 'images\' + filename;
+    Filename := ExtractFileName(Value);
+    if Pos('images/', Filename) = 1 then
+      System.Delete(Filename, 1, 7);
+    Path := ExtractFilePath(FPartner.Pathname);
+    Dest := Path + 'images\' + Filename;
     ForceDirectories(Path + 'images\');
     if not FileExists(Dest) then
-      copyFile(PChar(Value), PChar(Dest), true);
-    filename:= 'images/' + filename;
-    FObjectInspector.ELPropertyInspector.SetByCaption(Attr, filename);
+      CopyFile(PChar(Value), PChar(Dest), True);
+    Filename := 'images/' + Filename;
+    FObjectInspector.ELPropertyInspector.SetByCaption(Attr, Filename);
 
-    at:= 'private ' + Typ + ' ' + Name;
-    key:= 'private Image ' + Name + Attr;
-    s:= Indent2 + Key + ' = new Image(getClass().getResourceAsStream("' + filename + '"));';
-    Partner.ReplaceAttributAt(at, key, s);
+    AtPos := 'private ' + Typ + ' ' + Name;
+    Key := 'private Image ' + Name + Attr;
+    Str := Indent2 + Key + ' = new Image(getClass().getResourceAsStream("' +
+      Filename + '"));';
+    FPartner.ReplaceAttributAt(AtPos, Key, Str);
 
-    if Attr = 'Graphic'
-      then MakeAttribut('Graphic', 'new ImageView(' + Name + 'Graphic)')
-      else MakeAttribut('Image', Name + 'Image');
+    if Attr = 'Graphic' then
+      MakeAttribut('Graphic', 'new ImageView(' + Name + 'Graphic)')
+    else
+      MakeAttribut('Image', Name + 'Image');
   end;
 end;
 
-{--- TFXRegion ----------------------------------------------------------------}
+{ --- TFXRegion ---------------------------------------------------------------- }
 
 constructor TFXRegion.Create(AOwner: TComponent);
 begin
-  inherited create(aOwner);
-  FBackground:= FDefaultBackground;
+  inherited Create(AOwner);
+  FBackground := FDefaultBackground;
 end;
 
-procedure TFXRegion.SetBackground(aColor: TColor);
+procedure TFXRegion.SetBackground(AColor: TColor);
 begin
-  if aColor <> FBackground then begin
-    FBackground:= aColor;
+  if AColor <> FBackground then
+  begin
+    FBackground := AColor;
     Invalidate;
   end;
 end;
 
-function TFXRegion.getPrefHeightCode: string;
+function TFXRegion.GetPrefHeightCode: string;
 begin
-  Result:= Name + '.setPrefHeight(' + IntToStr(PPIUnScale(Height)) + ');';
+  Result := Name + '.setPrefHeight(' + IntToStr(PPIUnScale(Height)) + ');';
 end;
 
-function TFXRegion.getPrefWidthCode: string;
+function TFXRegion.GetPrefWidthCode: string;
 begin
-  Result:= Name + '.setPrefWidth(' + IntToStr(PPIUnScale(Width)) + ');';
+  Result := Name + '.setPrefWidth(' + IntToStr(PPIUnScale(Width)) + ');';
 end;
 
-procedure TFXRegion.SetPrefWidth(aValue: integer);
+procedure TFXRegion.SetPrefWidth(AValue: Integer);
 begin
-  if aValue <> FPrefWidth then begin
-    FPrefWidth:= aValue;
-    Width:= FPrefWidth;
+  if AValue <> FPrefWidth then
+  begin
+    FPrefWidth := AValue;
+    Width := FPrefWidth;
     Invalidate;
   end;
 end;
 
-function TFXRegion.getPrefWidth: integer;
+function TFXRegion.GetPrefWidth: Integer;
 begin
-  Result:= Width;
+  Result := Width;
 end;
 
-procedure TFXRegion.SetPrefHeight(aValue: integer);
+procedure TFXRegion.SetPrefHeight(AValue: Integer);
 begin
-  if aValue <> FPrefHeight then begin
-    FPrefHeight:= aValue;
-    Height:= FPrefHeight;
+  if AValue <> FPrefHeight then
+  begin
+    FPrefHeight := AValue;
+    Height := FPrefHeight;
     Invalidate;
   end;
 end;
 
-function TFXRegion.getPrefHeight: integer;
+function TFXRegion.GetPrefHeight: Integer;
 begin
-  Result:= Height;
+  Result := Height;
 end;
 
 procedure TFXRegion.SetPositionAndSize;
 begin
-  setAttributValue(Name + '.setLayoutX(', getLayoutXCode);
-  setAttributValue(Name + '.setLayoutY(', getLayoutYCode);
-  setAttributValue(Name + '.setPrefHeight(', getPrefHeightCode);
-  setAttributValue(Name + '.setPrefWidth(', getPrefWidthCode);
+  SetAttributValue(Name + '.setLayoutX(', GetLayoutXCode);
+  SetAttributValue(Name + '.setLayoutY(', GetLayoutYCode);
+  SetAttributValue(Name + '.setPrefHeight(', GetPrefHeightCode);
+  SetAttributValue(Name + '.setPrefWidth(', GetPrefWidthCode);
 end;
 
-function TFXRegion.getAttributes(ShowAttributes: integer): string;
+function TFXRegion.GetAttributes(ShowAttributes: Integer): string;
 begin
-  if ShowAttributes = 3
-    then Result:= '|Background|PrefHeight|PrefWidth|SnapToPixel' + inherited getAttributes(3)
-    else Result:= '|Name';
+  if ShowAttributes = 3 then
+    Result := '|Background|PrefHeight|PrefWidth|SnapToPixel' +
+      inherited GetAttributes(3)
+  else
+    Result := '|Name';
 end;
 
-{--- TFXControl ---------------------------------------------------------------}
+{ --- TFXControl --------------------------------------------------------------- }
 
-function TFXControl.getAttributes(ShowAttributes: integer): string;
+function TFXControl.GetAttributes(ShowAttributes: Integer): string;
 begin
-  if ShowAttributes = 3
-    then Result:= '|Tooltip|ContextMenu' + inherited getAttributes(3)
-    else Result:= inherited getAttributes(ShowAttributes)
+  if ShowAttributes = 3 then
+    Result := '|Tooltip|ContextMenu' + inherited GetAttributes(3)
+  else
+    Result := inherited GetAttributes(ShowAttributes);
 end;
 
 procedure TFXControl.SetAttribute(Attr, Value, Typ: string);
 begin
-  if Typ = 'TAlignment' then begin  // wieso hier?
+  if Typ = 'TAlignment' then
+  begin // wieso hier?
     InsertImport('javafx.geometry.*');
     MakeAttribut('Alignment', 'Pos.' + Value);
-  end else if Attr = 'Tooltip' then
-    MakeAttribut(Attr, 'new Tooltip(' + asString(Value) + ')')
+  end
+  else if Attr = 'Tooltip' then
+    MakeAttribut(Attr, 'new Tooltip(' + AsString(Value) + ')')
   else if Attr = 'ContextMenu' then
     MakeAttribut(Attr, Value)
   else

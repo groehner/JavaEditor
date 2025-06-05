@@ -3,7 +3,9 @@ unit UALabel;
 interface
 
 uses
-  Classes, StdCtrls, UAComponents;
+  Classes,
+  StdCtrls,
+  UAComponents;
 
 type
 
@@ -11,63 +13,69 @@ type
   private
     FAlignment: THorzAlignment;
     FText: string;
-    procedure setHorzAlignment(aValue: THorzAlignment);
-    procedure setText(const aValue: string);
+    procedure SetHorzAlignment(AValue: THorzAlignment);
+    procedure SetText(const AValue: string);
   public
-    constructor Create(aOwner: TComponent); override;
-    constructor CreateFrom(aLabel: TLabel);
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    constructor Create(AOwner: TComponent); override;
+    constructor CreateFrom(ALabel: TLabel);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
     procedure SizeToText; override;
     procedure NameFromText; override;
     procedure Paint; override;
   published
-    property Alignment: THorzAlignment read FAlignment write setHorzAlignment;
-    property Text: string read FText write setText;
+    property Alignment: THorzAlignment read FAlignment write SetHorzAlignment;
+    property Text: string read FText write SetText;
   end;
 
 implementation
 
-uses Graphics, Controls, UITypes;
+uses
+  Graphics,
+  Controls,
+  UITypes;
 
-{--- TALabel ------------------------------------------------------------------}
+{ --- TALabel ------------------------------------------------------------------ }
 
 constructor TALabel.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= -1;
-  Width:= 80;
-  Height:= 24;
-  FText:= 'Label';
-  Alignment:= UAComponents.LEFT;
-  Background:= clBtnFace;
-  JavaType:= 'Label';
+  inherited Create(AOwner);
+  Tag := -1;
+  Width := 80;
+  Height := 24;
+  FText := 'Label';
+  Alignment := UAComponents.LEFT;
+  Background := clBtnFace;
+  JavaType := 'Label';
 end;
 
-constructor TALabel.createFrom(aLabel: TLabel);
+constructor TALabel.CreateFrom(ALabel: TLabel);
 begin
-  Create(aLabel.Owner);
-  CreateFromA(aLabel);
-  Text:= aLabel.Caption;
-  Font:= aLabel.Font;
-  Foreground:= Font.Color;
-  Background:= aLabel.Color;
+  Create(ALabel.Owner);
+  CreateFromA(ALabel);
+  Text := ALabel.Caption;
+  Font := ALabel.Font;
+  Foreground := Font.Color;
+  Background := ALabel.Color;
   if Background = clBtnFace then
-    Background:= clWhite;
-  case aLabel.Alignment of
-    taLeftJustify : FAlignment:= UAComponents.LEFT;
-    taRightJustify: FAlignment:= UAComponents.RIGHT;
-    taCenter      : FAlignment:= UAComponents.CENTER;
+    Background := clWhite;
+  case ALabel.Alignment of
+    taLeftJustify:
+      FAlignment := UAComponents.LEFT;
+    taRightJustify:
+      FAlignment := UAComponents.RIGHT;
+    taCenter:
+      FAlignment := UAComponents.CENTER;
   end;
 end;
 
-function TALabel.getAttributes(ShowAttributes: integer): string;
+function TALabel.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Alignment|Text|Font' + inherited getAttributes(ShowAttributes);
+  Result := '|Alignment|Text|Font' + inherited GetAttributes(ShowAttributes);
 end;
 
-procedure TALabel.setAttribute(Attr, Value, Typ: string);
+procedure TALabel.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'Alignment' then
     MakeAttribut('Alignment', 'Label.' + Value)
@@ -79,7 +87,7 @@ procedure TALabel.NewControl;
 begin
   DefaultComponent;
   InsertNewVariable('private Label ' + Name + ' = new Label();');
-  MakeAttribut('Text', asString(Text));
+  MakeAttribut('Text', AsString(Text));
 end;
 
 procedure TALabel.SizeToText;
@@ -94,38 +102,46 @@ begin
 end;
 
 procedure TALabel.Paint;
-  var x, y, tw: integer; s: string;
+var
+  XPos, YPos, TextW: Integer;
+  Str: string;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= Background;
-  if Background = ColorNone
-    then Canvas.Brush.Color:= (Parent as TWinControl).Brush.Color
-    else Canvas.Brush.Color:= Background;
-  s:= FText;
-  Canvas.Font.Color:= Foreground;
+  Canvas.Pen.Color := Background;
+  if Background = ColorNone then
+    Canvas.Brush.Color := Parent.Brush.Color
+  else
+    Canvas.Brush.Color := Background;
+  Str := FText;
+  Canvas.Font.Color := Foreground;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  y:= (Height - Canvas.TextHeight(s)) div 2;
-  tw:= Canvas.TextWidth(s);
+  YPos := (Height - Canvas.TextHeight(Str)) div 2;
+  TextW := Canvas.TextWidth(Str);
   case FAlignment of
-    UAComponents.CENTER: x:= (Width-4 - tw) div 2;
-    UAComponents.LEFT  : x:= 2;
-    else { RIGHT }       x:= Width-4 - tw;
+    UAComponents.CENTER:
+      XPos := (Width - 4 - TextW) div 2;
+    UAComponents.LEFT:
+      XPos := 2;
+  else { RIGHT }
+    XPos := Width - 4 - TextW;
   end;
-  Canvas.TextRect(Rect(0, 0, Width, Height), x, y, s);
+  Canvas.TextRect(Rect(0, 0, Width, Height), XPos, YPos, Str);
 end;
 
-procedure TALabel.setHorzAlignment(aValue: THorzAlignment);
+procedure TALabel.SetHorzAlignment(AValue: THorzAlignment);
 begin
-  if aValue <> FAlignment then begin
-    FAlignment:= aValue;
+  if AValue <> FAlignment then
+  begin
+    FAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TALabel.setText(const aValue: string);
+procedure TALabel.SetText(const AValue: string);
 begin
-  if aValue <> FText then begin
-    FText:= aValue;
+  if AValue <> FText then
+  begin
+    FText := AValue;
     Invalidate;
   end;
 end;

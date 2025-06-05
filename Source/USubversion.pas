@@ -3,7 +3,11 @@ unit USubversion;
 interface
 
 uses
-  Forms, StdCtrls, ComCtrls, System.Classes, Vcl.Controls;
+  Forms,
+  StdCtrls,
+  ComCtrls,
+  System.Classes,
+  Vcl.Controls;
 
 type
   TFSubversion = class(TForm)
@@ -13,11 +17,11 @@ type
     procedure LVRevisionsDblClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   public
-    procedure ForFile(const aFile: string);
-    function getRevision: string;
-    function getRepositoryURL(s: string): string;
-    function IsRepository(const dir: string): boolean;
-    procedure CallSVN(prog: string; const call, Dir: string);
+    procedure ForFile(const AFile: string);
+    function GetRevision: string;
+    function GetRepositoryURL(Str: string): string;
+    function IsRepository(const Dir: string): Boolean;
+    procedure CallSVN(Prog: string; const Call, Dir: string);
   end;
 
 var
@@ -25,93 +29,108 @@ var
 
 implementation
 
-uses Windows, SysUtils, JvGnugettext, UStringRessources,
-     UConfiguration, UMessages, UJavaCommands, UUtils;
+uses
+  Windows,
+  SysUtils,
+  JvGnugettext,
+  UStringRessources,
+  UConfiguration,
+  UMessages,
+  UJavaCommands,
+  UUtils;
 
 {$R *.dfm}
 
-procedure TFSubversion.ForFile(const aFile: string);
-  var m, rev, aut, pa, s: string; p, i: integer; ListItem: TListItem;
+procedure TFSubversion.ForFile(const AFile: string);
+var
+  AMessage, Rev, Aut, Str: string;
+  Posi, Idx: Integer;
+  ListItem: TListItem;
 begin
   LVRevisions.Items.Clear;
-  pa:= ExtractFilePath(aFile);
-  CallSVN('\svn.exe', 'log ' + aFile, pa);
-  i:= 2;
-  while i < FMessages.LBMessages.Items.Count - 1 do begin
-    s:= FMessages.LBMessages.Items[i];
+  CallSVN('\svn.exe', 'log ' + AFile, ExtractFilePath(AFile));
+  Idx := 2;
+  while Idx < FMessages.LBMessages.Items.Count - 1 do
+  begin
+    Str := FMessages.LBMessages.Items[Idx];
     ListItem := LVRevisions.Items.Add;
-    p:= Pos(' | ', s);
-    rev:= copy(s, 2, p-2);
-    ListItem.Caption:= rev;
-    delete(s, 1, p + 2);
-    p:= Pos(' | ', s);
-    aut:= copy(s, 1, p-1);
-    ListItem.SubItems.Add(aut);
-    delete(s, 1, p + 2);
-    p:= Pos(':', s);
-    delete(s, p+5, length(s));
-    ListItem.SubItems.Add(s);
-    m:= FMessages.LBMessages.Items[i+2];
-    ListItem.SubItems.Add(m);
-    inc(i, 4);
+    Posi := Pos(' | ', Str);
+    Rev := Copy(Str, 2, Posi - 2);
+    ListItem.Caption := Rev;
+    Delete(Str, 1, Posi + 2);
+    Posi := Pos(' | ', Str);
+    Aut := Copy(Str, 1, Posi - 1);
+    ListItem.SubItems.Add(Aut);
+    Delete(Str, 1, Posi + 2);
+    Posi := Pos(':', Str);
+    Delete(Str, Posi + 5, Length(Str));
+    ListItem.SubItems.Add(Str);
+    AMessage := FMessages.LBMessages.Items[Idx + 2];
+    ListItem.SubItems.Add(AMessage);
+    Inc(Idx, 4);
   end;
 end;
 
-function TFSubversion.getRevision: string;
+function TFSubversion.GetRevision: string;
 begin
-  var i:= LVRevisions.ItemIndex;
-  Result:= LVRevisions.Items[i].Caption;
+  var
+  Idx := LVRevisions.ItemIndex;
+  Result := LVRevisions.Items[Idx].Caption;
 end;
 
-function TFSubversion.IsRepository(const dir: string): boolean;
+function TFSubversion.IsRepository(const Dir: string): Boolean;
 begin
-  Result:= false;
-  var s:= withTrailingSlash(Dir) + 'README.txt';
-  if FileExists(s) then begin
-    var SL:= TStringList.Create;
+  Result := False;
+  var
+  Str := WithTrailingSlash(Dir) + 'README.txt';
+  if FileExists(Str) then
+  begin
+    var
+    StringList := TStringList.Create;
     try
-      SL.LoadFromFile(s);
-      Result:= Pos('This is a Subversion repository;', SL.Text) > 0;
+      StringList.LoadFromFile(Str);
+      Result := Pos('This is a Subversion repository;', StringList.Text) > 0;
     finally
-      FreeAndNil(SL);
+      FreeAndNil(StringList);
     end;
   end;
 end;
 
-function TFSubversion.getRepositoryURL(s: string): string;
+function TFSubversion.GetRepositoryURL(Str: string): string;
 begin
-  s:= withoutTrailingSlash(ExtractFilePath(s));
-  Result:= toWeb('IE', FConfiguration.SVNRepository + '/' + toRepository(s));
+  Str := ExcludeTrailingPathDelimiter(ExtractFilePath(Str));
+  Result := ToWeb('IE', FConfiguration.SVNRepository + '/' + ToRepository(Str));
 end;
 
 procedure TFSubversion.LVRevisionsDblClick(Sender: TObject);
 begin
-  ModalResult := mrOK;
+  ModalResult := mrOk;
 end;
 
-procedure TFSubversion.CallSVN(prog: string; const call, dir: string);
+procedure TFSubversion.CallSVN(Prog: string; const Call, Dir: string);
 begin
-  prog:= FConfiguration.SVNFolder + prog;
+  Prog := FConfiguration.SVNFolder + Prog;
   FMessages.ShowTab(K_Messages);
   FMessages.DeleteTab(K_Messages);
-  FMessages.OutputLineTo(K_Messages, prog + ' ' + call);
-  Screen.Cursor:= crHourGlass;
-  if myJavaCommands.ExecAndWait(prog, call, dir,
-       FConfiguration.TempDir + 'error.txt', SW_Hide) then
+  FMessages.OutputLineTo(K_Messages, Prog + ' ' + Call);
+  Screen.Cursor := crHourGlass;
+  if MyJavaCommands.ExecAndWait(Prog, Call, Dir, FConfiguration.TempDir +
+    'error.txt', SW_HIDE) then
     FMessages.ShowMessages(FConfiguration.TempDir + 'error.txt');
-  Screen.Cursor:= crDefault;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TFSubversion.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
-  with LVRevisions do begin
-    Columns.Items[0].Caption:= _(LNGRevision);
-    Columns.Items[1].Caption:= _(LNGAuthor);
-    Columns.Items[2].Caption:= _(LNGDate);
-    Columns.Items[3].Caption:= _(LNGMessage);
+  with LVRevisions do
+  begin
+    Columns[0].Caption := _(LNGRevision);
+    Columns[1].Caption := _(LNGAuthor);
+    Columns[2].Caption := _(LNGDate);
+    Columns[3].Caption := _(LNGMessage);
   end;
-  Caption:= _(LNGRevisions);
+  Caption := _(LNGRevisions);
 end;
 
 end.

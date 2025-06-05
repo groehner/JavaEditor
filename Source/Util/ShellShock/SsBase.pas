@@ -110,7 +110,7 @@ const
 
 type
   TIncludeItemFunc = function (
-    const SR : TSearchRec; ForInclusion : boolean) : Boolean;
+    const SR : TSearchRec; ForInclusion : Boolean) : Boolean;
 
   {base component for ShellShock non-visual components}
   TSsComponent = class(TComponent)
@@ -289,7 +289,7 @@ type
     procedure SetCompare(C : TCompareFunc);
     procedure SetDisposeData(D : TDisposeDataProc);
     procedure SetLoadData(L : TLoadDataFunc);
-    procedure SetStoreData(S : TStoreDataProc);
+    procedure SetStoreData(Str : TStoreDataProc);
 
   protected
     conNodeClass : TStNodeClass;
@@ -297,8 +297,8 @@ type
     FCount       : Longint;
 
     {protected undocumented methods}
-    function AssignPointers(Source : TPersistent; AssignData : TIteratePointerFunc) : boolean;
-    function AssignUntypedVars(Source : TPersistent; AssignData : TIterateUntypedFunc) : boolean;
+    function AssignPointers(Source : TPersistent; AssignData : TIteratePointerFunc) : Boolean;
+    function AssignUntypedVars(Source : TPersistent; AssignData : TIterateUntypedFunc) : Boolean;
     procedure ForEachPointer(Action : TIteratePointerFunc; OtherData : Pointer);
       virtual;
     procedure ForEachUntypedVar(Action : TIterateUntypedFunc; OtherData : pointer);
@@ -307,9 +307,9 @@ type
       virtual;
     procedure SetArraySizes(RowCount, ColCount, ElSize : Cardinal);
       virtual;
-    function StoresPointers : boolean;
+    function StoresPointers : Boolean;
       virtual;
-    function StoresUntypedVars : boolean;
+    function StoresUntypedVars : Boolean;
       virtual;
 
     {protected documented}
@@ -330,7 +330,7 @@ type
     procedure Clear;
       virtual; abstract;
       {-Remove all elements from collection}
-    procedure DisposeNodeData(P : TStNode);
+    procedure DisposeNodeData(Posi : TStNode);
       {-Destroy the data associated with a node}
 
     {wrapper methods for using events or proc/func pointers}
@@ -346,13 +346,13 @@ type
     procedure LoadFromFile(const FileName : string);
       dynamic;
       {-Create a container and its data from a file}
-    procedure LoadFromStream(S : TStream);
+    procedure LoadFromStream(Str : TStream);
       dynamic; abstract;
       {-Create a container and its data from a stream}
     procedure StoreToFile(const FileName : string);
       dynamic;
       {-Create a container and its data from a file}
-    procedure StoreToStream(S : TStream);
+    procedure StoreToStream(Str : TStream);
       dynamic; abstract;
       {-Write a container and its data to a stream}
 
@@ -506,7 +506,7 @@ function DestroyNode(Container : TStContainer; Node : TStNode;
 
 {---Miscellaneous---}
 
-function IsOrInheritsFrom(Root, Candidate : TClass) : boolean;
+function IsOrInheritsFrom(Root, Candidate : TClass) : Boolean;
   {-Return true if the classes are equal or Candidate is a descendant of Root}
 
 procedure RaiseContainerError(Code : longint);
@@ -550,15 +550,15 @@ var
 {$ENDIF}
 
 {String routines}
-function LeftPadChS(const S : string; C : Char; Len : Integer) : string;
-function LeftPadS(const S : string; Len : Integer) : string;
+function LeftPadChS(const Str : string; C : Char; Len : Integer) : string;
+function LeftPadS(const Str : string; Len : Integer) : string;
 
-function CharExistsS(const S : string; C : Char) : Boolean;
-function StrChPosS(const P : string; C : Char; var Pos : Cardinal) : Boolean;
+function CharExistsS(const Str : string; C : Char) : Boolean;
+function StrChPosS(const Posi : string; C : Char; var Pos : Cardinal) : Boolean;
 
 function Long2StrL(L : LongInt) : string;
 
-function TrimL(const S : string) : string;
+function TrimL(const Str : string) : string;
 
 function AddBackSlashL(const DirName : string) : string;
 
@@ -629,7 +629,7 @@ begin
   Result := True;
 end;
 
-function IsOrInheritsFrom(Root, Candidate : TClass) : boolean;
+function IsOrInheritsFrom(Root, Candidate : TClass) : Boolean;
   begin
     Result := (Root = Candidate) or Candidate.InheritsFrom(Root);
   end;
@@ -653,16 +653,16 @@ begin
 end;
 
 {$IFNDEF HStrings}
-function StNewStr(S : string) : PShortString;
+function StNewStr(Str : string) : PShortString;
 begin
-  GetMem(Result, succ(length(S)));
-  Result^ := S;
+  GetMem(Result, succ(Length(Str)));
+  Result^ := Str;
 end;
 
 procedure StDisposeStr(PS : PShortString);
 begin
   if (PS <> nil) then
-    FreeMem(PS, succ(length(PS^)));
+    FreeMem(PS, succ(Length(PS^)));
 end;
 {$ENDIF}
 
@@ -676,26 +676,26 @@ end;
 {----------------------------------------------------------------------}
 
 function TStContainer.AssignPointers(Source : TPersistent;
-                                     AssignData : TIteratePointerFunc) : boolean;
+                                     AssignData : TIteratePointerFunc) : Boolean;
 begin
-  Result := false;
+  Result := False;
   if (Source is TStContainer) then
     if TStContainer(Source).StoresPointers then
       begin
         Clear;
         TStContainer(Source).ForEachPointer(AssignData, Self);
-        Result := true;
+        Result := True;
       end;
 end;
 
 function TStContainer.AssignUntypedVars(Source : TPersistent;
-                                        AssignData : TIterateUntypedFunc) : boolean;
+                                        AssignData : TIterateUntypedFunc) : Boolean;
 var
   RowCount : Cardinal;
   ColCount : Cardinal;
   ElSize : Cardinal;
 begin
-  Result := false;
+  Result := False;
   if (Source is TStContainer) then
     if TStContainer(Source).StoresUntypedVars then
       begin
@@ -703,7 +703,7 @@ begin
         TStContainer(Source).GetArraySizes(RowCount, ColCount, ElSize);
         SetArraySizes(RowCount, ColCount, ElSize);
         TStContainer(Source).ForEachUntypedVar(AssignData, Self);
-        Result := true;
+        Result := True;
       end;
 end;
 
@@ -746,19 +746,19 @@ begin
   FLoadData := L;
 end;
 
-procedure TStContainer.SetStoreData(S : TStoreDataProc);
+procedure TStContainer.SetStoreData(Str : TStoreDataProc);
 begin
-  FStoreData := S;
+  FStoreData := Str;
 end;
 
-function TStContainer.StoresPointers : boolean;
+function TStContainer.StoresPointers : Boolean;
 begin
-  Result := false;
+  Result := False;
 end;
 
-function TStContainer.StoresUntypedVars : boolean;
+function TStContainer.StoresUntypedVars : Boolean;
 begin
-  Result := false;
+  Result := False;
 end;
 
 constructor TStContainer.CreateContainer(NodeClass : TStNodeClass; Dummy : Integer);
@@ -788,14 +788,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TStContainer.DisposeNodeData(P : TStNode);
+procedure TStContainer.DisposeNodeData(Posi : TStNode);
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    if Assigned(P) then
-      DoDisposeData(P.Data);
+    if Assigned(Posi) then
+      DoDisposeData(Posi.Data);
 {$IFDEF ThreadSafe}
   finally
     LeaveCS;
@@ -862,25 +862,25 @@ end;
 
 procedure TStContainer.LoadFromFile(const FileName : string);
 var
-  S : TStream;
+  Str : TStream;
 begin
-  S := TFileStream.Create(FileName, fmOpenRead + fmShareDenyWrite);
+  Str := TFileStream.Create(FileName, fmOpenRead + fmShareDenyWrite);
   try
-    LoadFromStream(S);
+    LoadFromStream(Str);
   finally
-    S.Free;
+    Str.Free;
   end;
 end;
 
 procedure TStContainer.StoreToFile(const FileName : string);
 var
-  S : TStream;
+  Str : TStream;
 begin
-  S := TFileStream.Create(FileName, fmCreate);
+  Str := TFileStream.Create(FileName, fmCreate);
   try
-    StoreToStream(S);
+    StoreToStream(Str);
   finally
-    S.Free;
+    Str.Free;
   end;
 end;
 
@@ -897,30 +897,30 @@ begin
 end;
 
 { String routines }
-function LeftPadChS(const S : string; C : Char; Len : Integer) : string;
+function LeftPadChS(const Str : string; C : Char; Len : Integer) : string;
   {-Pad a string on the left with a specified character.}
 begin
-  if Length(S) >= Len then
-    Result := S
+  if Length(Str) >= Len then
+    Result := Str
   else
-    Result := StringOfChar(C, Len - Length(S)) + S;
+    Result := StringOfChar(C, Len - Length(Str)) + Str;
 end;
 
-function LeftPadS(const S : string; Len : Integer) : string;
+function LeftPadS(const Str : string; Len : Integer) : string;
   {-Pad a string on the left with spaces.}
 begin
-  Result := LeftPadChS(S, ' ', Len);
+  Result := LeftPadChS(Str, ' ', Len);
 end;
 
-function CharExistsS(const S : string; C : Char) : Boolean;
+function CharExistsS(const Str : string; C : Char) : Boolean;
 begin
-  Result := Pos(C, S) > 0;
+  Result := Pos(C, Str) > 0;
 end;
 
-function StrChPosS(const P : string; C : Char; var Pos : Cardinal) : Boolean;
+function StrChPosS(const Posi : string; C : Char; var Pos : Cardinal) : Boolean;
   {-Return the position of a specified character within a string.}
 begin
-  Pos := System.Pos(C, P);
+  Pos := System.Pos(C, Posi);
   Result := Pos > 0;
 end;
 
@@ -930,21 +930,21 @@ begin
   Result:= IntToStr(L);
 end;
 
-function TrimL(const S : string) : string;
+function TrimL(const Str : string) : string;
   {-Return a string with leading and trailing white space removed.}
 var
-  I : Longint;
+  Int : Longint;
 begin
-  Result := S;
+  Result := Str;
   while (Length(Result) > 0) and (Result[Length(Result)] <= ' ') do
     SetLength(Result, Pred(Length(Result)));
 
-  I := 1;
-  while (I <= Length(Result)) and (Result[I] <= ' ') do
-    Inc(I);
-  Dec(I);
-  if I > 0 then
-    System.Delete(Result, 1, I);
+  Int := 1;
+  while (Int <= Length(Result)) and (Result[Int] <= ' ') do
+    Inc(Int);
+  Dec(Int);
+  if Int > 0 then
+    System.Delete(Result, 1, Int);
 end;
 
 function AddBackSlashL(const DirName : string) : string;
@@ -962,7 +962,7 @@ function CommaizeChL(L : Longint; Ch : Char) : string;
   {-Convert a long integer to a string with Ch in comma positions}
 var
   Temp : string;
-  NumCommas, I, Len : Cardinal;
+  NumCommas, Len : Cardinal;
   Neg : Boolean;
 begin
   SetLength(Temp, 1);
@@ -975,7 +975,7 @@ begin
   Result := Long2StrL(L);
   Len := Length(Result);
   NumCommas := (Pred(Len)) div 3;
-  for I := 1 to NumCommas do
+  for var I := 1 to NumCommas do
     System.Insert(Temp, Result, Succ(Len-(I * 3)));
   if Neg then
     System.Insert('-', Result, 1);
@@ -1005,7 +1005,7 @@ procedure EnumerateFiles(StartDir : string;
       while Error = 0 do
       begin
         try
-          if (@IncludeItem = nil) or (IncludeItem(SR, true)) then
+          if (@IncludeItem = nil) or (IncludeItem(SR, True)) then
             FL.Add(Dir + SR.Name);
         except
           on EOutOfMemory do
@@ -1025,7 +1025,7 @@ procedure EnumerateFiles(StartDir : string;
           if ((SR.Attr and faDirectory = faDirectory) and
               (SR.Name <> '.') and (SR.Name <> '..')) then
           begin
-            if (@IncludeItem = nil) or (IncludeItem(SR, false)) then
+            if (@IncludeItem = nil) or (IncludeItem(SR, False)) then
             begin
               ChDir(SR.Name);
               SearchBranch;
@@ -1164,12 +1164,12 @@ procedure GetSpecialFolderFiles(Handle : TStHwnd;
                                 Folder : TStSpecialRootFolder;
                                 Files : TStrings);
 var
-  S : string;
+  Str : string;
 begin
-  S := GetSpecialFolderPath(Handle, Folder);
-  if not DirectoryExists(S) then
+  Str := GetSpecialFolderPath(Handle, Folder);
+  if not DirectoryExists(Str) then
     RaiseStError(ESsShellError, ssscShellVersionError);
-  EnumerateFiles(S, Files, False, FilterFunc);
+  EnumerateFiles(Str, Files, False, FilterFunc);
 end;
 
 constructor TSsShellComponent.Create(AOwner : TComponent);
@@ -1244,10 +1244,9 @@ var
   TrSize  : Integer;
   FixedInfo : TVSFixedFileInfo;
 
-  function MakeFloat(S : string) : Double;
+  function MakeFloat(Str : string) : Double;
   var
     Buff  : array [0..5] of Char;
-    I     : Integer;
     Count : Integer;
   begin
     Count := 0;
@@ -1256,14 +1255,14 @@ var
     { The file version string might be specified like }
     { 4.72.3105.0. Parse it down to just one decimal  }
     { place and create the floating point version #.  }
-    for I := 1 to Pred(Length(S)) do begin
-      if S[I] = '.' then begin
+    for var I := 1 to Pred(Length(Str)) do begin
+      if Str[I] = '.' then begin
         { Found the first period. Replace it with the DecimalSeparator }
         { constant so that StrToFloat works properly. }
-        S[I] := {$IFDEF VERSIONXE}FormatSettings.{$ENDIF}DecimalSeparator;
+        Str[I] := {$IFDEF VERSIONXE}FormatSettings.{$ENDIF}DecimalSeparator;
         Inc(Count);
         if (Count = 2) and (I <= Length(Buff)) then begin
-          Move(S[1], Buff, (I - 1) * SizeOf(Char));
+          Move(Str[1], Buff, (I - 1) * SizeOf(Char));
           Break;
         end;
       end;

@@ -35,13 +35,13 @@ type
   private
   public
     pvm: PJavaVM;
-    constructor Create(p: PJavaVM);
+    constructor Create(Posi: PJavaVM);
     destructor Destroy; override;
 
     // convenience method to call a method's static main
     // uses delphi's native TStrings to pass the
     // array of string args
-    class procedure CallMain(const aClassname: String ; strings: TStrings);
+    class procedure CallMain(const AClassname: string ; strings: TStrings);
     
     // Convenience method. Calls Exit procedure
     class procedure CallExit(exitCode: Integer);
@@ -54,7 +54,7 @@ type
     
     // IMPORTANT: The following method must be called by native methods
     // that receive a PEnv argument if they intend to use this unit.
-    class procedure setThreadPEnv(p: PJNIEnv);
+    class procedure setThreadPEnv(Posi: PJNIEnv);
 
     // This method sets whether you will only be using the JNIWrapper
     // methods from a single thread of execution. Basically, this
@@ -76,14 +76,14 @@ type
     FKind: TNumType;
     FString: string;
     FSig: string;
-    FValid: boolean;
+    FValid: Boolean;
     FError: string;
     function GetAsString: string;
-    function ResolveString(s: string): string;
+    function ResolveString(Str: string): string;
   public
-    constructor create(aValue: JValue; Kind: TNumType; const Sig: string); overload;
-    constructor create(Typ: string); overload;
-    constructor create(const Value, Sig: string); overload;
+    constructor Create(aValue: JValue; Kind: TNumType; const Sig: string); overload;
+    constructor Create(Typ: string); overload;
+    constructor Create(const Value, Sig: string); overload;
     destructor Destroy; override;
     function GetSig: string;
 
@@ -97,33 +97,33 @@ type
     function GetAsDoubleArray: TJDoubleArray;
     function GetAsTStrings: TStrings;
 
-    procedure SetBoolArrayFromString(const s: string);
-    procedure SetByteArrayFromString(const s: string);
-    procedure SetCharArrayFromString(const s: string);
-    procedure SetShortArrayFromString(const s: string);
-    procedure SetIntArrayFromString(const s: string);
-    procedure SetLongArrayFromString(const s: string);
-    procedure SetFloatArrayFromString(const s: string);
-    procedure SetDoubleArrayFromString(const s: string);
-    procedure SetStringArrayFromString(const s: string);
-    procedure SetObjectArrayFromString(const s: string);
+    procedure SetBoolArrayFromString(const Str: string);
+    procedure SetByteArrayFromString(const Str: string);
+    procedure SetCharArrayFromString(const Str: string);
+    procedure SetShortArrayFromString(const Str: string);
+    procedure SetIntArrayFromString(const Str: string);
+    procedure SetLongArrayFromString(const Str: string);
+    procedure SetFloatArrayFromString(const Str: string);
+    procedure SetDoubleArrayFromString(const Str: string);
+    procedure SetStringArrayFromString(const Str: string);
+    procedure SetObjectArrayFromString(const Str: string);
 
-    function StringToJBooleanArray(s: string): TJBooleanArray;
-    function StringToJByteArray(s: string): TJByteArray;
-    function StringToJCharArray(s: string): TJCharArray;
-    function StringToJShortArray(s: string): TJShortArray;
-    function StringToJIntArray(s: string): TJIntArray;
-    function StringToJLongArray(s: string): TJLongArray;
-    function StringToJFloatArray(s: string): TJFloatArray;
-    function StringToJDoubleArray(s: string): TJDoubleArray;
-    function StringToTStrings(s: string): TStrings;
+    function StringToJBooleanArray(Str: string): TJBooleanArray;
+    function StringToJByteArray(Str: string): TJByteArray;
+    function StringToJCharArray(Str: string): TJCharArray;
+    function StringToJShortArray(Str: string): TJShortArray;
+    function StringToJIntArray(Str: string): TJIntArray;
+    function StringToJLongArray(Str: string): TJLongArray;
+    function StringToJFloatArray(Str: string): TJFloatArray;
+    function StringToJDoubleArray(Str: string): TJDoubleArray;
+    function StringToTStrings(Str: string): TStrings;
 
     function AsFormattedString: string;
-    function SetFromString(s: string): boolean;
+    function SetFromString(Str: string): Boolean;
     property Value: JValue read FValue write FValue;
     property Kind: TNumType read FKind write FKind;
     property AsString: string read GetAsString;
-    property Valid: boolean read FValid;
+    property Valid: Boolean read FValid;
     property Error: string read FError write FError;
   end;
 
@@ -133,7 +133,7 @@ type
   private
     RefList: TList; //a list of references to be freed by the destructor.
     FSig: string;
-    FValid: boolean;
+    FValid: Boolean;
     FArgPointer: TJValueArray;
     FError: string;
     procedure addToArgBuffer(val: JValue); //add an element to buffer.
@@ -153,8 +153,8 @@ type
     procedure addFloat(value: JValue);
     procedure addDouble(value: JValue);
     procedure addString(value: JValue); overload;
-    procedure addString(const s: string); overload;
-    procedure addStringAsObject(const s: string);
+    procedure addString(const Str: string); overload;
+    procedure addStringAsObject(const Str: string);
     procedure addBooleanArray(arr: array of JBoolean);
     procedure addByteArray(arr: array of JByte);
     procedure addCharArray(arr: array of JChar);
@@ -173,11 +173,11 @@ type
     procedure addObjectArray(arr: TJavaObjectArray; jcl: TJavaClass);
 
   //the java signature of this parameter list.
-    property Signature: String read FSig write FSig;
+    property Signature: string read FSig write FSig;
   // a pointer to the buffer that contains the Parameters to be passed.
     property argPointer: TJValueArray read FArgPointer;
-    property IsValid: boolean read FValid;
-    property Error: String read FError write FError;
+    property IsValid: Boolean read FValid;
+    property Error: string read FError write FError;
   end;
 
 {Delphi class to encapsulate a Java method; }
@@ -194,18 +194,18 @@ type
     // the constructor. The retclass is Nil unless returntype is an object.
     // raises a EJavaMethodNotFound exception if method is not found.
     constructor Create(cls: TJavaClass;
-                       const name: string;
+                       const Name: string;
                        methodType: TMethodAttribute;
                        returnType: TNumType;
                        params: TJavaParams;
                        const retClassSig: string);
     // a minimal constructor for virtual methods that
     // takes no arguments and return nothing.
-    constructor CreateVoid(cls: TJavaClass; const name: string);
+    constructor CreateVoid(cls: TJavaClass; const Name: string);
     // TJavaMethod needs no destructor
     // because FMethodID needs no ressources
     function Call(params: TJavaParams ; jobj: TJavaObject): JValue;
-    function isValid: boolean;
+    function isValid: Boolean;
     property Error: string read FError;
   end;
 
@@ -215,9 +215,9 @@ type
     FAttributeID: JFieldID;
     FPEnv: PJNIEnv;
   public
-    Static_ : boolean;
-    Final_  : boolean;
-    isObject: boolean;
+    Static_ : Boolean;
+    Final_  : Boolean;
+    isObject: Boolean;
     vis: TVisibility;
     Name: string;
     Typ: string;
@@ -262,7 +262,7 @@ type
     function ToString: string; override;
     function Equals(JavaObject: TJavaObject): Boolean; reintroduce;
     function isInstanceOf(JavaClass: TJavaClass): Boolean;
-    function getAttributes: string;
+    function GetAttributes: string;
     function getAttributeNames: string;
     procedure addToProperties(const Objectname: string);
     procedure delFromProperties(const Objectname: string);
@@ -301,22 +301,22 @@ type
 // a constructor that creates a TJavaClass wrapper object when it already has
 // a local object ref to the class's JNI handle.
     constructor CreateWithHandle(const Name: string; jc: jclass);
-    constructor CreateLoadClass(const aClassname: string; Pathname: string);
+    constructor CreateLoadClass(const AClassname: string; Pathname: string);
     destructor Destroy; override;
-    class function FindClass(const aClassname: string): string;
-    class function IsInterface(const aClassname: string): string;
-    class function getSuperClassFromName(const aClassname: string): string;
+    class function FindClass(const AClassname: string): string;
+    class function IsInterface(const AClassname: string): string;
+    class function getSuperClassFromName(const AClassname: string): string;
     class function cookClass(const Pathname: string): string;
-    class function getPackage(const aClassname: string): string;
+    class function getPackage(const AClassname: string): string;
     procedure detecterror;
     // returns a handle to a new instance of this class.
     function Instantiate(params: TJavaParams): TJavaObject;
     function extends(JavaClass: TJavaClass): Boolean;
-    function hasSuperClass: boolean;
+    function hasSuperClass: Boolean;
     function getSuperClass: TJavaClass;
     function getSuperclassName: string;
-    function IsAbstract: boolean;
-    function getAttributes: string;
+    function IsAbstract: Boolean;
+    function GetAttributes: string;
     function getAttributeNames: string;
     function getRefreshedAttributeNames: string;
     function getConstructors: string;
@@ -325,12 +325,12 @@ type
 
     property Handle: jobject read GetHandle;
     property LocalHandle: jobject read FLocalHandle;
-    property Signature: String read FSig write FSig;
-    property Name: String read FName;
+    property Signature: string read FSig write FSig;
+    property Name: string read FName;
     property ImportTyp: string read getImportTyp;
     property Valid: Boolean read isValid;
     property Global: Boolean read isGlobal write setGlobal;
-    property Pathname: String read FPathname write FPathname;
+    property Pathname: string read FPathname write FPathname;
     property AttributesList: TObjectList read FAttributesList write FAttributesList;
   end;
 
@@ -342,7 +342,7 @@ type
     Args: PJValue;
     SL: TStringList;
   public
-    constructor create;
+    constructor Create;
     function Compile(const Classpath, Parameter, Pathname: string): string;
   end;
 
@@ -355,7 +355,7 @@ type
   EInvalidJNIHandle = class(EJvmException);
 
 { Various utility functions for creating java objects from delphi objects.}
-  function createJString (const s: string ): jstring;
+  function createJString (const Str: string ): jstring;
   function createJStringArray (myStrings: TStrings): jStringArray;
   function createJBooleanArray (arr: array of JBoolean): jBooleanArray;
   function createJByteArray (arr: array of JByte): jByteArray;
@@ -368,7 +368,7 @@ type
   function createJObjectArray(ObjectArr: TJavaObjectArray; aClass: jclass): jObjectArray;
   function getStringClass: jclass;
   function createObjectArray(strings: TStrings; aJavaClass: TJavaClass; const Typ: string;
-              var Valid: boolean; var AsString: string): TJavaObjectArray;
+              var Valid: Boolean; var AsString: string): TJavaObjectArray;
 
   {various utility functions for creating Delphi objects from Java objects}
   function JToDString(js: JString): string;
@@ -392,44 +392,44 @@ var
   sc: jclass = Nil;
   SingleThreaded: Boolean;
 
-  function TryStrToFloat(var s: string; var f: double): boolean;
-    var p: integer;
+  function TryStrToFloat(var Str: string; var f: double): Boolean;
+    var Posi: Integer;
   begin
-    Result:= true;
+    Result:= True;
     try
-      p:= Pos('.', s);
-      if (p > 0) and (FormatSettings.DecimalSeparator <> '.') then
-        s[p]:= FormatSettings.DecimalSeparator;
-      p:= Pos(',', s);
-      if (p > 0) and (FormatSettings.DecimalSeparator <> ',') then
-        s[p]:= FormatSettings.DecimalSeparator;
-      f:= StrToFloat(s);
+      Posi:= Pos('.', Str);
+      if (Posi > 0) and (FormatSettings.DecimalSeparator <> '.') then
+        Str[Posi]:= FormatSettings.DecimalSeparator;
+      Posi:= Pos(',', Str);
+      if (Posi > 0) and (FormatSettings.DecimalSeparator <> ',') then
+        Str[Posi]:= FormatSettings.DecimalSeparator;
+      f:= StrToFloat(Str);
     except
-      Result:= false;
+      Result:= False;
     end;
   end;
 
   function JNIPointer: PJNIEnv;
   begin
-    result:= PEnvGlobal;
+    Result:= PEnvGlobal;
     if (not SingleThreaded) or (PEnvGlobal = nil) then begin
-      result:= PEnvThread;
+      Result:= PEnvThread;
       if SingleThreaded then PEnvGlobal:= PEnvThread;
     end;
-    if result = nil then begin
-      result:= PEnvThread;
+    if Result = nil then begin
+      Result:= PEnvThread;
       if SingleThreaded then
         PEnvGlobal:= PEnvThread;
     end;
-    if result = nil then
+    if Result = nil then
       raise EJVMException.Create('JVM not loadad. No PEnv pointer is available');
   end;
 
   { --- TJavaVM ---------------------------------------------------------------}
 
-  constructor TJavaVM.Create(p: PJavaVM);
+  constructor TJavaVM.Create(Posi: PJavaVM);
   begin
-    pvm:= p;
+    pvm:= Posi;
   end;
     
   destructor TJavaVM.Destroy;
@@ -441,13 +441,13 @@ var
 
   class function TJavaVM.getPEnv: PJNIEnv;
   begin
-    result:= JNIPointer;
+    Result:= JNIPointer;
   end;
     
-  class procedure TJavaVM.setThreadPEnv(p: PJNIEnv);
+  class procedure TJavaVM.setThreadPEnv(Posi: PJNIEnv);
   begin
-    PEnvThread:= p;
-    PEnvGlobal:= p;
+    PEnvThread:= Posi;
+    PEnvGlobal:= Posi;
   end;
         
   class procedure TJavaVM.setSingleThreaded(B: Boolean);
@@ -469,7 +469,7 @@ var
   end;
 
 
-  class procedure TJavaVM.CallMain(const aClassname: String ; strings: TStrings);
+  class procedure TJavaVM.CallMain(const AClassname: string ; strings: TStrings);
   var
     classID: jclass;
     methodID: jmethodID;
@@ -477,28 +477,28 @@ var
     PEnv: PJNIEnv;
     uClassname: UTF8String;
 
-    function dotToSlash(const s : UTF8String) : UTF8String;
+    function dotToSlash(const Str : UTF8String) : UTF8String;
     var
-     I: Integer;
+     Int: Integer;
     begin
-      Result:= s;
-      for I := 1 to length(Result) do
-        if Result[I] = '.' then
-          Result[I] := '/';
+      Result:= Str;
+      for Int := 1 to Length(Result) do
+        if Result[Int] = '.' then
+          Result[Int] := '/';
     end;
 
   begin
     PEnv:= JNIPointer;
-    uClassname:= dotToSlash(UTF8Encode(aClassname));
+    uClassname:= dotToSlash(UTF8Encode(AClassname));
     classID:= PEnv^.FindClass(PEnv, PAnsiChar(uClassname));
     if classID = nil then 
       raise EJavaClassNotFound.Create('Could not find class ' + classname);
     methodID:= PEnv^.GetStaticMethodID(PEnv, classID, 'main', '([Ljava/lang/String;)V');
     if methodID = nil then
-      raise EJavaMethodNotFound.create('Could not find main method in class ' + aClassname);
+      raise EJavaMethodNotFound.Create('Could not find main method in class ' + AClassname);
     stringArray:= createJStringArray(strings);
     PEnv^.CallStaticVoidMethodV(PEnv, classID, methodID, @stringArray);
-    FreeRef(stringArray, false);
+    FreeRef(stringArray, False);
   end;
 
   class procedure TJavaVM.CallExit(exitCode: Integer);
@@ -544,17 +544,17 @@ var
   end;
 
   constructor TJavaClass.Create(jc: jclass);
-    var ClassH: jClass; FMethodID: jMethodID; aValue: JValue; s: string;
+    var ClassH: jClass; FMethodID: jMethodID; aValue: JValue; Str: string;
   begin
     FPEnv:= JNIPointer;
     FLocalHandle:= jc;
     ClassH:= FPEnv^.FindClass(FPEnv, 'java/lang/Class');
     FMethodID:= FPEnv^.getMethodID(FPEnv, ClassH, 'getName', '()Ljava/lang/String;');
-    aValue.s:= FPEnv^.CallObjectMethod(FPEnv, jc, FMethodID);
-    if assigned(aValue.s)
-      then s:= JToDString(aValue.s)
-      else s:= 'UnknownClass';
-    FName:= correctGetName(s);
+    aValue.Str:= FPEnv^.CallObjectMethod(FPEnv, jc, FMethodID);
+    if Assigned(aValue.Str)
+      then Str:= JToDString(aValue.Str)
+      else Str:= 'UnknownClass';
+    FName:= correctGetName(Str);
     FSig:= TypToSig(FName);
     FPEnv^.DeleteLocalRef(FPEnv, ClassH);
     if FPEnv^.ExceptionCheck(FPEnv) then begin
@@ -566,7 +566,7 @@ var
     FAttributesList:= nil;
   end;
 
-  constructor TJavaClass.CreateLoadClass(const aClassname: string; Pathname: string);
+  constructor TJavaClass.CreateLoadClass(const AClassname: string; Pathname: string);
     var Packagename, Path: string;
         myClass: TJavaClass;
         myParams: TJavaParams;
@@ -579,25 +579,25 @@ var
     FPEnv:= JNIPointer;
     FGlobalHandle:= nil;
     FLocalHandle:= nil;
-    Packagename:= copy(aClassname, 1, LastDelimiter('.', aClassname)-1);
+    Packagename:= Copy(AClassname, 1, LastDelimiter('.', AClassname)-1);
     if Length(Packagename) > 0 then
-      Path:= copy(Path, 1, Length(Path) - Length(Packagename) - 1);
-    FName:= aClassname;
-    FSig:= TypToSig(aClassname);
+      Path:= Copy(Path, 1, Length(Path) - Length(Packagename) - 1);
+    FName:= AClassname;
+    FSig:= TypToSig(AClassname);
     Pathname:= ChangeFileExt(Pathname, '.class');
     myClass:= myComJava2.getClass('JEClassLoader');
-    if assigned(myClass) then begin
+    if Assigned(myClass) then begin
       myParams:= TJavaParams.Create;
       try
         myParams.addString(Path);
-        myParams.addString(aClassname);
+        myParams.addString(AClassname);
         try
           myMethod:= TJavaMethod.Create(myClass, 'loadClass', static, ntObject, myParams, 'Ljava/lang/Class;');
           try
-            if assigned(MyMethod) and (myMethod.FMethodID <> nil) then begin
+            if Assigned(MyMethod) and (myMethod.FMethodID <> nil) then begin
               aValue:= myMethod.Call(myParams, nil);
               Error:= myMethod.FError;
-              FLocalHandle:= aValue.s;
+              FLocalHandle:= aValue.Str;
             end else
               Error:= myMethod.FError;
           finally
@@ -617,8 +617,8 @@ var
 
   destructor TJavaClass.Destroy;
   begin
-    if assigned(FPEnv) then
-      if assigned(FGlobalHandle)
+    if Assigned(FPEnv) then
+      if Assigned(FGlobalHandle)
         then FPEnv^.DeleteGlobalRef(FPEnv, FGlobalHandle)
         else FPEnv^.DeleteLocalRef(FPEnv, FLocalHandle);
     FLocalHandle:= nil;
@@ -626,14 +626,14 @@ var
     FreeAndNil(FAttributesList);
   end;
 
-  class function TJavaClass.FindClass(const aClassname: string): string;
-    var PEnv: PJNIEnv; P: JObject; s: UTF8String;
+  class function TJavaClass.FindClass(const AClassname: string): string;
+    var PEnv: PJNIEnv; Posi: JObject; Str: UTF8String;
   begin
     PEnv:= JNIPointer;
-    s:= UTF8Encode(TypToSig(aClassname));
-    P:= PEnv^.FindClass(PEnv, PAnsiChar(s));
-    if Assigned(P) then begin
-      PEnv^.DeleteLocalRef(PEnv, P);
+    Str:= UTF8Encode(TypToSig(AClassname));
+    Posi:= PEnv^.FindClass(PEnv, PAnsiChar(Str));
+    if Assigned(Posi) then begin
+      PEnv^.DeleteLocalRef(PEnv, Posi);
       Result:= '+OK ';
     end else begin
       PEnv^.ExceptionDescribe(PEnv);
@@ -641,21 +641,21 @@ var
     end;
   end;
 
-  class function TJavaClass.IsInterface(const aClassname: string): string;
-    var PEnv: PJNIEnv; P: JObject; uClassname: UTF8String;
+  class function TJavaClass.IsInterface(const AClassname: string): string;
+    var PEnv: PJNIEnv; Posi: JObject; uClassname: UTF8String;
         ClassH: jclass; FMethodID: jMethodID;
   begin
     PEnv:= JNIPointer;
-    uClassname:= UTF8encode(TypToSig(aClassname));
-    P:= PEnv^.FindClass(PEnv, PAnsiChar(uClassname));
-    if Assigned(P)then begin
+    uClassname:= UTF8encode(TypToSig(AClassname));
+    Posi:= PEnv^.FindClass(PEnv, PAnsiChar(uClassname));
+    if Assigned(Posi)then begin
       ClassH:= PEnv^.FindClass(PEnv, 'java/lang/Class');
       FMethodID:= PEnv^.getMethodID(PEnv, ClassH, 'isInterface', '()Z');
-      if PEnv^.CallBooleanMethod(PEnv, P, FMethodID)
+      if PEnv^.CallBooleanMethod(PEnv, Posi, FMethodID)
         then Result:= '+OK'
         else Result:= '-NO';
       PEnv^.DeleteLocalRef(PEnv, ClassH);
-      PEnv^.DeleteLocalRef(PEnv, P);
+      PEnv^.DeleteLocalRef(PEnv, Posi);
       end
     else begin
       PEnv^.ExceptionDescribe(PEnv);
@@ -663,23 +663,23 @@ var
     end;
   end;
 
-  class function TJavaClass.getSuperClassFromName(const aClassname: string): string;
+  class function TJavaClass.getSuperClassFromName(const AClassname: string): string;
     var ClassObjectH, ClassH: jclass; aValue: JValue;
         FMethodID: jMethodID; uSignature: UTF8String;
-        PEnv: PJNIEnv; P: jobject;
+        PEnv: PJNIEnv; Posi: jobject;
   begin
     PEnv:= JNIPointer;
-    uSignature:= UTF8Encode(TypToSig(aClassname));
-    P:= PEnv^.FindClass(PEnv, PAnsiChar(uSignature));
-    if assigned(P) then begin
-      ClassObjectH:= PEnv^.GetSuperClass(PEnv, P); // get the Class-object
-      if assigned(ClassObjectH) then begin
+    uSignature:= UTF8Encode(TypToSig(AClassname));
+    Posi:= PEnv^.FindClass(PEnv, PAnsiChar(uSignature));
+    if Assigned(Posi) then begin
+      ClassObjectH:= PEnv^.GetSuperClass(PEnv, Posi); // get the Class-object
+      if Assigned(ClassObjectH) then begin
         ClassH:= PEnv^.FindClass(PEnv, 'java/lang/Class');
         FMethodID:= PEnv^.getMethodID(PEnv, ClassH, 'getName', '()Ljava/lang/String;');
-        aValue.s:= PEnv^.CallObjectMethod(PEnv, ClassObjectH, FMethodID);
-        Result:= '+OK ' + JToDString(aValue.s);
+        aValue.Str:= PEnv^.CallObjectMethod(PEnv, ClassObjectH, FMethodID);
+        Result:= '+OK ' + JToDString(aValue.Str);
         PEnv^.DeleteLocalRef(PEnv, ClassH);
-        PEnv^.DeleteLocalRef(PEnv, aValue.s);
+        PEnv^.DeleteLocalRef(PEnv, aValue.Str);
       end else begin
         PEnv^.ExceptionDescribe(PEnv);
         Result:= '-ERR ' + myComJava2.ReadConsole;
@@ -701,7 +701,7 @@ var
   begin
     PEnv:= JNIPointer;
     ClassH:= PEnv^.FindClass(PEnv, 'org/codehaus/janino/SimpleCompiler');
-    if assigned(ClassH) then begin
+    if Assigned(ClassH) then begin
       aSignature:= '(Ljava/lang/String;)V';
       MethodID:= PEnv^.GetMethodID(PEnv, ClassH, '<init>', PAnsiChar(aSignature));
       if MethodID <> nil then begin
@@ -725,7 +725,7 @@ var
     //if Result then PEnv^.DeleteLocalRef(PEnv, ClassH);
   end;
 
-  class function TJavaClass.getPackage(const aClassname: string): string;
+  class function TJavaClass.getPackage(const AClassname: string): string;
     var PEnv: PJNIEnv;
         aSignature: UTF8String;
         ClassH: jClass;
@@ -737,23 +737,23 @@ var
     Result:= '';
     PEnv:= JNIPointer;
     ClassH:= PEnv^.FindClass(PEnv, 'java/lang/Class');
-    if assigned(ClassH) then begin
+    if Assigned(ClassH) then begin
       aSignature:= '(Ljava/lang/String;)Ljava/lang/String;';
       MethodID:= PEnv^.GetMethodID(PEnv, ClassH, 'forName', PAnsiChar(aSignature));
       if MethodID <> nil then begin
         myParams:= TJavaParams.Create;
-        myParams.addString(aClassname);
+        myParams.addString(AClassname);
         Args:= PJValue(myParams.ArgPointer);
-        aValue.s:= PEnv^.CallObjectMethodA(PEnv, ClassH, MethodID, Args);
-        if assigned(aValue.s) then begin
-          Result:= '+OK ' + JToDString(aValue.s);
-          PEnv^.DeleteLocalRef(PEnv, aValue.s);
+        aValue.Str:= PEnv^.CallObjectMethodA(PEnv, ClassH, MethodID, Args);
+        if Assigned(aValue.Str) then begin
+          Result:= '+OK ' + JToDString(aValue.Str);
+          PEnv^.DeleteLocalRef(PEnv, aValue.Str);
         end else begin
           if PEnv^.ExceptionCheck(PEnv) then begin
             PEnv^.ExceptionDescribe(PEnv);
             Result:= '-ERR ' + myComJava2.ReadConsole;
           end;
-          Result:= Result + #$0D#$0A + '-ERR Class ' + aClassname + ' not found.';
+          Result:= Result + #$0D#$0A + '-ERR Class ' + AClassname + ' not found.';
         end;
         PEnv^.DeleteLocalRef(PEnv, ClassH);
         myParams.Destroy;
@@ -771,7 +771,7 @@ var
 
   function TJavaClass.Instantiate(params: TJavaParams): TJavaObject;
   begin
-    Result:= TJavaObject.Create(self, params)
+    Result:= TJavaObject.Create(Self, params)
   end;
 
   function TJavaClass.extends(JavaClass: TJavaClass): Boolean;
@@ -781,20 +781,20 @@ var
 
   function TJavaClass.getHandle: jobject;
   begin
-    result:= FGlobalHandle;
-    if result = nil then Result:= FLocalHandle;
+    Result:= FGlobalHandle;
+    if Result = nil then Result:= FLocalHandle;
   end;
 
   function TJavaClass.getTyp: string;
-    var p: integer; s: string;
+    var Posi: Integer; Str: string;
   begin
-    s:= FSig;
-    p:= Pos('/', s);
-    while p > 0 do begin
-      delete(s, 1, p);
-      p:= Pos('/', s);
+    Str:= FSig;
+    Posi:= Pos('/', Str);
+    while Posi > 0 do begin
+      Delete(Str, 1, Posi);
+      Posi:= Pos('/', Str);
     end;
-    Result:= s;
+    Result:= Str;
   end;
 
   function TJavaClass.getImportTyp: string;
@@ -805,9 +805,9 @@ var
   function TJavaClass.isValid: Boolean;
   begin
     if isGlobal then
-      result:= true
+      Result:= True
     else
-      result:= (FLocalHandle <> Nil) and (FPEnv = JNIPointer);
+      Result:= (FLocalHandle <> Nil) and (FPEnv = JNIPointer);
   end;
 
   procedure TJavaClass.setGlobal(B: Boolean);
@@ -826,24 +826,24 @@ var
 
   function TJavaClass.isGlobal: Boolean;
   begin
-    result:= FGlobalHandle <> nil;
+    Result:= FGlobalHandle <> nil;
   end;
 
-  function TJavaClass.hasSuperClass: boolean;
+  function TJavaClass.hasSuperClass: Boolean;
     var h: jclass;
   begin
     h:= FPEnv^.GetSuperClass(FPEnv, Self.handle);
-    Result:= assigned(h);
+    Result:= Assigned(h);
     FPEnv^.DeleteLocalRef(FPEnv, h);
   end;
 
   function TJavaClass.getSuperClass: TJavaClass;
-    var aClassname: string;
+    var AClassname: string;
   begin
-    aClassname:= getSuperClassname;
-    if aClassname = ''
+    AClassname:= getSuperClassname;
+    if AClassname = ''
       then Result:= nil
-      else Result:= myComJava2.GetClass(aClassname);
+      else Result:= myComJava2.GetClass(AClassname);
   end;
 
   function TJavaClass.getSuperClassname: string;
@@ -853,10 +853,10 @@ var
     ClassObjectH:= FPEnv^.GetSuperClass(FPEnv, Self.handle); // get the Class-object
     ClassH:= FPEnv^.FindClass(FPEnv, 'java/lang/Class');
     FMethodID:= FPEnv^.getMethodID(FPEnv, ClassH, 'getName', '()Ljava/lang/String;');
-    aValue.s:= FPEnv^.CallObjectMethod(FPEnv, ClassObjectH, FMethodID);
-    if assigned(aValue.s) then begin
-      Result:= JToDString(aValue.s);
-      FPEnv^.DeleteLocalRef(FPEnv, aValue.s);
+    aValue.Str:= FPEnv^.CallObjectMethod(FPEnv, ClassObjectH, FMethodID);
+    if Assigned(aValue.Str) then begin
+      Result:= JToDString(aValue.Str);
+      FPEnv^.DeleteLocalRef(FPEnv, aValue.Str);
     end else begin
       if FPEnv^.ExceptionCheck(FPEnv) then begin
         FPEnv^.ExceptionDescribe(FPEnv);
@@ -867,13 +867,13 @@ var
     FPEnv^.DeleteLocalRef(FPEnv, ClassH);
   end;
 
-  function TJavaClass.IsAbstract: boolean;
-    var ClassH: jclass; i: integer; FMethodID: jMethodID;
+  function TJavaClass.IsAbstract: Boolean;
+    var ClassH: jclass; Int: Integer; FMethodID: jMethodID;
   begin
     ClassH:= FPEnv^.FindClass(FPEnv, 'java/lang/Class');
     FMethodID:= FPEnv^.getMethodID(FPEnv, ClassH, 'getModifiers', '()I');
-    i:= FPEnv^.CallIntMethod(FPEnv, Self.Handle, FMethodID);
-    Result:= (i and 1024) = 1024;
+    Int:= FPEnv^.CallIntMethod(FPEnv, Self.Handle, FMethodID);
+    Result:= (Int and 1024) = 1024;
     FPEnv^.DeleteLocalRef(FPEnv, ClassH);
   end;
 
@@ -881,20 +881,20 @@ var
     var JavaLangClass, FieldClass: jclass;
         DeclaredFieldID: jMethodID;
 
-    function toString(o: jobject): string;
+    function ToString(o: jobject): string;
       var classH: jclass; FMethodID: jMethodID; objclass: jclass;
     begin
       ClassH:= FPEnv^.FindClass(FPEnv, 'java/lang/Class');
       FMethodID:= FPEnv^.getMethodID(FPEnv, ClassH, 'toString', '()Ljava/lang/String;');
       objClass:= FPEnv^.CallObjectMethod(FPEnv, o, FMethodID);
-      if assigned(objClass)               // TK;
+      if Assigned(objClass)               // TK;
         then Result:= JToDString(objClass)
         else Result:= 'UnknownClass';
     end;
 
     function checkException(obj: jObject): string;
     begin
-      if assigned(obj) then
+      if Assigned(obj) then
         Result:= '+OK'
       else
         if FPEnv^.ExceptionCheck(FPEnv) then begin
@@ -904,91 +904,91 @@ var
         else Result:= 'error?';
     end;
 
-    procedure ProcessAttribute(isInherited: boolean; ss, sgs: string);
-      var p: integer; s1, s2, s3, sg1: string;
+    procedure ProcessAttribute(isInherited: Boolean; ss, sgs: string);
+      var Posi: Integer; Str1, Str2, Str3, sg1: string;
           vis: TVisibility;
           Attr: TJavaAttribute;
 
-      function GetShortType(s: string): string;
-        var p: integer;
+      function GetShortType(Str: string): string;
+        var Posi: Integer;
       begin
-        delete(s, 1, LastDelimiter('.', s));
-        p:= Pos('<', s);
-        if p > 1 then
-          s:= copy(s, 1, p-1);
-        Result:= s;
+        Delete(Str, 1, LastDelimiter('.', Str));
+        Posi:= Pos('<', Str);
+        if Posi > 1 then
+          Str:= Copy(Str, 1, Posi-1);
+        Result:= Str;
       end;
 
 
     begin
       vis:= viPackage;
-      s1:= getNextPart(ss);
+      Str1:= getNextPart(ss);
       sg1:= getNextPart(sgs);
-      if IsVisibility(s1) then begin
-        vis:= String2Visibility(s1);
-        s1:= getNextPart(ss);
+      if IsVisibility(Str1) then begin
+        vis:= String2Visibility(Str1);
+        Str1:= getNextPart(ss);
         sg1:= getNextPart(sgs)
       end;
       if isInherited and (vis = viPrivate) and
-         (myComJava2.ShowInheritedPrivateAttributes =  '0') then exit;
+         (myComJava2.ShowInheritedPrivateAttributes =  '0') then Exit;
 
       Attr:= TJavaAttribute.Create(Self);
-      Attr.static_:= false;
-      Attr.final_ := false;
+      Attr.static_:= False;
+      Attr.final_ := False;
       Attr.vis    := vis;
-      while IsModifier(s1) do begin
-        if s1 = 'static' then
-          Attr.static_:= true;
-        if s1 = 'final' then
-          Attr.final_:= true;
-        s1:= getNextPart(ss);
+      while IsModifier(Str1) do begin
+        if Str1 = 'static' then
+          Attr.static_:= True;
+        if Str1 = 'final' then
+          Attr.final_:= True;
+        Str1:= getNextPart(ss);
         sg1:= getNextPart(sgs);
       end;
 
-      p:= Pos('$', s1);
+      Posi:= Pos('$', Str1);
       // java.util.LinkedList.java.util.LinkedList$Node<E>
       // sgs: private BinaryTree<ContentType>.BTNode<ContentType> BinaryTree.node is without $
       // ss : private BinaryTree$BTNode BinaryTree.node is with $
-      if p > 0 then begin
-        s2:= copy(s1, 1, p-1);
-        p:= length(s2) div 2;
-        s3:= System.copy(s2, 1, p);
-        s2:= System.copy(s2, p + 2, 255);
-        if s2 = s3 then delete(s1, 1, p+1);
+      if Posi > 0 then begin
+        Str2:= Copy(Str1, 1, Posi-1);
+        Posi:= Length(Str2) div 2;
+        Str3:= System.Copy(Str2, 1, Posi);
+        Str2:= System.Copy(Str2, Posi + 2, 255);
+        if Str2 = Str3 then Delete(Str1, 1, Posi+1);
       end;
-      p:= Pos('.', sg1);
-      while p > 0 do begin
-        delete(sg1, 1, p);
-        p:= Pos('.', sg1);
+      Posi:= Pos('.', sg1);
+      while Posi > 0 do begin
+        Delete(sg1, 1, Posi);
+        Posi:= Pos('.', sg1);
       end;
 
-      p:= Pos('<', sg1);
-      if p > 0 then begin
-        Attr.Generic:= copy(sg1, p, length(sg1));
-        sg1:= copy(s1, 1, p-1);
+      Posi:= Pos('<', sg1);
+      if Posi > 0 then begin
+        Attr.Generic:= Copy(sg1, Posi, Length(sg1));
+        sg1:= Copy(Str1, 1, Posi-1);
       end;
       if (sg1 = 'E') or (sg1 = 'K') or (sg1 = 'V')
         then Attr.Typ:= 'java.lang.Object'
-        else Attr.Typ:= s1;
+        else Attr.Typ:= Str1;
       Attr.Sig:= TypToSig(Attr.Typ);
       Attr.isObject:= (SigToNumType(Attr.Sig) in [ntObject, ntObjectArray]) and not Attr.Static_;
       Attr.Name:= GetShortType(ss);
-      FAttributesString:= FAttributesString + #4 + Attr.toString;
+      FAttributesString:= FAttributesString + #4 + Attr.ToString;
       FAttributesNames:= FAttributesNames + #4 + Attr.Name;
       FAttributesList.Add(Attr);
     end;
 
-    procedure GetInheritedAttributes(aJavaClass: TJavaClass; isInherited: boolean);
-      var Count, i: integer; aJavaClass2: TJavaClass;
+    procedure GetInheritedAttributes(aJavaClass: TJavaClass; isInherited: Boolean);
+      var Count, Int: Integer; aJavaClass2: TJavaClass;
           Arr, aAttribut: jobject;
           aValue1, aValue2: JValue;
           FMethodID1, FMethodID2: jMethodID;
-          s1, s2: string;
+          Str1, Str2: string;
     begin
       if aJavaClass.hasSuperClass then begin
         aJavaClass2:= aJavaClass.getSuperClass;
-        if assigned(aJavaClass2) then
-          GetInheritedAttributes(aJavaClass2, true);
+        if Assigned(aJavaClass2) then
+          GetInheritedAttributes(aJavaClass2, True);
       end;
       // get the array of declared attributes
       Arr:= FPEnv^.CallObjectMethod(FPEnv, aJavaClass.Handle, DeclaredFieldID);
@@ -1003,14 +1003,14 @@ var
       FieldClass := FPEnv^.FindClass(FPEnv, 'java/lang/reflect/Field');
       FMethodID1:= FPEnv^.GetMethodID(FPEnv, FieldClass, 'toString', '()Ljava/lang/String;');
       FMethodID2:= FPEnv^.GetMethodID(FPEnv, FieldClass, 'toGenericString', '()Ljava/lang/String;');
-      for i:= 0 to Count - 1 do begin
-        aAttribut:= FPEnv^.GetObjectArrayElement(FPEnv, Arr, i);
-        aValue1.s:= FPEnv^.CallObjectMethod(FPEnv, aAttribut, FMethodID1);
-        s1:= JToDString(aValue1.s);
-        aValue2.s:= FPEnv^.CallObjectMethod(FPEnv, aAttribut, FMethodID2);
-        s2:= JToDString(aValue2.s);
-        ProcessAttribute(isInherited, s1, s2);
-        FPEnv^.DeleteLocalRef(FPEnv, aValue1.s);
+      for Int:= 0 to Count - 1 do begin
+        aAttribut:= FPEnv^.GetObjectArrayElement(FPEnv, Arr, Int);
+        aValue1.Str:= FPEnv^.CallObjectMethod(FPEnv, aAttribut, FMethodID1);
+        Str1:= JToDString(aValue1.Str);
+        aValue2.Str:= FPEnv^.CallObjectMethod(FPEnv, aAttribut, FMethodID2);
+        Str2:= JToDString(aValue2.Str);
+        ProcessAttribute(isInherited, Str1, Str2);
+        FPEnv^.DeleteLocalRef(FPEnv, aValue1.Str);
         FPEnv^.DeleteLocalRef(FPEnv, aAttribut);
       end;
       // release ressources
@@ -1019,13 +1019,13 @@ var
     end;
 
   begin
-    if not assigned(FAttributesList) or (Pos('|', FAttributesString) = 0) then begin
-      FAttributesList:= TObjectList.create;
+    if not Assigned(FAttributesList) or (Pos('|', FAttributesString) = 0) then begin
+      FAttributesList:= TObjectList.Create;
       FAttributesString:= '';
       FAttributesNames:= '';
       JavaLangClass:= FPEnv^.FindClass(FPEnv, 'java/lang/Class');
       DeclaredFieldID:= FPEnv^.GetMethodID(FPEnv, JavaLangClass, 'getDeclaredFields', '()[Ljava/lang/reflect/Field;');
-      GetInheritedAttributes(Self, false);
+      GetInheritedAttributes(Self, False);
       FPEnv^.DeleteLocalRef(FPEnv, JavaLangClass);
     end;
     Result:= FAttributesString;
@@ -1033,14 +1033,14 @@ var
 
   function TJavaClass.getAttributeNames: string;
   begin
-    if not assigned(FAttributesList) then
+    if not Assigned(FAttributesList) then
       GetAttributes;
     Result:= FAttributesNames;
   end;
 
   function TJavaClass.getRefreshedAttributeNames: string;
   begin
-    if assigned(FAttributesList) then
+    if Assigned(FAttributesList) then
       FreeAndNil(FAttributesList);
     GetAttributes;
     Result:= FAttributesNames;
@@ -1048,11 +1048,11 @@ var
 
   // get public constructors only
   function TJavaClass.getConstructors: string;
-    var s: string; Count, i: integer;
+    var Str: string; Count, Int: Integer;
         ClassH, ClassC: jclass; Arr, aConstructor: jobject;
         aValue: JValue; FMethodID: jMethodID;
   begin
-    s:= '';
+    Str:= '';
     try
       // get the constructors-array
       ClassH   := FPEnv^.FindClass(FPEnv, 'java/lang/Class');
@@ -1063,18 +1063,18 @@ var
       // get a description of every constructor
       ClassC  := FPEnv^.FindClass(FPEnv, 'java/lang/reflect/Constructor');
       FMethodID:= FPEnv^.GetMethodID(FPEnv, ClassC, 'toGenericString', '()Ljava/lang/String;');
-      for i:= 0 to Count - 1 do begin
-        aConstructor:= FPEnv^.GetObjectArrayElement(FPEnv, Arr, i);
-        aValue.s:= FPEnv^.CallObjectMethod(FPEnv, aConstructor, FMethodID);
-        s:= s + #13#10 + JToDString(aValue.s);
-        FPEnv^.DeleteLocalRef(FPEnv, aValue.s);
+      for Int:= 0 to Count - 1 do begin
+        aConstructor:= FPEnv^.GetObjectArrayElement(FPEnv, Arr, Int);
+        aValue.Str:= FPEnv^.CallObjectMethod(FPEnv, aConstructor, FMethodID);
+        Str:= Str + #13#10 + JToDString(aValue.Str);
+        FPEnv^.DeleteLocalRef(FPEnv, aValue.Str);
         FPEnv^.DeleteLocalRef(FPEnv, aConstructor);
       end;
       // release ressources
       FPEnv^.DeleteLocalRef(FPEnv, Arr);
       FPEnv^.DeleteLocalRef(FPEnv, ClassC);
       FPEnv^.DeleteLocalRef(FPEnv, ClassH);
-      Result:= '+OK ' + s;
+      Result:= '+OK ' + Str;
     except
       on e: Exception do
         Result:= '-ERR ' + e.Message;
@@ -1082,11 +1082,11 @@ var
   end;
 
   function TJavaClass.getMethods(const _Static: string): string;
-    var Count, i: integer; s, s1: string;
+    var Count, Int: Integer; Str, Str1: string;
         ClassH, ClassC: jclass; Arr, aMethod: jobject;
         aValue: JValue; FMethodID: jMethodID;
   begin
-    s:= '';
+    Str:= '';
     try
       // get the methods-array
       ClassH   := FPEnv^.FindClass(FPEnv, 'java/lang/Class');
@@ -1097,26 +1097,26 @@ var
       // get a description of every method
       ClassC  := FPEnv^.FindClass(FPEnv, 'java/lang/reflect/Method');
       FMethodID:= FPEnv^.GetMethodID(FPEnv, ClassC, 'toGenericString', '()Ljava/lang/String;');
-      for i:= 0 to Count - 1 do begin
-        aMethod:= FPEnv^.GetObjectArrayElement(FPEnv, Arr, i);
-        aValue.s:= FPEnv^.CallObjectMethod(FPEnv, aMethod, FMethodID);
-        s1:= JToDString(aValue.s);
-        if s1 <> '' then begin
-          if (_Static = 'static') and (Pos('static', s1) > 0) then
-            s:= s + #13#10 + s1;
-          if (_Static = 'not static') and (Pos('static', s1) = 0) then
-            s:= s + #13#10 + s1;
+      for Int:= 0 to Count - 1 do begin
+        aMethod:= FPEnv^.GetObjectArrayElement(FPEnv, Arr, Int);
+        aValue.Str:= FPEnv^.CallObjectMethod(FPEnv, aMethod, FMethodID);
+        Str1:= JToDString(aValue.Str);
+        if Str1 <> '' then begin
+          if (_Static = 'static') and (Pos('static', Str1) > 0) then
+            Str:= Str + #13#10 + Str1;
+          if (_Static = 'not static') and (Pos('static', Str1) = 0) then
+            Str:= Str + #13#10 + Str1;
           if _Static = '' then
-            s:= s + #13#10 + s1;
+            Str:= Str + #13#10 + Str1;
         end;
-        FPEnv^.DeleteLocalRef(FPEnv, aValue.s);
+        FPEnv^.DeleteLocalRef(FPEnv, aValue.Str);
         FPEnv^.DeleteLocalRef(FPEnv, aMethod);
       end;
       // release ressources
       FPEnv^.DeleteLocalRef(FPEnv, Arr);
       FPEnv^.DeleteLocalRef(FPEnv, ClassC);
       FPEnv^.DeleteLocalRef(FPEnv, ClassH);
-      Result:= '+OK ' + s;
+      Result:= '+OK ' + Str;
     except
       on e: Exception do
         Result:= '-ERR ' + e.Message;
@@ -1124,14 +1124,14 @@ var
   end;
 
   function TJavaClass.getOuterClassSig: string;
-    var p: integer;
+    var Posi: Integer;
   begin
     Result:= '';
-    p:= Length(FSig);
-    while (p > 0) and (FSig[p] <> '$') do dec(p);
-    if p > 0 then begin
+    Posi:= Length(FSig);
+    while (Posi > 0) and (FSig[Posi] <> '$') do Dec(Posi);
+    if Posi > 0 then begin
       Result:= FSig;
-      delete(Result, p, length(Result));
+      Delete(Result, Posi, Length(Result));
       Result:= Result + ';';
     end;
   end;
@@ -1140,11 +1140,11 @@ var
 
   constructor TJavaObject.Create(jcl: TJavaClass; params: TJavaParams);
   var
-    Signature, s: string; uSig: UTF8String;
+    Signature, Str: string; uSig: UTF8String;
     MethodID: JMethodID;
     Args: PJValue;
   begin
-    s:= '';
+    Str:= '';
     FError:= '';
     Signature:= '';
     Args:= nil;
@@ -1167,16 +1167,16 @@ var
       if FLocalHandle = nil then begin
         if FPEnv^.ExceptionCheck(FPEnv) then begin
           FPEnv^.ExceptionDescribe(FPEnv);
-          s:= myComJava2.ReadConsole;
+          Str:= myComJava2.ReadConsole;
         end;
-        FError:= 'Could not create new instance of ' + ReplaceText(jcl.signature, '/', '.') + ' ' + s;
+        FError:= 'Could not create new instance of ' + ReplaceText(jcl.signature, '/', '.') + ' ' + Str;
       end
     end else begin
       if FPEnv^.ExceptionCheck(FPEnv) then begin
         FPEnv^.ExceptionDescribe(FPEnv);
-        s:= myComJava2.ReadConsole;
+        Str:= myComJava2.ReadConsole;
       end;
-      FError:= 'No such constructor ' + Signature + ' - ' + s;
+      FError:= 'No such constructor ' + Signature + ' - ' + Str;
     end;
   end;
 
@@ -1211,9 +1211,9 @@ var
       try
         if myMethod.FMethodID <> nil then begin
           aJValue:= myMethod.Call(myParams, aJavaObject);
-          FLocalHandle:= aJValue.s;
-          setGlobal(true);
-          if assigned(FLocalHandle) then begin
+          FLocalHandle:= aJValue.Str;
+          setGlobal(True);
+          if Assigned(FLocalHandle) then begin
             ClassH:= FPEnv^.FindClass(FPEnv, 'java/lang/Object');
             MethodID:= FPEnv^.GetMethodID(FPEnv, ClassH, 'getClass', '()Ljava/lang/Class;');
             objClass:= FPEnv^.CallObjectMethod(FPenv, FLocalHandle, MethodID);
@@ -1298,8 +1298,8 @@ var
       try
         if myMethod.FMethodID <> nil then begin
           aJValue:= myMethod.Call(myParams, aJavaObject);
-          if assigned(aJValue.s) then
-            FPEnv^.DeleteGlobalRef(FPEnv, aJValue.s);
+          if Assigned(aJValue.Str) then
+            FPEnv^.DeleteGlobalRef(FPEnv, aJValue.Str);
         end;
       finally
         FreeAndNil(myMethod);
@@ -1312,9 +1312,9 @@ var
   function TJavaObject.getPEnv: PJNIEnv;
   begin
     if isGlobal or (FPEnv = Nil) then 
-      result:= JNIPointer
+      Result:= JNIPointer
     else
-      result:= FPEnv;
+      Result:= FPEnv;
   end;
 
   function TJavaObject.Equals(JavaObject: TJavaObject): Boolean;
@@ -1322,7 +1322,7 @@ var
     PEnv: PJNIEnv;
   begin
     PEnv:= getPEnv;
-    if (not self.Valid) or (not JavaObject.Valid) then
+    if (not Self.Valid) or (not JavaObject.Valid) then
       raise EInvalidJNIHandle.Create('Attempt to use JNI local object reference in a different thread.');
     Result:= PEnv^.IsSameObject(PEnv, Handle, JavaObject.Handle);
   end;
@@ -1332,9 +1332,9 @@ var
     PEnv: PJNIEnv;
   begin
     PEnv:= GetPEnv;
-    if (not self.Valid) or (not JavaClass.Valid) then 
+    if (not Self.Valid) or (not JavaClass.Valid) then 
         raise EInvalidJNIHandle.Create('Attempt to use JNI local object reference in a different thread.');
-    result:= PEnv^.IsInstanceOf(PEnv, Handle, JavaClass.Handle);
+    Result:= PEnv^.IsInstanceOf(PEnv, Handle, JavaClass.Handle);
   end;
 
   procedure TJavaObject.setGlobal(B: Boolean);
@@ -1353,19 +1353,19 @@ var
 
   function TJavaObject.isGlobal: Boolean;
   begin
-    result:= FGlobalHandle <> Nil;
+    Result:= FGlobalHandle <> Nil;
   end;
     
   function TJavaObject.isValid: Boolean;
   begin
     if isGlobal
-      then result:= true
-      else result:= (FLocalHandle <> Nil) and (FPEnv = JNIPointer);
+      then Result:= True
+      else Result:= (FLocalHandle <> Nil) and (FPEnv = JNIPointer);
   end;
 
-  function TJavaObject.getAttributes: string;
+  function TJavaObject.GetAttributes: string;
   begin
-    Result:= FClass.getAttributes;
+    Result:= FClass.GetAttributes;
   end;
 
   function TJavaObject.getAttributeNames: string;
@@ -1380,23 +1380,23 @@ var
       Result:= FLocalHandle;
   end;
 
-  function TJavaObject.toString: string;
+  function TJavaObject.ToString: string;
     var
       toStringMethod: jmethodID;
-      js: jstring; s: string;
+      js: jstring; Str: string;
       PEnv: PJNIEnv;
   begin
     PEnv:= getPEnv;
     toStringMethod:= PEnv^.getMethodID(PEnv, classRef.Handle, 'toString', '()Ljava/lang/String;');
     js:= PEnv^.callObjectMethod(PEnv, Handle, toStringMethod);
     if js <> nil
-      then s:= JToDString(js)
+      then Str:= JToDString(js)
     else begin
       if PEnv^.ExceptionCheck(PEnv) then
         PEnv^.ExceptionDescribe(PEnv);
-      s:= myComJava2.ReadConsole;
+      Str:= myComJava2.ReadConsole;
     end;
-    Result:= s;
+    Result:= Str;
   end;
 
 { --- TJavaParams ------------------------------------------------------------ }
@@ -1408,23 +1408,23 @@ var
     
   destructor TJavaParams.Destroy;
   var
-    I: Integer;
+    Int: Integer;
   begin
-    for I:= 0 to RefList.Count - 1 do
-      TJavaVM.FreeRef(Reflist.Items[i], false);
+    for Int:= 0 to RefList.Count - 1 do
+      TJavaVM.FreeRef(Reflist.Items[Int], False);
     RefList.Free;
     if Length(FArgPointer) >0
-      then setLength(FArgPointer, 0);
+      then SetLength(FArgPointer, 0);
     inherited Destroy;
   end;
 
   procedure TJavaParams.Clear;
-    var I: Integer;
+    var Int: Integer;
   begin
-    for I:= 0 to RefList.Count - 1 do
-      TJavaVM.FreeRef(Reflist.Items[i], false);
+    for Int:= 0 to RefList.Count - 1 do
+      TJavaVM.FreeRef(Reflist.Items[Int], False);
     RefList.Clear;
-    setLength(FArgPointer, 0);
+    SetLength(FArgPointer, 0);
     FArgPointer:= nil;
     FSig:= '';
   end;
@@ -1481,27 +1481,27 @@ var
   begin
     addToArgBuffer(value);
     FSig:= FSig + 'Ljava/lang/String;';
-    RefList.add(value.s);
+    RefList.Add(value.Str);
   end;
 
-  procedure TJavaParams.addString(const s: string);
+  procedure TJavaParams.addString(const Str: string);
     var js: JString; val: JValue;
   begin
-    js:= createJString(s);
-    val.s:= js;
+    js:= createJString(Str);
+    val.Str:= js;
     addToArgBuffer(val);
     FSig:= FSig + 'Ljava/lang/String;';
-    RefList.add(js);
+    RefList.Add(js);
   end;
 
-  procedure TJavaParams.addStringAsObject(const s: string);
+  procedure TJavaParams.addStringAsObject(const Str: string);
     var js: JString; val: JValue;
   begin
-    js:= createJString(s);
-    val.s:= js;
+    js:= createJString(Str);
+    val.Str:= js;
     addToArgBuffer(val);
     FSig:= FSig + 'Ljava/lang/Object;';
-    RefList.add(js);
+    RefList.Add(js);
   end;
 
   procedure TJavaParams.addObjectSingle(value: TJavaObject; jcl: TJavaClass; aValue: TJavaValue);
@@ -1510,7 +1510,7 @@ var
     if Assigned(value)
       then jo:= value.Handle
       else jo:= nil;
-    val.s:= jo;
+    val.Str:= jo;
     addToArgBuffer(val);
     if Assigned(jcl)
       then FSig:= FSig + jcl.Signature
@@ -1523,7 +1523,7 @@ var
     if Assigned(value)
       then jo:= value.Handle
       else jo:= nil;
-    val.s:= jo;
+    val.Str:= jo;
     addToArgBuffer(val);
     if Assigned(value.ClassRef)
       then FSig:= FSig + value.ClassRef.Signature;
@@ -1533,125 +1533,125 @@ var
     var
       PEnv: PJNIEnv;
       jarr: jobjectarray;
-      i: Integer; val: JValue;
+      Int: Integer; val: JValue;
   begin
     PEnv:= JNIPointer;
     jarr:= PEnv^.NewObjectArray(PEnv, High(Arr)+1, jcl.Handle, arr[0].Handle);
-    for i:= 1 + Low(arr) to High(arr) do
-      PEnv^.setObjectArrayElement(PEnv, jarr, I, arr[I].Handle);
-    val.s:= jarr;
+    for Int:= 1 + Low(arr) to High(arr) do
+      PEnv^.setObjectArrayElement(PEnv, jarr, Int, arr[Int].Handle);
+    val.Str:= jarr;
     addToArgBuffer(val);
     FSig:= FSig + '[' + jcl.Signature;
-    RefList.add(jarr)
+    RefList.Add(jarr)
   end;
     
   procedure TJavaParams.addBooleanArray(arr: array of JBoolean);
     var jbarray: JBooleanArray; val: JValue;
   begin
     jbarray:= createJBooleanArray(arr);
-    val.s:= jbarray;
+    val.Str:= jbarray;
     addToArgBuffer(val);
     FSig:= FSig + '[Z';
-    RefList.add(jbarray)
+    RefList.Add(jbarray)
   end;
 
   procedure TJavaParams.addByteArray(arr: array of JByte);
     var jbarray: JByteArray; val: JValue;
   begin
     jbarray:= createJByteArray(arr);
-    val.s:= jbarray;
+    val.Str:= jbarray;
     addToArgBuffer(val);
     FSig:= FSig + '[B';
-    RefList.add(jbarray)
+    RefList.Add(jbarray)
   end;
 
   procedure TJavaParams.addCharArray(arr: array of JChar);
     var jcarray: JCharArray; val: JValue;
   begin
     jcarray:= createJCharArray(arr);
-    val.s:= jcarray;
+    val.Str:= jcarray;
     addToArgBuffer(val);
     FSig:= FSig + '[C';
-    RefList.add(jcarray)
+    RefList.Add(jcarray)
   end;
 
   procedure TJavaParams.addShortArray(arr: array of JShort);
     var jsarray: JShortArray; val: JValue;
   begin
     jsarray:= createJShortArray(arr);
-    val.s:= jsarray;
+    val.Str:= jsarray;
     addToArgBuffer(val);
     FSig:= FSig + '[S';
-    RefList.add(jsarray)
+    RefList.Add(jsarray)
   end;
 
   procedure TJavaParams.addIntArray(arr: array of JInt);
     var jiarray: JIntArray; val: JValue;
   begin
     jiarray:= createJIntArray(arr);
-    val.s:= jiarray;
+    val.Str:= jiarray;
     addToArgBuffer(val);
     FSig:= FSig + '[I';
-    RefList.add(jiarray)
+    RefList.Add(jiarray)
   end;
     
   procedure TJavaParams.addLongArray(arr: array of Jlong);
     var jlarray: JLongArray; val: JValue;
   begin
     jlarray:= createJLongArray(arr);
-    val.s:= jlarray;
+    val.Str:= jlarray;
     addToArgBuffer(val);
     FSig:= FSig + '[J';
-    RefList.add(jlarray)
+    RefList.Add(jlarray)
   end;
 
   procedure TJavaParams.addFloatArray(arr: array of JFloat);
     var  jfarray: JFloatArray; val: JValue;
   begin
     jfarray:= createJFloatArray(arr);
-    val.s:= jfarray;
+    val.Str:= jfarray;
     addToArgBuffer(val);
     FSig:= FSig + '[F';
-    RefList.add(jfarray)
+    RefList.Add(jfarray)
   end;
         
   procedure TJavaParams.addDoubleArray(arr: array of JDouble);
     var jdarray: JDoubleArray; val: JValue;
   begin
     jdarray:= createJDoubleArray(arr);
-    val.s:= jdarray;
+    val.Str:= jdarray;
     addToArgBuffer(val);
     FSig:= FSig + '[D';
-    RefList.add(jdarray)
+    RefList.Add(jdarray)
   end;
     
   procedure TJavaParams.addStringArray(strings: TStrings);
     var jsarray: JArray; val: JValue;
   begin
     jsarray:= createJStringArray(strings);
-    val.s:= jsarray;
+    val.Str:= jsarray;
     addToArgBuffer(val);
     FSig:= FSig + '[Ljava/lang/String;';
-    RefList.add(jsarray)
+    RefList.Add(jsarray)
   end;
 
   procedure TJavaParams.MakeObjectArray(Strings: TStrings; aJavaClass: TJavaClass; const Typ: string);
-    var ObjectArr: TJavaObjectArray; var s: string;
+    var ObjectArr: TJavaObjectArray; var Str: string;
   begin
-     ObjectArr:= CreateObjectArray(Strings, aJavaClass, Typ, FValid, s);
+     ObjectArr:= CreateObjectArray(Strings, aJavaClass, Typ, FValid, Str);
      addObjectArray(ObjectArr, aJavaClass);
   end;
 
   procedure TJavaParams.addToArgBuffer(val: JValue);
-    var i: integer;
+    var Int: Integer;
   begin
-    i:= Length(FArgPointer);
-    SetLength(FArgPointer, i + 1);
-    FArgPointer[i]:= val;
+    Int:= Length(FArgPointer);
+    SetLength(FArgPointer, Int + 1);
+    FArgPointer[Int]:= val;
   end;
 
   constructor TJavaParams.CreateMakeParams(const Signature, Params: string);
-    var i: integer;
+    var Int: Integer;
         aJavaValue: TJavaValue;
         aJavaObject: TJavaObject;
         aJavaClass:  TJavaClass;
@@ -1659,18 +1659,18 @@ var
         Typ: string;
   begin
     RefList:= TList.Create;
-    FValid:= true;
+    FValid:= True;
     SLSig:= Split('|', Signature);
     SLPar:= Split('|', Params);
 
-    for i:= 0 to SLSig.Count - 1 do begin
-      if SLSig[i] = '' then continue;
-      aJavaValue:= TJavaValue.create(SLPar[i], SLSig[i]);
+    for Int:= 0 to SLSig.Count - 1 do begin
+      if SLSig[Int] = '' then Continue;
+      aJavaValue:= TJavaValue.Create(SLPar[Int], SLSig[Int]);
       FValid:= aJavaValue.FValid;
       if not FValid then begin
         Error:= aJavaValue.Error;
         FreeAndNil(aJavaValue);
-        break;
+        Break;
       end;
 
       case aJavaValue.Kind of
@@ -1700,19 +1700,19 @@ var
             aJavaObject:= myComJava2.GetObject(aJavaValue.AsString);
             if (aJavaObject = nil) and (aJavaValue.AsString <> 'null') then begin
               FError:= myComJava2.LNGUnknownObject + ' "' + aJavaValue.AsString + '"';
-              FValid:= false; break;
+              FValid:= False; Break;
              end
             else begin
               Typ:= SigToTyp(aJavaValue.GetSig);
               aJavaClass:= myComJava2.GetClass(Typ);
               if (aJavaClass = nil) and (aJavaObject <> nil) then begin
                 FError:= myComJava2.LNGUnknownClass + ' "' + Typ + '"';
-                FValid:= false; break;
+                FValid:= False; Break;
               end;
               if Assigned(aJavaObject) and not aJavaObject.ClassRef.extends(aJavaClass) then begin
                 FError:= format(myComJava2.LNGIncompatibelTypes, [aJavaObject.ClassRef.Name, Typ]);
-                FValid:= false;
-                break;
+                FValid:= False;
+                Break;
               end else
                 addObjectSingle(aJavaObject, aJavaClass, aJavaValue);
             end;
@@ -1722,16 +1722,16 @@ var
             aJavaClass:= myComJava2.GetClass(Typ);
             if aJavaClass = nil then begin
               FError:= myComJava2.LNGUnknownClass + ' "' + Typ + '"';
-              FValid:= false;
+              FValid:= False;
               end
             else begin
               SLT:= aJavaValue.GetAsTStrings;
-              if assigned(SLT) then begin
+              if Assigned(SLT) then begin
                 MakeObjectArray(SLT, aJavaClass, Typ);
                 SLT.Free;
               end else begin
                 FError:= 'Invalid object array';
-                FValid:= false;
+                FValid:= False;
               end;
             end;
           end;
@@ -1754,7 +1754,7 @@ var
     PEnv: PJNIEnv;
     uName, uSig: UTF8String;
   begin
-    inherited create;
+    inherited Create;
     FClass:= cls;
     if params = nil
       then FSig:= '()'
@@ -1771,12 +1771,12 @@ var
       then FMethodID:= PEnv^.getStaticMethodID(PEnv, Fclass.Handle, PAnsiChar(uName), PAnsiChar(uSig))
       else FMethodID:= PEnv^.getMethodID(PEnv, Fclass.Handle, PAnsiChar(uName), PAnsiChar(uSig));
     if FMethodID = Nil then
-      FError:= 'Method ' + String(uName) + ' with signature ' + String(uSig) + ' not found.';
+      FError:= 'Method ' + string(uName) + ' with signature ' + string(uSig) + ' not found.';
   end;
 
-  constructor TJavaMethod.CreateVoid(cls: TJavaClass; const name: string);
+  constructor TJavaMethod.CreateVoid(cls: TJavaClass; const Name: string);
   begin
-    Create(cls, name, nonstatic, ntVoid, Nil, '');
+    Create(cls, Name, nonstatic, ntVoid, Nil, '');
   end;
 
   function TJavaMethod.Call(Params: TJavaParams; jobj: TJavaObject): JValue;
@@ -1794,43 +1794,43 @@ var
     if FMethodType = static then
       case FRetVal of
          ntVoid:   PEnv^.CallStaticVoidMethodA(PEnv, FClass.Handle, FmethodID, args);
-         ntBool:   result.z:= PEnv^.CallStaticBooleanMethodA(PEnv, FClass.Handle, FmethodID, args);
-         ntByte:   result.b:= PEnv^.CallStaticByteMethodA(PEnv, FClass.Handle, FmethodID, args);
-         ntChar:   result.c:= PEnv^.CallStaticCharMethodA(PEnv, FClass.Handle, FmethodID, args);
-         ntShort:  result.h:= PEnv^.CallStaticShortMethodA(PEnv, FClass.Handle, FmethodID, args);
-         ntInt:    result.i:= PEnv^.CallStaticIntMethodA(PEnv, FClass.Handle, FmethodID, args);
-         ntLong:   result.l:= PEnv^.CallStaticLongMethodA(PEnv, FClass.Handle, FmethodID, args);
-         ntFloat:  result.f:= PEnv^.CallStaticFloatMethodA(PEnv, FClass.Handle, FmethodID, args);
-         ntDouble: result.d:= PEnv^.CallStaticDoubleMethodA(PEnv, FClass.Handle, FmethodID, args);
-         else      result.s:= PEnv^.CallStaticObjectMethodA(PEnv, FClass.Handle, FmethodID, args);
+         ntBool:   Result.z:= PEnv^.CallStaticBooleanMethodA(PEnv, FClass.Handle, FmethodID, args);
+         ntByte:   Result.b:= PEnv^.CallStaticByteMethodA(PEnv, FClass.Handle, FmethodID, args);
+         ntChar:   Result.c:= PEnv^.CallStaticCharMethodA(PEnv, FClass.Handle, FmethodID, args);
+         ntShort:  Result.h:= PEnv^.CallStaticShortMethodA(PEnv, FClass.Handle, FmethodID, args);
+         ntInt:    Result.Int:= PEnv^.CallStaticIntMethodA(PEnv, FClass.Handle, FmethodID, args);
+         ntLong:   Result.l:= PEnv^.CallStaticLongMethodA(PEnv, FClass.Handle, FmethodID, args);
+         ntFloat:  Result.f:= PEnv^.CallStaticFloatMethodA(PEnv, FClass.Handle, FmethodID, args);
+         ntDouble: Result.d:= PEnv^.CallStaticDoubleMethodA(PEnv, FClass.Handle, FmethodID, args);
+         else      Result.Str:= PEnv^.CallStaticObjectMethodA(PEnv, FClass.Handle, FmethodID, args);
       end;
 
    if FMethodType = nonvirtual then
       case FRetVal of
          ntVoid:   PEnv^.CallNonvirtualVoidMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
-         ntBool:   result.z:= PEnv^.CallNonVirtualBooleanMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
-         ntByte:   result.b:= PEnv^.CallNonVirtualByteMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
-         ntChar:   result.c:= PEnv^.CallNonVirtualCharMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
-         ntShort:  result.h:= PEnv^.CallNonVirtualShortMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
-         ntInt:    result.i:= PEnv^.CallNonVirtualIntMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
-         ntLong:   result.l:= PEnv^.CallNonVirtualLongMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
-         ntFloat:  result.f:= PEnv^.CallNonVirtualFloatMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
-         ntDouble: result.d:= PEnv^.CallNonVirtualDoubleMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
-         else      result.s:= PEnv^.CallNonVirtualObjectMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
+         ntBool:   Result.z:= PEnv^.CallNonVirtualBooleanMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
+         ntByte:   Result.b:= PEnv^.CallNonVirtualByteMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
+         ntChar:   Result.c:= PEnv^.CallNonVirtualCharMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
+         ntShort:  Result.h:= PEnv^.CallNonVirtualShortMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
+         ntInt:    Result.Int:= PEnv^.CallNonVirtualIntMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
+         ntLong:   Result.l:= PEnv^.CallNonVirtualLongMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
+         ntFloat:  Result.f:= PEnv^.CallNonVirtualFloatMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
+         ntDouble: Result.d:= PEnv^.CallNonVirtualDoubleMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
+         else      Result.Str:= PEnv^.CallNonVirtualObjectMethodA(PEnv, obj, FClass.Handle, FmethodID, args);
       end;
    
    if FMethodType = nonstatic then
       case FRetVal of
          ntVoid:   PEnv^.CallVoidMethodA(PEnv, obj, FmethodID, args);
-         ntBool:   result.z:= PEnv^.CallBooleanMethodA(PEnv, obj, FmethodID, args);
-         ntByte:   result.b:= PEnv^.CallByteMethodA(PEnv, obj, FmethodID, args);
-         ntChar:   result.c:= PEnv^.CallCharMethodA(PEnv, obj, FmethodID, args);
-         ntShort:  result.h:= PEnv^.CallShortMethodA(PEnv, obj, FmethodID, args);
-         ntInt:    result.i:= PEnv^.CallIntMethodA(PEnv, obj, FmethodID, args);
-         ntLong:   result.l:= PEnv^.CallLongMethodA(PEnv, obj, FmethodID, args);
-         ntFloat:  result.f:= PEnv^.CallFloatMethodA(PEnv, obj, FmethodID, args);
-         ntDouble: result.d:= PEnv^.CallDoubleMethodA(PEnv, obj, FmethodID, args);
-         else      result.s:= PEnv^.CallObjectMethodA(PEnv, obj, FmethodID, args);
+         ntBool:   Result.z:= PEnv^.CallBooleanMethodA(PEnv, obj, FmethodID, args);
+         ntByte:   Result.b:= PEnv^.CallByteMethodA(PEnv, obj, FmethodID, args);
+         ntChar:   Result.c:= PEnv^.CallCharMethodA(PEnv, obj, FmethodID, args);
+         ntShort:  Result.h:= PEnv^.CallShortMethodA(PEnv, obj, FmethodID, args);
+         ntInt:    Result.Int:= PEnv^.CallIntMethodA(PEnv, obj, FmethodID, args);
+         ntLong:   Result.l:= PEnv^.CallLongMethodA(PEnv, obj, FmethodID, args);
+         ntFloat:  Result.f:= PEnv^.CallFloatMethodA(PEnv, obj, FmethodID, args);
+         ntDouble: Result.d:= PEnv^.CallDoubleMethodA(PEnv, obj, FmethodID, args);
+         else      Result.Str:= PEnv^.CallObjectMethodA(PEnv, obj, FmethodID, args);
       end;
     if PEnv^.ExceptionCheck(PEnv) then begin
       PEnv^.ExceptionDescribe(PEnv);
@@ -1838,7 +1838,7 @@ var
     end;
   end;
 
-  function TJavaMethod.IsValid: boolean;
+  function TJavaMethod.IsValid: Boolean;
   begin
     Result:= Assigned(FMethodID);
   end;
@@ -1848,19 +1848,19 @@ var
   constructor TJavaAttribute.Create(cls: TJavaClass);
   begin
     vis     := viPackage;
-    Static_ := false;
-    Final_  := false;
-    isObject:= false;
+    Static_ := False;
+    Final_  := False;
+    isObject:= False;
     Generic := '';
     Sig     := '';
     Name    := '';
     FClass  := cls;
-    if assigned(cls)
+    if Assigned(cls)
       then FPEnv:= cls.FPEnv
       else FPEnv:= nil;
   end;
 
-  function TJavaAttribute.toString: string;
+  function TJavaAttribute.ToString: string;
   begin
     Result:= VisibilityAsString(vis) + '|' + BoolToStr(Static_) + '|' + BoolToStr(Final_) + '|' + Generic + '|' + Typ + '|' + Name;
   end;
@@ -1879,14 +1879,14 @@ var
         'B': value.B:= FPEnv^.GetStaticByteField(FPEnv, FClass.Handle, FAttributeID);
         'C': value.C:= FPEnv^.GetStaticCharField(FPEnv, FClass.Handle, FAttributeID);
         'S': value.H:= FPEnv^.GetStaticShortField(FPEnv, FClass.Handle, FAttributeID);
-        'I': value.I:= FPEnv^.GetStaticIntField(FPEnv, FClass.Handle, FAttributeID);
+        'I': value.Int:= FPEnv^.GetStaticIntField(FPEnv, FClass.Handle, FAttributeID);
         'J': value.L:= FPEnv^.GetStaticLongField(FPEnv, FClass.Handle, FAttributeID);
         'F': value.F:= FPEnv^.GetStaticFloatField(FPEnv, FClass.Handle, FAttributeID);
         'D': value.D:= FPEnv^.GetStaticDoubleField(FPEnv, FClass.Handle, FAttributeID);
         'L',
-        '[': value.S:= FPEnv^.GetStaticObjectField(FPEnv, FClass.Handle, FAttributeID);
+        '[': value.Str:= FPEnv^.GetStaticObjectField(FPEnv, FClass.Handle, FAttributeID);
       end;
-      Result:= TJavaValue.create(value, SigToNumType(Sig), Sig);
+      Result:= TJavaValue.Create(value, SigToNumType(Sig), Sig);
     end
     else Result:= nil;
   end;
@@ -1905,14 +1905,14 @@ var
         'B': value.B:= FPEnv^.GetByteField(FPEnv, JObj.Handle, FAttributeID);
         'C': value.C:= FPEnv^.GetCharField(FPEnv, JObj.Handle, FAttributeID);
         'S': value.H:= FPEnv^.GetShortField(FPEnv, JObj.Handle, FAttributeID);
-        'I': value.I:= FPEnv^.GetIntField(FPEnv, JObj.Handle, FAttributeID);
+        'I': value.Int:= FPEnv^.GetIntField(FPEnv, JObj.Handle, FAttributeID);
         'J': value.L:= FPEnv^.GetLongField(FPEnv, JObj.Handle, FAttributeID);
         'F': value.F:= FPEnv^.GetFloatField(FPEnv, JObj.Handle, FAttributeID);
         'D': value.D:= FPEnv^.GetDoubleField(FPEnv, JObj.Handle, FAttributeID);
         'L',
-        '[': value.S:= FPEnv^.GetObjectField(FPEnv, JObj.Handle, FAttributeID);
+        '[': value.Str:= FPEnv^.GetObjectField(FPEnv, JObj.Handle, FAttributeID);
       end;
-      Result:= TJavaValue.create(value, SigToNumType(Sig), Sig);
+      Result:= TJavaValue.Create(value, SigToNumType(Sig), Sig);
     end
     else
       Result:= nil;
@@ -1948,11 +1948,11 @@ var
       'B': FPEnv^.SetStaticByteField(FPEnv, FClass.Handle, FAttributeID, Value.b);
       'C': FPEnv^.SetStaticCharField(FPEnv, FClass.Handle, FAttributeID, Value.c);
       'S': FPEnv^.SetStaticShortField(FPEnv, FClass.Handle, FAttributeID, Value.h);
-      'I': FPEnv^.SetStaticIntField(FPEnv, FClass.Handle, FAttributeID, Value.i);
+      'I': FPEnv^.SetStaticIntField(FPEnv, FClass.Handle, FAttributeID, Value.Int);
       'J': FPEnv^.SetStaticLongField(FPEnv, FClass.Handle, FAttributeID, Value.l);
       'F': FPEnv^.SetStaticFloatField(FPEnv, FClass.Handle, FAttributeID, Value.f);
       'D': FPEnv^.SetStaticDoubleField(FPEnv, FClass.Handle, FAttributeID, Value.d);
-      else FPEnv^.SetStaticObjectField(FPEnv, FClass.Handle, FAttributeID, Value.s);
+      else FPEnv^.SetStaticObjectField(FPEnv, FClass.Handle, FAttributeID, Value.Str);
     end;
   end;
 
@@ -1967,27 +1967,27 @@ var
       'B': FPEnv^.SetByteField(FPEnv, JObj.Handle, FAttributeID, Value.b);
       'C': FPEnv^.SetCharField(FPEnv, JObj.Handle, FAttributeID, Value.c);
       'S': FPEnv^.SetShortField(FPEnv, JObj.Handle, FAttributeID, Value.h);
-      'I': FPEnv^.SetIntField(FPEnv, JObj.Handle, FAttributeID, Value.i);
+      'I': FPEnv^.SetIntField(FPEnv, JObj.Handle, FAttributeID, Value.Int);
       'J': FPEnv^.SetLongField(FPEnv, JObj.Handle, FAttributeID, Value.l);
       'F': FPEnv^.SetFloatField(FPEnv, JObj.Handle, FAttributeID, Value.f);
       'D': FPEnv^.SetDoubleField(FPEnv, JObj.Handle, FAttributeID, Value.d);
-      else FPEnv^.SetObjectField(FPEnv, JObj.Handle, FAttributeID, Value.s);
+      else FPEnv^.SetObjectField(FPEnv, JObj.Handle, FAttributeID, Value.Str);
     end;
   end;
 
 {--- TJavaValue ------------------------------------------}
 
-constructor TJavaValue.create(aValue: JValue; Kind: TNumType; const Sig: string);
+constructor TJavaValue.Create(aValue: JValue; Kind: TNumType; const Sig: string);
 begin
   FPEnv:= JNIPointer;
   FValue:= aValue;
   FKind:= Kind;
   FString:= '_x_';
   FSig:= Sig;
-  FValid:= true;
+  FValid:= True;
 end;
 
-constructor TJavaValue.create(const Value, Sig: string);
+constructor TJavaValue.Create(const Value, Sig: string);
 begin
   FPEnv:= JNIPointer;
   FKind:= SigToNumType(Sig);
@@ -1996,16 +1996,16 @@ begin
   FValid:= SetFromString(Value);
 end;
 
-constructor TJavaValue.create(Typ: string);
+constructor TJavaValue.Create(Typ: string);
 begin
   // ntBoolArray ntIntArray
   FPEnv:= JNIPointer;
   FString:= '_x_';
   FSig:= TypToSig(Typ);
-  delete(Typ, 1, LastDelimiter('.', Typ));
+  Delete(Typ, 1, LastDelimiter('.', Typ));
   FillChar(FValue, SizeOf(FValue), #0);
   FKind:= TypToNumType(Typ);
-  FValid:= true;
+  FValid:= True;
 end;
 
 destructor TJavaValue.Destroy;
@@ -2021,409 +2021,409 @@ end;
 
 function TJavaValue.GetAsBoolArray: TJBooleanArray;
 begin
-  result:= StringToJBooleanArray(FString);
+  Result:= StringToJBooleanArray(FString);
 end;
 
 function TJavaValue.GetAsByteArray: TJByteArray;
 begin
-  result:= StringToJByteArray(FString);
+  Result:= StringToJByteArray(FString);
 end;
 
 function TJavaValue.GetAsCharArray: TJCharArray;
 begin
-  result:= StringToJCharArray(FString);
+  Result:= StringToJCharArray(FString);
 end;
 
 function TJavaValue.GetAsShortArray: TJShortArray;
 begin
-  result:= StringToJShortArray(FString);
+  Result:= StringToJShortArray(FString);
 end;
 
 function TJavaValue.GetAsIntArray: TJIntArray;
 begin
-  result:= StringToJIntArray(FString);
+  Result:= StringToJIntArray(FString);
 end;
 
 function TJavaValue.GetAsLongArray: TJLongArray;
 begin
-  result:= StringToJLongArray(FString);
+  Result:= StringToJLongArray(FString);
 end;
 
 function TJavaValue.GetAsFloatArray: TJFloatArray;
 begin
-  result:= StringToJFloatArray(FString);
+  Result:= StringToJFloatArray(FString);
 end;
 
 function TJavaValue.GetAsDoubleArray: TJDoubleArray;
 begin
-  result:= StringToJDoubleArray(FString);
+  Result:= StringToJDoubleArray(FString);
 end;
 
 function TJavaValue.GetAsTStrings: TStrings;
 begin
-  result:= StringToTStrings(FString);
+  Result:= StringToTStrings(FString);
 end;
 
-procedure TJavaValue.SetBoolArrayFromString(const s: string);
+procedure TJavaValue.SetBoolArrayFromString(const Str: string);
   var arr: TJBooleanArray;
 begin
-  FString:= s;
+  FString:= Str;
   arr:= GetAsBoolArray;
   if Assigned(arr)
-    then FValue.s:= createJBooleanArray(arr)
-    else FValue.s:= nil;
+    then FValue.Str:= createJBooleanArray(arr)
+    else FValue.Str:= nil;
   SetLength(arr, 0);
 end;
 
-procedure TJavaValue.SetByteArrayFromString(const s: string);
+procedure TJavaValue.SetByteArrayFromString(const Str: string);
   var arr: TJByteArray;
 begin
-  FString:= s;
+  FString:= Str;
   arr:= GetAsByteArray;
   if Assigned(arr)
-    then FValue.s:= createJByteArray(arr)
-    else FValue.s:= nil;
+    then FValue.Str:= createJByteArray(arr)
+    else FValue.Str:= nil;
   SetLength(arr, 0);
 end;
 
-procedure TJavaValue.SetCharArrayFromString(const s: string);
+procedure TJavaValue.SetCharArrayFromString(const Str: string);
   var arr: TJCharArray;
 begin
-  FString:= s;
+  FString:= Str;
   arr:= GetAsCharArray;
   if Assigned(arr)
-    then FValue.s:= createJCharArray(arr)
-    else FValue.s:= nil;
+    then FValue.Str:= createJCharArray(arr)
+    else FValue.Str:= nil;
   SetLength(arr, 0);
 end;
 
-procedure TJavaValue.SetShortArrayFromString(const s: string);
+procedure TJavaValue.SetShortArrayFromString(const Str: string);
   var arr: TJShortArray;
 begin
-  FString:= s;
+  FString:= Str;
   arr:= GetAsShortArray;
   if Assigned(arr)
-    then FValue.s:= createJShortArray(arr)
-    else FValue.s:= nil;
+    then FValue.Str:= createJShortArray(arr)
+    else FValue.Str:= nil;
   SetLength(arr, 0);
 end;
 
-procedure TJavaValue.SetIntArrayFromString(const s: string);
+procedure TJavaValue.SetIntArrayFromString(const Str: string);
   var arr: TJIntArray;
 begin
-  FString:= s;
+  FString:= Str;
   arr:= GetAsIntArray;
   if Assigned(arr)
-    then FValue.s:= createJIntArray(arr)
-    else FValue.s:= nil;
+    then FValue.Str:= createJIntArray(arr)
+    else FValue.Str:= nil;
   SetLength(arr, 0);
 end;
 
-procedure TJavaValue.SetLongArrayFromString(const s: string);
+procedure TJavaValue.SetLongArrayFromString(const Str: string);
   var arr: TJLongArray;
 begin
-  FString:= s;
+  FString:= Str;
   arr:= GetAsLongArray;
   if Assigned(arr)
-    then FValue.s:= createJLongArray(arr)
-    else FValue.s:= nil;
+    then FValue.Str:= createJLongArray(arr)
+    else FValue.Str:= nil;
   SetLength(arr, 0);
 end;
 
-procedure TJavaValue.SetFloatArrayFromString(const s: string);
+procedure TJavaValue.SetFloatArrayFromString(const Str: string);
   var arr: TJFloatArray;
 begin
-  FString:= s;
+  FString:= Str;
   arr:= GetAsFloatArray;
   if Assigned(arr)
-    then FValue.s:= createJFloatArray(arr)
-    else FValue.s:= nil;
+    then FValue.Str:= createJFloatArray(arr)
+    else FValue.Str:= nil;
   SetLength(arr, 0);
 end;
 
-procedure TJavaValue.SetDoubleArrayFromString(const s: string);
+procedure TJavaValue.SetDoubleArrayFromString(const Str: string);
   var arr: TJDoubleArray;
 begin
-  FString:= s;
+  FString:= Str;
   arr:= GetAsDoubleArray;
   if Assigned(arr)
-    then FValue.s:= createJDoubleArray(arr)
-    else FValue.s:= nil;
+    then FValue.Str:= createJDoubleArray(arr)
+    else FValue.Str:= nil;
   SetLength(arr, 0);
 end;
 
-procedure TJavaValue.SetStringArrayFromString(const s: string);
+procedure TJavaValue.SetStringArrayFromString(const Str: string);
   var arr: TStrings;
 begin
-  FString:= s;
+  FString:= Str;
   arr:= GetAsTStrings;
   if Assigned(arr) then begin
-    FValue.s:= createJStringArray(arr);
+    FValue.Str:= createJStringArray(arr);
     arr.Free;
     end
-  else FValue.s:= nil;
+  else FValue.Str:= nil;
 end;
 
-procedure TJavaValue.SetObjectArrayFromString(const s: string);
+procedure TJavaValue.SetObjectArrayFromString(const Str: string);
   var arr: TStrings; Typ: string; aJavaClass: TJavaClass;
-      ObjectArr: TJavaObjectArray; aValid: boolean;
+      ObjectArr: TJavaObjectArray; aValid: Boolean;
 begin
   Typ:= SigToTyp(FSig);
   aJavaClass:= myComJava2.GetClass(Typ);
-  arr:= StringToTStrings(s);
+  arr:= StringToTStrings(Str);
   if Assigned(arr) then begin
     ObjectArr:= CreateObjectArray(arr, aJavaClass, Typ, aValid, FString);
-    FValue.s:= CreateJObjectArray(ObjectArr, aJavaClass.Handle);
+    FValue.Str:= CreateJObjectArray(ObjectArr, aJavaClass.Handle);
     arr.Free;
     end
   else
-    FValue.s:= nil;
+    FValue.Str:= nil;
 end;
 
-function TJavaValue.StringToJBooleanArray(s: string): TJBooleanArray;
-  var arr: TJBooleanArray; p, n: integer; b: boolean; s1: string;
+function TJavaValue.StringToJBooleanArray(Str: string): TJBooleanArray;
+  var arr: TJBooleanArray; Posi, n: Integer; b: Boolean; Str1: string;
 begin
-  result:= nil;
-  if Pos('{', s) = 0 then exit;
-  s:= ReplaceText(ReplaceText(s, '{', ''), '}', '') + ',';
-  p:= Pos(',', s);
+  Result:= nil;
+  if Pos('{', Str) = 0 then Exit;
+  Str:= ReplaceText(ReplaceText(Str, '{', ''), '}', '') + ',';
+  Posi:= Pos(',', Str);
   n:= 0;
-  while p > 0 do begin
-    s1:= trim(copy(s, 1, p-1));
-    delete(s, 1, p);
-    if not SysUtils.TryStrToBool(s1, b) then b:= false;
-    inc(n);
+  while Posi > 0 do begin
+    Str1:= Trim(Copy(Str, 1, Posi-1));
+    Delete(Str, 1, Posi);
+    if not SysUtils.TryStrToBool(Str1, b) then b:= False;
+    Inc(n);
     SetLength(arr, n);
     arr[n-1]:= b;
-    p:= Pos(',', s);
+    Posi:= Pos(',', Str);
   end;
-  result:= arr;
+  Result:= arr;
 end;
 
-function TJavaValue.StringToJByteArray(s: string): TJByteArray;
-  var arr: TJByteArray; p, n, i: integer; s1: string;
+function TJavaValue.StringToJByteArray(Str: string): TJByteArray;
+  var arr: TJByteArray; Posi, n, Int: Integer; Str1: string;
 begin
-  result:= nil;
-  if Pos('{', s) = 0 then exit;
-  s:= ReplaceText(ReplaceText(s, '{', ''), '}', '') + ',';
-  p:= Pos(',', s);
+  Result:= nil;
+  if Pos('{', Str) = 0 then Exit;
+  Str:= ReplaceText(ReplaceText(Str, '{', ''), '}', '') + ',';
+  Posi:= Pos(',', Str);
   n:= 0;
-  while p > 0 do begin
-    s1:= trim(copy(s, 1, p-1));
-    delete(s, 1, p);
-    if not (TryStrToInt(s1, i) and (-128 <= i) and (i <= 127)) then i:= 0;
-    inc(n);
+  while Posi > 0 do begin
+    Str1:= Trim(Copy(Str, 1, Posi-1));
+    Delete(Str, 1, Posi);
+    if not (TryStrToInt(Str1, Int) and (-128 <= Int) and (Int <= 127)) then Int:= 0;
+    Inc(n);
     SetLength(arr, n);
-    arr[n-1]:= i;
-    p:= Pos(',', s);
+    arr[n-1]:= Int;
+    Posi:= Pos(',', Str);
   end;
-  result:= arr;
+  Result:= arr;
 end;
 
-function TJavaValue.StringToJCharArray(s: string): TJCharArray;
-  var arr: TJCharArray; p, n: integer; s1: string;
+function TJavaValue.StringToJCharArray(Str: string): TJCharArray;
+  var arr: TJCharArray; Posi, n: Integer; Str1: string;
 begin
-  result:= nil;
-  if Pos('{', s) = 0 then exit;
-  s:= ReplaceText(ReplaceText(s, '{', ''), '}', '') + ',';
-  p:= Pos(',', s);
+  Result:= nil;
+  if Pos('{', Str) = 0 then Exit;
+  Str:= ReplaceText(ReplaceText(Str, '{', ''), '}', '') + ',';
+  Posi:= Pos(',', Str);
   n:= 0;
-  while p > 0 do begin
-    s1:= trim(copy(s, 1, p-1)) + ' ';
-    delete(s, 1, p);
-    inc(n);
+  while Posi > 0 do begin
+    Str1:= Trim(Copy(Str, 1, Posi-1)) + ' ';
+    Delete(Str, 1, Posi);
+    Inc(n);
     SetLength(arr, n);
-    arr[n-1]:= Ord(s1[1]);
-    p:= Pos(',', s);
+    arr[n-1]:= Ord(Str1[1]);
+    Posi:= Pos(',', Str);
   end;
-  result:= arr;
+  Result:= arr;
 end;
 
-function TJavaValue.StringToJShortArray(s: string): TJShortArray;
-  var arr: TJShortArray; p, n, i: integer; s1: string;
+function TJavaValue.StringToJShortArray(Str: string): TJShortArray;
+  var arr: TJShortArray; Posi, n, Int: Integer; Str1: string;
 begin
-  result:= nil;
-  if Pos('{', s) = 0 then exit;
-  s:= ReplaceText(ReplaceText(s, '{', ''), '}', '') + ',';
-  p:= Pos(',', s);
+  Result:= nil;
+  if Pos('{', Str) = 0 then Exit;
+  Str:= ReplaceText(ReplaceText(Str, '{', ''), '}', '') + ',';
+  Posi:= Pos(',', Str);
   n:= 0;
-  while p > 0 do begin
-    s1:= trim(copy(s, 1, p-1));
-    delete(s, 1, p);
-    if not (TryStrToInt(s1, i) and (-32768 <= i) and (i <= 32767)) then i:= 0;
-    inc(n);
+  while Posi > 0 do begin
+    Str1:= Trim(Copy(Str, 1, Posi-1));
+    Delete(Str, 1, Posi);
+    if not (TryStrToInt(Str1, Int) and (-32768 <= Int) and (Int <= 32767)) then Int:= 0;
+    Inc(n);
     SetLength(arr, n);
-    arr[n-1]:= i;
-    p:= Pos(',', s);
+    arr[n-1]:= Int;
+    Posi:= Pos(',', Str);
   end;
-  result:= arr;
+  Result:= arr;
 end;
 
-function TJavaValue.StringToJIntArray(s: string): TJIntArray;
-  var arr: TJIntArray; p, n, i: integer; s1: string;
+function TJavaValue.StringToJIntArray(Str: string): TJIntArray;
+  var arr: TJIntArray; Posi, n, Int: Integer; Str1: string;
 begin
-  result:= nil;
-  if Pos('{', s) = 0 then exit;
-  s:= ReplaceText(ReplaceText(s, '{', ''), '}', '') + ',';
-  p:= Pos(',', s);
+  Result:= nil;
+  if Pos('{', Str) = 0 then Exit;
+  Str:= ReplaceText(ReplaceText(Str, '{', ''), '}', '') + ',';
+  Posi:= Pos(',', Str);
   n:= 0;
-  while p > 0 do begin
-    s1:= trim(copy(s, 1, p-1));
-    delete(s, 1, p);
-    if not TryStrToInt(s1, i) then i:= 0;
-    inc(n);
+  while Posi > 0 do begin
+    Str1:= Trim(Copy(Str, 1, Posi-1));
+    Delete(Str, 1, Posi);
+    if not TryStrToInt(Str1, Int) then Int:= 0;
+    Inc(n);
     SetLength(arr, n);
-    arr[n-1]:= i;
-    p:= Pos(',', s);
+    arr[n-1]:= Int;
+    Posi:= Pos(',', Str);
   end;
-  result:= arr;
+  Result:= arr;
 end;
 
-function TJavaValue.StringToJLongArray(s: string): TJLongArray;
-  var arr: TJLongArray; p, n: integer; i: int64; s1: string;
+function TJavaValue.StringToJLongArray(Str: string): TJLongArray;
+  var arr: TJLongArray; Posi, n: Integer; Int: int64; Str1: string;
 begin
-  result:= nil;
-  if Pos('{', s) = 0 then exit;
-  s:= ReplaceText(ReplaceText(s, '{', ''), '}', '') + ',';
-  p:= Pos(',', s);
+  Result:= nil;
+  if Pos('{', Str) = 0 then Exit;
+  Str:= ReplaceText(ReplaceText(Str, '{', ''), '}', '') + ',';
+  Posi:= Pos(',', Str);
   n:= 0;
-  while p > 0 do begin
-    s1:= trim(copy(s, 1, p-1));
-    delete(s, 1, p);
-    if not TryStrToInt64(s1, i) then i:= 0;
-    inc(n);
+  while Posi > 0 do begin
+    Str1:= Trim(Copy(Str, 1, Posi-1));
+    Delete(Str, 1, Posi);
+    if not TryStrToInt64(Str1, Int) then Int:= 0;
+    Inc(n);
     SetLength(arr, n);
-    arr[n-1]:= i;
-    p:= Pos(',', s);
+    arr[n-1]:= Int;
+    Posi:= Pos(',', Str);
   end;
-  result:= arr;
+  Result:= arr;
 end;
 
-function TJavaValue.StringToJFloatArray(s: string): TJFloatArray;
-  var arr: TJFloatArray; p, n: integer; f: double; s1: string;
+function TJavaValue.StringToJFloatArray(Str: string): TJFloatArray;
+  var arr: TJFloatArray; Posi, n: Integer; f: double; Str1: string;
 begin
-  result:= nil;
-  if Pos('{', s) = 0 then exit;
-  s:= ReplaceText(ReplaceText(s, '{', ''), '}', '') + ',';
-  p:= Pos(',', s);
+  Result:= nil;
+  if Pos('{', Str) = 0 then Exit;
+  Str:= ReplaceText(ReplaceText(Str, '{', ''), '}', '') + ',';
+  Posi:= Pos(',', Str);
   n:= 0;
-  while p > 0 do begin
-    s1:= trim(copy(s, 1, p-1));
-    delete(s, 1, p);
-    if not TryStrToFloat(s1, f) then f:= 0.0;
-    inc(n);
-    SetLength(arr, n);
-    arr[n-1]:= f;
-    p:= Pos(',', s);
-  end;
-  result:= arr;
-end;
-
-function TJavaValue.StringToJDoubleArray(s: string): TJDoubleArray;
-  var arr: TJDoubleArray; p, n: integer; f: double; s1: string;
-begin
-  result:= nil;
-  if Pos('{', s) = 0 then exit;
-  s:= ReplaceText(ReplaceText(s, '{', ''), '}', '') + ',';
-  p:= Pos(',', s);
-  n:= 0;
-  while p > 0 do begin
-    s1:= trim(copy(s, 1, p-1));
-    delete(s, 1, p);
-    if not TryStrToFloat(s1, f) then f:= 0.0;
-    inc(n);
+  while Posi > 0 do begin
+    Str1:= Trim(Copy(Str, 1, Posi-1));
+    Delete(Str, 1, Posi);
+    if not TryStrToFloat(Str1, f) then f:= 0.0;
+    Inc(n);
     SetLength(arr, n);
     arr[n-1]:= f;
-    p:= Pos(',', s);
+    Posi:= Pos(',', Str);
   end;
-  result:= arr;
+  Result:= arr;
 end;
 
-function TJavaValue.StringToTStrings(s: string): TStrings;
-  var p: integer; s1: string;
+function TJavaValue.StringToJDoubleArray(Str: string): TJDoubleArray;
+  var arr: TJDoubleArray; Posi, n: Integer; f: double; Str1: string;
 begin
-  result:= nil;
-  if Pos('{', s) = 0 then exit;
-  result:= TStringList.Create;
-  s:= ReplaceText(s, '"', '');
-  s:= ReplaceText(ReplaceText(s, '{', ''), '}', '') + ',';
-  p:= Pos(',', s);
-  while p > 0 do begin
-    s1:= trim(copy(s, 1, p-1));
-    delete(s, 1, p);
-    result.add(ResolveString(s1));
-    p:= Pos(',', s);
+  Result:= nil;
+  if Pos('{', Str) = 0 then Exit;
+  Str:= ReplaceText(ReplaceText(Str, '{', ''), '}', '') + ',';
+  Posi:= Pos(',', Str);
+  n:= 0;
+  while Posi > 0 do begin
+    Str1:= Trim(Copy(Str, 1, Posi-1));
+    Delete(Str, 1, Posi);
+    if not TryStrToFloat(Str1, f) then f:= 0.0;
+    Inc(n);
+    SetLength(arr, n);
+    arr[n-1]:= f;
+    Posi:= Pos(',', Str);
+  end;
+  Result:= arr;
+end;
+
+function TJavaValue.StringToTStrings(Str: string): TStrings;
+  var Posi: Integer; Str1: string;
+begin
+  Result:= nil;
+  if Pos('{', Str) = 0 then Exit;
+  Result:= TStringList.Create;
+  Str:= ReplaceText(Str, '"', '');
+  Str:= ReplaceText(ReplaceText(Str, '{', ''), '}', '') + ',';
+  Posi:= Pos(',', Str);
+  while Posi > 0 do begin
+    Str1:= Trim(Copy(Str, 1, Posi-1));
+    Delete(Str, 1, Posi);
+    Result.Add(ResolveString(Str1));
+    Posi:= Pos(',', Str);
   end;
 end;
 
-function TryStrToInt64(s: string; var l: int64): boolean;
-  var i, sign: integer; c: char;
+function TryStrToInt64(Str: string; var l: int64): Boolean;
+  var Int, sign: Integer; c: Char;
 begin
-  Result:= false;
-  s:= trim(s);
+  Result:= False;
+  Str:= Trim(Str);
   l:= 0;
-  if length(s) > 0 then begin
-    c:= s[1];
+  if Length(Str) > 0 then begin
+    c:= Str[1];
     sign:= +1;
-    if CharInset(c, ['+', '-']) then begin
-      delete(s, 1, 1);
+    if CharInSet(c, ['+', '-']) then begin
+      Delete(Str, 1, 1);
       if c = '-' then sign:= -1;
     end;
-    if (sign = -1) and (length(s) = 19 ) and (s > '9223372036854775808') then exit;
-    if (sign = +1) and (length(s) = 19) and (s > '9223372036854775807') then exit;
-    if length(s) > 19 then exit;
+    if (sign = -1) and (Length(Str) = 19 ) and (Str > '9223372036854775808') then Exit;
+    if (sign = +1) and (Length(Str) = 19) and (Str > '9223372036854775807') then Exit;
+    if Length(Str) > 19 then Exit;
     
-    for i:= 1 to length(s) do begin
-      c:= s[i];
+    for Int:= 1 to Length(Str) do begin
+      c:= Str[Int];
       if ('0' <= c) and (c <= '9')
         then l:= l * 10 + Ord(c) - Ord('0')
-        else exit;
+        else Exit;
     end;
     l:= sign * l;
-    Result:= true;
+    Result:= True;
   end;
 end;
 
 function TJavaValue.AsFormattedString: string;
-  var s: string;
+  var Str: string;
 begin
   FString:= '_x_';
-  s:= GetAsString;
-  Result:= s;
+  Str:= GetAsString;
+  Result:= Str;
 end;
 
 function TJavaValue.GetAsString: string;
   var SL: TStringList;
       aJavaObject: TJavaObject;
-      i, anz: integer; zahl: int64; s: string;
-      b: boolean; ch: char; by: byte; sh: short; dou: double;
+      Int, anz: Integer; zahl: int64; Str: string;
+      b: Boolean; ch: Char; by: byte; sh: short; dou: double;
 
-  function IntToOkt(i: integer): string;
-    var s: string; r: integer;
+  function IntToOkt(Int: Integer): string;
+    var Str: string; r: Integer;
   begin
-    while i > 0 do begin
-      r:= i mod 8;
-      s:= IntTostr(r) + s;
-      i:= i div 8;
+    while Int > 0 do begin
+      r:= Int mod 8;
+      Str:= IntToStr(r) + Str;
+      Int:= Int div 8;
     end;
-    Result:= s;
+    Result:= Str;
   end;
 
   function createNewObject(obj: JObject): string;
     var aJavaClass: TJavaClass; aClass: jClass; aJavaObject: TJavaObject;
-        s: string;
+        Str: string;
   begin
     aClass:= FPEnv^.GetObjectClass(FPEnv, obj);
     aJavaClass:= myComJava2.ClassToJavaClass(aClass);
-    if assigned(aJavaClass) then begin
+    if Assigned(aJavaClass) then begin
       aJavaObject:= TJavaObject.CreateWithHandle(aJavaClass, obj);
-      aJavaObject.Global:= true;
-      s:= myComJava2.getNewObjectName(WithoutArray(GetShortType(aJavaClass.Name)));
-      if myComJava2.ObjectList.IndexOf(s) = -1 then begin
-        myComJava2.ObjectList.AddObject(s, aJavaObject);
-        aJavaObject.AddToProperties(s);
+      aJavaObject.Global:= True;
+      Str:= myComJava2.getNewObjectName(WithoutArray(GetShortType(aJavaClass.Name)));
+      if myComJava2.ObjectList.IndexOf(Str) = -1 then begin
+        myComJava2.ObjectList.AddObject(Str, aJavaObject);
+        aJavaObject.AddToProperties(Str);
       end;
-      Result:= s;
+      Result:= Str;
     end else
       Result:= '';
   end;
@@ -2432,11 +2432,11 @@ function TJavaValue.GetAsString: string;
     var aJavaClass: TJavaClass;
         jc, arr, obj: JObject;
         SLT: TStrings; SL: TStringList;
-        i, j: integer;
-        sig: char;
+        Int, j: Integer;
+        sig: Char;
         addr: NativeInt;
   begin
-    if assigned(ob) then begin
+    if Assigned(ob) then begin
       Result:= '{';
       anz:= FPEnv^.GetArrayLength(FPEnv, ob);
       jc:= FPEnv^.GetObjectClass(FPEnv, ob);
@@ -2444,101 +2444,101 @@ function TJavaValue.GetAsString: string;
       try
         sig:= aJavaClass.FSig[2];
         if sig = '[' then begin  // array of array
-          for i:= 0 to anz-1 do begin
-            arr:= FPEnv^.GetObjectArrayElement(FPEnv, ob, i);
+          for Int:= 0 to anz-1 do begin
+            arr:= FPEnv^.GetObjectArrayElement(FPEnv, ob, Int);
             Result:= Result + getArrayAsString(arr) + ', ';
             FPEnv^.DeleteLocalRef(FPENv, arr);
           end;
-          Result:= copy(Result, 1, length(Result)-2) + '}';
+          Result:= Copy(Result, 1, Length(Result)-2) + '}';
         end else if Pos(sig, 'ZCBSIJFD') > 0 then begin // primitive
           arr:= FPEnv^.GetPrimitiveArrayCritical(FPEnv, ob, nil);
           addr:= NativeInt(arr);
-          for i:= 0 to anz - 1 do
+          for Int:= 0 to anz - 1 do
             case sig of
               'Z': begin
                   b:= Boolean(Pointer(addr)^);
-                  Result:= Result + BoolToStr(b, true) + ', ';
-                  inc(addr, sizeof(jBoolean));
+                  Result:= Result + BoolToStr(b, True) + ', ';
+                  Inc(addr, sizeof(jBoolean));
                 end;
               'B': begin
                   by:= Byte(Pointer(addr)^);
                   Result:= Result + IntToStr(by) + ', ';
-                  inc(addr, sizeof(Byte));
+                  Inc(addr, sizeof(Byte));
                 end;
               'C': begin
                   ch:= Char(Pointer(addr)^);
                   if ch = #0
                     then Result:= Result + '\0, '
                     else Result:= Result + ch + ', ';
-                  inc(addr, sizeof(JChar));
+                  Inc(addr, sizeof(JChar));
                 end;
               'S': begin
                   sh:= Short(Pointer(addr)^);
                   Result:= Result + IntToStr(sh) + ', ';
-                  inc(addr, sizeof(Short));
+                  Inc(addr, sizeof(Short));
                 end;
               'I': begin
                   zahl:= Int32(Pointer(addr)^);
                   Result:= Result + IntToStr(zahl) + ', ';
-                  inc(addr, sizeof(Int32));
+                  Inc(addr, sizeof(Int32));
                 end;
               'J': begin
                   zahl:= Int64(Pointer(addr)^);
                   Result:= Result + IntToStr(zahl) + ', ';
-                  inc(addr, sizeof(Int64));
+                  Inc(addr, sizeof(Int64));
                 end;
               'F': begin
                   dou:= Single(Pointer(addr)^);
                   Result:= Result + ReplaceText(FloatToStr(dou), ',', '.') + ', ';
-                  inc(addr, sizeof(Single));
+                  Inc(addr, sizeof(Single));
                 end;
               'D': begin
                   dou:= Double(Pointer(addr)^);
                   Result:= Result + ReplaceText(FloatToStr(dou), ',', '.') + ', ';
-                  inc(addr, sizeof(Double));
+                  Inc(addr, sizeof(Double));
                 end;
             end;
-          Result:= copy(Result, 1, length(Result)-2) + '}';
+          Result:= Copy(Result, 1, Length(Result)-2) + '}';
           FPEnv^.ReleasePrimitiveArrayCritical(FPEnv, ob, arr, 0);
         end else if aJavaClass.FSig = '[Ljava/lang/String;' then begin
           SLT:= JToTStrings(ob);
-          for i:= 0 to SLT.Count - 1 do
-            if SLT.Strings[i] = 'null'
+          for Int:= 0 to SLT.Count - 1 do
+            if SLT.Strings[Int] = 'null'
               then Result:= Result + 'null, '
-              else Result:= Result + '"' + SLT.Strings[i] + '", ';
-          Result:= Copy(Result, 1, length(Result)-2) + '}';
+              else Result:= Result + '"' + SLT.Strings[Int] + '", ';
+          Result:= Copy(Result, 1, Length(Result)-2) + '}';
           SLT.Free;
         end else begin
           SL:= myComJava2.ObjectList;
-          for i:= 0 to anz - 1 do begin
-            s:= '';
-            obj:= FPEnv^.GetObjectArrayElement(FPEnv, ob, i);
+          for Int:= 0 to anz - 1 do begin
+            Str:= '';
+            obj:= FPEnv^.GetObjectArrayElement(FPEnv, ob, Int);
             if obj = nil then
-              s:= ', null'
+              Str:= ', null'
             else begin
               try
                 for j:= 0 to SL.Count - 1 do begin
                   aJavaObject:= SL.Objects[j] as TJavaObject;
                   if FPEnv^.IsSameObject(FPEnv, obj, aJavaObject.Handle) then begin
-                    s:= ', ' + SL.Strings[j];
-                    break;
+                    Str:= ', ' + SL.Strings[j];
+                    Break;
                   end;
                 end;
               except
-                s:= aJavaObject.toString;
+                Str:= aJavaObject.ToString;
                 for j:= 0 to SL.Count - 1 do begin
                   aJavaObject:= SL.Objects[j] as TJavaObject;
-                  if aJavaObject.toString = s then begin
-                    s:= ', ' + SL.Strings[j];
-                    break;
+                  if aJavaObject.ToString = Str then begin
+                    Str:= ', ' + SL.Strings[j];
+                    Break;
                   end;
                 end;
-                s:= ', ' + aJavaObject.toString;
+                Str:= ', ' + aJavaObject.ToString;
               end;
-              if s = '' then
-                s:= ', ' + createNewObject(obj);
+              if Str = '' then
+                Str:= ', ' + createNewObject(obj);
             end;
-            Result:= Result + s;
+            Result:= Result + Str;
           end;
           Result:= '{' + Right(Result, 4) + '}';
         end;
@@ -2553,7 +2553,7 @@ begin
   if FString = '_x_' then
     case FKind of
       ntVoid : FString:= '';
-      ntBool : FString:= LowerCase(BoolToStr(Value.z, true));
+      ntBool : FString:= LowerCase(BoolToStr(Value.z, True));
       ntByte : FString:= IntToStr(Value.b);
       ntChar : begin
                  if Value.c = Ord('\') then
@@ -2576,55 +2576,55 @@ begin
                  FString:= '''' + FString + '''';
                end;
       ntShort: FString:= IntToStr(Value.h);
-      ntInt  : FString:= IntToStr(Value.i);
+      ntInt  : FString:= IntToStr(Value.Int);
       ntLong : FString:= IntToStr(Value.l);
       ntFloat: FString:= ReplaceText(FloatToStr(Value.f), ',', '.');
       ntDouble: FString:= ReplaceText(FloatToStr(Value.d), ',', '.');
-      ntString: if Value.s = nil // default value of a single string is "", not null
-                  then begin Result:= ''; exit; end
-                  else FString:= '"' + JToDString(Value.s) + '"';
+      ntString: if Value.Str = nil // default value of a single string is "", not null
+                  then begin Result:= ''; Exit; end
+                  else FString:= '"' + JToDString(Value.Str) + '"';
       ntObject: begin
-          if Value.s = nil
-            then s:= 'null'
+          if Value.Str = nil
+            then Str:= 'null'
           else begin
-            s:= '';
+            Str:= '';
             SL:= myComJava2.ObjectList;
-            for i:= 0 to SL.Count - 1 do begin
-              aJavaObject:= SL.Objects[i] as TJavaObject;
-              if FPEnv^.IsSameObject(FPEnv, Value.s, aJavaObject.Handle) then begin
-                s:= SL.Strings[i];
-                break;
+            for Int:= 0 to SL.Count - 1 do begin
+              aJavaObject:= SL.Objects[Int] as TJavaObject;
+              if FPEnv^.IsSameObject(FPEnv, Value.Str, aJavaObject.Handle) then begin
+                Str:= SL.Strings[Int];
+                Break;
               end;
             end;
-            if s = '' then
-              s:= createNewObject(Value.s);
+            if Str = '' then
+              Str:= createNewObject(Value.Str);
           end;
-          FString:= s;
+          FString:= Str;
         end;
       else
-        FString:= getArrayAsString(Value.s);
+        FString:= getArrayAsString(Value.Str);
     end;
   Result:= ReplaceText(FString, #$A, '\n');
 end;
 
-function TJavaValue.SetFromString(s: string): boolean;
-  var i: integer;
+function TJavaValue.SetFromString(Str: string): Boolean;
+  var Int: Integer;
       aJavaObject: TJavaObject;
       aJavaClass: TJavaClass;
       Typ: string;
-      l: int64; d: double; c: char;
+      l: int64; d: double; c: Char;
 begin
-  Result:= true;
-  if (FString <> '_x_') and (FString = s) then exit;
+  Result:= True;
+  if (FString <> '_x_') and (FString = Str) then Exit;
   case FKind of
     ntBool : begin
-                s:= LowerCase(s);
-                if s = 'true'  then FValue.z:= true
-                else if s = 'false' then FValue.z:= false
-                else s:= FString;
+                Str:= LowerCase(Str);
+                if Str = 'true'  then FValue.z:= True
+                else if Str = 'false' then FValue.z:= False
+                else Str:= FString;
               end;
-    ntChar : if (copy(s, 1, 1) = '\') and (length(s) > 1) then begin
-                c:= s[2];
+    ntChar : if (Copy(Str, 1, 1) = '\') and (Length(Str) > 1) then begin
+                c:= Str[2];
                 case c of
                   'b': FValue.c:= 8;
                   't': FValue.c:= 9;
@@ -2635,88 +2635,88 @@ begin
                   '''': FValue.c:= Ord('''');
                   '\': FValue.c:= Ord('\');
                   else begin
-                    if TrystrToInt(Right(s, 2), i) and (i < 256)
-                      then FValue.c:= i
+                    if TrystrToInt(Right(Str, 2), Int) and (Int < 256)
+                      then FValue.c:= Int
                       else FValue.c:= 0;
                   end;
                 end
               end
               else begin
-                s:= copy(s, 1, 1);
-                if length(s) = 1 then FValue.c:= Ord(s[1]) else s:= FString;
+                Str:= Copy(Str, 1, 1);
+                if Length(Str) = 1 then FValue.c:= Ord(Str[1]) else Str:= FString;
               end;
-    ntByte : if TryStrToInt(s, i) and (-128 <= i) and (i <= 127)
-                then FValue.b:= i else s:= FString;
-    ntShort: if TryStrToInt(s, i) and (-32768 <= i) and (i <= 32767)
-                then FValue.h:= i else s:= FString;
-    ntInt  : if TryStrToInt(s, i) // and (-2147483648 <= i) and (i <= 2147483647)
-                then FValue.i:= i else s:= FString;
-    ntLong : if TryStrToInt64(s, l) then FValue.l:= l else s:= FString;
-    ntFloat: if TryStrToFloat(s, d) then FValue.f:= d else s:= FString;
-    ntDouble: if TryStrToFloat(s, d) then FValue.d:= d else s:= FString;
-    ntString: if s = 'null'
-                then FValue.s:= nil
-                else FValue.s:= createJString(ResolveString(s));
+    ntByte : if TryStrToInt(Str, Int) and (-128 <= Int) and (Int <= 127)
+                then FValue.b:= Int else Str:= FString;
+    ntShort: if TryStrToInt(Str, Int) and (-32768 <= Int) and (Int <= 32767)
+                then FValue.h:= Int else Str:= FString;
+    ntInt  : if TryStrToInt(Str, Int) // and (-2147483648 <= i) and (i <= 2147483647)
+                then FValue.Int:= Int else Str:= FString;
+    ntLong : if TryStrToInt64(Str, l) then FValue.l:= l else Str:= FString;
+    ntFloat: if TryStrToFloat(Str, d) then FValue.f:= d else Str:= FString;
+    ntDouble: if TryStrToFloat(Str, d) then FValue.d:= d else Str:= FString;
+    ntString: if Str = 'null'
+                then FValue.Str:= nil
+                else FValue.Str:= createJString(ResolveString(Str));
     ntObject:
-      if s = 'null' then
-        FValue.s:= nil
+      if Str = 'null' then
+        FValue.Str:= nil
       else begin
-        aJavaObject:= myComJava2.GetObject(s);
+        aJavaObject:= myComJava2.GetObject(Str);
         if aJavaObject = nil then begin
-          Error:= myComJava2.LNGUnknownObject + ' "' + s + '"';
-          Result:= false;
+          Error:= myComJava2.LNGUnknownObject + ' "' + Str + '"';
+          Result:= False;
          end
         else begin
           Typ:= SigToTyp(FSig);
           aJavaClass:= myComJava2.getClass(Typ);
           if aJavaClass = nil then begin  // due to generic problem
             aJavaClass:= myComJava2.getClass('java.lang.Object');
-            if assigned(aJavaClass) then
+            if Assigned(aJavaClass) then
               FSig:= 'Ljava/lang/Object;';
           end;
           
           if aJavaClass = nil then begin
             Error:= myComJava2.LNGUnknownClass + ' "' + Typ + '"';
-            Result:= false;
+            Result:= False;
             end
           else
             if aJavaObject.ClassRef.extends(aJavaClass)
-              then FValue.s:= aJavaObject.getHandle
+              then FValue.Str:= aJavaObject.getHandle
               else begin
                 Error:= format(myComJava2.LNGIncompatibelTypes, [aJavaObject.ClassRef.Name, SigToTyp(FSig)]);
-                Result:= false;
+                Result:= False;
               end;
         end;
       end;
     ntBoolArray..ntStringArray: begin
-      if Assigned(FValue.s) then
-        FPEnv^.DeleteLocalRef(FPEnv, FValue.s);
+      if Assigned(FValue.Str) then
+        FPEnv^.DeleteLocalRef(FPEnv, FValue.Str);
       case FKind of
-        ntBoolArray:   SetBoolArrayFromString(s);
-        ntByteArray:   SetByteArrayFromString(s);
-        ntCharArray:   SetCharArrayFromString(s);
-        ntShortArray:  SetShortArrayFromString(s);
-        ntIntArray:    SetIntArrayFromString(s);
-        ntLongArray:   SetLongArrayFromString(s);
-        ntFloatArray:  SetFloatArrayFromString(s);
-        ntDoubleArray: SetDoubleArrayFromString(s);
-        ntStringArray: SetStringArrayFromString(s);
+        ntBoolArray:   SetBoolArrayFromString(Str);
+        ntByteArray:   SetByteArrayFromString(Str);
+        ntCharArray:   SetCharArrayFromString(Str);
+        ntShortArray:  SetShortArrayFromString(Str);
+        ntIntArray:    SetIntArrayFromString(Str);
+        ntLongArray:   SetLongArrayFromString(Str);
+        ntFloatArray:  SetFloatArrayFromString(Str);
+        ntDoubleArray: SetDoubleArrayFromString(Str);
+        ntStringArray: SetStringArrayFromString(Str);
       end;
     end;
-    ntObjectArray: SetObjectArrayFromString(s);
+    ntObjectArray: SetObjectArrayFromString(Str);
   end;
-  FString:= s;
+  FString:= Str;
 end;
 
-function TJavaValue.ResolveString(s: string): string;
+function TJavaValue.ResolveString(Str: string): string;
   var aJavaObject: TJavaObject;
 begin
-  aJavaObject:= myComJava2.getObject(s);
-  if assigned(aJavaObject) and (aJavaObject.FClass.getTyp = 'String') then
-    s:= aJavaObject.toString;
-  if IsJavaString(s)
-    then Result:= copy(s, 2, length(s)-2)
-    else Result:= s;
+  aJavaObject:= myComJava2.getObject(Str);
+  if Assigned(aJavaObject) and (aJavaObject.FClass.getTyp = 'String') then
+    Str:= aJavaObject.ToString;
+  if IsJavaString(Str)
+    then Result:= Copy(Str, 2, Length(Str)-2)
+    else Result:= Str;
 end;
 
 {--- TJavaCompiler ------------------------------------------------------------}
@@ -2737,45 +2737,45 @@ begin
   ClassH:= PEnv^.FindClass(PEnv, 'javax/tools/JavaCompiler');
   MethodID:= PEnv^.getMethodID(PEnv, ClassH, 'run', PAnsiChar(Signature));
   CompilerClass:= TJavaClass.CreateWithHandle('javax.tools.JavaCompiler', ClassH);
-  CompilerClass.setGlobal(true);
+  CompilerClass.setGlobal(True);
   Compiler:= TJavaObject.CreateWithHandle(CompilerClass, CompilerObject);
-  Compiler.setGlobal(true);
+  Compiler.setGlobal(True);
   Params:= TJavaParams.Create;
   SL:= TStringList.Create;
 end;
 
 function TJavaCompiler.Compile(const Classpath, Parameter, Pathname: string): string;
-  var i, p: integer; PEnv: PJNIEnv;
+  var Int, Posi: Integer; PEnv: PJNIEnv;
       Input, Output: TJavaClass;
-      l, m, s, s1, s2, Sourcepath: string;
+      l, m, Str, Str1, Str2, Sourcepath: string;
 begin
   PEnv:= JNIPointer;
   SL.Clear;
-  s:= ExtractFilePath(Pathname);
-  if Pos(s, Classpath) = 0
-    then Sourcepath:= s + ';' + Classpath
+  Str:= ExtractFilePath(Pathname);
+  if Pos(Str, Classpath) = 0
+    then Sourcepath:= Str + ';' + Classpath
     else Sourcepath:= Classpath;
 
-  s1:= '-classpath ' + HideBlanks(Classpath) + ' ' + Parameter;
-  s1:= ReplaceText(s1, ' ', #13#10);
-  s2:= '';
-  p:= Pos('"', s1);
-  while p > 0 do begin
-    l:= Left(s1, p-1);
-    delete(s1, 1, p);
-    p:= Pos('"', s1);
-    if p = 0 then begin
-      s1:= s1 + '"';
-      p:= length(s1);
+  Str1:= '-classpath ' + HideBlanks(Classpath) + ' ' + Parameter;
+  Str1:= ReplaceText(Str1, ' ', #13#10);
+  Str2:= '';
+  Posi:= Pos('"', Str1);
+  while Posi > 0 do begin
+    l:= Left(Str1, Posi-1);
+    Delete(Str1, 1, Posi);
+    Posi:= Pos('"', Str1);
+    if Posi = 0 then begin
+      Str1:= Str1 + '"';
+      Posi:= Length(Str1);
     end;
-    m:= Left(s1, p-1);
-    delete(s1, 1, p);
-    s2:= s2 + l + ReplaceText(m, #13#10, ' ');
-    p:= Pos('"', s1);
+    m:= Left(Str1, Posi-1);
+    Delete(Str1, 1, Posi);
+    Str2:= Str2 + l + ReplaceText(m, #13#10, ' ');
+    Posi:= Pos('"', Str1);
   end;
-  s2:= s2 + s1;
+  Str2:= Str2 + Str1;
 
-  SL.Text:= s2;
+  SL.Text:= Str2;
   SL.Add('-sourcepath'); SL.Add(Sourcepath);
   SL.Add(Pathname);
   Input := myComJava2.getClass('java.io.InputStream');
@@ -2786,8 +2786,8 @@ begin
   Params.addObjectSingle(nil, Output, nil);
   Params.addStringArray(SL);
   Args:= PJValue(Params.ArgPointer);
-  i:= PEnv^.CallIntMethodA(PEnv, Compiler.Handle, MethodID, Args);
-  if i <> 0 then begin
+  Int:= PEnv^.CallIntMethodA(PEnv, Compiler.Handle, MethodID, Args);
+  if Int <> 0 then begin
     if PEnv^.ExceptionCheck(PEnv) then
       PEnv^.ExceptionDescribe(PEnv);
     Result:= '-ERR ' + myComJava2.ReadConsole;
@@ -2798,13 +2798,13 @@ end;
 
 { --- Sonstiges -------------------------------------------------------------- }
 
-  function createJString (const s: string): jstring;
+  function createJString (const Str: string): jstring;
     var PEnv: PJNIEnv;
         su: UTF8String;
   begin
-    su:= UTF8String(s);
+    su:= UTF8String(Str);
     PEnv:= JNIPointer;
-    result:= PEnv^.NewStringUTF(PEnv, PAnsiChar(su));
+    Result:= PEnv^.NewStringUTF(PEnv, PAnsiChar(su));
   end;
 
   function JToDString(js: JString): string;
@@ -2813,32 +2813,32 @@ end;
    len: Integer;
    CharBuf: PAnsiChar;
    IsCopy: JBoolean;
-   s: UTF8String;
+   Str: UTF8String;
   begin
     PEnv:= JNIPointer;
     CharBuf:= PEnv^.GetStringUTFChars(PEnv, js, IsCopy);
     len:= PEnv^.GetStringUTFLength(PEnv, js);
-    SetLength(s, len);
-    if len > 0 then AnsiStrings.StrLCopy(PAnsiChar(s), Charbuf, len);
+    SetLength(Str, len);
+    if len > 0 then AnsiStrings.StrLCopy(PAnsiChar(Str), Charbuf, len);
     if IsCopy then 
       PEnv^.ReleaseStringUTFChars(PEnv, js, CharBuf);
-    Result:= UTF8ToString(s);
+    Result:= UTF8ToString(Str);
   end;
 
   function JToTStrings(jarr: JObjectarray): TStrings;
   var
     PEnv: PJNIEnv;
     jobj: jobject;
-    len, i: Integer;
+    len, Int: Integer;
   begin
     PEnv:= JNIPointer;
-    result:= TStringList.Create;
+    Result:= TStringList.Create;
     len:= PEnv^.GetArrayLength(PEnv, jarr);
-    for i:= 1 to len do begin
-      jobj:= PEnv^.GetObjectArrayElement(PEnv, jarr, i-1);
+    for Int:= 1 to len do begin
+      jobj:= PEnv^.GetObjectArrayElement(PEnv, jarr, Int-1);
       if jobj = nil
-        then result.Add('null')
-        else result.add(JToDString(jobj));
+        then Result.Add('null')
+        else Result.Add(JToDString(jobj));
     end;
   end;
     
@@ -2852,12 +2852,12 @@ end;
       sc:= PEnv^.FindClass(JNIPointer, 'java/lang/String');
       sc:= PEnv^.NewGlobalRef(PEnv, sc);
     end;
-    result:= sc;
+    Result:= sc;
   end;
 
   function createJStringArray(myStrings: TStrings): jStringArray;
   var
-    i, Count: Integer;
+    Int, Count: Integer;
     js: jstring;
     PEnv: PJNIEnv;
   begin
@@ -2866,65 +2866,65 @@ end;
     if myStrings <> nil then
       Count:= myStrings.Count;
     js:= createJString('');
-    result:= PEnv^.NewObjectArray(PEnv, Count, getStringClass, js);
-    for i:= 0 to Count-1 do begin
-      js:= createJString(myStrings.Strings[i]);
-      PEnv^.SetObjectArrayElement(PEnv, result, i, js);
+    Result:= PEnv^.NewObjectArray(PEnv, Count, getStringClass, js);
+    for Int:= 0 to Count-1 do begin
+      js:= createJString(myStrings.Strings[Int]);
+      PEnv^.SetObjectArrayElement(PEnv, Result, Int, js);
     end;
   end;
 
   function CreateObjectArray(Strings: TStrings; aJavaClass: TJavaClass; const Typ: string;
-              var Valid: boolean; var AsString: string): TJavaObjectArray;
-    var ObjectArr: TJavaObjectArray; i, n: integer;
-        aJavaObject: TJavaObject; s: string;
+              var Valid: Boolean; var AsString: string): TJavaObjectArray;
+    var ObjectArr: TJavaObjectArray; Int, n: Integer;
+        aJavaObject: TJavaObject; Str: string;
   begin
     n:= 0;
     AsString:= '';
-    for i:= 0 to Strings.Count - 1 do begin
-      s:= '';
-      if (Strings[i] = 'null') or (Uppercase(Strings[i]) = 'POINTER') then begin
+    for Int:= 0 to Strings.Count - 1 do begin
+      Str:= '';
+      if (Strings[Int] = 'null') or (UpperCase(Strings[Int]) = 'POINTER') then begin
         aJavaObject:= nil;
-        s:= ', null';
+        Str:= ', null';
       end
       else begin
-        aJavaObject:= myComJava2.GetObject(Strings[i]);
+        aJavaObject:= myComJava2.GetObject(Strings[Int]);
         if aJavaObject = nil then begin
-          ErrorMsg(myComJava2.LNGUnknownObject + ' "' + Strings[i] + '"');
-          Valid:= false; break;
+          ErrorMsg(myComJava2.LNGUnknownObject + ' "' + Strings[Int] + '"');
+          Valid:= False; Break;
         end;
         if not aJavaObject.ClassRef.extends(aJavaClass) then begin
           ErrorMsg(format(myComJava2.LNGIncompatibelTypes,
             [aJavaObject.ClassRef.Name, Typ]));
-          Valid:= false; break;
+          Valid:= False; Break;
         end;
-        s:= ', ' + Strings[i];
+        Str:= ', ' + Strings[Int];
       end;
-      inc(n);
+      Inc(n);
       SetLength(ObjectArr, n);
       ObjectArr[n-1]:= aJavaObject;
-      AsString:= AsString + s;
+      AsString:= AsString + Str;
     end;
     AsString:= '{' + Right(AsString, 3) + '}';
     Result:= ObjectArr;
   end;
 
   function createJObjectArray(ObjectArr: TJavaObjectArray; aClass: jclass): jObjectArray;
-    var i, Count: Integer; PEnv: PJNIEnv;
+    var Int, Count: Integer; PEnv: PJNIEnv;
   begin
     PEnv:= JNIPointer;
     Count:= High(ObjectArr);
-    result:= PEnv^.NewObjectArray(PEnv, Count + 1, aClass, nil);
-    for i:= 0 to Count do
-      if assigned(ObjectArr[i]) then
-        PEnv^.SetObjectArrayElement(PEnv, result, i, ObjectArr[i].handle);
+    Result:= PEnv^.NewObjectArray(PEnv, Count + 1, aClass, nil);
+    for Int:= 0 to Count do
+      if Assigned(ObjectArr[Int]) then
+        PEnv^.SetObjectArrayElement(PEnv, Result, Int, ObjectArr[Int].handle);
   end;
 
   function createJBooleanArray ( arr: array of JBoolean): JBooleanArray;
     var PEnv: PJNIEnv;
   begin
     PEnv:= JNIPointer;
-    result:= PEnv^.newBooleanArray(PEnv, High(arr) + 1);
-    PEnv^.setBooleanArrayRegion(PEnv, result, low(arr), High(arr) +1, @arr);
+    Result:= PEnv^.newBooleanArray(PEnv, High(arr) + 1);
+    PEnv^.setBooleanArrayRegion(PEnv, Result, Low(arr), High(arr) +1, @arr);
   end;
 
   function createJByteArray ( arr: array of JByte): JByteArray;
@@ -2932,8 +2932,8 @@ end;
     PEnv: PJNIEnv;
   begin
     PEnv:= JNIPointer;
-    result:= PEnv^.newByteArray(PEnv, High(arr) + 1);
-    PEnv^.setByteArrayRegion(PEnv, result, 0, High(arr) +1, @arr);
+    Result:= PEnv^.newByteArray(PEnv, High(arr) + 1);
+    PEnv^.setByteArrayRegion(PEnv, Result, 0, High(arr) +1, @arr);
   end;
     
   function createJCharArray ( arr: array of JChar): JCharArray;
@@ -2941,8 +2941,8 @@ end;
     PEnv: PJNIEnv;
   begin
     PEnv:= JNIPointer;
-    result:= PEnv^.newCharArray(PEnv, High(arr) + 1);
-    PEnv^.setCharArrayRegion(PEnv, result, low(arr), High(arr) +1, @arr);
+    Result:= PEnv^.newCharArray(PEnv, High(arr) + 1);
+    PEnv^.setCharArrayRegion(PEnv, Result, Low(arr), High(arr) +1, @arr);
   end;
 
   function createJShortArray ( arr: array of JShort): JShortArray;
@@ -2950,8 +2950,8 @@ end;
     PEnv: PJNIEnv;
   begin
     PEnv:= JNIPointer;
-    result:= PEnv^.newShortArray(PEnv, High(arr) + 1);
-    PEnv^.setShortArrayRegion(PEnv, result, 0, High(arr) +1, @arr);
+    Result:= PEnv^.newShortArray(PEnv, High(arr) + 1);
+    PEnv^.setShortArrayRegion(PEnv, Result, 0, High(arr) +1, @arr);
   end;
     
   function createJIntArray ( arr: array of Jint): JIntArray;
@@ -2959,8 +2959,8 @@ end;
     PEnv: PJNIEnv;
   begin
     PEnv:= JNIPointer;
-    result:= PEnv^.newIntArray(PEnv, High(arr) + 1);
-    PEnv^.setIntArrayRegion(PEnv, result, low(arr), High(arr) +1, @arr);
+    Result:= PEnv^.newIntArray(PEnv, High(arr) + 1);
+    PEnv^.setIntArrayRegion(PEnv, Result, Low(arr), High(arr) +1, @arr);
   end;
   
   function createJLongArray ( arr: array of JLong): JLongArray;
@@ -2968,8 +2968,8 @@ end;
     PEnv: PJNIEnv;
   begin
     PEnv:= JNIPointer;
-    result:= PEnv^.newLongArray(PEnv, High(arr) + 1);
-    PEnv^.setLongArrayRegion(PEnv, result, low(arr), High(arr) +1, @arr);
+    Result:= PEnv^.newLongArray(PEnv, High(arr) + 1);
+    PEnv^.setLongArrayRegion(PEnv, Result, Low(arr), High(arr) +1, @arr);
   end;
 
   function createJFloatArray ( arr: array of JFloat): JFloatArray;
@@ -2977,8 +2977,8 @@ end;
     PEnv: PJNIEnv;
   begin
     PEnv:= JNIPointer;
-    result:= PEnv^.newFloatArray(PEnv, High(arr) + 1);
-    PEnv^.setFloatArrayRegion(PEnv, result, low(arr), High(arr) + 1, @arr);
+    Result:= PEnv^.newFloatArray(PEnv, High(arr) + 1);
+    PEnv^.setFloatArrayRegion(PEnv, Result, Low(arr), High(arr) + 1, @arr);
   end;
 
   function createJDoubleArray (arr: array of JDouble): JDoubleArray;
@@ -2986,20 +2986,20 @@ end;
     PEnv: PJNIEnv;
   begin
     PEnv:= JNIPointer;
-    result:= PEnv^.newDoubleArray(PEnv, High(arr) + 1);
-    PEnv^.setDoubleArrayRegion(PEnv, result, 0, High(arr) +1, @arr);
+    Result:= PEnv^.newDoubleArray(PEnv, High(arr) + 1);
+    PEnv^.setDoubleArrayRegion(PEnv, Result, 0, High(arr) +1, @arr);
   end;
 
   function TypToSig(Typ: string): string;
-    var dimension: string; p: integer;
+    var dimension: string; Posi: Integer;
   begin
     Result:= '';
     dimension:= '';
-    p:= Pos('[]', Typ);
-    while p > 0 do begin
+    Posi:= Pos('[]', Typ);
+    while Posi > 0 do begin
       dimension:= dimension + '[';
-      delete(Typ, p, 2);
-      p:= Pos('[]', Typ);
+      Delete(Typ, Posi, 2);
+      Posi:= Pos('[]', Typ);
     end;
     if Typ = 'String'    then Result:= 'Ljava/lang/String;' else
     if Typ = 'java.lang.String' then Result:= 'Ljava/lang/String;'  else

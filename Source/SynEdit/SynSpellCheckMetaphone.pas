@@ -139,14 +139,14 @@ var
 
 procedure ApplyRules(ScanStr: UnicodeString; RuleBase: array of TRule);
 
-  function RuleApplicable(Rule: TRule; CharIndex: integer): Boolean;
+  function RuleApplicable(Rule: TRule; CharIndex: Integer): Boolean;
   var
     RemChar, PrevChar, ArgLength, InpLength: Integer;
   begin
-    InpLength := length(ScanStr);
+    InpLength := Length(ScanStr);
     RemChar := InpLength - CharIndex;
     PrevChar := CharIndex - 1;
-    ArgLength := length(Rule.Args);
+    ArgLength := Length(Rule.Args);
     Result := False;
     if ((RemChar + 1) >= Length(Rule.sFrom)) and (Copy(ScanStr, CharIndex,
       Length(Rule.sFrom)) = Rule.sFrom) then
@@ -160,55 +160,55 @@ procedure ApplyRules(ScanStr: UnicodeString; RuleBase: array of TRule);
             Result := True;
         mrBefore: //If sFrom is just before arg
           if (RemChar >= ArgLength) and
-            (copy(ScanStr, CharIndex + 1, ArgLength) = Rule.Args) then
-            result := true;
+            (Copy(ScanStr, CharIndex + 1, ArgLength) = Rule.Args) then
+            Result := True;
 
         mrNotAfterVowel: //If sFrom is not preceded by vowel
-          if (RemChar >= 1) and (pos(copy(ScanStr, CharIndex + 1, 1), Vowels) >
+          if (RemChar >= 1) and (Pos(Copy(ScanStr, CharIndex + 1, 1), Vowels) >
             0) then
-            result := true;
+            Result := True;
 
         mrNotBeforeVowel: //If sFrom is not followed by vowel
-          if (PrevChar >= 1) and (pos(copy(ScanStr, CharIndex + 1, 1), Vowels) >
+          if (PrevChar >= 1) and (Pos(Copy(ScanStr, CharIndex + 1, 1), Vowels) >
             0) then
-            result := true;
+            Result := True;
 
         mrBetween: //If sFrom is between two chars specified in Args
-          if (PrevChar >= 1) and (RemChar >= 1) and (length(rule.args) = 2) and
-            (copy(ScanStr, CharIndex - 1, 1) = copy(rule.args, 1, 1)) and
-            (copy(ScanStr, CharIndex + 1, 1) = copy(rule.args, 2, 1)) then
-            result := true;
+          if (PrevChar >= 1) and (RemChar >= 1) and (Length(rule.args) = 2) and
+            (Copy(ScanStr, CharIndex - 1, 1) = Copy(rule.args, 1, 1)) and
+            (Copy(ScanStr, CharIndex + 1, 1) = Copy(rule.args, 2, 1)) then
+            Result := True;
 
         mrNotEndAfter: //Not at end of word after string in Args
-          if (CharIndex < InpLength) and (PrevChar >= length(rule.args)) and
-            (copy(ScanStr, CharIndex - ArgLength - 1, ArgLength) = Rule.Args)
+          if (CharIndex < InpLength) and (PrevChar >= Length(rule.args)) and
+            (Copy(ScanStr, CharIndex - ArgLength - 1, ArgLength) = Rule.Args)
               then
-            result := true;
+            Result := True;
 
         mrNotEndBefore: //Not at end of word just before string in args
           if (ArgLength > RemChar) and
-            (copy(ScanStr, CharIndex + 1, ArgLength) = Rule.Args) then
-            result := true;
+            (Copy(ScanStr, CharIndex + 1, ArgLength) = Rule.Args) then
+            Result := True;
 
         mrBeforeNoVowel: //Before "args", but no vowel thereafter
           if (ArgLength + 1 <= RemChar) and
-            (copy(ScanStr, CharIndex + 1, ArgLength) = Rule.Args) and
-            (pos(vowels, copy(ScanStr, CharIndex + 1 + ArgLength, 1)) > 0) then
-            result := true;
+            (Copy(ScanStr, CharIndex + 1, ArgLength) = Rule.Args) and
+            (Pos(vowels, Copy(ScanStr, CharIndex + 1 + ArgLength, 1)) > 0) then
+            Result := True;
 
         mrAfterVowelNotBeforeVowel: //after, but not before vowel
           if (PrevChar > 0) and (RemChar > 0) and
-            (pos(Vowels, copy(ScanStr, CharIndex - 1, 1)) > 0) and
-            (pos(Vowels, copy(ScanStr, CharIndex + 1, 1)) = 0) then
-            result := true;
+            (Pos(Vowels, Copy(ScanStr, CharIndex - 1, 1)) > 0) and
+            (Pos(Vowels, Copy(ScanStr, CharIndex + 1, 1)) = 0) then
+            Result := True;
 
         mrAtEndBefore: //At end of word just before "Arg"
           if (ArgLength = RemChar) and
-            (copy(ScanStr, CharIndex + 1, ArgLength) = Rule.Args) then
-            result := true;
+            (Copy(ScanStr, CharIndex + 1, ArgLength) = Rule.Args) then
+            Result := True;
 
         mrNone: //Rule always applies
-          Result := true;
+          Result := True;
       end; //case
 
   end; //function RuleApplicable
@@ -216,9 +216,9 @@ procedure ApplyRules(ScanStr: UnicodeString; RuleBase: array of TRule);
 var
   iI: Integer;
 
-  t: integer;
+  t: Integer;
   SkipRule: UnicodeString;
-  SkipFlag: boolean;
+  SkipFlag: Boolean;
 begin
   t := Low(RuleBase);
   while t <= High(RuleBase) do
@@ -248,32 +248,32 @@ begin
       Result := Result + Format('%3.3s %d ', [OutStr[iI], iI]);
 end;
 
-function MetaPhone(a: PWideChar; lg: integer): PWideChar; stdcall;
+function MetaPhone(a: PWideChar; lg: Integer): PWideChar; stdcall;
 var
   sResult: UnicodeString;
 
   InStr, TempStr: UnicodeString;
-  x, y, SmallestIndex, SmallestValue: integer; //for selection sort
-  FirstFlag: boolean;
+  x, y, SmallestIndex, SmallestValue: Integer; //for selection sort
+  FirstFlag: Boolean;
 begin
   OutStr := TUnicodeStringList.Create;
   try
     TempStr := WideUpperCase(a);
     InStr := '';
 
-    for x := 1 to length(TempStr) do
-      if pos(copy(TempStr, x, 1), AllowChar) > 0 then
-        InStr := InStr + copy(TempStr, x, 1);
+    for x := 1 to Length(TempStr) do
+      if Pos(Copy(TempStr, x, 1), AllowChar) > 0 then
+        InStr := InStr + Copy(TempStr, x, 1);
 
     //remove doubles EXCEPT FOR G (ugly exception)
-    if length(InStr) > 0 then
+    if Length(InStr) > 0 then
     begin
-      TempStr := copy(instr, 1, 1);
-      for x := 2 to length(InStr) do
-        if (copy(instr, x, 1) = 'G') then
-          TempStr := TempStr + copy(instr, x, 1)
-        else if (copy(instr, x, 1) <> copy(instr, x - 1, 1)) then
-          TempStr := TempStr + copy(instr, x, 1);
+      TempStr := Copy(instr, 1, 1);
+      for x := 2 to Length(InStr) do
+        if (Copy(instr, x, 1) = 'G') then
+          TempStr := TempStr + Copy(instr, x, 1)
+        else if (Copy(instr, x, 1) <> Copy(instr, x - 1, 1)) then
+          TempStr := TempStr + Copy(instr, x, 1);
       InStr := TempStr;
     end;
 
@@ -282,15 +282,15 @@ begin
 
     //get result - order output stringlist, then translate to string
     //do selection sort - or something like that, anyway :-)
-    for x := 0 to OutStr.count - 1 do
+    for x := 0 to OutStr.Count - 1 do
     begin
       SmallestIndex := x;
-      SmallestValue := integer(OutStr.objects[x]);
-      for y := x to OutStr.count - 1 do
-        if integer(OutStr.objects[y]) < SmallestValue then
+      SmallestValue := Integer(OutStr.objects[x]);
+      for y := x to OutStr.Count - 1 do
+        if Integer(OutStr.objects[y]) < SmallestValue then
         begin
           SmallestIndex := y;
-          SmallestValue := integer(OutStr.objects[y]);
+          SmallestValue := Integer(OutStr.objects[y]);
         end;
       if SmallestIndex > x then //do swap with smallest
         OutStr.Exchange(x, SmallestIndex);

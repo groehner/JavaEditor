@@ -58,7 +58,7 @@ uses
 type
   TSynExporterTeX = class(TSynCustomExporter)
   private
-    fMargin: integer;
+    fMargin: Integer;
     fLastAttri: TSynHighlighterAttributes;
     function AttriToCommand(Attri: TSynHighlighterAttributes;
       UniqueAttriName: string): string;
@@ -73,9 +73,9 @@ type
     function GetNewCommands: string;
     function MakeValidName(Name: string): string;
   protected
-    fCreateTeXFragment: boolean;
-    fTabWidth: integer;
-    fPageStyleEmpty: boolean;
+    fCreateTeXFragment: Boolean;
+    fTabWidth: Integer;
+    fPageStyleEmpty: Boolean;
     
     // overriding these abstract methods (though they are never called for this
     // specific highlighter) to prevent abstract instance warnings
@@ -99,13 +99,13 @@ type
     constructor Create(AOwner: TComponent); override;
     function SupportedEncodings: TSynEncodings; override;
   published
-    property Margin: integer read fMargin write fMargin default 2;
-    property TabWidth: integer read fTabWidth write fTabWidth default 2;
+    property Margin: Integer read fMargin write fMargin default 2;
+    property TabWidth: Integer read fTabWidth write fTabWidth default 2;
     property Color;
-    property CreateTeXFragment: boolean read fCreateTeXFragment
-      write fCreateTeXFragment default false;
-    property PageStyleEmpty: boolean read fPageStyleEmpty write fPageStyleEmpty
-      default false;
+    property CreateTeXFragment: Boolean read fCreateTeXFragment
+      write fCreateTeXFragment default False;
+    property PageStyleEmpty: Boolean read fPageStyleEmpty write fPageStyleEmpty
+      default False;
     property DefaultFilter;
     property Encoding;
     property Font;
@@ -157,7 +157,7 @@ begin
   inherited Create(AOwner);
   fMargin := 2;
   fTabWidth := 2;
-  fPageStyleEmpty := false;
+  fPageStyleEmpty := False;
   fDefaultFilter := SYNS_FilterTeX;
   FEncoding := seAnsi;
 end;
@@ -347,17 +347,17 @@ end;
 
 function TSynExporterTeX.MakeValidName(Name: string): string;
 var
-  i: Integer;
+  Int: Integer;
 begin
   Result := Name;
   
-  for i := Length(Result) downto 1 do
-  if CharInSet(Result[i], ['1'..'9']) then
-    Result[i] := Char(Ord('A') + Ord(Result[i]) - Ord('1'))
-  else if Result[i] = '0' then
-    Result[i] := 'Z'
-  else if not CharInSet(Result[i], ['a'..'z', 'A'..'Z']) then
-    Delete(Result, i, 1);
+  for Int := Length(Result) downto 1 do
+  if CharInSet(Result[Int], ['1'..'9']) then
+    Result[Int] := Char(Ord('A') + Ord(Result[Int]) - Ord('1'))
+  else if Result[Int] = '0' then
+    Result[Int] := 'Z'
+  else if not CharInSet(Result[Int], ['a'..'z', 'A'..'Z']) then
+    Delete(Result, Int, 1);
 end;
 
 function TSynExporterTeX.ReplaceReservedChar(AChar: WideChar): string;

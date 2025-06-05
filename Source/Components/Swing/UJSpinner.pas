@@ -3,11 +3,14 @@ unit UJSpinner;
 interface
 
 uses
-  Classes, Graphics, Spin, UJComponents;
+  Classes,
+  Graphics,
+  Spin,
+  UJComponents;
 
 type
 
-  TJSpinner = class (TSwingComponent)
+  TJSpinner = class(TSwingComponent)
   private
     FNeutral: TColor;
     FMaximum: Integer;
@@ -15,69 +18,73 @@ type
     FStepSize: Integer;
     FValue: string;
     FList: TStrings;
-    procedure setMaximum(aValue: integer);
-    procedure setMinimum(aValue: integer);
-    procedure setStepSize(aValue: integer);
-    procedure setValue(const aValue: string);
-    procedure setStrings(theStrings: TStrings);
+    procedure SetMaximum(AValue: Integer);
+    procedure SetMinimum(AValue: Integer);
+    procedure SetStepSize(AValue: Integer);
+    procedure SetValue(const AValue: string);
+    procedure SetStrings(TheStrings: TStrings);
     procedure MakeSpinnerColor(const Attr, Value: string);
     procedure MakeSpinner(const Attr: string);
   public
-    constructor Create (AOwner: TComponent); override;
-    constructor CreateFrom(aSpinEdit: TSpinEdit);
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    constructor Create(AOwner: TComponent); override;
+    constructor CreateFrom(ASpinEdit: TSpinEdit);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure DeleteComponent; override;
-    function getEvents(ShowEvents: integer): string; override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure NewControl; override;
     destructor Destroy; override;
     procedure Paint; override;
   published
-    property Maximum: integer read FMaximum write setMaximum;
-    property Minimum: integer read FMinimum write setMinimum;
-    property StepSize: integer read FStepSize write setStepSize;
-    property Value: string read FValue write setValue;
-    property List: TStrings read FList write setStrings;
+    property Maximum: Integer read FMaximum write SetMaximum;
+    property Minimum: Integer read FMinimum write SetMinimum;
+    property StepSize: Integer read FStepSize write SetStepSize;
+    property Value: string read FValue write SetValue;
+    property List: TStrings read FList write SetStrings;
   end;
 
 implementation
 
-uses Controls, SysUtils, Types, UUtils;
+uses
+  Controls,
+  SysUtils,
+  Types,
+  UUtils;
 
-constructor TJSpinner.Create (AOwner: TComponent);
+constructor TJSpinner.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= 22;
-  Width:= 80;
-  Height:= 24;
-  JavaType:= 'JSpinner';
-  Background:= clWhite;
-  FNeutral:= DefaultBackground;
-  FMaximum:= 10;
-  FMinimum:= 0;
-  FStepSize:= 1;
-  FValue:= '0';
-  FList:= TStringList.Create;
+  inherited Create(AOwner);
+  Tag := 22;
+  Width := 80;
+  Height := 24;
+  JavaType := 'JSpinner';
+  Background := clWhite;
+  FNeutral := DefaultBackground;
+  FMaximum := 10;
+  FMinimum := 0;
+  FStepSize := 1;
+  FValue := '0';
+  FList := TStringList.Create;
 end;
 
-constructor TJSpinner.CreateFrom(aSpinEdit: TSpinEdit);
+constructor TJSpinner.CreateFrom(ASpinEdit: TSpinEdit);
 begin
-  Create(aSpinEdit.Owner);
-  CreateFromJ(aSpinEdit);
-  Background:= aSpinEdit.Color;
-  Font.assign(aSpinEdit.Font);
+  Create(ASpinEdit.Owner);
+  CreateFromJ(ASpinEdit);
+  Background := ASpinEdit.Color;
+  Font.Assign(ASpinEdit.Font);
 end;
 
-function TJSpinner.getAttributes(ShowAttributes: integer): string;
+function TJSpinner.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Maximum|Minimum|StepSize|Value|List' + inherited;
+  Result := '|Maximum|Minimum|StepSize|Value|List' + inherited;
 end;
 
-procedure TJSpinner.setAttribute(Attr, Value, Typ: string);
+procedure TJSpinner.SetAttribute(Attr, Value, Typ: string);
 begin
   if (Attr = 'Value') or (Attr = 'Minimum') or (Attr = 'Maximum') or
-     (Attr = 'StepSize') or (Attr = 'List') then
+    (Attr = 'StepSize') or (Attr = 'List') then
     MakeSpinner(Attr)
   else if (Attr = 'Background') or (Attr = 'Foreground') then
     MakeSpinnerColor(Attr, Value)
@@ -86,66 +93,76 @@ begin
 end;
 
 procedure TJSpinner.MakeSpinner(const Attr: string);
-  var s, key: string; i: integer;
+var
+  Str, Key: string;
 begin
-  key:= Name + 'Model = new Spinner';
-  if (Attr = 'List') and (trim(FList.Text) <> '') then begin
-    s:= 'private SpinnerListModel ' + key + 'ListModel(new String[] {';
-    for i:= 0 to List.Count - 1 do
-      s:= s + '"' + List[i] + '", ';
-    s:= UUtils.Left(s, Length(s) -2);
-    s:= s + '});';
-    Partner.ReplaceLine(key, Indent2 + s);
-  end else begin
-    if trim(FList.Text) = '' then begin
-      s:= 'private SpinnerNumberModel ' + key + 'NumberModel(' +
-          Value + ', ' + IntToStr(Minimum) + ', ' +
-          IntToStr(Maximum) + ', ' + IntToStr(StepSize) + ');';
-      Partner.ReplaceLine(key, Indent2 + s);
+  Key := Name + 'Model = new Spinner';
+  if (Attr = 'List') and (Trim(FList.Text) <> '') then
+  begin
+    Str := 'private SpinnerListModel ' + Key + 'ListModel(new String[] {';
+    for var I := 0 to List.Count - 1 do
+      Str := Str + '"' + List[I] + '", ';
+    Str := UUtils.Left(Str, Length(Str) - 2);
+    Str := Str + '});';
+    FPartner.ReplaceLine(Key, Indent2 + Str);
+  end
+  else
+  begin
+    if Trim(FList.Text) = '' then
+    begin
+      Str := 'private SpinnerNumberModel ' + Key + 'NumberModel(' + Value + ', '
+        + IntToStr(Minimum) + ', ' + IntToStr(Maximum) + ', ' +
+        IntToStr(StepSize) + ');';
+      FPartner.ReplaceLine(Key, Indent2 + Str);
     end;
-    if Attr = 'Value' then begin
-      key:= Name + '.setValue(';
-      if trim(FList.Text) = ''
-        then s:= key + Value + ');'
-        else s:= key + '"' + Value + '");';
-      setAttributValue(key, Indent2 + s);  // toDo check!
+    if Attr = 'Value' then
+    begin
+      Key := Name + '.setValue(';
+      if Trim(FList.Text) = '' then
+        Str := Key + Value + ');'
+      else
+        Str := Key + '"' + Value + '");';
+      SetAttributValue(Key, Indent2 + Str); // toDo check!
     end;
   end;
 end;
 
 procedure TJSpinner.MakeSpinnerColor(const Attr, Value: string);
-  var s, key: string;
+var
+  Str, Key: string;
 begin
-  key:= Name + '.getEditor()).getTextField().set' + Attr;
-  s:= '((JSpinner.DefaultEditor)' + Name + '.getEditor()).getTextField().set' + Attr + '(' + getAttrColor(Value) + ');';
-  setAttributValue(key, Indent2 + s);
+  Key := Name + '.getEditor()).getTextField().set' + Attr;
+  Str := '((JSpinner.DefaultEditor)' + Name + '.getEditor()).getTextField().set'
+    + Attr + '(' + GetAttrColor(Value) + ');';
+  SetAttributValue(Key, Indent2 + Str);
 end;
 
 procedure TJSpinner.NewControl;
 begin
   InsertNewVariable('private JSpinner ' + Name + ' = new JSpinner();');
-  InsertNewVariable(Indent1 + 'private SpinnerNumberModel ' + Name + 'Model = new SpinnerNumberModel(0, 0, 10, 1);');
+  InsertNewVariable(Indent1 + 'private SpinnerNumberModel ' + Name +
+    'Model = new SpinnerNumberModel(0, 0, 10, 1);');
   MakeAttribut('Value', '0');
   MakeAttribut('Model', Name + 'Model');
-  Partner.InsertComponent(Indent2 + GetContainerAdd);
+  FPartner.InsertComponent(Indent2 + GetContainerAdd);
   MakeFont;
 end;
 
 procedure TJSpinner.Rename(const OldName, NewName, Events: string);
 begin
   inherited;
-  Partner.ReplaceWord(OldName + 'Model' , NewName + 'Model', true);
+  FPartner.ReplaceWord(OldName + 'Model', NewName + 'Model', True);
 end;
 
-function TJSpinner.getEvents(ShowEvents: integer): string;
+function TJSpinner.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|stateChanged' + inherited getEvents(ShowEvents);
+  Result := '|stateChanged' + inherited GetEvents(ShowEvents);
 end;
 
 procedure TJSpinner.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteAttribute('private SpinnerNumberModel ' + Name + 'Model');
+  FPartner.DeleteAttribute('private SpinnerNumberModel ' + Name + 'Model');
 end;
 
 destructor TJSpinner.Destroy;
@@ -155,90 +172,100 @@ begin
 end;
 
 procedure TJSpinner.Paint;
-  var s: string;
-      th, tw, x, y: integer;
-      Points: array[0..2] of TPoint;
+var
+  Str: string;
+  TextHeight, TextWidth, XPos, YPos: Integer;
+  Points: array [0 .. 2] of TPoint;
 begin
   CanvasFontAssign;
-  Canvas.Font.Style:= [];
-  Canvas.Font.Color:= Foreground;
-  Canvas.Pen.Color:= DarkShadow;
-  Canvas.Brush.Color:= Background;
+  Canvas.Font.Style := [];
+  Canvas.Font.Color := Foreground;
+  Canvas.Pen.Color := DarkShadow;
+  Canvas.Brush.Color := Background;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
 
   // paint number/value
-  if trim(FList.Text) = ''
-    then s:= FValue
-    else s:= List[0];
-  tw:= Canvas.TextWidth(s);
-  th:= Canvas.TextHeight(s);
-  if trim(FList.Text) = ''
-    then x:= Width - 16 - tw - 2
-    else x:= 2;
-  y:= (Height - th) div 2;
-  Canvas.TextOut(x, y, s);
+  if Trim(FList.Text) = '' then
+    Str := FValue
+  else
+    Str := List[0];
+  TextWidth := Canvas.TextWidth(Str);
+  TextHeight := Canvas.TextHeight(Str);
+  if Trim(FList.Text) = '' then
+    XPos := Width - 16 - TextWidth - 2
+  else
+    XPos := 2;
+  YPos := (Height - TextHeight) div 2;
+  Canvas.TextOut(XPos, YPos, Str);
 
   // paint up/down
-  Canvas.Brush.Color:= FNeutral;
-  Canvas.Rectangle(Width-16, 0, Width, Height div 2);
-  Canvas.Rectangle(Width-16, Height div 2, Width, Height);
-  Canvas.Brush.Color:= DarkShadow;
-  x:= Width - 16;
-  y:= Height div 4;
-  Points[0]:= Point(x +  5, y + 2);
-  Points[1]:= Point(x + 11, y + 2);
-  Points[2]:= Point(x +  8, y - 2);
+  Canvas.Brush.Color := FNeutral;
+  Canvas.Rectangle(Width - 16, 0, Width, Height div 2);
+  Canvas.Rectangle(Width - 16, Height div 2, Width, Height);
+  Canvas.Brush.Color := DarkShadow;
+  XPos := Width - 16;
+  YPos := Height div 4;
+  Points[0] := Point(XPos + 5, YPos + 2);
+  Points[1] := Point(XPos + 11, YPos + 2);
+  Points[2] := Point(XPos + 8, YPos - 2);
   Canvas.Polygon(Points);
-  y:= (Height*3) div 4;
-  Points[0]:= Point(x +  5, y - 2);
-  Points[1]:= Point(x + 11, y - 2);
-  Points[2]:= Point(x +  8, y + 2);
+  YPos := (Height * 3) div 4;
+  Points[0] := Point(XPos + 5, YPos - 2);
+  Points[1] := Point(XPos + 11, YPos - 2);
+  Points[2] := Point(XPos + 8, YPos + 2);
   Canvas.Polygon(Points);
 end;
 
-procedure TJSpinner.SetMaximum(aValue: integer);
+procedure TJSpinner.SetMaximum(AValue: Integer);
 begin
-  if (aValue <> FMaximum) and (aValue > FMinimum) then begin
-    FMaximum:= aValue;
+  if (AValue <> FMaximum) and (AValue > FMinimum) then
+  begin
+    FMaximum := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJSpinner.SetMinimum(aValue: integer);
+procedure TJSpinner.SetMinimum(AValue: Integer);
 begin
-  if (aValue <> FMinimum) and (aValue < FMaximum) then begin
-    FMinimum:= aValue;
+  if (AValue <> FMinimum) and (AValue < FMaximum) then
+  begin
+    FMinimum := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJSpinner.SetStepSize(aValue: integer);
+procedure TJSpinner.SetStepSize(AValue: Integer);
 begin
-  if aValue <> FStepSize then begin
-    FStepSize:= aValue;
+  if AValue <> FStepSize then
+  begin
+    FStepSize := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJSpinner.SetValue(const aValue: string);
-  var e: integer; d: double;
+procedure TJSpinner.SetValue(const AValue: string);
+var
+  AInt: Integer;
+  ADouble: Double;
 begin
-  if aValue <> FValue then begin
-    val(aValue, d, e);
-    if (e = 0) and (FMinimum <= d) and (d <= FMaximum) then
-      FValue:= aValue
-    else if FList.IndexOf(aValue) > -1 then
-      FValue:= aValue;
+  if AValue <> FValue then
+  begin
+    Val(AValue, ADouble, AInt);
+    if (AInt = 0) and (FMinimum <= ADouble) and (ADouble <= FMaximum) then
+      FValue := AValue
+    else if FList.IndexOf(AValue) > -1 then
+      FValue := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJSpinner.SetStrings(theStrings: TStrings);
+procedure TJSpinner.SetStrings(TheStrings: TStrings);
 begin
-  FList.assign(theStrings);
-  if trim(FList.Text) = ''
-    then FValue:= '0'
-    else FValue:= FList.Strings[0];
+  FList.Assign(TheStrings);
+  if Trim(FList.Text) = '' then
+    FValue := '0'
+  else
+    FValue := FList[0];
   Invalidate;
 end;
 

@@ -74,9 +74,9 @@ type
     function LoadFromRegistry(Reg: TBetterRegistry): Boolean;
     function SaveToRegistry(Reg: TBetterRegistry): Boolean;
     // Rr
-    function ReadIntOrHex(Ini: TCustomIniFile; Section, Name: string; Default: integer): integer;
+    function ReadIntOrHex(Ini: TCustomIniFile; Section, Name: string; Default: Integer): Integer;
     function LoadFromFile(Ini: TCustomIniFile): Boolean; overload;
-    function LoadFromFile(Ini : TCustomIniFile; Style: string): boolean; overload;
+    function LoadFromFile(Ini : TCustomIniFile; Style: string): Boolean; overload;
     function SaveToFile(Ini: TCustomIniFile): Boolean; overload;
     function SaveToFile(Ini: TCustomIniFile; aStyle: string): Boolean; overload;
   public
@@ -203,7 +203,7 @@ type
     function SaveToIniFile(AIni: TCustomIniFile; Style: string): Boolean; overload;
     // Rr
     function LoadFromFile(const AFileName: string): Boolean; overload;
-    function LoadFromFile(const AFileName, Style : string): boolean; overload;
+    function LoadFromFile(const AFileName, Style : string): Boolean; overload;
     function SaveToFile(const AFileName: string): Boolean; overload;
     function SaveToFile(const AFileName, Style: string): Boolean; overload;
 
@@ -290,14 +290,14 @@ end;
 
 function TSynHighlighterList.FindByClass(Comp: TComponent): Integer;
 var
-  i: Integer;
+  Int: Integer;
 begin
   Result := -1;
-  for i := 0 to Count - 1 do
+  for Int := 0 to Count - 1 do
   begin
-    if Comp is Items[i] then
+    if Comp is Items[Int] then
     begin
-      Result := i;
+      Result := Int;
       Exit;
     end;
   end;
@@ -305,14 +305,14 @@ end;
 
 function TSynHighlighterList.FindByFriendlyName(FriendlyName: string): Integer;
 var
-  i: Integer;
+  Int: Integer;
 begin
   Result := -1;
-  for i := 0 to Count - 1 do
+  for Int := 0 to Count - 1 do
   begin
-    if Items[i].GetFriendlyLanguageName = FriendlyName then
+    if Items[Int].GetFriendlyLanguageName = FriendlyName then
     begin
-      Result := i;
+      Result := Int;
       Exit;
     end;
   end;
@@ -320,14 +320,14 @@ end;
 
 function TSynHighlighterList.FindByName(Name: string): Integer;
 var
-  i: Integer;
+  Int: Integer;
 begin
   Result := -1;
-  for i := 0 to Count - 1 do
+  for Int := 0 to Count - 1 do
   begin
-    if Items[i].GetLanguageName = Name then
+    if Items[Int].GetLanguageName = Name then
     begin
-      Result := i;
+      Result := Int;
       Exit;
     end;
   end;
@@ -476,12 +476,12 @@ const
 
     function Get(var Name: string): string;
     var
-      p: Integer;
+      Posi: Integer;
     begin
-      p := Pos(',', Name);
-      if p = 0 then p := Length(Name) + 1;
-      Result := Copy(name, 1, p - 1);
-      name := Copy(name, p + 1, Length(name) - p);
+      Posi := Pos(',', Name);
+      if Posi = 0 then Posi := Length(Name) + 1;
+      Result := Copy(Name, 1, Posi - 1);
+      Name := Copy(Name, Posi + 1, Length(Name) - Posi);
     end;
 
   begin { LoadOldStyle }
@@ -689,41 +689,41 @@ begin
     Result := False;
 end;
 
-function TSynHighlighterAttributes.LoadFromFile(Ini : TCustomIniFile): boolean;
+function TSynHighlighterAttributes.LoadFromFile(Ini : TCustomIniFile): Boolean;
 var
-  S: TStringList;
+  Str: TStringList;
 begin
-  S := TStringList.Create;
+  Str := TStringList.Create;
   try
-    Ini.ReadSection(Name, S);
-    if S.Count > 0 then
+    Ini.ReadSection(Name, Str);
+    if Str.Count > 0 then
     begin
-      if S.IndexOf('Background') <> -1 then
+      if Str.IndexOf('Background') <> -1 then
         Background := Ini.ReadInteger(Name, 'Background', Background);
-      if S.IndexOf('Foreground') <> -1 then
+      if Str.IndexOf('Foreground') <> -1 then
         Foreground := Ini.ReadInteger(Name, 'Foreground', Foreground);
-      if S.IndexOf('Style') <> -1 then
+      if Str.IndexOf('Style') <> -1 then
         IntegerStyle := Ini.ReadInteger(Name, 'Style', IntegerStyle);
-      Result := true;
+      Result := True;
     end
     else
       Result := False;
   finally
-    S.Free;
+    Str.Free;
   end;
 end;
 
-function  TSynHighlighterAttributes.ReadIntOrHex(Ini: TCustomIniFile; Section, Name: string; Default: integer): integer;
-  var s: string;
+function  TSynHighlighterAttributes.ReadIntOrHex(Ini: TCustomIniFile; Section, Name: string; Default: Integer): Integer;
+  var Str: string;
 begin
   Result:= Default;
-  s:= Ini.ReadString(Section, Name, '');
-  if (s <> '') and (s[1] = '#') then begin
-    delete(s, 1, 1);
-    while length(s) < 6 do
-      s:= '0' + s;
-    s:= copy(s, 5, 2) + copy(s, 3, 2) + copy(s, 1, 2);
-    TryStrToInt('$' + s, Result);
+  Str:= Ini.ReadString(Section, Name, '');
+  if (Str <> '') and (Str[1] = '#') then begin
+    Delete(Str, 1, 1);
+    while Length(Str) < 6 do
+      Str:= '0' + Str;
+    Str:= Copy(Str, 5, 2) + Copy(Str, 3, 2) + Copy(Str, 1, 2);
+    TryStrToInt('$' + Str, Result);
   end else
     Result:= Default;
 end;
@@ -731,31 +731,31 @@ end;
 // Rr
 function TSynHighlighterAttributes.LoadFromFile(Ini: TCustomIniFile; Style: string): Boolean;
 var
-  S: TStringList;
+  Str: TStringList;
   Section: string;
 begin
-  S := TStringList.Create;
+  Str := TStringList.Create;
   try
     // Rr
     if Style = 'Default'
       then Section:= Name
       else Section:= Style + '\' + Name;
 
-    Ini.ReadSection(Name, S);
-    if S.Count > 0 then
+    Ini.ReadSection(Name, Str);
+    if Str.Count > 0 then
     begin
-      if S.IndexOf('Background') <> -1 then
+      if Str.IndexOf('Background') <> -1 then
         Background:= ReadIntOrHex(Ini, Section, 'Background', Background);
-      if S.IndexOf('Foreground') <> -1 then
+      if Str.IndexOf('Foreground') <> -1 then
         Foreground := ReadIntOrHex(Ini, Section, 'Foreground', Foreground);
-      if S.IndexOf('Style') <> -1 then
+      if Str.IndexOf('Style') <> -1 then
         IntegerStyle := Ini.ReadInteger(Section, 'Style', IntegerStyle);
-      Result := true;
+      Result := True;
     end
     else
       Result := False;
   finally
-    S.Free;
+    Str.Free;
   end;
 end;
 
@@ -767,11 +767,11 @@ begin
   Result := True;
 end;
 
-function TSynHighlighterAttributes.SaveToFile(Ini : TCustomIniFile; aStyle: string): boolean;
+function TSynHighlighterAttributes.SaveToFile(Ini : TCustomIniFile; aStyle: string): Boolean;
   var Section: string;
 
   function ToHTMLHex(color: TColor): string;
-    var R, G, B: integer;
+    var R, G, B: Integer;
   begin
     R := Color and $FF;
     G := (Color shr 8) and $FF;
@@ -850,12 +850,12 @@ end;
 
 procedure TSynCustomHighlighter.FreeHighlighterAttributes;
 var
-  i: Integer;
+  Int: Integer;
 begin
   if fAttributes <> nil then
   begin
-    for i := fAttributes.Count - 1 downto 0 do
-      TSynHighlighterAttributes(fAttributes.Objects[i]).Free;
+    for Int := fAttributes.Count - 1 downto 0 do
+      TSynHighlighterAttributes(fAttributes.Objects[Int]).Free;
     fAttributes.Clear;
   end;
 end;
@@ -863,7 +863,7 @@ end;
 procedure TSynCustomHighlighter.Assign(Source: TPersistent);
 var
   Src: TSynCustomHighlighter;
-  i, j: Integer;
+  Int, j: Integer;
   AttriName: string;
   SrcAttri: TSynHighlighterAttributes;
 begin
@@ -872,17 +872,17 @@ begin
     BeginUpdate;
     try
       Src := TSynCustomHighlighter(Source);
-      for i := 0 to AttrCount - 1 do
+      for Int := 0 to AttrCount - 1 do
       begin
         // assign first attribute with the same name
-        AttriName := Attribute[i].Name;
+        AttriName := Attribute[Int].Name;
         for j := 0 to Src.AttrCount - 1 do
         begin
           SrcAttri := Src.Attribute[j];
           if AttriName = SrcAttri.Name then
           begin
-            Attribute[i].Assign(SrcAttri);
-            break;
+            Attribute[Int].Assign(SrcAttri);
+            Break;
           end;
         end;
       end;
@@ -914,7 +914,7 @@ function TSynCustomHighlighter.LoadFromRegistry(RootKey: HKEY;
   Key: string): Boolean;
 var
   r: TBetterRegistry;
-  i: Integer;
+  Int: Integer;
 begin
   r := TBetterRegistry.Create;
   try
@@ -922,8 +922,8 @@ begin
     if r.OpenKeyReadOnly(Key) then
     begin
       Result := True;
-      for i := 0 to AttrCount - 1 do
-        Result := Attribute[i].LoadFromRegistry(r) and Result;
+      for Int := 0 to AttrCount - 1 do
+        Result := Attribute[Int].LoadFromRegistry(r) and Result;
     end
     else
       Result := False;
@@ -936,7 +936,7 @@ function TSynCustomHighlighter.SaveToRegistry(RootKey: HKEY;
   Key: string): Boolean;
 var
   r: TBetterRegistry;
-  i: Integer;
+  Int: Integer;
 begin
   r := TBetterRegistry.Create;
   try
@@ -944,8 +944,8 @@ begin
     if r.OpenKey(Key,True) then
     begin
       Result := True;
-      for i := 0 to AttrCount - 1 do
-        Result := Attribute[i].SaveToRegistry(r) and Result;
+      for Int := 0 to AttrCount - 1 do
+        Result := Attribute[Int].SaveToRegistry(r) and Result;
     end
     else
       Result := False;
@@ -954,7 +954,7 @@ begin
   end;
 end;
 
-function TSynCustomHighlighter.LoadFromFile(const AFileName : string): boolean;
+function TSynCustomHighlighter.LoadFromFile(const AFileName : string): Boolean;
 var
   AIni: TMemIniFile;
 begin
@@ -967,25 +967,25 @@ begin
 end;
 
 // Rr
-function TSynCustomHighlighter.LoadFromFile(const AFileName, Style : string): boolean;
+function TSynCustomHighlighter.LoadFromFile(const AFileName, Style : string): Boolean;
 var
   AIni: TIniFile;
-  i: Integer;
+  Int: Integer;
 begin
   AIni := TIniFile.Create(AFileName);
   try
     with AIni do
     begin
       Result := True;
-      for i := 0 to AttrCount - 1 do
-        Result := Attribute[i].LoadFromFile(AIni, Style) and Result;
+      for Int := 0 to AttrCount - 1 do
+        Result := Attribute[Int].LoadFromFile(AIni, Style) and Result;
     end;
   finally
     AIni.Free;
   end;
 end;
 
-function TSynCustomHighlighter.SaveToFile(const AFileName : string): boolean;
+function TSynCustomHighlighter.SaveToFile(const AFileName : string): Boolean;
 var
   AIni: TMemIniFile;
 begin
@@ -997,7 +997,7 @@ begin
   end;
 end;
 
-function TSynCustomHighlighter.SaveToFile(const AFileName, Style : string): boolean;
+function TSynCustomHighlighter.SaveToFile(const AFileName, Style : string): Boolean;
 var
   AIni: TMemIniFile;
 begin
@@ -1152,21 +1152,21 @@ end;
 
 function TSynCustomHighlighter.IsCurrentToken(const Token: string): Boolean;
 var
-  I: Integer;
+  Int: Integer;
   Temp: PWideChar;
 begin
   Temp := fToIdent;
   if Length(Token) = fStringLen then
   begin
     Result := True;
-    for i := 1 to fStringLen do
+    for Int := 1 to fStringLen do
     begin
-      if Temp^ <> Token[i] then
+      if Temp^ <> Token[Int] then
       begin
         Result := False;
-        break;
+        Break;
       end;
-      inc(Temp);
+      Inc(Temp);
     end;
   end
   else
@@ -1232,39 +1232,39 @@ end;
 
 function TSynCustomHighlighter.SaveToIniFile(AIni: TCustomIniFile): Boolean;
 var
-  i: Integer;
+  Int: Integer;
 begin
   with AIni do
   begin
     Result := True;
-    for i := 0 to AttrCount - 1 do
-      Result := Attribute[i].SaveToFile(AIni) and Result;
+    for Int := 0 to AttrCount - 1 do
+      Result := Attribute[Int].SaveToFile(AIni) and Result;
   end;
   AIni.UpdateFile;
 end;
 
 function TSynCustomHighlighter.SaveToIniFile(AIni: TCustomIniFile; Style: string): Boolean;
 var
-  i: Integer;
+  Int: Integer;
 begin
   with AIni do
   begin
     Result := True;
-    for i := 0 to AttrCount - 1 do
-      Result := Attribute[i].SaveToFile(AIni, Style) and Result;
+    for Int := 0 to AttrCount - 1 do
+      Result := Attribute[Int].SaveToFile(AIni, Style) and Result;
   end;
   AIni.UpdateFile;
 end;
 
 function TSynCustomHighlighter.LoadFromIniFile(AIni: TCustomIniFile): Boolean;
 var
-  i: Integer;
+  Int: Integer;
 begin
   with AIni do
   begin
     Result := True;
-    for i := 0 to AttrCount - 1 do
-      Result := Attribute[i].LoadFromFile(AIni) and Result;
+    for Int := 0 to AttrCount - 1 do
+      Result := Attribute[Int].LoadFromFile(AIni) and Result;
   end;
 end;
 
@@ -1281,9 +1281,9 @@ begin
   while Delta > 0 do
   begin
     while fExpandedLine[ExpandedRun] = FillerChar do
-      inc(ExpandedRun);
-    inc(ExpandedRun);
-    dec(Delta);
+      Inc(ExpandedRun);
+    Inc(ExpandedRun);
+    Dec(Delta);
   end;
   fOldRun := Run;
 end;
@@ -1311,12 +1311,12 @@ end;
 
 procedure TSynCustomHighlighter.SetAttributesOnChange(AEvent: TNotifyEvent);
 var
-  i: Integer;
+  Int: Integer;
   Attri: TSynHighlighterAttributes;
 begin
-  for i := fAttributes.Count - 1 downto 0 do
+  for Int := fAttributes.Count - 1 downto 0 do
   begin
-    Attri := TSynHighlighterAttributes(fAttributes.Objects[i]);
+    Attri := TSynHighlighterAttributes(fAttributes.Objects[Int]);
     if Attri <> nil then
     begin
       Attri.OnChange := AEvent;
@@ -1413,7 +1413,7 @@ end;
 // Pos and Result are 1-based (i.e. positions in a string not a PWideChar)
 function TSynCustomHighlighter.PosToExpandedPos(Pos: Integer): Integer;
 var
-  i: Integer;
+  Int: Integer;
 begin
   if fExpandedLine = nil then
   begin
@@ -1422,13 +1422,13 @@ begin
   end;
 
   Result := 0;
-  i := 0;
-  while i < Pos do
+  Int := 0;
+  while Int < Pos do
   begin
     while fExpandedLine[Result] = FillerChar do
-      inc(Result);
-    inc(Result);
-    inc(i);
+      Inc(Result);
+    Inc(Result);
+    Inc(Int);
   end;
 end;
 

@@ -3,60 +3,66 @@ unit UFXWebView;
 interface
 
 uses
-  Classes, UFXComponents;
+  Classes,
+  UFXComponents;
 
 type
   TFontSmoothingType = (GRAY, LCD);
 
-  TFXWebView = class (TFXNode)
+  TFXWebView = class(TFXNode)
   private
-    FContextMenuEnabled: boolean;
-    FFontScale: double;
+    FContextMenuEnabled: Boolean;
+    FFontScale: Double;
     FFontSmoothingType: TFontSmoothingType;
     FURL: string;
-    FPrefHeight: double;
-    FPrefWidth: double;
-    FZoom: double;
-    procedure setPrefWidth(aValue: double);
-    function getPrefWidth: double;
-    procedure setPrefHeight(aValue: double);
-    function getPrefHeight: double;
+    FPrefHeight: Double;
+    FPrefWidth: Double;
+    FZoom: Double;
+    procedure SetPrefWidth(AValue: Double);
+    function GetPrefWidth: Double;
+    procedure SetPrefHeight(AValue: Double);
+    function GetPrefHeight: Double;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetPositionAndSize; override;
   published
-    property ContextMenuEnabled: boolean read FContextMenuEnabled write FContextMenuEnabled;
-    property FontScale: double read FFontScale write FFontScale;
-    property FontSmoothingType: TFontSmoothingType read FFontSmoothingType write FFontSmoothingType;
-    property URL: string read FUrl write FUrl;
-    property PrefHeight: double read getPrefHeight write setPrefHeight;
-    property PrefWidth: double read getPrefWidth write setPrefWidth;
-    property Zoom: double read FZoom write FZoom;
+    property ContextMenuEnabled: Boolean read FContextMenuEnabled
+      write FContextMenuEnabled;
+    property FontScale: Double read FFontScale write FFontScale;
+    property FontSmoothingType: TFontSmoothingType read FFontSmoothingType
+      write FFontSmoothingType;
+    property URL: string read FURL write FURL;
+    property PrefHeight: Double read GetPrefHeight write SetPrefHeight;
+    property PrefWidth: Double read GetPrefWidth write SetPrefWidth;
+    property Zoom: Double read FZoom write FZoom;
   end;
 
 implementation
 
-uses Graphics, Controls, SysUtils;
+uses
+  Graphics,
+  Controls,
+  SysUtils;
 
-{--- TFXWebView ---------------------------------------------------------------}
+{ --- TFXWebView --------------------------------------------------------------- }
 
 constructor TFXWebView.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= +148;
-  FZoom:= 1;
-  FFontScale:= 1;
-  JavaType:= 'WebView';
+  inherited Create(AOwner);
+  Tag := +148;
+  FZoom := 1;
+  FFontScale := 1;
+  JavaType := 'WebView';
 end;
 
 procedure TFXWebView.Paint;
 begin
-  Canvas.Brush.Color:= clWhite;
-  Canvas.Pen.Color:= clWhite;
+  Canvas.Brush.Color := clWhite;
+  Canvas.Pen.Color := clWhite;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
 end;
 
@@ -70,46 +76,51 @@ end;
 procedure TFXWebView.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'URL' then
-    ChangeAttributValue(Name + '.getEngine(', Indent2 + Name +  '.getEngine().load("' + Value + '");')
+    ChangeAttributValue(Name + '.getEngine(',
+      Indent2 + Name + '.getEngine().load("' + Value + '");')
   else
     inherited;
 end;
 
-function TFXWebView.getAttributes(ShowAttributes: integer): string;
-  const Attributes1 = '|PrefHeight|PrefWidth|URL';
-        Attributes2 = Attributes1 + '|Zoom|FontScale|ContextMenuEnabled';
+function TFXWebView.GetAttributes(ShowAttributes: Integer): string;
+const
+  Attributes1 = '|PrefHeight|PrefWidth|URL';
+  Attributes2 = Attributes1 + '|Zoom|FontScale|ContextMenuEnabled';
 begin
-  if ShowAttributes = 1
-    then Result:= Attributes1 + inherited getAttributes(ShowAttributes)
-    else Result:= Attributes2 + inherited getAttributes(ShowAttributes);
+  if ShowAttributes = 1 then
+    Result := Attributes1 + inherited GetAttributes(ShowAttributes)
+  else
+    Result := Attributes2 + inherited GetAttributes(ShowAttributes);
 end;
 
-procedure TFXWebView.setPrefWidth(aValue: double);
+procedure TFXWebView.SetPrefWidth(AValue: Double);
 begin
-  if aValue <> FPrefWidth then begin
-    FPrefWidth:= aValue;
-    Width:= round(FPrefWidth);
+  if AValue <> FPrefWidth then
+  begin
+    FPrefWidth := AValue;
+    Width := Round(FPrefWidth);
     Invalidate;
   end;
 end;
 
-function TFXWebView.getPrefWidth: double;
+function TFXWebView.GetPrefWidth: Double;
 begin
-  Result:= Width;
+  Result := Width;
 end;
 
-procedure TFXWebView.setPrefHeight(aValue: double);
+procedure TFXWebView.SetPrefHeight(AValue: Double);
 begin
-  if aValue <> FPrefHeight then begin
-    FPrefHeight:= aValue;
-    Height:= round(FPrefHeight);
+  if AValue <> FPrefHeight then
+  begin
+    FPrefHeight := AValue;
+    Height := Round(FPrefHeight);
     Invalidate;
   end;
 end;
 
-function TFXWebView.getPrefHeight: double;
+function TFXWebView.GetPrefHeight: Double;
 begin
-  Result:= Height;
+  Result := Height;
 end;
 
 procedure TFXWebView.SetPositionAndSize;

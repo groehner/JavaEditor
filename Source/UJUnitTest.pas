@@ -3,16 +3,22 @@ unit UJUnitTest;
 interface
 
 uses
-  Classes, Controls, Forms, ComCtrls, ExtCtrls, Menus, uDockForm, TB2Item,
-  SpTBXItem, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList,
-  Vcl.BaseImageCollection, SVGIconImageCollection;
+  Classes,
+  Controls,
+  Forms,
+  ComCtrls,
+  ExtCtrls,
+  Menus,
+  TB2Item,
+  SpTBXItem,
+  System.ImageList,
+  Vcl.ImgList,
+  Vcl.VirtualImageList,
+  Vcl.BaseImageCollection,
+  SVGIconImageCollection,
+  UDockForm;
 
 type
-  TInteger = class
-  public
-    i: integer;
-    constructor create(aI: Integer);
-  end;
 
   TFJUnitTests = class(TDockableForm)
     PJUnit: TPanel;
@@ -36,17 +42,18 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
   private
+    FPathname: string;
     FUndockLeft: Integer;
     FUndockTop: Integer;
-    WindowOpened: boolean;
+    FWindowOpened: Boolean;
     procedure SaveWindow;
     procedure OpenWindow;
   public
-    Pathname: string;
     procedure ShowIt;
     procedure HideIt;
     procedure DeleteData;
     procedure ChangeStyle;
+    property Pathname: string read FPathname write FPathname;
     property UndockLeft: Integer read FUndockLeft write FUndockLeft;
     property UndockTop: Integer read FUndockTop write FUndockTop;
   end;
@@ -57,49 +64,56 @@ var
 implementation
 
 uses
-  SysUtils, Graphics, Dialogs, Math,
-  JvGnugettext, UConfiguration, UUtils, UJava, UEditorForm, UBaseForm;
+  SysUtils,
+  Math,
+  JvGnugettext,
+  UConfiguration,
+  UUtils,
+  UBaseForm,
+  UJava,
+  UEditorForm;
 
 {$R *.dfm}
-
-constructor TInteger.create(aI: Integer);
-begin
-  inherited create;
-  self.i:= aI;
-end;
 
 procedure TFJUnitTests.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
-  WindowOpened:= false;
+  FWindowOpened := False;
 end;
 
 procedure TFJUnitTests.FormShow(Sender: TObject);
 begin
-  if not WindowOpened then begin
+  if not FWindowOpened then
+  begin
     OpenWindow;
-    WindowOpened:= true;
+    FWindowOpened := True;
   end;
 end;
 
 procedure TFJUnitTests.TVJUnitTestsChange(Sender: TObject; Node: TTreeNode);
-  var Line: Integer;
-      EditForm: TFEditForm; aForm: TFForm;
-      isWrapping: boolean;
+var
+  Line: Integer;
+  EditForm: TFEditForm;
+  AForm: TFForm;
+  IsWrapping: Boolean;
 begin
-  FJava.SwitchWindowWithSearch(Pathname);
-  if FJava.WindowOpened(Pathname, aForm) then begin
-    EditForm:= aForm as TFEditForm;
+  FJava.SwitchWindowWithSearch(FPathname);
+  if FJava.WindowOpened(FPathname, AForm) then
+  begin
+    EditForm := AForm as TFEditForm;
     FJava.SwitchToWindow(EditForm);
-    Line:= TInteger(Node.Data).i;
-    isWrapping:= EditForm.Editor.WordWrap;
-    with EditForm.Editor do begin
-      if isWrapping then EditForm.SBWordWrapClick(nil);
-      Topline:= Line;
-      CaretY:= Line;
-      CaretX:= 1; // Length(Lines[Line-1]) + 1;
+    Line := TInteger(Node.Data).Int;
+    IsWrapping := EditForm.Editor.WordWrap;
+    with EditForm.Editor do
+    begin
+      if IsWrapping then
+        EditForm.SBWordWrapClick(nil);
+      TopLine := Line;
+      CaretY := Line;
+      CaretX := 1; // Length(Lines[Line-1]) + 1;
       EnsureCursorPosVisible;
-      if isWrapping then EditForm.SBWordWrapClick(nil);
+      if IsWrapping then
+        EditForm.SBWordWrapClick(nil);
     end;
     if EditForm.CanFocus then
       EditForm.SetFocus;
@@ -109,39 +123,52 @@ end;
 procedure TFJUnitTests.TVJUnitTestsMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  inherited;
   if Button = mbRight then
-    PMJUnitTests.Popup(X+(Sender as TTreeView).ClientOrigin.X-40, Y+(Sender as TTreeView).ClientOrigin.Y-5);
+    PMJUnitTests.Popup(X + (Sender as TTreeView).ClientOrigin.X - 40,
+      Y + (Sender as TTreeView).ClientOrigin.Y - 5);
 end;
 
 procedure TFJUnitTests.OpenWindow;
 begin
-  UndockLeft:= PPIScale(FConfiguration.ReadIntegerU('JUnitTest', 'UndockLeft', 400));
-  UndockTop:= PPIScale(FConfiguration.ReadIntegerU('JUnitTest', 'UndockTop', 100));
-  UndockWidth:= PPIScale(FConfiguration.ReadIntegerU('JUnitTest', 'UndockWidth', 200));
-  UndockHeight:= PPIScale(FConfiguration.ReadIntegerU('JUnitTest', 'UndockHeight', 200));
-  UndockLeft:= min(UndockLeft, Screen.DesktopWidth - 50);
-  UndockTop:= min(UndockTop, Screen.DesktopHeight - 50);
-  ManualFloat(Rect(UnDockLeft, UnDockTop, UnDockLeft + UnDockWidth, UnDockTop + UnDockHeight));
-  Font.Name:= FConfiguration.ReadStringU('JUnitTest', 'Fontname', 'Segoe UI');
-  Font.Size:= PPIScale(FConfiguration.ReadIntegerU('JUnitTest', 'Fontsize', 10));
+  UndockLeft := PPIScale(FConfiguration.ReadIntegerU('JUnitTest',
+    'UndockLeft', 400));
+  UndockTop := PPIScale(FConfiguration.ReadIntegerU('JUnitTest',
+    'UndockTop', 100));
+  UndockWidth := PPIScale(FConfiguration.ReadIntegerU('JUnitTest',
+    'UndockWidth', 200));
+  UndockHeight := PPIScale(FConfiguration.ReadIntegerU('JUnitTest',
+    'UndockHeight', 200));
+  UndockLeft := Min(UndockLeft, Screen.DesktopWidth - 50);
+  UndockTop := Min(UndockTop, Screen.DesktopHeight - 50);
+  ManualFloat(Rect(UndockLeft, UndockTop, UndockLeft + UndockWidth,
+    UndockTop + UndockHeight));
+  Font.Name := FConfiguration.ReadStringU('JUnitTest', 'Fontname', 'Segoe UI');
+  Font.Size := PPIScale(FConfiguration.ReadIntegerU('JUnitTest',
+    'Fontsize', 10));
 end;
 
 procedure TFJUnitTests.SaveWindow;
 begin
   FConfiguration.WriteBoolU('JUnitTest', 'Visible', Visible);
   FConfiguration.WriteBoolU('JUnitTest', 'Floating', Floating);
-  if Floating then begin
+  if Floating then
+  begin
     FConfiguration.WriteIntegerU('JUnitTest', 'UndockLeft', PPIUnScale(Left));
-    FConfiguration.WriteIntegerU('JUnitTest', 'UndockTop',  PPIUnScale(Top));
+    FConfiguration.WriteIntegerU('JUnitTest', 'UndockTop', PPIUnScale(Top));
     FConfiguration.WriteIntegerU('JUnitTest', 'UndockWidth', PPIUnScale(Width));
-    FConfiguration.WriteIntegerU('JUnitTest', 'UndockHeight', PPIUnscale(Height));
-    end
-  else begin
-    FConfiguration.WriteIntegerU('JUnitTest', 'UndockLeft', PPIUnScale(UndockLeft));
-    FConfiguration.WriteIntegerU('JUnitTest', 'UndockTop',  PPIUnScale(UndockTop));
-    FConfiguration.WriteIntegerU('JUnitTest', 'UndockWidth', PPIUnScale(UndockWidth));
-    FConfiguration.WriteIntegerU('JUnitTest', 'UndockHeight', PPIUnScale(UndockHeight));
+    FConfiguration.WriteIntegerU('JUnitTest', 'UndockHeight',
+      PPIUnScale(Height));
+  end
+  else
+  begin
+    FConfiguration.WriteIntegerU('JUnitTest', 'UndockLeft',
+      PPIUnScale(UndockLeft));
+    FConfiguration.WriteIntegerU('JUnitTest', 'UndockTop',
+      PPIUnScale(UndockTop));
+    FConfiguration.WriteIntegerU('JUnitTest', 'UndockWidth',
+      PPIUnScale(UndockWidth));
+    FConfiguration.WriteIntegerU('JUnitTest', 'UndockHeight',
+      PPIUnScale(UndockHeight));
   end;
   FConfiguration.WriteStringU('JUnitTest', 'Fontname', Font.Name);
   FConfiguration.WriteIntegerU('JUnitTest', 'Fontsize', PPIUnScale(Font.Size));
@@ -160,10 +187,12 @@ begin
 end;
 
 procedure TFJUnitTests.DeleteData;
-  var TInt: TInteger;  i: integer;
+var
+  TInt: TInteger;
 begin
-  for i:= 0 to TVJUnitTests.Items.Count -1 do begin
-    TInt:= TInteger(TVJUnitTests.Items[i].Data);
+  for var I := 0 to TVJUnitTests.Items.Count - 1 do
+  begin
+    TInt := TInteger(TVJUnitTests.Items[I].Data);
     FreeAndNil(TInt);
   end;
   TVJUnitTests.Items.Clear;
@@ -182,7 +211,7 @@ end;
 procedure TFJUnitTests.MIFontClick(Sender: TObject);
 begin
   FJava.FDFont.Font.Assign(Font);
-  FJava.FDFont.Options:= [];
+  FJava.FDFont.Options := [];
   if FJava.FDFont.Execute then
     Font.Assign(FJava.FDFont.Font);
 end;
@@ -199,12 +228,14 @@ end;
 
 procedure TFJUnitTests.ChangeStyle;
 begin
-  if FConfiguration.isDark
-    then PMJUnitTests.Images:= vilJUnitDark
-    else PMJUnitTests.Images:= vilJUnitLight;
+  if FConfiguration.IsDark then
+    PMJUnitTests.Images := vilJUnitDark
+  else
+    PMJUnitTests.Images := vilJUnitLight;
 end;
 
 initialization
-  FJUnitTests:= nil;
+
+FJUnitTests := nil;
 
 end.

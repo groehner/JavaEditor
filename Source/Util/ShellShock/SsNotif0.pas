@@ -144,22 +144,22 @@ end;
 
 procedure TShellNotifyEditorForm.SelectAllBtnClick(Sender: TObject);
 var
-  I :  Integer;
+  Int :  Integer;
 begin
-  for I := 0 to Pred(ComponentCount) do
-    if Components[I] is TCheckBox then
-      with Components[I] as TCheckBox do
+  for Int := 0 to Pred(ComponentCount) do
+    if Components[Int] is TCheckBox then
+      with Components[Int] as TCheckBox do
         if Parent = EventsGb then
           Checked := True;
 end;
 
 procedure TShellNotifyEditorForm.ClearAllBtnClick(Sender: TObject);
 var
-  I :  Integer;
+  Int :  Integer;
 begin
-  for I := 0 to Pred(ComponentCount) do
-    if Components[I] is TCheckBox then
-      with Components[I] as TCheckBox do
+  for Int := 0 to Pred(ComponentCount) do
+    if Components[Int] is TCheckBox then
+      with Components[Int] as TCheckBox do
         if Parent = EventsGb then
           Checked := False;
 end;

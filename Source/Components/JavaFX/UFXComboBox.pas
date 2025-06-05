@@ -1,10 +1,10 @@
 unit UFXComboBox;
 
 { classes
-    TFXComboBoxBase = class(TFXControl)
-      TFXComboBox = class (TFXComboBoxBase)
-      TFXColorPicker = class(TFXComboBoxBase)
-      TFXDatePicker = class(TFXComboBoxBase)
+  TFXComboBoxBase = class(TFXControl)
+  TFXComboBox = class (TFXComboBoxBase)
+  TFXColorPicker = class(TFXComboBoxBase)
+  TFXDatePicker = class(TFXComboBoxBase)
 }
 
 interface
@@ -16,7 +16,7 @@ type
 
   TFXComboBoxBase = class(TFXControl)
   private
-    FEditable: boolean;
+    FEditable: Boolean;
     FPromptText: string;
     FValue: string;
 
@@ -26,13 +26,13 @@ type
     Fshowing: string;
     Fshown: string;
   protected
-    procedure setEditable(aValue: boolean);
+    procedure SetEditable(AValue: Boolean);
   public
-    function getEvents(ShowEvents: integer): string; override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    function GetEvents(ShowEvents: Integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure Rename(const OldName, NewName, Events: string); override;
   published
-    property Editable: boolean read FEditable write setEditable;
+    property Editable: Boolean read FEditable write SetEditable;
     property PromptText: string read FPromptText write FPromptText;
     property Value: string read FValue write FValue;
 
@@ -43,114 +43,119 @@ type
     property shown: string read Fshown write Fshown;
   end;
 
-  TFXComboBox = class (TFXComboBoxBase)
+  TFXComboBox = class(TFXComboBoxBase)
   private
-    FVisibleRowCount: integer;
+    FVisibleRowCount: Integer;
     FItems: TStrings;
     FPromptText: string;
     FValue: string;
-    procedure setItems(aItems: TStrings);
-    procedure setPromptText(const aValue: string);
-    procedure setValue(const aValue: string);
+    procedure SetItems(AItems: TStrings);
+    procedure SetPromptText(const AValue: string);
+    procedure SetValue(const AValue: string);
     procedure MakeList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
     procedure NewControl; override;
-    procedure setAttribute(Attr, aValue, Typ: string); override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    procedure SetAttribute(Attr, AValue, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure DeleteComponent; override;
   published
-    property VisibleRowCount: integer read FVisibleRowCount write FVisibleRowCount default 8;
-    property Items: TStrings read FItems write setItems;
-    property PromptText: string read FPromptText write setPromptText;
-    property Value: string read FValue write setValue;    
+    property VisibleRowCount: Integer read FVisibleRowCount
+      write FVisibleRowCount default 8;
+    property Items: TStrings read FItems write SetItems;
+    property PromptText: string read FPromptText write SetPromptText;
+    property Value: string read FValue write SetValue;
   end;
 
   TFXColorPicker = class(TFXComboBoxBase)
   private
-    FaValue: TColor;
-    procedure setValue(aColor: TColor);
+    FAValue: TColor;
+    procedure SetValue(AColor: TColor);
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, aValue, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, AValue, Typ: string); override;
   published
-    property Value: TColor read FaValue write setValue;
+    property Value: TColor read FAValue write SetValue;
   end;
 
   TFXDatePicker = class(TFXComboBoxBase)
   private
-    FShowWeekNumbers: boolean;
+    FShowWeekNumbers: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, aValue, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, AValue, Typ: string); override;
   published
-    property ShowWeekNumbers: boolean read FShowWeekNumbers write FShowWeekNumbers;
+    property ShowWeekNumbers: Boolean read FShowWeekNumbers
+      write FShowWeekNumbers;
   end;
 
 implementation
 
 uses SysUtils, Controls, Types, UGUIDesigner, ULink, UUtils;
 
-{--- TFXComboBoxBase ----------------------------------------------------------}
+{ --- TFXComboBoxBase ---------------------------------------------------------- }
 
-procedure TFXComboBoxBase.setEditable(aValue: boolean);
+procedure TFXComboBoxBase.SetEditable(AValue: Boolean);
 begin
-  if aValue <> FEditable then begin
-    FEditable:= aValue;
+  if AValue <> FEditable then
+  begin
+    FEditable := AValue;
     Invalidate;
   end;
 end;
 
-function TFXComboBoxBase.getAttributes(ShowAttributes: integer): string;
-  const Attributes = '|Armed|Editable|PromptText|Value';
+function TFXComboBoxBase.GetAttributes(ShowAttributes: Integer): string;
+const
+  Attributes = '|Armed|Editable|PromptText|Value';
 begin
-  Result:= Attributes + inherited getAttributes(ShowAttributes);
+  Result := Attributes + inherited GetAttributes(ShowAttributes);
 end;
 
-function TFXComboBoxBase.getEvents(ShowEvents: integer): string;
-  const Events = '|action|hidden|hiding|showing|shown';
+function TFXComboBoxBase.GetEvents(ShowEvents: Integer): string;
+const
+  Events = '|action|hidden|hiding|showing|shown';
 begin
-  Result:= Events + inherited getEvents(ShowEvents);
+  Result := Events + inherited GetEvents(ShowEvents);
 end;
 
 procedure TFXComboBoxBase.Rename(const OldName, NewName, Events: string);
-  procedure rename(var name: string);
+  procedure Rename(var Name: string);
   begin
-    if name <> '' then
-      name:= NewName + UUtils.Right(name, Length(OldName) + 1);
+    if Name <> '' then
+      Name := NewName + UUtils.Right(Name, Length(OldName) + 1);
   end;
 
 begin
   inherited;
-  rename(Faction);
-  rename(Fhidden);
-  rename(Fhiding);
-  rename(Fshowing);
-  rename(Fshown);
+  Rename(Faction);
+  Rename(Fhidden);
+  Rename(Fhiding);
+  Rename(Fshowing);
+  Rename(Fshown);
 end;
 
-{--- TFXComboBox --------------------------------------------------------------}
+{ --- TFXComboBox -------------------------------------------------------------- }
 
 constructor TFXComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= +110;
-  PrefWidth:= 80;
-  PrefHeight:= 24;
-  FItems:= TStringList.Create;
-  FItems.Text:= defaultItems;
-  FValue:= FItems[0];
-  FVisibleRowCount:= 10;
-  JavaType:= 'ComboBox';
+  Tag := +110;
+  PrefWidth := 80;
+  PrefHeight := 24;
+  FItems := TStringList.Create;
+  FItems.Text := DefaultItems;
+  FValue := FItems[0];
+  FVisibleRowCount := 10;
+  JavaType := 'ComboBox';
 end;
 
 destructor TFXComboBox.Destroy;
@@ -160,61 +165,67 @@ begin
 end;
 
 procedure TFXComboBox.Paint;
-  var x, y, dxy, th: integer;
-      Points: array[0..2] of TPoint;
-      s: string;
+var
+  XPos, YPos, Dxy, TextHeight: Integer;
+  Points: array [0 .. 2] of TPoint;
+  Str: string;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= DarkShadow;
-  Canvas.Brush.Color:= Background;
+  Canvas.Pen.Color := DarkShadow;
+  Canvas.Brush.Color := Background;
   Canvas.RoundRect(0, 0, Width, Height, CornerRadius, CornerRadius);
-  if FEditable then begin
-    Canvas.Brush.Color:= clWhite;
+  if FEditable then
+  begin
+    Canvas.Brush.Color := clWhite;
     Canvas.MoveTo(Width - PPIScale(25), 0);
     Canvas.LineTo(Width - PPIScale(25), Height);
   end;
 
-  dxy:= PPIScale(5);
-  Canvas.Pen.Color:= DefaultForeground;
-  Canvas.Brush.Color:= DefaultForeground;
-  x:= Width - PPIScale(12);
-  y:= Height div 2 + dxy div 2;
-  Points[0]:= Point(x, y);
-  Points[1]:= Point(x - dxy, y - dxy);
-  Points[2]:= Point(x + dxy, y - dxy);
+  Dxy := PPIScale(5);
+  Canvas.Pen.Color := DefaultForeground;
+  Canvas.Brush.Color := DefaultForeground;
+  XPos := Width - PPIScale(12);
+  YPos := Height div 2 + Dxy div 2;
+  Points[0] := Point(XPos, YPos);
+  Points[1] := Point(XPos - Dxy, YPos - Dxy);
+  Points[2] := Point(XPos + Dxy, YPos - Dxy);
   Canvas.Polygon(Points);
 
-  if FValue <> '' then begin
-    Canvas.Brush.Color:= Background;
-    s:= FValue;
-    while Canvas.TextWidth(s) > Width - PPIScale(25 + 5) do
-      delete(s, length(s), 1);
-    th:= Canvas.TextHeight(s);
-    y:= (Height - th) div 2;
-    Canvas.TextOut(PPIScale(8), y, s);
+  if FValue <> '' then
+  begin
+    Canvas.Brush.Color := Background;
+    Str := FValue;
+    while Canvas.TextWidth(Str) > Width - PPIScale(25 + 5) do
+      Delete(Str, Length(Str), 1);
+    TextHeight := Canvas.TextHeight(Str);
+    YPos := (Height - TextHeight) div 2;
+    Canvas.TextOut(PPIScale(8), YPos, Str);
   end;
 end;
 
-procedure TFXComboBox.setItems(aItems: TStrings);
+procedure TFXComboBox.SetItems(AItems: TStrings);
 begin
-  if aItems.Text <> FItems.Text then begin
-    FItems.Assign(aItems);
+  if AItems.Text <> FItems.Text then
+  begin
+    FItems.Assign(AItems);
     Invalidate;
   end;
 end;
 
-procedure TFXComboBox.setPromptText(const aValue: string);
+procedure TFXComboBox.SetPromptText(const AValue: string);
 begin
-  if FPromptText <> aValue then begin
-    FPromptText:= aValue;
+  if FPromptText <> AValue then
+  begin
+    FPromptText := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXComboBox.setValue(const aValue: string);
+procedure TFXComboBox.SetValue(const AValue: string);
 begin
-  if FValue <> aValue then begin
-    FValue:= aValue;
+  if FValue <> AValue then
+  begin
+    FValue := AValue;
     Invalidate;
   end;
 end;
@@ -222,98 +233,112 @@ end;
 procedure TFXComboBox.NewControl;
 begin
   InsertImport('javafx.collections.*');
-  InsertNewVariable('private ComboBox<String> ' + Name + ' = new ComboBox<>();' + CrLf + GetIndentation +
-                    '  private ObservableList<String> ' + Name + 'ObservableList = ' + CrLf + GetIndentation +
-                    '          FXCollections.observableArrayList();');
+  InsertNewVariable('private ComboBox<String> ' + Name + ' = new ComboBox<>();'
+    + CrLf + GetIndentation + '  private ObservableList<String> ' + Name +
+    'ObservableList = ' + CrLf + GetIndentation +
+    '          FXCollections.observableArrayList();');
   DefaultComponent;
   MakeAttribut('Items', Name + 'ObservableList');
-  MakeAttribut('Value', asString(FValue));
+  MakeAttribut('Value', AsString(FValue));
   MakeList;
 end;
 
-procedure TFXComboBox.SetAttribute(Attr, aValue, Typ: string);
-  var s, key: string;
+procedure TFXComboBox.SetAttribute(Attr, AValue, Typ: string);
+var
+  Str, Key: string;
 begin
   if Attr = 'Items' then
     MakeList
-  else if Attr = 'SelectionMode' then begin
-    key:= Name + '.getSelectionModel()';
-    s:= key + '.setSelectionMode(SelectionMode.' + aValue + ');';
-    setAttributValue(key, s);
-  end else if Attr = 'Orientation' then begin
+  else if Attr = 'SelectionMode' then
+  begin
+    Key := Name + '.getSelectionModel()';
+    Str := Key + '.setSelectionMode(SelectionMode.' + AValue + ');';
+    SetAttributValue(Key, Str);
+  end
+  else if Attr = 'Orientation' then
+  begin
     InsertImport('javafx.geometry.*');
     MakeAttribut(Attr, 'Orientation.' + Value);
-  end else
-    inherited
+  end
+  else
+    inherited;
 end;
 
 procedure TFXComboBox.MakeList;
 begin
-  Partner.DeleteComponent(Name + 'ObservableList.add(');
-  for var i:= 0 to Items.Count - 1 do begin
-    var s:= Name + 'ObservableList.add("' + Items.Strings[i] + '");';
-    setAttributValue('___XXX___', s);
-  end
+  FPartner.DeleteComponent(Name + 'ObservableList.add(');
+  for var I := 0 to Items.Count - 1 do
+  begin
+    var
+    Str := Name + 'ObservableList.add("' + Items[I] + '");';
+    SetAttributValue('___XXX___', Str);
+  end;
 end;
 
-function TFXComboBox.getAttributes(ShowAttributes: integer): string;
-  const Attributes = '|Items|SelectedIndex|VisibleRowCount';
+function TFXComboBox.GetAttributes(ShowAttributes: Integer): string;
+const
+  Attributes = '|Items|SelectedIndex|VisibleRowCount';
 begin
-  Result:= Attributes + inherited getAttributes(ShowAttributes);
-  delete(Result, Pos('|Background', Result), 11);
+  Result := Attributes + inherited GetAttributes(ShowAttributes);
+  Delete(Result, Pos('|Background', Result), 11);
 end;
 
 procedure TFXComboBox.Rename(const OldName, NewName, Events: string);
 begin
   inherited;
-  Partner.ReplaceComponentname(OldName + 'ObservableList' , NewName + 'ObservableList', Events);
+  FPartner.ReplaceComponentname(OldName + 'ObservableList',
+    NewName + 'ObservableList', Events);
 end;
 
 procedure TFXComboBox.DeleteComponent;
-  var i: integer;
+var
+  Int: Integer;
 begin
   inherited;
-  Partner.DeleteAttribute('private ComboBox<String> ' + Name);
-  i:= Partner.getLineNumberWith('private ObservableList<String> ' + Name + 'ObservableList');
-  Partner.DeleteBlock(i, i+1);
-  Partner.DeleteComponent(Name + 'ObservableList.add');  
+  FPartner.DeleteAttribute('private ComboBox<String> ' + Name);
+  Int := FPartner.GetLineNumberWith('private ObservableList<String> ' + Name +
+    'ObservableList');
+  FPartner.DeleteBlock(Int, Int + 1);
+  FPartner.DeleteComponent(Name + 'ObservableList.add');
 end;
 
-{--- TFXColorPicker -----------------------------------------------------------}
+{ --- TFXColorPicker ----------------------------------------------------------- }
 
 constructor TFXColorPicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= +141;
-  PrefWidth:= 120;
-  PrefHeight:= 24;
-  FaValue:= clWhite;
-  JavaType:= 'ColorPicker';
+  Tag := +141;
+  PrefWidth := 120;
+  PrefHeight := 24;
+  FAValue := clWhite;
+  JavaType := 'ColorPicker';
 end;
 
 procedure TFXColorPicker.Paint;
-  var x, y, th, dxy: integer;
-      Points: array[0..2] of TPoint;
+var
+  XPos, YPos, TextHeight, Dxy: Integer;
+  Points: array [0 .. 2] of TPoint;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= DarkShadow;
-  Canvas.Brush.Color:= Background;
+  Canvas.Pen.Color := DarkShadow;
+  Canvas.Brush.Color := Background;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  Canvas.Brush.Color:= FaValue;
-  Canvas.Rectangle(Rect(PPIScale(8), Height div 2 - PPIScale(7),
-                        PPIScale(21), Height div 2 + PPIScale(6)));
-  Canvas.Brush.Color:= Background;
-  th:= Canvas.TextHeight('A');
-  Canvas.TextOut(PPIScale(24), (Height - th) div 2, Delphi2JavaColors(ColorToString(FaValue)));
+  Canvas.Brush.Color := FAValue;
+  Canvas.Rectangle(Rect(PPIScale(8), Height div 2 - PPIScale(7), PPIScale(21),
+    Height div 2 + PPIScale(6)));
+  Canvas.Brush.Color := Background;
+  TextHeight := Canvas.TextHeight('A');
+  Canvas.TextOut(PPIScale(24), (Height - TextHeight) div 2,
+    Delphi2JavaColors(ColorToString(FAValue)));
 
-  dxy:= PPIScale(5);
-  Canvas.Pen.Color:= DefaultForeground;
-  Canvas.Brush.Color:= DefaultForeground;
-  x:= Width - PPIScale(10);
-  y:= Height div 2 + dxy div 2;
-  Points[0]:= Point(x, y);
-  Points[1]:= Point(x - dxy, y - dxy);
-  Points[2]:= Point(x + dxy, y - dxy);
+  Dxy := PPIScale(5);
+  Canvas.Pen.Color := DefaultForeground;
+  Canvas.Brush.Color := DefaultForeground;
+  XPos := Width - PPIScale(10);
+  YPos := Height div 2 + Dxy div 2;
+  Points[0] := Point(XPos, YPos);
+  Points[1] := Point(XPos - Dxy, YPos - Dxy);
+  Points[2] := Point(XPos + Dxy, YPos - Dxy);
   Canvas.Polygon(Points);
 end;
 
@@ -324,52 +349,55 @@ begin
   InsertImport('javafx.scene.paint.Color');
 end;
 
-function TFXColorPicker.getAttributes(ShowAttributes: integer): string;
+function TFXColorPicker.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= inherited getAttributes(ShowAttributes);
-  delete(Result, Pos('|PromptText', Result), 11);
+  Result := inherited GetAttributes(ShowAttributes);
+  Delete(Result, Pos('|PromptText', Result), 11);
 end;
 
-procedure TFXColorPicker.SetAttribute(Attr, aValue, Typ: string);
+procedure TFXColorPicker.SetAttribute(Attr, AValue, Typ: string);
 begin
   if Attr = 'Value' then
-    MakeAttribut(Attr, getAttrColor(aValue))
+    MakeAttribut(Attr, GetAttrColor(AValue))
   else
     inherited;
 end;
 
-procedure TFXColorPicker.setValue(aColor: TColor);
+procedure TFXColorPicker.SetValue(AColor: TColor);
 begin
-  if aColor <> FaValue then begin
-    FaValue:= aColor;
+  if AColor <> FAValue then
+  begin
+    FAValue := AColor;
     Invalidate;
   end;
 end;
 
-{--- TFXDatePicker ------------------------------------------------------------}
+{ --- TFXDatePicker ------------------------------------------------------------ }
 
 constructor TFXDatePicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= +142;
-  PrefWidth:= 120;
-  PrefHeight:= 24;
-  FValue:= FormatDateTime('yyyy-mm-dd', Now);
-  ShowWeekNumbers:= true;
-  JavaType:= 'DatePicker';
+  Tag := +142;
+  PrefWidth := 120;
+  PrefHeight := 24;
+  FValue := FormatDateTime('yyyy-mm-dd', Now);
+  ShowWeekNumbers := True;
+  JavaType := 'DatePicker';
 end;
 
 procedure TFXDatePicker.Paint;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= DarkShadow;
-  Canvas.Brush.Color:= clWhite;
+  Canvas.Pen.Color := DarkShadow;
+  Canvas.Brush.Color := clWhite;
   Canvas.Rectangle(0, 0, Width, Height);
-  var th:= Canvas.TextHeight('A');
-  Canvas.TextOut(5, (Height - th) div 2, FValue);
-  Canvas.Brush.Color:= Background;
+  var
+  TextHeight := Canvas.TextHeight('A');
+  Canvas.TextOut(5, (Height - TextHeight) div 2, FValue);
+  Canvas.Brush.Color := Background;
   Canvas.Rectangle(Rect(Width - PPIScale(25), 0, Width, Height));
-  FGUIDesigner.vilControls21616.Draw(Canvas, Width - PPIScale(20), (Height - PPIScale(16)) div 2, 5);
+  FGUIDesigner.vilControls21616.Draw(Canvas, Width - PPIScale(20),
+    (Height - PPIScale(16)) div 2, 5);
 end;
 
 procedure TFXDatePicker.NewControl;
@@ -381,22 +409,24 @@ begin
   SetAttribute('Value', FValue, '');
 end;
 
-function TFXDatePicker.getAttributes(ShowAttributes: integer): string;
+function TFXDatePicker.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|ShowWeekNumbers' + inherited getAttributes(ShowAttributes);
-  delete(Result, Pos('|PromptText', Result), 11);
+  Result := '|ShowWeekNumbers' + inherited GetAttributes(ShowAttributes);
+  Delete(Result, Pos('|PromptText', Result), 11);
 end;
 
-procedure TFXDatePicker.SetAttribute(Attr, aValue, Typ: string);
-  var s, key: string;
+procedure TFXDatePicker.SetAttribute(Attr, AValue, Typ: string);
+var
+  Str, Key: string;
 begin
-  if Attr = 'Value' then begin
-    key:= Name + '.setValue(';
-    s:= key + 'LocalDate.parse("' + aValue + '"));';
-    setAttributValue(key, s);
-  end else
+  if Attr = 'Value' then
+  begin
+    Key := Name + '.setValue(';
+    Str := Key + 'LocalDate.parse("' + AValue + '"));';
+    SetAttributValue(Key, Str);
+  end
+  else
     inherited;
 end;
-
 
 end.

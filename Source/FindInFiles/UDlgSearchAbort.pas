@@ -3,7 +3,10 @@ unit UDlgSearchAbort;
 interface
 
 uses
-  Forms, StdCtrls, System.Classes, Vcl.Controls;
+  Forms,
+  StdCtrls,
+  System.Classes,
+  Vcl.Controls;
 
 type
   TFSearchAbort = class(TForm)
@@ -11,12 +14,15 @@ type
     procedure BSearchAbortClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   public
-    procedure ShowWith(s: string);
+    procedure ShowWith(Str: string);
   end;
 
 implementation
 
-uses Graphics, SysUtils, UGrepResults, JvGnugettext;
+uses
+  SysUtils,
+  JvGnugettext,
+  UGrepResults;
 
 {$R *.dfm}
 
@@ -27,16 +33,16 @@ end;
 
 procedure TFSearchAbort.BSearchAbortClick(Sender: TObject);
 begin
-  myGrepResults.Aborting:= true;
+  myGrepResults.Aborting:= True;
 end;
 
-procedure TFSearchAbort.ShowWith(s: string);
+procedure TFSearchAbort.ShowWith(Str: string);
 begin
-  s:= Format(_('Cancel search for "%s"'), [s]);
-  BSearchAbort.Caption:= s;
-  var w:= Canvas.TextWidth(s) + 16;
-  BSearchAbort.Width:= w;
-  Width:= w + 16;
+  Str:= Format(_('Cancel search for "%s"'), [Str]);
+  BSearchAbort.Caption:= Str;
+  var AWidth:= Canvas.TextWidth(Str) + 16;
+  BSearchAbort.Width:= AWidth;
+  Width:= AWidth + 16;
   Show;
 end;
 

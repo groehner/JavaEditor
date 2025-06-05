@@ -101,15 +101,15 @@ end;
 procedure TfrmAutoCorrectEditor.lbxItemsDrawItemCLX(Sender: TObject;
   Index: Integer; Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
 var
-  s: string;
+  Str: string;
 begin
   with lbxItems do
   begin
-    s := Items[Index];
+    Str := Items[Index];
     Canvas.FillRect(Rect);
-    Canvas.TextOut(Rect.Left + 2, Rect.Top, SynAutoCorrect.HalfString(s, True));
+    Canvas.TextOut(Rect.Left + 2, Rect.Top, SynAutoCorrect.HalfString(Str, True));
     Canvas.TextOut(Rect.Left + (lbxItems.ClientWidth div 2) + 2, Rect.Top,
-        SynAutoCorrect.HalfString(s, False));
+        SynAutoCorrect.HalfString(Str, False));
     FormPaint(nil);
   end;
 end;

@@ -35,14 +35,14 @@ const
 
 type
 
-  jbyte = type Shortint;
+  jbyte = type ShortInt;
   jint = Integer;
-  jlong = Int64; // Comp;
+  jlong = Int64;
   jboolean = Boolean;
   jchar = Word;
   jshort = SmallInt;
-  jfloat = single;
-  jdouble = double;
+  jfloat = Single;
+  jdouble = Double;
   jsize = jint;
 
   jobject = type Pointer;
@@ -73,7 +73,7 @@ type
       3:
         (h: jshort);
       4:
-        (i: jint);
+        (Int: jint);
       5:
         (l: jlong);
       6:
@@ -81,7 +81,7 @@ type
       7:
         (d: jdouble);
       8:
-        (s: jobject);
+        (Str: jobject);
   end;
 
   { pointer types }
@@ -104,7 +104,7 @@ type
   jmethodID = type Pointer;
 
   JNINativeMethod = packed record
-    name, signature: PAnsiChar;
+    Name, signature: PAnsiChar;
     fnPtr: Pointer;
   end;
 
@@ -129,428 +129,428 @@ type
 
   JNINativeInterface_ = packed record
     reserved0, reserved1, reserved2, reserved3: Pointer;
-    GetVersion: function(env: PJNIEnv): jint; stdcall;
-    DefineClass: function(env: PJNIEnv; const name: PAnsiChar; loader: jobject;
-      const buf: PJByte; len: jsize): jclass; stdcall;
-    FindClass: function(env: PJNIEnv; const name: PAnsiChar): jclass; stdcall;
-    FromReflectedMethod: function(env: PJNIEnv; method: jobject)
+    GetVersion: function(Env: PJNIEnv): jint; stdcall;
+    DefineClass: function(Env: PJNIEnv; const Name: PAnsiChar; Loader: jobject;
+      const Buf: PJByte; Len: jsize): jclass; stdcall;
+    FindClass: function(Env: PJNIEnv; const Name: PAnsiChar): jclass; stdcall;
+    FromReflectedMethod: function(Env: PJNIEnv; Method: jobject)
       : jmethodID; stdcall;
-    FromReflectedField: function(env: PJNIEnv; field: jobject)
+    FromReflectedField: function(Env: PJNIEnv; Field: jobject)
       : jfieldID; stdcall;
-    ToReflectedMethod: function(env: PJNIEnv; cls: jclass; methodID: jmethodID;
-      isStatic: jboolean): jobject; stdcall;
-    GetSuperClass: function(env: PJNIEnv; sub { , sup } : jclass)
+    ToReflectedMethod: function(Env: PJNIEnv; Cls: jclass; MethodID: jmethodID;
+      IsStatic: jboolean): jobject; stdcall;
+    GetSuperClass: function(Env: PJNIEnv; Sub { , Sup } : jclass)
       : jclass; stdcall;
-    IsAssignableFrom: function(env: PJNIEnv; sub, sup: jclass)
+    IsAssignableFrom: function(Env: PJNIEnv; Sub, Sup: jclass)
       : jboolean; stdcall;
-    ToReflectedField: function(env: PJNIEnv; cls: jclass; fieldID: jfieldID;
-      isStatic: jboolean): jobject; stdcall;
-    Throw: function(env: PJNIEnv; obj: jthrowable): jint; stdcall;
-    ThrowNew: function(env: PJNIEnv; clazz: jclass; const msg: PAnsiChar)
+    ToReflectedField: function(Env: PJNIEnv; Cls: jclass; FieldID: jfieldID;
+      IsStatic: jboolean): jobject; stdcall;
+    Throw: function(Env: PJNIEnv; Obj: jthrowable): jint; stdcall;
+    ThrowNew: function(Env: PJNIEnv; Clazz: jclass; const Msg: PAnsiChar)
       : jint; stdcall;
-    ExceptionOccurred: function(env: PJNIEnv): jthrowable; stdcall;
-    ExceptionDescribe, ExceptionClear: procedure(env: PJNIEnv); stdcall;
-    FatalError: procedure(env: PJNIEnv; const msg: PAnsiChar); stdcall;
-    PushLocalFrame: function(env: PJNIEnv; capacity: jint): jint; stdcall;
-    PopLocalFrame: function(env: PJNIEnv; res: jobject): jobject; stdcall;
-    NewGlobalRef: function(env: PJNIEnv; obj: jobject): jobject; stdcall;
-    DeleteGlobalRef: procedure(env: PJNIEnv; obj: jobject); stdcall;
-    DeleteLocalRef: procedure(env: PJNIEnv; obj: jobject); stdcall;
-    IsSameObject: function(env: PJNIEnv; obj1, obj2: jobject)
+    ExceptionOccurred: function(Env: PJNIEnv): jthrowable; stdcall;
+    ExceptionDescribe, ExceptionClear: procedure(Env: PJNIEnv); stdcall;
+    FatalError: procedure(Env: PJNIEnv; const Msg: PAnsiChar); stdcall;
+    PushLocalFrame: function(Env: PJNIEnv; Capacity: jint): jint; stdcall;
+    PopLocalFrame: function(Env: PJNIEnv; Res: jobject): jobject; stdcall;
+    NewGlobalRef: function(Env: PJNIEnv; Obj: jobject): jobject; stdcall;
+    DeleteGlobalRef: procedure(Env: PJNIEnv; Obj: jobject); stdcall;
+    DeleteLocalRef: procedure(Env: PJNIEnv; Obj: jobject); stdcall;
+    IsSameObject: function(Env: PJNIEnv; Obj1, Obj2: jobject)
       : jboolean; stdcall;
-    NewLocalRef: function(env: PJNIEnv; ref: jobject): jobject; stdcall;
-    EnsureLocalCapacity: function(env: PJNIEnv; capacity: jint): jint; stdcall;
-    AllocObject: function(env: PJNIEnv; clazz: jclass): jclass; stdcall;
-    NewObject: function(env: PJNIEnv; clazz: jclass; methodID: jmethodID)
+    NewLocalRef: function(Env: PJNIEnv; Ref: jobject): jobject; stdcall;
+    EnsureLocalCapacity: function(Env: PJNIEnv; Capacity: jint): jint; stdcall;
+    AllocObject: function(Env: PJNIEnv; Clazz: jclass): jclass; stdcall;
+    NewObject: function(Env: PJNIEnv; Clazz: jclass; MethodID: jmethodID)
       : jobject; stdcall;
-    NewObjectV: function(env: PJNIEnv; clazz: jclass; methodID: jmethodID;
-      args: Pointer): jobject; stdcall;
-    NewObjectA: function(env: PJNIEnv; clazz: jclass; methodID: jmethodID;
-      args: PJValue): jobject; stdcall;
-    GetObjectClass: function(env: PJNIEnv; obj: jobject): jclass; stdcall;
-    IsInstanceof: function(env: PJNIEnv; obj: jobject; clazz: jclass)
+    NewObjectV: function(Env: PJNIEnv; Clazz: jclass; MethodID: jmethodID;
+      Args: Pointer): jobject; stdcall;
+    NewObjectA: function(Env: PJNIEnv; Clazz: jclass; MethodID: jmethodID;
+      Args: PJValue): jobject; stdcall;
+    GetObjectClass: function(Env: PJNIEnv; Obj: jobject): jclass; stdcall;
+    IsInstanceof: function(Env: PJNIEnv; Obj: jobject; Clazz: jclass)
       : jboolean; stdcall;
-    GetMethodID: function(env: PJNIEnv; clazz: jclass;
-      const name, sig: PAnsiChar): jmethodID; stdcall;
-    CallObjectMethod: function(env: PJNIEnv; obj: jobject; methodID: jmethodID)
+    GetMethodID: function(Env: PJNIEnv; Clazz: jclass;
+      const Name, Sig: PAnsiChar): jmethodID; stdcall;
+    CallObjectMethod: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID)
       : jobject; stdcall;
-    CallObjectMethodV: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: Pointer): jobject; stdcall;
-    CallObjectMethodA: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: PJValue): jobject; stdcall;
-    CallBooleanMethod: function(env: PJNIEnv; obj: jobject; methodID: jmethodID)
+    CallObjectMethodV: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: Pointer): jobject; stdcall;
+    CallObjectMethodA: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: PJValue): jobject; stdcall;
+    CallBooleanMethod: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID)
       : jboolean; stdcall;
-    CallBooleanMethodV: function(env: PJNIEnv; obj: jobject;
-      methodID: jmethodID; args: Pointer): jboolean; stdcall;
-    CallBooleanMethodA: function(env: PJNIEnv; obj: jobject;
-      methodID: jmethodID; args: Pointer): jboolean; stdcall;
-    CallByteMethod: function(env: PJNIEnv; obj: jobject; methodID: jmethodID)
+    CallBooleanMethodV: function(Env: PJNIEnv; Obj: jobject;
+      MethodID: jmethodID; Args: Pointer): jboolean; stdcall;
+    CallBooleanMethodA: function(Env: PJNIEnv; Obj: jobject;
+      MethodID: jmethodID; Args: Pointer): jboolean; stdcall;
+    CallByteMethod: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID)
       : jbyte; stdcall;
-    CallByteMethodV: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: Pointer): jbyte; stdcall;
-    CallByteMethodA: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: PJValue): jbyte; stdcall;
-    CallCharMethod: function(env: PJNIEnv; obj: jobject; methodID: jmethodID)
+    CallByteMethodV: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: Pointer): jbyte; stdcall;
+    CallByteMethodA: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: PJValue): jbyte; stdcall;
+    CallCharMethod: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID)
       : jchar; stdcall;
-    CallCharMethodV: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: Pointer): jchar; stdcall;
-    CallCharMethodA: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: PJValue): jchar; stdcall;
-    CallShortMethod: function(env: PJNIEnv; obj: jobject; methodID: jmethodID)
+    CallCharMethodV: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: Pointer): jchar; stdcall;
+    CallCharMethodA: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: PJValue): jchar; stdcall;
+    CallShortMethod: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID)
       : jshort; stdcall;
-    CallShortMethodV: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: Pointer): jshort; stdcall;
-    CallShortMethodA: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: PJValue): jshort; stdcall;
-    CallIntMethod: function(env: PJNIEnv; obj: jobject; methodID: jmethodID)
+    CallShortMethodV: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: Pointer): jshort; stdcall;
+    CallShortMethodA: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: PJValue): jshort; stdcall;
+    CallIntMethod: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID)
       : jint; stdcall;
-    CallIntMethodV: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: Pointer): jint; stdcall;
-    CallIntMethodA: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: PJValue): jint; stdcall;
-    CallLongMethod: function(env: PJNIEnv; obj: jobject; methodID: jmethodID)
+    CallIntMethodV: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: Pointer): jint; stdcall;
+    CallIntMethodA: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: PJValue): jint; stdcall;
+    CallLongMethod: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID)
       : jlong; stdcall;
-    CallLongMethodV: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: Pointer): jlong; stdcall;
-    CallLongMethodA: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: PJValue): jlong; stdcall;
-    CallFloatMethod: function(env: PJNIEnv; obj: jobject; methodID: jmethodID)
+    CallLongMethodV: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: Pointer): jlong; stdcall;
+    CallLongMethodA: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: PJValue): jlong; stdcall;
+    CallFloatMethod: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID)
       : jfloat; stdcall;
-    CallFloatMethodV: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: Pointer): jfloat; stdcall;
-    CallFloatMethodA: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: PJValue): jfloat; stdcall;
-    CallDoubleMethod: function(env: PJNIEnv; obj: jobject; methodID: jmethodID)
+    CallFloatMethodV: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: Pointer): jfloat; stdcall;
+    CallFloatMethodA: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: PJValue): jfloat; stdcall;
+    CallDoubleMethod: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID)
       : jdouble; stdcall;
-    CallDoubleMethodV: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: Pointer): jdouble; stdcall;
-    CallDoubleMethodA: function(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: PJValue): jdouble; stdcall;
-    CallVoidMethod: procedure(env: PJNIEnv; obj: jobject;
-      methodID: jmethodID); stdcall;
-    CallVoidMethodV: procedure(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: Pointer); stdcall;
-    CallVoidMethodA: procedure(env: PJNIEnv; obj: jobject; methodID: jmethodID;
-      args: PJValue); stdcall;
-    CallNonvirtualObjectMethod: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID): jobject; stdcall;
-    CallNonvirtualObjectMethodV: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer): jobject; stdcall;
-    CallNonvirtualObjectMethodA: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue): jobject; stdcall;
-    CallNonvirtualBooleanMethod: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID): jboolean; stdcall;
-    CallNonvirtualBooleanMethodV: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer): jboolean; stdcall;
-    CallNonvirtualBooleanMethodA: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue): jboolean; stdcall;
-    CallNonvirtualByteMethod: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID): jbyte; stdcall;
-    CallNonvirtualByteMethodV: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer): jbyte; stdcall;
-    CallNonvirtualByteMethodA: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue): jbyte; stdcall;
-    CallNonvirtualCharMethod: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID): jchar; stdcall;
-    CallNonvirtualCharMethodV: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer): jchar; stdcall;
-    CallNonvirtualCharMethodA: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue): jchar; stdcall;
-    CallNonvirtualShortMethod: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID): jshort; stdcall;
-    CallNonvirtualShortMethodV: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer): jshort; stdcall;
-    CallNonvirtualShortMethodA: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue): jshort; stdcall;
-    CallNonvirtualIntMethod: function(env: PJNIEnv; obj: jobject; clazz: jclass;
-      methodID: jmethodID): jint; stdcall;
-    CallNonvirtualIntMethodV: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer): jint; stdcall;
-    CallNonvirtualIntMethodA: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue): jint; stdcall;
-    CallNonvirtualLongMethod: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID): jlong; stdcall;
-    CallNonvirtualLongMethodV: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer): jlong; stdcall;
-    CallNonvirtualLongMethodA: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue): jlong; stdcall;
-    CallNonvirtualFloatMethod: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID): jfloat; stdcall;
-    CallNonvirtualFloatMethodV: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer): jfloat; stdcall;
-    CallNonvirtualFloatMethodA: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue): jfloat; stdcall;
-    CallNonvirtualDoubleMethod: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID): jdouble; stdcall;
-    CallNonvirtualDoubleMethodV: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer): jdouble; stdcall;
-    CallNonvirtualDoubleMethodA: function(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue): jdouble; stdcall;
-    CallNonvirtualVoidMethod: procedure(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID); stdcall;
-    CallNonvirtualVoidMethodV: procedure(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: Pointer); stdcall;
-    CallNonvirtualVoidMethodA: procedure(env: PJNIEnv; obj: jobject;
-      clazz: jclass; methodID: jmethodID; args: PJValue); stdcall;
+    CallDoubleMethodV: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: Pointer): jdouble; stdcall;
+    CallDoubleMethodA: function(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: PJValue): jdouble; stdcall;
+    CallVoidMethod: procedure(Env: PJNIEnv; Obj: jobject;
+      MethodID: jmethodID); stdcall;
+    CallVoidMethodV: procedure(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: Pointer); stdcall;
+    CallVoidMethodA: procedure(Env: PJNIEnv; Obj: jobject; MethodID: jmethodID;
+      Args: PJValue); stdcall;
+    CallNonvirtualObjectMethod: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID): jobject; stdcall;
+    CallNonvirtualObjectMethodV: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer): jobject; stdcall;
+    CallNonvirtualObjectMethodA: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue): jobject; stdcall;
+    CallNonvirtualBooleanMethod: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID): jboolean; stdcall;
+    CallNonvirtualBooleanMethodV: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer): jboolean; stdcall;
+    CallNonvirtualBooleanMethodA: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue): jboolean; stdcall;
+    CallNonvirtualByteMethod: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID): jbyte; stdcall;
+    CallNonvirtualByteMethodV: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer): jbyte; stdcall;
+    CallNonvirtualByteMethodA: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue): jbyte; stdcall;
+    CallNonvirtualCharMethod: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID): jchar; stdcall;
+    CallNonvirtualCharMethodV: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer): jchar; stdcall;
+    CallNonvirtualCharMethodA: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue): jchar; stdcall;
+    CallNonvirtualShortMethod: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID): jshort; stdcall;
+    CallNonvirtualShortMethodV: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer): jshort; stdcall;
+    CallNonvirtualShortMethodA: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue): jshort; stdcall;
+    CallNonvirtualIntMethod: function(Env: PJNIEnv; Obj: jobject; Clazz: jclass;
+      MethodID: jmethodID): jint; stdcall;
+    CallNonvirtualIntMethodV: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer): jint; stdcall;
+    CallNonvirtualIntMethodA: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue): jint; stdcall;
+    CallNonvirtualLongMethod: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID): jlong; stdcall;
+    CallNonvirtualLongMethodV: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer): jlong; stdcall;
+    CallNonvirtualLongMethodA: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue): jlong; stdcall;
+    CallNonvirtualFloatMethod: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID): jfloat; stdcall;
+    CallNonvirtualFloatMethodV: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer): jfloat; stdcall;
+    CallNonvirtualFloatMethodA: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue): jfloat; stdcall;
+    CallNonvirtualDoubleMethod: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID): jdouble; stdcall;
+    CallNonvirtualDoubleMethodV: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer): jdouble; stdcall;
+    CallNonvirtualDoubleMethodA: function(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue): jdouble; stdcall;
+    CallNonvirtualVoidMethod: procedure(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID); stdcall;
+    CallNonvirtualVoidMethodV: procedure(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: Pointer); stdcall;
+    CallNonvirtualVoidMethodA: procedure(Env: PJNIEnv; Obj: jobject;
+      Clazz: jclass; MethodID: jmethodID; Args: PJValue); stdcall;
 
-    GetFieldId: function(env: PJNIEnv; clazz: jclass;
-      const name, sig: PAnsiChar): jfieldID; stdcall;
-    GetObjectField: function(env: PJNIEnv; obj: jobject; fieldID: jfieldID)
+    GetFieldId: function(Env: PJNIEnv; Clazz: jclass;
+      const Name, Sig: PAnsiChar): jfieldID; stdcall;
+    GetObjectField: function(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID)
       : jobject; stdcall;
-    GetBooleanField: function(env: PJNIEnv; obj: jobject; fieldID: jfieldID)
+    GetBooleanField: function(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID)
       : jboolean; stdcall;
-    GetByteField: function(env: PJNIEnv; obj: jobject; fieldID: jfieldID)
+    GetByteField: function(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID)
       : jbyte; stdcall;
-    GetCharField: function(env: PJNIEnv; obj: jobject; fieldID: jfieldID)
+    GetCharField: function(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID)
       : jchar; stdcall;
-    GetShortField: function(env: PJNIEnv; obj: jobject; fieldID: jfieldID)
+    GetShortField: function(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID)
       : jshort; stdcall;
-    GetIntField: function(env: PJNIEnv; obj: jobject; fieldID: jfieldID)
+    GetIntField: function(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID)
       : jint; stdcall;
-    GetLongField: function(env: PJNIEnv; obj: jobject; fieldID: jfieldID)
+    GetLongField: function(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID)
       : jlong; stdcall;
-    GetFloatField: function(env: PJNIEnv; obj: jobject; fieldID: jfieldID)
+    GetFloatField: function(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID)
       : jfloat; stdcall;
-    GetDoubleField: function(env: PJNIEnv; obj: jobject; fieldID: jfieldID)
+    GetDoubleField: function(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID)
       : jdouble; stdcall;
 
-    SetObjectField: procedure(env: PJNIEnv; obj: jobject; fieldID: jfieldID;
-      val: jobject); stdcall;
-    SetBooleanField: procedure(env: PJNIEnv; obj: jobject; fieldID: jfieldID;
-      val: jboolean); stdcall;
-    SetByteField: procedure(env: PJNIEnv; obj: jobject; fieldID: jfieldID;
-      val: jbyte); stdcall;
-    SetCharField: procedure(env: PJNIEnv; obj: jobject; fieldID: jfieldID;
-      val: jchar); stdcall;
-    SetShortField: procedure(env: PJNIEnv; obj: jobject; fieldID: jfieldID;
-      val: jshort); stdcall;
-    SetIntField: procedure(env: PJNIEnv; obj: jobject; fieldID: jfieldID;
-      val: jint); stdcall;
-    SetLongField: procedure(env: PJNIEnv; obj: jobject; fieldID: jfieldID;
-      val: jlong); stdcall;
-    SetFloatField: procedure(env: PJNIEnv; obj: jobject; fieldID: jfieldID;
-      val: jfloat); stdcall;
-    SetDoubleField: procedure(env: PJNIEnv; obj: jobject; fieldID: jfieldID;
-      val: jdouble); stdcall;
+    SetObjectField: procedure(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID;
+      Val: jobject); stdcall;
+    SetBooleanField: procedure(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID;
+      Val: jboolean); stdcall;
+    SetByteField: procedure(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID;
+      Val: jbyte); stdcall;
+    SetCharField: procedure(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID;
+      Val: jchar); stdcall;
+    SetShortField: procedure(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID;
+      Val: jshort); stdcall;
+    SetIntField: procedure(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID;
+      Val: jint); stdcall;
+    SetLongField: procedure(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID;
+      Val: jlong); stdcall;
+    SetFloatField: procedure(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID;
+      Val: jfloat); stdcall;
+    SetDoubleField: procedure(Env: PJNIEnv; Obj: jobject; FieldID: jfieldID;
+      Val: jdouble); stdcall;
 
-    GetStaticMethodID: function(env: PJNIEnv; clazz: jclass;
-      const name, sig: PAnsiChar): jmethodID; stdcall;
-    CallStaticObjectMethod: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID): jobject; stdcall;
-    CallStaticObjectMethodV: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer): jobject; stdcall;
-    CallStaticObjectMethodA: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue): jobject; stdcall;
-    CallStaticBooleanMethod: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID): jboolean; stdcall;
-    CallStaticBooleanMethodV: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer): jboolean; stdcall;
-    CallStaticBooleanMethodA: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue): jboolean; stdcall;
-    CallStaticByteMethod: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID): jbyte; stdcall;
-    CallStaticByteMethodV: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer): jbyte; stdcall;
-    CallStaticByteMethodA: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue): jbyte; stdcall;
-    CallStaticCharMethod: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID): jchar; stdcall;
-    CallStaticCharMethodV: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer): jchar; stdcall;
-    CallStaticCharMethodA: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue): jchar; stdcall;
-    CallStaticShortMethod: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID): jshort; stdcall;
-    CallStaticShortMethodV: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer): jshort; stdcall;
-    CallStaticShortMethodA: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue): jshort; stdcall;
-    CallStaticIntMethod: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID): jint; stdcall;
-    CallStaticIntMethodV: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer): jint; stdcall;
-    CallStaticIntMethodA: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue): jint; stdcall;
-    CallStaticLongMethod: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID): jlong; stdcall;
-    CallStaticLongMethodV: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer): jlong; stdcall;
-    CallStaticLongMethodA: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue): jlong; stdcall;
-    CallStaticFloatMethod: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID): jfloat; stdcall;
-    CallStaticFloatMethodV: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer): jfloat; stdcall;
-    CallStaticFloatMethodA: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue): jfloat; stdcall;
-    CallStaticDoubleMethod: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID): jdouble; stdcall;
-    CallStaticDoubleMethodV: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer): jdouble; stdcall;
-    CallStaticDoubleMethodA: function(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue): jdouble; stdcall;
-    CallStaticVoidMethod: procedure(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID); stdcall;
-    CallStaticVoidMethodV: procedure(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: Pointer); stdcall;
-    CallStaticVoidMethodA: procedure(env: PJNIEnv; clazz: jclass;
-      methodID: jmethodID; args: PJValue); stdcall;
+    GetStaticMethodID: function(Env: PJNIEnv; Clazz: jclass;
+      const Name, Sig: PAnsiChar): jmethodID; stdcall;
+    CallStaticObjectMethod: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID): jobject; stdcall;
+    CallStaticObjectMethodV: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer): jobject; stdcall;
+    CallStaticObjectMethodA: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue): jobject; stdcall;
+    CallStaticBooleanMethod: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID): jboolean; stdcall;
+    CallStaticBooleanMethodV: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer): jboolean; stdcall;
+    CallStaticBooleanMethodA: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue): jboolean; stdcall;
+    CallStaticByteMethod: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID): jbyte; stdcall;
+    CallStaticByteMethodV: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer): jbyte; stdcall;
+    CallStaticByteMethodA: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue): jbyte; stdcall;
+    CallStaticCharMethod: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID): jchar; stdcall;
+    CallStaticCharMethodV: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer): jchar; stdcall;
+    CallStaticCharMethodA: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue): jchar; stdcall;
+    CallStaticShortMethod: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID): jshort; stdcall;
+    CallStaticShortMethodV: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer): jshort; stdcall;
+    CallStaticShortMethodA: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue): jshort; stdcall;
+    CallStaticIntMethod: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID): jint; stdcall;
+    CallStaticIntMethodV: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer): jint; stdcall;
+    CallStaticIntMethodA: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue): jint; stdcall;
+    CallStaticLongMethod: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID): jlong; stdcall;
+    CallStaticLongMethodV: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer): jlong; stdcall;
+    CallStaticLongMethodA: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue): jlong; stdcall;
+    CallStaticFloatMethod: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID): jfloat; stdcall;
+    CallStaticFloatMethodV: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer): jfloat; stdcall;
+    CallStaticFloatMethodA: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue): jfloat; stdcall;
+    CallStaticDoubleMethod: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID): jdouble; stdcall;
+    CallStaticDoubleMethodV: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer): jdouble; stdcall;
+    CallStaticDoubleMethodA: function(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue): jdouble; stdcall;
+    CallStaticVoidMethod: procedure(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID); stdcall;
+    CallStaticVoidMethodV: procedure(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: Pointer); stdcall;
+    CallStaticVoidMethodA: procedure(Env: PJNIEnv; Clazz: jclass;
+      MethodID: jmethodID; Args: PJValue); stdcall;
 
-    GetStaticFieldID: function(env: PJNIEnv; clazz: jclass;
-      const name, sig: PAnsiChar): jfieldID; stdcall;
-    GetStaticObjectField: function(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID): jobject; stdcall;
-    GetStaticBooleanField: function(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID): jboolean; stdcall;
-    GetStaticByteField: function(env: PJNIEnv; clazz: jclass; fieldID: jfieldID)
+    GetStaticFieldID: function(Env: PJNIEnv; Clazz: jclass;
+      const Name, Sig: PAnsiChar): jfieldID; stdcall;
+    GetStaticObjectField: function(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID): jobject; stdcall;
+    GetStaticBooleanField: function(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID): jboolean; stdcall;
+    GetStaticByteField: function(Env: PJNIEnv; Clazz: jclass; FieldID: jfieldID)
       : jbyte; stdcall;
-    GetStaticCharField: function(env: PJNIEnv; clazz: jclass; fieldID: jfieldID)
+    GetStaticCharField: function(Env: PJNIEnv; Clazz: jclass; FieldID: jfieldID)
       : jchar; stdcall;
-    GetStaticShortField: function(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID): jshort; stdcall;
-    GetStaticIntField: function(env: PJNIEnv; clazz: jclass; fieldID: jfieldID)
+    GetStaticShortField: function(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID): jshort; stdcall;
+    GetStaticIntField: function(Env: PJNIEnv; Clazz: jclass; FieldID: jfieldID)
       : jint; stdcall;
-    GetStaticLongField: function(env: PJNIEnv; clazz: jclass; fieldID: jfieldID)
+    GetStaticLongField: function(Env: PJNIEnv; Clazz: jclass; FieldID: jfieldID)
       : jlong; stdcall;
-    GetStaticFloatField: function(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID): jfloat; stdcall;
-    GetStaticDoubleField: function(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID): jdouble; stdcall;
+    GetStaticFloatField: function(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID): jfloat; stdcall;
+    GetStaticDoubleField: function(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID): jdouble; stdcall;
 
-    SetStaticObjectField: procedure(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID; value: jobject); stdcall;
-    SetStaticBooleanField: procedure(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID; value: jboolean); stdcall;
-    SetStaticByteField: procedure(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID; value: jbyte); stdcall;
-    SetStaticCharField: procedure(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID; value: jchar); stdcall;
-    SetStaticShortField: procedure(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID; value: jshort); stdcall;
-    SetStaticIntField: procedure(env: PJNIEnv; clazz: jclass; fieldID: jfieldID;
-      value: jint); stdcall;
-    SetStaticLongField: procedure(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID; value: jlong); stdcall;
-    SetStaticFloatField: procedure(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID; value: jfloat); stdcall;
-    SetStaticDoubleField: procedure(env: PJNIEnv; clazz: jclass;
-      fieldID: jfieldID; value: jdouble); stdcall;
+    SetStaticObjectField: procedure(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID; Value: jobject); stdcall;
+    SetStaticBooleanField: procedure(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID; Value: jboolean); stdcall;
+    SetStaticByteField: procedure(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID; Value: jbyte); stdcall;
+    SetStaticCharField: procedure(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID; Value: jchar); stdcall;
+    SetStaticShortField: procedure(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID; Value: jshort); stdcall;
+    SetStaticIntField: procedure(Env: PJNIEnv; Clazz: jclass; FieldID: jfieldID;
+      Value: jint); stdcall;
+    SetStaticLongField: procedure(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID; Value: jlong); stdcall;
+    SetStaticFloatField: procedure(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID; Value: jfloat); stdcall;
+    SetStaticDoubleField: procedure(Env: PJNIEnv; Clazz: jclass;
+      FieldID: jfieldID; Value: jdouble); stdcall;
 
-    NewString: function(env: PJNIEnv; const unicode: PJChar; len: jsize)
+    NewString: function(Env: PJNIEnv; const Unicode: PJChar; Len: jsize)
       : jstring; stdcall;
-    GetStringLength: function(env: PJNIEnv; str: jstring): jsize; stdcall;
-    GetStringChars: function(env: PJNIEnv; str: jstring; isCopy: PJBoolean)
+    GetStringLength: function(Env: PJNIEnv; Str: jstring): jsize; stdcall;
+    GetStringChars: function(Env: PJNIEnv; Str: jstring; IsCopy: PJBoolean)
       : PJChar; stdcall;
-    ReleaseStringChars: procedure(env: PJNIEnv; str: jstring;
-      const chars: PJChar); stdcall;
-    NewStringUTF: function(env: PJNIEnv; const utf: PAnsiChar)
+    ReleaseStringChars: procedure(Env: PJNIEnv; Str: jstring;
+      const Chars: PJChar); stdcall;
+    NewStringUTF: function(Env: PJNIEnv; const Utf: PAnsiChar)
       : jstring; stdcall;
-    GetStringUTFLength: function(env: PJNIEnv; str: jstring): jsize; stdcall;
-    GetStringUTFChars: function(env: PJNIEnv; str: jstring;
-      var isCopy: jboolean): PAnsiChar; stdcall;
-    ReleaseStringUTFChars: procedure(env: PJNIEnv; str: jstring;
-      const chars: PAnsiChar); stdcall;
-    GetArrayLength: function(env: PJNIEnv; arr: jarray): jsize; stdcall;
-    NewObjectArray: function(env: PJNIEnv; len: jsize; clazz: jclass;
-      init: jobject): jobjectArray; stdcall;
-    GetObjectArrayElement: function(env: PJNIEnv; arr: jobjectArray;
-      index: jsize): jobject; stdcall;
-    SetObjectArrayElement: procedure(env: PJNIEnv; arr: jobjectArray;
-      index: jsize; val: jobject); stdcall;
-    NewBooleanArray: function(env: PJNIEnv; len: jsize): jbooleanArray; stdcall;
-    NewByteArray: function(env: PJNIEnv; len: jsize): jbyteArray; stdcall;
-    NewCharArray: function(env: PJNIEnv; len: jsize): jcharArray; stdcall;
-    NewShortArray: function(env: PJNIEnv; len: jsize): jshortArray; stdcall;
-    NewIntArray: function(env: PJNIEnv; len: jsize): jintArray; stdcall;
-    NewLongArray: function(env: PJNIEnv; len: jsize): jlongArray; stdcall;
-    NewFloatArray: function(env: PJNIEnv; len: jsize): jfloatArray; stdcall;
-    NewDoubleArray: function(env: PJNIEnv; len: jsize): jdoubleArray; stdcall;
-    GetBooleanArrayElements: function(env: PJNIEnv; arr: jbooleanArray;
-      isCopy: PJBoolean): PJBoolean; stdcall;
-    GetByteArrayElements: function(env: PJNIEnv; arr: jbyteArray;
-      isCopy: PJBoolean): PJByte; stdcall;
-    GetCharArrayElements: function(env: PJNIEnv; arr: jcharArray;
-      isCopy: PJBoolean): PJChar; stdcall;
-    GetShortArrayElements: function(env: PJNIEnv; arr: jshortArray;
-      isCopy: PJBoolean): PJShort; stdcall;
-    GetIntArrayElements: function(env: PJNIEnv; arr: jintArray; isCopy: PJInt)
+    GetStringUTFLength: function(Env: PJNIEnv; Str: jstring): jsize; stdcall;
+    GetStringUTFChars: function(Env: PJNIEnv; Str: jstring;
+      var IsCopy: jboolean): PAnsiChar; stdcall;
+    ReleaseStringUTFChars: procedure(Env: PJNIEnv; Str: jstring;
+      const Chars: PAnsiChar); stdcall;
+    GetArrayLength: function(Env: PJNIEnv; Arr: jarray): jsize; stdcall;
+    NewObjectArray: function(Env: PJNIEnv; Len: jsize; Clazz: jclass;
+      Init: jobject): jobjectArray; stdcall;
+    GetObjectArrayElement: function(Env: PJNIEnv; Arr: jobjectArray;
+      Index: jsize): jobject; stdcall;
+    SetObjectArrayElement: procedure(Env: PJNIEnv; Arr: jobjectArray;
+      Index: jsize; Val: jobject); stdcall;
+    NewBooleanArray: function(Env: PJNIEnv; Len: jsize): jbooleanArray; stdcall;
+    NewByteArray: function(Env: PJNIEnv; Len: jsize): jbyteArray; stdcall;
+    NewCharArray: function(Env: PJNIEnv; Len: jsize): jcharArray; stdcall;
+    NewShortArray: function(Env: PJNIEnv; Len: jsize): jshortArray; stdcall;
+    NewIntArray: function(Env: PJNIEnv; Len: jsize): jintArray; stdcall;
+    NewLongArray: function(Env: PJNIEnv; Len: jsize): jlongArray; stdcall;
+    NewFloatArray: function(Env: PJNIEnv; Len: jsize): jfloatArray; stdcall;
+    NewDoubleArray: function(Env: PJNIEnv; Len: jsize): jdoubleArray; stdcall;
+    GetBooleanArrayElements: function(Env: PJNIEnv; Arr: jbooleanArray;
+      IsCopy: PJBoolean): PJBoolean; stdcall;
+    GetByteArrayElements: function(Env: PJNIEnv; Arr: jbyteArray;
+      IsCopy: PJBoolean): PJByte; stdcall;
+    GetCharArrayElements: function(Env: PJNIEnv; Arr: jcharArray;
+      IsCopy: PJBoolean): PJChar; stdcall;
+    GetShortArrayElements: function(Env: PJNIEnv; Arr: jshortArray;
+      IsCopy: PJBoolean): PJShort; stdcall;
+    GetIntArrayElements: function(Env: PJNIEnv; Arr: jintArray; IsCopy: PJInt)
       : PJInt; stdcall;
-    GetLongArrayElements: function(env: PJNIEnv; arr: jlongArray;
-      isCopy: PJLong): PJLong; stdcall;
-    GetFloatArrayElements: function(env: PJNIEnv; arr: jfloatArray;
-      isCopy: PJBoolean): PJFloat; stdcall;
-    GetDoubleArrayElements: function(env: PJNIEnv; arr: jdoubleArray;
-      isCopy: PJBoolean): PJDouble; stdcall;
-    ReleaseBooleanArrayElements: procedure(env: PJNIEnv; arr: jbooleanArray;
-      elems: PJBoolean; mode: jint); stdcall;
-    ReleaseByteArrayElements: procedure(env: PJNIEnv; arr: jbyteArray;
-      elems: PJByte; mode: jint); stdcall;
-    ReleaseCharArrayElements: procedure(env: PJNIEnv; arr: jcharArray;
-      elems: PJChar; mode: jint); stdcall;
-    ReleaseShortArrayElements: procedure(env: PJNIEnv; arr: jshortArray;
-      elems: PJShort; mode: jint); stdcall;
-    ReleaseIntArrayElements: procedure(env: PJNIEnv; arr: jintArray;
-      elems: PJInt; mode: jint); stdcall;
-    ReleaseLongArrayElements: procedure(env: PJNIEnv; arr: jlongArray;
-      elems: PJLong; mode: jint); stdcall;
-    ReleaseFloatArrayElements: procedure(env: PJNIEnv; arr: jfloatArray;
-      elems: PJFloat; mode: jint); stdcall;
-    ReleaseDoubleArrayElements: procedure(env: PJNIEnv; arr: jdoubleArray;
-      elems: PJDouble; mode: jint); stdcall;
-    GetBooleanArrayRegion: procedure(env: PJNIEnv; arr: jbooleanArray;
-      start, l: jsize; buf: PJBoolean); stdcall;
-    GetByteArrayRegion: procedure(env: PJNIEnv; arr: jbyteArray;
-      start, l: jsize; buf: PJByte); stdcall;
-    GetCharArrayRegion: procedure(env: PJNIEnv; arr: jcharArray;
-      start, l: jsize; buf: PJChar); stdcall;
-    GetShortArrayRegion: procedure(env: PJNIEnv; arr: jshortArray;
-      start, l: jsize; buf: PJShort); stdcall;
-    GetIntArrayRegion: procedure(env: PJNIEnv; arr: jintArray; start, l: jsize;
-      buf: PJInt); stdcall;
-    GetLongArrayRegion: procedure(env: PJNIEnv; arr: jlongArray;
-      start, l: jsize; buf: PJLong); stdcall;
-    GetFloatArrayRegion: procedure(env: PJNIEnv; arr: jfloatArray;
-      start, l: jsize; buf: PJFloat); stdcall;
-    GetDoubleArrayRegion: procedure(env: PJNIEnv; arr: jdoubleArray;
-      start, l: jsize; buf: PJDouble); stdcall;
-    SetBooleanArrayRegion: procedure(env: PJNIEnv; arr: jbooleanArray;
-      start, len: jsize; buf: PJBoolean); stdcall;
-    SetByteArrayRegion: procedure(env: PJNIEnv; arr: jbyteArray;
-      start, len: jsize; buf: PJByte); stdcall;
-    SetCharArrayRegion: procedure(env: PJNIEnv; arr: jcharArray;
-      start, len: jsize; buf: PJChar); stdcall;
-    SetShortArrayRegion: procedure(env: PJNIEnv; arr: jshortArray;
-      start, len: jsize; buf: PJShort); stdcall;
-    SetIntArrayRegion: procedure(env: PJNIEnv; arr: jintArray;
-      start, len: jsize; buf: PJInt); stdcall;
-    SetLongArrayRegion: procedure(env: PJNIEnv; arr: jlongArray;
-      start, len: jsize; buf: PJLong); stdcall;
-    SetFloatArrayRegion: procedure(env: PJNIEnv; arr: jfloatArray;
-      start, len: jsize; buf: PJFloat); stdcall;
-    SetDoubleArrayRegion: procedure(env: PJNIEnv; arr: jdoubleArray;
-      start, len: jsize; buf: PJDouble); stdcall;
-    RegisterNatives: function(env: PJNIEnv; clazz: jclass;
-      const method: PJNINativeMethod; nMethods: jint): jint; stdcall;
-    UnregisterNatives: function(env: PJNIEnv; clazz: jclass): jint; stdcall;
-    MonitorEnter: function(env: PJNIEnv; obj: jobject): jint; stdcall;
-    MonitorExit: function(env: PJNIEnv; obj: jobject): jint; stdcall;
-    GetJavaVM: function(env: PJNIEnv; vm: PPJavaVM): jint; stdcall;
+    GetLongArrayElements: function(Env: PJNIEnv; Arr: jlongArray;
+      IsCopy: PJLong): PJLong; stdcall;
+    GetFloatArrayElements: function(Env: PJNIEnv; Arr: jfloatArray;
+      IsCopy: PJBoolean): PJFloat; stdcall;
+    GetDoubleArrayElements: function(Env: PJNIEnv; Arr: jdoubleArray;
+      IsCopy: PJBoolean): PJDouble; stdcall;
+    ReleaseBooleanArrayElements: procedure(Env: PJNIEnv; Arr: jbooleanArray;
+      Elems: PJBoolean; Mode: jint); stdcall;
+    ReleaseByteArrayElements: procedure(Env: PJNIEnv; Arr: jbyteArray;
+      Elems: PJByte; Mode: jint); stdcall;
+    ReleaseCharArrayElements: procedure(Env: PJNIEnv; Arr: jcharArray;
+      Elems: PJChar; Mode: jint); stdcall;
+    ReleaseShortArrayElements: procedure(Env: PJNIEnv; Arr: jshortArray;
+      Elems: PJShort; Mode: jint); stdcall;
+    ReleaseIntArrayElements: procedure(Env: PJNIEnv; Arr: jintArray;
+      Elems: PJInt; Mode: jint); stdcall;
+    ReleaseLongArrayElements: procedure(Env: PJNIEnv; Arr: jlongArray;
+      Elems: PJLong; Mode: jint); stdcall;
+    ReleaseFloatArrayElements: procedure(Env: PJNIEnv; Arr: jfloatArray;
+      Elems: PJFloat; Mode: jint); stdcall;
+    ReleaseDoubleArrayElements: procedure(Env: PJNIEnv; Arr: jdoubleArray;
+      Elems: PJDouble; Mode: jint); stdcall;
+    GetBooleanArrayRegion: procedure(Env: PJNIEnv; Arr: jbooleanArray;
+      Start, l: jsize; Buf: PJBoolean); stdcall;
+    GetByteArrayRegion: procedure(Env: PJNIEnv; Arr: jbyteArray;
+      Start, l: jsize; Buf: PJByte); stdcall;
+    GetCharArrayRegion: procedure(Env: PJNIEnv; Arr: jcharArray;
+      Start, l: jsize; Buf: PJChar); stdcall;
+    GetShortArrayRegion: procedure(Env: PJNIEnv; Arr: jshortArray;
+      Start, l: jsize; Buf: PJShort); stdcall;
+    GetIntArrayRegion: procedure(Env: PJNIEnv; Arr: jintArray; Start, l: jsize;
+      Buf: PJInt); stdcall;
+    GetLongArrayRegion: procedure(Env: PJNIEnv; Arr: jlongArray;
+      Start, l: jsize; Buf: PJLong); stdcall;
+    GetFloatArrayRegion: procedure(Env: PJNIEnv; Arr: jfloatArray;
+      Start, l: jsize; Buf: PJFloat); stdcall;
+    GetDoubleArrayRegion: procedure(Env: PJNIEnv; Arr: jdoubleArray;
+      Start, l: jsize; Buf: PJDouble); stdcall;
+    SetBooleanArrayRegion: procedure(Env: PJNIEnv; Arr: jbooleanArray;
+      Start, Len: jsize; Buf: PJBoolean); stdcall;
+    SetByteArrayRegion: procedure(Env: PJNIEnv; Arr: jbyteArray;
+      Start, Len: jsize; Buf: PJByte); stdcall;
+    SetCharArrayRegion: procedure(Env: PJNIEnv; Arr: jcharArray;
+      Start, Len: jsize; Buf: PJChar); stdcall;
+    SetShortArrayRegion: procedure(Env: PJNIEnv; Arr: jshortArray;
+      Start, Len: jsize; Buf: PJShort); stdcall;
+    SetIntArrayRegion: procedure(Env: PJNIEnv; Arr: jintArray;
+      Start, Len: jsize; Buf: PJInt); stdcall;
+    SetLongArrayRegion: procedure(Env: PJNIEnv; Arr: jlongArray;
+      Start, Len: jsize; Buf: PJLong); stdcall;
+    SetFloatArrayRegion: procedure(Env: PJNIEnv; Arr: jfloatArray;
+      Start, Len: jsize; Buf: PJFloat); stdcall;
+    SetDoubleArrayRegion: procedure(Env: PJNIEnv; Arr: jdoubleArray;
+      Start, Len: jsize; Buf: PJDouble); stdcall;
+    RegisterNatives: function(Env: PJNIEnv; Clazz: jclass;
+      const Method: PJNINativeMethod; NMethods: jint): jint; stdcall;
+    UnregisterNatives: function(Env: PJNIEnv; Clazz: jclass): jint; stdcall;
+    MonitorEnter: function(Env: PJNIEnv; Obj: jobject): jint; stdcall;
+    MonitorExit: function(Env: PJNIEnv; Obj: jobject): jint; stdcall;
+    GetJavaVM: function(Env: PJNIEnv; vm: PPJavaVM): jint; stdcall;
     { from here, it's only supported by Java 2 }
-    GetStringRegion: procedure(env: PJNIEnv; str: jstring; start, len: jsize;
-      buf: PJChar); stdcall;
-    GetStringUTFRegion: procedure(env: PJNIEnv; str: jstring; start, len: jsize;
-      buf: PAnsiChar); stdcall;
-    GetPrimitiveArrayCritical: function(env: PJNIEnv; arr: jarray;
-      isCopy: PJBoolean): Pointer; stdcall;
-    ReleasePrimitiveArrayCritical: procedure(env: PJNIEnv; arr: jarray;
-      carray: Pointer; mode: jint); stdcall;
-    GetStringCritical: function(env: PJNIEnv; str: jstring; isCopy: PJBoolean)
+    GetStringRegion: procedure(Env: PJNIEnv; Str: jstring; Start, Len: jsize;
+      Buf: PJChar); stdcall;
+    GetStringUTFRegion: procedure(Env: PJNIEnv; Str: jstring; Start, Len: jsize;
+      Buf: PAnsiChar); stdcall;
+    GetPrimitiveArrayCritical: function(Env: PJNIEnv; Arr: jarray;
+      IsCopy: PJBoolean): Pointer; stdcall;
+    ReleasePrimitiveArrayCritical: procedure(Env: PJNIEnv; Arr: jarray;
+      CAarray: Pointer; Mode: jint); stdcall;
+    GetStringCritical: function(Env: PJNIEnv; Str: jstring; IsCopy: PJBoolean)
       : PJChar; stdcall;
-    ReleaseStringCritical: procedure(env: PJNIEnv; str: jstring;
-      const cstring: PJChar); stdcall;
-    NewWeakGlobalRef: function(env: PJNIEnv; obj: jobject): jweak; stdcall;
-    DeleteWeakGlobalRef: procedure(env: PJNIEnv; ref: jweak); stdcall;
-    ExceptionCheck: function(env: PJNIEnv): jboolean; stdcall;
+    ReleaseStringCritical: procedure(Env: PJNIEnv; Str: jstring;
+      const CString: PJChar); stdcall;
+    NewWeakGlobalRef: function(Env: PJNIEnv; Obj: jobject): jweak; stdcall;
+    DeleteWeakGlobalRef: procedure(Env: PJNIEnv; Ref: jweak); stdcall;
+    ExceptionCheck: function(Env: PJNIEnv): jboolean; stdcall;
   end;
 
   JNIEnv_ = packed record
@@ -573,7 +573,7 @@ type
 
   JavaVMAttachArgs = packed record
     Version: jint;
-    name: PAnsiChar;
+    Name: PAnsiChar;
     Group: jobject;
   end;
 
@@ -585,10 +585,10 @@ type
     checkSource, nativeStackSize, javaStackSize, minHeapSize, maxHeapSize,
       verifyMode: jint;
     classpath: PAnsiChar;
-    vfprintf: function(filePointer: Pointer; const format: PAnsiChar;
-      args: va_list): jint; stdcall;
-    exit: procedure(exitCode: jint); stdcall;
-    abort: procedure; stdcall;
+    vfprintf: function(FilePointer: Pointer; const Format: PAnsiChar;
+      Args: va_list): jint; stdcall;
+    Exit: procedure(ExitCode: jint); stdcall;
+    Abort: procedure; stdcall;
     enableClassGC: jint;
     enableVerboseGC: jint;
     disableAsyncGC: jint;
@@ -605,12 +605,12 @@ type
   JNIInvokeInterface_ = packed record
     reserved0, reserved1, reserved2: Pointer;
     DestroyJavaVM: function(vm: PJavaVM): jint; stdcall;
-    AttachCurrentThread: function(vm: PJavaVM; penv: PPJNIEnv; args: Pointer)
+    AttachCurrentThread: function(vm: PJavaVM; PEnv: PPJNIEnv; Args: Pointer)
       : jint; stdcall;
-    DetachCurrentThread: function(vm: PJavaVM; penv: PPJNIEnv; args: Pointer)
+    DetachCurrentThread: function(vm: PJavaVM; PEnv: PPJNIEnv; Args: Pointer)
       : jint; stdcall;
     { the following function is only in Java 2 }
-    GetEnv: function(vm: PJavaVM; penv: PPJNIEnv; Version: jint): jint; stdcall;
+    GetEnv: function(vm: PJavaVM; PEnv: PPJNIEnv; Version: jint): jint; stdcall;
   end;
 
   TNumType = (ntBool, ntByte, ntChar, ntShort, ntInt, ntLong, ntFloat, ntDouble,
@@ -639,56 +639,56 @@ type
   TJObjectArray = array of jobject;
 
   // Achtung: einige Funktionen werden nur in Je2Java verwendet
-function SigToTyp(sig: string): string;
-function correctGetName(name: string): string;
-function SigToNumType(sig: string): TNumType;
+function SigToTyp(Sig: string): string;
+function CorrectGetName(Name: string): string;
+function SigToNumType(Sig: string): TNumType;
 function TypToNumType(Typ: string): TNumType;
 
-function NumTypeToSig(NumType: TNumType; sig: string): string;
-function GetFirstSig(var sig: string): string;
+function NumTypeToSig(NumType: TNumType; Sig: string): string;
+function GetFirstSig(var Sig: string): string;
 
 implementation
 
 uses StrUtils, UUtils;
 
-function GetFirstSig(var sig: string): string;
+function GetFirstSig(var Sig: string): string;
 begin
-  if Pos(sig[1], 'ZBCSIJFD') > 0 then
+  if Pos(Sig[1], 'ZBCSIJFD') > 0 then
   begin
-    Result := sig[1];
-    delete(sig, 1, 1);
+    Result := Sig[1];
+    Delete(Sig, 1, 1);
   end
-  else if (sig[1] = '[') and (Pos(sig[2], 'ZBCSIJFD') > 0) then
+  else if (Sig[1] = '[') and (Pos(Sig[2], 'ZBCSIJFD') > 0) then
   begin
-    Result := copy(sig, 1, 2);
-    delete(sig, 1, 2);
+    Result := Copy(Sig, 1, 2);
+    Delete(Sig, 1, 2);
   end
   else
   begin
-    var p := Pos(';', sig);
-    Result := copy(sig, 1, p);
-    delete(sig, 1, p);
+    var Posi := Pos(';', Sig);
+    Result := Copy(Sig, 1, Posi);
+    Delete(Sig, 1, Posi);
   end;
-  if Left(sig, 1) = '|' then
-    sig := Right(sig, 2);
+  if Left(Sig, 1) = '|' then
+    Sig := Right(Sig, 2);
 end;
 
-function SigToNumType(sig: string): TNumType;
+function SigToNumType(Sig: string): TNumType;
 begin
   Result := ntUnknown;
   var Offset := 0;
-  if sig[1] = '[' then
+  if Sig[1] = '[' then
   begin
     Offset := 10;
-    delete(sig, 1, 1);
+    Delete(Sig, 1, 1);
   end;
-  if sig[1] = '[' then
+  if Sig[1] = '[' then
   begin
     Offset := 20;
-    delete(sig, 1, 1);
+    Delete(Sig, 1, 1);
   end;
 
-  case sig[1] of
+  case Sig[1] of
     'Z':
       Result := ntBool;
     'B':
@@ -708,7 +708,7 @@ begin
     'V':
       Result := ntVoid;
     'L':
-      if sig = 'Ljava/lang/String;' then
+      if Sig = 'Ljava/lang/String;' then
         Result := ntString
       else
         Result := ntObject;
@@ -716,18 +716,18 @@ begin
   Result := TNumType(Ord(Result) + Offset);
 end;
 
-function NumTypeToSig(NumType: TNumType; sig: string): string;
+function NumTypeToSig(NumType: TNumType; Sig: string): string;
 begin
-  var arr:= '';
+  var Arr:= '';
   if Ord(NumType) in [10 .. 19] then
   begin
     NumType := TNumType(Ord(NumType) - 10);
-    arr := '[';
+    Arr := '[';
   end;
   if Ord(NumType) in [20 .. 29] then
   begin
     NumType := TNumType(Ord(NumType) - 20);
-    arr := '[[';
+    Arr := '[[';
   end;
   case NumType of
     ntBool:
@@ -750,34 +750,34 @@ begin
       Result := 'Ljava/lang/String;';
     ntObject:
       begin
-        sig := ReplaceStr(sig, '[]', '');
-        sig := ReplaceStr(sig, '.', '/');
-        if Right(sig, -1) <> ';' then
-          sig := 'L' + sig + ';';
-        Result := sig;
+        Sig := ReplaceStr(Sig, '[]', '');
+        Sig := ReplaceStr(Sig, '.', '/');
+        if Right(Sig, -1) <> ';' then
+          Sig := 'L' + Sig + ';';
+        Result := Sig;
       end;
     ntVoid:
       Result := 'V';
   else
     Result := '';
   end;
-  Result := arr + Result;
+  Result := Arr + Result;
 end;
 
-function SigToTyp(sig: string): string;
+function SigToTyp(Sig: string): string;
 begin
-  var arr := '';
-  if sig[1] = '[' then
+  var Arr := '';
+  if Sig[1] = '[' then
   begin
-    arr := '[]';
-    delete(sig, 1, 1);
+    Arr := '[]';
+    Delete(Sig, 1, 1);
   end;
-  if sig[1] = '[' then
+  if Sig[1] = '[' then
   begin
-    arr := '[][]';
-    delete(sig, 1, 1);
+    Arr := '[][]';
+    Delete(Sig, 1, 1);
   end;
-  case sig[1] of
+  case Sig[1] of
     'Z':
       Result := 'boolean';
     'C':
@@ -795,31 +795,31 @@ begin
     'D':
       Result := 'double';
     'L':
-      if (sig = 'Ljava/lang/String;') or (sig = 'LString;') then
+      if (Sig = 'Ljava/lang/String;') or (Sig = 'LString;') then
         Result := 'String'
       else
       begin
-        sig := copy(sig, 2, length(sig) - 2);
-        Result := ReplaceStr(sig, '/', '.');
+        Sig := Copy(Sig, 2, Length(Sig) - 2);
+        Result := ReplaceStr(Sig, '/', '.');
       end;
     'V':
       Result := 'void';
   else
     Result := 'typ-error';
   end;
-  Result := Result + arr;
+  Result := Result + Arr;
 end;
 
 // http://illegalargumentexception.blogspot.de/2008/06/java-class-names.html
-function correctGetName(name: string): string;
+function CorrectGetName(Name: string): string;
 begin
-  var arr := '';
+  var Arr := '';
   while Name[1] = '[' do
   begin
-    arr := arr + '[]';
-    delete(Name, 1, 1);
+    Arr := Arr + '[]';
+    Delete(Name, 1, 1);
   end;
-  if length(Name) = 1 then
+  if Length(Name) = 1 then
     case Name[1] of
       'Z':
         Result := 'boolean';
@@ -840,27 +840,27 @@ begin
       'V':
         Result := 'void';
     end
-  else if (Name[1] = 'L') and (Name[length(Name)] = ';') then
-    Result := copy(Name, 2, length(Name) - 2)
+  else if (Name[1] = 'L') and (Name[Length(Name)] = ';') then
+    Result := Copy(Name, 2, Length(Name) - 2)
   else
     Result := Name;
-  Result := Result + arr;
+  Result := Result + Arr;
 end;
 
 function TypToNumType(Typ: string): TNumType;
 begin
   var Offset := 0;
-  var p := Pos('[]', Typ);
-  if p > 0 then
+  var Posi := Pos('[]', Typ);
+  if Posi > 0 then
   begin
     Offset := 10;
-    delete(Typ, p, 2);
+    Delete(Typ, Posi, 2);
   end;
-  p := Pos('[]', Typ);
-  if p > 0 then
+  Posi := Pos('[]', Typ);
+  if Posi > 0 then
   begin
     Offset := 20;
-    delete(Typ, p, 2);
+    Delete(Typ, Posi, 2);
   end;
   if Typ = 'boolean' then
     Result := ntBool

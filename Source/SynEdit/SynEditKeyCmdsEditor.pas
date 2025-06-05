@@ -131,7 +131,7 @@ end;
 
 procedure TSynEditKeystrokesEditorForm.UpdateKeystrokesList;
 var
-  x: integer;
+  x: Integer;
 begin
   KeyCmdList.Items.BeginUpdate;
   try
@@ -198,7 +198,7 @@ var
   begin
     Result := False;
     KeyLoc := 0;
-    if AForm.ShowModal = mrOK then
+    if AForm.ShowModal = mrOk then
     begin
       Result := True;
       NewStroke := FKeystrokes.Add;
@@ -217,7 +217,7 @@ var
 
             Result := MessageDlg(Format(SYNS_DuplicateShortcutMsg,
               [Menus.ShortCutToText(AForm.Keystroke), TmpCommand]),
-              mtError, [mbOK, mbCancel], 0) = mrOK;
+              mtError, [mbOK, mbCancel], 0) = mrOk;
             NewStroke.Free;
 
             if Result then
@@ -233,7 +233,7 @@ begin
   with AForm do
     try
       Caption := 'Add Keystroke';
-      ExtendedString := self.ExtendedString;
+      ExtendedString := Self.ExtendedString;
       Command := ecNone;
       Keystroke := 0;
       Keystroke2 := 0;
@@ -274,7 +274,7 @@ var
   begin
     Result := False;
     KeyLoc := 0;
-    if AForm.ShowModal = mrOK then
+    if AForm.ShowModal = mrOk then
     begin
       Result := True;
       OldShortCut := FKeystrokes[SelItem.Index].ShortCut;
@@ -295,7 +295,7 @@ var
 
             Result := MessageDlg(Format(SYNS_DuplicateShortcutMsg,
               [Menus.ShortCutToText(AForm.Keystroke), TmpCommand]),
-              mtError, [mbOK, mbCancel], 0) = mrOK;
+              mtError, [mbOK, mbCancel], 0) = mrOk;
 
             FKeystrokes[SelItem.Index].ShortCut := OldShortCut;
             FKeystrokes[SelItem.Index].ShortCut2 := OldShortCut2;
@@ -327,14 +327,14 @@ begin
   if SelItem = NIL then
   begin
     MessageBeep(1);
-    exit;
+    Exit;
   end;
   AForm := TSynEditKeystrokeEditorForm.Create(Self);
   with AForm do
     try
-      ExtendedString := self.ExtendedString;
+      ExtendedString := Self.ExtendedString;
       Command := FKeystrokes[SelItem.Index].Command;
-      Keystroke := FKeystrokes[SelItem.Index].Shortcut;
+      Keystroke := FKeystrokes[SelItem.Index].ShortCut;
       Keystroke2 := FKeystrokes[SelItem.Index].Shortcut2;
       if EditKeyStroke then
       begin
@@ -373,7 +373,7 @@ begin
   if SelItem = nil then
   begin
     MessageBeep(1);
-    exit;
+    Exit;
   end;
   FKeystrokes[SelItem.Index].Free;
   KeyCmdList.Items.Delete(SelItem.Index);
@@ -398,7 +398,7 @@ end;
 
 procedure TSynEditKeystrokesEditorForm.btnOKClick(Sender: TObject);
 begin
-  ModalResult := mrOK;
+  ModalResult := mrOk;
 end;
 
 procedure TSynEditKeystrokesEditorForm.btnCancelClick(Sender: TObject);

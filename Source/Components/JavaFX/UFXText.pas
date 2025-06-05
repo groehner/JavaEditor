@@ -2,7 +2,10 @@ unit UFXText;
 
 interface
 
-uses Classes, UFXComponents, UFXShape;
+uses
+  Classes,
+  UFXComponents,
+  UFXShape;
 
 type
 
@@ -12,65 +15,70 @@ type
 
   TVPos = (_CD_BASELINE, _CD_BOTTOM, _CD_CENTER, _CD_TOP);
 
-  TFXText = class (TFXShape)
+  TFXText = class(TFXShape)
   private
     FBoundsType: TBoundsType;
     FFontSmoothingType: TFontSmoothingType;
-    FLineSpacing: integer;
-    FStrikethrough: boolean;
+    FLineSpacing: Integer;
+    FStrikethrough: Boolean;
     FText: string;
     FTextAlignment: TTextAlignment;
     FTextOrigin: TVPos;
-    FUnderline: boolean;
-    FWrappingWidth: double;
-    FX: double;
-    FY: double;
-    procedure setLineSpacing(aValue: integer);
-    procedure setUnderline(aValue: boolean);
-    procedure setText(const aValue: string);
-    procedure setTextAlignment(aValue: TTextAlignment);
+    FUnderline: Boolean;
+    FWrappingWidth: Double;
+    FXPos: Double;
+    FYPos: Double;
+    procedure SetLineSpacing(AValue: Integer);
+    procedure SetUnderline(AValue: Boolean);
+    procedure SetText(const AValue: string);
+    procedure SetTextAlignment(AValue: TTextAlignment);
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure SetPositionAndSize; override;
   published
     property BoundsType: TBoundsType read FBoundsType write FBoundsType;
-    property FontSmoothingType: TFontSmoothingType read FFontSmoothingType write FFontSmoothingType;
-    property LineSpacing: integer read FLineSpacing write setLineSpacing;
-    property Strikethrough: boolean read FStrikethrough write FStrikethrough;
-    property Text: string read FText write setText;
-    property TextAlignment: TTextAlignment read FTextAlignment write setTextAlignment;
+    property FontSmoothingType: TFontSmoothingType read FFontSmoothingType
+      write FFontSmoothingType;
+    property LineSpacing: Integer read FLineSpacing write SetLineSpacing;
+    property Strikethrough: Boolean read FStrikethrough write FStrikethrough;
+    property Text: string read FText write SetText;
+    property TextAlignment: TTextAlignment read FTextAlignment
+      write SetTextAlignment;
     property TextOrigin: TVPos read FTextOrigin write FTextOrigin;
-    property Underline: boolean read FUnderline write setUnderline;
-    property WrappingWidth: double read FWrappingWidth write FWrappingWidth;
-    property X: double read FX write FX;
-    property Y: double read FY write FY;
+    property Underline: Boolean read FUnderline write SetUnderline;
+    property WrappingWidth: Double read FWrappingWidth write FWrappingWidth;
+    property X: Double read FXPos write FXPos;
+    property Y: Double read FYPos write FYPos;
   end;
 
 implementation
 
-uses  Graphics, SysUtils;
+uses
+  Graphics,
+  SysUtils;
 
-{--- TFXText ------------------------------------------------------------------}
+{ --- TFXText ------------------------------------------------------------------ }
 
 constructor TFXText.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= +168;
-  JavaType:= 'Text';
+  inherited Create(AOwner);
+  Tag := +168;
+  JavaType := 'Text';
 end;
 
 procedure TFXText.Paint;
 begin
   CanvasFontAssign;
-  if Stroke = -16777201
-    then Canvas.Font.Color:= Fill
-  else begin
-    Canvas.Font.Color:= Stroke;
-    Canvas.Font.Style:= [fsBold];
+  if Stroke = -16777201 then
+    Canvas.Font.Color := Fill
+  else
+  begin
+    Canvas.Font.Color := Stroke;
+    Canvas.Font.Style := [fsBold];
   end;
   Canvas.TextOut(0, 0, Text);
 end;
@@ -86,67 +94,78 @@ end;
 
 procedure TFXText.SetPositionAndSize;
 begin
-  X:= Left;
-  Y:= Top;
-  MakeAttribut('X', Format('%g',[X]));
-  MakeAttribut('Y', Format('%g',[Y]));
+  X := Left;
+  Y := Top;
+  MakeAttribut('X', Format('%g', [X]));
+  MakeAttribut('Y', Format('%g', [Y]));
 end;
 
-function TFXText.getAttributes(ShowAttributes: integer): string;
-  const Attributes1 = '|Font|Text';
-        Attributes2 =  Attributes1 +
-                      '|BoundsType|FontSmoothingType|LineSpacing|Strikethrough|TextAlignment' +
-                      '|TextOrigin|Underline|WrappingWidth|X|Y';
+function TFXText.GetAttributes(ShowAttributes: Integer): string;
+const
+  Attributes1 = '|Font|Text';
+  Attributes2 = Attributes1 +
+    '|BoundsType|FontSmoothingType|LineSpacing|Strikethrough|TextAlignment' +
+    '|TextOrigin|Underline|WrappingWidth|X|Y';
 begin
-  if ShowAttributes = 1
-    then Result:= Attributes1
-    else Result:= Attributes2;
-  Result:= Result + inherited getAttributes(ShowAttributes);
-  var p:= Pos('|LayoutX|LayoutY', Result);
-  if p > 0 then
-    delete(Result, p, 16);
+  if ShowAttributes = 1 then
+    Result := Attributes1
+  else
+    Result := Attributes2;
+  Result := Result + inherited GetAttributes(ShowAttributes);
+  var
+  Posi := Pos('|LayoutX|LayoutY', Result);
+  if Posi > 0 then
+    Delete(Result, Posi, 16);
 end;
 
 procedure TFXText.SetAttribute(Attr, Value, Typ: string);
 begin
-  if Attr = 'TextAlignment' then begin
+  if Attr = 'TextAlignment' then
+  begin
     InsertImport('javafx.scene.text.*');
     MakeAttribut(Attr, 'TextAlignment.' + Value);
-  end else if Attr = 'TextOrigin' then begin
+  end
+  else if Attr = 'TextOrigin' then
+  begin
     InsertImport('javafx.geometry.*');
-    MakeAttribut(Attr, 'VPos.' + Value)
-  end else
+    MakeAttribut(Attr, 'VPos.' + Value);
+  end
+  else
     inherited;
 end;
 
-procedure TFXText.setLineSpacing(aValue: integer);
+procedure TFXText.SetLineSpacing(AValue: Integer);
 begin
-  if aValue <> FLineSpacing then begin
-    FLineSpacing:= aValue;
+  if AValue <> FLineSpacing then
+  begin
+    FLineSpacing := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXText.setUnderline(aValue: boolean);
+procedure TFXText.SetUnderline(AValue: Boolean);
 begin
-  if aValue <> FUnderline then begin
-    FUnderline:= aValue;
+  if AValue <> FUnderline then
+  begin
+    FUnderline := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXText.setTextAlignment(aValue: TTextAlignment);
+procedure TFXText.SetTextAlignment(AValue: TTextAlignment);
 begin
-  if aValue <> FTextAlignment then begin
-    FTextAlignment:= aValue;
+  if AValue <> FTextAlignment then
+  begin
+    FTextAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXText.setText(const aValue: string);
+procedure TFXText.SetText(const AValue: string);
 begin
-  if aValue <> FText then begin
-    FText:= aValue;
+  if AValue <> FText then
+  begin
+    FText := AValue;
     Invalidate;
   end;
 end;

@@ -117,12 +117,12 @@ type
     function GetRange: Pointer; override;
     procedure ResetRange; override;
     procedure SetRange(Value: Pointer); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes; override;
     function GetEol: Boolean; override;
     function GetKeyWords(TokenKind: Integer): string; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     function IsIdentChar(AChar: WideChar): Boolean; override;
     procedure Next; override;
   published
@@ -161,7 +161,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result + Ord(Str^);
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 2;
   fStringLen := Str - fToIdent;
@@ -182,11 +182,11 @@ end;
 
 procedure TSynLDRSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[1] := FuncAuthor;
 end;
@@ -207,21 +207,21 @@ end;
 procedure TSynLDRSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynLDRSyn.CRProc;
 begin
   fTokenID := tkUnknown;
-  inc(Run);
+  Inc(Run);
   if fLine[Run] = #10 then
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynLDRSyn.LFProc;
 begin
   fTokenID := tkUnknown;
-  inc(Run);
+  Inc(Run);
 end;
 
 constructor TSynLDRSyn.Create(AOwner: TComponent);
@@ -282,11 +282,11 @@ end;
 
 function TSynLDRSyn.FirstChar(DatLine: PWideChar): WideChar;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  i := 0;
-  while DatLine[i] = ' ' do inc(i);
-  Result := DatLine[i];
+  Int := 0;
+  while DatLine[Int] = ' ' do Inc(Int);
+  Result := DatLine[Int];
 end;
 
 procedure TSynLDRSyn.IdentProc;
@@ -295,12 +295,12 @@ begin
   begin
     fTokenID := tkComment;
     while (fLine[Run] <> #10) and (fLine[Run] <> #13)
-          and (fLine[Run] <> #0) do inc(Run);
+          and (fLine[Run] <> #0) do Inc(Run);
   end
   else
   begin
     fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
+  Inc(Run, fStringLen);
   while IsIdentChar(fLine[Run]) do
     Inc(Run);
   end;
@@ -310,24 +310,24 @@ procedure TSynLDRSyn.Number1Proc;
 
   function ArgNumber(DatLine: PWideChar): Byte;
   var
-   i: Integer;
+   Int: Integer;
    b: Boolean;
   begin
-    i := 0;
+    Int := 0;
     Result := 0;
     b := False;
-    while i <= Run do
+    while Int <= Run do
     begin
-      if DatLine[i] = ' ' then
+      if DatLine[Int] = ' ' then
       begin
-        inc(i);
+        Inc(Int);
         b := False;
       end
       else
       begin
-        if not b then inc(Result);
+        if not b then Inc(Result);
         b := True;
-        inc(i)
+        Inc(Int)
       end;
     end;
   end;
@@ -357,12 +357,12 @@ begin
     else
       fTokenID := tkIdentifier;
   end;
-  while CharInSet(FLine[Run], ['0'..'9', '.']) do inc(Run);
+  while CharInSet(FLine[Run], ['0'..'9', '.']) do Inc(Run);
 end;
 
 procedure TSynLDRSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -380,7 +380,7 @@ begin
   inherited;
 end;
 
-function TSynLDRSyn.GetDefaultAttribute(Index: integer): TSynHighLighterAttributes;
+function TSynLDRSyn.GetDefaultAttribute(Index: Integer): TSynHighLighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -427,7 +427,7 @@ begin
   end;
 end;
 
-function TSynLDRSyn.GetTokenKind: integer;
+function TSynLDRSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

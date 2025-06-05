@@ -2,17 +2,23 @@ unit UHTMLHelp;
 
 interface
 
-  function GetRootCHM(const s: string): string;
-  function LoadFromCHM(const afile: string): string;
+function GetRootCHM(const Str: string): string;
+function LoadFromCHM(const AFile: string): string;
 
 implementation
 
 uses
-  Windows, SysUtils, ActiveX, ComObj, UUtils;
+  Windows,
+  SysUtils,
+  ActiveX,
+  ComObj,
+  UUtils;
 
 const
-  CLSID_ITStorage: TGUID = (D1:$5d02926a; D2:$212e; D3:$11d0; D4:($9d,$f9,$00,$a0,$c9,$22,$e6,$ec));
-  IID_ITStorage  : TGUID = (D1:$88cc31de; D2:$27ab; D3:$11d0; D4:($9d,$f9,$00,$a0,$c9,$22,$e6,$ec));
+  CLSID_ITStorage: TGUID = (D1: $5D02926A; D2: $212E; D3: $11D0;
+    D4: ($9D, $F9, $00, $A0, $C9, $22, $E6, $EC));
+  IID_ITStorage: TGUID = (D1: $88CC31DE; D2: $27AB; D3: $11D0;
+    D4: ($9D, $F9, $00, $A0, $C9, $22, $E6, $EC));
 
 type
   SNB = PChar; // from objidl.h
@@ -20,117 +26,132 @@ type
   TCompactionLev = (COMPACT_DATA, COMPACT_DATA_AND_PATH);
 
   PItsControlData = ^TItsControlData;
-    _ITS_Control_Data = record
+
+  TITS_Control_Data = record
     cdwControlData: UINT;
-    adwControlData: array [0..0] of UINT;
+    adwControlData: array [0 .. 0] of UINT;
   end;
-  TItsControlData = _ITS_Control_Data;
 
-  IItsStorage = interface (IUnknown)
-    function StgCreateDocFile(const pwcsName: PChar; grfMode: DWORD;
-      reserved: DWORD; var ppstgOpen: IStorage): HRESULT; stdcall;
+  TItsControlData = TITS_Control_Data;
 
-    function StgCreateDocFileOnILockBytes(plkbyt: ILockBytes; grfMode: DWORD;
-      reserved: DWORD; var ppstgOpen: IStorage): HRESULT; stdcall;
+  IItsStorage = interface(IUnknown)
+    function StgCreateDocFile(const pwcsName: PChar; GrfMode: DWORD;
+      Reserved: DWORD; var PpstgOpen: IStorage): HRESULT; stdcall;
+
+    function StgCreateDocFileOnILockBytes(Plkbyt: ILockBytes; GrfMode: DWORD;
+      Reserved: DWORD; var PpstgOpen: IStorage): HRESULT; stdcall;
 
     function StgIsStorageFile(const pwcsName: PChar): HRESULT; stdcall;
 
-    function StgIsStorageILockBytes(plkbyt: ILockBytes): HRESULT; stdcall;
+    function StgIsStorageILockBytes(Plkbyt: ILockBytes): HRESULT; stdcall;
 
-    function StgOpenStorage(const pwcsName: PChar; pstgPriority: IStorage;
-      grfMode: DWORD; snbExclude: SNB; reserved: DWORD; var ppstgOpen: IStorage): HRESULT; stdcall;
+    function StgOpenStorage(const pwcsName: PChar; PstgPriority: IStorage;
+      GrfMode: DWORD; snbExclude: SNB; Reserved: DWORD; var PpstgOpen: IStorage)
+      : HRESULT; stdcall;
 
-    function StgOpenStorageOnILockBytes(plkbyt: ILockBytes; pStgPriority: IStorage;
-      grfMode: DWORD; snbExclude: SNB; reserved: DWORD; var ppstgOpen: IStorage): HRESULT; stdcall;
+    function StgOpenStorageOnILockBytes(Plkbyt: ILockBytes;
+      PstgPriority: IStorage; GrfMode: DWORD; snbExclude: SNB; Reserved: DWORD;
+      var PpstgOpen: IStorage): HRESULT; stdcall;
 
-    function StgSetTimes(const lpszName: PChar; const pctime, patime,
-      pmtime: TFileTime): HRESULT; stdcall;
+    function StgSetTimes(const LpszName: PChar;
+      const PcTime, PaTime, PmTime: TFileTime): HRESULT; stdcall;
 
-    function SetControlData(pControlData: PItsControlData): HRESULT; stdcall;
+    function SetControlData(PControlData: PItsControlData): HRESULT; stdcall;
 
-    function DefaultControlData(var ppControlData: PItsControlData): HRESULT; stdcall;
+    function DefaultControlData(var PpControlData: PItsControlData)
+      : HRESULT; stdcall;
 
-    function Compact(const pwcsName: PChar; iLev: TCompactionLev): HRESULT; stdcall;
+    function Compact(const pwcsName: PChar; ILev: TCompactionLev)
+      : HRESULT; stdcall;
   end;
 
-  var
-  mDumpBuffer: array of AnsiChar;
+var
+  GDumpBuffer: array of AnsiChar;
 
-function GetRootCHM(const s: string): string;
+function GetRootCHM(const Str: string): string;
 var
   ItsStorage: IItsStorage;
   Storage: IStorage;
-  Enumerator: IEnumStatStg;
+  Enumerator: IEnumSTATSTG;
   StatStg: TStatStg;
-  NumFetched: Longint;
-  HR: HResult;
-  text: string;
-  filename: string;
+  NumFetched: LongInt;
+  HRes: HRESULT;
+  Text: string;
+  Filename: string;
 begin
-  Result:= '';
-  filename:= s;
+  Result := '';
+  Filename := Str;
   try
-    OleCheck(CoCreateInstance(CLSID_ITStorage, nil, CLSCTX_INPROC_SERVER, IID_ITStorage, ItsStorage));
-    OleCheck(ItsStorage.StgOpenStorage(PChar(fileName), nil, STGM_READ or STGM_SHARE_DENY_WRITE, nil, 0, Storage));
+    OleCheck(CoCreateInstance(CLSID_ITStorage, nil, CLSCTX_INPROC_SERVER,
+      IID_ITStorage, ItsStorage));
+    OleCheck(ItsStorage.StgOpenStorage(PChar(Filename), nil,
+      STGM_READ or STGM_SHARE_DENY_WRITE, nil, 0, Storage));
     OleCheck(Storage.EnumElements(0, nil, 0, Enumerator));
     repeat
-      HR:= Enumerator.Next(1, StatStg, @NumFetched);
-      if (HR = S_OK) and (StatStg.pwcsName <> '') then begin
-        text:= StatStg.pwcsName;
-        if (Pos('$', text) = 0) and (StatStg.dwType = STGTY_STORAGE) then
-          Result:= text;
+      HRes := Enumerator.Next(1, StatStg, @NumFetched);
+      if (HRes = S_OK) and (StatStg.pwcsName <> '') then
+      begin
+        Text := StatStg.pwcsName;
+        if (Pos('$', Text) = 0) and (StatStg.dwType = STGTY_STORAGE) then
+          Result := Text;
         CoTaskMemFree(StatStg.pwcsName);
       end;
-    until HR <> S_OK;
-    Result:= '\' + Result;
-  except on e: Exception do
-    ErrorMsg('Exception: ' + e.Message + ' - Cannot read CHM root: ' + s);
+    until HRes <> S_OK;
+    Result := '\' + Result;
+  except
+    on e: Exception do
+      ErrorMsg('Exception: ' + e.Message + ' - Cannot read CHM root: ' + Str);
   end;
 end;
 
-function LoadFromCHM(const afile: string): string;
+function LoadFromCHM(const AFile: string): string;
 const
   FILENAME_LENGTH = 400;
 var
   ItsStorage: IItsStorage;
   Storage, SubStorage: IStorage;
   Stream: IStream;
-  BytesRead: Longint;
-  TotalRead, p: Integer;
-  CHMfile, path, s: string;
-  ws: string;
+  BytesRead: LongInt;
+  TotalRead, Posi: Integer;
+  CHMfile, Path, Str: string;
+  WideS: string;
 begin
-  Result:= '';
+  Result := '';
   try
-    p:= Pos('.CHM', Uppercase(afile));
-    CHMfile:= Copy(afile, 1, p + 3);
-    path:= Copy(afile, p + 5, length(afile));
-    OleCheck(CoCreateInstance(CLSID_ITStorage, nil, CLSCTX_INPROC_SERVER, IID_ITStorage, ItsStorage));
-    OleCheck(ItsStorage.StgOpenStorage(PChar(CHMfile), nil, STGM_READ or STGM_SHARE_DENY_WRITE, nil, 0, Storage));
-    p:= Pos('\', path);
-    while p > 0 do begin
-      ws:= Copy(path, 1, p-1);
-      delete(path, 1, p);
-      OleCheck(Storage.OpenStorage(PWideChar(ws), nil, STGM_READ or STGM_SHARE_DENY_WRITE, nil, 0, SubStorage));
+    Posi := Pos('.CHM', UpperCase(AFile));
+    CHMfile := Copy(AFile, 1, Posi + 3);
+    Path := Copy(AFile, Posi + 5, Length(AFile));
+    OleCheck(CoCreateInstance(CLSID_ITStorage, nil, CLSCTX_INPROC_SERVER,
+      IID_ITStorage, ItsStorage));
+    OleCheck(ItsStorage.StgOpenStorage(PChar(CHMfile), nil,
+      STGM_READ or STGM_SHARE_DENY_WRITE, nil, 0, Storage));
+    Posi := Pos('\', Path);
+    while Posi > 0 do
+    begin
+      WideS := Copy(Path, 1, Posi - 1);
+      Delete(Path, 1, Posi);
+      OleCheck(Storage.OpenStorage(PWideChar(WideS), nil,
+        STGM_READ or STGM_SHARE_DENY_WRITE, nil, 0, SubStorage));
       Storage := SubStorage;
-      p:= Pos('\', path);
+      Posi := Pos('\', Path);
     end;
-    ws:= path;
-    OleCheck(Storage.OpenStream(PWideChar(ws), nil, STGM_READ or STGM_SHARE_EXCLUSIVE, 0, Stream));
+    WideS := Path;
+    OleCheck(Storage.OpenStream(PWideChar(WideS), nil, STGM_READ or
+      STGM_SHARE_EXCLUSIVE, 0, Stream));
     TotalRead := 0;
-    SetLength(mDumpBuffer, 0);
+    SetLength(GDumpBuffer, 0);
     repeat
-      SetLength(mDumpBuffer, TotalRead + 128);
-      OleCheck(Stream.Read(@mDumpBuffer[TotalRead], 128, @BytesRead));
+      SetLength(GDumpBuffer, TotalRead + 128);
+      OleCheck(Stream.Read(@GDumpBuffer[TotalRead], 128, @BytesRead));
       TotalRead := TotalRead + BytesRead;
     until BytesRead <> 128;
-    SetLength(mDumpBuffer, TotalRead);
-    s:= string(PAnsiChar(mDumpBuffer));
-    Result:= s;
-  except on e: Exception do
-    ErrorMsg('Exception: ' + e.Message + ' - Cannot load from CHM: ' + afile);
+    SetLength(GDumpBuffer, TotalRead);
+    Str := string(PAnsiChar(GDumpBuffer));
+    Result := Str;
+  except
+    on e: Exception do
+      ErrorMsg('Exception: ' + e.Message + ' - Cannot load from CHM: ' + AFile);
   end;
 end;
 
 end.
-

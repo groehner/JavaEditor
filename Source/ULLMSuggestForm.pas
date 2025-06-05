@@ -3,17 +3,11 @@ unit ULLMSuggestForm;
 interface
 
 uses
-  Winapi.Windows,
   Winapi.Messages,
-  System.Types,
-  System.SysUtils,
-  System.Variants,
   System.Classes,
   System.ImageList,
-  Vcl.Graphics,
   Vcl.Controls,
   Vcl.Forms,
-  Vcl.Dialogs,
   Vcl.ImgList,
   Vcl.VirtualImageList,
   Vcl.BaseImageCollection,
@@ -44,7 +38,7 @@ type
     procedure spiCancelClick(Sender: TObject);
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
   protected
-    seSuggest: TSynEdit;
+    FSeSuggest: TSynEdit;
     FEditor: TCustomSynEdit;
     procedure CreateParams(var Params: TCreateParams); override;
   end;
@@ -59,6 +53,9 @@ implementation
 {$R *.dfm}
 
 uses
+  Winapi.Windows,
+  System.Types,
+  Vcl.Graphics,
   System.Math,
   SynEditTypes,
   SynEditKeyCmds,
@@ -66,8 +63,8 @@ uses
 
 procedure TSuggestWindow.FormCreate(Sender: TObject);
 begin
-  seSuggest:= TSynEdit.create(self);
-  with seSuggest do begin
+  FSeSuggest:= TSynEdit.Create(Self);
+  with FSeSuggest do begin
     Left:= 0;
     Top:= 0;
     Align:= alClient;
@@ -78,7 +75,7 @@ begin
     Font.Style:= [];
     Font.Quality:= fqClearTypeNatural;
     TabOrder:= 0;
-    UseCodeFolding:= false;
+    UseCodeFolding:= False;
     Gutter.Font.Charset:= DEFAULT_CHARSET;
     Gutter.Font.Color:= clWindowText;
     Gutter.Font.Height:= -11;
@@ -94,39 +91,36 @@ end;
 procedure TSuggestWindow.WMNCHitTest(var Message: TWMNCHitTest);
 //  Makes the form resizable
 var
-  D: Integer;
-  P: TPoint;
+  Size: Integer;
+  Posi: TPoint;
 begin
-  D := GetSystemMetrics(SM_CXSIZEFRAME);
-
-  P := ScreenToClient(Message.Pos);
-
-  if P.Y < D then
+  Size := GetSystemMetrics(SM_CXSIZEFRAME);
+  Posi := ScreenToClient(Message.Pos);
+  if Posi.Y < Size then
   begin
-    if P.X < D then
+    if Posi.X < Size then
       Message.Result := HTTOPLEFT
-    else if P.X > ClientWidth - D then
+    else if Posi.X > ClientWidth - Size then
       Message.Result := HTTOPRIGHT
     else
       Message.Result := HTTOP;
   end
-  else if P.Y > ClientHeight - D then
+  else if Posi.Y > ClientHeight - Size then
   begin
-    if P.X < D then
+    if Posi.X < Size then
       Message.Result := HTBOTTOMLEFT
-    else if P.X > ClientWidth - D then
+    else if Posi.X > ClientWidth - Size then
       Message.Result := HTBOTTOMRIGHT
     else
       Message.Result := HTBOTTOM;
   end
   else
   begin
-    if P.X < D then
+    if Posi.X < Size then
       Message.Result := HTLEFT
-    else if P.X > ClientWidth - D then
-      Message.Result := HTRIGHT
+    else if Posi.X > ClientWidth - Size then
+      Message.Result := HTRIGHT;
   end;
-
   if Message.Result = 0 then
     inherited;
 end;
@@ -161,34 +155,33 @@ end;
 
 procedure TSuggestWindow.spiAcceptClick(Sender: TObject);
 begin
-  FEditor.SelText := seSuggest.Text;
+  FEditor.SelText := FSeSuggest.Text;
   Close;
 end;
 
 procedure TSuggestWindow.spiAcceptLineClick(Sender: TObject);
 begin
-  var Line := seSuggest.Lines[0];
-  if seSuggest.Lines.Count > 1 then
+  var Line := FSeSuggest.Lines[0];
+  if FSeSuggest.Lines.Count > 1 then
     Line := Line + sLineBreak;
-  seSuggest.Lines.Delete(0);
+  FSeSuggest.Lines.Delete(0);
   FEditor.SelText := Line;
-  if seSuggest.Lines.Count = 0 then
+  if FSeSuggest.Lines.Count = 0 then
     Close;
 end;
 
 procedure TSuggestWindow.spiAcceptWordClick(Sender: TObject);
 begin
-  seSuggest.BlockBegin := BufferCoord(0, 0);
-  seSuggest.ExecuteCommand(ecSelWordRight, ' ', nil);
-  var FirstWord := seSuggest.SelText;
-  seSuggest.SelText := '';
+  FSeSuggest.BlockBegin := BufferCoord(0, 0);
+  FSeSuggest.ExecuteCommand(ecSelWordRight, ' ', nil);
+  var FirstWord := FSeSuggest.SelText;
+  FSeSuggest.SelText := '';
   var TrimTrailingSpaces := eoTrimTrailingSpaces in FEditor.Options;
   FEditor.Options := FEditor.Options - [eoTrimTrailingSpaces];
   FEditor.SelText := FirstWord;
   if TrimTrailingSpaces then
     FEditor.Options := FEditor.Options + [eoTrimTrailingSpaces];
-
-  if seSuggest.Text = '' then
+  if FSeSuggest.Text = '' then
     Close;
 end;
 
@@ -204,7 +197,7 @@ const
 begin
   if not Assigned(SuggestWindow) then begin
     SuggestWindow := TSuggestWindow.Create(Application.MainForm);
-    SuggestWindow.seSuggest.Parent:= SuggestWindow;
+    SuggestWindow.FSeSuggest.Parent:= SuggestWindow;
   end;
 
   SuggestWindow.FEditor := Editor;
@@ -217,26 +210,25 @@ begin
   end;
 
   var Monitor := Screen.MonitorFromWindow(Editor.Handle);
-  var BC := Editor.BlockBegin;
-  var DC := Editor.BufferToDisplayPos(BC);
-  var Point := Editor.RowColumnToPixels(DC);
-  var SP := Editor.ClientToScreen(Point);
+  var BlockBegin := Editor.BlockBegin;
+  var DisplayBegin := Editor.BufferToDisplayPos(BlockBegin);
+  var Point := Editor.RowColumnToPixels(DisplayBegin);
+  var ScreenPoint := Editor.ClientToScreen(Point);
 
-  SuggestWindow.seSuggest.Text := Suggestion;
-  var LineCount := Min(MaxLines, SuggestWindow.seSuggest.Lines.Count);
+  SuggestWindow.FSeSuggest.Text := Suggestion;
+  var LineCount := Min(MaxLines, SuggestWindow.FSeSuggest.Lines.Count);
 
   SuggestWindow.ScaleForPPI(Editor.CurrentPPI);
   // Window size
-  var Height := LineCount * SuggestWindow.seSuggest.LineHeight +
+  var Height := LineCount * SuggestWindow.FSeSuggest.LineHeight +
     SuggestWindow.SpTBXToolbar.Height + BordersSize;
-  var Width := SuggestWindow.seSuggest.CharWidth * 80 + BordersSize;
+  var Width := SuggestWindow.FSeSuggest.CharWidth * 80 + BordersSize;
   // Window position
-  var Left := Min(SP.X, Monitor.Left + Monitor.Width - Width);
-  var Top := SP.Y - Height;
+  var Left := Min(ScreenPoint.X, Monitor.Left + Monitor.Width - Width);
+  var Top := ScreenPoint.Y - Height;
   if Top < Monitor.Top then
-     Top := SP.Y + Editor.LineHeight;
+     Top := ScreenPoint.Y + Editor.LineHeight;
   SuggestWindow.SetBounds(Left, Top, Width, Height);
-
   SuggestWindow.ShowModal;
 end;
 

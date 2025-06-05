@@ -72,21 +72,21 @@ type
   private
     fLineOffsets: PRowIndexArray;
     fRowLengths: PRowLengthArray;
-    fLineCapacity: integer;
-    fRowCapacity: integer;
-    fLineCount: integer;
+    fLineCapacity: Integer;
+    fRowCapacity: Integer;
+    fLineCount: Integer;
 
     fEditor: TCustomSynEdit;
     fMinRowLength: TRowLength;
     fMaxRowLength: TRowLength;
-    procedure GrowLines(aMinSize: integer);
-    procedure MoveLines(aStart: TLineIndex; aMoveBy: integer);
-    procedure GrowRows(aMinSize: integer);
-    procedure MoveRows(aStart: TRowIndex; aMoveBy: integer);
+    procedure GrowLines(aMinSize: Integer);
+    procedure MoveLines(aStart: TLineIndex; aMoveBy: Integer);
+    procedure GrowRows(aMinSize: Integer);
+    procedure MoveRows(aStart: TRowIndex; aMoveBy: Integer);
     procedure SetEmpty;
   protected
     procedure WrapLines;
-    function ReWrapLine(aIndex: TLineIndex): integer;
+    function ReWrapLine(aIndex: TLineIndex): Integer;
     procedure TrimArrays;
     property LineOffsets: PRowIndexArray read fLineOffsets;
     property RowLengths: PRowLengthArray read fRowLengths;
@@ -94,15 +94,15 @@ type
   public
     constructor Create(aOwner: TCustomSynEdit);
     destructor Destroy; override;
-    property LineCount: integer read fLineCount;
+    property LineCount: Integer read fLineCount;
     { ISynEditBufferPlugin }
     function BufferToDisplayPos(const aPos: TBufferCoord): TDisplayCoord;
     function DisplayToBufferPos(const aPos: TDisplayCoord): TBufferCoord;
-    function RowCount: integer;
-    function GetRowLength(aRow: integer): integer;
-    function LinesInserted(aIndex: integer; aCount: integer): integer;
-    function LinesDeleted(aIndex: integer; aCount: integer): integer;
-    function LinesPutted(aIndex: integer; aCount: integer): integer;
+    function RowCount: Integer;
+    function GetRowLength(aRow: Integer): Integer;
+    function LinesInserted(aIndex: Integer; aCount: Integer): Integer;
+    function LinesDeleted(aIndex: Integer; aCount: Integer): Integer;
+    function LinesPutted(aIndex: Integer; aCount: Integer): Integer;
     procedure Reset;
     procedure DisplayChanged; 
   end;
@@ -121,9 +121,9 @@ uses
 function TSynWordWrapPlugin.BufferToDisplayPos(
   const aPos: TBufferCoord): TDisplayCoord;
 var
-  vStartRow: integer; // first row of the line
-  cRow: integer;
-  vRowLen: integer;
+  vStartRow: Integer; // first row of the line
+  cRow: Integer;
+  vRowLen: Integer;
 begin
   Assert(aPos.Char > 0);
   Assert(aPos.Line > 0);
@@ -179,8 +179,8 @@ end;
 function TSynWordWrapPlugin.DisplayToBufferPos(
   const aPos: TDisplayCoord): TBufferCoord;
 var
-  cLine: integer;
-  cRow: integer;
+  cLine: Integer;
+  cRow: Integer;
 begin
   Assert(aPos.Column > 0);
   Assert(aPos.Row > 0);
@@ -214,7 +214,7 @@ begin
     Inc(Result.Char, fRowLengths[cRow]);
 end;
 
-function TSynWordWrapPlugin.GetRowLength(aRow: integer): integer;
+function TSynWordWrapPlugin.GetRowLength(aRow: Integer): Integer;
 // aRow is 1-based...
 begin
   if (aRow <= 0) or (aRow > RowCount) then
@@ -222,7 +222,7 @@ begin
   Result := fRowLengths[aRow - 1];
 end;
 
-procedure TSynWordWrapPlugin.GrowLines(aMinSize: integer);
+procedure TSynWordWrapPlugin.GrowLines(aMinSize: Integer);
 const
   vStepSize = 256;
 begin
@@ -237,7 +237,7 @@ begin
   end;
 end;
 
-procedure TSynWordWrapPlugin.GrowRows(aMinSize: integer);
+procedure TSynWordWrapPlugin.GrowRows(aMinSize: Integer);
 const
   vStepSize = 512;
 begin
@@ -251,11 +251,11 @@ begin
   end;
 end;
 
-function TSynWordWrapPlugin.LinesDeleted(aIndex: integer; aCount: integer): integer;
+function TSynWordWrapPlugin.LinesDeleted(aIndex: Integer; aCount: Integer): Integer;
 var
-  vStartRow: integer;
-  vEndRow: integer;
-  cLine: integer;
+  vStartRow: Integer;
+  vEndRow: Integer;
+  cLine: Integer;
 begin
   if fMaxRowLength = 0 then
   begin
@@ -283,10 +283,10 @@ begin
     Dec(fLineOffsets[cLine], Result);
 end;
 
-function TSynWordWrapPlugin.LinesInserted(aIndex: integer; aCount: integer): integer;
+function TSynWordWrapPlugin.LinesInserted(aIndex: Integer; aCount: Integer): Integer;
 var
   vPrevOffset: TRowIndex;
-  cLine: integer;
+  cLine: Integer;
 begin
   if fMaxRowLength = 0 then
   begin
@@ -318,9 +318,9 @@ begin
     Inc(Result, ReWrapLine(cLine));
 end;
 
-function TSynWordWrapPlugin.LinesPutted(aIndex: integer; aCount: integer): integer;
+function TSynWordWrapPlugin.LinesPutted(aIndex: Integer; aCount: Integer): Integer;
 var
-  cLine: integer;
+  cLine: Integer;
 begin
   if fMaxRowLength = 0 then
   begin
@@ -336,9 +336,9 @@ begin
     Inc(Result, ReWrapLine(cLine));
 end;
 
-procedure TSynWordWrapPlugin.MoveLines(aStart: TLineIndex; aMoveBy: integer);
+procedure TSynWordWrapPlugin.MoveLines(aStart: TLineIndex; aMoveBy: Integer);
 var
-  vMoveCount: integer;
+  vMoveCount: Integer;
 begin
   Assert(aMoveBy <> 0);
   Assert(aStart + aMoveBy >= 0);
@@ -350,9 +350,9 @@ begin
     vMoveCount * SizeOf(TRowIndex));
 end;
 
-procedure TSynWordWrapPlugin.MoveRows(aStart: TRowIndex; aMoveBy: integer);
+procedure TSynWordWrapPlugin.MoveRows(aStart: TRowIndex; aMoveBy: Integer);
 var
-  vMoveCount: integer;
+  vMoveCount: Integer;
 begin
   Assert(aMoveBy <> 0);
   Assert(aStart + aMoveBy >= 0);
@@ -377,7 +377,7 @@ begin
   WrapLines;
 end;
 
-function TSynWordWrapPlugin.ReWrapLine(aIndex: TLineIndex): integer;
+function TSynWordWrapPlugin.ReWrapLine(aIndex: TLineIndex): Integer;
 // Returns RowCount delta (how many wrapped lines were added or removed by this change).
 var
   vMaxNewRows: Cardinal;
@@ -395,7 +395,7 @@ var
   vOldNextRow: Integer; // first row of the next line, before the change
   cLine: Integer;
 
-  p : PRowIndexArray;
+  Posi : PRowIndexArray;
 begin
   // ****** First parse the new string using an auxiliar array *****
   vLine := TSynEditStringList(Editor.Lines).ExpandedStrings[aIndex];
@@ -417,7 +417,7 @@ begin
         if Editor.IsWordBreakChar(vRunner^) then
         begin
           vRowEnd := vRunner + 1;
-          break;
+          Break;
         end;
         Dec(vRunner);
       end;
@@ -426,7 +426,7 @@ begin
       begin
         vLastVisibleChar := vRowEnd - 1;
         while (vLastVisibleChar^ = FillerChar) and (vLastVisibleChar > vRowBegin) do
-          dec(vLastVisibleChar);
+          Dec(vLastVisibleChar);
         vRowEnd := vLastVisibleChar + 1;
       end;
 
@@ -462,13 +462,13 @@ begin
           // the algorithmic issue if someone can spend some time looking
           // at the big picture... there are huge speedups to be made by
           // eliminating this loop
-          p:=fLineOffsets;
+          Posi:=fLineOffsets;
           for cLine := aIndex to LineCount - 1 do
-             Inc(p[cLine])
+             Inc(Posi[cLine])
         end else begin
-          p:=fLineOffsets;
+          Posi:=fLineOffsets;
           for cLine := aIndex to LineCount - 1 do
-            Inc(p[cLine], Result);
+            Inc(Posi[cLine], Result);
         end;
         if vOldNextRow < RowCount - Result then
           MoveRows(vOldNextRow, Result);
@@ -531,7 +531,7 @@ begin
         if Editor.IsWordBreakChar(vRunner^) then
         begin
           vRowEnd := vRunner + 1;
-          break;
+          Break;
         end;
         Dec(vRunner);
       end;
@@ -540,7 +540,7 @@ begin
       begin
         vLastVisibleChar := vRowEnd - 1;
         while (vLastVisibleChar^ = FillerChar) and (vLastVisibleChar > vRowBegin) do
-          dec(vLastVisibleChar);
+          Dec(vLastVisibleChar);
         vRowEnd := vLastVisibleChar + 1;
       end;
 
@@ -560,7 +560,7 @@ begin
   fLineCount := Editor.Lines.Count;
 end;
 
-function TSynWordWrapPlugin.RowCount: integer;
+function TSynWordWrapPlugin.RowCount: Integer;
 begin
   if LineCount > 0 then
     Result := fLineOffsets[LineCount - 1]

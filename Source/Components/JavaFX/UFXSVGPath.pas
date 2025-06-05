@@ -2,7 +2,9 @@ unit UFXSVGPath;
 
 interface
 
-uses Classes, UFXShape;
+uses
+  Classes,
+  UFXShape;
 
 type
 
@@ -16,8 +18,8 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure NewControl; override;
     procedure Paint; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
   published
     property Content: string read FContent write FContent;
     property FillRule: TFillRule read FFillRule write FFillRule;
@@ -25,13 +27,11 @@ type
 
 implementation
 
-uses SysUtils;
-
 {--- TFXRectangle -------------------------------------------------------------}
 
 constructor TFXSVGPath.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
+  inherited Create(AOwner);
   Tag:= +171;
   Width:= 120;
   Height:= 80;
@@ -45,7 +45,7 @@ begin
   inherited;
   DefaultComponent;
   InsertNewVariable('private SVGPath ' + Name + ' = new SVGPath();');
-  MakeAttribut('Content', asString(FContent));
+  MakeAttribut('Content', AsString(FContent));
 end;
 
 procedure TFXSVGPath.Paint;
@@ -53,10 +53,10 @@ begin
   DefaultPenBrush;
 end;
 
-function TFXSVGPath.getAttributes(ShowAttributes: integer): string;
+function TFXSVGPath.GetAttributes(ShowAttributes: Integer): string;
   const SVGPathAttributes = '|Content|FillRule';
 begin
-  Result:= SVGPathAttributes + inherited getAttributes(ShowAttributes) + '|LayoutX|LayoutY';
+  Result:= SVGPathAttributes + inherited GetAttributes(ShowAttributes) + '|LayoutX|LayoutY';
 end;
 
 procedure TFXSVGPath.SetAttribute(Attr, Value, Typ: string);

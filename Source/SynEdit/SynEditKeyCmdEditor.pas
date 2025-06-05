@@ -72,7 +72,7 @@ type
     FExtended: Boolean;
     procedure SetCommand(const Value: TSynEditorCommand);
     procedure SetKeystroke(const Value: TShortcut);
-    procedure AddEditorCommand(const S: string);
+    procedure AddEditorCommand(const Str: string);
     function GetCommand: TSynEditorCommand;
     function GetKeystroke: TShortcut;
     function GetKeystroke2: TShortcut;
@@ -111,22 +111,22 @@ begin
 end;
 
 procedure TSynEditKeystrokeEditorForm.FormShow(Sender: TObject);
-Var i : Integer;
+var Int : Integer;
 begin
   if FExtended then
     GetEditorCommandExtended(AddEditorCommand)
   else GetEditorCommandValues(AddEditorCommand);
 
   //Now add the values for quick access
-  for i := 0 to cmbCommand.Items.Count - 1 do
-    cmbCommand.Items.Objects[i] := TObject(IndexToEditorCommand(i));
+  for Int := 0 to cmbCommand.Items.Count - 1 do
+    cmbCommand.Items.Objects[Int] := TObject(IndexToEditorCommand(Int));
   if FExtended then
     cmbCommand.Sorted := True;
 end;
 
-procedure TSynEditKeystrokeEditorForm.AddEditorCommand(const S: string);
+procedure TSynEditKeystrokeEditorForm.AddEditorCommand(const Str: string);
 begin
-  cmbCommand.Items.Add(S);
+  cmbCommand.Items.Add(Str);
 end;
 
 function TSynEditKeystrokeEditorForm.GetCommand: TSynEditorCommand;
@@ -170,12 +170,12 @@ begin
   begin
     MessageDlg('The command "'+cmbCommand.Text+'" needs to have at least one keystroke assigned to it.', mtError, [mbOK], 0);
     hkKeystroke.SetFocus;
-  end else ModalResult := mrOK;
+  end else ModalResult := mrOk;
 end;
 
 procedure TSynEditKeystrokeEditorForm.FormCreate(Sender: TObject);
 begin    
-  hkKeystroke := TSynHotKey.Create(self);
+  hkKeystroke := TSynHotKey.Create(Self);
   with hkKeystroke do
   begin
     Parent := pnlAlign;
@@ -189,7 +189,7 @@ begin
     TabOrder := 1;
   end;
 
-  hkKeystroke2 := TSynHotKey.Create(self);
+  hkKeystroke2 := TSynHotKey.Create(Self);
   with hkKeystroke2 do
   begin
     Parent := pnlAlign;

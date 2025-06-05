@@ -99,7 +99,7 @@ type
 {$REGION 'TSysPopupItem'}
     TSysPopupItem = class
     private
-      FIndex: integer;
+      FIndex: Integer;
       FMenu: HMENU;
       FHandle: HWND;
       FSysParent: TSysControl;
@@ -120,7 +120,9 @@ type
       function GetItemID: WORD;
       function GetVCLRealItem: TMenuItem;
     public
-      constructor Create(SysPopupStyleHook: TSysPopupStyleHook; SysParent: TSysControl; const Index: integer; const Menu: HMENU); virtual;
+      constructor Create(SysPopupStyleHook: TSysPopupStyleHook;
+        SysParent: TSysControl; const Index: Integer;
+        const Menu: HMENU); virtual;
       destructor Destroy; override;
       property ID: WORD read GetItemID;
       property ItemRect: TRect read GetItemRect;
@@ -140,57 +142,61 @@ type
 {$ENDREGION}
 
   var
-    FOffset : Integer;
-    FOffsetCache : Integer;
-    FSeparatorHeightCache : Integer;
-    FItemHeightCache : Integer;
+    FOffset: Integer;
+    FOffsetCache: Integer;
+    FSeparatorHeightCache: Integer;
+    FItemHeightCache: Integer;
     FItemsPainted: Boolean;
     FParentSubItemPainted: Boolean;
-    FPreviousHotItemIndex: integer;
+    FPreviousHotItemIndex: Integer;
     FPaintFirstItemFromMenu: Boolean;
-    FKeyIndex: integer;
+    FKeyIndex: Integer;
     FSysPopupItem: TSysPopupItem;
-    FCount: integer;
+    FCount: Integer;
     FMenu: HMENU;
     FVCLMenuItems: TMenuItem;
-    FNCRect : TRect;
-    FEnterWithKeyboard : Boolean;
-    FPersistentHotKeys : Boolean;
+    FNCRect: TRect;
+    FEnterWithKeyboard: Boolean;
+    FPersistentHotKeys: Boolean;
 
-    FMenuBarHook : TObject;
+    FMenuBarHook: TObject;
     function GetMenuFromHandle(AHandle: HWND): HMENU;
-    function GetItemsCount: integer;
+    function GetItemsCount: Integer;
     procedure MNSELECTITEM(var Message: TMessage); message MN_SELECTITEM;
     procedure WMPRINT(var Message: TMessage); message WM_PRINT;
-    function GetSysPopupItem(Index: integer): TSysPopupItem;
+    function GetSysPopupItem(Index: Integer): TSysPopupItem;
     function GetRightToLeft: Boolean;
   protected
-    procedure EraseItem(Canvas: TCanvas; const Index: integer; const ItemRect: TRect); virtual;
-    procedure DoDrawItem(Canvas: TCanvas; const Index: integer; const ForceIsNotHot: Boolean = False);
-    procedure DrawItem(Canvas: TCanvas; const Index: integer; const ItemRect: TRect; const ItemText: string; const State: TSysPopupItemState;
+    procedure EraseItem(Canvas: TCanvas; const Index: Integer;
+      const ItemRect: TRect); virtual;
+    procedure DoDrawItem(Canvas: TCanvas; const Index: Integer;
+      const ForceIsNotHot: Boolean = False);
+    procedure DrawItem(Canvas: TCanvas; const Index: Integer;
+      const ItemRect: TRect; const ItemText: string;
+      const State: TSysPopupItemState;
       const Style: TSysPopupItemStyle); Virtual;
     procedure PaintBackground(Canvas: TCanvas); override;
     procedure GetNbSeparator(var PNbSeparator: Integer; const PIndex: Integer);
-    function GetMenuItemHeight(const Index: Integer) : Integer;
-    function GetOffset(UseCache: Boolean) : Integer;
+    function GetMenuItemHeight(const Index: Integer): Integer;
+    function GetOffset(UseCache: Boolean): Integer;
     function ItemIsVisible(const Index: Integer): Boolean;
     procedure SetMaxOffset();
     procedure RefreshMenu();
     procedure GetItemHeight();
     procedure GetSeparatorHeight();
     function GetClientRectHeight(var PValue: TRect): Integer;
-    function GetItemClicked(var PButton: Byte; PInitPos: TPoint) : Integer;
-    function GetMousePos() : TPoint;
+    function GetItemClicked(var PButton: Byte; PInitPos: TPoint): Integer;
+    function GetMousePos(): TPoint;
     procedure WndProc(var Message: TMessage); override;
     procedure UpdateColors; override;
     procedure SetOffset(PValue: Integer);
-    function GetBottom(const Index: Integer) : Integer;
+    function GetBottom(const Index: Integer): Integer;
   public
     constructor Create(AHandle: THandle); override;
     destructor Destroy; override;
     property Menu: HMENU read FMenu;
-    property Items[Index: integer]: TSysPopupItem read GetSysPopupItem;
-    property Count: integer read FCount;
+    property Items[Index: Integer]: TSysPopupItem read GetSysPopupItem;
+    property Count: Integer read FCount;
     property RightToLeft: Boolean read GetRightToLeft;
     property Offset: Integer read FOffset write SetOffset;
   end;
@@ -218,12 +224,12 @@ begin
   GetObject(hBmp, sizeof(Result), @Result);
 end;
 
-function GetBitmapHeight(hBmp: HBITMAP): integer;
+function GetBitmapHeight(hBmp: HBITMAP): Integer;
 begin
   Result := GetBmpInfo(hBmp).bmHeight;
 end;
 
-function GetBitmapWidth(hBmp: HBITMAP): integer;
+function GetBitmapWidth(hBmp: HBITMAP): Integer;
 begin
   Result := GetBmpInfo(hBmp).bmWidth;
 end;
@@ -261,26 +267,25 @@ begin
   Result := Icon;
 end;
 
-function GetMenuItemPos(Menu: HMENU; ID: integer): integer;
+function GetMenuItemPos(Menu: HMENU; ID: Integer): Integer;
 var
-  i: integer;
   pMenuItemInfo: TMenuItemInfo;
 begin
   Result := -1;
   if Menu = 0 then
     Exit;
-  for i := 0 to GetMenuItemCount(Menu) do
+  for var I := 0 to GetMenuItemCount(Menu) do
   begin
     FillChar(pMenuItemInfo, sizeof(pMenuItemInfo), Char(0));
     pMenuItemInfo.cbSize := sizeof(pMenuItemInfo);
     pMenuItemInfo.fMask := MIIM_ID;
-    if (GetMenuItemInfo(Menu, i, True, pMenuItemInfo)) then
+    if (GetMenuItemInfo(Menu, I, True, pMenuItemInfo)) then
       if pMenuItemInfo.wID = Cardinal(ID) then
-        Exit(i);
+        Exit(I);
   end;
 end;
 
-function IsItemHILITE(Menu: HMENU; const ItemIndex: integer): Boolean;
+function IsItemHILITE(Menu: HMENU; const ItemIndex: Integer): Boolean;
 var
   pMenuItemInfo: TMenuItemInfo;
 begin
@@ -311,8 +316,8 @@ begin
   Offset := 0;
   FSeparatorHeightCache := 1;
   FItemHeightCache := 1;
-  FEnterWithKeyboard  := False;
-  FPersistentHotKeys  := False;
+  FEnterWithKeyboard := False;
+  FPersistentHotKeys := False;
   FMenuBarHook := nil;
   // Font := Screen.MenuFont;
 end;
@@ -324,14 +329,15 @@ begin
   inherited;
 end;
 
-procedure TSysPopupStyleHook.DoDrawItem(Canvas: TCanvas; const Index: integer; const ForceIsNotHot: Boolean = False);
+procedure TSysPopupStyleHook.DoDrawItem(Canvas: TCanvas; const Index: Integer;
+  const ForceIsNotHot: Boolean = False);
 var
   LRect, LRect2, LItemRect: TRect;
-  P, P2: TPoint;
+  Posi, Posi2: TPoint;
   State: TSysPopupItemState;
   Style: TSysPopupItemStyle;
   LText: string;
-  SaveIndex: integer;
+  SaveIndex: Integer;
   LSysPopupItem: TSysPopupItem;
   ClientRectHeight: Integer;
 begin
@@ -340,39 +346,39 @@ begin
 
   LSysPopupItem := Items[Index];
   LItemRect := LSysPopupItem.ItemRect;
-  P2 := Point(LItemRect.Left, LItemRect.Bottom);
-  ScreenToClient(Handle, P2);
-  P2.Y := P2.Y - GetOffset(True); //add offset
+  Posi2 := Point(LItemRect.Left, LItemRect.Bottom);
+  ScreenToClient(Handle, Posi2);
+  Posi2.Y := Posi2.Y - GetOffset(True); // add offset
 
   GetMenuItemRect(0, FMenu, Index, LRect);
- //OutputDebugString(PChar(Format('Index %d  Width %d Height %d Left %d Top %d', [Index, LRect.Width, LRect.Height, LRect.Left, LRect.Top])));
+  // OutputDebugString(PChar(Format('Index %d  Width %d Height %d Left %d Top %d', [Index, LRect.Width, LRect.Height, LRect.Left, LRect.Top])));
   ClientRectHeight := GetClientRectHeight(LRect2);
   LRect2.Height := ClientRectHeight;
 
-  //prevent draw  not visible items on larger menus
-  if not PtInRect (LRect2, P2) then
+  // prevent draw  not visible items on larger menus
+  if not PtInRect(LRect2, Posi2) then
     Exit;
 
-  P := Point(LItemRect.Left, LItemRect.Top);
-  ScreenToClient(Handle, P);
-  P2 := P;
-  P2.Y := P2.Y - GetOffset(True); //add offset
+  Posi := Point(LItemRect.Left, LItemRect.Top);
+  ScreenToClient(Handle, Posi);
+  Posi2 := Posi;
+  Posi2.Y := Posi2.Y - GetOffset(True); // add offset
 
-  if ClientRectHeight>LRect.Height then
-    LRect2.Height:=  ClientRectHeight - LRect.Height;
+  if ClientRectHeight > LRect.Height then
+    LRect2.Height := ClientRectHeight - LRect.Height;
 
-  //prevent draw  not visible items on larger menus
-  if not PtInRect (LRect2, P2) then
+  // prevent draw  not visible items on larger menus
+  if not PtInRect(LRect2, Posi2) then
     Exit;
 
-  LItemRect := Rect(P.X, P.Y, P.X + LItemRect.Width, P.Y + LItemRect.Height);
-
+  LItemRect := Rect(Posi.X, Posi.Y, Posi.X + LItemRect.Width,
+    Posi.Y + LItemRect.Height);
 
   if LItemRect.Left < 2 then
     LItemRect.Left := 2;
-  inc(LItemRect.Right, 4);
+  Inc(LItemRect.Right, 4);
   if LItemRect.Top < 2 then
-    inc(LItemRect.Top, 2);
+    Inc(LItemRect.Top, 2);
   { Item State }
   State := [];
   if not ForceIsNotHot then
@@ -410,8 +416,9 @@ begin
   end;
 end;
 
-procedure TSysPopupStyleHook.DrawItem(Canvas: TCanvas; const Index: integer; const ItemRect: TRect; const ItemText: string; const State: TSysPopupItemState;
-  const Style: TSysPopupItemStyle);
+procedure TSysPopupStyleHook.DrawItem(Canvas: TCanvas; const Index: Integer;
+  const ItemRect: TRect; const ItemText: string;
+  const State: TSysPopupItemState; const Style: TSysPopupItemStyle);
 var
   LTextRect: TRect;
   DC: HDC;
@@ -431,23 +438,29 @@ var
     LSubMenuDetails := StyleServices.GetElementDetails(LSubMenuDetail);
     StyleServices.GetElementSize(DC, LSubMenuDetails, esActual, SubMenuSize);
     if not RightToLeft then
-      LSubMenuRect := Rect(ItemRect.Right - SubMenuSize.cx, ItemRect.Top, ItemRect.Right, ItemRect.Top + SubMenuSize.cy)
+      LSubMenuRect := Rect(ItemRect.Right - SubMenuSize.cx, ItemRect.Top,
+        ItemRect.Right, ItemRect.Top + SubMenuSize.cy)
     else
-      LSubMenuRect := Rect(ItemRect.Left + 4, ItemRect.Top, ItemRect.Left + 4 + SubMenuSize.Width, ItemRect.Bottom);
+      LSubMenuRect := Rect(ItemRect.Left + 4, ItemRect.Top,
+        ItemRect.Left + 4 + SubMenuSize.Width, ItemRect.Bottom);
     LBitmap := TBitmap.Create;
     try
       LBitmap.SetSize(SubMenuSize.Width, SubMenuSize.Height);
       LBitmap.Canvas.Brush.Color := clFuchsia;
-      LBitmap.Canvas.FillRect(Rect(0, 0, SubMenuSize.Width, SubMenuSize.Height));
-      StyleServices.DrawElement(LBitmap.Canvas.Handle, LSubMenuDetails, Rect(0, 0, SubMenuSize.Width, SubMenuSize.Height));
+      LBitmap.Canvas.FillRect(Rect(0, 0, SubMenuSize.Width,
+        SubMenuSize.Height));
+      StyleServices.DrawElement(LBitmap.Canvas.Handle, LSubMenuDetails,
+        Rect(0, 0, SubMenuSize.Width, SubMenuSize.Height));
       if RightToLeft then
       begin
         RotateBitmap(LBitmap, DegToRad(180), False, clFuchsia);
-        inc(LSubMenuRect.Top, (LBitmap.Height div 2) - 2);
-      end else
+        Inc(LSubMenuRect.Top, (LBitmap.Height div 2) - 2);
+      end
+      else
         Dec(LSubMenuRect.Left, 4);
 
-      TransparentBlt(DC, LSubMenuRect.Left, LSubMenuRect.Top, SubMenuSize.Width, SubMenuSize.Height, LBitmap.Canvas.Handle, 0, 0, SubMenuSize.Width,
+      TransparentBlt(DC, LSubMenuRect.Left, LSubMenuRect.Top, SubMenuSize.Width,
+        SubMenuSize.Height, LBitmap.Canvas.Handle, 0, 0, SubMenuSize.Width,
         SubMenuSize.Height, clFuchsia);
     finally
       LBitmap.Free;
@@ -455,13 +468,14 @@ var
     Dec(LTextRect.Right, LSubMenuRect.Width);
   end;
 
-  procedure DrawSpecialChar(DC: HDC; const Sign: Char; DestRect: TRect; const Bold: Boolean = False; const Disabled: Boolean = False);
+  procedure DrawSpecialChar(DC: HDC; const Sign: Char; DestRect: TRect;
+    const Bold: Boolean = False; const Disabled: Boolean = False);
   var
     LogFont: TLogFont;
     pOldFont: HGDIOBJ;
     AFont: HFONT;
     oldColor: COLORREF;
-    OldMode: integer;
+    OldMode: Integer;
   begin
     LogFont.lfHeight := DestRect.Height;
     LogFont.lfWidth := 0;
@@ -482,14 +496,18 @@ var
     LogFont.lfFaceName := 'Marlett';
 
     if Disabled then
-      oldColor := ColorToRGB(StyleServices.GetStyleFontColor(sfPopupMenuItemTextDisabled))
+      oldColor := ColorToRGB(StyleServices.GetStyleFontColor
+        (sfPopupMenuItemTextDisabled))
     else
     begin
-      oldColor := ColorToRGB(StyleServices.GetStyleFontColor(sfPopupMenuItemTextNormal));
+      oldColor := ColorToRGB(StyleServices.GetStyleFontColor
+        (sfPopupMenuItemTextNormal));
       if isHot in State then
-        oldColor := ColorToRGB(StyleServices.GetStyleFontColor(sfPopupMenuItemTextHot));
+        oldColor := ColorToRGB(StyleServices.GetStyleFontColor
+          (sfPopupMenuItemTextHot));
       if isDisabled in State then
-        oldColor := ColorToRGB(StyleServices.GetStyleFontColor(sfPopupMenuItemTextDisabled));
+        oldColor := ColorToRGB(StyleServices.GetStyleFontColor
+          (sfPopupMenuItemTextDisabled));
     end;
 
     AFont := CreateFontIndirect(LogFont);
@@ -499,7 +517,8 @@ var
         pOldFont := SelectObject(DC, AFont);
         try
           OldMode := SetBkMode(DC, Transparent);
-          Winapi.Windows.DrawText(DC, Sign, 1, DestRect, DT_LEFT or DT_SINGLELINE);
+          Winapi.Windows.DrawText(DC, Sign, 1, DestRect,
+            DT_LEFT or DT_SINGLELINE);
           SetBkMode(DC, OldMode);
           SelectObject(DC, oldColor);
         finally
@@ -518,10 +537,10 @@ var
   LSize: TSize;
   LMenuItem: TMenuItem;
   LOwnerDrawState: TOwnerDrawState;
-  P, LImageWidth, ImageIndex: integer;
+  Posi, LImageWidth, ImageIndex: Integer;
   LImageRect, R: TRect;
   hBmp: HBITMAP;
-  BmpHeight, BmpWidth: integer;
+  BmpHeight, BmpWidth: Integer;
   Icon: HICON;
   DisplayCheckedGlyph: Boolean;
   Sign: Char;
@@ -531,11 +550,10 @@ var
   LParentMenu: TMenu;
   ItemRect2: TRect;
 
-
 begin
   DisplayCheckedGlyph := True;
   ItemRect2 := ItemRect;
-  ItemRect2.Top := ItemRect.Top - GetOffset(True); //add offset
+  ItemRect2.Top := ItemRect.Top - GetOffset(True); // add offset
   ItemRect2.Height := ItemRect.Height;
   LTextRect := ItemRect2;
   { Fast access . }
@@ -550,7 +568,7 @@ begin
   if Style = isSep then
   begin
     LThemedMenu := tmPopupSeparator;
-    inc(R.Left, 25);
+    Inc(R.Left, 25);
   end;
 
   LDetails := StyleServices.GetElementDetails(LThemedMenu);
@@ -563,15 +581,17 @@ begin
     LBitmap.PixelFormat := pf32bit;
     try
       Bitmap32_SetAlphaAndColor(LBitmap, 0, 0);
-      StyleServices.DrawElement(LBitmap.Canvas.Handle, LDetails, Rect(0, 0, R.Width, R.Height));
+      StyleServices.DrawElement(LBitmap.Canvas.Handle, LDetails,
+        Rect(0, 0, R.Width, R.Height));
       _Darkness32(LBitmap, 30);
-      BitBlt(DC, R.Left, R.Top, R.Width, R.Height, LBitmap.Canvas.Handle, 0, 0, SRCCOPY);
+      BitBlt(DC, R.Left, R.Top, R.Width, R.Height, LBitmap.Canvas.Handle, 0,
+        0, SRCCOPY);
     finally
       LBitmap.Free;
     end;
   end
-  else
-  if (LThemedMenu <> tmPopupItemNormal) and (LThemedMenu <> tmPopupItemDisabled) then
+  else if (LThemedMenu <> tmPopupItemNormal) and
+    (LThemedMenu <> tmPopupItemDisabled) then
     StyleServices.DrawElement(DC, LDetails, R);
 
   if Style = isDropDown then
@@ -585,14 +605,15 @@ begin
   LParentMenu := nil;
   if (LMenuItem <> nil) then
     LParentMenu := LMenuItem.GetParentMenu;
-  if (LParentMenu <> nil) and (LParentMenu.OwnerDraw) and (@LMenuItem.OnDrawItem <> nil) then
+  if (LParentMenu <> nil) and (LParentMenu.OwnerDraw) and
+    (@LMenuItem.OnDrawItem <> nil) then
   begin
     LMenuItem.OnDrawItem(LMenuItem, Canvas, ItemRect2, (isHot in State));
     Exit;
   end;
 
-
-  if (LParentMenu <> nil) and (LParentMenu.OwnerDraw) and (LMenuItem <> nil) and (@LMenuItem.OnAdvancedDrawItem <> nil) then
+  if (LParentMenu <> nil) and (LParentMenu.OwnerDraw) and (LMenuItem <> nil) and
+    (@LMenuItem.OnAdvancedDrawItem <> nil) then
   begin
     LOwnerDrawState := [];
 
@@ -614,106 +635,109 @@ begin
     { Draw Vcl PopupMenu Bitmap }
     ImageIndex := LMenuItem.ImageIndex;
 
-      if (ImageIndex < 0) and (LMenuItem.Bitmap <> nil) then
+    if (ImageIndex < 0) and (LMenuItem.Bitmap <> nil) then
+    begin
+      LBitmap := LMenuItem.Bitmap;
+      if (LBitmap.Width = 16) and (LBitmap.Height = 16) then
       begin
-        LBitmap := LMenuItem.Bitmap;
-        if (LBitmap.Width = 16) and (LBitmap.Height = 16) then
-        begin
-          LImageWidth := LBitmap.Width;
-          LImageRect := Rect(0, 0, LBitmap.Width, LBitmap.Height);
-          RectVCenter(LImageRect, ItemRect2);
-
-          if not RightToLeft then
-            OffsetRect(LImageRect, 4, 0)
-          else
-          begin
-            LImageRect.Left := ItemRect2.Right - LBitmap.Width - 4;
-            LImageRect.Right := ItemRect2.Right;
-          end;
-
-          Canvas.Draw(LImageRect.Left, LImageRect.Top, LBitmap)
-        end
-        else
-        if (LBitmap.Width > 0) and (LBitmap.Height > 0) then
-        begin
-          LImageWidth := 16;
-          LImageRect := Rect(0, 0, 16, 16);
-          RectVCenter(LImageRect, ItemRect2);
-          if not RightToLeft then
-            OffsetRect(LImageRect, 4, 0)
-          else
-          begin
-            LImageRect.Left := ItemRect2.Right - 16 - 4;
-            LImageRect.Right := ItemRect2.Right;
-          end;
-
-          if (LSysPopupItem.Checked) and (not LSysPopupItem.RadioCheck)  then
-          begin
-           R:=LImageRect;
-           InflateRect(R, 2, 2);
-           Canvas.Brush.Style:=bsClear;
-           Canvas.Pen.Color  :=StyleServices.GetSystemColor(clHotLight);
-           Canvas.Rectangle(R);
-          end;
-
-          Canvas.StretchDraw(LImageRect, LBitmap);
-        end;
-
-      end
-      else
-      if (LMenuItem.Parent <> nil) and (LMenuItem.Parent.SubMenuImages <> nil) and (ImageIndex > -1) then
-      begin
-        LImageWidth := LMenuItem.Parent.SubMenuImages.Width;
-        DisplayCheckedGlyph := False;
-        LImageRect := Rect(0, 0, LMenuItem.Parent.SubMenuImages.Width, LMenuItem.Parent.SubMenuImages.Height);
+        LImageWidth := LBitmap.Width;
+        LImageRect := Rect(0, 0, LBitmap.Width, LBitmap.Height);
         RectVCenter(LImageRect, ItemRect2);
 
         if not RightToLeft then
           OffsetRect(LImageRect, 4, 0)
         else
         begin
-          LImageRect.Left := ItemRect2.Right - LMenuItem.Parent.SubMenuImages.Width - 4;
+          LImageRect.Left := ItemRect2.Right - LBitmap.Width - 4;
           LImageRect.Right := ItemRect2.Right;
         end;
 
-        if (LSysPopupItem.Checked) and (not LSysPopupItem.RadioCheck)  then
-        begin
-         R:=LImageRect;
-         InflateRect(R, 2, 2);
-         Canvas.Brush.Style:=bsClear;
-         Canvas.Pen.Color  :=StyleServices.GetSystemColor(clHotLight);
-         Canvas.Rectangle(R);
-        end;
-
-        LMenuItem.Parent.SubMenuImages.Draw(Canvas, LImageRect.Left, LImageRect.Top, ImageIndex);
+        Canvas.Draw(LImageRect.Left, LImageRect.Top, LBitmap)
       end
-      else
-      if (LParentMenu.Images <> nil) and (ImageIndex > -1) then
+      else if (LBitmap.Width > 0) and (LBitmap.Height > 0) then
       begin
-        LImageWidth := LParentMenu.Images.Width;
-        DisplayCheckedGlyph := False;
-        LImageRect := Rect(0, 0, LParentMenu.Images.Width, LParentMenu.Images.Height);
+        LImageWidth := 16;
+        LImageRect := Rect(0, 0, 16, 16);
         RectVCenter(LImageRect, ItemRect2);
-
         if not RightToLeft then
           OffsetRect(LImageRect, 4, 0)
         else
         begin
-          LImageRect.Left := ItemRect2.Right - LParentMenu.Images.Width - 4;
+          LImageRect.Left := ItemRect2.Right - 16 - 4;
           LImageRect.Right := ItemRect2.Right;
         end;
 
-        if (LSysPopupItem.Checked) and (not LSysPopupItem.RadioCheck)  then
+        if (LSysPopupItem.Checked) and (not LSysPopupItem.RadioCheck) then
         begin
-         R:=LImageRect;
-         InflateRect(R, 2, 2);
-         Canvas.Brush.Style:=bsClear;
-         Canvas.Pen.Color  :=StyleServices.GetSystemColor(clHotLight);
-         Canvas.Rectangle(R);
+          R := LImageRect;
+          InflateRect(R, 2, 2);
+          Canvas.Brush.Style := bsClear;
+          Canvas.Pen.Color := StyleServices.GetSystemColor(clHotLight);
+          Canvas.Rectangle(R);
         end;
 
-        LParentMenu.Images.Draw(Canvas, LImageRect.Left, LImageRect.Top, ImageIndex, not LSysPopupItem.Disabled);
+        Canvas.StretchDraw(LImageRect, LBitmap);
       end;
+
+    end
+    else if (LMenuItem.Parent <> nil) and
+      (LMenuItem.Parent.SubMenuImages <> nil) and (ImageIndex > -1) then
+    begin
+      LImageWidth := LMenuItem.Parent.SubMenuImages.Width;
+      DisplayCheckedGlyph := False;
+      LImageRect := Rect(0, 0, LMenuItem.Parent.SubMenuImages.Width,
+        LMenuItem.Parent.SubMenuImages.Height);
+      RectVCenter(LImageRect, ItemRect2);
+
+      if not RightToLeft then
+        OffsetRect(LImageRect, 4, 0)
+      else
+      begin
+        LImageRect.Left := ItemRect2.Right -
+          LMenuItem.Parent.SubMenuImages.Width - 4;
+        LImageRect.Right := ItemRect2.Right;
+      end;
+
+      if (LSysPopupItem.Checked) and (not LSysPopupItem.RadioCheck) then
+      begin
+        R := LImageRect;
+        InflateRect(R, 2, 2);
+        Canvas.Brush.Style := bsClear;
+        Canvas.Pen.Color := StyleServices.GetSystemColor(clHotLight);
+        Canvas.Rectangle(R);
+      end;
+
+      LMenuItem.Parent.SubMenuImages.Draw(Canvas, LImageRect.Left,
+        LImageRect.Top, ImageIndex);
+    end
+    else if (LParentMenu.Images <> nil) and (ImageIndex > -1) then
+    begin
+      LImageWidth := LParentMenu.Images.Width;
+      DisplayCheckedGlyph := False;
+      LImageRect := Rect(0, 0, LParentMenu.Images.Width,
+        LParentMenu.Images.Height);
+      RectVCenter(LImageRect, ItemRect2);
+
+      if not RightToLeft then
+        OffsetRect(LImageRect, 4, 0)
+      else
+      begin
+        LImageRect.Left := ItemRect2.Right - LParentMenu.Images.Width - 4;
+        LImageRect.Right := ItemRect2.Right;
+      end;
+
+      if (LSysPopupItem.Checked) and (not LSysPopupItem.RadioCheck) then
+      begin
+        R := LImageRect;
+        InflateRect(R, 2, 2);
+        Canvas.Brush.Style := bsClear;
+        Canvas.Pen.Color := StyleServices.GetSystemColor(clHotLight);
+        Canvas.Rectangle(R);
+      end;
+
+      LParentMenu.Images.Draw(Canvas, LImageRect.Left, LImageRect.Top,
+        ImageIndex, not LSysPopupItem.Disabled);
+    end;
   end
   else if LSysPopupItem.Bitmap > 0 then
   begin
@@ -738,10 +762,11 @@ begin
       if Sign <> #0 then
       begin
         LImageRect := Rect(0, 0, 10, 10);
-        R := Rect(ItemRect2.Left, ItemRect2.Top, ItemRect2.Left + 30, ItemRect2.Bottom);
+        R := Rect(ItemRect2.Left, ItemRect2.Top, ItemRect2.Left + 30,
+          ItemRect2.Bottom);
         RectCenter(LImageRect, ItemRect2);
         if not RightToLeft then
-          LImageRect.Left := ItemRect2.Left + 6 //Fix center image
+          LImageRect.Left := ItemRect2.Left + 6 // Fix center image
         else
         begin
           LImageRect.Left := ItemRect2.Right - 10 - 4;
@@ -772,27 +797,30 @@ begin
         if Icon <> 0 then
         begin
 
-          if (LSysPopupItem.Checked) and (not LSysPopupItem.RadioCheck)  then
+          if (LSysPopupItem.Checked) and (not LSysPopupItem.RadioCheck) then
           begin
-           R:=LImageRect;
-           InflateRect(R, 2, 2);
-           Canvas.Brush.Style:=bsClear;
-           Canvas.Pen.Color  :=StyleServices.GetSystemColor(clHotLight);
-           Canvas.Rectangle(R);
+            R := LImageRect;
+            InflateRect(R, 2, 2);
+            Canvas.Brush.Style := bsClear;
+            Canvas.Pen.Color := StyleServices.GetSystemColor(clHotLight);
+            Canvas.Rectangle(R);
           end;
 
-          DrawIconEX(DC, LImageRect.Left, LImageRect.Top, Icon, BmpWidth, BmpHeight, 0, 0, DI_NORMAL);
+          DrawIconEX(DC, LImageRect.Left, LImageRect.Top, Icon, BmpWidth,
+            BmpHeight, 0, 0, DI_NORMAL);
           DeleteObject(Icon);
         end;
       end;
     end;
   end;
 
-  if (LSysPopupItem.Checked)  then
+  if (LSysPopupItem.Checked) then
   begin
-    LThemedMenu := TThemedMenu(integer(tmPopupCheckNormal) + integer(LSysPopupItem.Disabled));
+    LThemedMenu := TThemedMenu(Integer(tmPopupCheckNormal) +
+      Integer(LSysPopupItem.Disabled));
     if LSysPopupItem.RadioCheck then
-      LThemedMenu := TThemedMenu(integer(tmPopupBulletNormal) + integer(LSysPopupItem.Disabled));
+      LThemedMenu := TThemedMenu(Integer(tmPopupBulletNormal) +
+        Integer(LSysPopupItem.Disabled));
     LDetails := StyleServices.GetElementDetails(LThemedMenu);
     StyleServices.GetElementSize(DC, LDetails, esActual, LSize);
     LImageRect := Rect(0, 0, LSize.Width, LSize.Height);
@@ -812,19 +840,20 @@ begin
   end;
 
   { Draw Text }
-  LTextFormat := [tfLeft, tfVerticalCenter, tfSingleLine, tfExpandTabs];//, tfHidePrefix];
+  LTextFormat := [tfLeft, tfVerticalCenter, tfSingleLine, tfExpandTabs];
+  // , tfHidePrefix];
 
-//  if (LMenuItem.Parent<>nil) then
-//   OutputDebugString(PChar(Format('LMenuItem.Parent %s IsItemHILITE %s', [LMenuItem.Parent.Caption, BoolToStr(IsItemHILITE(LMenuItem.Parent.Handle, LMenuItem.Parent.MenuIndex), True)])));
+  // if (LMenuItem.Parent<>nil) then
+  // OutputDebugString(PChar(Format('LMenuItem.Parent %s IsItemHILITE %s', [LMenuItem.Parent.Caption, BoolToStr(IsItemHILITE(LMenuItem.Parent.Handle, LMenuItem.Parent.MenuIndex), True)])));
 
-//  if FEnterWithKeyboard then
-//    Exclude(LTextFormat, tfHidePrefix);
+  // if FEnterWithKeyboard then
+  // Exclude(LTextFormat, tfHidePrefix);
 
   if not RightToLeft then
-    inc(LTextRect.Left, 28)
+    Inc(LTextRect.Left, 28)
   else
   begin
-    LTextRect.Left  := ItemRect2.Left;
+    LTextRect.Left := ItemRect2.Left;
     LTextRect.Right := ItemRect2.Right - 28;
     Exclude(LTextFormat, tfLeft);
     Include(LTextFormat, tfRtlReading);
@@ -857,31 +886,32 @@ begin
   begin
     sShortCut := '';
     // http://msdn.microsoft.com/en-us/library/ms647553%28v=VS.85%29.aspx#_win32_Menu_Shortcut_Keys
-    P := Pos(#9, ItemText);
-    if P > 1 then
+    Posi := Pos(#9, ItemText);
+    if Posi > 1 then
     begin
-      sShortCut := Copy(ItemText, P + 1, length(ItemText) - P);
-      DrawText(Canvas.Handle, LDetails, Copy(ItemText, 1, P), LTextRect, LTextFormat)
+      sShortCut := Copy(ItemText, Posi + 1, Length(ItemText) - Posi);
+      DrawText(Canvas.Handle, LDetails, Copy(ItemText, 1, Posi), LTextRect,
+        LTextFormat)
     end
     else
       DrawText(Canvas.Handle, LDetails, ItemText, LTextRect, LTextFormat)
   end;
 
-  {Draw vertical menu bar}
-//  LDetailsBar := StyleServices.GetElementDetails(tmPopupSeparator);
-//  LBitmapBar := TBitmap.Create;
-//  LBitmapBar.SetSize(LTextRect.Height, LTextRect.Height);
-//  LBitmapBar.PixelFormat := pf32bit;
-//  LBitmapBar.AlphaFormat := afDefined;
-//  LImageRect := Rect(0, 0, LBitmapBar.Width, LBitmapBar.Height);
-//  R:=LImageRect;
-//  try
-//    StyleServices.DrawElement(LBitmapBar.Canvas.Handle, LDetailsBar, Rect(0, 0, R.Width, R.Height));
-//    RotateBitmap(LBitmapBar, DegToRad(90), true);
-//    BitBlt(DC, LTextRect.Left - 6, LTextRect.Top, 1, LTextRect.Height, LBitmapBar.Canvas.Handle, round(LTextRect.Height / 2), 0, SRCCOPY);
-//  finally
-//    LBitmapBar.Free;
-//  end;
+  { Draw vertical menu bar }
+  // LDetailsBar := StyleServices.GetElementDetails(tmPopupSeparator);
+  // LBitmapBar := TBitmap.Create;
+  // LBitmapBar.SetSize(LTextRect.Height, LTextRect.Height);
+  // LBitmapBar.PixelFormat := pf32bit;
+  // LBitmapBar.AlphaFormat := afDefined;
+  // LImageRect := Rect(0, 0, LBitmapBar.Width, LBitmapBar.Height);
+  // R:=LImageRect;
+  // try
+  // StyleServices.DrawElement(LBitmapBar.Canvas.Handle, LDetailsBar, Rect(0, 0, R.Width, R.Height));
+  // RotateBitmap(LBitmapBar, DegToRad(90), true);
+  // BitBlt(DC, LTextRect.Left - 6, LTextRect.Top, 1, LTextRect.Height, LBitmapBar.Canvas.Handle, round(LTextRect.Height / 2), 0, SRCCOPY);
+  // finally
+  // LBitmapBar.Free;
+  // end;
 
   { Draw ShortCut Text . }
   if LMenuItem <> nil then
@@ -920,7 +950,8 @@ begin
   end;
 end;
 
-procedure TSysPopupStyleHook.EraseItem(Canvas: TCanvas; const Index: integer; const ItemRect: TRect);
+procedure TSysPopupStyleHook.EraseItem(Canvas: TCanvas; const Index: Integer;
+  const ItemRect: TRect);
 var
   LBitmap: TBitmap;
   LOffset: Integer;
@@ -930,13 +961,15 @@ begin
     LBitmap.SetSize(SysControl.Width, SysControl.Height);
     PaintBackground(LBitmap.Canvas);
     LOffset := GetOffset(True);
-    BitBlt(Canvas.Handle, ItemRect.Left, ItemRect.Top - LOffset, ItemRect.Width, ItemRect.Height, LBitmap.Canvas.Handle, ItemRect.Left, ItemRect.Top - LOffset, SRCCOPY);
+    BitBlt(Canvas.Handle, ItemRect.Left, ItemRect.Top - LOffset, ItemRect.Width,
+      ItemRect.Height, LBitmap.Canvas.Handle, ItemRect.Left,
+      ItemRect.Top - LOffset, SRCCOPY);
   finally
     LBitmap.Free;
   end;
 end;
 
-function TSysPopupStyleHook.GetItemsCount: integer;
+function TSysPopupStyleHook.GetItemsCount: Integer;
 begin
   Result := GetMenuItemCount(FMenu);
 end;
@@ -955,10 +988,11 @@ begin
   pMenuItemInfo.cbSize := sizeof(TMenuItemInfo);
   pMenuItemInfo.fMask := MIIM_TYPE;
   if GetMenuItemInfo(FMenu, 0, True, pMenuItemInfo) then
-    Result := ((pMenuItemInfo.fType and MFT_RIGHTORDER) = MFT_RIGHTORDER) or ((pMenuItemInfo.fType and MFT_RIGHTJUSTIFY) = MFT_RIGHTJUSTIFY);
+    Result := ((pMenuItemInfo.fType and MFT_RIGHTORDER) = MFT_RIGHTORDER) or
+      ((pMenuItemInfo.fType and MFT_RIGHTJUSTIFY) = MFT_RIGHTJUSTIFY);
 end;
 
-function TSysPopupStyleHook.GetSysPopupItem(Index: integer): TSysPopupItem;
+function TSysPopupStyleHook.GetSysPopupItem(Index: Integer): TSysPopupItem;
 begin
   Result := nil;
   if (Index > -1) and (index <= Count) then
@@ -972,7 +1006,8 @@ end;
 
 procedure TSysPopupStyleHook.PaintBackground(Canvas: TCanvas);
 begin
-  StyleServices.DrawElement(Canvas.Handle, StyleServices.GetElementDetails(tmPopupBorders), SysControl.ClientRect);
+  StyleServices.DrawElement(Canvas.Handle,
+    StyleServices.GetElementDetails(tmPopupBorders), SysControl.ClientRect);
 end;
 
 procedure TSysPopupStyleHook.UpdateColors;
@@ -985,7 +1020,7 @@ type
   TSubMenuItemInfo = record
     Menu: HMENU;
     WindowHandle: HWND;
-    ItemIndex: integer;
+    ItemIndex: Integer;
   end;
 
 var
@@ -995,10 +1030,9 @@ procedure TSysPopupStyleHook.MNSELECTITEM(var Message: TMessage);
 var
   DC: HDC;
   Canvas: TCanvas;
-  Index, Index2: integer;
-  i: WORD;
-  L: integer;
-  ParentItem: integer;
+  Index, Index2: Integer;
+  L: Integer;
+  ParentItem: Integer;
   ParentPopup: HWND;
   LMenu: HMENU;
   ArrowHeight: Integer;
@@ -1024,9 +1058,9 @@ begin
     ParentItem := -1;
     DC := GetDC(Handle);
     Canvas.Handle := DC;
-    Index := integer(Message.WParam);
+    Index := Integer(Message.WParam);
 
-    //OutputDebugString(PChar(Format('MNSELECTITEM Index %d', [Index])));
+    // OutputDebugString(PChar(Format('MNSELECTITEM Index %d', [Index])));
 
     if Assigned(Font) then
       Canvas.Font := Font;
@@ -1074,7 +1108,8 @@ begin
             StyleServices.DrawElement(LBitmap.Canvas.Handle, LDetails, R);
 
             if ItemIsVisible(Count - 1) then
-              LDetails := StyleServices.GetElementDetails(tsArrowBtnDownDisabled)
+              LDetails := StyleServices.GetElementDetails
+                (tsArrowBtnDownDisabled)
             else
               LDetails := StyleServices.GetElementDetails(tsArrowBtnDownNormal);
             R := FClientRect;
@@ -1082,7 +1117,8 @@ begin
             R.Height := ArrowHeight;
             StyleServices.DrawElement(LBitmap.Canvas.Handle, LDetails, R);
 
-            BitBlt(DC, FClientRect.Left, FClientRect.Top, FClientRect.Width, FClientRect.Height, LBitmap.Canvas.Handle, 0, 0, SRCCOPY);
+            BitBlt(DC, FClientRect.Left, FClientRect.Top, FClientRect.Width,
+              FClientRect.Height, LBitmap.Canvas.Handle, 0, 0, SRCCOPY);
           finally
             LBitmap.Free;
           end;
@@ -1100,17 +1136,17 @@ begin
       Exit;
     end;
 
-    L := length(SubMenuItemInfoArray);
+    L := Length(SubMenuItemInfoArray);
     if L <> 0 then
     begin
-      for i := 0 to L - 1 do
+      for var I := 0 to L - 1 do
       begin
         { Look for SubMenu Parent }
-        LMenu := SubMenuItemInfoArray[i].Menu;
+        LMenu := SubMenuItemInfoArray[I].Menu;
         if LMenu = FMenu then
         begin
-          ParentPopup := SubMenuItemInfoArray[i].WindowHandle;
-          ParentItem := SubMenuItemInfoArray[i].ItemIndex;
+          ParentPopup := SubMenuItemInfoArray[I].WindowHandle;
+          ParentItem := SubMenuItemInfoArray[I].ItemIndex;
           Break;
         end;
       end;
@@ -1118,7 +1154,8 @@ begin
 
     if (ParentPopup = Handle) then
       SetRedraw(True) { Allow drawing the current PopupMenu }
-    else if ((ParentPopup <> Handle) and (FItemsPainted) and (ParentPopup <> 0)) then
+    else if ((ParentPopup <> Handle) and (FItemsPainted) and (ParentPopup <> 0))
+    then
     begin
       {
         if user jump so fast from the parent PopupMenu to the
@@ -1138,7 +1175,7 @@ begin
     { if Item can drop a sub Popup Menu }
     if Items[Index].HasSubMenu then
     begin
-      L := length(SubMenuItemInfoArray);
+      L := Length(SubMenuItemInfoArray);
       if L = 0 then
       begin
         SetLength(SubMenuItemInfoArray, 1);
@@ -1147,11 +1184,11 @@ begin
       end;
 
       LMenu := GetMenuFromHandle(Handle);
-      for i := 0 to L - 1 do
+      for var I := 0 to L - 1 do
         { Avoid duplication }
-        if SubMenuItemInfoArray[i].Menu <> LMenu then
+        if SubMenuItemInfoArray[I].Menu <> LMenu then
         begin
-          inc(L);
+          Inc(L);
           SetLength(SubMenuItemInfoArray, L);
           SubMenuItemInfoArray[L - 1].Menu := GetSubMenu(FMenu, Index);
           SubMenuItemInfoArray[L - 1].WindowHandle := Handle;
@@ -1197,7 +1234,6 @@ end;
 procedure TSysPopupStyleHook.WMPRINT(var Message: TMessage);
 var
   DC: HDC;
-  i: integer;
   Canvas: TCanvas;
 begin
   FMenu := GetMenuFromHandle(Handle);
@@ -1223,22 +1259,22 @@ begin
 
   if Count > -1 then
   begin
-    //exit;
-    //FCount:=48;
+    // exit;
+    // FCount:=48;
 
-//    for i := 0 to Count - 1 do
-//    begin
-//     GetMenuItemRect(0, FMenu, i, LRect);
-//     OutputDebugString(PChar(Format('Index %d  Width %d Height %d Left %d Top %d', [i, LRect.Width, LRect.Height, LRect.Left, LRect.Top])));
-//    end;
+    // for i := 0 to Count - 1 do
+    // begin
+    // GetMenuItemRect(0, FMenu, i, LRect);
+    // OutputDebugString(PChar(Format('Index %d  Width %d Height %d Left %d Top %d', [i, LRect.Width, LRect.Height, LRect.Left, LRect.Top])));
+    // end;
 
-    for i := 0 + Offset to Count - 1 do
-      PostMessage(Handle, MN_SELECTITEM, i, 0);
+    for var I := 0 + Offset to Count - 1 do
+      PostMessage(Handle, MN_SELECTITEM, I, 0);
   end;
   Handled := True;
 end;
 
-function IsItemSeparator(Menu: HMENU; const ItemIndex: integer): Boolean;
+function IsItemSeparator(Menu: HMENU; const ItemIndex: Integer): Boolean;
 var
   pMenuItemInfo: TMenuItemInfo;
 begin
@@ -1254,21 +1290,20 @@ begin
     Result := (pMenuItemInfo.fType and MFT_SEPARATOR) = MFT_SEPARATOR;
 end;
 
-procedure TSysPopupStyleHook.GetNbSeparator(var PNbSeparator: Integer; const PIndex: Integer);
-var
-  i: Integer;
+procedure TSysPopupStyleHook.GetNbSeparator(var PNbSeparator: Integer;
+  const PIndex: Integer);
 begin
   PNbSeparator := 0;
   GetItemHeight();
   GetSeparatorHeight();
-  for i := 0 to PIndex - 1 do
+  for var I := 0 to PIndex - 1 do
   begin
-    if IsItemSeparator(Menu, i) then
+    if IsItemSeparator(Menu, I) then
       Inc(PNbSeparator);
   end;
 end;
 
-function TSysPopupStyleHook.GetMenuItemHeight(const Index: Integer) : Integer;
+function TSysPopupStyleHook.GetMenuItemHeight(const Index: Integer): Integer;
 var
   LItemRect: TRect;
 begin
@@ -1276,65 +1311,63 @@ begin
   Result := LItemRect.Height;
 end;
 
-function TSysPopupStyleHook.GetBottom(const Index: Integer) : Integer;
+function TSysPopupStyleHook.GetBottom(const Index: Integer): Integer;
 var
   LItemRect: TRect;
-  P: TPoint;
+  Posi: TPoint;
 begin
   GetMenuItemRect(0, FMenu, Index, LItemRect);
-  P := Point(LItemRect.Left, LItemRect.Bottom);
-  ScreenToClient(Handle, P);
-  Result := P.Y;
+  Posi := Point(LItemRect.Left, LItemRect.Bottom);
+  ScreenToClient(Handle, Posi);
+  Result := Posi.Y;
 end;
 
-function TSysPopupStyleHook.GetOffset(UseCache: Boolean) : Integer;
+function TSysPopupStyleHook.GetOffset(UseCache: Boolean): Integer;
 var
   LNbSeparator: Integer;
 begin
-  if (Offset = 0) and (GetBottom(Count - 1) <= SysControl.ClientRect.Bottom) then
+  if (Offset = 0) and (GetBottom(Count - 1) <= SysControl.ClientRect.Bottom)
+  then
   begin
     Result := 0;
-    exit;
+    Exit;
   end;
 
   if UseCache then
     if FOffsetCache <> 0 then
     begin
       Result := FOffsetCache;
-      exit;
+      Exit;
     end;
 
   GetNbSeparator(LNbSeparator, Offset);
-  Result := ((Offset - LNbSeparator) * FItemHeightCache) + (LNbSeparator * FSeparatorHeightCache) - trunc(FItemHeightCache / 2);
+  Result := ((Offset - LNbSeparator) * FItemHeightCache) +
+    (LNbSeparator * FSeparatorHeightCache) - trunc(FItemHeightCache / 2);
   if UseCache then
     FOffsetCache := Result;
 end;
 
 procedure TSysPopupStyleHook.GetItemHeight();
-var
-  i: Integer;
 begin
   if FItemHeightCache = 1 then
-    for i := 0 to Count - 1 do
-      if not IsItemSeparator(Menu, i) then
+    for var I := 0 to Count - 1 do
+      if not IsItemSeparator(Menu, I) then
       begin
-        FItemHeightCache := GetMenuItemHeight(i);
-        exit;
+        FItemHeightCache := GetMenuItemHeight(I);
+        Exit;
       end;
   if FItemHeightCache = 1 then
     FItemHeightCache := 22;
 end;
 
 procedure TSysPopupStyleHook.GetSeparatorHeight();
-var
-  i: Integer;
 begin
   if FSeparatorHeightCache = 1 then
-    for i := 0 to Count - 1 do
-      if IsItemSeparator(Menu, i) then
+    for var I := 0 to Count - 1 do
+      if IsItemSeparator(Menu, I) then
       begin
-        FSeparatorHeightCache := GetMenuItemHeight(i);
-        exit;
+        FSeparatorHeightCache := GetMenuItemHeight(I);
+        Exit;
       end;
   if FSeparatorHeightCache = 1 then
     FSeparatorHeightCache := 8;
@@ -1347,22 +1380,22 @@ begin
   { Search gap }
   LBottom := GetBottom(Count - 1);
   { No up/down button? }
-  LGap :=  LBottom - SysControl.ClientRect.Bottom;
+  LGap := LBottom - SysControl.ClientRect.Bottom;
   if LGap <= 0 then
   begin
     Offset := 0;
-    exit;
+    Exit;
   end;
 
-  { Search height to calc offset}
+  { Search height to calc offset }
   GetItemHeight();
 
   { FItemHeightCache is for 2 buttons up/down }
-  LGap :=  LGap + round(FItemHeightCache / 2);
+  LGap := LGap + round(FItemHeightCache / 2);
   if LGap <= 0 then
   begin
     Offset := 0;
-    exit;
+    Exit;
   end;
 
   Offset := trunc(LGap / FItemHeightCache);
@@ -1375,7 +1408,7 @@ procedure TSysPopupStyleHook.RefreshMenu();
 var
   DC: HDC;
   LBitmap: TBitmap;
-  i, ArrowHeight: Integer;
+  ArrowHeight: Integer;
   LDetails: TThemedElementDetails;
   R, FClientRect: TRect;
 begin
@@ -1390,12 +1423,12 @@ begin
   try
     DC := GetDC(Handle);
     PaintBackground(LBitmap.Canvas);
-    for i := Offset to Count - 1 do
+    for var I := Offset to Count - 1 do
     begin
-      if ItemIsVisible(i) then
-        DoDrawItem(LBitmap.Canvas, i, True)
+      if ItemIsVisible(I) then
+        DoDrawItem(LBitmap.Canvas, I, True)
       else
-        break;
+        Break;
     end;
     { draw up/dowm button }
     FClientRect := SysControl.ClientRect;
@@ -1417,7 +1450,8 @@ begin
     R.Height := ArrowHeight;
     StyleServices.DrawElement(LBitmap.Canvas.Handle, LDetails, R);
 
-    BitBlt(DC, FClientRect.Left, FClientRect.Top, FClientRect.Width, FClientRect.Height, LBitmap.Canvas.Handle, 0, 0, SRCCOPY);
+    BitBlt(DC, FClientRect.Left, FClientRect.Top, FClientRect.Width,
+      FClientRect.Height, LBitmap.Canvas.Handle, 0, 0, SRCCOPY);
   finally
     LBitmap.Free;
     if DC <> 0 then
@@ -1428,34 +1462,34 @@ end;
 function TSysPopupStyleHook.ItemIsVisible(const Index: Integer): Boolean;
 var
   LRect, LItemRect: TRect;
-  P: TPoint;
+  Posi: TPoint;
   ClientRectHeight: Integer;
   LOffset: Integer;
 begin
-  result := True;
+  Result := True;
   if (Index < 0) or (Index >= Count) then
     Exit;
 
   GetMenuItemRect(0, FMenu, Index, LItemRect);
-  P := Point(LItemRect.Left, LItemRect.Bottom);
-  ScreenToClient(Handle, P);
+  Posi := Point(LItemRect.Left, LItemRect.Bottom);
+  ScreenToClient(Handle, Posi);
   LOffset := GetOffset(True);
-  P.Y := P.Y - LOffset;
+  Posi.Y := Posi.Y - LOffset;
 
   ClientRectHeight := GetClientRectHeight(LRect);
   LRect.Height := ClientRectHeight;
 
-  //prevent draw  not visible items on larger menus
-  Result := PtInRect (LRect, P);
+  // prevent draw  not visible items on larger menus
+  Result := PtInRect(LRect, Posi);
 
   if Result then
   begin
-    P := Point(LItemRect.Left, LItemRect.Top);
-    ScreenToClient(Handle, P);
-    P.Y := P.Y - LOffset;
+    Posi := Point(LItemRect.Left, LItemRect.Top);
+    ScreenToClient(Handle, Posi);
+    Posi.Y := Posi.Y - LOffset;
     if ClientRectHeight > LItemRect.Height then
-      LRect.Height :=  ClientRectHeight - LItemRect.Height;
-    Result := PtInRect (LRect, P);
+      LRect.Height := ClientRectHeight - LItemRect.Height;
+    Result := PtInRect(LRect, Posi);
   end;
 end;
 
@@ -1477,9 +1511,10 @@ begin
   FOffsetCache := 0;
 end;
 
-function TSysPopupStyleHook.GetItemClicked(var PButton: Byte; PInitPos: TPoint) : Integer;
+function TSysPopupStyleHook.GetItemClicked(var PButton: Byte;
+  PInitPos: TPoint): Integer;
 var
-  ArrowHeight, i: Integer;
+  ArrowHeight: Integer;
   R, LItemRect: TRect;
   Pos: TPoint;
 begin
@@ -1500,35 +1535,32 @@ begin
     ArrowHeight := trunc(FItemHeightCache / 2);
     if Pos.Y <= ArrowHeight then
     begin
-      { up button}
+      { up button }
       PButton := 1;
-      exit;
+      Exit;
     end;
 
     if Pos.Y >= R.Bottom - ArrowHeight then
     begin
-      { down button}
+      { down button }
       PButton := 2;
-      exit;
+      Exit;
     end;
   end;
 
   Pos.Y := Pos.Y + GetOffset(True);
   ClientToScreen(Handle, Pos);
-  for i := Offset to Count - 1 do
+  for var I := Offset to Count - 1 do
   begin
-    GetMenuItemRect(0, FMenu, i, LItemRect);
-    if PtInRect (LItemRect, Pos) then
-    begin
-      Result := i;
-      exit;
-    end;
+    GetMenuItemRect(0, FMenu, I, LItemRect);
+    if PtInRect(LItemRect, Pos) then
+      Exit(I);
   end;
   if Result = -1 then
     Result := -1;
 end;
 
-function TSysPopupStyleHook.GetMousePos() : TPoint;
+function TSysPopupStyleHook.GetMousePos(): TPoint;
 begin
   Result := Mouse.CursorPos;
   ScreenToClient(Handle, Result);
@@ -1536,7 +1568,6 @@ end;
 
 procedure TSysPopupStyleHook.WndProc(var Message: TMessage);
 var
-  i: integer;
   TopWin: HWND;
   TopCntrl: TControl;
   LButton: Byte;
@@ -1545,19 +1576,19 @@ var
   LSwap: Boolean;
 
 begin
-//OutputDebugString(PChar(FormatDateTime('hh:nn:ss.zzz', Now)+' Msg = ' + IntToHex(Message.Msg, 4) + ' wParam = ' + IntToHex(Message.wParam, 8) + ' LParam = ' + IntToHex(Message.lParam, 8)));
-//  AddToLog(Message);
-//Message.Result := CallDefaultProc(Message);
-//Exit;
-{
+  // OutputDebugString(PChar(FormatDateTime('hh:nn:ss.zzz', Now)+' Msg = ' + IntToHex(Message.Msg, 4) + ' wParam = ' + IntToHex(Message.wParam, 8) + ' LParam = ' + IntToHex(Message.lParam, 8)));
+  // AddToLog(Message);
+  // Message.Result := CallDefaultProc(Message);
+  // Exit;
+  {
 
-  case Message.Msg of
-            WM_KEYFIRST..WM_KEYLAST:
-            begin
-              FEnterWithKeyboard := True;
-            end;
-  end;
-}
+    case Message.Msg of
+    WM_KEYFIRST..WM_KEYLAST:
+    begin
+    FEnterWithKeyboard := True;
+    end;
+    end;
+  }
   case Message.Msg of
     MN_SELECTITEM, WM_PRINT:
       begin
@@ -1609,7 +1640,8 @@ begin
         { down menu }
         begin
           LSwap := GetSystemMetrics(SM_SWAPBUTTON) <> 0;
-          if (LSwap and ((GetKeyState(VK_RBUTTON) and $80) <> 0)) or (not(LSwap) and ((GetKeyState(VK_LBUTTON) and $80) <> 0)) then
+          if (LSwap and ((GetKeyState(VK_RBUTTON) and $80) <> 0)) or
+            (not(LSwap) and ((GetKeyState(VK_LBUTTON) and $80) <> 0)) then
           begin
             if not ItemIsVisible(Count - 1) then
             begin
@@ -1626,7 +1658,8 @@ begin
         { up menu }
         begin
           LSwap := GetSystemMetrics(SM_SWAPBUTTON) <> 0;
-          if (LSwap and ((GetKeyState(VK_RBUTTON) and $80) <> 0)) or (not(LSwap) and ((GetKeyState(VK_LBUTTON) and $80) <> 0)) then
+          if (LSwap and ((GetKeyState(VK_RBUTTON) and $80) <> 0)) or
+            (not(LSwap) and ((GetKeyState(VK_LBUTTON) and $80) <> 0)) then
           begin
             if Offset > 0 then
             begin
@@ -1649,67 +1682,67 @@ begin
         FKeyIndex := GetItemClicked(LButton, LInitPos);
         case LButton of
           0:
-          begin
-            { Click on MenuItem}
-            if FKeyIndex = -1 then
             begin
-              Message.Result := 0;
-              exit;
+              { Click on MenuItem }
+              if FKeyIndex = -1 then
+              begin
+                Message.Result := 0;
+                Exit;
+              end;
+              Message2.Msg := MN_SELECTITEM;
+              Message2.WParam := FKeyIndex;
+              Message2.lParam := 0;
+              Message2.Result := 0;
+              CallDefaultProc(Message2);
+
+              Message2.Msg := WM_KEYDOWN;
+              Message2.WParam := VK_RETURN;
+              CallDefaultProc(Message2);
+
+              Message2.Msg := WM_KEYUP;
+              CallDefaultProc(Message2);
+              Exit;
             end;
-            Message2.Msg := MN_SELECTITEM;
-            Message2.wParam := FKeyIndex;
-            Message2.lParam := 0;
-            Message2.Result := 0;
-            CallDefaultProc(Message2);
-
-            Message2.Msg := WM_KEYDOWN;
-            Message2.wParam := VK_RETURN;
-            CallDefaultProc(Message2);
-
-            Message2.Msg := WM_KEYUP;
-            CallDefaultProc(Message2);
-            exit;
-          end;
           1:
-          begin
-            { Scroll up menu }
-            if Offset > 0 then
             begin
-              FKeyIndex := -1;
-              Offset := Offset - 1;
-              RefreshMenu();
-              if FKeyIndex <> FPreviousHotItemIndex then
-                SendMessage(Handle, MN_SELECTITEM, FKeyIndex, 0);
-              Message.Result := 0;
-              SetTimer(Handle, $202, 150, nil);
-              exit;
-            end
-            else
-            begin
-              Message.Result := 0;
-              exit;
+              { Scroll up menu }
+              if Offset > 0 then
+              begin
+                FKeyIndex := -1;
+                Offset := Offset - 1;
+                RefreshMenu();
+                if FKeyIndex <> FPreviousHotItemIndex then
+                  SendMessage(Handle, MN_SELECTITEM, FKeyIndex, 0);
+                Message.Result := 0;
+                SetTimer(Handle, $202, 150, nil);
+                Exit;
+              end
+              else
+              begin
+                Message.Result := 0;
+                Exit;
+              end;
             end;
-          end;
           2:
-          begin
-            { Scroll down }
-            if not ItemIsVisible(Count - 1) then
             begin
-              Offset := Offset + 1;
-              FKeyIndex := -1;
-              RefreshMenu();
-              if FKeyIndex <> FPreviousHotItemIndex then
-                SendMessage(Handle, MN_SELECTITEM, FKeyIndex, 0);
-              SetTimer(Handle, $201, 150, nil);
-              Message.Result := 0;
-              exit;
-            end
-            else
-            begin
-              Message.Result := 0;
-              exit;
+              { Scroll down }
+              if not ItemIsVisible(Count - 1) then
+              begin
+                Offset := Offset + 1;
+                FKeyIndex := -1;
+                RefreshMenu();
+                if FKeyIndex <> FPreviousHotItemIndex then
+                  SendMessage(Handle, MN_SELECTITEM, FKeyIndex, 0);
+                SetTimer(Handle, $201, 150, nil);
+                Message.Result := 0;
+                Exit;
+              end
+              else
+              begin
+                Message.Result := 0;
+                Exit;
+              end;
             end;
-          end;
         end;
       end;
 
@@ -1740,10 +1773,10 @@ begin
                 find the next valid item .
               }
               if IsItemSeparator(Menu, FKeyIndex) then
-                for i := FKeyIndex to GetMenuItemCount(Menu) - 1 do
-                  if (not IsItemSeparator(Menu, i)) then
+                for var I := FKeyIndex to GetMenuItemCount(Menu) - 1 do
+                  if (not IsItemSeparator(Menu, I)) then
                   begin
-                    FKeyIndex := i;
+                    FKeyIndex := I;
                     Break;
                   end;
               if not ItemIsVisible(FKeyIndex) then
@@ -1783,10 +1816,10 @@ begin
                 find the next valid item .
               }
               if IsItemSeparator(Menu, FKeyIndex) then
-                for i := FKeyIndex downto 0 do
-                  if not IsItemSeparator(Menu, i) then
+                for var I := FKeyIndex downto 0 do
+                  if not IsItemSeparator(Menu, I) then
                   begin
-                    FKeyIndex := i;
+                    FKeyIndex := I;
                     Break;
                   end;
               if not ItemIsVisible(FKeyIndex) then
@@ -1852,14 +1885,14 @@ begin
 
     WM_NCCALCSIZE, WM_NCPAINT:
       begin
-        if Message.Msg= WM_NCCALCSIZE then
+        if Message.Msg = WM_NCCALCSIZE then
         begin
           if TWMNCCalcSize(Message).CalcValidRects then
           begin
             FNCRect := TWMNCCalcSize(Message).CalcSize_Params.rgrc[0];
-            //Message.Result := CallDefaultProc(Message);
-            //LRect := TWMNCCalcSize(Message).CalcSize_Params.rgrc0;
-            //OutputDebugString(PChar(Format('LRect.Height %d WParam %d', [FNCRect.Height, Message.WParam])));
+            // Message.Result := CallDefaultProc(Message);
+            // LRect := TWMNCCalcSize(Message).CalcSize_Params.rgrc0;
+            // OutputDebugString(PChar(Format('LRect.Height %d WParam %d', [FNCRect.Height, Message.WParam])));
           end;
         end;
 
@@ -1918,7 +1951,9 @@ end;
 
 { TSysPopupItem }
 
-constructor TSysPopupStyleHook.TSysPopupItem.Create(SysPopupStyleHook: TSysPopupStyleHook; SysParent: TSysControl; const Index: integer; const Menu: HMENU);
+constructor TSysPopupStyleHook.TSysPopupItem.Create(SysPopupStyleHook
+  : TSysPopupStyleHook; SysParent: TSysControl; const Index: Integer;
+  const Menu: HMENU);
 begin
   inherited Create;
   FSysPopupStyleHook := SysPopupStyleHook;
@@ -1966,7 +2001,7 @@ end;
 function TSysPopupStyleHook.TSysPopupItem.GetItemText: string;
 var
   Buffer: PChar;
-  StrSize: integer;
+  StrSize: Integer;
   pMenuItemInfo: MENUITEMINFO;
 begin
 
@@ -1983,14 +2018,15 @@ begin
 
   Result := '';
 
-  FillChar(pMenuItemInfo, SizeOf(MENUITEMINFO), Char(0));
-  pMenuItemInfo.cbSize := SizeOf(MENUITEMINFO);
+  FillChar(pMenuItemInfo, sizeof(MENUITEMINFO), Char(0));
+  pMenuItemInfo.cbSize := sizeof(MENUITEMINFO);
   pMenuItemInfo.fMask := MIIM_STRING or MIIM_FTYPE;
   pMenuItemInfo.dwTypeData := nil;
   if GetMenuItemInfo(FMenu, FIndex, True, pMenuItemInfo) then
   begin
-     //Fix for shell menus on W10
-    if (VCLMenuItems = nil) or (not (pMenuItemInfo.fType and MFT_OWNERDRAW = MFT_OWNERDRAW)) then
+    // Fix for shell menus on W10
+    if (VCLMenuItems = nil) or
+      (not(pMenuItemInfo.fType and MFT_OWNERDRAW = MFT_OWNERDRAW)) then
     begin
       { The Size needed for the Buffer . }
       StrSize := pMenuItemInfo.cch * 2 + 2;
@@ -1998,7 +2034,7 @@ begin
       try
         pMenuItemInfo.dwTypeData := Buffer;
         { inc cch to get the last char . }
-        inc(pMenuItemInfo.cch);
+        Inc(pMenuItemInfo.cch);
         if GetMenuItemInfo(FMenu, FIndex, True, pMenuItemInfo) then
           Result := string(Buffer);
       finally
@@ -2023,7 +2059,6 @@ end;
 
 function TSysPopupStyleHook.TSysPopupItem.GetVCLRealItem: TMenuItem;
 var
-  i: integer;
   VisibleItems: TList;
   LVCLMenuItems: TMenuItem;
 begin
@@ -2041,11 +2076,9 @@ begin
   if LVCLMenuItems <> nil then
   begin
     VisibleItems := TList.Create;
-    for i := 0 to LVCLMenuItems.Count - 1 do
-    begin
-      if LVCLMenuItems.Items[i].Visible then
-        VisibleItems.Add(LVCLMenuItems.Items[i]);
-    end;
+    for var I := 0 to LVCLMenuItems.Count - 1 do
+      if LVCLMenuItems.Items[I].Visible then
+        VisibleItems.Add(LVCLMenuItems.Items[I]);
   end;
   if Assigned(VisibleItems) then
   begin
@@ -2057,36 +2090,33 @@ end;
 
 function TSysPopupStyleHook.TSysPopupItem.GetVCLMenuItems: TMenuItem;
 var
-  i, j: integer;
   LPopupMenu: TPopupMenu;
   LForm: TCustomForm;
   LMenuItem: TMenuItem;
 
   function GetChildPopup(Comp: TComponent): TMenuItem;
-  var
-    k: integer;
   begin
     Result := nil;
     if Assigned(Comp) then
     begin
-      for k := 0 to Comp.ComponentCount - 1 do
+      for var K := 0 to Comp.ComponentCount - 1 do
       begin
 
-        if Comp.Components[k] is TPopupMenu then
+        if Comp.Components[K] is TPopupMenu then
         begin
-          LPopupMenu := TPopupMenu(Comp.Components[k]);
+          LPopupMenu := TPopupMenu(Comp.Components[K]);
           if LPopupMenu.Handle = FMenu then
             Exit(LPopupMenu.Items);
         end
-        else if Comp.Components[k] is TMenuItem then
+        else if Comp.Components[K] is TMenuItem then
         begin
-          LMenuItem := TMenuItem(Comp.Components[k]);
+          LMenuItem := TMenuItem(Comp.Components[K]);
           if LMenuItem.Handle = FMenu then
             Exit(LMenuItem);
         end;
 
         if Comp.Components[k].ComponentCount > 0 then
-          Result := GetChildPopup(Comp.Components[k]);
+          Result := GetChildPopup(Comp.Components[K]);
         if Assigned(Result) then
           Exit;
       end;
@@ -2096,19 +2126,19 @@ var
   function GetMenuItem(AMenu: TMenuItem): TMenuItem;
   var
     LMenuItem: TMenuItem;
-    i: integer;
+    Int: Integer;
   begin
     if (AMenu.Handle = FMenu) then
       Result := AMenu
     else
     begin
       Result := nil;
-      i := 0;
-      while (Result = nil) and (i < AMenu.Count) do
+      Int := 0;
+      while (Result = nil) and (Int < AMenu.Count) do
       begin
-        LMenuItem := AMenu.Items[i];
+        LMenuItem := AMenu.Items[Int];
         Result := GetMenuItem(LMenuItem);
-        inc(i);
+        Inc(Int);
       end;
     end;
   end;
@@ -2116,26 +2146,26 @@ var
 begin
   Result := nil;
 
-  for i := 0 to PopupList.Count - 1 do
-    if TPopupMenu(PopupList.Items[i]).Handle = FMenu then
-      Exit(TPopupMenu(PopupList.Items[i]).Items);
+  for var I := 0 to PopupList.Count - 1 do
+    if TPopupMenu(PopupList.Items[I]).Handle = FMenu then
+      Exit(TPopupMenu(PopupList.Items[I]).Items);
 
-  for i := 0 to Screen.FormCount - 1 do
+  for var I := 0 to Screen.FormCount - 1 do
   begin
-    LForm := Screen.Forms[i];
-    for j := 0 to LForm.ComponentCount - 1 do
+    LForm := Screen.Forms[I];
+    for var J := 0 to LForm.ComponentCount - 1 do
     begin
 
-      if LForm.Components[j] is TMenuItem then
+      if LForm.Components[J] is TMenuItem then
       begin
-        LMenuItem := TMenuItem(LForm.Components[j]);
+        LMenuItem := TMenuItem(LForm.Components[J]);
         Result := GetMenuItem(LMenuItem);
         if Assigned(Result) then
           Exit;
       end
-      else if LForm.Components[j] is TPopupMenu then
+      else if LForm.Components[J] is TPopupMenu then
       begin
-        LPopupMenu := TPopupMenu(LForm.Components[j]);
+        LPopupMenu := TPopupMenu(LForm.Components[J]);
         if LPopupMenu.Handle = FMenu then
           Exit(LPopupMenu.Items);
 
@@ -2145,7 +2175,7 @@ begin
       end
       else
       begin
-        Result := GetChildPopup(LForm.Components[j]);
+        Result := GetChildPopup(LForm.Components[J]);
         if Assigned(Result) then
           Exit;
       end;
@@ -2173,7 +2203,8 @@ begin
   pMenuItemInfo.cbSize := sizeof(TMenuItemInfo);
   pMenuItemInfo.fMask := MIIM_STATE;
   if GetMenuItemInfo(FMenu, FIndex, True, pMenuItemInfo) then
-    Result := (pMenuItemInfo.fState and MFS_DISABLED = MFS_DISABLED) or (pMenuItemInfo.fState and MF_DISABLED = MF_DISABLED) or
+    Result := (pMenuItemInfo.fState and MFS_DISABLED = MFS_DISABLED) or
+      (pMenuItemInfo.fState and MF_DISABLED = MF_DISABLED) or
       (pMenuItemInfo.fState and MF_GRAYED = MF_GRAYED);
 end;
 

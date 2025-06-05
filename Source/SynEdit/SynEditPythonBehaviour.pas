@@ -56,17 +56,17 @@ type
   TSynEditPythonBehaviour = class(TComponent)
   private
     FEditor: TSynEdit;
-    fIndent: integer;
+    fIndent: Integer;
   protected
     procedure SetEditor(Value: TSynEdit); virtual;
-    procedure doProcessUserCommand(Sender: TObject; AfterProcessing: boolean;
-      var Handled: boolean; var Command: TSynEditorCommand;
+    procedure doProcessUserCommand(Sender: TObject; AfterProcessing: Boolean;
+      var Handled: Boolean; var Command: TSynEditorCommand;
       var AChar: WideChar; Data: Pointer; HandlerData: Pointer); virtual;
   public
     constructor Create(aOwner: TComponent); override;
   published
     property Editor: TSynEdit read FEditor write SetEditor;
-    property Indent: integer read fIndent write fIndent default 4;
+    property Indent: Integer read fIndent write fIndent default 4;
   end;
 
 implementation
@@ -88,13 +88,13 @@ begin
 end; 
 
 procedure TSynEditPythonBehaviour.doProcessUserCommand(Sender: TObject;
-  AfterProcessing: boolean; var Handled: boolean;
+  AfterProcessing: Boolean; var Handled: Boolean;
   var Command: TSynEditorCommand; var AChar: WideChar; Data: Pointer;
   HandlerData: pointer);
 var
   iEditor: TCustomSynEdit;
   iPrevLine: string;
-  cSpace: integer;
+  cSpace: Integer;
 begin
   if (Command = ecLineBreak) and AfterProcessing then
   begin

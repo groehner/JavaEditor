@@ -831,8 +831,9 @@ object FTextDiff: TFTextDiff
     Top = 58
   end
   object PopupEditor: TSpTBXPopupMenu
-    Left = 454
-    Top = 170
+    OnPopup = PopupEditorPopup
+    Left = 374
+    Top = 66
     object MIUndo: TSpTBXItem
       Caption = 'Undo'
       ShortCut = 16474
@@ -842,7 +843,7 @@ object FTextDiff: TFTextDiff
       Caption = 'Redo'
       OnClick = MIRedoClick
     end
-    object SpTBXSeparatorItem1: TSpTBXSeparatorItem
+    object N1Sep: TSpTBXSeparatorItem
     end
     object MICut: TSpTBXItem
       Caption = 'Cut'
@@ -863,6 +864,12 @@ object FTextDiff: TFTextDiff
       Caption = 'Close'
       ShortCut = 16499
       OnClick = MICloseClick
+    end
+    object N2Sep: TSpTBXSeparatorItem
+    end
+    object MIOpenFile: TSpTBXItem
+      Caption = 'Open file'
+      OnClick = MIOpenFileClick
     end
   end
 end

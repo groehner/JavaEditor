@@ -125,12 +125,12 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     function IsIdentChar(AChar: WideChar): Boolean; override;
     procedure Next; override;
   published
@@ -214,7 +214,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 838 + Ord(Str^) * 296;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 461;
   fStringLen := Str - fToIdent;
@@ -235,18 +235,18 @@ end;
 
 procedure TSynBaanSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[21] := FuncBrp46open;
   fIdentFuncTable[449] := FuncDate46num;
 
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if @fIdentFuncTable[i] = nil then
-      fIdentFuncTable[i] := KeyWordFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if @fIdentFuncTable[Int] = nil then
+      fIdentFuncTable[Int] := KeyWordFunc;
 end;
 
 function TSynBaanSyn.AltFunc(Index: Integer): TtkTokenKind;
@@ -314,17 +314,17 @@ begin
   case FLine[Run + 1] of
     '=':                               {and assign}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
     '&':                               {logical and}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {and}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -335,28 +335,28 @@ begin
   fTokenID := tkString;
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #39;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynBaanSyn.AtSymbolProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynBaanSyn.BraceCloseProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
 procedure TSynBaanSyn.BraceOpenProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
@@ -364,8 +364,8 @@ procedure TSynBaanSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Case FLine[Run + 1] of
-    #10: inc(Run, 2);
-  else inc(Run);
+    #10: Inc(Run, 2);
+  else Inc(Run);
   end;
 end;
 
@@ -374,12 +374,12 @@ begin
   Case FLine[Run + 1] of
     ':':                               {scope resolution operator}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {colon}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -387,7 +387,7 @@ end;
 
 procedure TSynBaanSyn.CommaProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
@@ -396,9 +396,9 @@ begin
   fTokenID := tkDirective;
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #0;
 end;
 
@@ -407,12 +407,12 @@ begin
   case FLine[Run + 1] of
     '=':                               {logical equal}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {assign}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -420,14 +420,14 @@ end;
 
 procedure TSynBaanSyn.ErectProc;
 begin
-  inc(Run, 1);                        {Bann Comments}
+  Inc(Run, 1);                        {Bann Comments}
   fTokenID := tkComment;
   while FLine[Run] <> #0 do
   begin
     case FLine[Run] of
-      #10, #13: break;
+      #10, #13: Break;
     end; //case
-    inc(Run);
+    Inc(Run);
   end; //while
 end;
 
@@ -436,20 +436,20 @@ begin
   Case FLine[Run + 1] of
     '=':                               {greater than or equal to}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
     '>':
       begin
         if FLine[Run + 2] = '=' then   {shift right assign}
-          inc(Run, 3)
+          Inc(Run, 3)
         else                           {shift right}
-          inc(Run, 2);
+          Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {greater than}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -458,14 +458,14 @@ end;
 procedure TSynBaanSyn.IdentProc;
 begin
   fTokenID := IdentKind(fLine + Run);
-  inc(Run, fStringLen);
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  Inc(Run, fStringLen);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
 end;
 
 procedure TSynBaanSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynBaanSyn.LowerProc;
@@ -473,20 +473,20 @@ begin
   case FLine[Run + 1] of
     '=':                               {less than or equal to}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
     '<':
       begin
         if FLine[Run + 2] = '=' then   {shift left assign}
-          inc(Run, 3)
+          Inc(Run, 3)
         else                           {shift left}
-          inc(Run, 2);
+          Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {less than}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -497,22 +497,22 @@ begin
   case FLine[Run + 1] of
     '=':                               {subtract assign}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
     '-':                               {decrement}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
     '>':                               {arrow}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {subtract}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -523,12 +523,12 @@ begin
   case FLine[Run + 1] of
     '=':                               {mod assign}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {mod}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -539,12 +539,12 @@ begin
   case FLine[Run + 1] of
     '=':                               {not equal}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {not}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -553,7 +553,7 @@ end;
 procedure TSynBaanSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynBaanSyn.NumberProc;
@@ -569,15 +569,15 @@ procedure TSynBaanSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
   begin
     case FLine[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if FLine[Run + 1] = '.' then Break;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
@@ -586,17 +586,17 @@ begin
   case FLine[Run + 1] of
     '=':                               {add assign}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
     '+':                               {increment}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {subtract}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -604,19 +604,19 @@ end;
 
 procedure TSynBaanSyn.RoundCloseProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynBaanSyn.RoundOpenProc;
 begin
-  inc(Run);
+  Inc(Run);
   FTokenID := tkSymbol;
 end;
 
 procedure TSynBaanSyn.SemiColonProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
@@ -625,12 +625,12 @@ begin
   case FLine[Run + 1] of
     '=':                               {division assign}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {division}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -638,20 +638,20 @@ end;
 
 procedure TSynBaanSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynBaanSyn.SquareCloseProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynBaanSyn.SquareOpenProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
@@ -660,12 +660,12 @@ begin
   case FLine[Run + 1] of
     '=':                               {multiply assign}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {star}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -674,21 +674,21 @@ end;
 procedure TSynBaanSyn.StringProc;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then inc(Run, 2);
+  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then Inc(Run, 2);
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
       #92:
-        if FLine[Run + 1] = #10 then inc(Run);
+        if FLine[Run + 1] = #10 then Inc(Run);
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #34;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynBaanSyn.TildeProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
@@ -697,12 +697,12 @@ begin
   Case FLine[Run + 1] of
     '=':                               {xor assign}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {xor}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -710,7 +710,7 @@ end;
 
 procedure TSynBaanSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -796,7 +796,7 @@ begin
   end;
 end;
 
-function TSynBaanSyn.GetTokenKind: integer;
+function TSynBaanSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

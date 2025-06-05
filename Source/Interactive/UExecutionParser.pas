@@ -2,13 +2,16 @@ unit UExecutionParser;
 
 interface
 
-uses UJavaParser, UExecution;
+uses
+  UJavaParser,
+  UExecution;
 
 type
   TExecutionParser = class(TJavaParser)
   private
-    ExecutionList: TExecutionList;
-    procedure ExecuteVariableObjectArrayCreation(Typename: string; const Ident: string);
+    FExecutionList: TExecutionList;
+    procedure ExecuteVariableObjectArrayCreation(Typename: string;
+      const Ident: string);
     procedure ExecuteEqualAssignment(const Variable: string);
     procedure ExecuteDeclaration(Typename: string; const Ident: string);
     procedure ExecuteInvalidStatement;
@@ -16,48 +19,64 @@ type
     procedure ExecuteUnnamedObjectCreation;
     procedure ExecuteStatement(const Kind: string);
     procedure ExecuteMethodCall(const Call: string);
-    procedure ExecuteExpression(const aToken: string);
-    procedure ExecuteTerm(E: TExecutionLine);
+    procedure ExecuteExpression(const Token: string);
+    procedure ExecuteTerm(ExecutionLine: TExecutionLine);
   public
-    procedure PrepareExecute(const s: string; EL: TExecutionList);
+    procedure PrepareExecute(const Str: string; ExecutionList: TExecutionList);
   end;
 
 implementation
 
-uses Contnrs, Classes, SysUtils, UModel, UUtils, UComJava1, UConfiguration;
+uses
+  Contnrs,
+  Classes,
+  SysUtils,
+  UModel,
+  UUtils,
+  UComJava1,
+  UConfiguration;
 
-procedure TExecutionParser.PrepareExecute(const s: string; EL: TExecutionList);
-  var TypeName, Ident: string;
+procedure TExecutionParser.PrepareExecute(const Str: string;
+  ExecutionList: TExecutionList);
+var
+  Typename, Ident: string;
 begin
-  Scanner.init(s);
-  Scanner.CompoundTokens:= true;
-  ExecutionList:= EL;
-  ExecutionList.Clear;
+  Scanner.Init(Str);
+  Scanner.CompoundTokens := True;
+  FExecutionList := ExecutionList;
+  FExecutionList.Clear;
   GetNextToken;
-  while True do begin
+  while True do
+  begin
     ParseModifiers; // visibility and others
     if Token = '' then
-      break
-    else if (Token = ';') or (Token = '}') then begin
-      Scanner.StartPos:= Scanner.CurrPos;
-      GetNextToken
-    end else if Token = 'new' then
+      Break
+    else if (Token = ';') or (Token = '}') then
+    begin
+      Scanner.StartPos := Scanner.CurrPos;
+      GetNextToken;
+    end
+    else if Token = 'new' then
       ExecuteUnnamedObjectCreation
     else if IsStatementBegin(Token) or (Token = '{') then
       ExecuteStatement(Token)
     else if Token = '(' then
       ExecuteExpression(Token)
-    else if IsTypename(Token) then begin
-      Typename:= GetTypeName;
+    else if IsTypename(Token) then
+    begin
+      Typename := GetTypeName;
       if Token = '(' then
         ExecuteMethodCall(Typename)
       else if Token = '=' then
         ExecuteEqualAssignment(Typename)
-      else if IsAssignmentOperator(Token) or (Token = '++') or (Token = '--') then
+      else if IsAssignmentOperator(Token) or (Token = '++') or (Token = '--')
+      then
         ExecuteAssignment(Typename)
-      else begin
-        Ident:= Token;
-        if IsIdentifier(Ident) then begin
+      else
+      begin
+        Ident := Token;
+        if IsIdentifier(Ident) then
+        begin
           SwapArrFromTo(Ident, Typename);
           GetNextToken;
           if Token = '=' then
@@ -66,10 +85,12 @@ begin
             ExecuteDeclaration(Typename, Ident)
           else
             ExecuteInvalidStatement;
-          while Token = ',' do begin
+          while Token = ',' do
+          begin
             GetNextToken;
-            if IsIdentifier(Token) then begin
-              Ident:= Token;
+            if IsIdentifier(Token) then
+            begin
+              Ident := Token;
               GetNextToken;
               if Token = '=' then
                 ExecuteVariableObjectArrayCreation(Typename, Ident)
@@ -77,250 +98,315 @@ begin
                 ExecuteDeclaration(Typename, Ident)
               else
                 ExecuteInvalidStatement;
-            end else
+            end
+            else
               ExecuteInvalidStatement;
-          end
-        end else
-          if IsSimpleType(Typename) or isSimpleType(WithoutArray(Typename))
-            then ExecuteInvalidStatement
-            else ExecuteExpression(Typename + ' ' + Token);
-      end
-    end else
+          end;
+        end
+        else if IsSimpleType(Typename) or IsSimpleType(WithoutArray(Typename))
+        then
+          ExecuteInvalidStatement
+        else
+          ExecuteExpression(Typename + ' ' + Token);
+      end;
+    end
+    else
       ExecuteExpression(Token);
-    getNextToken;
+    GetNextToken;
   end;
 end;
 
-procedure TExecutionParser.ExecuteExpression(const aToken: string);
-  var E: TExecutionLine; Start: PChar; s: string;
+procedure TExecutionParser.ExecuteExpression(const Token: string);
+var
+  ExecutionLine: TExecutionLine;
+  Start: PChar;
+  Str: string;
 begin
-  E:= TExecutionLine.Create('', Expression);
-  Start:= Scanner.CurrPos;
+  ExecutionLine := TExecutionLine.Create('', Expression);
+  Start := Scanner.CurrPos;
   SkipTo(';');
-  setString(s, Start, Scanner.CurrPos - Start);
-  E.Value:= aToken + s;
-  ExecuteTerm(E);
+  SetString(Str, Start, Scanner.CurrPos - Start);
+  ExecutionLine.Value := Token + Str;
+  ExecuteTerm(ExecutionLine);
 end;
 
-procedure TExecutionParser.ExecuteVariableObjectArrayCreation(Typename: string; const Ident: string);
-  var E: TExecutionLine; Start: PChar; s: string; p: integer;
+procedure TExecutionParser.ExecuteVariableObjectArrayCreation(Typename: string;
+  const Ident: string);
+var
+  ExecutionLine: TExecutionLine;
+  Start: PChar;
+  Str: string;
 begin
   // Typename Identifier = [Value | new constructor]
-  E:= TExecutionLine.Create(Ident);
-  Start:= Scanner.CurrPos;
+  ExecutionLine := TExecutionLine.Create(Ident);
+  Start := Scanner.CurrPos;
   GetNextToken;
-  if Token = 'new'
-    then E.Kind:= ObjectCreation
-  else if Token = '{'
-    then E.Kind:= ArrayDeclaration
-    else E.Kind:= VariableCreation;
+  if Token = 'new' then
+    ExecutionLine.Kind := ObjectCreation
+  else if Token = '{' then
+    ExecutionLine.Kind := ArrayDeclaration
+  else
+    ExecutionLine.Kind := VariableCreation;
 
-  s:= getImportName(Typename);
-  if s <> Typename then begin
-    E.ClassImport:= s;
-    Typename:= s;
+  Str := GetImportName(Typename);
+  if Str <> Typename then
+  begin
+    ExecutionLine.ClassImport := Str;
+    Typename := Str;
   end;
 
-  if Token = '{' then  // int[] p = {1,2,3,4,4+5};
+  if Token = '{' then // int[] p = {1,2,3,4,4+5};
     SkipPair('{', '}')
   else
-    while {(Token <> ',') and } (Token <> ';') and (Token <> '') do  begin
+    while { (Token <> ',') and } (Token <> ';') and (Token <> '') do
+    begin
       GetNextToken;
-      if Token = '(' then SkipPair('(', ')');
-      if Token = '{' then begin
+      if Token = '(' then
+        SkipPair('(', ')');
+      if Token = '{' then
+      begin
         SkipPair('{', '}');
-        E.Kind:= ArrayDeclaration;
+        ExecutionLine.Kind := ArrayDeclaration;
       end;
     end;
-  setString(s, Start, Scanner.CurrPos - 1 - Start);
-  s:= trim(s);
-  if copy(s, 1, 1) = '"' then begin // string s = "abc";
-    s:= 'new String(' + s + ')';
-    E.Kind:= ObjectCreation;
+  SetString(Str, Start, Scanner.CurrPos - 1 - Start);
+  Str := Trim(Str);
+  if Copy(Str, 1, 1) = '"' then
+  begin // string s = "abc";
+    Str := 'new String(' + Str + ')';
+    ExecutionLine.Kind := ObjectCreation;
   end;
-  s:= s + ';';
-  E.Typename:= Typename;
-  E.Value:= E.Name + ' = ' + s;
-  E.Name:= Ident;
-  if E.Kind = ObjectCreation then begin
-    p:= Pos('(', s);
-    s:= copy(s, p+1, length(s));
-    p:= Pos(')', s);
-    E.Params:= copy(s, 1, p);
+  Str := Str + ';';
+  ExecutionLine.Typename := Typename;
+  ExecutionLine.Value := ExecutionLine.Name + ' = ' + Str;
+  ExecutionLine.Name := Ident;
+  if ExecutionLine.Kind = ObjectCreation then
+  begin
+    var Posi := Pos('(', Str);
+    Str := Copy(Str, Posi + 1, Length(Str));
+    Posi := Pos(')', Str);
+    ExecutionLine.Params := Copy(Str, 1, Posi);
   end;
-  ExecuteTerm(E);
+  ExecuteTerm(ExecutionLine);
 end;
 
-procedure TExecutionParser.ExecuteDeclaration(Typename: string; const Ident: string);
-  var E: TExecutionLine; s: string;
+procedure TExecutionParser.ExecuteDeclaration(Typename: string;
+  const Ident: string);
+var
+  ExecutionLine: TExecutionLine;
+  Str: string;
 begin
   // Typename Ident;
-  if IsSimpleType(Typename) or isSimpleType(WithoutArray(Typename))
-    then E:= TExecutionLine.Create(Ident, VariableDeclaration)
-    else E:= TExecutionLine.Create(Ident, ObjectDeclaration);
-  s:= getImportName(Typename);
-  if s <> Typename then begin
-    E.ClassImport:= s;
-    Typename:= s;
+  if IsSimpleType(Typename) or IsSimpleType(WithoutArray(Typename)) then
+    ExecutionLine := TExecutionLine.Create(Ident, VariableDeclaration)
+  else
+    ExecutionLine := TExecutionLine.Create(Ident, ObjectDeclaration);
+  Str := GetImportName(Typename);
+  if Str <> Typename then
+  begin
+    ExecutionLine.ClassImport := Str;
+    Typename := Str;
   end;
-  E.Typename:= Typename;
-  E.Value:= TypeName + ' ' + E.Name + ';';
-  ExecuteTerm(E);
+  ExecutionLine.Typename := Typename;
+  ExecutionLine.Value := Typename + ' ' + ExecutionLine.Name + ';';
+  ExecuteTerm(ExecutionLine);
 end;
 
 procedure TExecutionParser.ExecuteInvalidStatement;
-  var E: TExecutionLine; s: string; Start: PChar;
+var
+  ExecutionLine: TExecutionLine;
+  Str: string;
+  Start: PChar;
 begin
   // not a valid statement, get error from compiler
-  E:= TExecutionLine.Create('Invalid', Statement);
-  E.Kind:= TExecutionType.None;
-  Start:= Scanner.CurrPos;
+  ExecutionLine := TExecutionLine.Create('Invalid', Statement);
+  ExecutionLine.Kind := TExecutionType.None;
+  Start := Scanner.CurrPos;
   SkipTo(';');
-  setString(s, Start, Scanner.CurrPos - Start);
-  E.Value:= s;
-  ExecuteTerm(E);
+  SetString(Str, Start, Scanner.CurrPos - Start);
+  ExecutionLine.Value := Str;
+  ExecuteTerm(ExecutionLine);
 end;
 
 procedure TExecutionParser.ExecuteEqualAssignment(const Variable: string);
-  var E: TExecutionLine; s: string; Start: PChar; p: integer;
+var
+  ExecutionLine: TExecutionLine;
+  Str: string;
+  Start: PChar;
 begin
   GetNextToken;
-  if Token = 'new' then begin
+  if Token = 'new' then
+  begin
     // untyped assignment: object = new Class(...)
-    E:= TExecutionLine.Create('', Assignment);
-    Start:= Scanner.CurrPos;
+    ExecutionLine := TExecutionLine.Create('', Assignment);
+    Start := Scanner.CurrPos;
     GetNextToken;
-    E.Typename:= Token;
-    s:= getImportName(E.Typename);
-    if s <> E.Typename then begin
-      E.ClassImport:= s;
-      E.Typename:= s;
+    ExecutionLine.Typename := Token;
+    Str := GetImportName(ExecutionLine.Typename);
+    if Str <> ExecutionLine.Typename then
+    begin
+      ExecutionLine.ClassImport := Str;
+      ExecutionLine.Typename := Str;
     end;
-    E.Name:= Variable;
+    ExecutionLine.Name := Variable;
     SkipTo(';');
-    setString(s, Start, Scanner.CurrPos - Start);
-    if FConfiguration.StrictJavaMode then begin
-      E.Name:= '';
-      E.Value:= 'new ' + s;
-      E.Kind:= Statement;
-    end else
-      E.Value:= E.Name + ' = new ' + s;
-    p:= Pos('(', s);
-    s:= copy(s, p+1, length(s));
-    p:= Pos(')', s);
-    E.Params:= copy(s, 1, p - 1);
-  end else begin
+    SetString(Str, Start, Scanner.CurrPos - Start);
+    if FConfiguration.StrictJavaMode then
+    begin
+      ExecutionLine.Name := '';
+      ExecutionLine.Value := 'new ' + Str;
+      ExecutionLine.Kind := Statement;
+    end
+    else
+      ExecutionLine.Value := ExecutionLine.Name + ' = new ' + Str;
+    var Posi := Pos('(', Str);
+    Str := Copy(Str, Posi + 1, Length(Str));
+    Posi := Pos(')', Str);
+    ExecutionLine.Params := Copy(Str, 1, Posi - 1);
+  end
+  else
+  begin
     // assignment: var = expression;
-    E:= TExecutionLine.Create(Variable, Assignment);
-    E.Value:= Token;
-    Start:= Scanner.CurrPos;
+    ExecutionLine := TExecutionLine.Create(Variable, Assignment);
+    ExecutionLine.Value := Token;
+    Start := Scanner.CurrPos;
     SkipTo(';');
-    setString(s, Start, Scanner.CurrPos - Start);
-    E.Value:= Variable + ' = ' + E.Value + s;
+    SetString(Str, Start, Scanner.CurrPos - Start);
+    ExecutionLine.Value := Variable + ' = ' + ExecutionLine.Value + Str;
   end;
-  ExecuteTerm(E);
+  ExecuteTerm(ExecutionLine);
 end;
 
 procedure TExecutionParser.ExecuteAssignment(const Variable: string);
-  var E: TExecutionLine; s: string;
+var
+  ExecutionLine: TExecutionLine;
+  Str: string;
 begin
-  E:= TExecutionLine.Create(Variable, Assignment);
+  ExecutionLine := TExecutionLine.Create(Variable, Assignment);
   SkipTo(';');
-  setString(s, Scanner.StartPos, Scanner.CurrPos - Scanner.StartPos);
-  E.Value:= s;
-  ExecuteTerm(E);
+  SetString(Str, Scanner.StartPos, Scanner.CurrPos - Scanner.StartPos);
+  ExecutionLine.Value := Str;
+  ExecuteTerm(ExecutionLine);
 end;
 
 procedure TExecutionParser.ExecuteUnnamedObjectCreation;
-  var E: TExecutionLine; Start: PChar; s: string; p: integer;
+var
+  ExecutionLine: TExecutionLine;
+  Start: PChar;
+  Str: string;
 begin
   // unnamed objectcreation: new Class(...)
-  E:= TExecutionLine.Create('', ObjectCreation);
-  Start:= Scanner.CurrPos;
+  ExecutionLine := TExecutionLine.Create('', ObjectCreation);
+  Start := Scanner.CurrPos;
   GetNextToken;
-  E.Typename:= Token;
-  s:= getImportName(E.Typename);
-  if s <> E.Typename then begin
-    E.ClassImport:= s;
-    E.Typename:= s;
+  ExecutionLine.Typename := Token;
+  Str := GetImportName(ExecutionLine.Typename);
+  if Str <> ExecutionLine.Typename then
+  begin
+    ExecutionLine.ClassImport := Str;
+    ExecutionLine.Typename := Str;
   end;
-  E.Name:= getShortType(getComJava.GetUniqueObjectName(E.Typename));
+  ExecutionLine.Name :=
+    GetShortType(GetComJava.GetUniqueObjectName(ExecutionLine.Typename));
   SkipTo(';');
-  setString(s, Start, Scanner.CurrPos - Start);
+  SetString(Str, Start, Scanner.CurrPos - Start);
 
-  if FConfiguration.StrictJavaMode then begin
-    E.Name:= '';
-    E.Value:= 'new ' + s;
-    E.Kind:= Statement;
-  end else
-    E.Value:= E.Name + ' = new ' + s;
-  p:= Pos('(', s);
-  s:= copy(s, p+1, length(s));
-  p:= Pos(')', s);
-  E.Params:= copy(s, 1, p);
-  ExecuteTerm(E);
+  if FConfiguration.StrictJavaMode then
+  begin
+    ExecutionLine.Name := '';
+    ExecutionLine.Value := 'new ' + Str;
+    ExecutionLine.Kind := Statement;
+  end
+  else
+    ExecutionLine.Value := ExecutionLine.Name + ' = new ' + Str;
+  var Posi := Pos('(', Str);
+  Str := Copy(Str, Posi + 1, Length(Str));
+  Posi := Pos(')', Str);
+  ExecutionLine.Params := Copy(Str, 1, Posi);
+  ExecuteTerm(ExecutionLine);
 end;
 
 procedure TExecutionParser.ExecuteStatement(const Kind: string);
-  var E: TExecutionLine; Start: PChar; s: string; O: TOperation;
+var
+  ExecutionLine: TExecutionLine;
+  Start: PChar;
+  Str: string;
+  Operation: TOperation;
 begin
-  E:= TExecutionLine.Create(Kind, Statement);
-  O:= TOperation.Create(nil);
+  ExecutionLine := TExecutionLine.Create(Kind, Statement);
+  Operation := TOperation.Create(nil);
   try
-    E.Name:= Kind;
-    Start:= Scanner.CurrPos;
-    ParseBlockStatement(O, true);
-    setString(s, Start, Scanner.CurrPos - Start);
-    E.Value:= E.Name + s;
-    ExecuteTerm(E);
+    ExecutionLine.Name := Kind;
+    Start := Scanner.CurrPos;
+    ParseBlockStatement(Operation, True);
+    SetString(Str, Start, Scanner.CurrPos - Start);
+    ExecutionLine.Value := ExecutionLine.Name + Str;
+    ExecuteTerm(ExecutionLine);
   finally
-    FreeAndNil(O);
+    FreeAndNil(Operation);
   end;
 end;
 
 procedure TExecutionParser.ExecuteMethodCall(const Call: string);
-  var E: TExecutionLine; Start: PChar; s: string; p: integer;
+var
+  ExecutionLine: TExecutionLine;
+  Start: PChar;
+  Str: string;
+  Posi: Integer;
 begin
   // Methodcall  [Object|Class].Method(...)
-  p:= Pos('.', Call);
-  if p > 0  then begin
-    E:= TExecutionLine.Create(Left(Call, p-1), MethodCall);
-    E.Method:= Right(Call, p+1);
-    Start:= Scanner.CurrPos;
+  Posi := Pos('.', Call);
+  if Posi > 0 then
+  begin
+    ExecutionLine := TExecutionLine.Create(Left(Call, Posi - 1), MethodCall);
+    ExecutionLine.Method := Right(Call, Posi + 1);
+    Start := Scanner.CurrPos;
     SkipPair('(', ')');
-    if (Token = '') or (Token = ';') then begin
-      setString(s, Start, Scanner.CurrPos - Start);
-      E.Value:= E.Name + '.' + E.Method + '(' + s;
-      p:= Pos(')', s);
-      delete(s, p+1, length(s));
-      E.Params:= s;
-    end else begin // expression starting with method-call
-      E.Kind:= Expression;
+    if (Token = '') or (Token = ';') then
+    begin
+      SetString(Str, Start, Scanner.CurrPos - Start);
+      ExecutionLine.Value := ExecutionLine.Name + '.' + ExecutionLine.Method +
+        '(' + Str;
+      Posi := Pos(')', Str);
+      Delete(Str, Posi + 1, Length(Str));
+      ExecutionLine.Params := Str;
+    end
+    else
+    begin // expression starting with method-call
+      ExecutionLine.Kind := Expression;
       SkipTo(';');
-      setString(s, Start, Scanner.CurrPos - Start);
-      E.Value:= E.Name + '.' + E.Method + '(' + s;
+      SetString(Str, Start, Scanner.CurrPos - Start);
+      ExecutionLine.Value := ExecutionLine.Name + '.' + ExecutionLine.Method +
+        '(' + Str;
     end;
-  end else begin
-    Start:= Scanner.CurrPos;
+  end
+  else
+  begin
+    Start := Scanner.CurrPos;
     SkipTo(';');
-    setString(s, Start, Scanner.CurrPos - Start);
-    E:= TExecutionLine.create('', TExecutionType.None { Methodcall});  // public Car(String...) {
-    E.Value:= Call + '(' + s;
+    SetString(Str, Start, Scanner.CurrPos - Start);
+    ExecutionLine := TExecutionLine.Create('',
+      TExecutionType.None { Methodcall } ); // public Car(String...) {
+    ExecutionLine.Value := Call + '(' + Str;
   end;
 
-  ExecuteTerm(E);
-  if (E.Kind = Expression) and (Right(E.Value, -1) = ';') then
-    E.Value:= Left(E.Value, -1); // without ";"
+  ExecuteTerm(ExecutionLine);
+  if (ExecutionLine.Kind = Expression) and (Right(ExecutionLine.Value, -1) = ';')
+  then
+    ExecutionLine.Value := Left(ExecutionLine.Value, -1); // without ";"
 end;
 
-procedure TExecutionParser.ExecuteTerm(E: TExecutionLine);
+procedure TExecutionParser.ExecuteTerm(ExecutionLine: TExecutionLine);
 begin
-  if Right(E.Value, -2) = #13#10 then
-    E.Value:= Left(E.Value, Length(E.Value)-2);
-  E.Value:= TrimRight(E.Value);
+  if Right(ExecutionLine.Value, -2) = #13#10 then
+    ExecutionLine.Value := Left(ExecutionLine.Value,
+      Length(ExecutionLine.Value) - 2);
+  ExecutionLine.Value := TrimRight(ExecutionLine.Value);
   if not FConfiguration.StrictJavaMode then
-    if (Right(E.Value, -1) <> ';') and (Right(E.Value, -1) <> '}') then E.Value:= E.Value + ';';
-  ExecutionList.Add(E);
+    if (Right(ExecutionLine.Value, -1) <> ';') and
+      (Right(ExecutionLine.Value, -1) <> '}') then
+      ExecutionLine.Value := ExecutionLine.Value + ';';
+  FExecutionList.Add(ExecutionLine);
 end;
 
 end.

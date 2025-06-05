@@ -213,17 +213,17 @@ implementation
 constructor TStCustomTrayIcon.Create(AOwner: TComponent);
 var
   MI   : TMenuItem;
-  I, J : Integer;
+  Int, J : Integer;
 begin
   inherited Create(AOwner);
 
   { Since we hook the main form's window procedure, we must }
   { insure that only one StTrayIcon exists per application. }
   if not (csDesigning in ComponentState) then begin
-    for I := 0 to Pred(Screen.FormCount) do
-      for J := 0 to Pred(Screen.Forms[I].ComponentCount) do
-        if (Screen.Forms[I].Components[J] is TStTrayIcon)
-            and (Screen.Forms[I].Components[J] <> Self) then
+    for Int := 0 to Pred(Screen.FormCount) do
+      for J := 0 to Pred(Screen.Forms[Int].ComponentCount) do
+        if (Screen.Forms[Int].Components[J] is TStTrayIcon)
+            and (Screen.Forms[Int].Components[J] <> Self) then
           RaiseStError(ESsTrayIconError, ssscTrayIconDuplicate);
   end;
 
@@ -321,7 +321,7 @@ end;
 procedure TStCustomTrayIcon.WndProc(var Msg : TMessage);
 var
   ShiftState : TShiftState;
-  P          : TPoint;
+  Posi          : TPoint;
 begin
   with Msg do begin
     if (lParam >= WM_LBUTTONDOWN) and
@@ -334,10 +334,10 @@ begin
           if Assigned(FPopupMenu) then begin
             SetForegroundWindow(Application.Handle);
             Application.ProcessMessages;
-            GetCursorPos(P);
+            GetCursorPos(Posi);
             FPopupMenu.AutoPopup := False;
             FPopupMenu.PopupComponent := Owner;
-            FPopupMenu.Popup(P.X, P.Y);
+            FPopupMenu.Popup(Posi.X, Posi.Y);
           end;
         WM_LBUTTONDBLCLK : DoDblClick(mbLeft, ShiftState);
         WM_MBUTTONDBLCLK : DoDblClick(mbMiddle, ShiftState);

@@ -120,14 +120,14 @@ end;
 
 procedure TSynEditSearch.FixResults(First, Delta: Integer);
 var
-  i: Integer;
+  Int: Integer;
 begin
   if (Delta <> 0) and (fResults.Count > 0) then begin
-    i := Pred(fResults.Count);
-    while i >= 0 do begin
-      if Integer(fResults[i]) <= First then break;
-      fResults[i] := pointer(Integer(fResults[i]) - Delta);
-      Dec(i);
+    Int := Pred(fResults.Count);
+    while Int >= 0 do begin
+      if Integer(fResults[Int]) <= First then Break;
+      fResults[Int] := pointer(Integer(fResults[Int]) - Delta);
+      Dec(Int);
     end;
   end;
 end;
@@ -135,18 +135,18 @@ end;
 procedure TSynEditSearch.InitShiftTable;
 var
   C: WideChar;
-  I: Integer;
+  Int: Integer;
 begin
   PatLen := Length(Pat);
   if Patlen = 0 then raise Exception.Create('Pattern is empty');
   PatLenSucc := PatLen + 1;
   Look_At := 1;
   for C := Low(WideChar) to High(WideChar) do Shift[C] := PatLenSucc;
-  for I := 1 to PatLen do Shift[Pat[I]] := PatLenSucc - I;
+  for Int := 1 to PatLen do Shift[Pat[Int]] := PatLenSucc - Int;
   while Look_at < PatLen do
   begin
-    if Pat[PatLen] = Pat[PatLen - Look_at] then break;
-    inc(Look_at);
+    if Pat[PatLen] = Pat[PatLen - Look_at] then Break;
+    Inc(Look_at);
   end;
   fShiftInitialized := True;
 end;                                
@@ -176,34 +176,34 @@ end;
 
 function TSynEditSearch.Next: Integer;
 var
-  I: Integer;
+  Int: Integer;
   J: PWideChar;
 begin
   Result := 0;
-  inc(Run, PatLen);
+  Inc(Run, PatLen);
   while Run < TheEnd do
   begin
     if Pat[Patlen] <> Run^ then
-      inc(Run, Shift[(Run + 1)^])
+      Inc(Run, Shift[(Run + 1)^])
     else
     begin
       J := Run - PatLen + 1;
-      I := 1;
-      while Pat[I] = J^ do
+      Int := 1;
+      while Pat[Int] = J^ do
       begin
-        if I = PatLen then
+        if Int = PatLen then
         begin
-          if fWhole and not TestWholeWord then break;
-          inc(fCount);
+          if fWhole and not TestWholeWord then Break;
+          Inc(fCount);
           Result := Run - Origin - Patlen + 2;
-          exit;
+          Exit;
         end;
-        inc(I);
-        inc(J);
+        Inc(Int);
+        Inc(J);
       end;
       Inc(Run, Look_At);
       if Run >= TheEnd then
-        break;
+        Break;
       Inc(Run, Shift[Run^] - 1);
     end;
   end;

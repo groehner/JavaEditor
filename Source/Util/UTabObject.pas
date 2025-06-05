@@ -6,18 +6,18 @@ uses UBaseForm;
 
 type TTabObject = class
        path: string;
-       Nr: integer;
+       Num: Integer;
        Form: TFForm;
-       constructor create(const aPath: string; aNr: integer; aForm: TFForm);
+       constructor Create(const APath: string; ANum: Integer; AForm: TFForm);
      end;
 
 implementation
 
-constructor TTabObject.create(const aPath: string; aNr: integer; aForm: TFForm);
+constructor TTabObject.Create(const APath: string; ANum: Integer; AForm: TFForm);
 begin
-  self.path := aPath;
-  self.Nr:= aNr;
-  self.Form:= aForm;
+  Self.path := APath;
+  Self.Num:= ANum;
+  Self.Form:= AForm;
 end;
 
 end.

@@ -86,12 +86,12 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
   published
     property CommentAttri : TSynHighlighterAttributes read fCommentAttri
@@ -153,8 +153,8 @@ procedure TSynTeXSyn.CRProc;
 begin
   fTokenID := tkSpace;
   case FLine[Run + 1] of
-    #10: inc(Run, 2);
-    else inc(Run);
+    #10: Inc(Run, 2);
+    else Inc(Run);
   end;
 end;  { CRProc }
 
@@ -162,50 +162,50 @@ end;  { CRProc }
 procedure TSynTeXSyn.SpaceProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  Inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;  { SpaceProc }
 
 procedure TSynTeXSyn.TextProc;
 begin
   fTokenID := tkText;
-  inc(Run);
+  Inc(Run);
 end;  { TextProc }
 
 procedure TSynTeXSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;  { SpaceProc }
 
 procedure TSynTeXSyn.BraceOpenProc;
 begin
   fTokenID := tkBrace;
-  inc(Run);
+  Inc(Run);
 end;  { BraceOpen }
 
 procedure TSynTeXSyn.BraceCloseProc;
 begin
   fTokenID := tkBrace;
-  inc(Run);
+  Inc(Run);
 end;  { BraceClose }
 
 procedure TSynTeXSyn.BracketOpenProc;
 begin
   fTokenID := tkBracket;
-  inc(Run);
+  Inc(Run);
 end;  { BracketOpen }
 
 procedure TSynTeXSyn.BracketCloseProc;
 begin
   fTokenID := tkBracket;
-  inc(Run);
+  Inc(Run);
 end;  { BracketClose }
 
 procedure TSynTeXSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;  { NullProc }
 
 procedure TSynTeXSyn.CommentProc;
@@ -215,7 +215,7 @@ begin
     case fLine[Run] of
       #0, #10: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until fLine[Run] = #13;
   Exit;
 end;  { CommentProc }
@@ -244,7 +244,7 @@ begin
    end;
    Inc(Run);
  until fLine[Run] = #32;
- exit;
+ Exit;
 end;  { ControlSequenceProc }
 
 procedure TSynTeXSyn.Next;
@@ -267,7 +267,7 @@ begin
   inherited;
 end;  { Next }
 
-function TSynTeXSyn.GetDefaultAttribute(Index: integer):
+function TSynTeXSyn.GetDefaultAttribute(Index: Integer):
   TSynHighlighterAttributes;
 begin
   case Index of
@@ -302,7 +302,7 @@ begin
   end;
 end;  { GetTokenAttribute }
 
-function TSynTeXSyn.GetTokenKind: integer;
+function TSynTeXSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;  { GetTokenKind }

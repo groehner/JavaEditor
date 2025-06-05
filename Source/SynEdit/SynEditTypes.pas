@@ -78,8 +78,8 @@ type
   TSynSelectionMode = (smNormal, smLine, smColumn);
 
   TBufferCoord = record
-    Char: integer;
-    Line: integer;
+    Char: Integer;
+    Line: Integer;
     class operator Equal(a, b: TBufferCoord): Boolean;
     class operator NotEqual(a, b: TBufferCoord): Boolean;
     class operator LessThan(a, b: TBufferCoord): Boolean;
@@ -91,8 +91,8 @@ type
   end;
 
   TDisplayCoord = record
-    Column: integer;
-    Row: integer;
+    Column: Integer;
+    Row: Integer;
     class operator Equal(a, b: TDisplayCoord): Boolean;
     class operator NotEqual(a, b: TDisplayCoord): Boolean;
     class operator LessThan(a, b: TDisplayCoord): Boolean;

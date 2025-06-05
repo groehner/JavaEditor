@@ -7,50 +7,50 @@ uses
 
 type
 
-  TAMenuBar = class (TAWTComponent)
+  TAMenuBar = class(TAWTComponent)
   public
-    constructor Create (AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor Create(AOwner: TComponent); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure SetPositionAndSize; override;
     procedure Paint; override;
   end;
 
-  TAMenuBarWithMenus = class (TAWTComponent)
+  TAMenuBarWithMenus = class(TAWTComponent)
   private
     FMenuItems: TStrings;
+    FMenuItemsOld: TStrings;
   protected
-    procedure setItems(aItems: TStrings);
+    procedure SetItems(AItems: TStrings);
   public
-    MenuItemsOld: TStrings;
-    constructor Create (AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure DeleteComponent; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure SetPositionAndSize; override;
     procedure Paint; override;
   published
-    property MenuItems: TStrings read FMenuItems write setItems;
+    property MenuItems: TStrings read FMenuItems write SetItems;
   end;
 
-  TAMenu = class (TAWTComponent)
+  TAMenu = class(TAWTComponent)
   private
     FText: string;
     FMenuBar: string;
     FMenuItems: TStrings;
+    FMenuItemsOld: TStrings;
     procedure MakeMenuBar(Value: string);
-    procedure setItems(aItems: TStrings);
+    procedure SetItems(AItems: TStrings);
   public
-    MenuItemsOld: TStrings;
-    constructor Create (AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor Create(AOwner: TComponent); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure NewControl; override;
     procedure DeleteComponent; override;
@@ -59,257 +59,270 @@ type
   published
     property Text: string read FText write FText;
     property MenuBar: string read FMenuBar write FMenuBar;
-    property MenuItems: TStrings read FMenuItems write setItems;
+    property MenuItems: TStrings read FMenuItems write SetItems;
   end;
 
-  TAPopupMenu = class (TAWTComponent)
+  TAPopupMenu = class(TAWTComponent)
   private
     FText: string; // deprecated
     FListener: string;
     FMenuItems: TStrings;
+    FMenuItemsOld: TStrings;
   protected
-    procedure setItems(aItems: TStrings);
+    procedure SetItems(AItems: TStrings);
   public
-    MenuItemsOld: TStrings;
-    constructor Create (AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure DeleteComponent; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure Paint; override;
   published
     property Text: string read FText write FText;
     property Listener: string read FListener write FListener;
-    property MenuItems: TStrings read FMenuItems write setItems;
+    property MenuItems: TStrings read FMenuItems write SetItems;
   end;
 
 implementation
 
-uses SysUtils, Graphics, Controls,
-     UJEComponents, UGuiForm, UUtils, UJava;
+uses
+  SysUtils,
+  Graphics,
+  Controls,
+  UJEComponents,
+  UGUIForm,
+  UUtils,
+  UJava;
 
-{--- TAMenuBar ----------------------------------------------------------------}
+{ --- TAMenuBar ---------------------------------------------------------------- }
 
 constructor TAMenuBar.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= -42;
-  Height:= 20;
-  Width:= 80;
-  ShowFont:= false;
-  JavaType:= 'MenuBar';
+  inherited Create(AOwner);
+  Tag := -42;
+  Height := 20;
+  Width := 80;
+  ShowFont := False;
+  JavaType := 'MenuBar';
 end;
 
-function TAMenuBar.getAttributes(ShowAttributes: integer): string;
+function TAMenuBar.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Name';
+  Result := '|Name';
 end;
 
-function TAMenuBar.getEvents(ShowEvents: integer): string;
+function TAMenuBar.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '';
+  Result := '';
 end;
 
 procedure TAMenuBar.NewControl;
 begin
   InsertNewVariable('private MenuBar ' + Name + ' = new MenuBar();');
-  Partner.InsertComponent(Indent2 + 'setMenuBar(' + Name + ');' )
+  FPartner.InsertComponent(Indent2 + 'setMenuBar(' + Name + ');');
 end;
 
 procedure TAMenuBar.Paint;
-  var Form: TFGUIForm;
-      i, x: integer; s: string;
+var
+  Form: TFGUIForm;
+  XPos: Integer;
+  Str: string;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= $F0F0F0;
-  Canvas.Brush.Color:= $F0F0F0;
+  Canvas.Pen.Color := $F0F0F0;
+  Canvas.Brush.Color := $F0F0F0;
   Canvas.Rectangle(0, 0, Width, Height);
-  x:= 2;
-  if Parent is TFGUIForm then begin
-    Form:= Parent as TFGUIForm;
-    for i:= 0 to Form.ComponentCount - 1 do
-      if Form.Components[i] is TAMenu then begin
-        s:= (Form.Components[i] as TAMenu).Text;
-        Canvas.TextOut(x + 8, 3, s);
-        x:= x + 8 + Canvas.TextWidth(s) + 8;
+  XPos := 2;
+  if Parent is TFGUIForm then
+  begin
+    Form := Parent as TFGUIForm;
+    for var I := 0 to Form.ComponentCount - 1 do
+      if Form.Components[I] is TAMenu then
+      begin
+        Str := (Form.Components[I] as TAMenu).Text;
+        Canvas.TextOut(XPos + 8, 3, Str);
+        XPos := XPos + 8 + Canvas.TextWidth(Str) + 8;
       end;
   end;
 end;
 
 procedure TAMenuBar.SetPositionAndSize;
 begin
-  Left:= 0;
-  Top:= 0;
-  Height:= 20;
-  Width:= Parent.Width - 16;
+  Left := 0;
+  Top := 0;
+  Height := 20;
+  Width := Parent.Width - 16;
 end;
 
-{--- TAMenuBarWithMenu---------------------------------------------------------}
+{ --- TAMenuBarWithMenu--------------------------------------------------------- }
 
 constructor TAMenuBarWithMenus.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= -52;
-  Height:= 23;
-  Width:= 80;
-  FMenuItems:= TStringList.Create;
-  FMenuItems.Text:= DefaultMenu;
-  MenuItemsOld:= TStringList.Create;
-  JavaType:= 'MenuBar';
+  inherited Create(AOwner);
+  Tag := -52;
+  Height := 23;
+  Width := 80;
+  FMenuItems := TStringList.Create;
+  FMenuItems.Text := DefaultMenu;
+  FMenuItemsOld := TStringList.Create;
+  JavaType := 'MenuBar';
 end;
 
 destructor TAMenuBarWithMenus.Destroy;
 begin
   FreeAndNil(FMenuItems);
-  FreeAndNil(MenuItemsOld);
+  FreeAndNil(FMenuItemsOld);
   inherited;
 end;
 
-function TAMenuBarWithMenus.getAttributes(ShowAttributes: integer): string;
+function TAMenuBarWithMenus.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Name|MenuItems';
+  Result := '|Name|MenuItems';
 end;
 
-procedure TAMenuBarWithMenus.setAttribute(Attr, Value, Typ: string);
+procedure TAMenuBarWithMenus.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'MenuItems' then
-    MakeMenuItems(MenuItemsOld, MenuItems, true)
+    MakeMenuItems(FMenuItemsOld, MenuItems, True)
   else
     inherited;
 end;
 
-function TAMenuBarWithMenus.getEvents(ShowEvents: integer): string;
+function TAMenuBarWithMenus.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '';
+  Result := '';
 end;
 
 procedure TAMenuBarWithMenus.NewControl;
 begin
   InsertNewVariable('private MenuBar ' + Name + ' = new MenuBar();');
-  MakeMenuItems(MenuItemsOld, MenuItems, true);
+  MakeMenuItems(FMenuItemsOld, MenuItems, True);
 end;
 
 procedure TAMenuBarWithMenus.DeleteComponent;
 begin
   DeleteEvents;
-  DeleteMenuItems(MenuItemsOld, MenuItems);
-  Partner.DeleteAttribute('private MenuBar ' + Name);
-  Partner.DeleteAttributeValue('setMenuBar(' + Name + ')');
-  Partner.DeleteAttributeValues('setShortcut(new MenuShortcut');
+  DeleteMenuItems(FMenuItemsOld, MenuItems);
+  FPartner.DeleteAttribute('private MenuBar ' + Name);
+  FPartner.DeleteAttributeValue('setMenuBar(' + Name + ')');
+  FPartner.DeleteAttributeValues('setShortcut(new MenuShortcut');
 end;
 
 procedure TAMenuBarWithMenus.Rename(const OldName, NewName, Events: string);
 begin
-  Partner.Editor.BeginUpdate;
+  FPartner.Editor.BeginUpdate;
   RenameMenu(OldName, NewName, '');
   inherited;
-  Partner.Editor.EndUpdate;
+  FPartner.Editor.EndUpdate;
 end;
 
 procedure TAMenuBarWithMenus.Paint;
-  var i, x: integer;
+var
+  XPos: Integer;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= $F0F0F0;
-  Canvas.Brush.Color:= $F0F0F0;
+  Canvas.Pen.Color := $F0F0F0;
+  Canvas.Brush.Color := $F0F0F0;
   Canvas.Rectangle(0, 0, Width, Height);
-  x:= 2;
-  for i:= 0 to FMenuItems.Count - 1 do
-    if LeftSpaces(FMenuItems[i], 2) = 0 then begin
-      Canvas.TextOut(x + 8, 3, FMenuItems[i]);
-      x:= x + 8 + Canvas.TextWidth(FMenuItems[i]) + 8;
+  XPos := 2;
+  for var I := 0 to FMenuItems.Count - 1 do
+    if LeftSpaces(FMenuItems[I], 2) = 0 then
+    begin
+      Canvas.TextOut(XPos + 8, 3, FMenuItems[I]);
+      XPos := XPos + 8 + Canvas.TextWidth(FMenuItems[I]) + 8;
     end;
 end;
 
 procedure TAMenuBarWithMenus.SetPositionAndSize;
 begin
-  Left:= 0;
-  Top:= 0;
-  Height:= 23;
-  Width:= Parent.Width - 16;
+  Left := 0;
+  Top := 0;
+  Height := 23;
+  Width := Parent.Width - 16;
 end;
 
-procedure TAMenuBarWithMenus.setItems(aItems: TStrings);
+procedure TAMenuBarWithMenus.SetItems(AItems: TStrings);
 begin
-  MenuItemsOld.Text:= FMenuItems.Text;
-  if aItems.Text <> FMenuItems.Text then
-    FMenuItems.Assign(aItems);
+  FMenuItemsOld.Text := FMenuItems.Text;
+  if AItems.Text <> FMenuItems.Text then
+    FMenuItems.Assign(AItems);
 end;
 
-
-{--- TAMenu -------------------------------------------------------------------}
+{ --- TAMenu ------------------------------------------------------------------- }
 
 constructor TAMenu.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= -43;
-  Height:= 28;
-  Width:= 32;
-  Sizeable:= false;
-  FMenuItems:= TStringList.Create;
-  FMenuItems.Text:= DefaultMenu;
-  MenuItemsOld:= TStringList.Create;
-  JavaType:= 'Menu';
+  inherited Create(AOwner);
+  Tag := -43;
+  Height := 28;
+  Width := 32;
+  Sizeable := False;
+  FMenuItems := TStringList.Create;
+  FMenuItems.Text := DefaultMenu;
+  FMenuItemsOld := TStringList.Create;
+  JavaType := 'Menu';
 end;
 
-function TAMenu.getAttributes(ShowAttributes: integer): string;
+function TAMenu.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Text|MenuBar|MenuItems|Name';
+  Result := '|Text|MenuBar|MenuItems|Name';
 end;
 
-procedure TAMenu.setAttribute(Attr, Value, Typ: string);
+procedure TAMenu.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'Text' then
-    Partner.ReplaceAttribute('private Menu ' + Name, Indent1 + 'private Menu ' + Name + ' = new Menu("' + Value + '");')
+    FPartner.ReplaceAttribute('private Menu ' + Name, Indent1 + 'private Menu ' +
+      Name + ' = new Menu("' + Value + '");')
   else if Attr = 'MenuBar' then
     MakeMenuBar(Value)
   else if Attr = 'MenuItems' then
-    MakeMenuItems(MenuItemsOld, MenuItems)
+    MakeMenuItems(FMenuItemsOld, MenuItems)
   else
     inherited;
 end;
 
-function TAMenu.getEvents(ShowEvents: integer): string;
+function TAMenu.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '';
+  Result := '';
 end;
 
 procedure TAMenu.Rename(const OldName, NewName, Events: string);
 begin
-  Partner.Editor.BeginUpdate;
+  FPartner.Editor.BeginUpdate;
   RenameMenu(OldName, NewName, '');
   inherited;
-  Partner.Editor.EndUpdate;
+  FPartner.Editor.EndUpdate;
 end;
 
 procedure TAMenu.MakeMenuBar(Value: string);
-  var key, s: string;
+var
+  Key, Str: string;
 begin
-  key:= '.add(' + Name + ');';
-  s:= Indent2 + Value + '.add(' + Name + ');';
-  Partner.DeleteAttributeValue(key);
-  setAttributValue(key, s);
+  Key := '.add(' + Name + ');';
+  Str := Indent2 + Value + '.add(' + Name + ');';
+  FPartner.DeleteAttributeValue(Key);
+  SetAttributValue(Key, Str);
 end;
 
 procedure TAMenu.NewControl;
 begin
   InsertNewVariable('private Menu ' + Name + ' = new Menu("' + Text + '");');
-  MakeMenuItems(MenuItemsOld, MenuItems);
+  MakeMenuItems(FMenuItemsOld, MenuItems);
 end;
 
 procedure TAMenu.DeleteComponent;
 begin
-  DeleteMenuItems(MenuItemsOld, MenuItems);
-  Partner.DeleteAttribute('private Menu ' + Name);
+  DeleteMenuItems(FMenuItemsOld, MenuItems);
+  FPartner.DeleteAttribute('private Menu ' + Name);
 end;
 
 destructor TAMenu.Destroy;
 begin
   FreeAndNil(FMenuItems);
-  FreeAndNil(MenuItemsOld);
+  FreeAndNil(FMenuItemsOld);
   inherited;
 end;
 
@@ -319,84 +332,85 @@ begin
   FJava.vilAWTLight.Draw(Canvas, 5, 2, 15);
 end;
 
-procedure TAMenu.setItems(aItems: TStrings);
+procedure TAMenu.SetItems(AItems: TStrings);
 begin
-  MenuItemsOld.Text:= FMenuItems.Text;
-  if aItems.Text <> FMenuItems.Text then
-    FMenuItems.Assign(aItems);
+  FMenuItemsOld.Text := FMenuItems.Text;
+  if AItems.Text <> FMenuItems.Text then
+    FMenuItems.Assign(AItems);
 end;
 
-{--- TAPopupMenu ---------------------------------------------------------------}
+{ --- TAPopupMenu --------------------------------------------------------------- }
 
 constructor TAPopupMenu.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= -44;
-  Height:= 28;
-  Width:= 32;
-  Sizeable:= false;
-  Listener:= 'cp';
-  FMenuItems:= TStringList.Create;
-  FMenuItems.Text:= DefaultMenu;
-  MenuItemsOld:= TStringList.Create;
-  JavaType:= 'PopupMenu';
+  inherited Create(AOwner);
+  Tag := -44;
+  Height := 28;
+  Width := 32;
+  Sizeable := False;
+  Listener := 'cp';
+  FMenuItems := TStringList.Create;
+  FMenuItems.Text := DefaultMenu;
+  FMenuItemsOld := TStringList.Create;
+  JavaType := 'PopupMenu';
 end;
 
 destructor TAPopupMenu.Destroy;
 begin
   FreeAndNil(FMenuItems);
-  FreeAndNil(MenuItemsOld);
+  FreeAndNil(FMenuItemsOld);
   inherited;
 end;
 
-function TAPopupMenu.getAttributes(ShowAttributes: integer): string;
+function TAPopupMenu.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|MenuItems|Name|Id|Style|Listener';
+  Result := '|MenuItems|Name|Id|Style|Listener';
 end;
 
 procedure TAPopupMenu.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'MenuItems' then
-    MakeMenuItems(MenuItemsOld, MenuItems)
+    MakeMenuItems(FMenuItemsOld, MenuItems)
   else if Attr = 'Listener' then
     MakeListener(Value)
   else
-    inherited
+    inherited;
 end;
 
-function TAPopupMenu.getEvents(ShowEvents: integer): string;
+function TAPopupMenu.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '';
+  Result := '';
 end;
 
 procedure TAPopupMenu.Rename(const OldName, NewName, Events: string);
-  procedure rename(var name: string);
+
+  procedure Rename(var Name: string);
   begin
-    if name <> '' then
-      name:= NewName + UUtils.Right(name, Length(OldName) + 1);
+    if Name <> '' then
+      Name := NewName + UUtils.Right(Name, Length(OldName) + 1);
   end;
 
 begin
-  Partner.Editor.BeginUpdate;
+  FPartner.Editor.BeginUpdate;
   RenameMenu(OldName, NewName, '');
   inherited;
-  Partner.Editor.EndUpdate;
+  FPartner.Editor.EndUpdate;
 end;
 
 procedure TAPopupMenu.NewControl;
 begin
   InsertNewVariable('private PopupMenu ' + Name + ' = new PopupMenu();');
-  MakeMenuItems(MenuItemsOld, MenuItems);
-  Partner.InsertListener(GetContainerAdd, getContextMenuListener(Listener));
-  Partner.InsertComponent(Indent2 + 'add(' + Name + ');');
+  MakeMenuItems(FMenuItemsOld, MenuItems);
+  FPartner.InsertListener(GetContainerAdd, getContextMenuListener(Listener));
+  FPartner.InsertComponent(Indent2 + 'add(' + Name + ');');
 end;
 
 procedure TAPopupMenu.DeleteComponent;
 begin
-  DeleteMenuItems(MenuItemsOld, MenuItems);
-  Partner.DeleteAttribute('private PopupMenu ' + Name);
-  Partner.DeleteListener(getContextMenuListener(Listener));
-  Partner.DeleteAttributeValue(Indent2 + 'add(' + Name + ');');
+  DeleteMenuItems(FMenuItemsOld, MenuItems);
+  FPartner.DeleteAttribute('private PopupMenu ' + Name);
+  FPartner.DeleteListener(getContextMenuListener(Listener));
+  FPartner.DeleteAttributeValue(Indent2 + 'add(' + Name + ');');
 end;
 
 procedure TAPopupMenu.Paint;
@@ -405,11 +419,11 @@ begin
   FJava.vilAWTLight.Draw(Canvas, 7, 4, 16);
 end;
 
-procedure TAPopupMenu.setItems(aItems: TStrings);
+procedure TAPopupMenu.SetItems(AItems: TStrings);
 begin
-  MenuItemsOld.Text:= FMenuItems.Text;
-  if aItems.Text <> FMenuItems.Text then
-    FMenuItems.Assign(aItems);
+  FMenuItemsOld.Text := FMenuItems.Text;
+  if AItems.Text <> FMenuItems.Text then
+    FMenuItems.Assign(AItems);
 end;
 
 end.

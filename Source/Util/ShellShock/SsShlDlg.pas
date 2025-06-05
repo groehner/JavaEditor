@@ -661,8 +661,6 @@ begin
 end;
 
 destructor TStCustomShellNavigator.Destroy;
-var
-  I : Integer;
 begin
   if Assigned(FListView) and not (csDestroying in ComponentState) then
     with FListView as TStShellListView do begin
@@ -673,7 +671,7 @@ begin
         SpecialRootFolder := sfNone;
       Clear;
     end;
-  for I := 0 to RecentFoldersList.Count - 1 do
+  for var I := 0 to RecentFoldersList.Count - 1 do
     TStShellFolder(RecentFoldersList[I]).Free;
   RecentFoldersList.Free;
   inherited;
@@ -1195,13 +1193,13 @@ end;
 
 procedure TSsMenuButton.Click;
 var
-  P : TPoint;
+  Posi : TPoint;
 begin
   if PopupMenu <> nil then begin
-    P := Point(0, Height);
-    P := ClientToScreen(P);
+    Posi := Point(0, Height);
+    Posi := ClientToScreen(Posi);
     PopupMenu.PopupComponent := Self;
-    PopupMenu.Popup(P.X, P.Y);
+    PopupMenu.Popup(Posi.X, Posi.Y);
   end;
   inherited Click;
 end;
@@ -1522,8 +1520,7 @@ end;
 
 procedure TStCustomDialogPanel.DoListViewClick;
 var
-  I : Integer;
-  S : string;
+  Str : string;
   DefaultAction : Boolean;
 begin
   DefaultAction := True;
@@ -1533,16 +1530,16 @@ begin
     if Assigned(FListView.SelectedItem) then
       if FileExists(FListView.SelectedItem.Path) then begin
         FFiles.Clear;
-        for I := 0 to Pred(FListView.Items.Count) do
+        for var I := 0 to Pred(FListView.Items.Count) do
           if FListView.Items[I].Selected then
             FFiles.Insert(0, FListView.ShellItems[
               Integer(FListView.Items[I].Data)].Path);
         if FFiles.Count = 1 then
           FFileNameEdit.Text := ExtractFileName(FListView.SelectedItem.Path)
         else begin
-          for I := 0 to Pred(FFiles.Count) do
-            S := S + '"' + ExtractFileName(FFiles[I]) + '" ';
-          FFileNameEdit.Text := S;
+          for var I := 0 to Pred(FFiles.Count) do
+            Str := Str + '"' + ExtractFileName(FFiles[I]) + '" ';
+          FFileNameEdit.Text := Str;
         end;
       end;
 end;
@@ -1567,7 +1564,7 @@ end;
 procedure TStCustomDialogPanel.DoOpenButtonClick;
 var
   DefaultAction : Boolean;
-  S : string;
+  Str : string;
 begin
   DefaultAction := True;
 
@@ -1612,13 +1609,13 @@ begin
     end;
 
   { Possibly a directory under the current folder was entered. }
-  S := FListView.Folder.Path;
-  if S[Length(S)] <> '\' then
-    S := S + '\';
-  S := S + FileNameEdit.Text;
-  if DirectoryExists(S) then begin
+  Str := FListView.Folder.Path;
+  if Str[Length(Str)] <> '\' then
+    Str := Str + '\';
+  Str := Str + FileNameEdit.Text;
+  if DirectoryExists(Str) then begin
     try
-      FListView.RootFolder := S;
+      FListView.RootFolder := Str;
     except
       FFileNameEdit.Text := '';
       Exit;
@@ -1628,7 +1625,7 @@ begin
     Exit;
   end;
 
-  FFileName := S;
+  FFileName := Str;
   if Assigned(FOnOpenButtonClick) then
     FOnOpenButtonClick(FOpenButton, DefaultAction);
   if DefaultAction = True then begin
@@ -1636,15 +1633,15 @@ begin
       if (FDefaultExt <> '') and (Pos('.', FFileName) = 0) then
         FFileName := FFileName + '.' + FDefaultExt;
       if Assigned(FParentForm) then begin
-        FParentForm.ModalResult := mrOK;
+        FParentForm.ModalResult := mrOk;
         Exit;
       end else if Parent is TForm then
         with Parent as TForm do begin
-          ModalResult := mrOK;
+          ModalResult := mrOk;
           Exit;
         end
       else
-        Screen.ActiveForm.ModalResult := mrOK;
+        Screen.ActiveForm.ModalResult := mrOk;
     end;
   end;
 end;
@@ -1699,8 +1696,8 @@ end;
 
 procedure TStCustomDialogPanel.SetFilter(Value : string);
 var
-  P : Integer;
-  S : string;
+  Posi : Integer;
+  Str : string;
   FilterStr : string;
 begin
   FFilter := Value;
@@ -1714,20 +1711,20 @@ begin
 
   { Parse the string and add to the combo box. }
   FFileTypeComboBox.Items.Clear;
-  P := Pos('|', FilterStr);
-  while P <> 0 do begin
-    S := Copy(FilterStr, 1, P - 1);
-    FFileTypeComboBox.Items.Add(S);
-    Delete(FilterStr, 1, P);
-    P := Pos('|', FilterStr);
-    if P = 0 then
+  Posi := Pos('|', FilterStr);
+  while Posi <> 0 do begin
+    Str := Copy(FilterStr, 1, Posi - 1);
+    FFileTypeComboBox.Items.Add(Str);
+    Delete(FilterStr, 1, Posi);
+    Posi := Pos('|', FilterStr);
+    if Posi = 0 then
       FilterList.Add(FilterStr)
     else begin
-      S := Copy(FilterStr, 1, P - 1);
-      FilterList.Add(S);
-      Delete(FilterStr, 1, P);
+      Str := Copy(FilterStr, 1, Posi - 1);
+      FilterList.Add(Str);
+      Delete(FilterStr, 1, Posi);
     end;
-    P := Pos('|', FilterStr);
+    Posi := Pos('|', FilterStr);
   end;
   FFileTypeComboBox.ItemIndex := 0;
 

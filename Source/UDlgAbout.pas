@@ -2,17 +2,22 @@ unit UDlgAbout;
 
 interface
 
-uses Forms, StdCtrls, ExtCtrls, Vcl.Graphics, Vcl.Controls, System.Classes;
+uses
+  Forms,
+  StdCtrls,
+  ExtCtrls,
+  Vcl.Controls,
+  System.Classes, Vcl.Graphics;
 
 const
-  {$IFDEF WIN32}
+{$IFDEF WIN32}
   Version = '23.06, 32 Bit';
-  {$ELSE}
+{$ELSE}
   Version = '23.06, 64 Bit';
-  {$ENDIF}
-  DTag  = 16;
-  Monat = 4;
-  Jahr  = 2025;
+{$ENDIF}
+  Day = 16;
+  Month = 4;
+  Year = 2025;
 
 type
   TFAbout = class(TForm)
@@ -33,23 +38,23 @@ type
     class function GetDate: string;
   end;
 
-
 implementation
 
 {$R *.DFM}
 
-uses SysUtils, JvGnugettext;
+uses
+  SysUtils,
+  JvGnugettext;
 
 procedure TFAbout.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
-  LProductname.Caption:= 'Java-Editor ' + Version + ', ' + GetDate;
+  LProductName.Caption := 'Java-Editor ' + Version + ', ' + GetDate;
 end;
 
 class function TFAbout.GetDate: string;
 begin
-  Result:= DateToStr(EncodeDate(Jahr, Monat, DTag));
+  Result := DateToStr(EncodeDate(Year, Month, Day));
 end;
 
 end.
-

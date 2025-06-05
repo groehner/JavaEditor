@@ -292,17 +292,17 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
-    function UseUserSettings(settingIndex: integer): boolean; override;
+    function UseUserSettings(settingIndex: Integer): Boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -408,7 +408,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 641 + Ord(Str^) * 282;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 821;
   fStringLen := Str - fToIdent;
@@ -429,11 +429,11 @@ end;
 
 procedure TSynADSP21xxSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[48] := FuncAbs;
   fIdentFuncTable[426] := FuncAbstract;
@@ -2127,21 +2127,21 @@ end;
 
 procedure TSynADSP21xxSyn.BraceCloseProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
 procedure TSynADSP21xxSyn.StringProc;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then inc(Run, 2);
+  if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then Inc(Run, 2);
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #39;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynADSP21xxSyn.PascalCommentProc;
@@ -2151,17 +2151,17 @@ begin
     #0:
       begin
         NullProc;
-        exit;
+        Exit;
       end;
     #10:
       begin
         LFProc;
-        exit;
+        Exit;
       end;
     #13:
       begin
         CRProc;
-        exit;
+        Exit;
       end;
   end;
 
@@ -2170,12 +2170,12 @@ begin
       '}':
         begin
           fRange := rsUnKnown;
-          inc(Run);
-          break;
+          Inc(Run);
+          Break;
         end;
-      #10: break;
-      #13: break;
-      else inc(Run);
+      #10: Break;
+      #13: Break;
+      else Inc(Run);
     end;
 end;
 
@@ -2185,15 +2185,15 @@ begin
   case FLine[Run] of
     #0: begin
           NullProc;
-          exit;
+          Exit;
         end;
     #10:begin
          LFProc;
-         exit;
+         Exit;
         end;
     #13:begin
           CRProc;
-          exit;
+          Exit;
         end;
   end;
 
@@ -2204,15 +2204,15 @@ begin
           if FLine[Run+1] = '/' then
           begin
             fRange := rsUnknown;
-            inc(Run, 2);
-            break;
+            Inc(Run, 2);
+            Break;
           end
           else
             Inc(Run);
         end;
-      #10: break;
-      #13: break;
-      else inc(Run);
+      #10: Break;
+      #13: Break;
+      else Inc(Run);
     end;
 end;
 
@@ -2220,25 +2220,25 @@ procedure TSynADSP21xxSyn.BraceOpenProc;
 begin
   fTokenID := tkComment;
   fRange := rsPascalComment;
-  inc(Run);
+  Inc(Run);
   while FLine[Run] <> #0 do
     case FLine[Run] of
       '}':
         begin
           fRange := rsUnKnown;
-          inc(Run);
-          break;
+          Inc(Run);
+          Break;
         end;
-      #10: break;
-      #13: break;
-    else inc(Run);
+      #10: Break;
+      #13: Break;
+    else Inc(Run);
     end;
 end;
 
 
 procedure TSynADSP21xxSyn.IncludeCloseProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
@@ -2246,8 +2246,8 @@ procedure TSynADSP21xxSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Case FLine[Run + 1] of
-    #10: inc(Run, 2);
-  else inc(Run);
+    #10: Inc(Run, 2);
+  else Inc(Run);
   end;
 end;
 
@@ -2255,16 +2255,16 @@ procedure TSynADSP21xxSyn.ExclamationProc;
 begin
   fTokenID := tkComment;
   repeat
-    inc(Run);
+    Inc(Run);
   until IsLineEnd(Run);
 end;
 
 procedure TSynADSP21xxSyn.IdentProc;
 begin
   fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
+  Inc(Run, fStringLen);
   while IsIdentChar(fLine[Run]) do
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynADSP21xxSyn.IntegerProc;
@@ -2280,21 +2280,21 @@ procedure TSynADSP21xxSyn.IntegerProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
-  while IsIntegerChar do inc(Run);
+  while IsIntegerChar do Inc(Run);
 end;
 
 procedure TSynADSP21xxSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynADSP21xxSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynADSP21xxSyn.NumberProc;
@@ -2310,15 +2310,15 @@ procedure TSynADSP21xxSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
   begin
     case FLine[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if FLine[Run + 1] = '.' then Break;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
@@ -2335,22 +2335,22 @@ procedure TSynADSP21xxSyn.HexNumber;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   fRange := rsUnKnown;
   while IsHexChar do
   begin
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
 procedure TSynADSP21xxSyn.BinaryNumber;
 begin
-  inc(Run);
+  Inc(Run);
   fRange := rsUnKnown;
   while CharInSet(FLine[Run], ['0'..'1']) do
   begin
-    inc(Run);
+    Inc(Run);
   end;
   if CharInSet(FLine[Run], ['2'..'9', 'A'..'F', 'a'..'f']) then
   begin
@@ -2366,40 +2366,40 @@ begin
   begin
     fTokenID := tkComment;
     fRange := rsCComment;
-    inc(Run, 2);
+    Inc(Run, 2);
     while FLine[Run] <> #0 do
       case FLine[Run] of
         '*':  begin
                 if FLine[Run+1] = '/' then
                 begin
-                  inc(Run, 2);
+                  Inc(Run, 2);
                   fRange := rsUnknown;
-                  break;
+                  Break;
                 end
-                else inc(Run);
+                else Inc(Run);
               end;
-        #10: break;
-        #13: break;
-        else inc(Run);
+        #10: Break;
+        #13: Break;
+        else Inc(Run);
       end;
     end
   else
   begin
-    inc(Run);
+    Inc(Run);
     fTokenID := tkSymbol;
   end;
 end;
 
 procedure TSynADSP21xxSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynADSP21xxSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -2433,7 +2433,7 @@ begin
   inherited;
 end;
 
-function TSynADSP21xxSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynADSP21xxSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -2457,7 +2457,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynADSP21xxSyn.GetTokenKind: integer;
+function TSynADSP21xxSyn.GetTokenKind: Integer;
 begin
   Result := Ord(GetTokenID);
 end;
@@ -2517,7 +2517,7 @@ begin
   end;
 end;
 
-function TSynADSP21xxSyn.UseUserSettings(settingIndex: integer): boolean;
+function TSynADSP21xxSyn.UseUserSettings(settingIndex: Integer): Boolean;
 // Possible parameter values:
 //   index into TStrings returned by EnumUserSettings
 // Possible return values:
@@ -2525,12 +2525,12 @@ function TSynADSP21xxSyn.UseUserSettings(settingIndex: integer): boolean;
 //   false: problem reading settings or invalid version specified - old settings
 //          were preserved
 
-    function ReadDspIDESetting(settingTag: string; attri: TSynHighlighterAttributes; key: string): boolean;
+    function ReadDspIDESetting(settingTag: string; attri: TSynHighlighterAttributes; key: string): Boolean;
     begin
       try
         Result := attri.LoadFromBorlandRegistry(HKEY_CURRENT_USER,
-               '\Software\Wynand\DspIDE\1.0\Editor\Highlight',key,false);
-      except Result := false; end;
+               '\Software\Wynand\DspIDE\1.0\Editor\Highlight',key,False);
+      except Result := False; end;
     end;
 var
   tmpNumberAttri    : TSynHighlighterAttributes;
@@ -2548,7 +2548,7 @@ begin  // UseUserSettings
   try
     EnumUserSettings(StrLst);
     if settingIndex >= StrLst.Count then
-      Result := false
+      Result := False
     else
     begin
       tmpNumberAttri    := TSynHighlighterAttributes.Create('', '');

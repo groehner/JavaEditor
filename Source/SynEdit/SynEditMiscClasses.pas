@@ -82,39 +82,39 @@ type
     fFont: TFont;
     fColor: TColor;
     fBorderColor: TColor;
-    fWidth: integer;
-    fShowLineNumbers: boolean;
-    fDigitCount: integer;
-    fLeadingZeros: boolean;
-    fZeroStart: boolean;
-    fLeftOffset: integer;
-    fRightOffset: integer;
-    fRightMargin: integer;
+    fWidth: Integer;
+    fShowLineNumbers: Boolean;
+    fDigitCount: Integer;
+    fLeadingZeros: Boolean;
+    fZeroStart: Boolean;
+    fLeftOffset: Integer;
+    fRightOffset: Integer;
+    fRightMargin: Integer;
     fOnChange: TNotifyEvent;
     fCursor: TCursor;
-    fVisible: boolean;
-    fUseFontStyle: boolean;
-    fAutoSize: boolean;
-    fAutoSizeDigitCount: integer;
+    fVisible: Boolean;
+    fUseFontStyle: Boolean;
+    fAutoSize: Boolean;
+    fAutoSizeDigitCount: Integer;
     fBorderStyle: TSynGutterBorderStyle;
     fLineNumberStart: Integer;
     fGradient: Boolean;
     fGradientStartColor: TColor;
     fGradientEndColor: TColor;
     fGradientSteps: Integer;
-    procedure SetAutoSize(const Value: boolean);
+    procedure SetAutoSize(const Value: Boolean);
     procedure SetBorderColor(const Value: TColor);
     procedure SetColor(const Value: TColor);
-    procedure SetDigitCount(Value: integer);
-    procedure SetLeadingZeros(const Value: boolean);
-    procedure SetLeftOffset(Value: integer);
-    procedure SetRightOffset(Value: integer);
-    procedure SetRightMargin(Value: integer);
-    procedure SetShowLineNumbers(const Value: boolean);
-    procedure SetUseFontStyle(Value: boolean);
-    procedure SetVisible(Value: boolean);
-    procedure SetWidth(Value: integer);
-    procedure SetZeroStart(const Value: boolean);
+    procedure SetDigitCount(Value: Integer);
+    procedure SetLeadingZeros(const Value: Boolean);
+    procedure SetLeftOffset(Value: Integer);
+    procedure SetRightOffset(Value: Integer);
+    procedure SetRightMargin(Value: Integer);
+    procedure SetShowLineNumbers(const Value: Boolean);
+    procedure SetUseFontStyle(Value: Boolean);
+    procedure SetVisible(Value: Boolean);
+    procedure SetWidth(Value: Integer);
+    procedure SetZeroStart(const Value: Boolean);
     procedure SetFont(Value: TFont);
     procedure OnFontChange(Sender: TObject);
     procedure SetBorderStyle(const Value: TSynGutterBorderStyle);
@@ -123,40 +123,40 @@ type
     procedure SetGradientStartColor(const Value: TColor);
     procedure SetGradientEndColor(const Value: TColor);
     procedure SetGradientSteps(const Value: Integer);
-    function GetWidth: integer;
+    function GetWidth: Integer;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    procedure AutoSizeDigitCount(LinesCount: integer);
-    function FormatLineNumber(Line: integer): string;
-    function RealGutterWidth(CharWidth: integer): integer;
+    procedure AutoSizeDigitCount(LinesCount: Integer);
+    function FormatLineNumber(Line: Integer): string;
+    function RealGutterWidth(CharWidth: Integer): Integer;
     procedure ChangeScale(M, D: Integer); virtual;
   published
-    property AutoSize: boolean read fAutoSize write SetAutoSize default FALSE;
+    property AutoSize: Boolean read fAutoSize write SetAutoSize default FALSE;
     property BorderStyle: TSynGutterBorderStyle read fBorderStyle
       write SetBorderStyle default gbsMiddle;
     property Color: TColor read fColor write SetColor default clBtnFace;
     property BorderColor: TColor read fBorderColor write SetBorderColor default clWindow;
     property Cursor: TCursor read fCursor write fCursor default crDefault;
-    property DigitCount: integer read fDigitCount write SetDigitCount
+    property DigitCount: Integer read fDigitCount write SetDigitCount
       default 4;
     property Font: TFont read fFont write SetFont;
-    property LeadingZeros: boolean read fLeadingZeros write SetLeadingZeros
+    property LeadingZeros: Boolean read fLeadingZeros write SetLeadingZeros
       default FALSE;
-    property LeftOffset: integer read fLeftOffset write SetLeftOffset
+    property LeftOffset: Integer read fLeftOffset write SetLeftOffset
       default 16;
-    property RightOffset: integer read fRightOffset write SetRightOffset
+    property RightOffset: Integer read fRightOffset write SetRightOffset
       default 2;
-    property RightMargin: integer read fRightMargin write SetRightMargin
+    property RightMargin: Integer read fRightMargin write SetRightMargin
       default 2;
-    property ShowLineNumbers: boolean read fShowLineNumbers
+    property ShowLineNumbers: Boolean read fShowLineNumbers
       write SetShowLineNumbers default FALSE;
-    property UseFontStyle: boolean read fUseFontStyle write SetUseFontStyle
+    property UseFontStyle: Boolean read fUseFontStyle write SetUseFontStyle
       default True;
-    property Visible: boolean read fVisible write SetVisible default TRUE;
-    property Width: integer read GetWidth write SetWidth default 30;
-    property ZeroStart: boolean read fZeroStart write SetZeroStart
+    property Visible: Boolean read fVisible write SetVisible default TRUE;
+    property Width: Integer read GetWidth write SetWidth default 30;
+    property ZeroStart: Boolean read fZeroStart write SetZeroStart
       default False;
     property LineNumberStart: Integer read fLineNumberStart write SetLineNumberStart default 1;
     property Gradient: Boolean read fGradient write SetGradient default False;
@@ -169,18 +169,18 @@ type
   TSynBookMarkOpt = class(TPersistent)
   private
     fBookmarkImages: TCustomImageList;
-    fDrawBookmarksFirst: boolean;
+    fDrawBookmarksFirst: Boolean;
     fEnableKeys: Boolean;
     fGlyphsVisible: Boolean;
     fLeftMargin: Integer;
     fOwner: TComponent;
-    fXoffset: integer;
+    fXoffset: Integer;
     fOnChange: TNotifyEvent;
     procedure SetBookmarkImages(const Value: TCustomImageList);
-    procedure SetDrawBookmarksFirst(Value: boolean);
+    procedure SetDrawBookmarksFirst(Value: Boolean);
     procedure SetGlyphsVisible(Value: Boolean);
     procedure SetLeftMargin(Value: Integer);
-    procedure SetXOffset(Value: integer);
+    procedure SetXOffset(Value: Integer);
   public
     constructor Create(AOwner: TComponent);
     procedure Assign(Source: TPersistent); override;
@@ -188,43 +188,43 @@ type
   published
     property BookmarkImages: TCustomImageList
       read fBookmarkImages write SetBookmarkImages;
-    property DrawBookmarksFirst: boolean read fDrawBookmarksFirst
+    property DrawBookmarksFirst: Boolean read fDrawBookmarksFirst
       write SetDrawBookmarksFirst default True;
     property EnableKeys: Boolean
       read fEnableKeys write fEnableKeys default True;
     property GlyphsVisible: Boolean
       read fGlyphsVisible write SetGlyphsVisible default True;
     property LeftMargin: Integer read fLeftMargin write SetLeftMargin default 2;
-    property Xoffset: integer read fXoffset write SetXOffset default 12;
+    property Xoffset: Integer read fXoffset write SetXOffset default 12;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   end;
 
   TSynGlyph = class(TPersistent)
   private
-    fVisible: boolean;
+    fVisible: Boolean;
     fInternalGlyph, fGlyph: TBitmap;
     fInternalMaskColor, fMaskColor: TColor;
     fOnChange: TNotifyEvent;
     procedure SetGlyph(Value: TBitmap);
     procedure GlyphChange(Sender: TObject);
     procedure SetMaskColor(Value: TColor);
-    procedure SetVisible(Value: boolean);
-    function GetWidth : integer;
-    function GetHeight : integer;
+    procedure SetVisible(Value: Boolean);
+    function GetWidth : Integer;
+    function GetHeight : Integer;
   public
-    constructor Create(aModule: THandle; const aName: string; aMaskColor: TColor);
+    constructor Create(aModule: THandle; const AName: string; aMaskColor: TColor);
     destructor Destroy; override;
     procedure Assign(aSource: TPersistent); override;
-    procedure Draw(aCanvas: TCanvas; aX, aY, aLineHeight: integer);
-    property Width : integer read GetWidth;
-    property Height : integer read GetHeight;
+    procedure Draw(aCanvas: TCanvas; aX, aY, aLineHeight: Integer);
+    property Width : Integer read GetWidth;
+    property Height : Integer read GetHeight;
  //++ DPI-Aware
     procedure ChangeScale(M, D: Integer); virtual;
 //-- DPI-Aware
   published
     property Glyph: TBitmap read fGlyph write SetGlyph;
     property MaskColor: TColor read fMaskColor write SetMaskColor default clNone;
-    property Visible: boolean read fVisible write SetVisible default True;
+    property Visible: Boolean read fVisible write SetVisible default True;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   end;
 
@@ -276,11 +276,11 @@ type
     fCount  : Integer;
 
   public
-    constructor Create(aModule: THandle; const Name: string; Count: integer);
+    constructor Create(aModule: THandle; const Name: string; Count: Integer);
     destructor Destroy; override;
-    procedure Draw(ACanvas: TCanvas; Number, X, Y, LineHeight: integer);
+    procedure Draw(ACanvas: TCanvas; Number, X, Y, LineHeight: Integer);
     procedure DrawTransparent(ACanvas: TCanvas; Number, X, Y,
-      LineHeight: integer; TransparentColor: TColor);
+      LineHeight: Integer; TransparentColor: TColor);
     procedure ChangeScale(M, D: Integer); virtual;
   end;
 
@@ -418,7 +418,7 @@ type
   end;
 
   procedure ResizeBitmap(Bitmap: TBitmap; const NewWidth,
-    NewHeight: integer);
+    NewHeight: Integer);
 
 implementation
 
@@ -433,7 +433,7 @@ uses
   SynEdit;
 
 //++ DPI-Aware
-procedure ResizeBitmap(Bitmap: TBitmap; const NewWidth, NewHeight: integer);
+procedure ResizeBitmap(Bitmap: TBitmap; const NewWidth, NewHeight: Integer);
 var
   Factory: IWICImagingFactory;
   Scaler: IWICBitmapScaler;
@@ -578,9 +578,9 @@ begin
     inherited;
 end;
 
-procedure TSynGutter.AutoSizeDigitCount(LinesCount: integer);
+procedure TSynGutter.AutoSizeDigitCount(LinesCount: Integer);
 var
-  nDigits: integer;
+  nDigits: Integer;
 begin
   if fVisible and fAutoSize and fShowLineNumbers then 
   begin
@@ -598,9 +598,9 @@ begin
     fAutoSizeDigitCount := fDigitCount;
 end;
 
-function TSynGutter.FormatLineNumber(Line: integer): string;
+function TSynGutter.FormatLineNumber(Line: Integer): string;
 var
-  i: integer;
+  Int: Integer;
 begin
   if fZeroStart then
     Dec(Line)
@@ -608,13 +608,13 @@ begin
     Inc(Line, fLineNumberStart - 1);
   Result := Format('%*d', [fAutoSizeDigitCount, Line]);
   if fLeadingZeros then
-    for i := 1 to fAutoSizeDigitCount - 1 do begin
-      if (Result[i] <> ' ') then break;
-      Result[i] := '0';
+    for Int := 1 to fAutoSizeDigitCount - 1 do begin
+      if (Result[Int] <> ' ') then Break;
+      Result[Int] := '0';
     end;
 end;
 
-function TSynGutter.RealGutterWidth(CharWidth: integer): integer;
+function TSynGutter.RealGutterWidth(CharWidth: Integer): Integer;
 begin
   if not fVisible then
     Result := 0
@@ -626,7 +626,7 @@ begin
     Result := fWidth;
 end;
 
-procedure TSynGutter.SetAutoSize(const Value: boolean);
+procedure TSynGutter.SetAutoSize(const Value: Boolean);
 begin
   if fAutoSize <> Value then begin
     fAutoSize := Value;
@@ -652,7 +652,7 @@ begin
   if Assigned(fOnChange) then fOnChange(Self);
 end;
 
-procedure TSynGutter.SetDigitCount(Value: integer);
+procedure TSynGutter.SetDigitCount(Value: Integer);
 begin
   Value := MinMax(Value, 2, 12);
   if fDigitCount <> Value then begin
@@ -662,7 +662,7 @@ begin
   end;
 end;
 
-procedure TSynGutter.SetLeadingZeros(const Value: boolean);
+procedure TSynGutter.SetLeadingZeros(const Value: Boolean);
 begin
   if fLeadingZeros <> Value then begin
     fLeadingZeros := Value;
@@ -670,7 +670,7 @@ begin
   end;
 end;
 
-procedure TSynGutter.SetLeftOffset(Value: integer);
+procedure TSynGutter.SetLeftOffset(Value: Integer);
 begin
   Value := Max(0, Value);
   if fLeftOffset <> Value then begin
@@ -679,7 +679,7 @@ begin
   end;
 end;
 
-procedure TSynGutter.SetRightOffset(Value: integer);
+procedure TSynGutter.SetRightOffset(Value: Integer);
 begin
   Value := Max(0, Value);
   if fRightOffset <> Value then begin
@@ -688,7 +688,7 @@ begin
   end;
 end;
 
-procedure TSynGutter.SetRightMargin(Value: integer);
+procedure TSynGutter.SetRightMargin(Value: Integer);
 begin
   Value := Max(0, Value);
   if fRightMargin <> Value then begin
@@ -697,7 +697,7 @@ begin
   end;
 end;
 
-procedure TSynGutter.SetShowLineNumbers(const Value: boolean);
+procedure TSynGutter.SetShowLineNumbers(const Value: Boolean);
 begin
   if fShowLineNumbers <> Value then begin
     fShowLineNumbers := Value;
@@ -705,7 +705,7 @@ begin
   end;
 end;
 
-procedure TSynGutter.SetUseFontStyle(Value: boolean);
+procedure TSynGutter.SetUseFontStyle(Value: Boolean);
 begin
   if fUseFontStyle <> Value then begin
     fUseFontStyle := Value;
@@ -713,7 +713,7 @@ begin
   end;
 end;
 
-procedure TSynGutter.SetVisible(Value: boolean);
+procedure TSynGutter.SetVisible(Value: Boolean);
 begin
   if fVisible <> Value then begin
     fVisible := Value;
@@ -721,7 +721,7 @@ begin
   end;
 end;
 
-procedure TSynGutter.SetWidth(Value: integer);
+procedure TSynGutter.SetWidth(Value: Integer);
 begin
   Value := Max(0, Value);
   if fWidth <> Value then begin
@@ -730,7 +730,7 @@ begin
   end;
 end;
 
-procedure TSynGutter.SetZeroStart(const Value: boolean);
+procedure TSynGutter.SetZeroStart(const Value: Boolean);
 begin
   if fZeroStart <> Value then begin
     fZeroStart := Value;
@@ -806,7 +806,7 @@ begin
   end;
 end;
 
-function TSynGutter.GetWidth: integer;
+function TSynGutter.GetWidth: Integer;
 begin
   if not Visible then
     Result := 0
@@ -859,7 +859,7 @@ begin
   end;
 end;
 
-procedure TSynBookMarkOpt.SetDrawBookmarksFirst(Value: boolean);
+procedure TSynBookMarkOpt.SetDrawBookmarksFirst(Value: Boolean);
 begin
   if Value <> fDrawBookmarksFirst then begin
     fDrawBookmarksFirst := Value;
@@ -883,7 +883,7 @@ begin
   end;
 end;
 
-procedure TSynBookMarkOpt.SetXOffset(Value: integer);
+procedure TSynBookMarkOpt.SetXOffset(Value: Integer);
 begin
   if fXOffset <> Value then begin
     fXOffset := Value;
@@ -900,14 +900,14 @@ begin
     ResizeBitmap(fGlyph, MulDiv(fGlyph.Width, M, D), MulDiv(fGlyph.Height, M, D));
 end;
 
-constructor TSynGlyph.Create(aModule: THandle; const aName: string; aMaskColor: TColor);
+constructor TSynGlyph.Create(aModule: THandle; const AName: string; aMaskColor: TColor);
 begin
   inherited Create;
 
-  if aName <> '' then
+  if AName <> '' then
   begin
     fInternalGlyph := TBitmap.Create;
-    fInternalGlyph.LoadFromResourceName(aModule, aName);
+    fInternalGlyph.LoadFromResourceName(aModule, AName);
     fInternalMaskColor := aMaskColor;
   end
   else
@@ -947,7 +947,7 @@ begin
     inherited;
 end;
 
-procedure TSynGlyph.Draw(aCanvas: TCanvas; aX, aY, aLineHeight: integer);
+procedure TSynGlyph.Draw(aCanvas: TCanvas; aX, aY, aLineHeight: Integer);
 var
   rcSrc, rcDest : TRect;
   vGlyph : TBitmap;
@@ -1001,7 +1001,7 @@ begin
   end;
 end;
 
-procedure TSynGlyph.SetVisible(Value: boolean);
+procedure TSynGlyph.SetVisible(Value: Boolean);
 begin
   if fVisible <> Value then
   begin
@@ -1010,7 +1010,7 @@ begin
   end;
 end;
 
-function TSynGlyph.GetWidth : integer;
+function TSynGlyph.GetWidth : Integer;
 begin
   if not fGlyph.Empty then
     Result := fGlyph.Width
@@ -1021,7 +1021,7 @@ begin
     Result := 0;
 end;
 
-function TSynGlyph.GetHeight : integer;
+function TSynGlyph.GetHeight : Integer;
 begin
   if not fGlyph.Empty then
     Result := fGlyph.Height
@@ -1077,30 +1077,30 @@ end;
 procedure TSynMethodChain.Fire;
 var
   AMethod: TMethod;
-  i: Integer;
+  Int: Integer;
 begin
-  i := 0;
+  Int := 0;
   with FNotifyProcs, AMethod do
-    while i < Count do
+    while Int < Count do
       try
         repeat
-          Code := Items[i];
-          Inc(i);
-          Data := Items[i];
-          Inc(i);
+          Code := Items[Int];
+          Inc(Int);
+          Data := Items[Int];
+          Inc(Int);
 
           DoFire(AMethod)
-        until i >= Count;
+        until Int >= Count;
       except
         on E: Exception do
           if not DoHandleException(E) then
-            i := MaxInt;
+            Int := MaxInt;
       end;
 end;
 
 procedure TSynMethodChain.Remove(AEvent: TMethod);
 var
-  i: Integer;
+  Int: Integer;
 begin
   if not Assigned(@AEvent) then
     raise ESynMethodChain.CreateFmt(
@@ -1108,19 +1108,19 @@ begin
 
   with FNotifyProcs, AEvent do
   begin
-    i := Count - 1;
-    while i > 0 do
-      if Items[i] <> Data then
-        Dec(i, 2)
+    Int := Count - 1;
+    while Int > 0 do
+      if Items[Int] <> Data then
+        Dec(Int, 2)
       else
       begin
-        Dec(i);
-        if Items[i] = Code then
+        Dec(Int);
+        if Items[Int] = Code then
         begin
-          Delete(i);
-          Delete(i);
+          Delete(Int);
+          Delete(Int);
         end;
-        Dec(i);
+        Dec(Int);
       end;
   end;
 end;
@@ -1168,7 +1168,7 @@ begin
   fHeight := fImages.Height;
 end;
 
-constructor TSynInternalImage.Create(aModule: THandle; const Name: string; Count: integer);
+constructor TSynInternalImage.Create(aModule: THandle; const Name: string; Count: Integer);
 begin
   inherited Create;
   fImages := TBitmap.Create;
@@ -1185,7 +1185,7 @@ begin
 end;
 
 procedure TSynInternalImage.Draw(ACanvas: TCanvas;
-  Number, X, Y, LineHeight: integer);
+  Number, X, Y, LineHeight: Integer);
 var
   rcSrc, rcDest: TRect;
 begin
@@ -1206,7 +1206,7 @@ begin
 end;
 
 procedure TSynInternalImage.DrawTransparent(ACanvas: TCanvas; Number, X, Y,
-  LineHeight: integer; TransparentColor: TColor);
+  LineHeight: Integer; TransparentColor: TColor);
 var
   rcSrc, rcDest: TRect;
 begin
@@ -1452,20 +1452,20 @@ function TBetterRegistry.OpenKeyReadOnly(const Key: string): Boolean;
 
 var
   TempKey: HKey;
-  S: string;
+  Str: string;
   Relative: Boolean;
 begin
-  S := Key;
-  Relative := IsRelative(S);
+  Str := Key;
+  Relative := IsRelative(Str);
 
-  if not Relative then Delete(S, 1, 1);
+  if not Relative then Delete(Str, 1, 1);
   TempKey := 0;
-  Result := RegOpenKeyEx(GetBaseKey(Relative), PChar(S), 0,
+  Result := RegOpenKeyEx(GetBaseKey(Relative), PChar(Str), 0,
       KEY_READ, TempKey) = ERROR_SUCCESS;
   if Result then
   begin
-    if (CurrentKey <> 0) and Relative then S := CurrentPath + '\' + S;
-    ChangeKey(TempKey, S);
+    if (CurrentKey <> 0) and Relative then Str := CurrentPath + '\' + Str;
+    ChangeKey(TempKey, Str);
   end;
 end; { TBetterRegistry.OpenKeyReadOnly }
 
@@ -1503,16 +1503,16 @@ procedure TSynIndicators.Clear(Id: TGUID; Invalidate: Boolean = True; Line: Inte
   procedure ProcessLine(ALine: Integer);
   var
     Indicators: TArray<TSynIndicator>;
-    I: Integer;
+    Int: Integer;
   begin
     if FList.TryGetValue(ALine, Indicators) then
     begin
-      for I := Length(Indicators) - 1 downto 0 do
-        if Indicators[I].Id = Id then
+      for Int := Length(Indicators) - 1 downto 0 do
+        if Indicators[Int].Id = Id then
         begin
           if Invalidate then
-            InvalidateIndicator(ALine, Indicators[I]);
-          Delete(Indicators, I, 1);
+            InvalidateIndicator(ALine, Indicators[Int]);
+          Delete(Indicators, Int, 1);
         end;
       if Length(Indicators) = 0 then
         FList.Remove(ALine)
@@ -1534,15 +1534,15 @@ end;
 procedure TSynIndicators.Clear(Line: Integer; const Indicator: TSynIndicator);
 var
   Indicators: TArray<TSynIndicator>;
-  I: Integer;
+  Int: Integer;
 begin
   if FList.TryGetValue(Line, Indicators) then
   begin
-    for I := 0 to Length(Indicators) - 1 do
-      if Indicators[I] = Indicator then
+    for Int := 0 to Length(Indicators) - 1 do
+      if Indicators[Int] = Indicator then
       begin
         InvalidateIndicator(Line, Indicator);
-        Delete(Indicators, I, 1);
+        Delete(Indicators, Int, 1);
         if Length(Indicators) = 0 then
           FList.Remove(Line)
         else
@@ -1659,13 +1659,13 @@ procedure TSynIndicators.LinesInserted(FirstLine, Count: Integer);
   FirstLine 0-based. Indicator lines 1-based.}
 var
   Keys: TArray<Integer>;
-  I, Line: Integer;
+  Int, Line: Integer;
 begin
   Keys := FList.Keys.ToArray;
   TArray.Sort<Integer>(Keys);
-  for I := Length(Keys) - 1 downto 0 do
+  for Int := Length(Keys) - 1 downto 0 do
   begin
-    Line := Keys[I];
+    Line := Keys[Int];
     if Line > FirstLine then
     begin
       FList.Add(Line + Count, FList[Line]);
@@ -1680,7 +1680,7 @@ var
   Geometry: ID2D1PathGeometry;
   Sink: ID2D1GeometrySink;
   Delta: Integer;
-  P: TPoint;
+  Posi: TPoint;
   R: TRect;
 begin
   R := ClipR;
@@ -1702,27 +1702,27 @@ begin
         Delta := Round(R.Height / 6);
         if Spec.Style = sisSquiggleMicrosoftWord then
         begin
-          P := Point(R.Left, R.Bottom - Delta);
-          Sink.BeginFigure(P, D2D1_FIGURE_BEGIN_HOLLOW);
-          while P.X < R.Right do
+          Posi := Point(R.Left, R.Bottom - Delta);
+          Sink.BeginFigure(Posi, D2D1_FIGURE_BEGIN_HOLLOW);
+          while Posi.X < R.Right do
           begin
-            Inc(P.X, Abs(Delta));
-            Inc(P.Y, Delta);
+            Inc(Posi.X, Abs(Delta));
+            Inc(Posi.Y, Delta);
             Delta := -Delta;
-            Sink.AddLine(P);
+            Sink.AddLine(Posi);
           end;
           Sink.EndFigure(D2D1_FIGURE_END_OPEN);
         end
         else
         begin
-          P := Point(R.Left, R.Bottom);
-          while P.X < R.Right do
+          Posi := Point(R.Left, R.Bottom);
+          while Posi.X < R.Right do
           begin
-            Sink.BeginFigure(P, D2D1_FIGURE_BEGIN_HOLLOW);
-            P.Offset(Delta, -Delta);
-            Sink.AddLine(P);
+            Sink.BeginFigure(Posi, D2D1_FIGURE_BEGIN_HOLLOW);
+            Posi.Offset(Delta, -Delta);
+            Sink.AddLine(Posi);
             Sink.EndFigure(D2D1_FIGURE_END_OPEN);
-            P.Offset(Delta - 1, Delta)
+            Posi.Offset(Delta - 1, Delta)
           end;
         end;
         CheckOSError(Sink.Close);

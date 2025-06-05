@@ -377,7 +377,7 @@ type
    case Byte of
     0: (eScript: Word)   {:10};    // Shaping engine
     1: (fFlags: TScriptAnalysis_set;
-        s: TScriptState)
+        Str: TScriptState)
   end;
 (*  eScript: Word         {:10};    // Shaping engine
     fRTL: Word            {:1};     // Rendering direction
@@ -2197,12 +2197,12 @@ begin
   Result := Usp10DllModule;
 end;
 
-procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
+procedure GetProcedureAddress(var Posi: Pointer; const ModuleName, ProcName: string);
 begin
-  if not Assigned(P) then
+  if not Assigned(Posi) then
   begin
-    P := Pointer(GetProcAddress(Usp10DllModule, PAnsiChar(AnsiString(ProcName))));
-    if not Assigned(P) or (Usp10DllModule = 0) then
+    Posi := Pointer(GetProcAddress(Usp10DllModule, PAnsiChar(AnsiString(ProcName))));
+    if not Assigned(Posi) or (Usp10DllModule = 0) then
       RaiseLastOSError;
   end;
 end;

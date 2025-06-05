@@ -71,9 +71,9 @@ const
 type
   TFontCharSet = 0..255;
 
-function SynCharNext(P: PWideChar): PWideChar; overload;
-function SynCharNext(P: PWideChar; out Element: string): PWideChar; overload;
-function SynUniElementsCount(S: string) : integer;
+function SynCharNext(Posi: PWideChar): PWideChar; overload;
+function SynCharNext(Posi: PWideChar; out Element: string): PWideChar; overload;
+function SynUniElementsCount(Str: string) : Integer;
 
 { functions taken from JCLUnicode.pas }
 procedure StrSwapByteOrder(Str: PWideChar);
@@ -90,9 +90,9 @@ type
   TSynEncodings = set of TSynEncoding;
 
 function IsAnsiOnly(const WS: string): Boolean;
-function IsUTF8(Stream: TStream; out WithBOM: Boolean; BytesToCheck: integer = $4000): Boolean; overload;
-function IsUTF8(const FileName: string; out WithBOM: Boolean; BytesToCheck: integer = $4000): Boolean; overload;
-function IsUTF8(const Bytes: TBytes; Start: Integer = 0; BytesToCheck: integer = $4000): Boolean; overload;
+function IsUTF8(Stream: TStream; out WithBOM: Boolean; BytesToCheck: Integer = $4000): Boolean; overload;
+function IsUTF8(const FileName: string; out WithBOM: Boolean; BytesToCheck: Integer = $4000): Boolean; overload;
+function IsUTF8(const Bytes: TBytes; Start: Integer = 0; BytesToCheck: Integer = $4000): Boolean; overload;
 function GetEncoding(const FileName: string; out WithBOM: Boolean): TEncoding; overload;
 function GetEncoding(Stream: TStream; out WithBOM: Boolean): TEncoding; overload;
 
@@ -112,29 +112,29 @@ uses
   Math,
   Clipbrd;
 
-function SynCharNext(P: PWideChar): PWideChar;
+function SynCharNext(Posi: PWideChar): PWideChar;
 begin
-  Result := Windows.CharNext(P);
+  Result := Windows.CharNext(Posi);
 end;
 
-function SynCharNext(P: PWideChar; out Element: string): PWideChar; overload;
+function SynCharNext(Posi: PWideChar; out Element: string): PWideChar; overload;
 var
   Start : PWideChar;
 begin
-  Start := P;
-  Result := Windows.CharNext(P);
+  Start := Posi;
+  Result := Windows.CharNext(Posi);
   SetString(Element, Start, Result - Start);
 end;
 
-function SynUniElementsCount(S: string) : integer;
+function SynUniElementsCount(Str: string) : Integer;
 var
-  P : PWideChar;
+  Posi : PWideChar;
 begin
   Result := 0;
-  P := PWideChar(S);
-  while P^ <> #0 do
+  Posi := PWideChar(Str);
+  while Posi^ <> #0 do
   begin
-    P := Windows.CharNext(P);
+    Posi := Windows.CharNext(Posi);
     Inc(Result);
   end;
 end;
@@ -144,18 +144,18 @@ end;
 // EAX contains address of string
 procedure StrSwapByteOrder(Str: PWideChar);
 var
-  P: PWord;
+  Posi: PWord;
 begin
-  P := PWord(Str);
-  while P^ <> 0 do
+  Posi := PWord(Str);
+  while Posi^ <> 0 do
   begin
-    P^ := MakeWord(HiByte(P^), LoByte(P^));
-    Inc(P);
+    Posi^ := MakeWord(HiByte(Posi^), LoByte(Posi^));
+    Inc(Posi);
   end;
 end;
 
 function TranslateCharsetInfoEx(lpSrc: PDWORD; var lpCs: TCharsetInfo; dwFlags: DWORD): BOOL; stdcall;
-  external 'gdi32.dll' name 'TranslateCharsetInfo';
+  external 'gdi32.dll' Name 'TranslateCharsetInfo';
 
 function CharSetFromLocale(Language: LCID): TFontCharSet;
 var
@@ -200,7 +200,7 @@ begin
   Result := not UsedDefaultChar;
 end;
 
-function IsUTF8(const FileName: string; out WithBOM: Boolean; BytesToCheck: integer): Boolean;
+function IsUTF8(const FileName: string; out WithBOM: Boolean; BytesToCheck: Integer): Boolean;
 var
   Stream: TStream;
 begin
@@ -214,7 +214,7 @@ end;
 
 // checks for a BOM in UTF-8 format or searches the first 4096 bytes for
 // typical UTF-8 octet sequences
-function IsUTF8(Stream: TStream; out WithBOM: Boolean; BytesToCheck: integer): Boolean;
+function IsUTF8(Stream: TStream; out WithBOM: Boolean; BytesToCheck: Integer): Boolean;
 var
   Buffer: TBytes;
   BufferSize: Integer;
@@ -251,25 +251,25 @@ begin
   end;
 end;
 
-function IsUTF8(const Bytes: TBytes; Start: Integer; BytesToCheck: integer): Boolean; overload;
+function IsUTF8(const Bytes: TBytes; Start: Integer; BytesToCheck: Integer): Boolean; overload;
 const
   MinimumCountOfUTF8Strings = 1;
 var
-   Len, i, FoundUTF8Strings: Integer;
+   Len, Int, FoundUTF8Strings: Integer;
 
   // 3 trailing bytes are the maximum in valid UTF-8 streams,
   // so a count of 4 trailing bytes is enough to detect invalid UTF-8 streams
   function CountOfTrailingBytes: Integer;
   begin
     Result := 0;
-    inc(i);
-    while (i < Len) and (Result < 4) do
+    Inc(Int);
+    while (Int < Len) and (Result < 4) do
     begin
-      if Bytes[i] in [$80..$BF] then
-        inc(Result)
+      if Bytes[Int] in [$80..$BF] then
+        Inc(Result)
       else
         Break;
-      inc(i);
+      Inc(Int);
     end;
   end;
 
@@ -282,56 +282,56 @@ begin
     Result := False;
     Len := Min(Start + BytesToCheck, Length(Bytes));
     FoundUTF8Strings := 0;
-    i := Start;
-    while i < Len do
+    Int := Start;
+    while Int < Len do
     begin
-      case Bytes[i] of
+      case Bytes[Int] of
         $00..$7F: // skip US-ASCII characters as they could belong to various charsets
           ;
         $C2..$DF:
           if CountOfTrailingBytes = 1 then
-            inc(FoundUTF8Strings)
+            Inc(FoundUTF8Strings)
           else
             Break;
         $E0:
           begin
-            inc(i);
-            if (i < Len) and (Bytes[i] in [$A0..$BF]) and (CountOfTrailingBytes = 1) then
-              inc(FoundUTF8Strings)
+            Inc(Int);
+            if (Int < Len) and (Bytes[Int] in [$A0..$BF]) and (CountOfTrailingBytes = 1) then
+              Inc(FoundUTF8Strings)
             else
               Break;
           end;
         $E1..$EC, $EE..$EF:
           if CountOfTrailingBytes = 2 then
-            inc(FoundUTF8Strings)
+            Inc(FoundUTF8Strings)
           else
             Break;
         $ED:
           begin
-            inc(i);
-            if (i < Len) and (Bytes[i] in [$80..$9F]) and (CountOfTrailingBytes = 1) then
-              inc(FoundUTF8Strings)
+            Inc(Int);
+            if (Int < Len) and (Bytes[Int] in [$80..$9F]) and (CountOfTrailingBytes = 1) then
+              Inc(FoundUTF8Strings)
             else
               Break;
           end;
         $F0:
           begin
-            inc(i);
-            if (i < Len) and (Bytes[i] in [$90..$BF]) and (CountOfTrailingBytes = 2) then
-              inc(FoundUTF8Strings)
+            Inc(Int);
+            if (Int < Len) and (Bytes[Int] in [$90..$BF]) and (CountOfTrailingBytes = 2) then
+              Inc(FoundUTF8Strings)
             else
               Break;
           end;
         $F1..$F3:
           if CountOfTrailingBytes = 3 then
-            inc(FoundUTF8Strings)
+            Inc(FoundUTF8Strings)
           else
             Break;
         $F4:
           begin
-            inc(i);
-            if (i < Len) and (Bytes[i] in [$80..$8F]) and (CountOfTrailingBytes = 2) then
-              inc(FoundUTF8Strings)
+            Inc(Int);
+            if (Int < Len) and (Bytes[Int] in [$80..$8F]) and (CountOfTrailingBytes = 2) then
+              Inc(FoundUTF8Strings)
             else
               Break;
           end;
@@ -348,7 +348,7 @@ begin
         Break;
       end;
 
-      inc(i);
+      Inc(Int);
     end;
 end;
 
@@ -368,11 +368,11 @@ function GetEncoding(Stream: TStream; out WithBOM: Boolean): TEncoding;
 
   function TBytesEqual(A, B: TBytes; Len: Integer): Boolean;
   var
-    I: Integer;
+    Int: Integer;
   begin
     Result := True;
-    for I := 0 to Len - 1 do
-      if A[i] <> B[i] then Exit(False)
+    for Int := 0 to Len - 1 do
+      if A[Int] <> B[Int] then Exit(False)
   end;
 
 var

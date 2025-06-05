@@ -126,7 +126,7 @@ type
     procedure FormatNewLine; virtual; abstract;
     { Returns the size of the formatted text in the output buffer, to be used
       in the format header or footer. }
-    function GetBufferSize: integer;
+    function GetBufferSize: Integer;
     { The clipboard format the exporter creates as native format. }
     function GetClipboardFormat: UINT; virtual;
     { Has to be overridden in descendant classes to return the correct output
@@ -280,7 +280,7 @@ end;
 procedure SetClipboardText(Text: string);
 var
   Mem: HGLOBAL;
-  P: PByte;
+  Posi: PByte;
   SLen: Integer;
 begin
   SLen := Length(Text);
@@ -294,11 +294,11 @@ begin
       (SLen + 1) * sizeof(WideChar));
     if Mem <> 0 then
     begin
-      P := GlobalLock(Mem);
+      Posi := GlobalLock(Mem);
       try
-        if P <> nil then
+        if Posi <> nil then
         begin
-          Move(PWideChar(Text)^, P^, (SLen + 1) * sizeof(WideChar));
+          Move(PWideChar(Text)^, Posi^, (SLen + 1) * sizeof(WideChar));
           Clipboard.SetAsHandle(CF_UNICODETEXT, Mem);
         end;
       finally
@@ -316,7 +316,7 @@ procedure TSynCustomExporter.CopyToClipboard;
 const
   Nulls: array[0..1] of Byte = (0, 0);
 var
-  S: string;
+  Str: string;
 begin
   if fExportAsText then
   begin
@@ -324,18 +324,18 @@ begin
     fBuffer.Write(Nulls, FCharSize);
     case Encoding of
       seUTF16LE:
-        S := PWideChar(fBuffer.Memory);
+        Str := PWideChar(fBuffer.Memory);
       seUTF16BE:
         begin
-          S := PWideChar(fBuffer.Memory);
-          StrSwapByteOrder(PWideChar(S));
+          Str := PWideChar(fBuffer.Memory);
+          StrSwapByteOrder(PWideChar(Str));
         end;
       seUTF8:
-        S := UTF8ToUnicodeString(PAnsiChar(fBuffer.Memory));
+        Str := UTF8ToUnicodeString(PAnsiChar(fBuffer.Memory));
       seAnsi:
-        S := string(PAnsiChar(fBuffer.Memory));
+        Str := string(PAnsiChar(fBuffer.Memory));
     end;
-    SetClipboardText(S);
+    SetClipboardText(Str);
   end
   else
     CopyToClipboardFormat(GetClipboardFormat);
@@ -382,7 +382,7 @@ end;
 
 procedure TSynCustomExporter.ExportRange(ALines: TStrings; Start, Stop: TBufferCoord);
 var
-  i: Integer;
+  Int: Integer;
   Line, Token: string;
   Attri: TSynHighlighterAttributes;
 begin
@@ -405,16 +405,16 @@ begin
     Highlighter.ResetRange;
     // export all the lines into fBuffer
     fFirstAttribute := True;
-    for i := Start.Line to Stop.Line do
+    for Int := Start.Line to Stop.Line do
     begin
-      Line := ALines[i - 1];
+      Line := ALines[Int - 1];
       // order is important, since Start.Y might be equal to Stop.Y
-      if i = Stop.Line then
+      if Int = Stop.Line then
         Delete(Line, Stop.Char, MaxInt);
-      if (i = Start.Line) and (Start.Char > 1) then
+      if (Int = Start.Line) and (Start.Char > 1) then
         Delete(Line, 1, Start.Char - 1);
       // export the line
-      Highlighter.SetLine(Line, i);
+      Highlighter.SetLine(Line, Int);
       while not Highlighter.GetEOL do
       begin
         Attri := Highlighter.GetTokenAttribute;
@@ -445,7 +445,7 @@ begin
   AddData(Token);
 end;
 
-function TSynCustomExporter.GetBufferSize: integer;
+function TSynCustomExporter.GetBufferSize: Integer;
 begin
   Result := fBuffer.Size;
 end;
@@ -485,7 +485,7 @@ end;
 
 function TSynCustomExporter.ReplaceReservedChars(AToken: string): string;
 var
-  I, ISrc, IDest, SrcLen, DestLen: Integer;
+  Int, ISrc, IDest, SrcLen, DestLen: Integer;
   Replace: string;
   c: WideChar;
 begin
@@ -512,16 +512,16 @@ begin
         Result[IDest] := c;
         Inc(ISrc);
         Inc(IDest);
-        continue;
+        Continue;
       end;
       if IDest + Length(Replace) - 1 > DestLen then
       begin
         Inc(DestLen, Max(32, IDest + Length(Replace) - DestLen));
         SetLength(Result, DestLen);
       end;
-      for I := 1 to Length(Replace) do
+      for Int := 1 to Length(Replace) do
       begin
-        Result[IDest] := Replace[I];
+        Result[IDest] := Replace[Int];
         Inc(IDest);
       end;
     end;
@@ -561,7 +561,7 @@ end;
 procedure TSynCustomExporter.SetEncoding(const Value: TSynEncoding);
 begin
   // don't change encoding while streaming as this could corrupt output data
-  if FStreaming then exit;
+  if FStreaming then Exit;
 
   if not (Value in SupportedEncodings) then
     raise ESynEncoding.CreateFmt(SEncodingError, [EncodingStrs[Value],

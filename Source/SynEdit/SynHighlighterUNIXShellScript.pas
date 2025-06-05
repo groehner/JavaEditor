@@ -120,7 +120,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
@@ -183,7 +183,7 @@ const
 
 function TSynUNIXShellScriptSyn.IsKeyword(const AKeyword: string): Boolean;
 var
-  First, Last, I, Compare: Integer;
+  First, Last, Int, Compare: Integer;
   Token: string;
 begin
   First := 0;
@@ -193,21 +193,21 @@ begin
 
   while First <= Last do
   begin
-    I := (First + Last) shr 1;
-    Compare := CompareStr(ShellScriptKeys[I], Token);
+    Int := (First + Last) shr 1;
+    Compare := CompareStr(ShellScriptKeys[Int], Token);
     if Compare = 0 then
     begin
       Result := True;
-      break;
+      Break;
     end
     else
-      if Compare < 0 then First := I + 1 else Last := I - 1;
+      if Compare < 0 then First := Int + 1 else Last := Int - 1;
   end;
 end; { IsKeyWord }
 
 function TSynUNIXShellScriptSyn.IsSecondKeyWord(AToken: string): Boolean;
 var
-  First, Last, I, Compare: Integer;
+  First, Last, Int, Compare: Integer;
   Token: string;
 begin
   First := 0;
@@ -216,15 +216,15 @@ begin
   Token := SysUtils.AnsiLowerCase(AToken);
   while First <= Last do
   begin
-    I := (First + Last) shr 1;
-    Compare := CompareStr(ShellScriptSecondKeys[i], Token);
+    Int := (First + Last) shr 1;
+    Compare := CompareStr(ShellScriptSecondKeys[Int], Token);
     if Compare = 0 then
     begin
       Result := True;
-      break;
+      Break;
     end
     else
-      if Compare < 0 then First := I + 1 else Last := I - 1;
+      if Compare < 0 then First := Int + 1 else Last := Int - 1;
   end;
 end; { IsSecondKeyWord }
 
@@ -272,42 +272,42 @@ procedure TSynUNIXShellScriptSyn.DollarProc;
 var
   cc: WideChar;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkVariable;
   if IsLineEnd(Run) then Exit;
   cc := FLine[Run];
-  inc(Run);
+  Inc(Run);
   if (cc = '{') then
   begin
     // ${var}
     while IsIdentChar(FLine[Run]) do
     begin
-      if IsLineEnd(Run) then break;
-      inc(Run);
+      if IsLineEnd(Run) then Break;
+      Inc(Run);
     end;
     if FLine[Run] = '}' then Inc(Run);
   end
   else
     // $var
     while IsIdentChar(FLine[Run]) do
-      inc(Run);
+      Inc(Run);
 end;
 
 procedure TSynUNIXShellScriptSyn.DotProc;
 
   function TestDot: Boolean;
   var
-    i: Integer;
+    Int: Integer;
   begin
-    result := False;
-    i := Run;
-    inc(i);
-    while CharInSet(FLine[i], ['a'..'z', 'A'..'Z']) do
-      inc(i);
-    if i > (Run + 1) then
+    Result := False;
+    Int := Run;
+    Inc(Int);
+    while CharInSet(FLine[Int], ['a'..'z', 'A'..'Z']) do
+      Inc(Int);
+    if Int > (Run + 1) then
       Result := True;
     if Result then
-      Run := i;
+      Run := Int;
   end;
   
 begin
@@ -316,20 +316,20 @@ begin
     fTokenID := tkIdentifier
   else
   begin
-    inc(Run);
+    Inc(Run);
     fTokenID := tkSymbol;
   end;
 end;
 
 procedure TSynUNIXShellScriptSyn.BraceOpenProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynUNIXShellScriptSyn.PointCommaProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
@@ -337,14 +337,14 @@ procedure TSynUNIXShellScriptSyn.CRProc;
 begin
   fTokenID := tkSpace;
   case FLine[Run + 1] of
-    #10: inc(Run, 2);
-    else inc(Run);
+    #10: Inc(Run, 2);
+    else Inc(Run);
   end;
 end;
 
 procedure TSynUNIXShellScriptSyn.IdentProc;
 begin
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
   if IsKeyWord(GetToken) then
   begin
     fTokenId := tkKey;
@@ -364,7 +364,7 @@ end;
 procedure TSynUNIXShellScriptSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynUNIXShellScriptSyn.LowerProc;
@@ -383,7 +383,7 @@ procedure TSynUNIXShellScriptSyn.LowerProc;
   end;
 
 var
-  i, Len, SkipRun: Integer;
+  Int, Len, SkipRun: Integer;
   IndentedHeredoc: Boolean;
   QuoteChar: WideChar;
 {$ENDIF}
@@ -413,11 +413,11 @@ begin
 
     if IsAlphaNumChar(Run + SkipRun + 2) then
     begin
-      inc(Run, 2);
+      Inc(Run, 2);
 
-      i := Run;
-      while IsAlphaNumChar(SkipRun + i) do Inc(i);
-      Len := i - Run;
+      Int := Run;
+      while IsAlphaNumChar(SkipRun + Int) do Inc(Int);
+      Len := Int - Run;
 
       if Len > 255 then
       begin
@@ -442,12 +442,12 @@ begin
       fTokenID := tkString;
     end
     else
-      inc(Run, 2);
+      Inc(Run, 2);
   end
   else
 {$ENDIF}
   begin
-    inc(Run);
+    Inc(Run);
     fTokenID := tkSymbol;
   end;
 end;
@@ -455,7 +455,7 @@ end;
 procedure TSynUNIXShellScriptSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynUNIXShellScriptSyn.NumberProc;
@@ -471,21 +471,21 @@ procedure TSynUNIXShellScriptSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
   begin
     case FLine[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if FLine[Run + 1] = '.' then Break;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
 procedure TSynUNIXShellScriptSyn.RoundOpenProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
@@ -494,25 +494,25 @@ begin
   if FLine[Run] = '#' then
   begin
     // Perl Styled Comment
-    inc(Run);
+    Inc(Run);
     fTokenID := tkComment;
     while not IsLineEnd(Run) do
     begin
-      inc(Run);
+      Inc(Run);
     end;
   end
   else
   begin
-    inc(Run);
+    Inc(Run);
     fTokenID := tkSymbol;
   end;
 end;
 
 procedure TSynUNIXShellScriptSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynUNIXShellScriptSyn.StringProc;
@@ -524,17 +524,17 @@ begin
   fTokenID := tkString;
   QuoteChar := FLine[Run];      // either " or '
   if (FLine[Run + 1] = QuoteChar) and (FLine[Run + 2] = QuoteChar)
-    then inc(Run, 2);
+    then Inc(Run, 2);
   repeat
-    if IsLineEnd(Run) then break;
-    inc(Run);
+    if IsLineEnd(Run) then Break;
+    Inc(Run);
   until FLine[Run] = QuoteChar;
-  if not IsLineEnd(Run) then inc(Run);
+  if not IsLineEnd(Run) then Inc(Run);
 end;
 
 procedure TSynUNIXShellScriptSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -549,13 +549,13 @@ procedure TSynUNIXShellScriptSyn.HeredocProc;
       #13: CRProc;
       else
         repeat
-          inc(Run);
+          Inc(Run);
         until IsLineEnd(Run);
     end;
   end;
 
 var
-  i: Integer;
+  Int: Integer;
 begin
   if IsLineEnd(Run) and (fTokenPos = Run) then
   begin
@@ -569,28 +569,28 @@ begin
 
   if ((Run = 0) and (fRange = rsHeredoc)) or (fRange = rsIndentedHeredoc) then
   begin
-    i := 0;
+    Int := 0;
 
-    while not IsLineEnd(FLine[Run + i]) do
+    while not IsLineEnd(FLine[Run + Int]) do
     begin
-      if i > fHeredocLength then
+      if Int > fHeredocLength then
       begin
         SkipToEOL;
         Exit;
       end;
-      Inc(i);
+      Inc(Int);
     end;
 
-    if i <> fHeredocLength then
+    if Int <> fHeredocLength then
     begin
       SkipToEOL;
       Exit;
     end;
 
-    if (CalcFCS(FLine[Run], i) = fHeredocChecksum) then
+    if (CalcFCS(FLine[Run], Int) = fHeredocChecksum) then
     begin
       fRange := rsUnknown;
-      Run := Run + i;
+      Run := Run + Int;
       Exit;
     end;
   end;
@@ -634,7 +634,7 @@ begin
   end;
 end;
 
-function TSynUNIXShellScriptSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynUNIXShellScriptSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -697,7 +697,7 @@ begin
   end;
 end;
 
-function TSynUNIXShellScriptSyn.GetTokenKind: integer;
+function TSynUNIXShellScriptSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;
@@ -768,7 +768,7 @@ end;
 
 procedure TSynUNIXShellScriptSyn.SymbolProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 

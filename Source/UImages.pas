@@ -3,8 +3,10 @@ unit UImages;
 interface
 
 uses
-  Classes, Controls, System.ImageList, Vcl.ImgList, Vcl.BaseImageCollection,
-  SVGIconImageCollection, Vcl.VirtualImageList, TB2Item, SpTBXItem, Vcl.Menus;
+  Classes,
+  Vcl.BaseImageCollection,
+  SVGIconImageCollection,
+  Vcl.VirtualImageList;
 
 type
   TDMImages = class(TDataModule)
@@ -29,9 +31,6 @@ var
 
 implementation
 
-uses UJava;
-
 {$R *.dfm}
-
 
 end.

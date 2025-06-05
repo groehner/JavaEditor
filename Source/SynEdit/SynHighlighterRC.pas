@@ -96,16 +96,16 @@ type
   public
    constructor Create(aOwner: TComponent); override;
    destructor Destroy; override;
-   function GetDefaultAttribute(index: integer): TSynHighlighterAttributes; override;
-   function GetEol: boolean; override;
+   function GetDefaultAttribute(index: Integer): TSynHighlighterAttributes; override;
+   function GetEol: Boolean; override;
    function GetRange: pointer; override;
    function GetTokenID: TtkTokenKind;
    function GetTokenAttribute: TSynHighlighterAttributes; override;
-   function GetTokenKind: integer; override;
+   function GetTokenKind: Integer; override;
    procedure Next; override;
    procedure SetRange(value: pointer); override;
    procedure ResetRange; override;
-   function UseUserSettings(SettingIndex: integer): boolean; override;
+   function UseUserSettings(SettingIndex: Integer): Boolean; override;
    procedure EnumUserSettings(Settings: TStrings); override;
   published
    property CommentAttri: TSynHighlighterAttributes read fCommentAttri write fCommentAttri;
@@ -166,7 +166,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 25 + Ord(Str^) * 298;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 241;
   fStringLen := Str - fToIdent;
@@ -187,15 +187,15 @@ end;
 
 procedure TSynRCSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if @fIdentFuncTable[i] = nil then
-      fIdentFuncTable[i] := KeyWordFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if @fIdentFuncTable[Int] = nil then
+      fIdentFuncTable[Int] := KeyWordFunc;
 end;
 
 function TSynRCSyn.AltFunc(Index: Integer): TtkTokenKind;
@@ -256,10 +256,10 @@ procedure TSynRCSyn.QuoteProc;
 begin
   fTokenId:= tkString;
   repeat
-   inc(Run);
+   Inc(Run);
   until IsLineEnd(Run) or (fLine[Run] = #34);
   if fLine[Run] = #34 then
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynRCSyn.SlashProc;
@@ -270,32 +270,32 @@ begin
    '/':
     begin
       fTokenId := tkComment;
-      inc(Run, 2);
-      while not IsLineEnd(Run) do inc(Run);
+      Inc(Run, 2);
+      while not IsLineEnd(Run) do Inc(Run);
     end;
    '*':
     begin
       fTokenID := tkComment;
       fRange := rsComment;
-      inc(Run, 2);
+      Inc(Run, 2);
       while fLine[Run] <> #0 do
        case fLine[Run] of
         '*':
          if fLine[Run + 1] = '/' then
           begin
-            inc(Run, 2);
+            Inc(Run, 2);
             fRange := rsUnknown;
-            break;
+            Break;
           end
-         else inc(Run);
-        #10, #13: break;
+         else Inc(Run);
+        #10, #13: Break;
        else
-        inc(Run);
+        Inc(Run);
        end;
     end;
   else
    fTokenId := tkSymbol;
-   inc(Run);  
+   Inc(Run);  
   end
 end;
 
@@ -311,12 +311,12 @@ begin
    repeat
     if (fLine[Run] = '*') and (fLine[Run +1] = '/') then
      begin
-       inc(Run, 2);
+       Inc(Run, 2);
        fRange := rsUnknown;
-       break;
+       Break;
      end
     else
-     inc(Run);
+     Inc(Run);
    until IsLineEnd(Run);
   end;
 end;
@@ -330,51 +330,51 @@ begin
       if fLine[Run +1] = '/' then
        begin
          fRange := rsUnknown;
-         exit;
+         Exit;
        end
       else
        if fLine[Run +1] = '*' then
         begin
           fRange := rsComment;
-          exit;
+          Exit;
         end
     end;
-   inc(Run);
+   Inc(Run);
   until IsLineEnd(Run);
 end;
 
 procedure TSynRCSyn.IdentProc;
 begin
   fTokenId := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  Inc(Run, fStringLen);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
 end;
 
 procedure TSynRCSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
   if fLine[Run] = #10 then
-   inc(Run);
+   Inc(Run);
 end;
 
 procedure TSynRCSyn.LFProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
 end;
 
 procedure TSynRCSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynRCSyn.NullProc;
 begin
   fTokenId := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynRCSyn.NumberProc;
@@ -391,26 +391,26 @@ procedure TSynRCSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
    begin
      case fLine[Run] of
-      '.': if fLine[Run + 1] = '.' then break;
+      '.': if fLine[Run + 1] = '.' then Break;
      end;
-     inc(Run);
+     Inc(Run);
    end;
 end;
 
 procedure TSynRCSyn.SymbolProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynRCSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -451,7 +451,7 @@ begin
   end;
 end;
 
-function TSynRCSyn.GetEol: boolean;
+function TSynRCSyn.GetEol: Boolean;
 begin
   Result := Run = fLineLen + 1;
 end;
@@ -502,7 +502,7 @@ begin
   // ** ??
 end;
 
-function TSynRCSyn.UseUserSettings(SettingIndex: integer): boolean;
+function TSynRCSyn.UseUserSettings(SettingIndex: Integer): Boolean;
 begin
   Result := False;
 end;

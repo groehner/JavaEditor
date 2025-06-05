@@ -120,18 +120,18 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     function IsKeyword(const AKeyword: string): Boolean; override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
-    function SaveToRegistry(RootKey: HKEY; Key: string): boolean; override;
+    function SaveToRegistry(RootKey: HKEY; Key: string): Boolean; override;
     function LoadFromRegistry(RootKey: HKEY; Key: string): Boolean; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -240,7 +240,7 @@ const
 function TSynTclTkSyn.InternalIsKeyword(const AKeyword: string;
   KeyWordList: TStrings; ACaseSensitive: Boolean = False): Boolean;
 var
-  First, Last, I, Compare: Integer;
+  First, Last, Int, Compare: Integer;
   Token: string;
 begin
   First := 0;
@@ -252,15 +252,15 @@ begin
     Token := SysUtils.AnsiLowerCase(AKeyword);
   while First <= Last do
   begin
-    I := (First + Last) shr 1;
-    Compare := CompareStr(KeyWordList[i], Token);
+    Int := (First + Last) shr 1;
+    Compare := CompareStr(KeyWordList[Int], Token);
     if Compare = 0 then
     begin
       Result := True;
-      break;
+      Break;
     end
     else
-      if Compare < 0 then First := I + 1 else Last := I - 1;
+      if Compare < 0 then First := Int + 1 else Last := Int - 1;
   end;
 end;
 
@@ -274,7 +274,7 @@ end;
 
 constructor TSynTclTkSyn.Create(AOwner: TComponent);
 var
-  i: Integer;
+  Int: Integer;
 begin
   inherited Create(AOwner);
 
@@ -293,20 +293,20 @@ begin
   TStringList(fWidgetWords).Sorted := True;
   TStringList(fWidgetWords).Duplicates := dupIgnore;
   fKeyWords.BeginUpdate;
-  for i := Low(TclTkKeys) to High(TclTkKeys) do
-    FKeyWords.Add(TclTkKeys[i]);
+  for Int := Low(TclTkKeys) to High(TclTkKeys) do
+    FKeyWords.Add(TclTkKeys[Int]);
   fKeyWords.EndUpdate;
   fSecondKeys.BeginUpdate;
-  for i := Low(SecondTclTkKeys) to High(SecondTclTkKeys) do
-    fSecondKeys.Add(SecondTclTkKeys[i]);
+  for Int := Low(SecondTclTkKeys) to High(SecondTclTkKeys) do
+    fSecondKeys.Add(SecondTclTkKeys[Int]);
   fSecondKeys.EndUpdate;
   fTixWords.BeginUpdate;
-  for i := Low(TixKeys) to High(TixKeys) do
-    FTixWords.Add(TixKeys[i]);
+  for Int := Low(TixKeys) to High(TixKeys) do
+    FTixWords.Add(TixKeys[Int]);
   fTixWords.EndUpdate;
   fWidgetWords.BeginUpdate;
-  for i := Low(WidgetKeys) to High(WidgetKeys) do
-    FWidgetWords.Add(WidgetKeys[i]);
+  for Int := Low(WidgetKeys) to High(WidgetKeys) do
+    FWidgetWords.Add(WidgetKeys[Int]);
   fWidgetWords.EndUpdate;
 
   fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_FriendlyAttrComment);
@@ -365,18 +365,18 @@ begin
     #0:
       begin
         NullProc;
-        exit;
+        Exit;
       end;
     #10:
       begin
         LFProc;
-        exit;
+        Exit;
       end;
 
     #13:
       begin
         CRProc;
-        exit;
+        Exit;
       end;
   end;
 
@@ -386,14 +386,14 @@ begin
       if fLine[Run + 1] = ')' then
       begin
         fRange := rsUnKnown;
-        inc(Run, 2);
-        break;
+        Inc(Run, 2);
+        Break;
       end
       else
-        inc(Run)
+        Inc(Run)
     end
     else
-      inc(Run);
+      Inc(Run);
 end;
 
 procedure TSynTclTkSyn.PasStyleProc;
@@ -403,18 +403,18 @@ begin
     #0:
       begin
         NullProc;
-        exit;
+        Exit;
       end;
     #10:
       begin
         LFProc;
-        exit;
+        Exit;
       end;
 
     #13:
       begin
         CRProc;
-        exit;
+        Exit;
       end;
   end;
 
@@ -422,11 +422,11 @@ begin
     if FLine[Run] = '}' then
     begin
       fRange := rsUnKnown;
-      inc(Run);
-      break;
+      Inc(Run);
+      Break;
     end
     else
-      inc(Run);
+      Inc(Run);
 end;
 
 procedure TSynTclTkSyn.CStyleProc;
@@ -436,18 +436,18 @@ begin
     #0:
       begin
         NullProc;
-        exit;
+        Exit;
       end;
     #10:
       begin
         LFProc;
-        exit;
+        Exit;
       end;
 
     #13:
       begin
         CRProc;
-        exit;
+        Exit;
       end;
   end;
 
@@ -457,24 +457,24 @@ begin
       if fLine[Run + 1] = '/' then
       begin
         fRange := rsUnKnown;
-        inc(Run, 2);
-        break;
+        Inc(Run, 2);
+        Break;
       end
-      else inc(Run)
+      else Inc(Run)
     end
     else
-      inc(Run);
+      Inc(Run);
 end;
 
 procedure TSynTclTkSyn.BraceOpenProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynTclTkSyn.PointCommaProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
@@ -482,14 +482,14 @@ procedure TSynTclTkSyn.CRProc;
 begin
   fTokenID := tkSpace;
   case FLine[Run + 1] of
-    #10: inc(Run, 2);
-    else inc(Run);
+    #10: Inc(Run, 2);
+    else Inc(Run);
   end;
 end;
 
 procedure TSynTclTkSyn.IdentProc;
 begin
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
   if InternalIsKeyword(GetToken, fWidgetWords, True) then
     fTokenId := tkWidgetKey
   else if InternalIsKeyword(GetToken, fTixWords) then
@@ -505,13 +505,13 @@ end;
 procedure TSynTclTkSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynTclTkSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynTclTkSyn.NumberProc;
@@ -527,21 +527,21 @@ procedure TSynTclTkSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
   begin
     case FLine[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if FLine[Run + 1] = '.' then Break;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
 procedure TSynTclTkSyn.RoundOpenProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
@@ -561,26 +561,26 @@ end;
 
 procedure TSynTclTkSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynTclTkSyn.StringProc;
 begin
   fTokenID := tkString;
   if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then
-    inc(Run, 2);
+    Inc(Run, 2);
   repeat
-    if IsLineEnd(Run) then break;
-    inc(Run);
+    if IsLineEnd(Run) then Break;
+    Inc(Run);
   until (FLine[Run] = #34) and (FLine[Pred(Run)] <> '\');
-  if not IsLineEnd(Run) then inc(Run);
+  if not IsLineEnd(Run) then Inc(Run);
 end;
 
 procedure TSynTclTkSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnKnown;
 end;
 
@@ -615,7 +615,7 @@ begin
   inherited;
 end;
 
-function TSynTclTkSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynTclTkSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -666,7 +666,7 @@ begin
   end;
 end;
 
-function TSynTclTkSyn.GetTokenKind: integer;
+function TSynTclTkSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;
@@ -683,13 +683,13 @@ end;
 
 procedure TSynTclTkSyn.SetKeyWords(const Value: TStrings);
 var
-  i: Integer;
+  Int: Integer;
 begin
   if Value <> nil then
     begin
       Value.BeginUpdate;
-      for i := 0 to Value.Count - 1 do
-        Value[i] := SysUtils.AnsiUpperCase(Value[i]);
+      for Int := 0 to Value.Count - 1 do
+        Value[Int] := SysUtils.AnsiUpperCase(Value[Int]);
       Value.EndUpdate;
     end;
   fKeyWords.Assign(Value);
@@ -698,13 +698,13 @@ end;
 
 procedure TSynTclTkSyn.SetSecondKeys(const Value: TStrings);
 var
-  i: Integer;
+  Int: Integer;
 begin
   if Value <> nil then
     begin
       Value.BeginUpdate;
-      for i := 0 to Value.Count - 1 do
-        Value[i] := SysUtils.AnsiUpperCase(Value[i]);
+      for Int := 0 to Value.Count - 1 do
+        Value[Int] := SysUtils.AnsiUpperCase(Value[Int]);
       Value.EndUpdate;
     end;
   fSecondKeys.Assign(Value);
@@ -740,20 +740,20 @@ begin
   end;
 end;
 
-function TSynTclTkSyn.SaveToRegistry(RootKey: HKEY; Key: string): boolean;     
+function TSynTclTkSyn.SaveToRegistry(RootKey: HKEY; Key: string): Boolean;     
 var
   r: TBetterRegistry;
 begin
   r:= TBetterRegistry.Create;
   try
     r.RootKey := RootKey;
-    if r.OpenKey(Key,true) then
+    if r.OpenKey(Key,True) then
     begin
       r.WriteString('KeyWords', KeyWords.Text);
       Result := inherited SaveToRegistry(RootKey, Key);
     end
     else
-      Result := false;
+      Result := False;
   finally
     r.Free;
   end;

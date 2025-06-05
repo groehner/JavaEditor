@@ -94,20 +94,20 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     function IsIdentChar(AChar: WideChar): Boolean; override;
     function IsKeyword(const AKeyword: string): Boolean; override;
     procedure Next; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
-    function SaveToRegistry(RootKey: HKEY; Key: string): boolean; override;
-    function LoadFromRegistry(RootKey: HKEY; Key: string): boolean; override;
+    function SaveToRegistry(RootKey: HKEY; Key: string): Boolean; override;
+    function LoadFromRegistry(RootKey: HKEY; Key: string): Boolean; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
@@ -138,7 +138,7 @@ end;
 
 function TSynGalaxySyn.IsKeyword(const AKeyword: string): Boolean;
 var
-  First, Last, I, Compare: Integer;
+  First, Last, Int, Compare: Integer;
   Token: string;
 begin
   First := 0;
@@ -147,14 +147,14 @@ begin
   Token := SysUtils.AnsiUpperCase(AKeyword);
   while First <= Last do
   begin
-    I := (First + Last) shr 1;
-    Compare := CompareStr(fKeywords[i], Token);
+    Int := (First + Last) shr 1;
+    Compare := CompareStr(fKeywords[Int], Token);
     if Compare = 0 then
     begin
       Result := True;
-      break;
+      Break;
     end else
-      if Compare < 0 then First := I + 1 else Last := I - 1;
+      if Compare < 0 then First := Int + 1 else Last := Int - 1;
   end;
 end; { IsKeyWord }
 
@@ -206,27 +206,27 @@ begin
     #0:
       begin
         NullProc;
-        exit;
+        Exit;
       end;
     #10:
       begin
         LFProc;
-        exit;
+        Exit;
       end;
 
     #13:
       begin
         CRProc;
-        exit;
+        Exit;
       end;
   end;
 
   if (Run = 0) and (FLine[Run] = '@') then begin
     fRange := rsUnKnown;
-    inc(Run);
+    Inc(Run);
   end else
     while FLine[Run] <> #0 do
-      inc(Run);
+      Inc(Run);
 end;
 
 procedure TSynGalaxySyn.PointCommaProc;                                         
@@ -234,7 +234,7 @@ begin
   fTokenID := tkComment;
   fRange := rsUnknown;
   repeat
-    inc(Run);
+    Inc(Run);
   until fLine[Run] = #0;
 end;
 
@@ -259,20 +259,20 @@ end;
 procedure TSynGalaxySyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynGalaxySyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynGalaxySyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynGalaxySyn.StringProc;
@@ -282,12 +282,12 @@ begin
     fTokenID := tkMessage;
     fRange := rsMessageStyle;
   end;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynGalaxySyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnKnown;
 end;
 
@@ -310,7 +310,7 @@ begin
   inherited;
 end;
 
-function TSynGalaxySyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynGalaxySyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -352,7 +352,7 @@ begin
   end;
 end;
 
-function TSynGalaxySyn.GetTokenKind: integer;
+function TSynGalaxySyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;
@@ -369,13 +369,13 @@ end;
 
 procedure TSynGalaxySyn.SetKeyWords(const Value: TStrings);
 var
-  i: Integer;
+  Int: Integer;
 begin
   if Value <> nil then
     begin
       Value.BeginUpdate;
-      for i := 0 to Value.Count - 1 do
-        Value[i] := SysUtils.AnsiUpperCase(Value[i]);
+      for Int := 0 to Value.Count - 1 do
+        Value[Int] := SysUtils.AnsiUpperCase(Value[Int]);
       Value.EndUpdate;
     end;
   fKeyWords.Assign(Value);
@@ -392,7 +392,7 @@ begin
   Result := SYNS_LangGalaxy;
 end;
 
-function TSynGalaxySyn.LoadFromRegistry(RootKey: HKEY; Key: string): boolean;
+function TSynGalaxySyn.LoadFromRegistry(RootKey: HKEY; Key: string): Boolean;
 var
   r: TBetterRegistry;
 begin
@@ -411,20 +411,20 @@ begin
   end;
 end;
 
-function TSynGalaxySyn.SaveToRegistry(RootKey: HKEY; Key: string): boolean;
+function TSynGalaxySyn.SaveToRegistry(RootKey: HKEY; Key: string): Boolean;
 var
   r: TBetterRegistry;
 begin
   r:= TBetterRegistry.Create;
   try
     r.RootKey := RootKey;
-    if r.OpenKey(Key,true) then
+    if r.OpenKey(Key,True) then
     begin
       r.WriteString('KeyWords', KeyWords.Text);
       Result := inherited SaveToRegistry(RootKey, Key);
     end
     else
-      Result := false;
+      Result := False;
   finally
     r.Free;
   end;

@@ -2,43 +2,47 @@ unit UFXRectangle;
 
 interface
 
-uses Classes, UFXShape;
+uses
+  Classes,
+  UFXShape;
 
 type
 
-  TFXRectangle = class (TFXShape)
+  TFXRectangle = class(TFXShape)
   private
-    FArcHeight: double;
-    FArcWidth: double;
-    FX: double;
-    FY: double;
+    FArcHeight: Double;
+    FArcWidth: Double;
+    FXPos: Double;
+    FYPos: Double;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure SetPositionAndSize; override;
   published
-    property ArcHeight: double read FArcHeight write FArcHeight;
-    property ArcWidth: double read FArcWidth write FArcWidth;
-    property X: double read FX write FX;
-    property Y: double read FY write FY;
+    property ArcHeight: Double read FArcHeight write FArcHeight;
+    property ArcWidth: Double read FArcWidth write FArcWidth;
+    property X: Double read FXPos write FXPos;
+    property Y: Double read FYPos write FYPos;
   end;
 
 implementation
 
-uses SysUtils, UObjectInspector;
+uses
+  SysUtils,
+  UObjectInspector;
 
-{--- TFXRectangle -------------------------------------------------------------}
+{ --- TFXRectangle ------------------------------------------------------------- }
 
 constructor TFXRectangle.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= +162;
-  Width:= 120;
-  Height:= 80;
-  JavaType:= 'Rectangle';
+  inherited Create(AOwner);
+  Tag := +162;
+  Width := 120;
+  Height := 80;
+  JavaType := 'Rectangle';
 end;
 
 procedure TFXRectangle.Paint;
@@ -55,35 +59,40 @@ begin
 end;
 
 procedure TFXRectangle.SetPositionAndSize;
-  var sX, sY: string;
+var
+  StrX, StrY: string;
 begin
-  X:= Left;
-  Y:= Top;
-  sX:= Format('%g',[X]);
-  sY:= Format('%g',[Y]);
-  ChangeAttributValue(Name + '.setX(', Name + '.setX(' + sX + ');');
-  ChangeAttributValue(Name + '.setY(', Name + '.setY(' + sY + ');');
-  ChangeAttributValue(Name + '.setWidth(', Name + '.setWidth(' + IntToStr(Width) + ');');
-  ChangeAttributValue(Name + '.setHeight(',Name + '.setHeight(' + IntToStr(Height) + ');');
+  X := Left;
+  Y := Top;
+  StrX := Format('%g', [X]);
+  StrY := Format('%g', [Y]);
+  ChangeAttributValue(Name + '.setX(', Name + '.setX(' + StrX + ');');
+  ChangeAttributValue(Name + '.setY(', Name + '.setY(' + StrY + ');');
+  ChangeAttributValue(Name + '.setWidth(', Name + '.setWidth(' +
+    IntToStr(Width) + ');');
+  ChangeAttributValue(Name + '.setHeight(', Name + '.setHeight(' +
+    IntToStr(Height) + ');');
   FObjectInspector.UpdatePropertyInspector;
 end;
 
-function TFXRectangle.getAttributes(ShowAttributes: integer): string;
-  const RectangleAttributes1 = '|Height|Width|X|Y';
-        RectangleAttributes2 = RectangleAttributes1 + '|ArcHeight|ArcWidth';
+function TFXRectangle.GetAttributes(ShowAttributes: Integer): string;
+const
+  RectangleAttributes1 = '|Height|Width|X|Y';
+  RectangleAttributes2 = RectangleAttributes1 + '|ArcHeight|ArcWidth';
 begin
-  if ShowAttributes = 1
-    then Result:= RectangleAttributes1 + inherited getAttributes(ShowAttributes)
-    else Result:= RectangleAttributes2 + inherited getAttributes(ShowAttributes);
+  if ShowAttributes = 1 then
+    Result := RectangleAttributes1 + inherited GetAttributes(ShowAttributes)
+  else
+    Result := RectangleAttributes2 + inherited GetAttributes(ShowAttributes);
 end;
 
 procedure TFXRectangle.SetAttribute(Attr, Value, Typ: string);
 begin
   inherited;
   if Attr = 'Y' then
-    Top:= Round(FY)
-   else if Attr = 'X' then
-    Left:= Round(FX);
+    Top := Round(FYPos)
+  else if Attr = 'X' then
+    Left := Round(FXPos);
   Invalidate;
 end;
 

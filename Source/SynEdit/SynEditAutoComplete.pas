@@ -63,19 +63,19 @@ type
     fEditor: TCustomSynEdit;
     fEditors: TList;
     fEOTokenChars: string;
-    fCaseSensitive: boolean;
-    fParsed: boolean;
+    fCaseSensitive: Boolean;
+    fParsed: Boolean;
     procedure CompletionListChanged(Sender: TObject);
     procedure DefineProperties(Filer: TFiler); override;    
     function GetCompletions: TStrings;
     function GetCompletionComments: TStrings;
     function GetCompletionValues: TStrings;
-    function GetEditorCount: integer;
-    function GetNthEditor(Index: integer): TCustomSynEdit;
+    function GetEditorCount: Integer;
+    function GetNthEditor(Index: Integer): TCustomSynEdit;
     procedure SetAutoCompleteList(Value: TStrings); virtual;
     procedure SetEditor(Value: TCustomSynEdit);
-    procedure SynEditCommandHandler(Sender: TObject; AfterProcessing: boolean;
-      var Handled: boolean; var Command: TSynEditorCommand; var AChar: WideChar;
+    procedure SynEditCommandHandler(Sender: TObject; AfterProcessing: Boolean;
+      var Handled: Boolean; var Command: TSynEditorCommand; var AChar: WideChar;
       Data: pointer; HandlerData: pointer);
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -83,8 +83,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    function AddEditor(AEditor: TCustomSynEdit): boolean;
-    function RemoveEditor(AEditor: TCustomSynEdit): boolean;
+    function AddEditor(AEditor: TCustomSynEdit): Boolean;
+    function RemoveEditor(AEditor: TCustomSynEdit): Boolean;
 
     procedure AddCompletion(const AToken, AValue, AComment: string);
     procedure Execute(AEditor: TCustomSynEdit); virtual;
@@ -94,13 +94,13 @@ type
   public
     property AutoCompleteList: TStrings read fAutoCompleteList
       write SetAutoCompleteList;
-    property CaseSensitive: boolean read fCaseSensitive write fCaseSensitive;
+    property CaseSensitive: Boolean read fCaseSensitive write fCaseSensitive;
     property Completions: TStrings read GetCompletions;
     property CompletionComments: TStrings read GetCompletionComments;
     property CompletionValues: TStrings read GetCompletionValues;
     property Editor: TCustomSynEdit read fEditor write SetEditor;
-    property EditorCount: integer read GetEditorCount;
-    property Editors[Index: integer]: TCustomSynEdit read GetNthEditor;
+    property EditorCount: Integer read GetEditorCount;
+    property Editors[Index: Integer]: TCustomSynEdit read GetNthEditor;
     property EndOfTokenChr: string read fEOTokenChars write fEOTokenChars;
   end;
 
@@ -131,14 +131,14 @@ begin
   end;
 end;
 
-function TCustomSynAutoComplete.AddEditor(AEditor: TCustomSynEdit): boolean;
+function TCustomSynAutoComplete.AddEditor(AEditor: TCustomSynEdit): Boolean;
 var
-  i: integer;
+  Int: Integer;
 begin
   if AEditor <> nil then
   begin
-    i := fEditors.IndexOf(AEditor);
-    if i = -1 then
+    Int := fEditors.IndexOf(AEditor);
+    if Int = -1 then
     begin
       AEditor.FreeNotification(Self);
       fEditors.Add(AEditor);
@@ -188,22 +188,22 @@ end;
 
 procedure TCustomSynAutoComplete.Execute(AEditor: TCustomSynEdit);
 var
-  s: string;
-  i, j: integer;
+  Str: string;
+  Int, j: Integer;
 begin
   if AEditor <> nil then
   begin
     // get token
-    s := AEditor.LineText;
+    Str := AEditor.LineText;
     j := AEditor.CaretX;
-    i := j - 1;
-    if i <= Length(s) then
+    Int := j - 1;
+    if Int <= Length(Str) then
     begin
-      while (i > 0) and (s[i] > ' ') and (Pos(s[i], fEOTokenChars) = 0) do
-        Dec(i);
-      Inc(i);
-      s := Copy(s, i, j - i);
-      ExecuteCompletion(s, AEditor);
+      while (Int > 0) and (Str[Int] > ' ') and (Pos(Str[Int], fEOTokenChars) = 0) do
+        Dec(Int);
+      Inc(Int);
+      Str := Copy(Str, Int, j - Int);
+      ExecuteCompletion(Str, AEditor);
     end;
   end;
 end;
@@ -211,11 +211,11 @@ end;
 procedure TCustomSynAutoComplete.ExecuteCompletion(const AToken: string;
   AEditor: TCustomSynEdit);
 var
-  i, j, Len, IndentLen: integer;
-  s: string;
-  IdxMaybe, NumMaybe: integer;
-  p: TBufferCoord;
-  NewCaretPos: boolean;
+  Int, j, Len, IndentLen: Integer;
+  Str: string;
+  IdxMaybe, NumMaybe: Integer;
+  Posi: TBufferCoord;
+  NewCaretPos: Boolean;
   Temp: TStringList;
 begin
   if not fParsed then
@@ -225,96 +225,96 @@ begin
     and (fCompletions.Count > 0) then
   begin
     // find completion for this token - not all chars necessary if unambiguous
-    i := fCompletions.Count - 1;
+    Int := fCompletions.Count - 1;
     IdxMaybe := -1;
     NumMaybe := 0;
     if fCaseSensitive then
     begin
-      while i > -1 do
+      while Int > -1 do
       begin
-        s := fCompletions[i];
-        if CompareStr(s, AToken) = 0 then
-          break
-        else if CompareStr(Copy(s, 1, Len), AToken) = 0 then
+        Str := fCompletions[Int];
+        if CompareStr(Str, AToken) = 0 then
+          Break
+        else if CompareStr(Copy(Str, 1, Len), AToken) = 0 then
         begin
           Inc(NumMaybe);
-          IdxMaybe := i;
+          IdxMaybe := Int;
         end;
-        Dec(i);
+        Dec(Int);
       end;
     end
     else
     begin
-      while i > -1 do
+      while Int > -1 do
       begin
-        s := fCompletions[i];
-        if CompareText(s, AToken) = 0 then
-          break
-        else if CompareText(Copy(s, 1, Len), AToken) = 0 then
+        Str := fCompletions[Int];
+        if CompareText(Str, AToken) = 0 then
+          Break
+        else if CompareText(Copy(Str, 1, Len), AToken) = 0 then
         begin
           Inc(NumMaybe);
-          IdxMaybe := i;
+          IdxMaybe := Int;
         end;
-        Dec(i);
+        Dec(Int);
       end;
     end;
-    if (i = -1) and (NumMaybe = 1) then
-      i := IdxMaybe;
-    if i > -1 then
+    if (Int = -1) and (NumMaybe = 1) then
+      Int := IdxMaybe;
+    if Int > -1 then
     begin
       // select token in editor
-      p := AEditor.CaretXY;
+      Posi := AEditor.CaretXY;
       AEditor.BeginUpdate;
       try
-        AEditor.BlockBegin := BufferCoord(p.Char - Len, p.Line);
-        AEditor.BlockEnd := p;
+        AEditor.BlockBegin := BufferCoord(Posi.Char - Len, Posi.Line);
+        AEditor.BlockEnd := Posi;
         // indent the completion string if necessary, determine the caret pos
-        IndentLen := p.Char - Len - 1;
-        p := AEditor.BlockBegin;
+        IndentLen := Posi.Char - Len - 1;
+        Posi := AEditor.BlockBegin;
         NewCaretPos := False;
         Temp := TStringList.Create;
         try
-          Temp.Text := fCompletionValues[i];
+          Temp.Text := fCompletionValues[Int];
           // indent lines
           if (IndentLen > 0) and (Temp.Count > 1) then
           begin
-            s := StringofChar(' ', IndentLen);
-            for i := 1 to Temp.Count - 1 do
-              Temp[i] := s + Temp[i];
+            Str := StringofChar(' ', IndentLen);
+            for Int := 1 to Temp.Count - 1 do
+              Temp[Int] := Str + Temp[Int];
           end;
           // find first '|' and use it as caret position
-          for i := 0 to Temp.Count - 1 do
+          for Int := 0 to Temp.Count - 1 do
           begin
-            s := Temp[i];
-            j := Pos('|', s);
+            Str := Temp[Int];
+            j := Pos('|', Str);
             if j > 0 then
             begin
-              Delete(s, j, 1);
-              Temp[i] := s;
+              Delete(Str, j, 1);
+              Temp[Int] := Str;
 //              if j > 1 then
 //                Dec(j);
               NewCaretPos := True;
-              Inc(p.Line, i);
-              if i = 0 then
+              Inc(Posi.Line, Int);
+              if Int = 0 then
 //                Inc(p.x, j)
-                Inc(p.Char, j - 1)
+                Inc(Posi.Char, j - 1)
               else
-                p.Char := j;
-              break;
+                Posi.Char := j;
+              Break;
             end;
           end;
-          s := Temp.Text;
+          Str := Temp.Text;
           // strip the trailing #13#10 that was appended by the stringlist
-          i := Length(s);
-          if (i >= 2) and (s[i - 1] = #13) and (s[i] = #10) then
-            SetLength(s, i - 2);
+          Int := Length(Str);
+          if (Int >= 2) and (Str[Int - 1] = #13) and (Str[Int] = #10) then
+            SetLength(Str, Int - 2);
         finally
           Temp.Free;
         end;
         // replace the selected text and position the caret
-        AEditor.SelText := s;
+        AEditor.SelText := Str;
         if NewCaretPos then
-          AEditor.CaretXY := p;
+          AEditor.CaretXY := Posi;
       finally
         AEditor.EndUpdate;                                                
       end;
@@ -343,12 +343,12 @@ begin
   Result := fCompletionValues;
 end;
 
-function TCustomSynAutoComplete.GetEditorCount: integer;
+function TCustomSynAutoComplete.GetEditorCount: Integer;
 begin
   Result := fEditors.Count;
 end;
 
-function TCustomSynAutoComplete.GetNthEditor(Index: integer): TCustomSynEdit;
+function TCustomSynAutoComplete.GetNthEditor(Index: Integer): TCustomSynEdit;
 begin
   if (Index >= 0) and (Index < fEditors.Count) then
     Result := fEditors[Index]
@@ -371,9 +371,9 @@ end;
 
 procedure TCustomSynAutoComplete.ParseCompletionList;
 var
-  BorlandDCI: boolean;
-  i, j, Len: integer;
-  s, sCompl, sComment, sComplValue: string;
+  BorlandDCI: Boolean;
+  Int, j, Len: Integer;
+  Str, sCompl, sComment, sComplValue: string;
 
   procedure SaveEntry;
   begin
@@ -392,37 +392,37 @@ begin
 
   if fAutoCompleteList.Count > 0 then
   begin
-    s := fAutoCompleteList[0];
-    BorlandDCI := (s <> '') and (s[1] = '[');
+    Str := fAutoCompleteList[0];
+    BorlandDCI := (Str <> '') and (Str[1] = '[');
 
     sCompl := '';
     sComment := '';
     sComplValue := '';
-    for i := 0 to fAutoCompleteList.Count - 1 do
+    for Int := 0 to fAutoCompleteList.Count - 1 do
     begin
-      s := fAutoCompleteList[i];
-      Len := Length(s);
+      Str := fAutoCompleteList[Int];
+      Len := Length(Str);
       if BorlandDCI then
       begin
         // the style of the Delphi32.dci file
-        if (Len > 0) and (s[1] = '[') then
+        if (Len > 0) and (Str[1] = '[') then
         begin
           // save last entry
           if sCompl <> '' then
             SaveEntry;
           // new completion entry
           j := 2;
-          while (j <= Len) and (s[j] > ' ') do
+          while (j <= Len) and (Str[j] > ' ') do
             Inc(j);
-          sCompl := Copy(s, 2, j - 2);
+          sCompl := Copy(Str, 2, j - 2);
           // start of comment in DCI file
-          while (j <= Len) and (s[j] <= ' ') do
+          while (j <= Len) and (Str[j] <= ' ') do
             Inc(j);
-          if (j <= Len) and (s[j] = '|') then
+          if (j <= Len) and (Str[j] = '|') then
             Inc(j);
-          while (j <= Len) and (s[j] <= ' ') do
+          while (j <= Len) and (Str[j] <= ' ') do
             Inc(j);
-          sComment := Copy(s, j, Len);
+          sComment := Copy(Str, j, Len);
           if sComment[Length(sComment)] = ']' then
             SetLength(sComment, Length(sComment) - 1);
         end
@@ -430,25 +430,25 @@ begin
         begin
           if sComplValue <> '' then
             sComplValue := sComplValue + #13#10;
-          sComplValue := sComplValue + s;
+          sComplValue := sComplValue + Str;
         end;
       end
       else
       begin
         // the original style
-        if (Len > 0) and (s[1] <> '=') then
+        if (Len > 0) and (Str[1] <> '=') then
         begin
           // save last entry
           if sCompl <> '' then
             SaveEntry;
           // new completion entry
-          sCompl := s;
+          sCompl := Str;
         end
-        else if (Len > 0) and (s[1] = '=') then
+        else if (Len > 0) and (Str[1] = '=') then
         begin
           if sComplValue <> '' then
             sComplValue := sComplValue + #13#10;
-          sComplValue := sComplValue + Copy(s, 2, Len);
+          sComplValue := sComplValue + Copy(Str, 2, Len);
         end;
       end;
     end;
@@ -458,18 +458,18 @@ begin
   fParsed := True;
 end;
 
-function TCustomSynAutoComplete.RemoveEditor(AEditor: TCustomSynEdit): boolean;
+function TCustomSynAutoComplete.RemoveEditor(AEditor: TCustomSynEdit): Boolean;
 var
-  i: integer;
+  Int: Integer;
 begin
   if AEditor <> nil then
   begin
-    i := fEditors.IndexOf(AEditor);
-    if (i > -1) then
+    Int := fEditors.IndexOf(AEditor);
+    if (Int > -1) then
     begin
       if fEditor = AEditor then
         fEditor := nil;
-      fEditors.Delete(i);
+      fEditors.Delete(Int);
       AEditor.UnregisterCommandHandler(SynEditCommandHandler);
       RemoveFreeNotification(AEditor);
     end;
@@ -496,7 +496,7 @@ begin
 end;
 
 procedure TCustomSynAutoComplete.SynEditCommandHandler(Sender: TObject;
-  AfterProcessing: boolean; var Handled: boolean;
+  AfterProcessing: Boolean; var Handled: Boolean;
   var Command: TSynEditorCommand; var AChar: WideChar; Data: pointer;
   HandlerData: pointer);
 begin

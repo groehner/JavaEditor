@@ -89,7 +89,7 @@ type
     RE_BlockBegin : TRegEx;
     RE_BlockEnd : TRegEx;
 //-- CodeFolding
-    procedure DoAddKeyword(AKeyword: string; AKind: integer);
+    procedure DoAddKeyword(AKeyword: string; AKind: Integer);
     function HashKey(Str: PWideChar): Cardinal;
     function IdentKind(MayBe: PWideChar): TtkTokenKind;
     procedure AndSymbolProc;
@@ -133,12 +133,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
 //++ CodeFolding
     procedure ScanForFoldRanges(FoldRanges: TSynFoldRanges;
@@ -310,12 +310,12 @@ begin
   while Assigned(Entry) do
   begin
     if Entry.KeywordLen > fStringLen then
-      break
+      Break
     else if Entry.KeywordLen = fStringLen then
       if IsCurrentToken(Entry.Keyword) then
       begin
         Result := TtkTokenKind(Entry.Kind);
-        exit;
+        Exit;
       end;
     Entry := Entry.Next;
   end;
@@ -415,16 +415,16 @@ var
 
   function FoldRegion(Line: Integer): Boolean;
   var
-    S: string;
+    Str: string;
   begin
     Result := False;
-    S := TrimLeft(CurLine);
-    if Uppercase(Copy(S, 1, 7)) = '*REGION' then
+    Str := TrimLeft(CurLine);
+    if UpperCase(Copy(Str, 1, 7)) = '*REGION' then
     begin
       FoldRanges.StartFoldRange(Line + 1, FoldRegionType);
       Result := True;
     end
-    else if Uppercase(Copy(S, 1, 11)) = '*ENDREGION' then
+    else if UpperCase(Copy(Str, 1, 11)) = '*ENDREGION' then
     begin
       FoldRanges.StopFoldRange(Line + 1, FoldRegionType);
       Result := True;
@@ -459,29 +459,29 @@ procedure TSynFoxproSyn.AdjustFoldRanges(FoldRanges: TSynFoldRanges;
 {
    Provide folding for procedures and functions included nested ones.
 }
-Var
-  i, j, SkipTo: Integer;
+var
+  Int, j, SkipTo: Integer;
   ImplementationIndex: Integer;
   FoldRange: TSynFoldRange;
   mc: TMatchCollection;
 begin
   ImplementationIndex := - 1;
-  for i  := FoldRanges.Ranges.Count - 1 downto 0 do
+  for Int  := FoldRanges.Ranges.Count - 1 downto 0 do
   begin
-    if FoldRanges.Ranges.List[i].FoldType = FT_Implementation then
-      ImplementationIndex := i
+    if FoldRanges.Ranges.List[Int].FoldType = FT_Implementation then
+      ImplementationIndex := Int
     else
-    if FoldRanges.Ranges.List[i].FoldType = FT_CodeDeclaration then
+    if FoldRanges.Ranges.List[Int].FoldType = FT_CodeDeclaration then
     begin
       if ImplementationIndex >= 0 then begin
         // Code declaration in the Interface part of a unit
-        FoldRanges.Ranges.Delete(i);
+        FoldRanges.Ranges.Delete(Int);
         Dec(ImplementationIndex);
-        continue;
+        Continue;
       end;
       // Examine the following ranges
       SkipTo := 0;
-      j := i + 1;
+      j := Int + 1;
       while J < FoldRanges.Ranges.Count do begin
         FoldRange := FoldRanges.Ranges.List[j];
         Inc(j);
@@ -490,7 +490,7 @@ begin
           FT_CodeDeclarationWithBody:
             begin
               SkipTo := FoldRange.ToLine;
-              continue;
+              Continue;
             end;
           FT_Standard:
           // possibly begin end;
@@ -505,14 +505,14 @@ begin
                 begin
                   // function or procedure followed by begin end block
                   // Adjust ToLine
-                  FoldRanges.Ranges.List[i].ToLine := FoldRange.ToLine;
-                  FoldRanges.Ranges.List[i].FoldType := FT_CodeDeclarationWithBody;
-                  break
+                  FoldRanges.Ranges.List[Int].ToLine := FoldRange.ToLine;
+                  FoldRanges.Ranges.List[Int].FoldType := FT_CodeDeclarationWithBody;
+                  Break
                 end else
                 begin
                   // class or record declaration follows, so
-                  FoldRanges.Ranges.Delete(i);
-                  break;
+                  FoldRanges.Ranges.Delete(Int);
+                  Break;
                  end;
               end else
                 Assert(False, 'TSynVBSSyn.AdjustFoldRanges');
@@ -524,8 +524,8 @@ begin
             else begin
               // Otherwise delete
               // eg. function definitions within a class definition
-              FoldRanges.Ranges.Delete(i);
-              break
+              FoldRanges.Ranges.Delete(Int);
+              Break
             end;
           end;
         end;
@@ -544,19 +544,19 @@ begin
   case FLine[Run + 1] of
     '&':                               {Comments}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkComment;
         while FLine[Run] <> #0 do
         begin
           case FLine[Run] of
-            #10, #13: break;
+            #10, #13: Break;
           end; //case
-          inc(Run);
+          Inc(Run);
         end;
       end;
   else                                 {and}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -567,17 +567,17 @@ begin
   fTokenID := tkString;
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #39;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynFoxproSyn.AtSymbolProc;
 begin
   fTokenID := tkKey;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynFoxproSyn.BraceOpenProc;
@@ -585,21 +585,21 @@ begin
   fTokenID := tkString;
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
       #92:
-        if FLine[Run + 1] = #10 then inc(Run);
+        if FLine[Run + 1] = #10 then Inc(Run);
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = '}';
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynFoxproSyn.CRProc;
 begin
   fTokenID := tkSpace;
   case FLine[Run + 1] of
-    #10: inc(Run, 2);
-    else inc(Run);
+    #10: Inc(Run, 2);
+    else Inc(Run);
   end;
 end;
 
@@ -609,9 +609,9 @@ begin
   inherited;
 end;
 
-procedure TSynFoxproSyn.DoAddKeyword(AKeyword: string; AKind: integer);
+procedure TSynFoxproSyn.DoAddKeyword(AKeyword: string; AKind: Integer);
 var
-  HashValue: integer;
+  HashValue: Integer;
 begin
   HashValue := HashKey(PWideChar(AKeyword));
   fKeywords[HashValue] := TSynHashEntry.Create(AKeyword, AKind);
@@ -620,13 +620,13 @@ end;
 procedure TSynFoxproSyn.ColonProc;
 begin
   {colon}
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.CommaProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
@@ -635,12 +635,12 @@ begin
   case FLine[Run + 1] of
     '=':                               {logical equal}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {assign}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -651,20 +651,20 @@ begin
   Case FLine[Run + 1] of
     '=':                               {greater than or equal to}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
     '>':
       begin
         if FLine[Run + 2] = '=' then   {shift right assign}
-          inc(Run, 3)
+          Inc(Run, 3)
         else                           {shift right}
-          inc(Run, 2);
+          Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {greater than}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -673,14 +673,14 @@ end;
 procedure TSynFoxproSyn.IdentProc;
 begin
   fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  Inc(Run, fStringLen);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
 end;
 
 procedure TSynFoxproSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynFoxproSyn.LowerProc;
@@ -688,20 +688,20 @@ begin
   case FLine[Run + 1] of
     '=':                               {less than or equal to}
       begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
     '<':
       begin
         if FLine[Run + 2] = '=' then   {shift left assign}
-          inc(Run, 3)
+          Inc(Run, 3)
         else                           {shift left}
-          inc(Run, 2);
+          Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else                                 {less than}
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -710,28 +710,28 @@ end;
 procedure TSynFoxproSyn.MinusProc;
 begin
   {subtract}
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.ModSymbolProc;
 begin
   {mod}
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.NotSymbolProc;
 begin
   {not}
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynFoxproSyn.NumberProc;
@@ -747,29 +747,29 @@ procedure TSynFoxproSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
   begin
     case FLine[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if FLine[Run + 1] = '.' then Break;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
 procedure TSynFoxproSyn.OrSymbolProc;
 begin
   {or}
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.PlusProc;
 begin
   {subtract}
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
@@ -779,7 +779,7 @@ begin
     (UpperCase(FLine[Run + 1]) = 'F')) and     {.f.}
     (FLine[Run + 2] = '.') then
   begin
-    inc(Run, 3);
+    Inc(Run, 3);
     fTokenID := tkSymbol;
   end
   else if (((UpperCase(FLine[Run + 1]) = 'A') and
@@ -790,70 +790,70 @@ begin
     (UpperCase(FLine[Run + 3]) = 'T'))) and   {.not.}
     (FLine[Run + 4] = '.') then
   begin
-    inc(Run, 5);
+    Inc(Run, 5);
     fTokenID := tkSymbol;
   end
   else if (UpperCase(FLine[Run + 1]) = 'O') and
     (UpperCase(FLine[Run + 2]) = 'R') and
     (FLine[Run + 3] = '.') then  {.or.}
   begin
-    inc(Run, 4);
+    Inc(Run, 4);
     fTokenID := tkSymbol;
   end
   else                                 {point}
   begin
-    inc(Run);
+    Inc(Run);
     fTokenID := tkSymbol;
   end;
 end;
 
 procedure TSynFoxproSyn.QuestionProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.RoundCloseProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.RoundOpenProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.SemiColonProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.SlashProc;
 begin
   {division}
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynFoxproSyn.SquareCloseProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.SquareOpenProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
@@ -861,20 +861,20 @@ procedure TSynFoxproSyn.StarProc;
 begin
   if (Run = 0) or (Trim(Copy(fLine, 1, Run)) = '') then
   begin                        {Foxpro Comments}
-    inc(Run);
+    Inc(Run);
     fTokenID := tkComment;
     while FLine[Run] <> #0 do
     begin
       case FLine[Run] of
-        #10, #13: break;
+        #10, #13: Break;
       end;
-      inc(Run);
+      Inc(Run);
     end;
   end
   else
   begin
     {star}
-    inc(Run);
+    Inc(Run);
     fTokenID := tkSymbol;
   end;
 end;
@@ -882,34 +882,34 @@ end;
 procedure TSynFoxproSyn.StringProc;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then inc(Run, 2);
+  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then Inc(Run, 2);
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
       #92:
-        if FLine[Run + 1] = #10 then inc(Run);
+        if FLine[Run + 1] = #10 then Inc(Run);
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #34;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynFoxproSyn.TildeProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.XOrSymbolProc;
 begin
   {xor}
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynFoxproSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -954,7 +954,7 @@ begin
   inherited;
 end;
 
-function TSynFoxproSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynFoxproSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -993,7 +993,7 @@ begin
   end;
 end;
 
-function TSynFoxproSyn.GetTokenKind: integer;
+function TSynFoxproSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

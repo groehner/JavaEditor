@@ -3,19 +3,23 @@ unit UDlgUpdate;
 interface
 
 uses
-  Forms, StdCtrls, ComCtrls, Vcl.Controls, System.Classes;
+  Forms,
+  StdCtrls,
+  ComCtrls,
+  Vcl.Controls,
+  System.Classes;
 
 const
-  Server  = 'https://www.guipy.de/javaeditor/download/';
-  InfFile = Server + 'version.txt';
-  {$IFDEF WIN32}
+  Server = 'https://www.guipy.de/javaeditor/download/';
+  InformationFile = Server + 'version.txt';
+{$IFDEF WIN32}
   ZipFile = Server + 'javaeditor.zip';
   Bits = '32 Bit';
-  {$ENDIF}
-  {$IFDEF WIN64}
+{$ENDIF}
+{$IFDEF WIN64}
   ZipFile = Server + 'javaeditor64.zip';
   Bits = '64 Bit';
-  {$ENDIF}
+{$ENDIF}
 
 type
   TFUpdateDialog = class(TForm)
@@ -31,24 +35,32 @@ type
     BUpdate: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var AAction: TCloseAction);
     procedure BCloseClick(Sender: TObject);
     procedure BUpdateClick(Sender: TObject);
   private
-    SourceDir: string;
-    DestDir: string;
+    FSourceDir: string;
+    FDestDir: string;
     procedure MakeUpdate;
-    function NewVersion: boolean;
-    function ShowVersionDate(s: string): string;
+    function NewVersion: Boolean;
+    function ShowVersionDate(Str: string): string;
   public
     procedure CheckAutomatically;
   end;
 
 implementation
 
-uses UDlgDownload, SysUtils, DateUtils, IOUtils,
-     JvGnugettext, UStringRessources,
-     UUtils, UDlgAbout, UConfiguration, UJava;
+uses
+  UDlgDownload,
+  SysUtils,
+  DateUtils,
+  IOUtils,
+  JvGnugettext,
+  UStringRessources,
+  UUtils,
+  UDlgAbout,
+  UConfiguration,
+  UJava;
 
 {$R *.dfm}
 
@@ -60,15 +72,16 @@ end;
 
 procedure TFUpdateDialog.FormShow(Sender: TObject);
 begin
-  SourceDir:= FConfiguration.TempDir + 'javaeditor\';
-  DestDir := FConfiguration.EditorFolder;
-  TThread.ForceQueue(nil, procedure
+  FSourceDir := FConfiguration.TempDir + 'javaeditor\';
+  FDestDir := FConfiguration.EditorFolder;
+  TThread.ForceQueue(nil,
+    procedure
     begin
       NewVersion;
     end);
 end;
 
-procedure TFUpdateDialog.FormClose(Sender: TObject; var aAction: TCloseAction);
+procedure TFUpdateDialog.FormClose(Sender: TObject; var AAction: TCloseAction);
 begin
   FConfiguration.WriteIntegerU('Program', 'Update', CBUpdate.ItemIndex);
 end;
@@ -78,142 +91,164 @@ begin
   Close;
 end;
 
-{$WARN SYMBOL_PLATFORM OFF}
 procedure TFUpdateDialog.BUpdateClick(Sender: TObject);
 begin
   try
-    Screen.Cursor:= crHourglass;
-    ForceDirectories(SourceDir);
-    var Filename:= TPath.Combine(SourceDir, 'javaeditor.zip');
-    with TFDownload.Create(self) do begin
-      if GetInetFile(ZipFile, Filename, ProgressBar) then
-        if FConfiguration.ExtractZipToDir(Filename, ExcludeTrailingBackslash(SourceDir))
-          then MakeUpdate
-          else Memo.Lines.Add(_('Error while unpacking'))
-      else Memo.Lines.Add(_(LNGDownloadError));
+    Screen.Cursor := crHourGlass;
+    ForceDirectories(FSourceDir);
+    var
+    FileName := TPath.Combine(FSourceDir, 'javaeditor.zip');
+    with TFDownload.Create(Self) do
+    begin
+      if GetInetFile(ZipFile, FileName, ProgressBar) then
+        if FConfiguration.ExtractZipToDir(FileName,
+          ExcludeTrailingPathDelimiter(FSourceDir)) then
+          MakeUpdate
+        else
+          Memo.Lines.Add(_('Error while unpacking'))
+      else
+        Memo.Lines.Add(_(LNGDownloadError));
       Free;
     end;
   finally
-    Screen.Cursor:= crDefault;
+    Screen.Cursor := crDefault;
   end;
 end;
-{$WARN SYMBOL_PLATFORM ON}
 
 procedure TFUpdateDialog.MakeUpdate;
-  var Updater, Params, sVersion: string;
+var
+  Updater, Params, FSVersion: string;
 begin
-  FConfiguration.ModelToRegistry; // do it in advance, because in 32 bit it takes very long
-  FJava.MakeUpdate:= true;
-  Updater:= TPath.Combine(SourceDir, 'setup.exe');
-  sVersion:= copy(UDlgAbout.Version, 1, Pos(',', UDlgAbout.Version) - 1);
-  Params:= '-Update ' + HideBlanks(DestDir) +  ' ' + HideBlanks(SourceDir) + ' ' + sVersion;
-  if FConfiguration.RunAsAdmin(Handle, Updater, Params) = 33 then begin
+  FConfiguration.ModelToRegistry;
+  // do it in advance, because in 32 bit it takes very long
+  FJava.MakeUpdate := True;
+  Updater := TPath.Combine(FSourceDir, 'setup.exe');
+  FSVersion := Copy(UDlgAbout.Version, 1, Pos(',', UDlgAbout.Version) - 1);
+  Params := '-Update ' + HideBlanks(FDestDir) + ' ' + HideBlanks(FSourceDir) +
+    ' ' + FSVersion;
+  if FConfiguration.RunAsAdmin(Handle, Updater, Params) = 33 then
+  begin
     Close;
     FJava.Close;
   end;
 end;
 
-function TFUpdateDialog.NewVersion: boolean;
-  var old, new, s: string; p: integer;
+function TFUpdateDialog.NewVersion: Boolean;
+var
+  Old, New, Str: string;
 begin
-  EOldVersion.Text:= UDlgAbout.Version + ', ' + TFAbout.GetDate;
-  ENewVersion.Text:= '';
+  EOldVersion.Text := UDlgAbout.Version + ', ' + TFAbout.GetDate;
+  ENewVersion.Text := '';
   Memo.Lines.Clear;
   try
-    Screen.Cursor:= crHourglass;
-    if DownloadURL(InfFile, FConfiguration.TempDir + 'Version.txt') then begin
-      var SL:= TStringList.Create;
+    Screen.Cursor := crHourGlass;
+    if DownloadURL(InformationFile, FConfiguration.TempDir + 'Version.txt') then
+    begin
+      var
+      StringList := TStringList.Create;
       try
-        SL.LoadFromFile(FConfiguration.TempDir + 'Version.txt');
-        s:= ShowVersionDate(SL[0]);
-        p:= pos(', ', s);
-        insert(Bits + ', ', s, p + 2);
-        ENewVersion.Text:= s;
-        Memo.Lines.AddStrings(SL);
-        old:= Copy(EOldVersion.Text, 1, Pos(',', EOldVersion.text)-1);
-        new:= Copy(ENewVersion.Text, 1, Pos(',', ENewVersion.text)-1);
-        if old = new then begin
-          ENewVersion.Text:= _('The Java-Editor is up to date.');
-          Result:= false;
-        end else
-          Result:= true;
+        StringList.LoadFromFile(FConfiguration.TempDir + 'Version.txt');
+        Str := ShowVersionDate(StringList[0]);
+        Insert(Bits + ', ', Str, Pos(', ', Str) + 2);
+        ENewVersion.Text := Str;
+        Memo.Lines.AddStrings(StringList);
+        Old := Copy(EOldVersion.Text, 1, Pos(',', EOldVersion.Text) - 1);
+        New := Copy(ENewVersion.Text, 1, Pos(',', ENewVersion.Text) - 1);
+        if Old = New then
+        begin
+          ENewVersion.Text := _('The Java-Editor is up to date.');
+          Result := False;
+        end
+        else
+          Result := True;
       finally
-        FreeAndNil(SL);
+        FreeAndNil(StringList);
       end;
-    end else begin
+    end
+    else
+    begin
       Memo.Lines.Add(_(LNGNoInternetConnection));
-      Result:= false;
+      Result := False;
     end;
   finally
-    Screen.Cursor:= crDefault;
+    Screen.Cursor := crDefault;
   end;
 end;
 
 procedure TFUpdateDialog.CheckAutomatically;
-  var NextUpdate: Integer;
-      aDate: TDateTime;
-      AYear, AMonth, AWeekOfMonth, ADayOfWeek: Word;
+var
+  NextUpdate: Integer;
+  ADate: TDateTime;
+  AYear, AMonth, AWeekOfMonth, ADayOfWeek: Word;
 
   procedure NextMonth;
   begin
-    inc(AMonth);
-    if AMonth = 13 then begin
-      inc(AYear);
-      AMonth:= 1;
+    Inc(AMonth);
+    if AMonth = 13 then
+    begin
+      Inc(AYear);
+      AMonth := 1;
     end;
-    AWeekOfMonth:= 1;
-    ADayOfWeek:= 1;
+    AWeekOfMonth := 1;
+    ADayOfWeek := 1;
   end;
 
   procedure NextWeek;
   begin
-    ADayOfWeek:= 1;
-    inc(AWeekOfMonth);
+    ADayOfWeek := 1;
+    Inc(AWeekOfMonth);
     if not IsValidDateMonthWeek(AYear, AMonth, AWeekOfMonth, ADayOfWeek) then
       NextMonth;
   end;
 
   procedure NextDay;
   begin
-    inc(ADayOfWeek);
+    Inc(ADayOfWeek);
     if ADayOfWeek = 8 then
       NextWeek;
   end;
 
 begin
-  CBUpdate.ItemIndex:= FConfiguration.ReadIntegerU('Program', 'Update', 0);
-  if CBUpdate.ItemIndex <= 0 then exit;
-  NextUpdate:= FConfiguration.ReadIntegerU('Program', 'NextUpdate', -1);
+  CBUpdate.ItemIndex := FConfiguration.ReadIntegerU('Program', 'Update', 0);
+  if CBUpdate.ItemIndex <= 0 then
+    Exit;
+  NextUpdate := FConfiguration.ReadIntegerU('Program', 'NextUpdate', -1);
   if (Date < NextUpdate) and (CBUpdate.ItemIndex < 4) then
-    exit;
+    Exit;
   DecodeDateMonthWeek(Date, AYear, AMonth, AWeekOfMonth, ADayOfWeek);
   case CBUpdate.ItemIndex of
-    1: NextMonth;
-    2: NextWeek;
-    3: NextDay;
+    1:
+      NextMonth;
+    2:
+      NextWeek;
+    3:
+      NextDay;
   end;
-  aDate:= EncodeDateMonthWeek(AYear, AMonth, AWeekOfMonth, ADayOfWeek);
-  FConfiguration.WriteIntegerU('Program', 'NextUpdate', Round(aDate));
+  ADate := EncodeDateMonthWeek(AYear, AMonth, AWeekOfMonth, ADayOfWeek);
+  FConfiguration.WriteIntegerU('Program', 'NextUpdate', Round(ADate));
   if NewVersion then
     Show;
 end;
 
-function TFUpdateDialog.ShowVersionDate(s: string): string;
-  var Day, Month, Year, p: integer;
-      Version: string;
+function TFUpdateDialog.ShowVersionDate(Str: string): string;
+var
+  Day, Month, Year, Posi: Integer;
+  Version: string;
 begin
-  p:= Pos(',', s);
-  Version:= copy(s, 1, p);
-  delete(s, 1, p);
-  p:= Pos('.', s);
-  Result:= Version;
-  if TryStrToInt(Copy(s, 1, p-1), Year) then begin
-    delete(s, 1, p);
-    p:= pos('.', s);
-    if TryStrToInt(Copy(s, 1, p-1), Month) then begin
-      delete(s, 1, p);
-      if TryStrToInt(s, Day) then
-        Result:= Version + ' ' + DateToStr(EncodeDate(Year, Month, Day));
+  Posi := Pos(',', Str);
+  Version := Copy(Str, 1, Posi);
+  Delete(Str, 1, Posi);
+  Posi := Pos('.', Str);
+  Result := Version;
+  if TryStrToInt(Copy(Str, 1, Posi - 1), Year) then
+  begin
+    Delete(Str, 1, Posi);
+    Posi := Pos('.', Str);
+    if TryStrToInt(Copy(Str, 1, Posi - 1), Month) then
+    begin
+      Delete(Str, 1, Posi);
+      if TryStrToInt(Str, Day) then
+        Result := Version + ' ' + DateToStr(EncodeDate(Year, Month, Day));
     end;
   end;
 end;

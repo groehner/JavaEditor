@@ -25,12 +25,12 @@ type
     theParams: TJavaParams;
     aJavaTyp: TNumType;
     aClass: TJavaClass;
-    Mode: integer;
+    Mode: Integer;
   public
     // return values
     aJavaObject: TJavaObject;
     aJavaValue: TJavaValue;
-    constructor create(const Javapath: string);
+    constructor Create(const Javapath: string);
     procedure SetMethodCall(bJavaMethod: TJavaMethod;
                             bParams: TJavaParams;
                             bJavaObject: TJavaObject;
@@ -61,15 +61,15 @@ implementation
     ReadHandle:= JavaOutputReadHandle;
     Buffer:= '';
     aException:= '';
-    inherited Create(false);  // not suspended, execute immediatly startet
+    inherited Create(False);  // not suspended, execute immediatly startet
   end;
 
   procedure TConsoleThread.ShowLines;
   begin
-    myComJava2.ShowInMemo(String(Buffer));
-    if Pos('Exception', String(Buffer)) > 0
-      then aException:= String(Buffer)
-      else FJe2Java.WriteToConsolePipe(String(Buffer));
+    myComJava2.ShowInMemo(string(Buffer));
+    if Pos('Exception', string(Buffer)) > 0
+      then aException:= string(Buffer)
+      else FJe2Java.WriteToConsolePipe(string(Buffer));
     Buffer:= '';
   end;
 
@@ -93,9 +93,9 @@ implementation
 
   {--- ExecThread -------------------------------------------------------------}
 
-  constructor TExecThread.create(const Javapath: string);
+  constructor TExecThread.Create(const Javapath: string);
   begin
-    inherited Create(true);  // suspended
+    inherited Create(True);  // suspended
     JavaVM:= TJavaRuntime.getDefault(Javapath).GetVM;
   end;
 
@@ -132,7 +132,7 @@ implementation
         end
       else begin
         aJavaObject:= TJavaObject.Create(aClass, theParams);
-        aJavaObject.Global:= true;
+        aJavaObject.Global:= True;
       end;
     except
       on E: Exception do
@@ -145,18 +145,18 @@ implementation
   constructor THideThread.Create;
   begin
     ConsoleWindow:= 0;
-    inherited Create(false);  // not suspended
+    inherited Create(False);  // not suspended
   end;
 
   function THideThread.GetConsoleWindow: THandle;
-    var S: string;
+    var Str: string;
   begin
     if ConsoleWindow = 0 then begin
-      Setlength(S, MAX_PATH + 1);
-      if GetConsoleTitle(PChar(S), MAX_PATH) <> 0 then begin
-        S[1]:= '$';
-        SetConsoleTitle(PChar(S));
-        ConsoleWindow:= FindWindow(nil, PChar(S));
+      Setlength(Str, MAX_PATH + 1);
+      if GetConsoleTitle(PChar(Str), MAX_PATH) <> 0 then begin
+        Str[1]:= '$';
+        SetConsoleTitle(PChar(Str));
+        ConsoleWindow:= FindWindow(nil, PChar(Str));
         SetConsoleTitle('Console');
       end;
     end;
@@ -168,7 +168,7 @@ implementation
     while ConsoleWindow = 0 do
       ConsoleWindow:= GetConsoleWindow;
     repeat
-      ShowWindow(ConsoleWindow, SW_Hide);
+      ShowWindow(ConsoleWindow, SW_HIDE);
     until not IsWindowVisible(ConsoleWindow);
   end;
 

@@ -231,13 +231,13 @@ uses
 // Helper routine for AsString processing.
 function GetFirstEl(var Value: string; Delim: WideChar): string;
 var
-  p: Integer;
+  Posi: Integer;
 begin
-  p := Pos(Delim, Value);
-  if p = 0 then
-    p := Length(Value) + 1;
-  Result := Copy(Value, 1, p - 1);
-  Delete(Value, 1, p);
+  Posi := Pos(Delim, Value);
+  if Posi = 0 then
+    Posi := Length(Value) + 1;
+  Result := Copy(Value, 1, Posi - 1);
+  Delete(Value, 1, Posi);
 end;
 
 
@@ -372,7 +372,7 @@ begin
             begin
               Inc(Run); // also the '$'
               Start := Run;
-              break;
+              Break;
             end
             else
             begin
@@ -397,7 +397,7 @@ var
   aCharset: TFontCharset;
   aColor: TColor;
   aHeight: Integer;
-  aName: TFontName;
+  AName: TFontName;
   aPitch: TFontPitch;
   aSize: Integer;
   aStyle: TFontStyles;
@@ -426,7 +426,7 @@ begin
     try
       Read(Buffer^, BufferSize);
       PAnsiChar(Buffer)[BufferSize div sizeof(AnsiChar)] := #0;
-      aName := string(PAnsiChar(Buffer));
+      AName := string(PAnsiChar(Buffer));
     finally
       FreeMem(Buffer);
     end;
@@ -436,7 +436,7 @@ begin
     FFont.Charset := aCharset;
     FFont.Color := aColor;
     FFont.Height := aHeight;
-    FFont.Name := aName;
+    FFont.Name := AName;
     FFont.Pitch := aPitch;
     FFont.Size := aSize;
     FFont.Style := aStyle;
@@ -449,7 +449,7 @@ var
   aCharset: TFontCharset;
   aColor: TColor;
   aHeight: Integer;
-  aName: TFontName;
+  AName: TFontName;
   aPitch: TFontPitch;
   aSize: Integer;
   aStyle: TFontStyles;
@@ -465,16 +465,16 @@ begin
     aCharset := FFont.Charset;
     aColor   := FFont.Color;
     aHeight  := FFont.Height;
-    aName    := FFont.Name;
+    AName    := FFont.Name;
     aPitch   := FFont.Pitch;
     aSize    := FFont.Size;
     aStyle   := FFont.Style;
     Write(aCharset, SizeOf(aCharset));
     Write(aColor, SizeOf(aColor));
     Write(aHeight, SizeOf(aHeight));
-    aLen := Length(aName);
+    aLen := Length(AName);
     Write(aLen, SizeOf(aLen));
-    Write(PAnsiChar(AnsiString(aName))^, aLen);
+    Write(PAnsiChar(AnsiString(AName))^, aLen);
     Write(aPitch, SizeOf(aPitch));
     Write(aSize, SizeOf(aSize));
     Write(aStyle, SizeOf(aStyle));
@@ -484,22 +484,22 @@ end;
 
 procedure THeaderFooterItem.SetAsString(const Value: string);
 var
-  s: string;
+  Str: string;
   sty: TFontStyles;
 begin
-  s := Value;
-  FText := DecodeString(GetFirstEl(s, '/'));
-  FFont.Charset := StrToIntDef(GetFirstEl(s, '/'), 0);
-  FFont.Color := StrToIntDef(GetFirstEl(s, '/'), 0);
-  FFont.Height := StrToIntDef(GetFirstEl(s, '/'), 0);
-  FFont.Name := DecodeString(GetFirstEl(s, '/'));
-  FFont.Pitch := TFontPitch(StrToIntDef(GetFirstEl(s, '/'), 0));
-  FFont.PixelsPerInch := StrToIntDef(GetFirstEl(s, '/'), 0);
-  FFont.Size := StrToIntDef(GetFirstEl(s, '/'), 0);
-  byte(sty) := StrToIntDef(GetFirstEl(s, '/'), 0);
+  Str := Value;
+  FText := DecodeString(GetFirstEl(Str, '/'));
+  FFont.Charset := StrToIntDef(GetFirstEl(Str, '/'), 0);
+  FFont.Color := StrToIntDef(GetFirstEl(Str, '/'), 0);
+  FFont.Height := StrToIntDef(GetFirstEl(Str, '/'), 0);
+  FFont.Name := DecodeString(GetFirstEl(Str, '/'));
+  FFont.Pitch := TFontPitch(StrToIntDef(GetFirstEl(Str, '/'), 0));
+  FFont.PixelsPerInch := StrToIntDef(GetFirstEl(Str, '/'), 0);
+  FFont.Size := StrToIntDef(GetFirstEl(Str, '/'), 0);
+  byte(sty) := StrToIntDef(GetFirstEl(Str, '/'), 0);
   FFont.Style := sty;
-  FLineNumber := StrToIntDef(GetFirstEl(s, '/'), 0);
-  FAlignment := TAlignment(StrToIntDef(GetFirstEl(s, '/'), 0));
+  FLineNumber := StrToIntDef(GetFirstEl(Str, '/'), 0);
+  FAlignment := TAlignment(StrToIntDef(GetFirstEl(Str, '/'), 0));
 end;
 
 procedure THeaderFooterItem.SetFont(const Value: TFont);
@@ -533,7 +533,7 @@ end;
 
 destructor THeaderFooter.Destroy;
 var
-  i: Integer;
+  Int: Integer;
 begin
   Clear;
   FItems.Free;
@@ -541,8 +541,8 @@ begin
   FOldPen.Free;
   FOldBrush.Free;
   FOldFont.Free;
-  for i := 0 to FLineInfo.Count - 1 do
-    TLineInfo(FLineInfo[i]).Free;
+  for Int := 0 to FLineInfo.Count - 1 do
+    TLineInfo(FLineInfo[Int]).Free;
   FLineInfo.Free;
   inherited;
 end;
@@ -566,13 +566,13 @@ end;
 
 procedure THeaderFooter.Delete(Index: Integer);
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := 0 to FItems.Count - 1 do
+  for Int := 0 to FItems.Count - 1 do
   begin
-    if THeaderFooterItem(FItems[i]).FIndex = Index then
+    if THeaderFooterItem(FItems[Int]).FIndex = Index then
     begin
-      FItems.Delete(i);
+      FItems.Delete(Int);
       Break;
     end;
   end;
@@ -580,10 +580,10 @@ end;
 
 procedure THeaderFooter.Clear;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := 0 to FItems.Count - 1 do
-    THeaderFooterItem(FItems[i]).Free;
+  for Int := 0 to FItems.Count - 1 do
+    THeaderFooterItem(FItems[Int]).Free;
   FItems.Clear;
 end;
 
@@ -596,24 +596,24 @@ end;
   start with 1 (the user might add header/footer items starting at line 2) }
 procedure THeaderFooter.FixLines;
 var
-  i, CurLine: Integer;
+  Int, CurLine: Integer;
   LineInfo: TLineInfo;
 begin
-  for i := 0 to FLineInfo.Count - 1 do
-    TLineInfo(FLineInfo[i]).Free;
+  for Int := 0 to FLineInfo.Count - 1 do
+    TLineInfo(FLineInfo[Int]).Free;
   FLineInfo.Clear;
   CurLine := 0;
   FLineCount := 0;
-  for i := 0 to FItems.Count - 1 do
+  for Int := 0 to FItems.Count - 1 do
   begin
-    if THeaderFooterItem(FItems[i]).LineNumber <> CurLine then
+    if THeaderFooterItem(FItems[Int]).LineNumber <> CurLine then
     begin
-      CurLine := THeaderFooterItem(FItems[i]).LineNumber;
+      CurLine := THeaderFooterItem(FItems[Int]).LineNumber;
       FLineCount := FLineCount + 1;
       LineInfo := TLineInfo.Create;
       FLineInfo.Add(LineInfo);
     end;
-    THeaderFooterItem(FItems[i]).LineNumber := FLineCount;
+    THeaderFooterItem(FItems[Int]).LineNumber := FLineCount;
   end;
 end;
 
@@ -621,7 +621,7 @@ end;
   and calculates the font baseline where text is to be written }
 procedure THeaderFooter.CalcHeight(ACanvas: TCanvas);
 var
-  i, CurLine: Integer;
+  Int, CurLine: Integer;
   AItem: THeaderFooterItem;
   FOrgHeight: Integer;
   TextMetric: TTextMetric;
@@ -632,9 +632,9 @@ begin
   CurLine := 1;
   FFrameHeight := 0;
   FOrgHeight := FFrameHeight;
-  for i := 0 to FItems.Count - 1 do
+  for Int := 0 to FItems.Count - 1 do
   begin
-    AItem := THeaderFooterItem(FItems[i]);
+    AItem := THeaderFooterItem(FItems[Int]);
     if AItem.LineNumber <> CurLine then
     begin
       CurLine := AItem.LineNumber;
@@ -662,12 +662,12 @@ end;
 
 procedure THeaderFooter.SetPixPrInch(Value: Integer);
 var
-  i, TmpSize: Integer;
+  Int, TmpSize: Integer;
   AFont: TFont;
 begin
-  for i := 0 to FItems.Count - 1 do
+  for Int := 0 to FItems.Count - 1 do
   begin
-    AFont := THeaderFooterItem(FItems[i]).Font;
+    AFont := THeaderFooterItem(FItems[Int]).Font;
     TmpSize := AFont.Size;
     AFont.PixelsPerInch := Value;
     AFont.Size := TmpSize;
@@ -740,7 +740,7 @@ end;
 
 procedure THeaderFooter.Print(ACanvas: TCanvas; PageNum: Integer);
 var
-  i, X, Y, CurLine: Integer;
+  Int, X, Y, CurLine: Integer;
   AStr: string;
   AItem: THeaderFooterItem;
   OldAlign: UINT;
@@ -757,9 +757,9 @@ begin
   Y := Y + FMargins.PHFInternalMargin; // Add the specified internal margin
 
   CurLine := 1;
-  for i := 0 to FItems.Count - 1 do
+  for Int := 0 to FItems.Count - 1 do
   begin
-    AItem := THeaderFooterItem(FItems[i]);
+    AItem := THeaderFooterItem(FItems[Int]);
     ACanvas.Font := AItem.Font;
     if AItem.LineNumber <> CurLine then
     begin
@@ -796,7 +796,7 @@ end;
 procedure THeaderFooter.Assign(Source: TPersistent);
 var
   Src: THeaderFooter;
-  i: Integer;
+  Int: Integer;
 begin
   if (Source <> nil) and (Source is THeaderFooter) then begin
     Src := THeaderFooter(Source);
@@ -805,8 +805,8 @@ begin
     FFrameTypes := Src.FFrameTypes;
     FShadedColor := Src.FShadedColor;
     FLineColor := Src.FLineColor;
-    for i := 0 to Src.FItems.Count - 1 do begin
-      with THeaderFooterItem(Src.FItems[i]) do
+    for Int := 0 to Src.FItems.Count - 1 do begin
+      with THeaderFooterItem(Src.FItems[Int]) do
         Add(Text, Font, Alignment, LineNumber);
     end;
     FDefaultFont.Assign(Src.FDefaultFont);
@@ -828,28 +828,28 @@ end;
 
 function THeaderFooter.GetAsString: string;
 var
-  i: integer;
+  Int: Integer;
 begin
   FixLines;
   Result := '';
-  for i := 0 to FItems.Count - 1 do begin
+  for Int := 0 to FItems.Count - 1 do begin
     if Result <> '' then Result := Result + '/';
-    Result := Result + EncodeString(THeaderFooterItem(FItems[i]).AsString);
+    Result := Result + EncodeString(THeaderFooterItem(FItems[Int]).AsString);
   end; //for
 end;
 
 procedure THeaderFooter.SetAsString(const Value: string);
 var
   item: THeaderFooterItem;
-  s: string;
+  Str: string;
 begin
   Clear;
   item := THeaderFooterItem.Create;
   try
-    s := Value;
-    while s <> '' do
+    Str := Value;
+    while Str <> '' do
     begin
-      item.AsString := DecodeString(GetFirstEl(s, '/'));
+      item.AsString := DecodeString(GetFirstEl(Str, '/'));
       Add(item.Text, item.Font, item.Alignment, item.LineNumber);
     end; 
   finally
@@ -859,11 +859,11 @@ end;
 
 procedure THeaderFooter.LoadFromStream(AStream: TStream);
 var
-  Num, i: Integer;
+  Num, Int: Integer;
   aCharset: TFontCharset;
   aColor: TColor;
   aHeight: Integer;
-  aName: TFontName;
+  AName: TFontName;
   aPitch: TFontPitch;
   aSize: Integer;
   aStyle: TFontStyles;
@@ -886,7 +886,7 @@ begin
     try
       Read(buffer^, bufSize);
       buffer[bufSize] := #0;
-      aName := string(buffer);
+      AName := string(buffer);
     finally
       FreeMem(buffer);
     end;
@@ -896,7 +896,7 @@ begin
     FDefaultFont.Charset := aCharset;
     FDefaultFont.Color   := aColor;
     FDefaultFont.Height  := aHeight;
-    FDefaultFont.Name    := aName;
+    FDefaultFont.Name    := AName;
     FDefaultFont.Pitch   := aPitch;
     FDefaultFont.Size    := aSize;
     FDefaultFont.Style   := aStyle;
@@ -905,8 +905,8 @@ begin
     while Num > 0 do
     begin
       // load headerfooter items from stream
-      i := Add('', nil, taLeftJustify, 1);
-      Get(i).LoadFromStream(AStream);
+      Int := Add('', nil, taLeftJustify, 1);
+      Get(Int).LoadFromStream(AStream);
       Dec(Num);
     end;
   end;
@@ -914,15 +914,15 @@ end;
 
 procedure THeaderFooter.SaveToStream(AStream: TStream);
 var
-  i, Num: integer;
+  Int, Num: Integer;
   aCharset: TFontCharset;
   aColor: TColor;
   aHeight: Integer;
-  aName: TFontName;
+  AName: TFontName;
   aPitch: TFontPitch;
   aSize: Integer;
   aStyle: TFontStyles;
-  aLen : integer;
+  aLen : Integer;
 begin
   with AStream do begin
     // write the header/footer properties first
@@ -935,16 +935,16 @@ begin
     aCharset := FDefaultFont.Charset;
     aColor   := FDefaultFont.Color;
     aHeight  := FDefaultFont.Height;
-    aName    := FDefaultFont.Name;
+    AName    := FDefaultFont.Name;
     aPitch   := FDefaultFont.Pitch;
     aSize    := FDefaultFont.Size;
     aStyle   := FDefaultFont.Style;
     Write(aCharset, SizeOf(aCharset));
     Write(aColor, SizeOf(aColor));
     Write(aHeight, SizeOf(aHeight));
-    aLen := Length(aName);
+    aLen := Length(AName);
     Write(aLen, SizeOf(aLen));
-    Write(PAnsiChar(AnsiString(aName))^, Length(aName));
+    Write(PAnsiChar(AnsiString(AName))^, Length(AName));
     Write(aPitch, SizeOf(aPitch));
     Write(aSize, SizeOf(aSize));
     Write(aStyle, SizeOf(aStyle));
@@ -952,8 +952,8 @@ begin
     // now write the items
     Num := Count;
     Write(Num, SizeOf(Num));
-    for i := 0 to Num - 1 do
-      Get(i).SaveToStream(AStream);
+    for Int := 0 to Num - 1 do
+      Get(Int).SaveToStream(AStream);
   end;
 end;
 

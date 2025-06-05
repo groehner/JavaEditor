@@ -2,26 +2,30 @@ unit UJButton;
 
 { Classes
   TAbstractButton = class (TSwingComponent)
-    TJButton
-    TJToggleButton
+  TJButton
+  TJToggleButton
 }
 
 interface
 
 uses
-  Classes, StdCtrls, UAComponents, UJComponents, UJLabel;
+  Classes,
+  StdCtrls,
+  UAComponents,
+  UJComponents,
+  UJLabel;
 
 type
 
-  TAbstractButton = class (TSwingComponent)
+  TAbstractButton = class(TSwingComponent)
   private
     FText: string;
     FMnemonic: TShortCut;
-    FDisplayedMnemonicIndex: integer;
-    FSelected: boolean;
-    FBorderPainted: boolean;
-    FFocusPainted: boolean;
-    FContentAreaFilled: boolean;
+    FDisplayedMnemonicIndex: Integer;
+    FSelected: Boolean;
+    FBorderPainted: Boolean;
+    FFocusPainted: Boolean;
+    FContentAreaFilled: Boolean;
 
     FVertAlignment: TVertAlignment;
     FHorzAlignment: THorzAlignment;
@@ -34,118 +38,138 @@ type
     FRolloverIcon: string;
     FRolloverSelectedIcon: string;
 
-    FRolloverEnabled: boolean;
+    FRolloverEnabled: Boolean;
     FHorizontalTextPosition: THorzAlignment;
     FVerticalTextPosition: TVertAlignment;
-    FIconTextGap: integer;
+    FIconTextGap: Integer;
 
-    procedure setText(const aValue: string);
-    procedure setBorderPainted(aValue: boolean);
-    procedure setContentAreaFilled(aValue: boolean);
-    procedure setHorzAlignment(aValue: THorzAlignment);
-    procedure setVertAlignment(aValue: TVertAlignment);
-    procedure setIcon(const aValue: string);
+    procedure SetText(const AValue: string);
+    procedure SetBorderPainted(AValue: Boolean);
+    procedure SetContentAreaFilled(AValue: Boolean);
+    procedure SetHorzAlignment(AValue: THorzAlignment);
+    procedure SetVertAlignment(AValue: TVertAlignment);
+    procedure SetIcon(const AValue: string);
 
-    procedure setHorizontalTextPosition(aValue: THorzAlignment);
-    procedure setVerticalTextPosition(aValue: TVertAlignment);
-    procedure setIconTextGap(aValue: integer);
+    procedure SetHorizontalTextPosition(AValue: THorzAlignment);
+    procedure SetVerticalTextPosition(AValue: TVertAlignment);
+    procedure SetIconTextGap(AValue: Integer);
   public
     constructor Create(AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure SizeToText; override;
     procedure Paint; override;
     procedure DeleteComponent; override;
   published
-    property Text: string read FText write setText;
+    property Text: string read FText write SetText;
     property Mnemonic: TShortCut read FMnemonic write FMnemonic;
-    property DisplayedMnemonicIndex: integer read FDisplayedMnemonicIndex write FDisplayedMnemonicIndex;
-    property Selected: boolean read FSelected write FSelected;
-    property BorderPainted: boolean read FBorderPainted write setBorderPainted;
-    property FocusPainted: boolean read FFocusPainted write FFocusPainted;
+    property DisplayedMnemonicIndex: Integer read FDisplayedMnemonicIndex
+      write FDisplayedMnemonicIndex;
+    property Selected: Boolean read FSelected write FSelected;
+    property BorderPainted: Boolean read FBorderPainted write SetBorderPainted;
+    property FocusPainted: Boolean read FFocusPainted write FFocusPainted;
 
-    property ContentAreaFilled: boolean read FContentAreaFilled write setContentAreaFilled;
+    property ContentAreaFilled: Boolean read FContentAreaFilled
+      write SetContentAreaFilled;
 
-    property Icon: string read FIcon write setIcon;
+    property Icon: string read FIcon write SetIcon;
     property DisabledIcon: string read FDisabledIcon write FDisabledIcon;
     property PressedIcon: string read FPressedIcon write FPressedIcon;
     property SelectedIcon: string read FSelectedIcon write FSelectedIcon;
-    property DisabledSelectedIcon: string read FDisabledSelectedIcon write FDisabledSelectedIcon;
+    property DisabledSelectedIcon: string read FDisabledSelectedIcon
+      write FDisabledSelectedIcon;
     property RolloverIcon: string read FRolloverIcon write FRolloverIcon;
-    property RolloverSelectedIcon: string read FRolloverSelectedIcon write FRolloverSelectedIcon;
+    property RolloverSelectedIcon: string read FRolloverSelectedIcon
+      write FRolloverSelectedIcon;
 
-    property HorizontalAlignment: THorzAlignment read FHorzAlignment write setHorzAlignment;
-    property VerticalAlignment: TVertAlignment read FVertAlignment write setVertAlignment;
-    property HorizontalTextPosition: THorzAlignment read FHorizontalTextPosition write setHorizontalTextPosition;
-    property VerticalTextPosition: TVertAlignment read FVerticalTextPosition write setVerticalTextPosition;
-    property IconTextGap: integer read FIconTextGap write setIconTextGap;
-    property RolloverEnabled: boolean read FRolloverEnabled write FRolloverEnabled;
+    property HorizontalAlignment: THorzAlignment read FHorzAlignment
+      write SetHorzAlignment;
+    property VerticalAlignment: TVertAlignment read FVertAlignment
+      write SetVertAlignment;
+    property HorizontalTextPosition: THorzAlignment read FHorizontalTextPosition
+      write SetHorizontalTextPosition;
+    property VerticalTextPosition: TVertAlignment read FVerticalTextPosition
+      write SetVerticalTextPosition;
+    property IconTextGap: Integer read FIconTextGap write SetIconTextGap;
+    property RolloverEnabled: Boolean read FRolloverEnabled
+      write FRolloverEnabled;
     property Border;
   end;
 
   TJButton = class(TAbstractButton)
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aButton: TButton);
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    constructor CreateFrom(AButton: TButton);
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NameFromText; override;
     procedure NewControl; override;
   end;
 
-  TJToggleButton = class (TAbstractButton)
+  TJToggleButton = class(TAbstractButton)
   public
     constructor Create(AOwner: TComponent); override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NameFromText; override;
     procedure NewControl; override;
   end;
-
 
 implementation
 
-uses Windows, SysUtils, Math, Graphics, Controls, UITypes,
-     Vcl.Imaging.GIFImg, Vcl.Imaging.jpeg, Vcl.Imaging.pngimage,
-     UUtils, UGuiDesigner;
+uses
+  Windows,
+  SysUtils,
+  Math,
+  Graphics,
+  Controls,
+  UITypes,
+  Vcl.Imaging.GIFImg,
+  Vcl.Imaging.jpeg,
+  Vcl.Imaging.pngimage,
+  UUtils,
+  UGUIDesigner;
 
-{--- TAbstractButton ----------------------------------------------------------}
+{ --- TAbstractButton ---------------------------------------------------------- }
 
 constructor TAbstractButton.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Width:= 80;
-  Height:= 24;
-  FBorderPainted:= true;
-  FContentAreaFilled:= true;
-  HorizontalAlignment:= UAComponents.CENTER;
-  VerticalAlignment  := CENTER;
-  HorizontalTextPosition:= UAComponents.RIGHT; // TRAILING;
-  VerticalTextPosition:= CENTER;
-  IconTextGap:= 4;
+  inherited Create(AOwner);
+  Width := 80;
+  Height := 24;
+  FBorderPainted := True;
+  FContentAreaFilled := True;
+  HorizontalAlignment := UAComponents.CENTER;
+  VerticalAlignment := CENTER;
+  HorizontalTextPosition := UAComponents.Right; // TRAILING
+  VerticalTextPosition := CENTER;
+  IconTextGap := 4;
 end;
 
-function TAbstractButton.getAttributes(ShowAttributes: integer): string;
-  const
-    Button1 = '|Text|Selected|Icon|IconTextGap';
-    Button2 = '|Mnemonic|DisabledIcon|PressedIcon|SelectedIcon|RolloverIcon' +
-              '|HorizontalAlignment|VerticalAlignment|Border';
-    Button3 = '|DisplayedMnemonicIndex|BorderPainted|FocusPainted|ContentAreaFilled' +
-              '|DisabledSelectedIcon|RolloverSelectedIcon|HorizontalTextPosition' +
-              '|VerticalTextPosition|RolloverEnabled';
+function TAbstractButton.GetAttributes(ShowAttributes: Integer): string;
+const
+  Button1 = '|Text|Selected|Icon|IconTextGap';
+  Button2 = '|Mnemonic|DisabledIcon|PressedIcon|SelectedIcon|RolloverIcon' +
+    '|HorizontalAlignment|VerticalAlignment|Border';
+  Button3 = '|DisplayedMnemonicIndex|BorderPainted|FocusPainted|ContentAreaFilled'
+    + '|DisabledSelectedIcon|RolloverSelectedIcon|HorizontalTextPosition' +
+    '|VerticalTextPosition|RolloverEnabled';
 begin
   case ShowAttributes of
-    1: Result:= Button1;
-    2: Result:= Button1 + Button2;
-  else Result:= Button1 + Button2 + Button3;
+    1:
+      Result := Button1;
+    2:
+      Result := Button1 + Button2;
+  else
+    Result := Button1 + Button2 + Button3;
   end;
-  Result:= Result + inherited;
+  Result := Result + inherited;
 end;
 
-procedure TAbstractButton.setAttribute(Attr, Value, Typ: string);
+procedure TAbstractButton.SetAttribute(Attr, Value, Typ: string);
 begin
   if (Attr = 'HorizontalAlignment') or (Attr = 'VerticalAlignment') or
-     (Attr = 'HorizontalTextPosition') or (Attr = 'VerticalTextPosition') then
+    (Attr = 'HorizontalTextPosition') or (Attr = 'VerticalTextPosition') then
     MakeAttribut(Attr, 'SwingConstants.' + Value)
   else if Attr = 'Mnemonic' then
     MakeKeyEvent(Attr, Value)
@@ -153,36 +177,43 @@ begin
     inherited;
 end;
 
-function TAbstractButton.getEvents(ShowEvents: integer): string;
+function TAbstractButton.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|actionPerformed|stateChanged';
+  Result := '|actionPerformed|stateChanged';
   if ShowEvents = 3 then
-    Result:= Result + '|itemStateChanged';
-  Result:= Result + inherited;
+    Result := Result + '|itemStateChanged';
+  Result := Result + inherited;
 end;
 
 procedure TAbstractButton.Rename(const OldName, NewName, Events: string);
 begin
   inherited;
-  Partner.ReplaceWord(OldName + 'DisabledIcon' , NewName + 'DisabledIcon', true);
-  Partner.ReplaceWord(OldName + 'DisabledSelectedIcon' , NewName + 'DisabledSelectedIcon', true);
-  Partner.ReplaceWord(OldName + 'Icon' , NewName + 'Icon', true);
-  Partner.ReplaceWord(OldName + 'PressedIcon' , NewName + 'PressedIcon', true);
-  Partner.ReplaceWord(OldName + 'RolloverIcon' , NewName + 'RolloverIcon', true);
-  Partner.ReplaceWord(OldName + 'RolloverSelectedIcon' , NewName + 'RolloverSelectedIcon', true);
-  Partner.ReplaceWord(OldName + 'SelectedIcon' , NewName + 'SelectedIcon', true);
+  FPartner.ReplaceWord(OldName + 'DisabledIcon',
+    NewName + 'DisabledIcon', True);
+  FPartner.ReplaceWord(OldName + 'DisabledSelectedIcon',
+    NewName + 'DisabledSelectedIcon', True);
+  FPartner.ReplaceWord(OldName + 'Icon', NewName + 'Icon', True);
+  FPartner.ReplaceWord(OldName + 'PressedIcon', NewName + 'PressedIcon', True);
+  FPartner.ReplaceWord(OldName + 'RolloverIcon',
+    NewName + 'RolloverIcon', True);
+  FPartner.ReplaceWord(OldName + 'RolloverSelectedIcon',
+    NewName + 'RolloverSelectedIcon', True);
+  FPartner.ReplaceWord(OldName + 'SelectedIcon',
+    NewName + 'SelectedIcon', True);
 end;
 
 procedure TAbstractButton.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteAttribute('private ImageIcon ' + Name + 'DisabledIcon');
-  Partner.DeleteAttribute('private ImageIcon ' + Name + 'DisabledSelectedIcon');
-  Partner.DeleteAttribute('private ImageIcon ' + Name + 'Icon');
-  Partner.DeleteAttribute('private ImageIcon ' + Name + 'PressedIcon');
-  Partner.DeleteAttribute('private ImageIcon ' + Name + 'RolloverIcon');
-  Partner.DeleteAttribute('private ImageIcon ' + Name + 'RolloverSelectedIcon');
-  Partner.DeleteAttribute('private ImageIcon ' + Name + 'SelectedIcon');
+  FPartner.DeleteAttribute('private ImageIcon ' + Name + 'DisabledIcon');
+  FPartner.DeleteAttribute('private ImageIcon ' + Name +
+    'DisabledSelectedIcon');
+  FPartner.DeleteAttribute('private ImageIcon ' + Name + 'Icon');
+  FPartner.DeleteAttribute('private ImageIcon ' + Name + 'PressedIcon');
+  FPartner.DeleteAttribute('private ImageIcon ' + Name + 'RolloverIcon');
+  FPartner.DeleteAttribute('private ImageIcon ' + Name +
+    'RolloverSelectedIcon');
+  FPartner.DeleteAttribute('private ImageIcon ' + Name + 'SelectedIcon');
 end;
 
 procedure TAbstractButton.SizeToText;
@@ -191,280 +222,337 @@ begin
 end;
 
 procedure TAbstractButton.Paint;
-  var tx, ty, ix, iy, tw, th, itg, dx, dy, x1, x2, y1, y2: integer;
-      boWidth, boHeight: integer;
-      s, pathname, ext: string;
-      boRect: TRect;
-      png: TPngImage;
-      gif: TGifImage;
-      jpg: TJPEGImage;
-      bmp: TBitmap;
+var
+  TextX, TextY, IXPos, IYPos, TextWidth, TextHeight, Itg, DeltaX, DeltaY, X1Pos,
+    X2Pos, Y1Pos, Y2Pos: Integer;
+  BoWidth, BoHeight: Integer;
+  Str, Pathname, Ext: string;
+  BoRect: TRect;
+  Png: TPngImage;
+  Gif: TGIFImage;
+  Jpg: TJPEGImage;
+  Bmp: TBitmap;
 begin
   Border.Show(Self, Canvas);
   CanvasFontAssign;
-  Canvas.Font.Color:= Foreground;
-  Canvas.Brush.Style:= bsClear;
-  Canvas.Pen.Width:= 2;
-  boRect:= Border.getClientRect;
-  boWidth:= boRect.Right - boRect.Left;
-  boHeight:= boRect.Bottom - boRect.Top;
-  if FBorderPainted
-    then Canvas.Pen.Color:= DarkShadow
-    else Canvas.Pen.Color:= Background;
-  if FSelected and (Self is TJToggleButton)
-    then Canvas.Brush.Color:= SelectionColor
-    else Canvas.Brush.Color:= Background;
+  Canvas.Font.Color := Foreground;
+  Canvas.Brush.Style := bsClear;
+  Canvas.Pen.Width := 2;
+  BoRect := Border.GetClientRect;
+  BoWidth := BoRect.Right - BoRect.Left;
+  BoHeight := BoRect.Bottom - BoRect.Top;
+  if FBorderPainted then
+    Canvas.Pen.Color := DarkShadow
+  else
+    Canvas.Pen.Color := Background;
+  if FSelected and (Self is TJToggleButton) then
+    Canvas.Brush.Color := SelectionColor
+  else
+    Canvas.Brush.Color := Background;
   if FContentAreaFilled then
-    Canvas.Rectangle(boRect)
-  else if FBorderPainted then begin
-    Canvas.Brush.Color:= Canvas.Pen.Color;
-    Canvas.FrameRect(boRect);
+    Canvas.Rectangle(BoRect)
+  else if FBorderPainted then
+  begin
+    Canvas.Brush.Color := Canvas.Pen.Color;
+    Canvas.FrameRect(BoRect);
   end;
 
-  s:= FText;
-  tw:= Canvas.TextWidth(s);
-  if tw > boWidth - 10 then begin
-    while (tw > boWidth - 19) and (length(s) > 0) do begin
-      s:= UUtils.Left(s, Length(s)-1);
-      tw:= Canvas.TextWidth(s);
+  Str := FText;
+  TextWidth := Canvas.TextWidth(Str);
+  if TextWidth > BoWidth - 10 then
+  begin
+    while (TextWidth > BoWidth - 19) and (Length(Str) > 0) do
+    begin
+      Str := UUtils.Left(Str, Length(Str) - 1);
+      TextWidth := Canvas.TextWidth(Str);
     end;
-    s:= s + '...';
+    Str := Str + '...';
   end;
 
-  tw:= Canvas.TextWidth(s);
-  tx:= 0;
+  TextWidth := Canvas.TextWidth(Str);
+  TextX := 0;
   case FHorzAlignment of
-    UAComponents.CENTER: tx:= (boWidth - tw) div 2;
-    UAComponents.LEFT  : tx:= 0;
-    UAComponents.RIGHT : tx:= boWidth - tw;
+    UAComponents.CENTER:
+      TextX := (BoWidth - TextWidth) div 2;
+    UAComponents.Left:
+      TextX := 0;
+    UAComponents.Right:
+      TextX := BoWidth - TextWidth;
   end;
-  inc(tx, boRect.Left);
-  th:= Canvas.TextHeight(s);
-  ty:= 0;
+  Inc(TextX, BoRect.Left);
+  TextHeight := Canvas.TextHeight(Str);
+  TextY := 0;
   case FVertAlignment of
-    CENTER: ty:= (boHeight-2 - th) div 2 + 2;
-    UJLabel.TOP   : ty:= 1;
-    BOTTOM: ty:= boHeight - th;
+    CENTER:
+      TextY := (BoHeight - 2 - TextHeight) div 2 + 2;
+    UJLabel.Top:
+      TextY := 1;
+    Bottom:
+      TextY := BoHeight - TextHeight;
   end;
-  inc(ty, boRect.top);
+  Inc(TextY, BoRect.Top);
 
-  pathname:= FGuiDesigner.getPath + 'images\' + copy(Icon, 8, length(Icon));
+  Pathname := FGUIDesigner.GetPath + 'images\' + Copy(Icon, 8, Length(Icon));
 
-  if not FileExists(pathname) then begin
-    Canvas.TextRect(Rect(tx, ty, tx+tw, ty+th), tx, ty, s);
-    exit;
-  end;
-
-  ext:= Uppercase(ExtractFileExt(Icon));
-  bmp:= TBitmap.Create;
-  if ext = '.PNG' then begin
-    png:= TPngImage.Create;
-    png.LoadFromFile(pathname);
-    bmp.Assign(png);
-    FreeAndNil(png);
-  end else if ext = '.GIF' then begin
-    gif:= TGifImage.Create;
-    gif.LoadFromFile(pathname);
-    bmp.Assign(gif.Bitmap);
-    FreeAndNil(gif);
-  end else if (ext = '.JPG') or (ext = 'JPEG') then begin
-    jpg:= TJPEGImage.Create;
-    jpg.LoadFromFile(pathname);
-    bmp.Assign(jpg);
-    FreeAndNil(jpg);
+  if not FileExists(Pathname) then
+  begin
+    Canvas.TextRect(Rect(TextX, TextY, TextX + TextWidth, TextY + TextHeight),
+      TextX, TextY, Str);
+    Exit;
   end;
 
-  ix:= 0;
+  Ext := UpperCase(ExtractFileExt(Icon));
+  Bmp := TBitmap.Create;
+  if Ext = '.Png' then
+  begin
+    Png := TPngImage.Create;
+    Png.LoadFromFile(Pathname);
+    Bmp.Assign(Png);
+    FreeAndNil(Png);
+  end
+  else if Ext = '.Gif' then
+  begin
+    Gif := TGIFImage.Create;
+    Gif.LoadFromFile(Pathname);
+    Bmp.Assign(Gif.Bitmap);
+    FreeAndNil(Gif);
+  end
+  else if (Ext = '.Jpg') or (Ext = 'JPEG') then
+  begin
+    Jpg := TJPEGImage.Create;
+    Jpg.LoadFromFile(Pathname);
+    Bmp.Assign(Jpg);
+    FreeAndNil(Jpg);
+  end;
+
+  IXPos := 0;
   case FHorzAlignment of
-    UAComponents.CENTER: ix:= (boWidth - bmp.Width) div 2;
-    UAComponents.LEFT  : ix:= 0;
-    UAComponents.RIGHT : ix:= boWidth - bmp.Width;
+    UAComponents.CENTER:
+      IXPos := (BoWidth - Bmp.Width) div 2;
+    UAComponents.Left:
+      IXPos := 0;
+    UAComponents.Right:
+      IXPos := BoWidth - Bmp.Width;
   end;
-  inc(ix, boRect.Left);
-  iy:= 0;
+  Inc(IXPos, BoRect.Left);
+  IYPos := 0;
   case FVertAlignment of
-    CENTER: iy:= (boHeight - bmp.Height) div 2;
-    UJLabel.TOP   : iy:= 0;
-    BOTTOM: iy:= boHeight - bmp.Height;
+    CENTER:
+      IYPos := (BoHeight - Bmp.Height) div 2;
+    UJLabel.Top:
+      IYPos := 0;
+    Bottom:
+      IYPos := BoHeight - Bmp.Height;
   end;
-  inc(iy, boRect.Top);
-  if FText = '' then begin
-    Canvas.Draw(ix, iy, bmp);
-    FreeAndNil(bmp);
-    exit;
+  Inc(IYPos, BoRect.Top);
+  if FText = '' then
+  begin
+    Canvas.Draw(IXPos, IYPos, Bmp);
+    FreeAndNil(Bmp);
+    Exit;
   end;
 
-  Canvas.Brush.Style:= bsClear;
-  itg:= FIconTextGap;
+  Canvas.Brush.Style := bsClear;
+  Itg := FIconTextGap;
   case FHorizontalTextPosition of
-    UAComponents.CENTER: tx:= ix + (bmp.Width - tw) div 2;
-    UAComponents.LEFT  : tx:= ix - itg - tw;
-    UAComponents.RIGHT : tx:= ix + bmp.Width + itg;
+    UAComponents.CENTER:
+      TextX := IXPos + (Bmp.Width - TextWidth) div 2;
+    UAComponents.Left:
+      TextX := IXPos - Itg - TextWidth;
+    UAComponents.Right:
+      TextX := IXPos + Bmp.Width + Itg;
   end;
-  if tx < 0 then begin
-    dx:= min(-tx, boWidth-ix-bmp.width) + boRect.Left;
-    inc(tx, dx);
-    inc(ix, dx);
-  end else begin // vertical correction
-    dx:= tx + tw - (boRect.Left + boWidth);
-    dx:= min(dx, ix);
-    if dx > 0 then begin
-      dec(tx, dx);
-      dec(ix, dx);
+  if TextX < 0 then
+  begin
+    DeltaX := Min(-TextX, BoWidth - IXPos - Bmp.Width) + BoRect.Left;
+    Inc(TextX, DeltaX);
+    Inc(IXPos, DeltaX);
+  end
+  else
+  begin // vertical correction
+    DeltaX := TextX + TextWidth - (BoRect.Left + BoWidth);
+    DeltaX := Min(DeltaX, IXPos);
+    if DeltaX > 0 then
+    begin
+      Dec(TextX, DeltaX);
+      Dec(IXPos, DeltaX);
     end;
   end;
   case FVerticalTextPosition of
     CENTER:
-      ty:= iy + (bmp.Height - th) div 2;
-    UJLabel.TOP:
-      if FHorizontalTextPosition = UAComponents.CENTER then begin
-        ty:= iy - itg - th;
-        if ty < boRect.Top then begin
-          iy:= iy - (ty - boRect.Top);
-          ty:= boRect.Top;
+      TextY := IYPos + (Bmp.Height - TextHeight) div 2;
+    UJLabel.Top:
+      if FHorizontalTextPosition = UAComponents.CENTER then
+      begin
+        TextY := IYPos - Itg - TextHeight;
+        if TextY < BoRect.Top then
+        begin
+          IYPos := IYPos - (TextY - BoRect.Top);
+          TextY := BoRect.Top;
         end;
       end
-        else ty:= iy;
-    BOTTOM:
-      if FHorizontalTextPosition = UAComponents.CENTER then begin
-        ty:= iy + bmp.Height + itg;
-        dy:= ty + th - (boRect.Top + boHeight);
-        if dy > 0 then begin
-          dec(iy, dy);
-          dec(ty, dy);
+      else
+        TextY := IYPos;
+    Bottom:
+      if FHorizontalTextPosition = UAComponents.CENTER then
+      begin
+        TextY := IYPos + Bmp.Height + Itg;
+        DeltaY := TextY + TextHeight - (BoRect.Top + BoHeight);
+        if DeltaY > 0 then
+        begin
+          Dec(IYPos, DeltaY);
+          Dec(TextY, DeltaY);
         end;
       end
-        else ty:= iy + bmp.Height - th;
+      else
+        TextY := IYPos + Bmp.Height - TextHeight;
   end;
-  if FHorzAlignment = UAComponents.CENTER then begin
-    x1:= min(tx, ix);
-    x2:= max(tx + tw, ix + bmp.width);
-    dx:= (boWidth - (x2 - x1)) div 2 - (x1 - boRect.Left);
-    inc(tx, dx);
-    inc(ix, dx);
+  if FHorzAlignment = UAComponents.CENTER then
+  begin
+    X1Pos := Min(TextX, IXPos);
+    X2Pos := Max(TextX + TextWidth, IXPos + Bmp.Width);
+    DeltaX := (BoWidth - (X2Pos - X1Pos)) div 2 - (X1Pos - BoRect.Left);
+    Inc(TextX, DeltaX);
+    Inc(IXPos, DeltaX);
   end;
-  if FVertAlignment = CENTER then begin
-    y1:= min(ty, iy);
-    y2:= max(ty + th, iy + bmp.Height);
-    dy:= (boHeight - (y2 - y1)) div 2 - (y1 - boRect.Top);
-    inc(ty, dy);
-    inc(iy, dy);
-  end;
-
-  if (ix < 4) or (tx < 4) then begin
-    inc(ix, 4);
-    inc(tx, 4);
-  end else
-  if (Width - ix - bmp.Width < 4) or (Width - tx - tw < 4) then begin
-    dec(ix, 4);
-    dec(tx, 4);
-  end;
-  if (iy < 4) or (ty < 4) then begin
-    inc(iy, 4);
-    inc(ty, 4);
-  end else
-  if (Height - iy - bmp.Height < 4) or (Height - ty - th < 4) then begin
-    dec(iy, 4);
-    dec(ty, 4);
+  if FVertAlignment = CENTER then
+  begin
+    Y1Pos := Min(TextY, IYPos);
+    Y2Pos := Max(TextY + TextHeight, IYPos + Bmp.Height);
+    DeltaY := (BoHeight - (Y2Pos - Y1Pos)) div 2 - (Y1Pos - BoRect.Top);
+    Inc(TextY, DeltaY);
+    Inc(IYPos, DeltaY);
   end;
 
-  Canvas.Draw(ix, iy, bmp);
-  Canvas.TextRect(Rect(0, 0, Width, Height), tx, ty, s);
-  FreeAndNil(bmp);
+  if (IXPos < 4) or (TextX < 4) then
+  begin
+    Inc(IXPos, 4);
+    Inc(TextX, 4);
+  end
+  else if (Width - IXPos - Bmp.Width < 4) or (Width - TextX - TextWidth < 4)
+  then
+  begin
+    Dec(IXPos, 4);
+    Dec(TextX, 4);
+  end;
+  if (IYPos < 4) or (TextY < 4) then
+  begin
+    Inc(IYPos, 4);
+    Inc(TextY, 4);
+  end
+  else if (Height - IYPos - Bmp.Height < 4) or (Height - TextY - TextHeight < 4)
+  then
+  begin
+    Dec(IYPos, 4);
+    Dec(TextY, 4);
+  end;
+
+  Canvas.Draw(IXPos, IYPos, Bmp);
+  Canvas.TextRect(Rect(0, 0, Width, Height), TextX, TextY, Str);
+  FreeAndNil(Bmp);
 end;
 
-procedure TAbstractButton.setBorderPainted(aValue: boolean);
+procedure TAbstractButton.SetBorderPainted(AValue: Boolean);
 begin
-  if aValue <> FBorderPainted then begin
-    FBorderPainted:= aValue;
+  if AValue <> FBorderPainted then
+  begin
+    FBorderPainted := AValue;
     Invalidate;
   end;
 end;
 
-procedure TAbstractButton.setContentAreaFilled(aValue: boolean);
+procedure TAbstractButton.SetContentAreaFilled(AValue: Boolean);
 begin
-  if aValue <> FContentAreaFilled then begin
-    FContentAreaFilled:= aValue;
+  if AValue <> FContentAreaFilled then
+  begin
+    FContentAreaFilled := AValue;
     Invalidate;
   end;
 end;
 
-procedure TAbstractButton.setHorzAlignment(aValue: THorzAlignment);
+procedure TAbstractButton.SetHorzAlignment(AValue: THorzAlignment);
 begin
-  if aValue <> FHorzAlignment then begin
-    FHorzAlignment:= aValue;
+  if AValue <> FHorzAlignment then
+  begin
+    FHorzAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TAbstractButton.setVertAlignment(aValue: TVertAlignment);
+procedure TAbstractButton.SetVertAlignment(AValue: TVertAlignment);
 begin
-  if aValue <> FVertAlignment then begin
-    FVertAlignment:= aValue;
+  if AValue <> FVertAlignment then
+  begin
+    FVertAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TAbstractButton.setIcon(const aValue: string);
+procedure TAbstractButton.SetIcon(const AValue: string);
 begin
-  if aValue <> FIcon then begin
-    FIcon:= aValue;
+  if AValue <> FIcon then
+  begin
+    FIcon := AValue;
     Invalidate;
   end;
 end;
 
-procedure TAbstractButton.setHorizontalTextPosition(aValue: THorzAlignment);
+procedure TAbstractButton.SetHorizontalTextPosition(AValue: THorzAlignment);
 begin
-  if aValue <> FHorizontalTextPosition then begin
-    FHorizontalTextPosition:= aValue;
+  if AValue <> FHorizontalTextPosition then
+  begin
+    FHorizontalTextPosition := AValue;
     Invalidate;
   end;
 end;
 
-procedure TAbstractButton.setVerticalTextPosition(aValue: TVertAlignment);
+procedure TAbstractButton.SetVerticalTextPosition(AValue: TVertAlignment);
 begin
-  if aValue <> FVerticalTextPosition then begin
-    FVerticalTextPosition:= aValue;
+  if AValue <> FVerticalTextPosition then
+  begin
+    FVerticalTextPosition := AValue;
     Invalidate;
   end;
 end;
 
-procedure TAbstractButton.setIconTextGap(aValue: integer);
+procedure TAbstractButton.SetIconTextGap(AValue: Integer);
 begin
-  if aValue <> FIconTextGap then begin
-    FIconTextGap:= aValue;
+  if AValue <> FIconTextGap then
+  begin
+    FIconTextGap := AValue;
     Invalidate;
   end;
 end;
 
-procedure TAbstractButton.setText(const aValue: string);
+procedure TAbstractButton.SetText(const AValue: string);
 begin
-  if aValue <> FText then begin
-    FText:= aValue;
+  if AValue <> FText then
+  begin
+    FText := AValue;
     Invalidate;
   end;
 end;
 
-{--- TJButton -----------------------------------------------------------------}
+{ --- TJButton ----------------------------------------------------------------- }
 
 constructor TJButton.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= +4;
-  FText:= 'Button';
-  JavaType:= 'JButton';
+  inherited Create(AOwner);
+  Tag := +4;
+  FText := 'Button';
+  JavaType := 'JButton';
 end;
 
-constructor TJButton.CreateFrom(aButton: TButton);
+constructor TJButton.CreateFrom(AButton: TButton);
 begin
-  Create(aButton.Owner);
-  CreateFromJ(aButton);
-  Text:= aButton.Caption;
-  Font:= aButton.Font;
-  Foreground:= Font.Color;
+  Create(AButton.Owner);
+  CreateFromJ(AButton);
+  Text := AButton.Caption;
+  Font := AButton.Font;
+  Foreground := Font.Color;
 end;
 
-procedure TJButton.setAttribute(Attr, Value, Typ: string);
+procedure TJButton.SetAttribute(Attr, Value, Typ: string);
 begin
   if Right(Attr, -4) = 'Icon' then
     MakeIcon(Attr, Value, 'JButton')
@@ -482,22 +570,22 @@ procedure TJButton.NewControl;
 begin
   DefaultComponent;
   InsertNewVariable('private JButton ' + Name + ' = new JButton();');
-  MakeAttribut('Text', asString(FText));
+  MakeAttribut('Text', AsString(FText));
   MakeAttribut('Margin', 'new Insets(2, 2, 2, 2)');
   AddListener('actionPerformed');
 end;
 
-{--- TJToggleButton -----------------------------------------------------------------}
+{ --- TJToggleButton ----------------------------------------------------------------- }
 
 constructor TJToggleButton.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= +25;
-  FText:= 'ToggleButton';
-  JavaType:= 'JToggleButton';
+  inherited Create(AOwner);
+  Tag := +25;
+  FText := 'ToggleButton';
+  JavaType := 'JToggleButton';
 end;
 
-procedure TJToggleButton.setAttribute(Attr, Value, Typ: string);
+procedure TJToggleButton.SetAttribute(Attr, Value, Typ: string);
 begin
   if Right(Attr, -4) = 'Icon' then
     MakeIcon(Attr, Value, 'JToggleButton')
@@ -514,11 +602,11 @@ end;
 procedure TJToggleButton.NewControl;
 begin
   DefaultComponent;
-  InsertNewVariable('private JToggleButton ' + Name + ' = new JToggleButton();');
-  MakeAttribut('Text', asString(Text));
+  InsertNewVariable('private JToggleButton ' + Name +
+    ' = new JToggleButton();');
+  MakeAttribut('Text', AsString(Text));
   MakeAttribut('Margin', 'new Insets(2, 2, 2, 2)');
   AddListener('actionPerformed');
 end;
 
 end.
-

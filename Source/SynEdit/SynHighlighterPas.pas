@@ -298,7 +298,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 526 + Ord(Str^) * 502;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 641;
   fStringLen := Str - fToIdent;
@@ -319,11 +319,11 @@ end;
 
 procedure TSynPasSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[215] := FuncType;
   fIdentFuncTable[412] := FuncType;
@@ -383,9 +383,9 @@ begin
   fIdentFuncTable[291] := FuncWrite;
   fIdentFuncTable[496] := FuncWriteonly;
 
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if @fIdentFuncTable[i] = nil then
-      fIdentFuncTable[i] := KeyWordFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if @fIdentFuncTable[Int] = nil then
+      fIdentFuncTable[Int] := KeyWordFunc;
 end;
 
 function TSynPasSyn.AltFunc(Index: Integer): TtkTokenKind;
@@ -751,8 +751,8 @@ end;
 procedure TSynPasSyn.AddressOpProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if fLine[Run] = '@' then inc(Run);
+  Inc(Run);
+  if fLine[Run] = '@' then Inc(Run);
 end;
 
 procedure TSynPasSyn.AsciiCharProc;
@@ -794,7 +794,7 @@ begin
             fRange := rsAsm
           else
             fRange := rsUnKnown;
-          break;
+          Break;
         end;
         Inc(Run);
       until IsLineEnd(Run);
@@ -824,14 +824,14 @@ end;
 procedure TSynPasSyn.ColonOrGreaterProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if fLine[Run] = '=' then inc(Run);
+  Inc(Run);
+  if fLine[Run] = '=' then Inc(Run);
 end;
 
 procedure TSynPasSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
   if fLine[Run] = #10 then
     Inc(Run);
 end;
@@ -839,7 +839,7 @@ end;
 procedure TSynPasSyn.IdentProc;
 begin
   fTokenID := IdentKind(fLine + Run);
-  inc(Run, fStringLen);
+  Inc(Run, fStringLen);
   while IsIdentChar(fLine[Run]) do
     Inc(Run);
 end;
@@ -857,7 +857,7 @@ procedure TSynPasSyn.IntegerProc;
   end;
   
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkHex;
   while IsIntegerChar do
     Inc(Run);
@@ -866,13 +866,13 @@ end;
 procedure TSynPasSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynPasSyn.LowerProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
+  Inc(Run);
   if (fLine[Run] = '=') or (fLine[Run] = '>') then
     Inc(Run);
 end;
@@ -880,7 +880,7 @@ end;
 procedure TSynPasSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynPasSyn.NumberProc;
@@ -922,7 +922,7 @@ end;
 procedure TSynPasSyn.PointProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
+  Inc(Run);
   if (fLine[Run] = '.') or (fLine[Run - 1] = ')') then
     Inc(Run);
 end; 
@@ -942,7 +942,7 @@ begin
           fRange := rsAsm
         else
           fRange := rsUnKnown;
-        break;
+        Break;
       end;
       Inc(Run);
     until IsLineEnd(Run);
@@ -966,7 +966,7 @@ begin
       end;
     '.':
       begin
-        inc(Run);
+        Inc(Run);
         fTokenID := tkSymbol;
       end;
   else
@@ -998,9 +998,9 @@ end;
 
 procedure TSynPasSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynPasSyn.StringProc;
@@ -1012,7 +1012,7 @@ begin
     if fLine[Run] = #39 then begin
       Inc(Run);
       if fLine[Run] <> #39 then
-        break;
+        Break;
     end;
     Inc(Run);
   end;
@@ -1020,13 +1020,13 @@ end;
 
 procedure TSynPasSyn.SymbolProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynPasSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -1149,7 +1149,7 @@ procedure TSynPasSyn.EnumUserSettings(DelphiVersions: TStrings);
   procedure LoadKeyVersions(const Key, Prefix: string);
   var
     Versions: TStringList;
-    i: Integer;
+    Int: Integer;
   begin
     with TBetterRegistry.Create do
     begin
@@ -1161,8 +1161,8 @@ procedure TSynPasSyn.EnumUserSettings(DelphiVersions: TStrings);
             Versions := TStringList.Create;
             try
               GetKeyNames(Versions);
-              for i := 0 to Versions.Count - 1 do
-                DelphiVersions.Add(Prefix + Versions[i]);
+              for Int := 0 to Versions.Count - 1 do
+                DelphiVersions.Add(Prefix + Versions[Int]);
             finally
               FreeAndNil(Versions);
             end;
@@ -1199,14 +1199,14 @@ function TSynPasSyn.UseUserSettings(VersionIndex: Integer): Boolean;
       Version: Currency;
       VersionStr: string;
 
-      function ReadDelphi2Or3(settingTag: string; attri: TSynHighlighterAttributes; name: string): Boolean;
+      function ReadDelphi2Or3(settingTag: string; attri: TSynHighlighterAttributes; Name: string): Boolean;
       var
-        i: Integer;
+        Int: Integer;
       begin
-        for i := 1 to Length(name) do
-          if name[i] = ' ' then name[i] := '_';
+        for Int := 1 to Length(Name) do
+          if Name[Int] = ' ' then Name[Int] := '_';
         Result := attri.LoadFromBorlandRegistry(HKEY_CURRENT_USER,
-                '\Software\Borland\Delphi\'+settingTag+'\Highlight',name,True);
+                '\Software\Borland\Delphi\'+settingTag+'\Highlight',Name,True);
       end; { ReadDelphi2Or3 }
 
       function ReadDelphi4OrMore(settingTag: string; attri: TSynHighlighterAttributes; key: string): Boolean;
@@ -1453,16 +1453,16 @@ var
 
   function FoldRegion(Line: Integer): Boolean;
   var
-    S: string;
+    Str: string;
   begin
     Result := False;
-    S := TrimLeft(CurLine);
-    if Uppercase(Copy(S, 1, 8)) = '{$REGION' then
+    Str := TrimLeft(CurLine);
+    if UpperCase(Copy(Str, 1, 8)) = '{$REGION' then
     begin
       FoldRanges.StartFoldRange(Line + 1, FoldRegionType);
       Result := True;
     end
-    else if Uppercase(Copy(S, 1, 11)) = '{$ENDREGION' then
+    else if UpperCase(Copy(Str, 1, 11)) = '{$ENDREGION' then
     begin
       FoldRanges.StopFoldRange(Line + 1, FoldRegionType);
       Result := True;
@@ -1471,23 +1471,23 @@ var
 
   function ConditionalDirective(Line: Integer): Boolean;
   var
-    S: string;
+    Str: string;
   begin
     Result := False;
-    S := TrimLeft(CurLine);
-    if Uppercase(Copy(S, 1, 7)) = '{$IFDEF' then
+    Str := TrimLeft(CurLine);
+    if UpperCase(Copy(Str, 1, 7)) = '{$IFDEF' then
     begin
       FoldRanges.StartFoldRange(Line + 1, FT_ConditionalDirective);
       Result := True;
     end
-    else if Uppercase(Copy(S, 1, 7)) = '{$ENDIF' then
+    else if UpperCase(Copy(Str, 1, 7)) = '{$ENDIF' then
     begin
       FoldRanges.StopFoldRange(Line + 1, FT_ConditionalDirective);
       Result := True;
     end;
   end;
 
-  function IsMultiLineStatement(Line : integer; Ranges: TRangeStates;
+  function IsMultiLineStatement(Line : Integer; Ranges: TRangeStates;
      Fold : Boolean; FoldType: Integer = 1): Boolean;
   begin
     Result := True;
@@ -1533,7 +1533,7 @@ begin
       Continue;
 
     // Implementation
-    if Uppercase(TrimLeft(CurLine)) = 'IMPLEMENTATION' then
+    if UpperCase(TrimLeft(CurLine)) = 'IMPLEMENTATION' then
       FoldRanges.StartFoldRange(Line +1, FT_Implementation)
     // Functions and procedures
     else if RE_Code.Matches(CurLine).Count > 0 then
@@ -1550,27 +1550,27 @@ procedure TSynPasSyn.AdjustFoldRanges(FoldRanges: TSynFoldRanges;
    Provide folding for procedures and functions included nested ones.
 }
 var
-  i, j, SkipTo: Integer;
+  Int, j, SkipTo: Integer;
   ImplementationIndex: Integer;
   FoldRange: TSynFoldRange;
   mc: TMatchCollection;
 begin
   ImplementationIndex := - 1;
-  for i  := FoldRanges.Ranges.Count - 1 downto 0 do
+  for Int  := FoldRanges.Ranges.Count - 1 downto 0 do
   begin
-    if FoldRanges.Ranges.List[i].FoldType = FT_Implementation then
-      ImplementationIndex := i
-    else if FoldRanges.Ranges.List[i].FoldType = FT_CodeDeclaration then
+    if FoldRanges.Ranges.List[Int].FoldType = FT_Implementation then
+      ImplementationIndex := Int
+    else if FoldRanges.Ranges.List[Int].FoldType = FT_CodeDeclaration then
     begin
       if ImplementationIndex >= 0 then begin
         // Code declaration in the Interface part of a unit
-        FoldRanges.Ranges.Delete(i);
+        FoldRanges.Ranges.Delete(Int);
         Dec(ImplementationIndex);
-        continue;
+        Continue;
       end;
       // Examine the following ranges
       SkipTo := 0;
-      j := i + 1;
+      j := Int + 1;
       while J < FoldRanges.Ranges.Count do begin
         FoldRange := FoldRanges.Ranges.List[j];
         Inc(j);
@@ -1579,7 +1579,7 @@ begin
           FT_CodeDeclarationWithBody:
             begin
               SkipTo := FoldRange.ToLine;
-              continue;
+              Continue;
             end;
           FT_Standard:
           // possibly begin end;
@@ -1594,14 +1594,14 @@ begin
                 begin
                   // function or procedure followed by begin end block
                   // Adjust ToLine
-                  FoldRanges.Ranges.List[i].ToLine := FoldRange.ToLine;
-                  FoldRanges.Ranges.List[i].FoldType := FT_CodeDeclarationWithBody;
-                  break
+                  FoldRanges.Ranges.List[Int].ToLine := FoldRange.ToLine;
+                  FoldRanges.Ranges.List[Int].FoldType := FT_CodeDeclarationWithBody;
+                  Break
                 end else
                 begin
                   // class or record declaration follows, so
-                  FoldRanges.Ranges.Delete(i);
-                  break;
+                  FoldRanges.Ranges.Delete(Int);
+                  Break;
                  end;
               end else
                 Assert(False, 'TSynDWSSyn.AdjustFoldRanges');
@@ -1613,8 +1613,8 @@ begin
             else begin
               // Otherwise delete
               // eg. function definitions within a class definition
-              FoldRanges.Ranges.Delete(i);
-              break
+              FoldRanges.Ranges.Delete(Int);
+              Break
             end;
           end;
         end;

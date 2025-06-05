@@ -277,7 +277,7 @@ begin
   Result := gFontsInfoManager;
 end;
 
-function Min(x, y: integer): integer;
+function Min(x, y: Integer): Integer;
 begin
   if x < y then Result := x else Result := y;
 end;
@@ -429,11 +429,11 @@ end;
 procedure TheFontsInfoManager.DestroyFontHandles(
   pFontsInfo: PheSharedFontsInfo);
 var
-  i: Integer;
+  Int: Integer;
 begin
   with pFontsInfo^ do
-    for i := Low(TheStockFontPatterns) to High(TheStockFontPatterns) do
-      with FontsData[i] do
+    for Int := Low(TheStockFontPatterns) to High(TheStockFontPatterns) do
+      with FontsData[Int] do
         if Handle <> 0 then
         begin
           DeleteObject(Handle);
@@ -444,11 +444,11 @@ end;
 function TheFontsInfoManager.FindFontsInfo(
   const LF: TLogFont): PheSharedFontsInfo;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := 0 to FFontsInfo.Count - 1 do
+  for Int := 0 to FFontsInfo.Count - 1 do
   begin
-    Result := PheSharedFontsInfo(FFontsInfo[i]);
+    Result := PheSharedFontsInfo(FFontsInfo[Int]);
     if CompareMem(@(Result^.BaseLF), @LF, SizeOf(TLogFont)) then
       Exit;
   end;
@@ -677,7 +677,7 @@ var
   idx: Integer;
   DC: HDC;
   hOldFont: HFONT;
-  p: PheFontData;
+  Posi: PheFontData;
 begin
 {$IFDEF HE_ASSERT}
   ASSERT(SizeOf(TFontStyles) = 1,
@@ -691,12 +691,12 @@ begin
   ASSERT(idx <= High(TheStockFontPatterns));
 
   UseFontHandles;
-  p := FontData[idx];
-  if FpCrntFontData = p then
+  Posi := FontData[idx];
+  if FpCrntFontData = Posi then
     Exit;
 
-  FpCrntFontData := p;
-  with p^ do
+  FpCrntFontData := Posi;
+  with Posi^ do
     if Handle <> 0 then
     begin
       FCrntFont := Handle;
@@ -926,15 +926,15 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; Options: TTextOutOptions;
   procedure InitETODist(CharWidth: Integer);
   var
     Size: TSize;
-    i: Integer;
+    Int: Integer;
   begin
     ReallocMem(FETODist, Length * SizeOf(Integer));
-    for i := 0 to Length - 1 do
+    for Int := 0 to Length - 1 do
     begin
-      Size := TextExtent(PWideChar(@Text[i]), 1);
+      Size := TextExtent(PWideChar(@Text[Int]), 1);
       if Size.cx <> CharWidth then
-         FETODist[i] := Ceil(Size.cx / CharWidth) * CharWidth
-      else FETODist[i] := CharWidth;
+         FETODist[Int] := Ceil(Size.cx / CharWidth) * CharWidth
+      else FETODist[Int] := CharWidth;
     end;
   end;
 

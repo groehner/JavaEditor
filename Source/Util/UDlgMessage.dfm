@@ -150,8 +150,6 @@ object DlgMessage: TDlgMessage
     Align = alBottom
     ParentBackground = False
     TabOrder = 0
-    ExplicitTop = 54
-    ExplicitWidth = 383
     object BOverwrite: TButton
       Left = 44
       Top = 11

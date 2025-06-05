@@ -21,7 +21,11 @@ unit UIntegrator;
 
 interface
 
-uses Classes, Contnrs, uCodeProvider, uModel;
+uses
+  Classes,
+  Contnrs,
+  UCodeProvider,
+  UModel;
 
 type
   {
@@ -31,7 +35,7 @@ type
   private
     FModel: TObjectModel;
   public
-    constructor Create(om: TObjectModel); reintroduce;
+    constructor Create(ObjectModel: TObjectModel); reintroduce;
     destructor Destroy; override;
     // THE objectmodel
     property Model: TObjectModel read FModel;
@@ -44,7 +48,7 @@ type
   TTwowayIntegrator = class(TIntegrator)
   public
     procedure InitFromModel; virtual;
-    procedure BuildModelFrom(const FileName : string); virtual;
+    procedure BuildModelFrom(const FileName: string); virtual;
   end;
 
   {
@@ -60,21 +64,26 @@ type
     used to generate a model.
   }
   TImportIntegrator = class(TIntegrator)
+  private
+    FCodeProvider: TCodeProvider;
   protected
-
     // List of files that have been read in this Lista importsession
-    FilesRead : TStringList;
+    FFilesRead: TStringList;
 
-    procedure ImportOneFile(const FileName: string; withoutNeedSource: boolean = false); virtual; abstract;
+    procedure ImportOneFile(const FileName: string;
+      WithoutNeedSource: Boolean = False); virtual; abstract;
   public
-    CodeProvider: TCodeProvider;
-    constructor Create(om: TObjectModel; aCodeProvider: TCodeProvider); reintroduce;
+    constructor Create(ObjectModel: TObjectModel; CodeProvider: TCodeProvider);
+      reintroduce;
     destructor Destroy; override;
-    procedure BuildModelFrom(const FileName : string; ResetModel : boolean = True; Lock : boolean = true; withoutNeedSource: boolean = false); overload;
-    procedure BuildModelFrom(FileNames : TStrings; withoutNeedSource: boolean = false); overload;
-    procedure AddFileToModel(const Filename: string);
+    procedure BuildModelFrom(const FileName: string; ResetModel: Boolean = True;
+      Lock: Boolean = True; WithoutNeedSource: Boolean = False); overload;
+    procedure BuildModelFrom(FileNames: TStrings;
+      WithoutNeedSource: Boolean = False); overload;
+    procedure AddFileToModel(const FileName: string);
     procedure AddClasspath(Classpath: string; const Pathname: string);
-    class function GetFileExtensions : TStringList; virtual; abstract;
+    class function GetFileExtensions: TStringList; virtual; abstract;
+    property CodeProvider: TCodeProvider read FCodeProvider;
   end;
 
   TIntegratorClass = class of TIntegrator;
@@ -82,40 +91,40 @@ type
 
   TIntegrators = class
   private
-    List : TClassList;
+    FList: TClassList;
   public
     constructor Create;
     destructor Destroy; override;
 
     {
-     Should be called by all integrator implementations to register it with
-     the masterlist of integrators.
-     eg. Integrators.Register( TEiffelIntegrator );
+      Should be called by all integrator implementations to register it with
+      the masterlist of integrators.
+      eg. Integrators.Register( TEiffelIntegrator );
     }
-    procedure Register(T: TIntegratorClass);
+    procedure Register(Kind: TIntegratorClass);
 
     // Retrieves a list of available integrators of a given kind
-    function Get(Kind : TIntegratorClass) : TClassList;
+    function Get(Kind: TIntegratorClass): TClassList;
   end;
 
-{
-  Used to retrieve _the_ instance of TIntegrators.
-}
-function Integrators : TIntegrators;
+  {
+    Used to retrieve _the_ instance of TIntegrators.
+  }
+function Integrators: TIntegrators;
 
 implementation
 
 uses SysUtils, Dialogs;
 
 var
-  _Integrators : TIntegrators = nil;
+  GIntegrators: TIntegrators = nil;
 
-{ TIntegrator }
+  { TIntegrator }
 
-constructor TIntegrator.Create(om: TObjectModel);
+constructor TIntegrator.Create(ObjectModel: TObjectModel);
 begin
   inherited Create(nil);
-  FModel := om;
+  FModel := ObjectModel;
 end;
 
 destructor TIntegrator.Destroy;
@@ -126,37 +135,38 @@ end;
 
 { TTwowayIntegrator }
 
-procedure TTwowayIntegrator.BuildModelFrom(const FileName : string);
+procedure TTwowayIntegrator.BuildModelFrom(const FileName: string);
 begin
-//Stub
+  // Stub
 end;
 
 procedure TTwowayIntegrator.InitFromModel;
 begin
-//Stub
+  // Stub
 end;
 
 { TImportIntegrator }
 
 procedure TImportIntegrator.BuildModelFrom(const FileName: string;
-            ResetModel: boolean; Lock: boolean; withoutNeedSource: boolean);
+  ResetModel: Boolean; Lock: Boolean; WithoutNeedSource: Boolean);
 begin
-  CodeProvider.AddSearchPath(ExtractFilePath(FileName));
+  FCodeProvider.AddSearchPath(ExtractFilePath(FileName));
   if Lock then
     Model.Lock;
 
-  if ResetModel then begin
+  if ResetModel then
+  begin
     Model.Clear;
     Model.ModelRoot.SetConfigFile(FileName);
   end;
 
-  FilesRead.Add(FileName);
+  FFilesRead.Add(FileName);
   try
     try
-      if assigned(Model) and assigned(Model.ModelRoot) and
-        (Model.ModelRoot.Files.IndexOf(Filename) = -1) then
-        Model.ModelRoot.Files.Add(Filename);
-      ImportOneFile(FileName, withoutNeedSource);
+      if Assigned(Model) and Assigned(Model.ModelRoot) and
+        (Model.ModelRoot.Files.IndexOf(FileName) = -1) then
+        Model.ModelRoot.Files.Add(FileName);
+      ImportOneFile(FileName, WithoutNeedSource);
     except
       on E: Exception do
         ShowMessage(E.Message);
@@ -168,53 +178,58 @@ begin
 end;
 
 procedure TImportIntegrator.BuildModelFrom(FileNames: TStrings;
-            withoutNeedSource: boolean = false);
+  WithoutNeedSource: Boolean = False);
 begin
   try
     Model.Lock;
     // Add all searchpaths first so the units can find eachother.
-    for var i:= 0 to FileNames.Count-1 do
-      CodeProvider.AddSearchPath(ExtractFilePath(FileNames[I]));
+    for var I := 0 to FileNames.Count - 1 do
+      FCodeProvider.AddSearchPath(ExtractFilePath(FileNames[I]));
     Model.Clear;
     Model.ModelRoot.SetConfigFile(FileNames[0]);
-    for var i:= 0 to FileNames.Count-1 do
-      BuildModelFrom(FileNames[i], false, true, withoutNeedSource);
+    for var I := 0 to FileNames.Count - 1 do
+      BuildModelFrom(FileNames[I], False, True, WithoutNeedSource);
   finally
-     Model.UnLock;
+    Model.Unlock;
   end;
 end;
 
-procedure TImportIntegrator.AddFileToModel(const Filename: string);
+procedure TImportIntegrator.AddFileToModel(const FileName: string);
 begin
-  BuildModelFrom(FileName, false, false, true);
+  BuildModelFrom(FileName, False, False, True);
 end;
 
-procedure TImportIntegrator.AddClasspath(Classpath: string; const Pathname: string);
+procedure TImportIntegrator.AddClasspath(Classpath: string;
+  const Pathname: string);
 begin
-  Classpath:= Classpath + ';';
+  Classpath := Classpath + ';';
   repeat
-    var p:= Pos(';', Classpath);
-    var s:= copy(Classpath, 1, p-1);
-    delete(Classpath, 1, p);
-    if s = '.' then s:= ExtractFilepath(Pathname);
-    if DirectoryExists(s) then
-      Codeprovider.AddSearchPath(s);
+    var
+    Posi := Pos(';', Classpath);
+    var
+    Str := Copy(Classpath, 1, Posi - 1);
+    Delete(Classpath, 1, Posi);
+    if Str = '.' then
+      Str := ExtractFilePath(Pathname);
+    if DirectoryExists(Str) then
+      FCodeProvider.AddSearchPath(Str);
   until Classpath = '';
 end;
 
-constructor TImportIntegrator.Create(om: TObjectModel; aCodeProvider: TCodeProvider);
+constructor TImportIntegrator.Create(ObjectModel: TObjectModel;
+  CodeProvider: TCodeProvider);
 begin
-  inherited Create(Om);
-  Self.CodeProvider := aCodeProvider;
-  FilesRead := TStringList.Create;
-  FilesRead.Sorted := True;
-  FilesRead.Duplicates := dupIgnore;
+  inherited Create(ObjectModel);
+  Self.FCodeProvider := CodeProvider;
+  FFilesRead := TStringList.Create;
+  FFilesRead.Sorted := True;
+  FFilesRead.Duplicates := dupIgnore;
 end;
 
 destructor TImportIntegrator.Destroy;
 begin
-  FreeAndNil(CodeProvider);
-  FreeAndNil(FilesRead);
+  FreeAndNil(FCodeProvider);
+  FreeAndNil(FFilesRead);
   inherited;
 end;
 
@@ -222,38 +237,39 @@ end;
 
 constructor TIntegrators.Create;
 begin
-  List := TClassList.Create;
+  FList := TClassList.Create;
 end;
 
 destructor TIntegrators.Destroy;
 begin
-  FreeAndNil(List);
+  FreeAndNil(FList);
+  inherited;
 end;
 
 function TIntegrators.Get(Kind: TIntegratorClass): TClassList;
 begin
   Result := TClassList.Create;
-  for var i:= 0 to List.Count - 1 do
-    if List[i].InheritsFrom(Kind) then
-      Result.Add(List[i]);
+  for var I := 0 to FList.Count - 1 do
+    if FList[I].InheritsFrom(Kind) then
+      Result.Add(FList[I]);
 end;
 
-procedure TIntegrators.Register(T: TIntegratorClass);
+procedure TIntegrators.Register(Kind: TIntegratorClass);
 begin
-  List.Add(T);
+  FList.Add(Kind);
 end;
 
-function Integrators : TIntegrators;
+function Integrators: TIntegrators;
 begin
-  if _Integrators = nil then
-    _Integrators := TIntegrators.Create;
-  Result := _Integrators;
+  if not Assigned(GIntegrators) then
+    GIntegrators := TIntegrators.Create;
+  Result := GIntegrators;
 end;
 
 initialization
 
 finalization
-   FreeAndNil(_Integrators);
+
+FreeAndNil(GIntegrators);
 
 end.
-

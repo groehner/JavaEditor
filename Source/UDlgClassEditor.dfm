@@ -52,7 +52,7 @@ object FClassEditor: TFClassEditor
     Top = 8
     Width = 368
     Height = 425
-    ActivePage = TSClass
+    ActivePage = TSAttributes
     TabOrder = 0
     OnChange = PageControlChange
     object TSClass: TTabSheet
@@ -248,7 +248,7 @@ object FClassEditor: TFClassEditor
         Height = 115
         Caption = 'Options'
         TabOrder = 1
-        object CBsetMethod: TCheckBox
+        object CBSetMethod: TCheckBox
           Left = 8
           Top = 90
           Width = 90
@@ -258,7 +258,7 @@ object FClassEditor: TFClassEditor
           State = cbChecked
           TabOrder = 3
         end
-        object CBgetMethod: TCheckBox
+        object CBGetMethod: TCheckBox
           Left = 8
           Top = 66
           Width = 90

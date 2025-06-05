@@ -24,24 +24,36 @@ unit UJavaParser;
 // http://java.sun.com/docs/books/jls/first_edition/html/index.html
 // http://java.sun.com/docs/books/jls/second_edition/html/syntax.doc.html
 
-// The syntax {x} on the right-hand side of a production denotes zero or more occurrences of x.
-// The syntax [x] on the right-hand side of a production denotes zero or one occurrences of x. That is, x is an optional symbol.
-// The phrase (one of) on the right-hand side of a production signifies that each of the symbols on the following line or lines is an alternative definition.
+// The syntax {x} on the right-hand side of a production denotes zero or more
+//   occurrences of x.
+// The syntax [x] on the right-hand side of a production denotes zero or one
+//   occurrences of x. That is, x is an optional symbol.
+// The phrase (one of) on the right-hand side of a production signifies that
+//   each of the symbols on the following Line or lines is an alternative definition.
 
 interface
 
-uses Classes, uCodeParser, uModel, uModelEntity,
-  UStructure, UBaseForm, uIntegrator, UJavaScanner, UUtils;
+uses
+  Classes,
+  UCodeParser,
+  UModel,
+  UModelEntity,
+  UStructure,
+  UBaseForm,
+  UIntegrator,
+  UJavaScanner,
+  UUtils;
 
 type
 
   TJavaImporter = class(TImportIntegrator)
   private
-    Parser: TCodeParser;
+    FParser: TCodeParser;
   public
-    procedure NeedPackageHandler(var AName: string; aPackage: string;
+    procedure NeedPackageHandler(var AName: string; Package: string;
       var AStream: TStream; OnlyLookUp: Boolean = False);
-    procedure ImportOneFile(const FileName: string; withoutNeedSource: boolean = false); override;
+    procedure ImportOneFile(const FileName: string;
+      WithoutNeedSource: Boolean = False); override;
     procedure ImportOneEditor(const FileName: string; Form: TFForm);
     class function GetFileExtensions: TStringList; override;
   end;
@@ -50,165 +62,188 @@ type
   private
     FUnit: TUnitPackage; // nil for Execution-Parser
     FOM: TObjectModel;
-    ClassImports: TStringList; // import java.util.Vector
-    FullImports: TStringList; // import java.util.*
-    UserImportClasses: TStringList; // import javavis.base.*;
-
-    ModAbstract: Boolean;
-    ModStatic: Boolean;
-    ModFinal: Boolean;
-    ModVisibility: TVisibility;
+    FClassImports: TStringList; // import java.util.Vector
+    FFullImports: TStringList; // import java.util.*
+    FUserImportClasses: TStringList; // import javavis.base.*;
+    FModAbstract: Boolean;
+    FModStatic: Boolean;
+    FModFinal: Boolean;
+    FModVisibility: TVisibility;
     FFilename: string;
     FSourcepath: string;
-    Packagename: string;
-    WithView: Boolean;
+    FPackagename: string;
+    FWithView: Boolean;
     FInner: Boolean;
-    FWithoutNeedSource: boolean;
-    ScopeDepth: integer;
-    FAnonymClassNr: integer;
-    Depth: integer;
-    FrameType: integer;
+    FWithoutNeedSource: Boolean;
+    FScopeDepth: Integer;
+    FAnonymClassNr: Integer;
+    FCountClasses: Integer;
+    FDepth: Integer;
+    FFilo: TList;
+    FFrameType: Integer;
+    FScanner: TJavaScanner;
+    FStructures: TStructures;
 
     procedure ParseCompilationUnit;
     procedure ParseTypeDeclaration;
-
-    procedure ParseClassDeclaration(line: integer; IsInner: Boolean = False;
-      const ParentName: string = '');
-    procedure ParseClassBody(C: TClass);
-    procedure ParseInterfaceDeclaration(line: integer; IsInner: Boolean = False;
-      const ParentName: string = '');
+    procedure ParseClassDeclaration(Line: Integer; IsInner: Boolean = False;
+      const Parentname: string = '');
+    procedure ParseClassBody(AClass: TClass);
+    procedure ParseInterfaceDeclaration(Line: Integer; IsInner: Boolean = False;
+      const Parentname: string = '');
     procedure ParseEnumDeclaration;
-    procedure ParseBlock(O: TOperation);
-    procedure ParseIfStatement(O: TOperation);
-    procedure ParseElseIfStatement(O: TOperation);
-    procedure ParseDoStatement(O: TOperation);
-    procedure ParseWhileStatement(O: TOperation);
-    procedure ParseForStatement(O: TOperation);
-    procedure ParseTryStatement(O: TOperation);
-    procedure ParseSwitchStatement(O: TOperation);
-    procedure ParseSynchronizedStatement(O: TOperation);
-    procedure ParseReturnStatement(O: TOperation);
-    procedure ParseThrowStatement(O: TOperation);
-    procedure ParseBreakStatement(O: TOperation);
-    procedure ParseYieldStatement(O: TOperation);
-    procedure ParseContinueStatement(O: TOperation);
-    procedure ParseAssertStatement(O: TOperation);
-    procedure ParseAssignment(O: TOperation);
-    procedure ParseLambdaBody(O: TOperation);
-    procedure ParseNew(O: TOperation);
-    procedure ParseMethodInvocation(const Typename: string; O: TOperation);
-    procedure ParseLocalVariableDeclaration(Typename: string; O: TOperation);
-    procedure ParseExpressionOrLocalVariableDeclarationStatement(O: TOperation);
+    procedure ParseBlock(Operation: TOperation);
+    procedure ParseIfStatement(Operation: TOperation);
+    procedure ParseElseIfStatement(Operation: TOperation);
+    procedure ParseDoStatement(Operation: TOperation);
+    procedure ParseWhileStatement(Operation: TOperation);
+    procedure ParseForStatement(Operation: TOperation);
+    procedure ParseTryStatement(Operation: TOperation);
+    procedure ParseSwitchStatement(Operation: TOperation);
+    procedure ParseSynchronizedStatement(Operation: TOperation);
+    procedure ParseReturnStatement(Operation: TOperation);
+    procedure ParseThrowStatement(Operation: TOperation);
+    procedure ParseBreakStatement(Operation: TOperation);
+    procedure ParseYieldStatement(Operation: TOperation);
+    procedure ParseContinueStatement(Operation: TOperation);
+    procedure ParseAssertStatement(Operation: TOperation);
+    procedure ParseAssignment(Operation: TOperation);
+    procedure ParseLambdaBody(Operation: TOperation);
+    procedure ParseNew(Operation: TOperation);
+    procedure ParseMethodInvocation(const Typename: string;
+      Operation: TOperation);
+    procedure ParseLocalVariableDeclaration(Typename: string;
+      Operation: TOperation);
+    procedure ParseExpressionOrLocalVariableDeclarationStatement
+      (Operation: TOperation);
 
-    procedure DoOperation(O: TOperation; const ParentName, Typename: string);
-    procedure DoAttribute(A: TAttribute; const aGeneric: string; O: TOperation = nil);
-    procedure ParseArgumentList(O: TOperation); overload;
+    procedure DoOperation(Operation: TOperation;
+      const Parentname, Typename: string);
+    procedure DoAttribute(Attribute: TAttribute; const AGeneric: string;
+      Operation: TOperation = nil);
+    procedure ParseArgumentList(Operation: TOperation); overload;
 
-    function GetClassName(s: string): string;
+    function GetClassName(Str: string): string;
     procedure ReadFullImport(const Import: string);
     procedure CollectClassesForImport(const Import, Sourcepath, Package: string;
       UserImports: TStringList);
-    procedure CollectDirClassesForImport(const Import, Sourcepath, Package: string;
-      UserImports: TStringList);
+    procedure CollectDirClassesForImport(const Import, Sourcepath,
+      Package: string; UserImports: TStringList);
 
-    procedure SetVisibility(M: TModelEntity);
-    function NeedSource(const SourceName, aPackagename: string): Boolean;
+    procedure SetVisibility(Model: TModelEntity);
+    function NeedSource(const SourceName, Packagename: string): Boolean;
     function ShowView(IsInner: Boolean): Boolean;
     function ThreadAbort: Boolean;
-    procedure AddStructure(from, _to: integer); overload;
-    procedure AddStructure(from, _to: integer;
+    procedure AddStructure(From, To_: Integer); overload;
+    procedure AddStructure(From, To_: Integer;
       SingleStatement: Boolean); overload;
     procedure AddStructureDefault;
-    procedure CloseStructure(line: integer); overload;
-    procedure CloseStructure(line: integer; SingleStatement: Boolean); overload;
+    procedure CloseStructure(Line: Integer); overload;
+    procedure CloseStructure(Line: Integer; SingleStatement: Boolean); overload;
     procedure CloseStructureDefault;
   protected
-    procedure SwapArrFromTo(var s1, s2: string);
-    procedure SkipTo(ch: char);
-    procedure Skip(ch: char);
-    procedure SkipPair(const open, close: string);
-    function ParseAnnotations(C: TClass = nil): string;
+    procedure SwapArrFromTo(var Str1, Str2: string);
+    procedure SkipTo(Chr: Char);
+    procedure Skip(Chr: Char);
+    procedure SkipPair(const Open, Close: string);
+    function ParseAnnotations(AClass: TClass = nil): string;
     function ParseModifiers: string;
     function IsMethodModifier(const Token: string): Boolean;
     procedure ParseLocalClassModifiers;
     function GetTypeName: string;
     function IsStatementBegin(const Token: string): Boolean;
-    function IsIdentifier(s: string): Boolean;
-    function IsReservedWord(const s: string): Boolean;
-    function IsTypename(const s: string): Boolean;
-    function IsExpressionStatementOperator(const Op: string): Boolean;
-    function IsAssignmentOperator(const Op: string): Boolean;
-    function IsOperator(const Op: string): Boolean;
-    function NeedClassifier(const CName: string; TheClass: TModelEntityClass = nil): TClassifier;
-    procedure ParseBlockStatement(O: TOperation; NewStructure: Boolean);
-
+    function IsIdentifier(Str: string): Boolean;
+    function IsReservedWord(const Str: string): Boolean;
+    function IsTypename(const Str: string): Boolean;
+    function IsExpressionStatementOperator(const Operator: string): Boolean;
+    function IsAssignmentOperator(const Operator: string): Boolean;
+    function IsOperator(const Operator: string): Boolean;
+    function NeedClassifier(const CName: string;
+      TheClass: TModelEntityClass = nil): TClassifier;
+    procedure ParseBlockStatement(Operation: TOperation; NewStructure: Boolean);
   public
-    CountClasses: integer;
-    Scanner: TJavaScanner;
-    Structures: TStructures;
-    Filo: TList;
-    constructor Create(aWithView: Boolean); virtual;
+    constructor Create(WithView: Boolean); virtual;
     destructor Destroy; override;
     procedure ParseStream(AStream: TStream; AModel: TAbstractPackage;
-      AOM: TObjectModel; FileName: string; inner: Boolean; withoutNeedSource: boolean); overload; override;
+      AOM: TObjectModel; FileName: string; Inner: Boolean;
+      WithoutNeedSource: Boolean); overload; override;
     function Token: string;
     function GetNextToken: string;
     function GetImportName(const Typ: string): string;
+    property CountClasses: Integer read FCountClasses;
+    property Filo: TList read FFilo;
+    property Scanner: TJavaScanner read FScanner;
+    property Structures: TStructures read FStructures;
   end;
 
 implementation
 
-uses Windows, Dialogs, Controls, Types, SysUtils, StrUtils, Character, Zip,
-  uCodeProvider, UConfiguration;
+uses
+  Windows,
+  Types,
+  SysUtils,
+  StrUtils,
+  Character,
+  Zip,
+  UConfiguration;
 
 { TJavaImporter }
 
-procedure TJavaImporter.ImportOneFile(const FileName: string; withoutNeedSource: boolean);
+procedure TJavaImporter.ImportOneFile(const FileName: string;
+  WithoutNeedSource: Boolean);
 begin
-  var Str := CodeProvider.LoadStream(FileName);
-  if Assigned(Str) then begin
-    Parser := TJavaParser.Create(true);
+  var
+  Str := CodeProvider.LoadStream(FileName);
+  if Assigned(Str) then
+  begin
+    FParser := TJavaParser.Create(True);
     try
-      Parser.NeedPackage := NeedPackageHandler;
-      Parser.Thread := nil;
-      Parser.ParseStream(Str, Model.ModelRoot, Model, FileName, False, withoutNeedSource);
+      FParser.NeedPackage := NeedPackageHandler;
+      FParser.Thread := nil;
+      FParser.ParseStream(Str, Model.ModelRoot, Model, FileName, False,
+        WithoutNeedSource);
     finally
-      FreeAndNil(Parser);
+      FreeAndNil(FParser);
     end;
   end;
 end;
 
 procedure TJavaImporter.ImportOneEditor(const FileName: string; Form: TFForm);
 begin
-  var Str:= CodeProvider.LoadStream(FileName, Form);
-  if Assigned(Str) then begin
-    Parser := TJavaParser.Create(true);
+  var
+  Str := CodeProvider.LoadStream(FileName, Form);
+  if Assigned(Str) then
+  begin
+    FParser := TJavaParser.Create(True);
     try
-      Parser.NeedPackage := NeedPackageHandler;
-      Parser.Thread := nil;
-      Parser.ParseStream(Str, Model.ModelRoot, Model, FileName, false, false);
+      FParser.NeedPackage := NeedPackageHandler;
+      FParser.Thread := nil;
+      FParser.ParseStream(Str, Model.ModelRoot, Model, FileName, False, False);
     finally
-      FreeAndNil(Parser);
+      FreeAndNil(FParser);
     end;
   end;
 end;
 
-procedure TJavaImporter.NeedPackageHandler(var AName: string; aPackage: string;
+procedure TJavaImporter.NeedPackageHandler(var AName: string; Package: string;
   var AStream: TStream; OnlyLookUp: Boolean = False);
 begin
   AStream := nil;
-  var FileName := AName + '.java';
-  if aPackage <> '' then begin
-    aPackage := ReplaceStr(aPackage, '.', '\');
-    FileName := aPackage + '\' + FileName;
+  var
+  FileName := AName + '.java';
+  if Package <> '' then
+  begin
+    Package := ReplaceStr(Package, '.', '\');
+    FileName := Package + '\' + FileName;
   end;
 
   FileName := CodeProvider.LocateFile(FileName);
   // Dont read same file twice
-  if (not OnlyLookUp) and (FileName <> '') and (FilesRead.IndexOf(FileName) = -1)
-  then begin
+  if (not OnlyLookUp) and (FileName <> '') and (FFilesRead.IndexOf(FileName) = -1)
+  then
+  begin
     AStream := CodeProvider.LoadStream(FileName);
-    FilesRead.Add(FileName);
+    FFilesRead.Add(FileName);
     AName := FileName;
   end;
 end;
@@ -231,31 +266,31 @@ const
     'strictfp', 'super', 'switch', 'synchronized', 'this', 'throw', 'throws',
     'transient', 'true', 'try', 'void', 'volatile', 'while', 'yield');
 
-constructor TJavaParser.Create(aWithView: Boolean);
+constructor TJavaParser.Create(WithView: Boolean);
 begin
   inherited Create;
-  Self.WithView := aWithView;
-  ClassImports := TStringList.Create;
-  FullImports := TStringList.Create;
-  UserImportClasses := TStringList.Create;
-  UserImportClasses.Sorted := true;
-  UserImportClasses.Duplicates := dupIgnore;
-  Scanner := TJavaScanner.Create;
-  Structures := TStructures.Create;
+  Self.FWithView := WithView;
+  FClassImports := TStringList.Create;
+  FFullImports := TStringList.Create;
+  FUserImportClasses := TStringList.Create;
+  FUserImportClasses.Sorted := True;
+  FUserImportClasses.Duplicates := dupIgnore;
+  FScanner := TJavaScanner.Create;
+  FStructures := TStructures.Create;
   FConfiguration.ImportCache.Clear;
-  Filo := TList.Create;
-  ScopeDepth := 0;
+  FFilo := TList.Create;
+  FScopeDepth := 0;
   FAnonymClassNr := 0;
 end;
 
 destructor TJavaParser.Destroy;
 begin
-  FreeAndNil(ClassImports);
-  FreeAndNil(FullImports);
-  FreeAndNil(UserImportClasses);
-  FreeAndNil(Scanner);
-  FreeAndNil(Structures);
-  FreeAndNil(Filo);
+  FreeAndNil(FClassImports);
+  FreeAndNil(FFullImports);
+  FreeAndNil(FUserImportClasses);
+  FreeAndNil(FScanner);
+  FreeAndNil(FStructures);
+  FreeAndNil(FFilo);
   // not FreeAndNil(FOM); as FOM is the output of the parser
   // not FreeAndNil(FUnit); as FUnit belongs to the model
   inherited;
@@ -263,47 +298,46 @@ end;
 
 function TJavaParser.GetNextToken: string;
 begin
-  Result := Scanner.GetNextToken;
-
-  {if Scanner.Line <> Line then begin
-    line:= Scanner.Line;
-    FMessages.OutputToTerminal(IntTostr(Line));
-  end;}
-
+  Result := FScanner.GetNextToken;
 end;
 
 function TJavaParser.Token: string;
 begin
-  Result := Scanner.Token;
+  Result := FScanner.Token;
 end;
 
-procedure TJavaParser.SkipPair(const open, close: string);
+procedure TJavaParser.SkipPair(const Open, Close: string);
 begin
-  Scanner.SkipPair(open, close);
+  FScanner.SkipPair(Open, Close);
 end;
 
 procedure TJavaParser.ParseStream(AStream: TStream; AModel: TAbstractPackage;
-  AOM: TObjectModel; FileName: string; inner: Boolean; withoutNeedSource: boolean);
-  var aClassifier: TClassifier; aClass: TClass;
+  AOM: TObjectModel; FileName: string; Inner: Boolean;
+  WithoutNeedSource: Boolean);
+var
+  AClassifier: TClassifier;
+  AClass: TClass;
 begin
-  Scanner.Init(AStream);
+  FScanner.Init(AStream);
   FModel := AModel;
   FOM := AOM;
   FFilename := FileName;
-  FSourcepath := ExtractFilepath(FileName);
-  FInner := inner;
-  FWithoutNeedSource:= withoutNeedSource;
+  FSourcepath := ExtractFilePath(FileName);
+  FInner := Inner;
+  FWithoutNeedSource := WithoutNeedSource;
   FUnit := (FModel as TLogicPackage).FindUnitPackage('Default');
   if not Assigned(FUnit) then
     FUnit := (FModel as TLogicPackage).AddUnit('Default');
-  aClassifier:= FUnit.FindClass(Filename);
-  if assigned(aClassifier) and aClassifier.SourceRead then begin
-    if aClassifier is TClass then begin
-      aClass:= aClassifier as TClass;
-      aClass.IsVisible:= true;
-      FUnit.AddClass(aClass);
+  AClassifier := FUnit.FindClass(FileName);
+  if Assigned(AClassifier) and AClassifier.SourceRead then
+  begin
+    if AClassifier is TClass then
+    begin
+      AClass := AClassifier as TClass;
+      AClass.IsVisible := True;
+      FUnit.AddClass(AClass);
     end;
-    exit;
+    Exit;
   end;
   ParseCompilationUnit;
 end;
@@ -336,40 +370,45 @@ function TJavaParser.ParseModifiers: string;
 *)
 begin
   Result := '';
-  ModVisibility := viPackage;
-  ModAbstract := False;
-  ModStatic := False;
-  ModFinal := False;
-  while true do begin
+  FModVisibility := viPackage;
+  FModAbstract := False;
+  FModStatic := False;
+  FModFinal := False;
+  while True do
+  begin
     if Token = 'public' then
-      ModVisibility := viPublic
+      FModVisibility := viPublic
     else if Token = 'protected' then
-      ModVisibility := viProtected
+      FModVisibility := viProtected
     else if Token = 'private' then
-      ModVisibility := viPrivate
+      FModVisibility := viPrivate
     else if Token = 'static' then
-      ModStatic := true
+      FModStatic := True
     else if Token = 'abstract' then
-      ModAbstract := true
+      FModAbstract := True
     else if Token = 'final' then
-      ModFinal := true
-    else if Token = '<' then begin
+      FModFinal := True
+    else if Token = '<' then
+    begin
       SkipPair('<', '>');
-      break
+      Break;
     end
-    else if (Token = 'non') and (GetNextToken = '-') and (GetNextToken = 'sealed') then
-      Scanner.Token:= 'non-sealed'
+    else if (Token = 'non') and (GetNextToken = '-') and
+      (GetNextToken = 'sealed') then
+      FScanner.Token := 'non-sealed'
     else if (Token = 'native') or (Token = 'transient') or (Token = 'default')
-      or (Token = 'volatile') or (Token = 'strictfp') or (Token = 'sealed')
-      or (Copy(Token, 1, 1) = '@') then
-    else if Token = 'synchronized' then begin
-      if Scanner.LookAheadToken = '(' then begin
-        Scanner.Token := 'synchronized';
-        break;
+      or (Token = 'volatile') or (Token = 'strictfp') or (Token = 'sealed') or
+      (Copy(Token, 1, 1) = '@') then
+    else if Token = 'synchronized' then
+    begin
+      if FScanner.LookAheadToken = '(' then
+      begin
+        FScanner.Token := 'synchronized';
+        Break;
       end;
     end
     else
-      break;
+      Break;
     Result := Result + ' ' + Token;
     GetNextToken;
   end;
@@ -398,15 +437,18 @@ procedure TJavaParser.ParseCompilationUnit;
 *)
 begin
   GetNextToken;
-  if Token = 'package' then begin
-    Packagename := GetNextToken;
-    // FullImports.add(Packagename + '.');
-    CollectDirClassesForImport(Packagename, FSourcepath, Packagename, UserImportClasses);
+  if Token = 'package' then
+  begin
+    FPackagename := GetNextToken;
+    CollectDirClassesForImport(FPackagename, FSourcepath, FPackagename,
+      FUserImportClasses);
     if not FInner then
-      FUnit.ImportStartline := Scanner.line + 1;
-    Scanner.SkipToken(';');
-  end else begin
-    Packagename := '';
+      FUnit.ImportStartline := FScanner.Line + 1;
+    FScanner.SkipToken(';');
+  end
+  else
+  begin
+    FPackagename := '';
     if not FInner then
       FUnit.ImportStartline := 1;
   end;
@@ -414,35 +456,41 @@ begin
     FUnit.ImportEndline := -1;
 
   if (Token = 'import') and not FInner then
-    FUnit.ImportStartline := Scanner.line;
-  while (Token = 'import') and not ThreadAbort do begin
+    FUnit.ImportStartline := FScanner.Line;
+  while (Token = 'import') and not ThreadAbort do
+  begin
     (*
       ImportDeclaration
       import Identifier {   .   Identifier } [   .     *   ] ;
     *)
-    var s := GetNextToken;
-    if s = 'static' then
-      s := GetNextToken;
+    var
+    Str := GetNextToken;
+    if Str = 'static' then
+      Str := GetNextToken;
 
     if not FInner then
-      FUnit.ImportEndline := Scanner.line;
-    if GetNextToken = '*' then begin
-      FullImports.Add(s);
-      s := Copy(s, 1, length(s) - 1);
+      FUnit.ImportEndline := FScanner.Line;
+    if GetNextToken = '*' then
+    begin
+      FFullImports.Add(Str);
+      Str := Copy(Str, 1, Length(Str) - 1);
       if FConfiguration.FixImports then
-        ReadFullImport(s)
-      else if not FConfiguration.IsAPIPackage(s) then
-        CollectDirClassesForImport(s, FSourcepath, Packagename, UserImportClasses);
+        ReadFullImport(Str)
+      else if not FConfiguration.IsAPIPackage(Str) then
+        CollectDirClassesForImport(Str, FSourcepath, FPackagename,
+          FUserImportClasses);
       GetNextToken;
-    end else
-      ClassImports.Values[ExtractClassName(s)] := ExtractPackageName(s);
+    end
+    else
+      FClassImports.Values[ExtractClassName(Str)] := ExtractPackageName(Str);
     GetNextToken;
   end;
 
-  FullImports.Add('java.lang.');
-  if not FInner then begin
-    AddStrings(FUnit.FullImports, FullImports);
-    AddStrings(FUnit.ClassImports, ClassImports);
+  FFullImports.Add('java.lang.');
+  if not FInner then
+  begin
+    AddStrings(FUnit.FullImports, FFullImports);
+    AddStrings(FUnit.ClassImports, FClassImports);
   end;
 
   while not ThreadAbort and (Token <> '') do
@@ -450,48 +498,52 @@ begin
 end;
 
 procedure TJavaParser.ParseTypeDeclaration;
-  (*
-    TypeDeclaration:
-    ClassOrInterfaceDeclaration or RecordDeclaration
-    ;
+(*
+  TypeDeclaration:
+  ClassOrInterfaceDeclaration or RecordDeclaration
+  ;
 
-    ClassOrInterfaceDeclaration:
-    ModifiersOpt (ClassDeclaration | InterfaceDeclaration)
+  ClassOrInterfaceDeclaration:
+  ModifiersOpt (ClassDeclaration | InterfaceDeclaration)
 
-    InterfaceDeclaration:
-    interface Identifier [extends TypeList] InterfaceBody
+  InterfaceDeclaration:
+  interface Identifier [extends TypeList] InterfaceBody
 
-    RecordDeclaration:
-    {ClassModifier} `record` TypeIdentifier [TypeParameters]
-    RecordHeader [SuperInterfaces] RecordBody
+  RecordDeclaration:
+  {ClassModifier} `record` TypeIdentifier [TypeParameters]
+  RecordHeader [SuperInterfaces] RecordBody
 
-  *)
+*)
 begin
-  Structures.Clear;
-  Structures.MaxDepth := 0;
-  while Token <> '' do begin
-    var line := Scanner.TokenLine;
+  FStructures.Clear;
+  FStructures.MaxDepth := 0;
+  while Token <> '' do
+  begin
+    var
+    Line := FScanner.TokenLine;
     ParseAnnotations;
     ParseModifiers;
     if (Token = 'class') or (Token = 'record') then
-      ParseClassDeclaration(line)
+      ParseClassDeclaration(Line)
     else if Token = 'enum' then
       ParseEnumDeclaration
     else if (Token = 'interface') or (Token = '@interface') then
-      ParseInterfaceDeclaration(line)
-    else // if token = 'void' Method declaration from the structogram area
+      ParseInterfaceDeclaration(Line)
+    else // if token = 'void' Method declaration From the structogram area
       GetNextToken;
   end;
-  while Filo.Count > 0 do begin
-    var Structure := TStructureEx(Filo[Filo.Count - 1]);
-    Filo.Delete(Filo.Count - 1);
-    Structure.FTextRect.BottomRight := Point(0, Scanner.line);
-    Structures.Add(Structure);
+  while FFilo.Count > 0 do
+  begin
+    var
+    Structure := TStructureEx(FFilo.Last);
+    FFilo.Delete(FFilo.Count - 1);
+    Structure.FTextRect.BottomRight := Point(0, FScanner.Line);
+    FStructures.Add(Structure);
   end;
 end;
 
-procedure TJavaParser.ParseClassDeclaration(line: integer;
-  IsInner: Boolean = False; const ParentName: string = '');
+procedure TJavaParser.ParseClassDeclaration(Line: Integer;
+  IsInner: Boolean = False; const Parentname: string = '');
 (*
 
   ClassDeclaration:
@@ -500,99 +552,109 @@ procedure TJavaParser.ParseClassDeclaration(line: integer;
 
   NormalClassDeclaration:
   {ClassModifier} class TypeIdentifier [TypeParameters]
-    [Superclass] [Superinterfaces] [PermittedSubclasse] ClassBody
+  [Superclass] [Superinterfaces] [PermittedSubclasse] ClassBody
 
   EnumDeclaration:
   {ClassModifier} enum TypeIdentifier [Superinterfaces] EnumBody
 
   RecordDeclaration:
   {ClassModifier} record TypeIdentifier [TypeParameters]
-    RecordHeader [SuperInterfaces] RecordBody
+  RecordHeader [SuperInterfaces] RecordBody
 
 *)
 var
-  C: TClass;
-  Int: TInterface;
-  aclass: TClassifier;
-  Impl, Ext, aClassname, aGeneric: string;
-  anonym, isRecord: Boolean;
+  AClass: TClass;
+  Intf: TInterface;
+  AClassifier: TClassifier;
+  Impl, Ext, AClassname, AGeneric: string;
+  Anonym, IsRecord: Boolean;
 
 begin
   // enum is not supported
-  Inc(CountClasses);
-  Inc(ScopeDepth);
-  isRecord:= (Token = 'record');
-  if Token = '{' then begin // anonym inner class
-    anonym := true;
+  Inc(FCountClasses);
+  Inc(FScopeDepth);
+  IsRecord := (Token = 'record');
+  if Token = '{' then
+  begin // Anonym Inner class
+    Anonym := True;
     Inc(FAnonymClassNr);
-    aClassname := ParentName + '$' + IntToStr(FAnonymClassNr);
-  end else begin
-    anonym := False;
+    AClassname := Parentname + '$' + IntToStr(FAnonymClassNr);
+  end
+  else
+  begin
+    Anonym := False;
     GetNextToken;
-    if IsInner
-      then aClassname := ParentName + '$' + Token
-      else aClassname := Token;
+    if IsInner then
+      AClassname := Parentname + '$' + Token
+    else
+      AClassname := Token;
     GetNextToken;
     // [TypeParameters]
-    if Token = '<' then begin
-      aGeneric := Scanner.GetGeneric;
-      aClassname := aClassname + '<' + aGeneric + '>';
+    if Token = '<' then
+    begin
+      AGeneric := FScanner.GetGeneric;
+      AClassname := AClassname + '<' + AGeneric + '>';
     end;
   end;
 
-  if (Packagename <> '') and (Pos(Packagename, aClassname) <> 1) then
-    aClassname := Packagename + '.' + aClassname;
-  C := FUnit.MakeClass(aClassname, FFilename);
-  C.Documentation.Description := ReplaceStr(Scanner.Comment, #13#10, '<br>');
-  Scanner.Comment := '';
-  C.Importname := aClassname;
-  C.aGeneric := aGeneric;
-  C.inner := IsInner;
-  C.anonym := anonym;
-  C.IsVisible := ShowView(IsInner) and not anonym;
-  C.LineS := line;
-  C.LineSE := Scanner.line;
-  C.ScopeDepth := ScopeDepth;
-  if C.IsVisible then // what is with C if C ist not visible?
-    FUnit.AddClass(C);
-  SetVisibility(C);
+  if (FPackagename <> '') and (Pos(FPackagename, AClassname) <> 1) then
+    AClassname := FPackagename + '.' + AClassname;
+  AClass := FUnit.MakeClass(AClassname, FFilename);
+  AClass.Documentation.Description := ReplaceStr(FScanner.Comment,
+    #13#10, '<br>');
+  FScanner.Comment := '';
+  AClass.Importname := AClassname;
+  AClass.Generic := AGeneric;
+  AClass.Inner := IsInner;
+  AClass.Anonym := Anonym;
+  AClass.IsVisible := ShowView(IsInner) and not Anonym;
+  AClass.LineS := Line;
+  AClass.LineSE := FScanner.Line;
+  AClass.ScopeDepth := FScopeDepth;
+  if AClass.IsVisible then // what is with AClass if AClass ist not visible?
+    FUnit.AddClass(AClass);
+  SetVisibility(AClass);
 
   // Superclass:
   // extends ClassType
-  if (Token = 'extends') and not isRecord and not ThreadAbort then begin
+  if (Token = 'extends') and not IsRecord and not ThreadAbort then
+  begin
     Ext := GetNextToken;
     if EndsWith(Ext, 'Application') then
-      FrameType := 8
+      FFrameType := 8
     else if EndsWith(Ext, 'JApplet') then
-      FrameType := 7
+      FFrameType := 7
     else if EndsWith(Ext, 'JDialog') then
-      FrameType := 6
+      FFrameType := 6
     else if EndsWith(Ext, 'JFrame') then
-      FrameType := 5
+      FFrameType := 5
     else if EndsWith(Ext, 'Applet') then
-      FrameType := 4
+      FFrameType := 4
     else if EndsWith(Ext, 'Dialog') then
-      FrameType := 3
+      FFrameType := 3
     else if EndsWith(Ext, 'Frame') then
-      FrameType := 2
+      FFrameType := 2
     else
-      FrameType := 1;
+      FFrameType := 1;
     Ext := GetImportName(Ext);
     GetNextToken;
     if Token = '<' then
-      Ext := Scanner.GetGeneric(Ext);
-    if C.Importname <> Ext then begin
-      aclass := NeedClassifier(Ext, TClass);
-      if Assigned(aclass) and (aclass is TClass) then begin
-        C.Ancestor := aclass as TClass;
+      Ext := FScanner.GetGeneric(Ext);
+    if AClass.Importname <> Ext then
+    begin
+      AClassifier := NeedClassifier(Ext, TClass);
+      if Assigned(AClassifier) and (AClassifier is TClass) then
+      begin
+        AClass.Ancestor := AClassifier as TClass;
         // we need superclass for e.g. code completion
-        if Assigned(C.Ancestor) then
-          C.Ancestor.Importname := GetImportName(C.Ancestor.Name);
+        if Assigned(AClass.Ancestor) then
+          AClass.Ancestor.Importname := GetImportName(AClass.Ancestor.Name);
       end;
     end;
   end;
 
-  if isRecord then begin
+  if IsRecord then
+  begin
     if Token = '(' then
       SkipTo(')');
     GetNextToken;
@@ -606,36 +668,39 @@ begin
       Impl := GetImportName(Impl);
       GetNextToken;
       if Token = '<' then
-        Impl := ChangeGenericType(Scanner.GetGeneric(Impl));
+        Impl := ChangeGenericType(FScanner.GetGeneric(Impl));
 
-      aclass := NeedClassifier(Impl, TInterface);
-      if Assigned(aclass) and (aclass is TInterface) then begin
-        Int := aclass as TInterface;
-        C.AddImplements(Int);
-        if ShowView(true) then
-          C.ViewImplements(Int);
+      AClassifier := NeedClassifier(Impl, TInterface);
+      if Assigned(AClassifier) and (AClassifier is TInterface) then
+      begin
+        Intf := AClassifier as TInterface;
+        AClass.AddImplements(Intf);
+        if ShowView(True) then
+          AClass.ViewImplements(Intf);
       end;
     until (Token <> ',') or ThreadAbort;
 
   // PermittedSubclasses:
-  if Token = 'permits' then begin
+  if Token = 'permits' then
+  begin
     GetNextToken;
     while GetNextToken = ',' do
       GetNextToken;
   end;
 
-  if (Token = '{') and not ThreadAbort then begin
-    AddStructure(line, Scanner.line);
-    ParseClassBody(C);
-    C.LineE := Scanner.line;
+  if (Token = '{') and not ThreadAbort then
+  begin
+    AddStructure(Line, FScanner.Line);
+    ParseClassBody(AClass);
+    AClass.LineE := FScanner.Line;
     CloseStructureDefault;
     GetNextToken;
   end;
-  Dec(ScopeDepth);
-  C.SourceRead:= true;
+  Dec(FScopeDepth);
+  AClass.SourceRead := True;
 end;
 
-procedure TJavaParser.ParseClassBody(C: TClass);
+procedure TJavaParser.ParseClassBody(AClass: TClass);
 (*
   ClassBody:
   { {ClassBodyDeclaration} }
@@ -658,45 +723,49 @@ var
   Operation, OpTemp: TOperation;
   Attribute: TAttribute;
   Typename, Ident, Generic, Annotation, Modifiers: string;
-  LineS, line: integer;
+  LineS, Line: Integer;
   TypeClass: TClassifier;
 begin
   GetNextToken;
-  while true and not ThreadAbort do begin
-    line := Scanner.TokenLine;
-    Annotation := ParseAnnotations(C);
+  while True and not ThreadAbort do
+  begin
+    Line := FScanner.TokenLine;
+    Annotation := ParseAnnotations(AClass);
     Modifiers := ParseModifiers;
     // StaticInitializer:
     // static Block
-    if (Modifiers = ' static') and (Token = '{') then begin
-      Operation := C.AddOperationWithoutType('static initializer');
+    if (Modifiers = ' static') and (Token = '{') then
+    begin
+      Operation := AClass.AddOperationWithoutType('static initializer');
       Operation.LineS := Line;
-      AddStructure(line, Scanner.line);
+      AddStructure(Line, FScanner.Line);
       ParseBlock(Operation);
       CloseStructureDefault;
       GetNextToken;
     end
     // InstanceInitializer:
     // Block
-    else if (Modifiers = '') and (Token = '{') then begin
-      Operation := C.AddOperationWithoutType('instance initializer');
+    else if (Modifiers = '') and (Token = '{') then
+    begin
+      Operation := AClass.AddOperationWithoutType('instance initializer');
       Operation.LineS := Line;
-      AddStructure(line, Scanner.line);
+      AddStructure(Line, FScanner.Line);
       ParseBlock(Operation);
       CloseStructureDefault;
       GetNextToken;
-    end else if Token = ';' then
+    end
+    else if Token = ';' then
       GetNextToken
     else if (Token = '}') or (Token = '') then
-      break
+      Break
       // ClassDeclaration:
-    else if (Token = 'class') or (Token = 'record') then // inner class
-      ParseClassDeclaration(line, true, withoutGeneric(C.Name))
+    else if (Token = 'class') or (Token = 'record') then // Inner class
+      ParseClassDeclaration(Line, True, WithoutGeneric(AClass.Name))
     else if Token = 'enum' then
       ParseEnumDeclaration
       // InterfaceDeclaration:
     else if Token = 'interface' then
-      ParseInterfaceDeclaration(line, true, C.Name)
+      ParseInterfaceDeclaration(Line, True, AClass.Name)
       // Field-, Method- or Constructor-Declaration
       // FieldDeclaration:
       // {FieldModifier} UnannType VariableDeclaratorList ;
@@ -704,9 +773,10 @@ begin
       // {MethodModifier} MethodHeader MethodBody
       // ConstructorDeclaration:
       // {ConstructorModifier} ConstructorDeclarator [Throws] ConstructorBody
-    else begin
+    else
+    begin
       // must be typename or constructor
-      LineS := line;
+      LineS := Line;
       // ConstructorDeclarator:
       // [TypeParameters] SimpleTypeName ( [ReceiverParameter ,] [FormalParameterList] )
 
@@ -726,43 +796,52 @@ begin
 
       ParseAnnotations;
 
-      Typename:= GetTypeName;
-      if (Typename = GetClassName(C.Name)) and (Token = '(') then begin
+      Typename := GetTypeName;
+      if (Typename = GetClassName(AClass.Name)) and (Token = '(') then
+      begin
         Ident := Typename; // constructor
         Typename := '';
-      end else begin
-        Ident:= Token;
+      end
+      else
+      begin
+        Ident := Token;
         GetNextToken;
-        while Token = '[]' do begin // for FieldDeclaration
+        while Token = '[]' do
+        begin // for FieldDeclaration
           Ident := Ident + Token;
           GetNextToken;
         end;
       end;
 
-      if Token = '(' then begin // new Method/Constructor, start of parameters
-        TypeClass:= nil;
+      if Token = '(' then
+      begin // new Method/Constructor, start of parameters
+        TypeClass := nil;
         if (Typename <> '') and (Typename <> 'void') then
-          TypeClass:= NeedClassifier(GetImportName(Typename));
-        OpTemp := C.MakeOperation(Ident, TypeClass);
+          TypeClass := NeedClassifier(GetImportName(Typename));
+        OpTemp := AClass.MakeOperation(Ident, TypeClass);
         OpTemp.LineS := LineS;
         OpTemp.Annotation := Annotation;
-        DoOperation(OpTemp, C.Name, Typename);
-        Operation:= C.FindOperation(OpTemp);
-        if Operation = nil then begin
-          Operation:= OpTemp;
-          C.AddOperation(Operation);
-        end else
+        DoOperation(OpTemp, AClass.Name, Typename);
+        Operation := AClass.FindOperation(OpTemp);
+        if not Assigned(Operation) then
+        begin
+          Operation := OpTemp;
+          AClass.AddOperation(Operation);
+        end
+        else
           FreeAndNil(OpTemp);
 
         GetNextToken; // ')'
         while Token = '[]' do
           GetNextToken;
 
-        if Token = 'throws' then begin
+        if Token = 'throws' then
+        begin
           GetNextToken;
           GetImportName(Token);
           GetNextToken;
-          while Token = ',' do begin
+          while Token = ',' do
+          begin
             GetNextToken;
             GetImportName(Token);
             GetNextToken;
@@ -771,57 +850,63 @@ begin
 
         while (Token <> ';') and (Token <> '{') and (Token <> '') do
           GetNextToken;
-        AddStructure(line, Scanner.TokenLine);
+        AddStructure(Line, FScanner.TokenLine);
         // either ; for abstract method or { for body
-        if not ThreadAbort and (Token = '{') then begin
+        if not ThreadAbort and (Token = '{') then
+        begin
           ParseBlock(Operation);
           CloseStructureDefault;
           GetNextToken;
-        end else
+        end
+        else
           CloseStructureDefault;
-      end else // new attribute
+      end
+      else // new attribute
         // FieldDeclaration:
         // {FieldModifier} UnannType VariableDeclaratorList ;
-        if not ThreadAbort and IsIdentifier(Ident) and IsTypename(Typename) and (Ident <> Typename)
-        then begin
+        if not ThreadAbort and IsIdentifier(Ident) and IsTypename(Typename) and
+          (Ident <> Typename) then
+        begin
           SwapArrFromTo(Ident, Typename);
-          TypeClass:= NeedClassifier(GetImportName(Typename));
-          Attribute := C.AddAttribute(Ident, TypeClass);
+          TypeClass := NeedClassifier(GetImportName(Typename));
+          Attribute := AClass.AddAttribute(Ident, TypeClass);
           Attribute.LineS := LineS;
           DoAttribute(Attribute, Generic);
-          while not ThreadAbort and (Token = ',') do begin
+          while not ThreadAbort and (Token = ',') do
+          begin
             GetNextToken;
             Ident := Token;
             GetNextToken;
-            while Token = '[]' do begin
+            while Token = '[]' do
+            begin
               Ident := Ident + Token;
               GetNextToken;
             end;
-            DoAttribute(C.AddAttribute(Ident, TypeClass), Generic);
+            DoAttribute(AClass.AddAttribute(Ident, TypeClass), Generic);
           end;
           // attribute-declaration ends with ;
           // erroneous attribute declaration is catched here
           while (Token <> '') and (Token <> ';') do
             GetNextToken;
         end;
-      Scanner.Comment := '';
+      FScanner.Comment := '';
     end;
   end;
 end;
 
-procedure TJavaParser.SkipTo(ch: char);
+procedure TJavaParser.SkipTo(Chr: Char);
 begin
-  Scanner.SkipTo(ch);
+  FScanner.SkipTo(Chr);
 end;
 
-procedure TJavaParser.Skip(ch: char);
+procedure TJavaParser.Skip(Chr: Char);
 begin
-  Scanner.SkipTo(ch);
+  FScanner.SkipTo(Chr);
   GetNextToken;
 end;
 
-procedure TJavaParser.ParseInterfaceDeclaration(line: integer;
-  IsInner: Boolean = False; const ParentName: string = '');
+procedure TJavaParser.ParseInterfaceDeclaration(Line: Integer;
+  IsInner: Boolean = False; const Parentname: string = '');
 (*
   InterfaceDeclaration:
   interface Identifier [extends TypeList] InterfaceBody
@@ -842,155 +927,171 @@ procedure TJavaParser.ParseInterfaceDeclaration(line: integer;
   Type Identifier InterfaceMethodOrFieldRest
 
   InterfaceMethodOrFieldRest:
-  ConstantDeclaratorsRest ;
+  ConstantDeclaratorsRest
   InterfaceMethodDeclaratorRest
 
   InterfaceMethodDeclaratorRest:
-  FormalParameters BracketsOpt [throws QualifiedIdentifierList]   ;
+  FormalParameters BracketsOpt [throws QualifiedIdentifierList]
 
   VoidInterfaceMethodDeclaratorRest:
-  FormalParameters [throws QualifiedIdentifierList]   ;
+  FormalParameters [throws QualifiedIdentifierList]
 *)
 var
-  Int, aInt: TInterface;
-  aClassifier: TClassifier;
-  Typename, Ident, Ext, s, aGeneric: string;
+  Intf, AInt: TInterface;
+  AClassifier: TClassifier;
+  Typename, Ident, Ext, Str, AGeneric: string;
   Operation, OpTemp: TOperation;
   Attribute: TAttribute;
-  LineS: integer;
-  firstAncestor: Boolean;
+  LineS: Integer;
+  FirstAncestor: Boolean;
   TypeClass: TClassifier;
 begin
-  Inc(CountClasses);
-  inc(ScopeDepth);
+  Inc(FCountClasses);
+  Inc(FScopeDepth);
   GetNextToken;
   if IsInner then
-    s := ParentName + '$' + Token
-  else if Packagename = '' then
-    s := Token
+    Str := Parentname + '$' + Token
+  else if FPackagename = '' then
+    Str := Token
   else
-    s := Packagename + '.' + Token;
+    Str := FPackagename + '.' + Token;
   GetNextToken;
 
-  if Token = '<' then begin
-    aGeneric := Scanner.GetGeneric;
-    s := s + '<' + aGeneric + '>';
+  if Token = '<' then
+  begin
+    AGeneric := FScanner.GetGeneric;
+    Str := Str + '<' + AGeneric + '>';
   end;
-  Int := FUnit.MakeInterface(s, FFilename);
-  Int.Documentation.Description := ReplaceStr(Scanner.Comment, #13#10, '<br>');
-  Scanner.Comment := '';
-  Int.aGeneric := aGeneric;
-  Int.LineS := line;
-  Int.LineSE := Scanner.line;
-  Int.ScopeDepth := ScopeDepth;
-  SetVisibility(Int);
-  Int.IsVisible := ShowView(IsInner);
-  if Int.IsVisible then
-    FUnit.AddInterface(Int);
+  Intf := FUnit.MakeInterface(Str, FFilename);
+  Intf.Documentation.Description := ReplaceStr(FScanner.Comment,
+    #13#10, '<br>');
+  FScanner.Comment := '';
+  Intf.Generic := AGeneric;
+  Intf.LineS := Line;
+  Intf.LineSE := FScanner.Line;
+  Intf.ScopeDepth := FScopeDepth;
+  SetVisibility(Intf);
+  Intf.IsVisible := ShowView(IsInner);
+  if Intf.IsVisible then
+    FUnit.AddInterface(Intf);
 
-  firstAncestor := true;
+  FirstAncestor := True;
   if Token = 'extends' then
     repeat
       Ext := GetImportName(GetNextToken);
-      // if Packagename <> '' then Ext:= Packagename + '.' + Ext;
+      // if FPackagename <> '' then Ext:= FPackagename + '.' + Ext;
       GetNextToken;
       if Token = '<' then
-        Ext := ChangeGenericType(Scanner.GetGeneric(Ext));
-      aClassifier := NeedClassifier(Ext, TInterface);
-      if Assigned(aClassifier) and (aClassifier is TInterface) then
+        Ext := ChangeGenericType(FScanner.GetGeneric(Ext));
+      AClassifier := NeedClassifier(Ext, TInterface);
+      if Assigned(AClassifier) and (AClassifier is TInterface) then
       begin
-        aInt := aClassifier as TInterface; // toDo
-        if firstAncestor then
+        AInt := AClassifier as TInterface; // toDo
+        if FirstAncestor then
         begin
-          Int.Ancestor := aInt;
-          Int.Ancestor.Importname := GetImportName(Int.Ancestor.Name);
-          firstAncestor := False;
+          Intf.Ancestor := AInt;
+          Intf.Ancestor.Importname := GetImportName(Intf.Ancestor.Name);
+          FirstAncestor := False;
         end;
-        if Assigned(Int) then
+        if Assigned(Intf) then
         begin
-          Int.AddExtends(aInt);
-          if ShowView(true) then
-            Int.ViewExtends(aInt);
+          Intf.AddExtends(AInt);
+          if ShowView(True) then
+            Intf.ViewExtends(AInt);
         end;
       end;
     until Token <> ',';
-  Int.LineSE := Scanner.line;
-  if Token = '{' then begin
-    AddStructure(line, Scanner.line);
+  Intf.LineSE := FScanner.Line;
+  if Token = '{' then
+  begin
+    AddStructure(Line, FScanner.Line);
     GetNextToken;
-    while true do begin
-      line:= Scanner.line;
+    while True do
+    begin
+      Line := FScanner.Line;
       ParseAnnotations;
       ParseModifiers;
       if Token = ';' then // empty
         GetNextToken
       else if Token = 'class' then // Inner class
-        ParseClassDeclaration(line, true, Int.Name)
+        ParseClassDeclaration(Line, True, Intf.Name)
       else if Token = 'enum' then
         ParseEnumDeclaration
       else if Token = 'interface' then // Inner interface
-        ParseInterfaceDeclaration(line, true, Int.Name)
-      else if (Token = '}') or (Token = '') then begin
+        ParseInterfaceDeclaration(Line, True, Intf.Name)
+      else if (Token = '}') or (Token = '') then
+      begin
         // end of interface declaration
-        Int.LineE := Scanner.line;
+        Intf.LineE := FScanner.Line;
         CloseStructureDefault;
         GetNextToken;
-        break;
-      end else begin
+        Break;
+      end
+      else
+      begin
         // Must be type of attr or return type of operation
-        LineS := line;
+        LineS := Line;
         Typename := GetTypeName;
         Ident := Token;
-        if GetNextToken = '(' then begin
+        if GetNextToken = '(' then
+        begin
           // Operation
-          if (Typename <> '') and (Typename <> 'void')
-            then TypeClass:= NeedClassifier(GetImportName(Typename))
-            else TypeClass:= nil;
+          if (Typename <> '') and (Typename <> 'void') then
+            TypeClass := NeedClassifier(GetImportName(Typename))
+          else
+            TypeClass := nil;
 
-          OpTemp := Int.MakeOperation(Ident, TypeClass);
+          OpTemp := Intf.MakeOperation(Ident, TypeClass);
           OpTemp.LineS := LineS;
-          DoOperation(OpTemp, Int.Name, Typename);
-          Operation:= Int.FindOperation(OpTemp);
-          if Operation = nil then begin
-            Operation:= OpTemp;
-            Int.AddOperation(Operation)
-          end else
+          DoOperation(OpTemp, Intf.Name, Typename);
+          Operation := Intf.FindOperation(OpTemp);
+          if not Assigned(Operation) then
+          begin
+            Operation := OpTemp;
+            Intf.AddOperation(Operation);
+          end
+          else
             FreeAndNil(OpTemp);
 
           GetNextToken;
-          if Token = '{' then begin // default methods
-            AddStructure(line, Scanner.TokenLine);
+          if Token = '{' then
+          begin // default methods
+            AddStructure(Line, FScanner.TokenLine);
             ParseBlock(Operation);
             CloseStructureDefault;
             GetNextToken;
-          end else  begin
+          end
+          else
+          begin
             // Skip Throws if present
             while (Token <> ';') and (Token <> '') do
               GetNextToken;
-            AddStructure(line, Scanner.TokenLine);
+            AddStructure(Line, FScanner.TokenLine);
             CloseStructureDefault;
-          end
-        end else if IsIdentifier(Ident) and IsTypename(Typename) and
+          end;
+        end
+        else if IsIdentifier(Ident) and IsTypename(Typename) and
           (Ident <> Typename) then
         begin
           SwapArrFromTo(Ident, Typename);
-          TypeClass:= NeedClassifier(GetImportName(Typename));
-          Attribute := Int.AddAttribute(Ident, TypeClass);
-          Attribute.LineS:= LineS;
-          DoAttribute(Attribute, aGeneric);
-          while Token = ',' do begin
+          TypeClass := NeedClassifier(GetImportName(Typename));
+          Attribute := Intf.AddAttribute(Ident, TypeClass);
+          Attribute.LineS := LineS;
+          DoAttribute(Attribute, AGeneric);
+          while Token = ',' do
+          begin
             GetNextToken;
             Ident := Token;
             GetNextToken;
-            DoAttribute(Int.AddAttribute(Ident, TypeClass), aGeneric);
+            DoAttribute(Intf.AddAttribute(Ident, TypeClass), AGeneric);
           end;
-          Scanner.Comment := '';
+          FScanner.Comment := '';
         end;
       end;
     end;
   end;
-  Dec(ScopeDepth);
-  Int.SourceRead:= true;
+  Dec(FScopeDepth);
+  Intf.SourceRead := True;
 end;
 
 procedure TJavaParser.ParseEnumDeclaration;
@@ -1011,136 +1112,151 @@ begin
     SkipPair('{', '}');
 end;
 
-function TJavaParser.NeedClassifier(const CName: string; TheClass: TModelEntityClass = nil): TClassifier;
+function TJavaParser.NeedClassifier(const CName: string;
+  TheClass: TModelEntityClass = nil): TClassifier;
 var
   PName, ShortName: string;
-  ci: IModelIterator;
-  cent: TModelEntity;
+  ClassIte: IModelIterator;
+  Cent: TModelEntity;
 
   function AddAClass(const CName: string): TClassifier;
   var
-    C: TClass;
-    I: TInterface;
-    classpathname: string;
+    AClass: TClass;
+    Int: TInterface;
+    Classpathname: string;
   begin
     Result := nil;
-    if TheClass = TInterface then begin
-      I := FUnit.MakeInterface(CName, '');
-      I.Importname := CName;
-      FUnit.AddInterfaceWithoutShowing(I);
-      Result := TClassifier(I);
-    end else begin
-      C := FUnit.MakeClass(CName, '');
-      if not Assigned(C) then
-        exit;
-      C.Importname := CName;
-      classpathname := FSourcepath + WithoutArray(CName) + '.java';
-      if FileExists(classpathname) then
-        C.Pathname := classpathname;
-      FUnit.AddClassWithoutShowing(C);
-      Result := TClassifier(C);
+    if TheClass = TInterface then
+    begin
+      Int := FUnit.MakeInterface(CName, '');
+      Int.Importname := CName;
+      FUnit.AddInterfaceWithoutShowing(Int);
+      Result := TClassifier(Int);
+    end
+    else
+    begin
+      AClass := FUnit.MakeClass(CName, '');
+      if not Assigned(AClass) then
+        Exit;
+      AClass.Importname := CName;
+      Classpathname := FSourcepath + WithoutArray(CName) + '.java';
+      if FileExists(Classpathname) then
+        AClass.Pathname := Classpathname;
+      FUnit.AddClassWithoutShowing(AClass);
+      Result := TClassifier(AClass);
     end;
   end;
 
 begin
   Result := nil;
-  if not assigned(FUnit) then
-    exit;
+  if not Assigned(FUnit) then
+    Exit;
 
-  Result:= FUnit.FindClassifier(CName, TheClass, true);
-  if Assigned(Result)
-    then exit
-    else if IsSimpleType(CName) or (CName = 'java.lang.String') then begin
-      Result := AddAClass(CName);
-      exit;
-    end;
+  Result := FUnit.FindClassifier(CName, TheClass, True);
+  if Assigned(Result) then
+    Exit
+  else if IsSimpleType(CName) or (CName = 'java.lang.String') then
+  begin
+    Result := AddAClass(CName);
+    Exit;
+  end;
 
   PName := ExtractPackageName(CName);
   ShortName := ExtractClassName(CName);
-  if PName = '' then begin
-    ci := FUnit.GetClassifiers;
-    while ci.HasNext do begin
-      cent := ci.next;
-      if ExtractClassName(cent.Name) = CName then begin
-        Result := (cent as TClassifier);
-        exit;
+  if PName = '' then
+  begin
+    ClassIte := FUnit.GetClassifiers;
+    while ClassIte.HasNext do
+    begin
+      Cent := ClassIte.Next;
+      if ExtractClassName(Cent.Name) = CName then
+      begin
+        Result := (Cent as TClassifier);
+        Exit;
       end;
     end;
   end;
 
-  if not FWithoutNeedSource and NeedSource(ShortName, PName) then begin
-    Result:= FUnit.FindClassifier(ShortName, TheClass, true);
-    if Assigned(Result) then exit;
+  if not FWithoutNeedSource and NeedSource(ShortName, PName) then
+  begin
+    Result := FUnit.FindClassifier(ShortName, TheClass, True);
+    if Assigned(Result) then
+      Exit;
   end;
-  Result:= AddAClass(CName);
-  if FWithoutNeedSource = true then
-    Result.Pathname:= '';
+  Result := AddAClass(CName);
+  if FWithoutNeedSource then
+    Result.Pathname := '';
 end;
 
-procedure TJavaParser.SetVisibility(M: TModelEntity);
+procedure TJavaParser.SetVisibility(Model: TModelEntity);
 begin
-  M.Visibility := ModVisibility;
-  M.Static := ModStatic;
-  M.IsFinal := ModFinal;
-  M.IsAbstract := ModAbstract;
+  Model.Visibility := FModVisibility;
+  Model.Static := FModStatic;
+  Model.IsFinal := FModFinal;
+  Model.IsAbstract := FModAbstract;
 end;
 
-procedure TJavaParser.SwapArrFromTo(var s1, s2: string);
+procedure TJavaParser.SwapArrFromTo(var Str1, Str2: string);
 begin
-  var p := Pos('[]', s1);
-  while p > 0 do begin
-    s2 := s2 + '[]';
-    Delete(s1, p, 2);
-    p := Pos('[]', s1);
+  var
+  Posi := Pos('[]', Str1);
+  while Posi > 0 do
+  begin
+    Str2 := Str2 + '[]';
+    Delete(Str1, Posi, 2);
+    Posi := Pos('[]', Str1);
   end;
 end;
 
-procedure TJavaParser.DoOperation(O: TOperation; const ParentName, Typename: string);
+procedure TJavaParser.DoOperation(Operation: TOperation;
+  const Parentname, Typename: string);
 var
   ParType, Ident: string;
   Param: TParameter;
 begin
-  O.Documentation.Description := Scanner.Comment;
-  O.Documentation.LineS := Scanner.CommentLineS;
-  O.Documentation.LineE := Scanner.CommentLineE;
-  O.Spalte:= Scanner.LastTokenColumn;
-  O.hasComment := (Pos('/*', O.Documentation.Description) + Pos('//',
-    O.Documentation.Description) = 1);
-  O.ParentName := ParentName;
-  O.ScopeDepth:= ScopeDepth;
-  SetVisibility(O);
-  if (O.ReturnValue = nil) and (Typename <> '') and (Typename <> 'void') then
-    O.ReturnValue := NeedClassifier(GetImportName(Typename));
-  if Assigned(O.ReturnValue) then
-    O.OperationType := otFunction
-  else if (GetClassName(ParentName) = O.Name) and (Typename = '') then
-    O.OperationType := otConstructor
+  Operation.Documentation.Description := FScanner.Comment;
+  Operation.Documentation.LineS := FScanner.CommentLineS;
+  Operation.Documentation.LineE := FScanner.CommentLineE;
+  Operation.Spalte := FScanner.LastTokenColumn;
+  Operation.HasComment := (Pos('/*', Operation.Documentation.Description) +
+    Pos('//', Operation.Documentation.Description) = 1);
+  Operation.Parentname := Parentname;
+  Operation.ScopeDepth := FScopeDepth;
+  SetVisibility(Operation);
+  if (Operation.ReturnValue = nil) and (Typename <> '') and (Typename <> 'void')
+  then
+    Operation.ReturnValue := NeedClassifier(GetImportName(Typename));
+  if Assigned(Operation.ReturnValue) then
+    Operation.OperationType := otFunction
+  else if (GetClassName(Parentname) = Operation.Name) and (Typename = '') then
+    Operation.OperationType := otConstructor
   else
-    O.OperationType := otProcedure;
+    Operation.OperationType := otProcedure;
   // Parameterlist
   GetNextToken;
-  while (Token <> '') and (Token <> ')') do begin
+  while (Token <> '') and (Token <> ')') do
+  begin
     if Token = 'final' then
       GetNextToken;
     ParType := GetTypeName;
     Ident := Token;
     SwapArrFromTo(Ident, ParType);
     // if ParType = 'E' then p:= 'java.lang.Object' else p:= ParType;
-    Param := O.AddParameter(Ident);
-    Param.LineS := Scanner.line;
-    Param.Spalte:= Scanner.TokenColumn;
+    Param := Operation.AddParameter(Ident);
+    Param.LineS := FScanner.Line;
+    Param.Spalte := FScanner.TokenColumn;
     Param.TypeClassifier := NeedClassifier(GetImportName(ParType));
     GetNextToken;
     if Token = ',' then
       GetNextToken;
   end;
-  Scanner.Comment := '';
-  Scanner.CommentLineS := 0;
-  Scanner.CommentLineE := 0;
-  O.LineE := Scanner.line;
+  FScanner.Comment := '';
+  FScanner.CommentLineS := 0;
+  FScanner.CommentLineE := 0;
+  Operation.LineE := FScanner.Line;
 end;
 
-function TJavaParser.ParseAnnotations(C: TClass = nil): string;
+function TJavaParser.ParseAnnotations(AClass: TClass = nil): string;
 begin
   Result := '';
   while Token = '@' do
@@ -1153,9 +1269,9 @@ begin
       (Pos('org.junit.Assert', FUnit.ClassImports.Text) > 0) or
       (Pos('org.junit.jupiter.api.Assertions', FUnit.FullImports.Text) > 0) or
       (Pos('org.junit.jupiter.api.Assertions', FUnit.ClassImports.Text) > 0))
-      and Assigned(C) then
+      and Assigned(AClass) then
     begin
-      C.isJUnitTestClass := true;
+      AClass.IsJUnitTestClass := True;
       if (Token = 'Test') or (Token = 'ParameterizedTest') then
         Result := Token;
     end;
@@ -1165,152 +1281,170 @@ begin
   end;
 end;
 
-procedure TJavaParser.ParseBlock(O: TOperation);
+procedure TJavaParser.ParseBlock(Operation: TOperation);
 begin
-  Inc(ScopeDepth);
+  Inc(FScopeDepth);
   GetNextToken;
   repeat
-    ParseBlockStatement(O, true);
+    ParseBlockStatement(Operation, True);
   until (Token = '}') or (Token = '') or IsMethodModifier(Token);
-  O.setAttributeScope(ScopeDepth, Scanner.line);
-  O.LineE := Scanner.line;
-  Dec(ScopeDepth);
+  Operation.SetAttributeScope(FScopeDepth, FScanner.Line);
+  Operation.LineE := FScanner.Line;
+  Dec(FScopeDepth);
 end;
 
-procedure TJavaParser.ParseIfStatement(O: TOperation);
-  // IfThenStatement: if ( Expression ) Statement
-  // IfThenElseStatement: if ( Expression ) StatementNoShortIf else Statement
+procedure TJavaParser.ParseIfStatement(Operation: TOperation);
+// IfThenStatement: if ( Expression ) Statement
+// IfThenElseStatement: if ( Expression ) StatementNoShortIf else Statement
 begin
-  var line := Scanner.line;
+  var
+  Line := FScanner.Line;
   GetNextToken;
   if Token = '(' then
-    Scanner.SkipCondition
+    FScanner.SkipCondition
   else if Token = ')' then
     GetNextToken;
 
-  var SingleStatement := (Token <> '{');
-  if SingleStatement
-    then AddStructure(line, Scanner.LastTokenLine, SingleStatement)
-    else AddStructure(line, Scanner.line, SingleStatement);
-  ParseBlockStatement(O, False);
+  var
+  SingleStatement := (Token <> '{');
+  if SingleStatement then
+    AddStructure(Line, FScanner.LastTokenLine, SingleStatement)
+  else
+    AddStructure(Line, FScanner.Line, SingleStatement);
+  ParseBlockStatement(Operation, False);
   if not SingleStatement then
     GetNextToken;
-  if (Token = ';') and (Scanner.lookAheadToken = 'else') then
+  if (Token = ';') and (FScanner.LookAheadToken = 'else') then
     GetNextToken;
-  if Token = 'else' then begin
-    line := Scanner.line;
-    if SingleStatement
-      then CloseStructure(line, False)
-      else CloseStructure(Scanner.LastTokenLine, False);
+  if Token = 'else' then
+  begin
+    Line := FScanner.Line;
+    if SingleStatement then
+      CloseStructure(Line, False)
+    else
+      CloseStructure(FScanner.LastTokenLine, False);
     GetNextToken;
     // else if gleiche Ebene wie einfaches else
     // andere Variante in Versionen 18.19 bis 20.05
     if Token = 'if' then
-      ParseElseIfStatement(O)
-    else begin
+      ParseElseIfStatement(Operation)
+    else
+    begin
       SingleStatement := (Token <> '{');
-      if SingleStatement
-        then AddStructure(line, Scanner.LastTokenLine, SingleStatement)
-        else AddStructure(line, Scanner.line, SingleStatement);
-      ParseBlockStatement(O, False);
+      if SingleStatement then
+        AddStructure(Line, FScanner.LastTokenLine, SingleStatement)
+      else
+        AddStructure(Line, FScanner.Line, SingleStatement);
+      ParseBlockStatement(Operation, False);
       if not SingleStatement then
         GetNextToken;
-      CloseStructure(Scanner.LastTokenLine)
-    end
+      CloseStructure(FScanner.LastTokenLine);
+    end;
   end
   else
-    CloseStructure(Scanner.LastTokenLine, SingleStatement);
+    CloseStructure(FScanner.LastTokenLine, SingleStatement);
 end;
 
-procedure TJavaParser.ParseElseIfStatement(O: TOperation);
+procedure TJavaParser.ParseElseIfStatement(Operation: TOperation);
 begin
-  var line := Scanner.line;
+  var
+  Line := FScanner.Line;
   GetNextToken;
   if Token = '(' then
-    Scanner.SkipCondition;
-  var SingleStatement := (Token <> '{');
-  if SingleStatement
-    then AddStructure(line, Scanner.LastTokenLine)
-    else AddStructure(line, Scanner.line);
-  ParseBlockStatement(O, False);
+    FScanner.SkipCondition;
+  var
+  SingleStatement := (Token <> '{');
+  if SingleStatement then
+    AddStructure(Line, FScanner.LastTokenLine)
+  else
+    AddStructure(Line, FScanner.Line);
+  ParseBlockStatement(Operation, False);
   if not SingleStatement then
     GetNextToken;
-  if (Token = ';') and (Scanner.LookAheadToken = 'else') then
+  if (Token = ';') and (FScanner.LookAheadToken = 'else') then
     GetNextToken;
 
-  if Token = 'else' then begin
-    if SingleStatement
-      then line := Scanner.line
-      else line := Scanner.LastTokenLine;
-    CloseStructure(line, False);
+  if Token = 'else' then
+  begin
+    if SingleStatement then
+      Line := FScanner.Line
+    else
+      Line := FScanner.LastTokenLine;
+    CloseStructure(Line, False);
     GetNextToken;
     if Token = 'if' then
-      ParseElseIfStatement(O)
-    else begin
+      ParseElseIfStatement(Operation)
+    else
+    begin
       SingleStatement := (Token <> '{');
-      if SingleStatement
-        then AddStructure(line, Scanner.LastTokenLine)
-        else AddStructure(line, Scanner.line);
-      ParseBlockStatement(O, False);
+      if SingleStatement then
+        AddStructure(Line, FScanner.LastTokenLine)
+      else
+        AddStructure(Line, FScanner.Line);
+      ParseBlockStatement(Operation, False);
       if not SingleStatement then
         GetNextToken;
-      CloseStructure(Scanner.LastTokenLine, SingleStatement);
+      CloseStructure(FScanner.LastTokenLine, SingleStatement);
     end;
   end
   else if SingleStatement then
-    CloseStructure(Scanner.line - 1, true)
+    CloseStructure(FScanner.Line - 1, True)
   else
-    CloseStructure(Scanner.LastTokenLine, False);
+    CloseStructure(FScanner.LastTokenLine, False);
 end;
 
-procedure TJavaParser.ParseTryStatement(O: TOperation);
+procedure TJavaParser.ParseTryStatement(Operation: TOperation);
 // TryStatement: try Block Catches | try Block Catchesopt Finally
 // Catches     : CatchClause | Catches CatchClause
 // CatchClause : catch ( FormalParameter ) Block
 // Finally     : finally Block
 var
   Typename, Ident: string;
-  line: integer;
+  Line: Integer;
 begin
-  line := Scanner.line;
+  Line := FScanner.Line;
   GetNextToken;
   if Token = '(' then
   begin // try with ressources
     GetNextToken;
     Typename := Token;
     GetImportName(Typename);
-    Scanner.SkipCondition;
+    FScanner.SkipCondition;
   end;
-  AddStructure(line, Scanner.line);
-  ParseBlock(O);
+  AddStructure(Line, FScanner.Line);
+  ParseBlock(Operation);
   CloseStructureDefault;
   GetNextToken;
-  while Token = 'catch' do begin
-    line := Scanner.line;
+  while Token = 'catch' do
+  begin
+    Line := FScanner.Line;
     GetNextToken;
-    if Token = '(' then begin
-      Typename:= GetImportName(GetNextToken);
-      Ident:= getNextToken;
-      if assigned(FUnit) then // not for ExecutionParser
-        DoAttribute(O.AddAttribute(Ident, NeedClassifier(Typename)), '', O);
-      Scanner.SkipCondition;
+    if Token = '(' then
+    begin
+      Typename := GetImportName(GetNextToken);
+      Ident := GetNextToken;
+      if Assigned(FUnit) then // not for ExecutionParser
+        DoAttribute(Operation.AddAttribute(Ident, NeedClassifier(Typename)), '',
+          Operation);
+      FScanner.SkipCondition;
     end;
-    AddStructure(line, Scanner.line);
-    ParseBlock(O);
+    AddStructure(Line, FScanner.Line);
+    ParseBlock(Operation);
     CloseStructureDefault;
     GetNextToken;
   end;
-  if Token = 'finally' then begin
-    line := Scanner.LastTokenLine;
+  if Token = 'finally' then
+  begin
+    Line := FScanner.LastTokenLine;
     GetNextToken;
-    AddStructure(line, Scanner.line);
-    ParseBlock(O);
+    AddStructure(Line, FScanner.Line);
+    ParseBlock(Operation);
     CloseStructureDefault;
     GetNextToken;
   end;
 end;
 
-procedure TJavaParser.ParseSwitchStatement(O: TOperation);
+procedure TJavaParser.ParseSwitchStatement(Operation: TOperation);
 (*
   SwitchStatement: switch ( Expression ) SwitchBlock
   SwitchBlock: { SwitchBlockStatementGroupsopt SwitchLabelsopt }
@@ -1320,168 +1454,188 @@ procedure TJavaParser.ParseSwitchStatement(O: TOperation);
 *)
 
 var
-  line: integer; lToken: string;
+  Line: Integer;
+  LToken: string;
 
   procedure TraditionelSwitch;
   begin
-    while (Token = 'case') or (Token = 'default') do begin
-      line := Scanner.line;
+    while (Token = 'case') or (Token = 'default') do
+    begin
+      Line := FScanner.Line;
       GetNextToken;
       SkipTo(':');
-      AddStructure(line, Scanner.line);
+      AddStructure(Line, FScanner.Line);
       GetNextToken;
-      while (Token = 'case') or (Token = 'default') do begin
+      while (Token = 'case') or (Token = 'default') do
+      begin
         CloseStructureDefault;
-        line := Scanner.line;
+        Line := FScanner.Line;
         GetNextToken;
         SkipTo(':');
-        AddStructure(line, Scanner.line);
+        AddStructure(Line, FScanner.Line);
         GetNextToken;
       end;
       if Token <> '}' then
         repeat
-          ParseBlockStatement(O, true);
+          ParseBlockStatement(Operation, True);
           if Token = ';' then
             GetNextToken;
         until (Token = '}') or (Token = '') or (Token = 'case') or
           (Token = 'default');
-      CloseStructure(Scanner.LastTokenLine, true);
+      CloseStructure(FScanner.LastTokenLine, True);
     end;
   end;
 
   procedure NewSwitch;
   begin
-    while (Token = 'case') or (Token = 'default') do begin
-      line := Scanner.line;
-      AddStructure(line, Scanner.line);
-      while (Token <> '->') and not Scanner.empty do
+    while (Token = 'case') or (Token = 'default') do
+    begin
+      Line := FScanner.Line;
+      AddStructure(Line, FScanner.Line);
+      while (Token <> '->') and not FScanner.Empty do
         GetNextToken;
       GetNextToken;
-      var SingleStatement:= (Token <> '{');
-      ParseBlockStatement(O, false);
-      if SingleStatement and (Token = ';') or
-         not SingleStatement and (Token = '}') then
-           GetNextToken;
-      CloseStructure(Scanner.LastTokenLine, SingleStatement);
+      var
+      SingleStatement := (Token <> '{');
+      ParseBlockStatement(Operation, False);
+      if SingleStatement and (Token = ';') or not SingleStatement and
+        (Token = '}') then
+        GetNextToken;
+      CloseStructure(FScanner.LastTokenLine, SingleStatement);
     end;
   end;
 
 begin
-  line := Scanner.line;
+  Line := FScanner.Line;
   GetNextToken;
   if Token = '(' then
-    Scanner.SkipCondition;
-  AddStructure(line, Scanner.line);
-  if Token = '{' then begin
+    FScanner.SkipCondition;
+  AddStructure(Line, FScanner.Line);
+  if Token = '{' then
+  begin
     GetNextToken;
-    if (Token = 'case') or (Token = 'default') then begin
-      line := Scanner.line;
-      lToken:= Scanner.LookAheadToken(':->');
-      if lToken = ':'
-        then TraditionelSwitch
-        else NewSwitch;
+    if (Token = 'case') or (Token = 'default') then
+    begin
+      Line := FScanner.Line;
+      LToken := FScanner.LookAheadToken(':->');
+      if LToken = ':' then
+        TraditionelSwitch
+      else
+        NewSwitch;
     end;
   end;
   CloseStructureDefault;
   GetNextToken;
 end;
 
-procedure TJavaParser.ParseWhileStatement(O: TOperation);
+procedure TJavaParser.ParseWhileStatement(Operation: TOperation);
 // WhileStatement: while ( Expression ) Statement
 begin
-  var line := Scanner.line;
+  var
+  Line := FScanner.Line;
   GetNextToken;
   if Token = '(' then
-    Scanner.SkipCondition
+    FScanner.SkipCondition
   else if Token = ')' then
     GetNextToken;
-  var SingleStatement := (Token <> '{');
-  if SingleStatement
-    then AddStructure(line, Scanner.LastTokenLine)
-    else AddStructure(line, Scanner.line);
-  ParseBlockStatement(O, False);
+  var
+  SingleStatement := (Token <> '{');
+  if SingleStatement then
+    AddStructure(Line, FScanner.LastTokenLine)
+  else
+    AddStructure(Line, FScanner.Line);
+  ParseBlockStatement(Operation, False);
   if not SingleStatement then
     GetNextToken;
   if SingleStatement then
-    CloseStructure(Scanner.LastTokenLine, SingleStatement) // Scanner.Line?
+    CloseStructure(FScanner.LastTokenLine, SingleStatement) // FScanner.Line?
   else
-    CloseStructure(Scanner.LastTokenLine, SingleStatement);
+    CloseStructure(FScanner.LastTokenLine, SingleStatement);
 end;
 
-procedure TJavaParser.ParseDoStatement(O: TOperation);
+procedure TJavaParser.ParseDoStatement(Operation: TOperation);
 // DoStatement: do Statement while ( Expression ) ;
 begin
-  var line := Scanner.line;
+  var
+  Line := FScanner.Line;
   GetNextToken;
-  var SingleStatement := (Token <> '{');
-  if SingleStatement
-    then AddStructure(line, Scanner.LastTokenLine)
-    else AddStructure(line, Scanner.line);
-  ParseBlockStatement(O, False);
+  var
+  SingleStatement := (Token <> '{');
+  if SingleStatement then
+    AddStructure(Line, FScanner.LastTokenLine)
+  else
+    AddStructure(Line, FScanner.Line);
+  ParseBlockStatement(Operation, False);
   GetNextToken;
   if SingleStatement then
-    line := Scanner.line
+    Line := FScanner.Line
   else
-    line := Scanner.LastTokenLine;
+    Line := FScanner.LastTokenLine;
   if Token = 'while' then
   begin
     GetNextToken;
     if Token = '(' then
-      Scanner.SkipCondition;
+      FScanner.SkipCondition;
   end;
-  CloseStructure(Scanner.line, False);
-  Structures[Structures.Count - 1].FBottomTop := line;
+  CloseStructure(FScanner.Line, False);
+  FStructures[FStructures.Count - 1].FBottomTop := Line;
   if Token = ';' then
     GetNextToken;
 end;
 
-procedure TJavaParser.ParseForStatement(O: TOperation);
+procedure TJavaParser.ParseForStatement(Operation: TOperation);
 var
   Typename, Ident, Importname: string;
   SingleStatement: Boolean;
-  line: integer;
+  Line: Integer;
   Attr: TAttribute;
   // ForStatement: for (type variable = ; Expressionopt ; ForUpdateopt ) Statement
   // ForStatement: for (Type Object : Collection) Statement
 begin
-  line := Scanner.line;
+  Line := FScanner.Line;
   GetNextToken;
-  Inc(ScopeDepth);
-  if Token = '(' then begin
+  Inc(FScopeDepth);
+  if Token = '(' then
+  begin
     Typename := GetNextToken;
     if Token = '<' then
       SkipPair('<', '>');
-    if Typename <> ';' then begin
+    if Typename <> ';' then
+    begin
       Ident := GetNextToken;
-      if Ident = '(' then   // for (match (Token.Colon); ; match (Token.Comma)) {..}
+      if Ident = '(' then
+      // for (match (Token.Colon); ; match (Token.Comma)) {..}
         SkipPair('(', ')')
-      else begin
+      else
+      begin
         GetNextToken;
-        if ((Token = ':') or (Token = '=')) and assigned(FUnit) then begin
-          ModVisibility := viPackage;
-          Importname:= GetImportName(Typename);
-          Attr:= O.AddAttribute(Ident, NeedClassifier(Importname));
-          DoAttribute(Attr, '', O);
-          Attr.LineS:= Scanner.LastTokenLine;
+        if ((Token = ':') or (Token = '=')) and Assigned(FUnit) then
+        begin
+          FModVisibility := viPackage;
+          Importname := GetImportName(Typename);
+          Attr := Operation.AddAttribute(Ident, NeedClassifier(Importname));
+          DoAttribute(Attr, '', Operation);
+          Attr.LineS := FScanner.LastTokenLine;
         end;
       end;
     end;
     if Token <> '{' then
-      Scanner.SkipPairStopAt('(', ')', '{}');
+      FScanner.SkipPairStopAt('(', ')', '{}');
   end;
-  SingleStatement:= (Token <> '{');
-  if SingleStatement
-    then AddStructure(line, Scanner.LastTokenLine)
-    else AddStructure(line, Scanner.line);
-  ParseBlockStatement(O, False);
+  SingleStatement := (Token <> '{');
+  if SingleStatement then
+    AddStructure(Line, FScanner.LastTokenLine)
+  else
+    AddStructure(Line, FScanner.Line);
+  ParseBlockStatement(Operation, False);
   if not SingleStatement then
     GetNextToken;
-  CloseStructure(Scanner.LastTokenLine, SingleStatement);
-  O.setAttributeScope(ScopeDepth, Scanner.line);
-  Dec(ScopeDepth);
+  CloseStructure(FScanner.LastTokenLine, SingleStatement);
+  Operation.SetAttributeScope(FScopeDepth, FScanner.Line);
+  Dec(FScopeDepth);
 end;
 
-procedure TJavaParser.ParseBreakStatement(O: TOperation);
+procedure TJavaParser.ParseBreakStatement(Operation: TOperation);
 // 14.14
 // BreakStatement: break Identifier opt ;
 begin
@@ -1489,170 +1643,184 @@ begin
   Skip(';');
 end;
 
-procedure TJavaParser.ParseYieldStatement(O: TOperation);
+procedure TJavaParser.ParseYieldStatement(Operation: TOperation);
 // YieldStatement: yield Expression;
 begin
   SkipTo(';');
   Skip(';');
 end;
 
-procedure TJavaParser.ParseContinueStatement(O: TOperation);
+procedure TJavaParser.ParseContinueStatement(Operation: TOperation);
 // ContinueStatement: continue Identifieropt ;
 begin
   SkipTo(';');
   Skip(';');
 end;
 
-procedure TJavaParser.ParseAssertStatement(O: TOperation);
+procedure TJavaParser.ParseAssertStatement(Operation: TOperation);
 // AssertStatement: assert Expression1 ; | asser Expression1 : Expression2 ;
 begin
   SkipTo(';');
   Skip(';');
 end;
 
-procedure TJavaParser.ParseReturnStatement(O: TOperation);
+procedure TJavaParser.ParseReturnStatement(Operation: TOperation);
 // ReturnStatement: return [Expression] ;
 begin
   GetNextToken;
-  // ParseExpression(O);
   if Token = 'new' then
-    ParseNew(O)
-  else if IsIdentifier(Token) then begin
+    ParseNew(Operation)
+  else if IsIdentifier(Token) then
+  begin
     GetNextToken;
     if Token = '(' then
-      ParseArgumentList(O);
-  end else if Token = '(' then begin
+      ParseArgumentList(Operation);
+  end
+  else if Token = '(' then
+  begin
     SkipPair('(', ')');
     if Token = '->' then
-      ParseLambdaBody(O);
+      ParseLambdaBody(Operation);
   end;
   Skip(';');
 end;
 
-procedure TJavaParser.parseLambdaBody(O: TOperation);
+procedure TJavaParser.ParseLambdaBody(Operation: TOperation);
 begin
-  var myfree:= false;
-  if O = nil then begin
-    O:= TOperation.Create(nil);
-    myfree:= true;
+  var
+  MyFree := False;
+  if not Assigned(Operation) then
+  begin
+    Operation := TOperation.Create(nil);
+    MyFree := True;
   end;
   GetNextToken;
-  if Token = '{' then begin
-    AddStructure(Scanner.line, Scanner.line);
-    ParseBlock(O);
+  if Token = '{' then
+  begin
+    AddStructure(FScanner.Line, FScanner.Line);
+    ParseBlock(Operation);
     CloseStructureDefault;
-  end else
-    ParseBlockStatement(O, False);
-  if myfree then
-    FreeAndNil(O);
+  end
+  else
+    ParseBlockStatement(Operation, False);
+  if MyFree then
+    FreeAndNil(Operation);
 end;
 
-procedure TJavaParser.ParseNew(O: TOperation);
-  var Typename: string;
-      C: TClass;
-(*
-ClassInstanceCreationExpression:
-  UnqualifiedClassInstanceCreationExpression
-  ExpressionName . UnqualifiedClassInstanceCreationExpression
-  Primary . UnqualifiedClassInstanceCreationExpression
+procedure TJavaParser.ParseNew(Operation: TOperation);
+var
+  Typename: string;
+  AClass: TClass;
+  (*
+    ClassInstanceCreationExpression:
+    UnqualifiedClassInstanceCreationExpression
+    ExpressionName . UnqualifiedClassInstanceCreationExpression
+    Primary . UnqualifiedClassInstanceCreationExpression
 
-UnqualifiedClassInstanceCreationExpression:
-  new [TypeArguments] ClassOrInterfaceTypeToInstantiate ( [ArgumentList] ) [ClassBody]
+    UnqualifiedClassInstanceCreationExpression:
+    new [TypeArguments] ClassOrInterfaceTypeToInstantiate ( [ArgumentList] ) [ClassBody]
 
-ClassOrInterfaceTypeToInstantiate:
-  {Annotation} Identifier {. {Annotation} Identifier} [TypeArgumentsOrDiamond]
+    ClassOrInterfaceTypeToInstantiate:
+    {Annotation} Identifier {. {Annotation} Identifier} [TypeArgumentsOrDiamond]
 
-TypeArgumentsOrDiamond:
-  TypeArguments
-  <>
-*)
+    TypeArgumentsOrDiamond:
+    TypeArguments
+    <>
+  *)
 begin
   GetNextToken;
-  if Token = '<' then SkipPair('<', '>');
-  Typename:= GetTypeName;
+  if Token = '<' then
+    SkipPair('<', '>');
+  Typename := GetTypeName;
   NeedClassifier(GetImportName(WithoutArray(Typename)));
   if Token = '<' then
     SkipPair('<', '>')
   else if Token = '<>' then
     GetNextToken;
-  if Token = '(' then begin
-    ParseArgumentList(O);
-    if Token = '{' then begin
-      AddStructure(Scanner.line, Scanner.line);
-      //if (O = nil) or (O.Owner = nil) then begin
-        C:= TClass.create(nil);
-        try
-          ParseClassBody(C);
-        finally
-          FreeAndNil(C);
-        end;
-      //end;
-      //else ParseClassBody(O.Owner as TClass);
+  if Token = '(' then
+  begin
+    ParseArgumentList(Operation);
+    if Token = '{' then
+    begin
+      AddStructure(FScanner.Line, FScanner.Line);
+      AClass := TClass.Create(nil);
+      try
+        ParseClassBody(AClass);
+      finally
+        FreeAndNil(AClass);
+      end;
       CloseStructureDefault;
     end;
-  end else if Token = '{' then // array declaration
+  end
+  else if Token = '{' then // array declaration
     SkipPair('{', '}');
 end;
 
-procedure TJavaParser.ParseThrowStatement(O: TOperation);
+procedure TJavaParser.ParseThrowStatement(Operation: TOperation);
 // ThrowStatement: throw Expression ;
 begin
   GetNextToken;
   Skip(';');
 end;
 
-procedure TJavaParser.ParseSynchronizedStatement(O: TOperation);
+procedure TJavaParser.ParseSynchronizedStatement(Operation: TOperation);
 // SynchronizedStatement: synchronized ( Expression ) Block
 begin
   GetNextToken;
   if Token = '(' then
-    Scanner.SkipCondition;
-  AddStructure(Scanner.line, Scanner.line);
-  ParseBlock(O);
+    FScanner.SkipCondition;
+  AddStructure(FScanner.Line, FScanner.Line);
+  ParseBlock(Operation);
   CloseStructureDefault;
   GetNextToken;
 end;
 
 function TJavaParser.IsStatementBegin(const Token: string): Boolean;
 begin
-  var s := Token;
-  Result := (s = 'if') or (s = 'do') or (s = 'while') or (s = 'for') or
-    (s = 'try') or (s = 'switch') or (s = 'synchronized') or (s = 'return') or
-    (s = 'throw') or (s = 'break') or (s = 'continue') or (s = 'assert');
+  var
+  Str := Token;
+  Result := (Str = 'if') or (Str = 'do') or (Str = 'while') or (Str = 'for') or
+    (Str = 'try') or (Str = 'switch') or (Str = 'synchronized') or
+    (Str = 'return') or (Str = 'throw') or (Str = 'break') or (Str = 'continue')
+    or (Str = 'assert');
 end;
 
-procedure TJavaParser.ParseBlockStatement(O: TOperation; NewStructure: Boolean);
+procedure TJavaParser.ParseBlockStatement(Operation: TOperation;
+  NewStructure: Boolean);
 // BlockStatement:
 // LocalVariableDeclarationStatement
 // ClassDeclaration (local class, declared in a method/constructor)
 // Statement
 begin
   if (Token = '}') or (Token = '') then
-    exit;
+    Exit;
   ParseAnnotations;
   ParseLocalClassModifiers; // not private/protected/public/static
 
   // labled statement
-  if Scanner.LookAheadToken = ':' then begin
+  if FScanner.LookAheadToken = ':' then
+  begin
     GetNextToken;
     GetNextToken;
   end;
   if Token = 'class' then
-    ParseClassDeclaration(Scanner.line, true, O.ParentName)
+    ParseClassDeclaration(FScanner.Line, True, Operation.Parentname)
   else if Token = 'enum' then
     ParseEnumDeclaration
-    // local, inner class
+    // local, Inner class
   else if Token = 'if' then
-    ParseIfStatement(O)
+    ParseIfStatement(Operation)
   else if Token = 'while' then
-    ParseWhileStatement(O)
+    ParseWhileStatement(Operation)
   else if Token = 'for' then
-    ParseForStatement(O)
-  else if Token = '{' then begin // Blockstatement
-     if NewStructure then
+    ParseForStatement(Operation)
+  else if Token = '{' then
+  begin // Blockstatement
+    if NewStructure then
       AddStructureDefault;
-    ParseBlock(O);
-    if NewStructure then begin
+    ParseBlock(Operation);
+    if NewStructure then
+    begin
       CloseStructureDefault;
       GetNextToken;
     end;
@@ -1660,34 +1828,34 @@ begin
   else if Token = ';' then // EmptyStatement
     GetNextToken
   else if Token = 'assert' then
-    ParseAssertStatement(O)
+    ParseAssertStatement(Operation)
   else if Token = 'switch' then
-    ParseSwitchStatement(O)
+    ParseSwitchStatement(Operation)
   else if Token = 'do' then
-    ParseDoStatement(O)
+    ParseDoStatement(Operation)
   else if Token = 'break' then
-    ParseBreakStatement(O)
+    ParseBreakStatement(Operation)
   else if Token = 'yield' then
-    ParseYieldStatement(O)
+    ParseYieldStatement(Operation)
   else if Token = 'continue' then
-    ParseContinueStatement(O)
+    ParseContinueStatement(Operation)
   else if Token = 'return' then
-    ParseReturnStatement(O)
+    ParseReturnStatement(Operation)
   else if Token = 'synchronized' then
-    ParseSynchronizedStatement(O)
+    ParseSynchronizedStatement(Operation)
   else if Token = 'throw' then
-    ParseThrowStatement(O)
+    ParseThrowStatement(Operation)
   else if Token = 'try' then
-    ParseTryStatement(O)
+    ParseTryStatement(Operation)
   else
-    ParseExpressionOrLocalVariableDeclarationStatement(O);
-  O.HasSourceCode := true;
+    ParseExpressionOrLocalVariableDeclarationStatement(Operation);
+  Operation.HasSourceCode := True;
 end;
 
 procedure TJavaParser.ParseExpressionOrLocalVariableDeclarationStatement
-  (O: TOperation);
+  (Operation: TOperation);
 begin
-  // ExpressionStatement: StatementExpression ;
+  // ExpressionStatement: StatementExpression
   // StatementExpression: Assignment | PreIncrementExpression | PreDecrementExpression
   // PostIncrementExpression | PostDecrementExpression
   // MethodInvocation | ClassInstanceCreationExpression
@@ -1697,41 +1865,52 @@ begin
   // Assignment: LeftHandSide AssignmentOperator AssignmentExpression
 
   if Token = 'new' then // ClassInstanceCreationExpression
-    ParseNew(O)
+    ParseNew(Operation)
   else if (Token = '++') or (Token = '--') then // PreIncDecrementExpression
     Skip(';')
-  else begin
-    var Typename := GetTypeName;
-    if Typename = 'final' then begin
+  else
+  begin
+    var
+    Typename := GetTypeName;
+    if Typename = 'final' then
+    begin
       Typename := GetTypeName;
-      ParseLocalVariableDeclaration(Typename, O);
+      ParseLocalVariableDeclaration(Typename, Operation);
       SkipTo(';');
-    end else if (Typename = '(') and (Token = '(') then begin // ((Typecast) object).method;
+    end
+    else if (Typename = '(') and (Token = '(') then
+    begin // ((Typecast) object).method;
       GetNextToken;
       GetImportName(Token);
       Skip(';');
-    end else begin
-      while (length(Token) > 0) and CharInSet(Token[1], ['.', '[']) do begin
+    end
+    else
+    begin
+      while (Length(Token) > 0) and CharInSet(Token[1], ['.', '[']) do
+      begin
         Typename := Typename + Token;
         GetNextToken;
       end;
-      if (Token = '++') or (Token = '--') then  // PostIncDecExpression
+      if (Token = '++') or (Token = '--') then // PostIncDecExpression
         Skip(';')
-      else if Token = '(' then  // MethodInvocation
-        ParseMethodInvocation(Typename, O)
+      else if Token = '(' then // MethodInvocation
+        ParseMethodInvocation(Typename, Operation)
       else if IsAssignmentOperator(Token) then // Assignment
-        ParseAssignment(O)
-      else if (Token <> ';') and (Token <> '') and (Token <> '}') and (Token <> ')')
-        and (Token <> '(') and not IsStatementBegin(Token) and not IsOperator(Token) then begin
-          ParseLocalVariableDeclaration(Typename, O); // Variable Declaration
-          SkipTo(';');
-        end;
+        ParseAssignment(Operation)
+      else if (Token <> ';') and (Token <> '') and (Token <> '}') and
+        (Token <> ')') and (Token <> '(') and not IsStatementBegin(Token) and
+        not IsOperator(Token) then
+      begin
+        ParseLocalVariableDeclaration(Typename, Operation);
+        // Variable Declaration
+        SkipTo(';');
+      end;
     end;
   end;
 end;
 
 procedure TJavaParser.ParseLocalVariableDeclaration(Typename: string;
-  O: TOperation);
+  Operation: TOperation);
 (*
   14.4
   LocalVariableDeclarationStatement: LocalVariableType VariableDeclaratorList
@@ -1742,209 +1921,246 @@ procedure TJavaParser.ParseLocalVariableDeclaration(Typename: string;
 *)
 var
   Ident, Generic: string;
-  Attribute: TAttribute; col: integer;
+  Attribute: TAttribute;
+  Col: Integer;
   TypeClass: TClassifier;
 begin
-  col:= Scanner.LastTokenColumn;
-  if Token = '<' then begin
-    Generic := Scanner.GetGeneric;
+  Col := FScanner.LastTokenColumn;
+  if Token = '<' then
+  begin
+    Generic := FScanner.GetGeneric;
     Typename := Typename + '<' + Generic + '>';
-  end else
+  end
+  else
     Generic := '';
-  Ident:= Token;
+  Ident := Token;
   GetNextToken;
-  while Token = '[]' do begin
+  while Token = '[]' do
+  begin
     Ident := Ident + Token;
     GetNextToken;
   end;
   if IsIdentifier(Ident) and (IsSimpleType(Typename) or IsIdentifier(Typename))
-    and (length(Token) > 0) and CharInSet(Token[1], ['=', ',', ';']) then begin
-      ModVisibility := viPackage;
-      TypeClass:= NeedClassifier(GetImportName(Typename));
-      Attribute := O.AddAttribute(Ident, TypeClass);
-      DoAttribute(Attribute, Generic, O);
+    and (Length(Token) > 0) and CharInSet(Token[1], ['=', ',', ';']) then
+  begin
+    FModVisibility := viPackage;
+    TypeClass := NeedClassifier(GetImportName(Typename));
+    Attribute := Operation.AddAttribute(Ident, TypeClass);
+    DoAttribute(Attribute, Generic, Operation);
+    Attribute.Static := False;
+    Attribute.Visibility := viPackage;
+    Attribute.LineS := FScanner.TokenLine;
+    Attribute.Spalte := Col;
+    while Token = ',' do
+    begin
+      GetNextToken;
+      Ident := Token;
+      GetNextToken;
+      Attribute := Operation.AddAttribute(Ident, TypeClass);
+      DoAttribute(Attribute, Generic, Operation);
       Attribute.Static := False;
       Attribute.Visibility := viPackage;
-      Attribute.LineS := Scanner.TokenLine;
-      Attribute.Spalte:= col;
-      while Token = ',' do begin
-        GetNextToken;
-        Ident := Token;
-        GetNextToken;
-        Attribute := O.AddAttribute(Ident, TypeClass);
-        DoAttribute(Attribute, Generic, O);
-        Attribute.Static := False;
-        Attribute.Visibility := viPackage;
-        Attribute.LineS := Scanner.TokenLine;
-        Attribute.Spalte:= col;
-      end;
-      Scanner.Comment := '';
+      Attribute.LineS := FScanner.TokenLine;
+      Attribute.Spalte := Col;
+    end;
+    FScanner.Comment := '';
   end;
 end;
 
-procedure TJavaParser.ParseAssignment(O: TOperation);
+procedure TJavaParser.ParseAssignment(Operation: TOperation);
 begin
   // this is part of ParseExpression
   GetNextToken;
   if Token = 'new' then
-    ParseNew(O)
+    ParseNew(Operation)
   else if IsIdentifier(Token) then
-    while IsIdentifier(Token) do begin
+    while IsIdentifier(Token) do
+    begin
       GetNextToken;
       if Token = '(' then
-        ParseArgumentList(O);
+        ParseArgumentList(Operation);
       if Token = '.' then
         GetNextToken;
     end
-  else if (Token = '(') then begin // lambda
+  else if (Token = '(') then
+  begin // lambda
     GetNextToken;
-    if (Token = ')') and (Scanner.LookAheadToken = '->') then begin
+    if (Token = ')') and (FScanner.LookAheadToken = '->') then
+    begin
       GetNextToken;
-      parseLambdaBody(O);
-    end
+      ParseLambdaBody(Operation);
+    end;
   end;
   SkipTo(';');
   GetNextToken;
 end;
 
-procedure TJavaParser.ParseMethodInvocation(const Typename: string; O: TOperation);
+procedure TJavaParser.ParseMethodInvocation(const Typename: string;
+  Operation: TOperation);
 var
   Mi1, Mi2: IModelIterator;
   Attr: TModelEntity;
-  p: integer;
-  aObject: string;
-  isClass: Boolean;
+  Posi: Integer;
+  AObject: string;
+  IsClass: Boolean;
 begin
-  p := Pos('.', Typename);
-  aObject := Copy(Typename, 1, p - 1);
-  if aObject <> '' then begin
-    isClass := true;
-    Mi1 := O.GetAttributes;
-    while Mi1.HasNext do begin
-      Attr := Mi1.next;
-      if Attr.Name = aObject then
-        isClass := False;
+  Posi := Pos('.', Typename);
+  AObject := Copy(Typename, 1, Posi - 1);
+  if AObject <> '' then
+  begin
+    IsClass := True;
+    Mi1 := Operation.GetAttributes;
+    while Mi1.HasNext do
+    begin
+      Attr := Mi1.Next;
+      if Attr.Name = AObject then
+        IsClass := False;
     end;
-    if (O.Owner is TClassifier) then begin
-      Mi2:= ((O.Owner as TModelEntity) as TClassifier).GetAttributes;
-      while Mi2.HasNext do begin
-        Attr:= Mi2.next;
-        if Attr.Name = WithoutArray(aObject) then
-          isClass:= False;
+    if (Operation.Owner is TClassifier) then
+    begin
+      Mi2 := (Operation.Owner as TClassifier).GetAttributes;
+      while Mi2.HasNext do
+      begin
+        Attr := Mi2.Next;
+        if Attr.Name = WithoutArray(AObject) then
+          IsClass := False;
       end;
-      if isClass then begin
-        aObject:= GetImportName(aObject);
-        NeedClassifier(aObject);
+      if IsClass then
+      begin
+        AObject := GetImportName(AObject);
+        NeedClassifier(AObject);
       end;
     end;
   end;
-  ParseArgumentList(O);
-  while Token = '.' do begin
+  ParseArgumentList(Operation);
+  while Token = '.' do
+  begin
     GetNextToken;
     GetNextToken;
     if Token = '(' then
-      ParseArgumentList(O);
+      ParseArgumentList(Operation);
   end;
 end;
 
-procedure TJavaParser.ParseArgumentList(O: TOperation);
+procedure TJavaParser.ParseArgumentList(Operation: TOperation);
 var
-  bracket: integer;
-  aClassname: string;
-  myfree: boolean;
+  Bracket: Integer;
+  AClassname: string;
+  MyFree: Boolean;
 begin
-  myfree:= false;
-  if O = nil then begin
-    O:= TOperation.create(nil);
-    myFree:= true;
+  MyFree := False;
+  if not Assigned(Operation) then
+  begin
+    Operation := TOperation.Create(nil);
+    MyFree := True;
   end;
 
   GetNextToken;
-  bracket := 0;
-  while (Token <> ')') and (Token <> '') do begin
-    if Token = '(' then begin // Typecast | method call | lambda
+  Bracket := 0;
+  while (Token <> ')') and (Token <> '') do
+  begin
+    if Token = '(' then
+    begin // Typecast | method call | lambda
       GetNextToken;
-      Inc(bracket);
-      if Token = '(' then  begin
+      Inc(Bracket);
+      if Token = '(' then
+      begin
         GetNextToken;
         if IsTypename(Token) then
           GetImportName(Token);
         SkipTo(')');
         GetNextToken;
       end
-      else if Token = ')' then begin // lambda
+      else if Token = ')' then
+      begin // lambda
         GetNextToken;
-        Dec(bracket);
+        Dec(Bracket);
         if Token = '->' then
-          parseLambdaBody(O);
-      end else begin
+          ParseLambdaBody(Operation);
+      end
+      else
+      begin
         SkipPair('(', ')');
-        Dec(bracket);
+        Dec(Bracket);
       end;
-    end else if Token = 'new' then
-      ParseNew(O)
+    end
+    else if Token = 'new' then
+      ParseNew(Operation)
     else if Token = 'switch' then
-      ParseSwitchStatement(O)
-    else if Token = '{' then begin
-      AddStructure(Scanner.line, Scanner.line);
-      ParseBlock(O);
+      ParseSwitchStatement(Operation)
+    else if Token = '{' then
+    begin
+      AddStructure(FScanner.Line, FScanner.Line);
+      ParseBlock(Operation);
       CloseStructureDefault;
-    end else if (Pos('.', Token) > 0) and (Pos('"', Token) <> 1) then begin
-      aClassname := Copy(Token, 1, Pos('.', Token) - 1);
-      GetImportName(aClassname);
+    end
+    else if (Pos('.', Token) > 0) and (Pos('"', Token) <> 1) then
+    begin
+      AClassname := Copy(Token, 1, Pos('.', Token) - 1);
+      GetImportName(AClassname);
       GetNextToken;
-    end else if Token = '::' then begin
+    end
+    else if Token = '::' then
+    begin
       GetNextToken;
       GetNextToken;
-    end else begin
+    end
+    else
+    begin
       GetNextToken;
-      while (bracket > 0) and (Token = ')') do begin
+      while (Bracket > 0) and (Token = ')') do
+      begin
         GetNextToken;
-        Dec(bracket);
+        Dec(Bracket);
       end;
     end;
   end;
   GetNextToken;
-  if myfree then
-    FreeAndNil(O);
+  if MyFree then
+    FreeAndNil(Operation);
 end;
 
-function TJavaParser.IsAssignmentOperator(const Op: string): Boolean;
+function TJavaParser.IsAssignmentOperator(const Operator: string): Boolean;
 begin
-  Result := (Op = '=') or (Op = '*=') or (Op = '/=') or (Op = '%=') or
-    (Op = '+=') or (Op = '-=') or (Op = '<<=') or (Op = '>>=') or (Op = '>>>=')
-    or (Op = '&=') or (Op = '^=') or (Op = '|=');
+  Result := (Operator = '=') or (Operator = '*=') or (Operator = '/=') or
+    (Operator = '%=') or (Operator = '+=') or (Operator = '-=') or
+    (Operator = '<<=') or (Operator = '>>=') or (Operator = '>>>=') or
+    (Operator = '&=') or (Operator = '^=') or (Operator = '|=');
 end;
 
-function TJavaParser.IsOperator(const Op: string): Boolean;
+function TJavaParser.IsOperator(const Operator: string): Boolean;
 begin
-  Result := (Op = '*') or (Op = '/') or (Op = '%') or (Op = '+')
-    or (Op = '-') or (Op = '<<') or (Op = '>>') or (Op = '>>>') or (Op = '<')
-    or (Op = '>') or (Op = '<=') or (Op = '>M') or (Op = 'instanceof')
-    or (Op = '==') or (Op = '!=') or (Op = '&') or (Op = '^') or (Op = '|')
-    or (Op = '&&') or (Op = '||') or (Op = '?') or (Op = ':');
+  Result := (Operator = '*') or (Operator = '/') or (Operator = '%') or
+    (Operator = '+') or (Operator = '-') or (Operator = '<<') or
+    (Operator = '>>') or (Operator = '>>>') or (Operator = '<') or
+    (Operator = '>') or (Operator = '<=') or (Operator = '>M') or
+    (Operator = 'instanceof') or (Operator = '==') or (Operator = '!=') or
+    (Operator = '&') or (Operator = '^') or (Operator = '|') or
+    (Operator = '&&') or (Operator = '||') or (Operator = '?') or
+    (Operator = ':');
 end;
 
-function TJavaParser.IsExpressionStatementOperator(const Op: string): Boolean;
+function TJavaParser.IsExpressionStatementOperator(const Operator
+  : string): Boolean;
 begin
-  Result := IsAssignmentOperator(Op) or (Op = '(') or (Op = '++') or
-    (Op = '--');
+  Result := IsAssignmentOperator(Operator) or (Operator = '(') or
+    (Operator = '++') or (Operator = '--');
 end;
 
-function TJavaParser.IsReservedWord(const s: string): Boolean;
+function TJavaParser.IsReservedWord(const Str: string): Boolean;
 var
-  Left, Mid, Right: integer;
+  Left, Mid, Right: Integer;
 begin
-  Result := true;
+  Result := True;
   Left := 0;
   Right := High(ReservedWords);
 
   while Left <= Right do
   begin
     Mid := (Left + Right) div 2;
-    if ReservedWords[Mid] = s then
-      exit;
-    if ReservedWords[Mid] > s then
+    if ReservedWords[Mid] = Str then
+      Exit;
+    if ReservedWords[Mid] > Str then
       Right := Mid - 1
     else
       Left := Mid + 1;
@@ -1952,71 +2168,82 @@ begin
   Result := False;
 end;
 
-function TJavaParser.IsIdentifier(s: string): Boolean;
+function TJavaParser.IsIdentifier(Str: string): Boolean;
 begin
   Result := False;
-  var I := Pos('<', s);
-  if I > 0 then
-    Delete(s, I, length(s));
-  if length(s) = 0 then
-    exit;
-  if not (s[1].isLetter or (Pos(s[1], '_$') > 0)) then
-    exit;
-  for I := 2 to length(s) do
-    if not (s[i].isLetterOrDigit or (Pos(s[i], '_.[]<>') > 0)) then
-      exit;
-  if s[length(s)] = '.' then
-    exit;
-  Result := not IsReservedWord(s);
+  var
+  Int := Pos('<', Str);
+  if Int > 0 then
+    Delete(Str, Int, Length(Str));
+  if Length(Str) = 0 then
+    Exit;
+  if not(Str[1].IsLetter or (Pos(Str[1], '_$') > 0)) then
+    Exit;
+  for var I := 2 to Length(Str) do
+    if not(Str[I].IsLetterOrDigit or (Pos(Str[I], '_.[]<>') > 0)) then
+      Exit;
+  if Str[Length(Str)] = '.' then
+    Exit;
+  Result := not IsReservedWord(Str);
 end;
 
-function TJavaParser.IsTypename(const s: string): Boolean;
+function TJavaParser.IsTypename(const Str: string): Boolean;
 var
-  ci, it: IModelIterator;
+  ClassIte, Ite: IModelIterator;
   Attr: TAttribute;
-  cent: TModelEntity;
+  Cent: TModelEntity;
 begin
-  Result:= true;
-  if IsSimpleType(s) then
-    exit;
-  Result:= not IsReservedWord(s);
-  if Result and Assigned(FUnit) then begin
-    ci:= FUnit.GetClassifiers;
-    while ci.HasNext do begin
-      cent:= ci.next;
-      it:= (cent as TClassifier).GetAttributes;
-      while it.HasNext do  begin
-        Attr:= it.next as TAttribute;
-        if Attr.Name = s then
-          Result:= False;
-      end
+  Result := True;
+  if IsSimpleType(Str) then
+    Exit;
+  Result := not IsReservedWord(Str);
+  if Result and Assigned(FUnit) then
+  begin
+    ClassIte := FUnit.GetClassifiers;
+    while ClassIte.HasNext do
+    begin
+      Cent := ClassIte.Next;
+      Ite := (Cent as TClassifier).GetAttributes;
+      while Ite.HasNext do
+      begin
+        Attr := Ite.Next as TAttribute;
+        if Attr.Name = Str then
+          Result := False;
+      end;
     end;
   end;
 end;
 
-procedure TJavaParser.DoAttribute(A: TAttribute; const aGeneric: string; O: TOperation = nil);
+procedure TJavaParser.DoAttribute(Attribute: TAttribute; const AGeneric: string;
+  Operation: TOperation = nil);
 
-  var Pos: PChar; p: integer; aToken, s: string;
+var
+  Pos: PChar;
+  Posi: Integer;
+  AToken, Str: string;
 
   function GetValue: string;
   begin
-    var s := '';
-    while Pos < Scanner.CurrPos - 1 do begin
-      s := s + Pos^;
+    var
+    Str := '';
+    while Pos < FScanner.CurrPos - 1 do
+    begin
+      Str := Str + Pos^;
       Pos := Pos + 1;
     end;
-    Result := s;
+    Result := Str;
   end;
 
 begin
-  if Assigned(A) then begin
-    //A.LineS := Scanner.line;
-    A.Spalte := Scanner.LastTokenColumn;
-    A.ScopeDepth := ScopeDepth;
+  if Assigned(Attribute) then
+  begin
+    Attribute.Spalte := FScanner.LastTokenColumn;
+    Attribute.ScopeDepth := FScopeDepth;
     // VariableDeclarator:
     // VariableDeclaratorId [= VariableInitializer]
-    if Token = '=' then begin
-      Pos := Scanner.CurrPos;
+    if Token = '=' then
+    begin
+      Pos := FScanner.CurrPos;
       (*
         VariableInitializer:
         Expression      - new is part of Expression - parseExpression!
@@ -2027,13 +2254,15 @@ begin
         ExpressionName . UnqualifiedClassInstanceCreationExpression
         Primary . UnqualifiedClassInstanceCreationExpression
       *)
-      aToken := GetNextToken;
-      if (aToken = 'new') or EndsWith(aToken, '.new') then
-        ParseNew(O)
-      else if (aToken = 'switch') then
-        ParseSwitchStatement(O)
-      else if IsIdentifier(Token) then begin
-        while IsIdentifier(Token) do begin
+      AToken := GetNextToken;
+      if (AToken = 'new') or EndsWith(AToken, '.new') then
+        ParseNew(Operation)
+      else if (AToken = 'switch') then
+        ParseSwitchStatement(Operation)
+      else if IsIdentifier(Token) then
+      begin
+        while IsIdentifier(Token) do
+        begin
           GetNextToken;
           if Token = '(' then
             ParseArgumentList(nil);
@@ -2042,21 +2271,28 @@ begin
         end;
         if Token = '->' then
           ParseLambdaBody(nil);
-      end else if (Token = '(') then begin // lambda
+      end
+      else if (Token = '(') then
+      begin // lambda
         SkipPair('(', ')');
         if Token = '->' then
           ParseLambdaBody(nil);
-      end else begin
-        aToken := Token;
-        p := System.Pos('.', aToken);
-        if p > 0 then begin
-          Delete(aToken, p, length(aToken));
-          GetImportName(aToken);
+      end
+      else
+      begin
+        AToken := Token;
+        Posi := System.Pos('.', AToken);
+        if Posi > 0 then
+        begin
+          Delete(AToken, Posi, Length(AToken));
+          GetImportName(AToken);
         end;
       end;
 
       // skip unknown part until , (next VariableDeclarator) or ; (end of VariableDeclaratorList)
-      while (Token <> ',') and (Token <> ';') and (Token <> '') and (Token <> '}') do begin
+      while (Token <> ',') and (Token <> ';') and (Token <> '') and
+        (Token <> '}') do
+      begin
         if Token = '{' then
           SkipPair('{', '}')
         else if Token = '(' then
@@ -2064,102 +2300,110 @@ begin
         else
           GetNextToken;
       end;
-      s:= trim(GetValue);
-      p:= System.Pos(#13#10, s);
-      if p > 0 then
-       s:= copy(s, 1, p-1);
-      A.Value := s;
+      Str := Trim(GetValue);
+      Posi := System.Pos(#13#10, Str);
+      if Posi > 0 then
+        Str := Copy(Str, 1, Posi - 1);
+      Attribute.Value := Str;
     end;
 
-    A.LineE := Scanner.line;
-    if Assigned(A.TypeClassifier) then
-      A.TypeClassifier.aGeneric := aGeneric;
-    if Assigned(A.Documentation) then
-      A.Documentation.Description := Scanner.Comment;
-    SetVisibility(A);
+    Attribute.LineE := FScanner.Line;
+    if Assigned(Attribute.TypeClassifier) then
+      Attribute.TypeClassifier.Generic := AGeneric;
+    if Assigned(Attribute.Documentation) then
+      Attribute.Documentation.Description := FScanner.Comment;
+    SetVisibility(Attribute);
   end;
 end;
 
 function TJavaParser.GetImportName(const Typ: string): string;
 var
-  I, p: integer;
-  SL: TStringList;
-  WithoutArray, withoutGeneric, gen, innergen, arr, complete: string;
+  Posi: Integer;
+  StringList: TStringList;
+  WithoutArray, WithoutGeneric, Gen, InnerGen, Arr, Complete: string;
 begin
   Result := Typ;
-  if ThreadAbort or IsSimpleType(Typ) or
-    IsSimpleType(UUtils.WithoutArray(Typ)) or
-    ((Pos('.', Typ) > 0) and (Pos('...', Typ) = 0)) or (Typ = '') then
-    exit;
+  if ThreadAbort or IsSimpleType(Typ) or IsSimpleType(UUtils.WithoutArray(Typ))
+    or ((Pos('.', Typ) > 0) and (Pos('...', Typ) = 0)) or (Typ = '') then
+    Exit;
 
-  p := Pos('<', Typ);
-  if p > 0 then begin
-    gen := Copy(Typ, p, length(Typ));
-    withoutGeneric := Copy(Typ, 1, p - 1);
-  end else begin
-    gen := '';
-    withoutGeneric := Typ;
+  Posi := Pos('<', Typ);
+  if Posi > 0 then
+  begin
+    Gen := Copy(Typ, Posi, Length(Typ));
+    WithoutGeneric := Copy(Typ, 1, Posi - 1);
+  end
+  else
+  begin
+    Gen := '';
+    WithoutGeneric := Typ;
   end;
-  WithoutArray := withoutGeneric;
-  arr := '';
-  SwapArrFromTo(WithoutArray, arr);
+  WithoutArray := WithoutGeneric;
+  Arr := '';
+  SwapArrFromTo(WithoutArray, Arr);
 
-  if WithoutArray = 'String' then begin
+  if WithoutArray = 'String' then
+  begin
     Result := 'java.lang.' + Typ;
-    exit;
+    Exit;
   end;
 
-  if gen <> '' then begin
-    innergen := Copy(gen, 2, length(gen) - 2);
-    SL := Split(',', innergen);
-    for I := 0 to SL.Count - 1 do
-      GetImportName(SL.Strings[I]);
-    FreeAndNil(SL);
+  if Gen <> '' then
+  begin
+    InnerGen := Copy(Gen, 2, Length(Gen) - 2);
+    StringList := Split(',', InnerGen);
+    for var I := 0 to StringList.Count - 1 do
+      GetImportName(StringList[I]);
+    FreeAndNil(StringList);
   end;
 
-  complete := FConfiguration.getCompleteClassname(FullImports, ClassImports,
-    UserImportClasses, WithoutArray);
-  if complete <> '' then begin
-    Result := complete + arr + gen;
+  Complete := FConfiguration.GetCompleteClassname(FFullImports, FClassImports,
+    FUserImportClasses, WithoutArray);
+  if Complete <> '' then
+  begin
+    Result := Complete + Arr + Gen;
     FConfiguration.ImportCache.Add(Typ + '=' + Result);
-    exit;
+    Exit;
   end;
 
-  if FConfiguration.FixImports then begin
+  if FConfiguration.FixImports then
+  begin
     // search in classpath
-    Result := FConfiguration.SearchClassInClasspath(WithoutArray, FSourcepath, Packagename);
-    if Result <> '' then  begin
+    Result := FConfiguration.SearchClassInClasspath(WithoutArray, FSourcepath,
+      FPackagename);
+    if Result <> '' then
+    begin
       if Pos(FConfiguration.JavaCache + '\', Result) = 1 then
-        Delete(Result, 1, length(FConfiguration.JavaCache) + 1);
-      if ExtractFilepath(Result) = FSourcepath then
-        exit;
+        Delete(Result, 1, Length(FConfiguration.JavaCache) + 1);
+      if ExtractFilePath(Result) = FSourcepath then
+        Exit;
       Result := ReplaceStr(ChangeFileExt(Result, ''), '\', '.');
       FConfiguration.ImportCache.Add(WithoutArray + '=' + Result);
-      exit;
+      Exit;
     end;
 
     // search in AllClasses
-    p := FConfiguration.AllClasses.IndexOfName(WithoutArray);
-    if (p > -1) and (p < FConfiguration.AllClasses.Count) then
+    Posi := FConfiguration.AllClasses.IndexOfName(WithoutArray);
+    if (Posi > -1) and (Posi < FConfiguration.AllClasses.Count) then
     begin
-      Result := FConfiguration.AllClasses.ValueFromIndex[p];
-      if (FrameType = 8) and (Pos('.awt', Result) + Pos('.swing.', Result) > 0)
+      Result := FConfiguration.AllClasses.ValueFromIndex[Posi];
+      if (FFrameType = 8) and (Pos('.awt', Result) + Pos('.swing.', Result) > 0)
       then
-        Result := FConfiguration.AllClasses.ValueFromIndex[p + 1];
+        Result := FConfiguration.AllClasses.ValueFromIndex[Posi + 1];
       FConfiguration.ImportCache.Add(WithoutArray + '=' + Result);
-      exit;
+      Exit;
     end;
 
     // search in AllInterfaces
-    p := FConfiguration.AllInterfaces.IndexOfName(WithoutArray);
-    if (p > -1) and (p < FConfiguration.AllInterfaces.Count) then
+    Posi := FConfiguration.AllInterfaces.IndexOfName(WithoutArray);
+    if (Posi > -1) and (Posi < FConfiguration.AllInterfaces.Count) then
     begin
-      Result := FConfiguration.AllInterfaces.ValueFromIndex[p];
-      if (FrameType = 8) and (Pos('.awt', Result) + Pos('.swing.', Result) > 0)
+      Result := FConfiguration.AllInterfaces.ValueFromIndex[Posi];
+      if (FFrameType = 8) and (Pos('.awt', Result) + Pos('.swing.', Result) > 0)
       then
-        Result := FConfiguration.AllInterfaces.ValueFromIndex[p + 1];
+        Result := FConfiguration.AllInterfaces.ValueFromIndex[Posi + 1];
       FConfiguration.ImportCache.Add(WithoutArray + '=' + Result);
-      exit;
+      Exit;
     end;
   end;
 end;
@@ -2167,254 +2411,262 @@ end;
 procedure TJavaParser.ReadFullImport(const Import: string);
 begin
   if not FConfiguration.IsAPIPackage(Import) then
-    CollectClassesForImport(Import, FSourcepath, Packagename,
-      UserImportClasses);
+    CollectClassesForImport(Import, FSourcepath, FPackagename,
+      FUserImportClasses);
 end;
 
 { $WARNINGS OFF }
 procedure TJavaParser.CollectClassesForImport(const Import, Sourcepath,
   Package: string; UserImports: TStringList);
 var
-  PackageDir, cp, cp1, classnam: string;
-  p: integer;
-  found: Boolean;
+  PackageDir, Cp1, Cp2, Classnam: string;
+  Posi: Integer;
+  Found: Boolean;
 
   procedure CollectInJarFile(const JarFilename, Importname: string);
   var
     JarFile: TZipFile;
-    s: string;
-    I: integer;
+    Str: string;
   begin
-    JarFile:= TZipFile.Create;
+    JarFile := TZipFile.Create;
     try
       try
-        JarFile.open(JarFilename, zmRead);
-        for I := 0 to JarFile.FileCount - 1 do begin
-          s := JarFile.FileNames[I];
-          if Pos(Importname, s) = 1 then begin
-            found := true;
-            classnam := ChangeFileExt(Copy(s, length(Importname) + 2,
-              length(s)), '');
-            if (Pos('\', classnam) = 0) and (Pos('$', classnam) = 0) then
-              UserImports.Add(classnam + '=' +
-                ReplaceStr(ChangeFileExt(s, ''), '\', '.'));
+        JarFile.Open(JarFilename, zmRead);
+        for var I := 0 to JarFile.FileCount - 1 do
+        begin
+          Str := JarFile.FileNames[I];
+          if Pos(Importname, Str) = 1 then
+          begin
+            Found := True;
+            Classnam := ChangeFileExt(Copy(Str, Length(Importname) + 2,
+              Length(Str)), '');
+            if (Pos('\', Classnam) = 0) and (Pos('$', Classnam) = 0) then
+              UserImports.Add(Classnam + '=' + ReplaceStr(ChangeFileExt(Str,
+                ''), '\', '.'));
           end;
           if ThreadAbort then
-            break;
+            Break;
         end;
       except
+        on E: Exception do
+          OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
+            E.Message));
       end;
     finally
       FreeAndNil(JarFile);
     end;
   end;
 
-  procedure CollectInDirectory(const cp1, Importname, Ext: string);
+  procedure CollectInDirectory(const Cp2, Importname, Ext: string);
   var
-    fn, path, s, srn: string;
-    SR: TSearchRec;
+    FileName, Path, Str, SearchRecName: string;
+    SearchRec: TSearchRec;
   begin
-    path := cp1 + Importname;
-    fn := path + Ext;
-    if FindFirst(fn, 0, SR) = 0 then
+    Path := Cp2 + Importname;
+    FileName := Path + Ext;
+    if FindFirst(FileName, 0, SearchRec) = 0 then
     begin
-      found := true;
-      Delete(path, 1, length(PackageDir));
-      path := ReplaceStr(path, '\', '.');
+      Found := True;
+      Delete(Path, 1, Length(PackageDir));
+      Path := ReplaceStr(Path, '\', '.');
       repeat
-        srn := ChangeFileExt(SR.Name, '');
-        s := path + '.' + srn;
-        if Pos('$', s) = 0 then
-          UserImports.Add(srn + '=' + s);
-      until ThreadAbort or (FindNext(SR) <> 0);
+        SearchRecName := ChangeFileExt(SearchRec.Name, '');
+        Str := Path + '.' + SearchRecName;
+        if Pos('$', Str) = 0 then
+          UserImports.Add(SearchRecName + '=' + Str);
+      until ThreadAbort or (FindNext(SearchRec) <> 0);
     end;
-    FindClose(SR);
+    FindClose(SearchRec);
   end;
 
 begin
-  found := False;
+  Found := False;
   PackageDir := IncludeTrailingPathDelimiter
-    (FConfiguration.getPackageDirectoryRelativ(Sourcepath, Package));
-  cp := UnHideBlanks(FConfiguration.getClassPathJarExpanded(Sourcepath,
+    (FConfiguration.GetPackageDirectoryRelativ(Sourcepath, Package));
+  Cp1 := UnHideBlanks(FConfiguration.GetClassPathJarExpanded(Sourcepath,
     Package)) + ';';
-  p := Pos(';', cp);
-  while (p > 0) and not found do
+  Posi := Pos(';', Cp1);
+  while (Posi > 0) and not Found do
   begin
-    cp1 := Copy(cp, 1, p - 1);
-    Delete(cp, 1, p);
-    if (ExtractFileExt(cp1) = '.jar') and (ExtractFilename(cp1) <> 'rt.jar') and
-      FileExists(cp1) then
-      CollectInJarFile(cp1, ReplaceStr(Import, '.', '\'))
+    Cp2 := Copy(Cp1, 1, Posi - 1);
+    Delete(Cp1, 1, Posi);
+    if (ExtractFileExt(Cp2) = '.jar') and (ExtractFileName(Cp2) <> 'rt.jar') and
+      FileExists(Cp2) then
+      CollectInJarFile(Cp2, ReplaceStr(Import, '.', '\'))
     else
     begin
-      cp1 := withTrailingSlash(cp1);
-      CollectInDirectory(cp1, ReplaceStr(Import, '.', '\'), '\*.class');
-      CollectInDirectory(cp1, ReplaceStr(Import, '.', '\'), '\*.java');
+      Cp2 := WithTrailingSlash(Cp2);
+      CollectInDirectory(Cp2, ReplaceStr(Import, '.', '\'), '\*.class');
+      CollectInDirectory(Cp2, ReplaceStr(Import, '.', '\'), '\*.java');
     end;
-    p := Pos(';', cp);
+    Posi := Pos(';', Cp1);
   end;
 end;
 
 procedure TJavaParser.CollectDirClassesForImport(const Import, Sourcepath,
   Package: string; UserImports: TStringList);
 var
-  PackageDir, cp, cp1: string;
-  p: integer;
-  found: Boolean;
+  PackageDir, Cp1, Cp2: string;
+  Posi: Integer;
+  Found: Boolean;
 
-  procedure CollectInDirectory(const cp1, Importname, Ext: string);
+  procedure CollectInDirectory(const Cp2, Importname, Ext: string);
   var
-    fn, path, s, srn: string;
-    SR: TSearchRec;
+    FileName, Path, Str, SerachRecName: string;
+    SearchRec: TSearchRec;
   begin
-    path := cp1 + Importname;
-    fn := path + Ext;
-    if FindFirst(fn, 0, SR) = 0 then
+    Path := Cp2 + Importname;
+    FileName := Path + Ext;
+    if FindFirst(FileName, 0, SearchRec) = 0 then
     begin
-      found := true;
-      Delete(path, 1, length(PackageDir));
-      path := ReplaceStr(path, '\', '.');
+      Found := True;
+      Delete(Path, 1, Length(PackageDir));
+      Path := ReplaceStr(Path, '\', '.');
       repeat
-        srn := ChangeFileExt(SR.Name, '');
-        s := path + '.' + srn;
-        if Pos('$', s) = 0 then
-          UserImports.Add(srn + '=' + s);
-      until ThreadAbort or (FindNext(SR) <> 0);
+        SerachRecName := ChangeFileExt(SearchRec.Name, '');
+        Str := Path + '.' + SerachRecName;
+        if Pos('$', Str) = 0 then
+          UserImports.Add(SerachRecName + '=' + Str);
+      until ThreadAbort or (FindNext(SearchRec) <> 0);
     end;
-    FindClose(SR);
+    FindClose(SearchRec);
   end;
 
 begin
-  found := False;
+  Found := False;
   PackageDir := IncludeTrailingPathDelimiter
-    (FConfiguration.getPackageDirectorySecure(Sourcepath, Package));
-  cp := UnHideBlanks(FConfiguration.getClassPath(Sourcepath, Package)) + ';';
-  p := Pos(';', cp);
-  while (p > 0) and not found do
+    (FConfiguration.GetPackageDirectorySecure(Sourcepath, Package));
+  Cp1 := UnHideBlanks(FConfiguration.GetClassPath(Sourcepath, Package)) + ';';
+  Posi := Pos(';', Cp1);
+  while (Posi > 0) and not Found do
   begin
-    cp1 := Copy(cp, 1, p - 1);
-    Delete(cp, 1, p);
-    if not(ExtractFileExt(cp1) = '.jar') and not EndsWith(cp1, '*') then
+    Cp2 := Copy(Cp1, 1, Posi - 1);
+    Delete(Cp1, 1, Posi);
+    if not(ExtractFileExt(Cp2) = '.jar') and not EndsWith(Cp2, '*') then
     begin
-      cp1 := withTrailingSlash(cp1);
-      CollectInDirectory(cp1, ReplaceStr(Import, '.', '\'), '\*.class');
-      CollectInDirectory(cp1, ReplaceStr(Import, '.', '\'), '\*.java');
+      Cp2 := WithTrailingSlash(Cp2);
+      CollectInDirectory(Cp2, ReplaceStr(Import, '.', '\'), '\*.class');
+      CollectInDirectory(Cp2, ReplaceStr(Import, '.', '\'), '\*.java');
     end;
-    p := Pos(';', cp);
+    Posi := Pos(';', Cp1);
   end;
 end;
 
 function TJavaParser.GetTypeName: string;
 begin
-  Result := Scanner.GetTypeName;
+  Result := FScanner.GetTypeName;
 end;
 
-function TJavaParser.GetClassName(s: string): string;
+function TJavaParser.GetClassName(Str: string): string;
 begin
-  Delete(s, 1, LastDelimiter('.', s));
-  Delete(s, 1, LastDelimiter('$', s));
-  var p := Pos('<', s);
-  if p > 0 then // classname<generic>
-    Delete(s, p, length(s));
-  Result := s;
+  Delete(Str, 1, LastDelimiter('.', Str));
+  Delete(Str, 1, LastDelimiter('$', Str));
+  var
+  Posi := Pos('<', Str);
+  if Posi > 0 then // classname<generic>
+    Delete(Str, Posi, Length(Str));
+  Result := Str;
 end;
 
-function TJavaParser.NeedSource(const SourceName, aPackagename: string): Boolean;
+function TJavaParser.NeedSource(const SourceName, Packagename: string): Boolean;
 var
-  Str: TStream;
+  Stream: TStream;
   Parser: TJavaParser;
-  s: string;
+  Str: string;
 begin
   Result := False;
-  if Assigned(NeedPackage) then begin
-    s := WithoutArray(SourceName);
-    NeedPackage(s, aPackagename, Str);
-    if Assigned(Str) then begin
-      Parser := TJavaParser.Create(false);  // war false
+  if Assigned(NeedPackage) then
+  begin
+    Str := WithoutArray(SourceName);
+    NeedPackage(Str, Packagename, Stream);
+    if Assigned(Stream) then
+    begin
+      Parser := TJavaParser.Create(False); // war false
       try
         Parser.NeedPackage := NeedPackage;
-        if s <> SourceName then begin
-          Parser.ParseStream(Str, FOM.ModelRoot, FOM, s, true, true);
-          FOM.ModelRoot.Files.Add(s);
-        end else
-          Parser.ParseStream(Str, FOM.ModelRoot, FOM, FFilename, true, true);
+        if Str <> SourceName then
+        begin
+          Parser.ParseStream(Stream, FOM.ModelRoot, FOM, Str, True, True);
+          FOM.ModelRoot.Files.Add(Str);
+        end
+        else
+          Parser.ParseStream(Stream, FOM.ModelRoot, FOM, FFilename, True, True);
       finally
         FreeAndNil(Parser);
       end;
-      Result := true;
+      Result := True;
     end;
   end;
 end;
 
 function TJavaParser.ShowView(IsInner: Boolean): Boolean;
 begin
-  Result := WithView;
-  if FConfiguration.ShowPublicOnly and (ModVisibility <> viPublic) then
+  Result := FWithView;
+  if FConfiguration.ShowPublicOnly and (FModVisibility <> viPublic) then
     Result := False;
   Result := Result or FConfiguration.ShowAlways;
   if IsInner then
-    Result := true;
+    Result := True;
 end;
 
 function TJavaParser.ThreadAbort: Boolean;
 begin
   Result := Assigned(Thread) and Thread.Abort;
-  {if Result then begin
-    FJava.Memo1.Lines.Add('THREAD ABORT at line: ' + IntTostr(scanner.line));
-    FJava.memo1.Lines.add('THREAD STATE: ' + IntToStr(Thread.State));
-  end;
-  }
 end;
 
-procedure TJavaParser.AddStructure(from, _to: integer);
+procedure TJavaParser.AddStructure(From, To_: Integer);
 begin
-  Inc(Depth);
-  if Depth > Structures.MaxDepth then
-    Structures.MaxDepth := Depth;
-  var Structure := Structures.NewStructure;
-  Structure.FTextRect.TopLeft := Point((Depth - 1) * FConfiguration.Indent
-    + 1, from);
-  Structure.FTopBottom := _to;
-  Structure.FTopBottomRight := Scanner.LastTokenColumn;
-  Structure.FDepth := Depth;
-  Filo.Add(Structure);
+  Inc(FDepth);
+  if FDepth > FStructures.MaxDepth then
+    FStructures.MaxDepth := FDepth;
+  var
+  Structure := FStructures.NewStructure;
+  Structure.FTextRect.TopLeft := Point((FDepth - 1) * FConfiguration.Indent
+    + 1, From);
+  Structure.FTopBottom := To_;
+  Structure.FTopBottomRight := FScanner.LastTokenColumn;
+  Structure.FDepth := FDepth;
+  FFilo.Add(Structure);
 end;
 
-procedure TJavaParser.AddStructure(from, _to: integer;
+procedure TJavaParser.AddStructure(From, To_: Integer;
   SingleStatement: Boolean);
 begin
-  AddStructure(from, _to);
-  var Structure := TStructureEx(Filo[Filo.Count - 1]);
+  AddStructure(From, To_);
+  var
+  Structure := TStructureEx(FFilo.Last);
   Structure.SingleStatement := SingleStatement;
 end;
 
 procedure TJavaParser.AddStructureDefault;
 begin
-  AddStructure(Scanner.TokenLine, Scanner.TokenLine);
+  AddStructure(FScanner.TokenLine, FScanner.TokenLine);
 end;
 
-procedure TJavaParser.CloseStructure(line: integer);
+procedure TJavaParser.CloseStructure(Line: Integer);
 begin
-  if Filo.Count > 0 then begin
-    var Structure := TStructureEx(Filo[Filo.Count - 1]);
-    Filo.Delete(Filo.Count - 1);
+  if FFilo.Count > 0 then
+  begin
+    var
+    Structure := TStructureEx(FFilo.Last);
+    FFilo.Delete(FFilo.Count - 1);
     Structure.FTextRect.BottomRight :=
-      Point((Depth - 1) * FConfiguration.Indent + 1, line);
-    Structure.FBottomTop := line;
-    Structures.Add(Structure);
-    Dec(Depth);
+      Point((FDepth - 1) * FConfiguration.Indent + 1, Line);
+    Structure.FBottomTop := Line;
+    FStructures.Add(Structure);
+    Dec(FDepth);
   end;
 end;
 
-procedure TJavaParser.CloseStructure(line: integer; SingleStatement: Boolean);
+procedure TJavaParser.CloseStructure(Line: Integer; SingleStatement: Boolean);
 begin
-  CloseStructure(line);
-  Structures[Structures.Count - 1].SingleStatement := SingleStatement;
+  CloseStructure(Line);
+  FStructures[FStructures.Count - 1].SingleStatement := SingleStatement;
 end;
 
 procedure TJavaParser.CloseStructureDefault;
 begin
-  CloseStructure(Scanner.TokenLine, False);
+  CloseStructure(FScanner.TokenLine, False);
 end;
 
 initialization

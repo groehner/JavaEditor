@@ -138,17 +138,17 @@ end;
 
 procedure TSsSpecialFolderProperty.GetValues(Proc: TGetStrProc);
 var
-  I        : Integer;
+  Int        : Integer;
   EnumType : PTypeInfo;
-  S        : string;
+  Str        : string;
 begin
   EnumType := GetPropType;
   with GetTypeData(EnumType)^ do
-    for I := MinValue to MaxValue do begin
-      S := GetEnumName(EnumType, I);
-      if S = 'sfNone' then
-        S := '(sfNone)';
-      Proc(S);
+    for Int := MinValue to MaxValue do begin
+      Str := GetEnumName(EnumType, Int);
+      if Str = 'sfNone' then
+        Str := '(sfNone)';
+      Proc(Str);
     end;
 end;
 

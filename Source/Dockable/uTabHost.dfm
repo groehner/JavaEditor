@@ -20,7 +20,5 @@ object TabDockHost: TTabDockHost
     OnDockOver = PageControl1DockOver
     OnGetSiteInfo = PageControl1GetSiteInfo
     OnUnDock = PageControl1UnDock
-    ExplicitWidth = 492
-    ExplicitHeight = 275
   end
 end

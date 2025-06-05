@@ -253,7 +253,7 @@ procedure TSynEditPrintPreview.PaintPaper;
 var
   rcClip, rcPaper: TRect;
   rgnPaper: HRGN;
-  i: Integer;
+  Int: Integer;
 begin
   with Canvas do begin
       // we work in MM_TEXT mapping mode here...
@@ -286,9 +286,9 @@ begin
       // paper shadow
     Brush.Color := clDkGray;
     with rcPaper do begin
-      for i := 1 to SHADOW_SIZE do
-        PolyLine([Point(Left + i, Bottom + i), Point(Right + i, Bottom + i),
-          Point(Right + i, Top + i)]);
+      for Int := 1 to SHADOW_SIZE do
+        PolyLine([Point(Left + Int, Bottom + Int), Point(Right + Int, Bottom + Int),
+          Point(Right + Int, Top + Int)]);
     end;
       // paint paper background
     SelectClipRgn(Handle, rgnPaper);
@@ -578,7 +578,7 @@ end;
 procedure TSynEditPrintPreview.WMVScroll(var Msg: TWMVScroll);
 var
   nH: Integer;
-  s: string;
+  Str: string;
   rc: TRect;
   pt: TPoint;
   ScrollHint: THintWindow;
@@ -607,11 +607,11 @@ begin
                 ScrollHint.Color := Application.HintColor;
                 ScrollHint.Visible := TRUE;
               end;
-              s := Format(SYNS_PreviewScrollInfoFmt, [FPageNumber]);
-              rc := ScrollHint.CalcHintRect(200, s, nil);
+              Str := Format(SYNS_PreviewScrollInfoFmt, [FPageNumber]);
+              rc := ScrollHint.CalcHintRect(200, Str, nil);
               pt := ClientToScreen(Point(ClientWidth - rc.Right - 4, 10));
               OffsetRect(rc, pt.x, pt.y);
-              ScrollHint.ActivateHint(rc, s);
+              ScrollHint.ActivateHint(rc, Str);
               SendMessage(ScrollHint.Handle, WM_NCPAINT, 1, 0);
               ScrollHint.Update;
             end;

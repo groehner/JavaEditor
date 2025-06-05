@@ -3,20 +3,34 @@ unit UObjectInspector;
 interface
 
 uses
-  Classes, Graphics, Controls, ComCtrls, StdCtrls, ExtCtrls,
-  TypInfo, Menus, Forms, ELPropInsp, ELDsgnr, UDockForm, TB2Item, SpTBXItem,
-  System.ImageList, Vcl.ImgList, Vcl.VirtualImageList, Vcl.BaseImageCollection,
-  SVGIconImageCollection;
+  Classes,
+  Graphics, Controls,
+  ComCtrls,
+  StdCtrls,
+  ExtCtrls,
+  TypInfo,
+  Menus,
+  Forms,
+  ELPropInsp,
+  ELDsgnr,
+  TB2Item,
+  SpTBXItem,
+  System.ImageList,
+  Vcl.ImgList,
+  Vcl.VirtualImageList,
+  Vcl.BaseImageCollection,
+  SVGIconImageCollection,
+  UDockForm;
 
 type
 
   TFObjectInspector = class(TDockableForm)
     PObjects: TPanel;
-      CBObjects: TComboBox;
+    CBObjects: TComboBox;
     TCAttributesEvents: TTabControl;
     PNewDel: TPanel;
-      BNewDelete: TButton;
-      BMore: TButton;
+    BNewDelete: TButton;
+    BMore: TButton;
     PMObjectInspector: TSpTBXPopupMenu;
     MIFont: TSpTBXItem;
     MIDefaultLayout: TSpTBXItem;
@@ -34,14 +48,14 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
     procedure ELPropertyInspectorModified(Sender: TObject);
-    procedure ELPropertyInspectorFilterProp(Sender: TObject; AInstance: TPersistent;
-      APropInfo: PPropInfo; var AIncludeProp: Boolean);
+    procedure ELPropertyInspectorFilterProp(Sender: TObject;
+      AInstance: TPersistent; APropInfo: PPropInfo; var AIncludeProp: Boolean);
 
     procedure ELPropertyInspectorClick(Sender: TObject);
     procedure ELEventInspectorClick(Sender: TObject);
     procedure ELEventInspectorDblClick(Sender: TObject);
-    procedure ELEventInspectorFilterProp(Sender: TObject; AInstance: TPersistent;
-      APropInfo: PPropInfo; var AIncludeProp: Boolean);
+    procedure ELEventInspectorFilterProp(Sender: TObject;
+      AInstance: TPersistent; APropInfo: PPropInfo; var AIncludeProp: Boolean);
     procedure ELObjectInspectorDeactivate(Sender: TObject);
 
     procedure BMoreClick(Sender: TObject);
@@ -60,23 +74,25 @@ type
     procedure FormMouseActivate(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y, HitTest: Integer;
       var MouseActivate: TMouseActivate);
-    procedure OnMouseDownEvent(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure OnMouseDownEvent(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure TCAttributesEventsMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
+  private
+    FAttributes: string;
+    FELEventInspector: TELPropertyInspector;
+    FELPropertyInspector: TELPropertyInspector;
+    FEvents: string;
+    FShowAttributes: Integer;
+    FShowEvents: Integer;
   public
-    ELPropertyInspector: TELPropertyInspector;
-    ELEventInspector: TELPropertyInspector;
-    Events: string;
-    Attributes: string;
-    ShowEvents: integer;
-    ShowAttributes: integer;
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure RefreshCB(newname: string = '');
+    procedure RefreshCB(NewName: string = '');
     procedure RefreshCBObjects;
-    procedure MyOnGetComponentNames(Sender: TObject; AClass: TComponentClass; AResult: TStrings);
+    procedure MyOnGetComponentNames(Sender: TObject; AClass: TComponentClass;
+      AResult: TStrings);
     procedure OnEnterEvent(Sender: TObject);
     procedure SetSelectedObject(Control: TControl);
     procedure ChangeSelection(SelectedControls: TELDesignerSelectedControls);
@@ -84,12 +100,12 @@ type
     procedure SaveWindow;
     procedure LoadWindow;
     procedure SetBNewDeleteCaption;
-    procedure SetButtonCaption(aShow: integer);
+    procedure SetButtonCaption(AShow: Integer);
     procedure CutToClipboard;
     procedure CopyToClipboard;
     procedure PasteFromClipboard;
-    procedure SetFontSize(Delta: integer);
-    procedure SetFont(aFont: TFont);
+    procedure SetFontSize(Delta: Integer);
+    procedure SetFont(AFont: TFont);
     procedure UpdateState;
     procedure UpdateItems;
     procedure UpdatePropertyInspector;
@@ -99,6 +115,12 @@ type
     procedure HideIt;
     procedure ChangeHideShow;
     procedure ChangeStyle;
+    property Attributes: string read FAttributes;
+    property ELEventInspector: TELPropertyInspector read FELEventInspector;
+    property ELPropertyInspector: TELPropertyInspector read FELPropertyInspector;
+    property Events: string read FEvents;
+    property ShowAttributes: Integer read FShowAttributes;
+    property ShowEvents: Integer read FShowEvents;
   end;
 
 var
@@ -106,46 +128,65 @@ var
 
 implementation
 
-uses Windows, SysUtils, Dialogs, Clipbrd, Math, Themes, StrUtils, JvGnugettext,
-     UGUIForm, UGUIDesigner, UJava, UConfiguration,
-     UUtils, UJPanel, UFXComponents, UAComponents,
-     UJEComponents, UFXGuiForm, UBaseForm, UEditorForm, UJGuiForm;
+uses
+  Windows,
+  SysUtils,
+  Clipbrd,
+  Math,
+  Themes,
+  StrUtils,
+  JvGnugettext,
+  UGUIForm,
+  UGUIDesigner,
+  UJava,
+  UConfiguration,
+  UUtils,
+  UJPanel,
+  UFXComponents,
+  UAComponents,
+  UJEComponents,
+  UFXGUIForm,
+  UBaseForm,
+  UEditorForm,
+  UJGuiForm;
 
 {$R *.dfm}
 
-constructor TFObjectInspector.Create(aOwner: TComponent);
+constructor TFObjectInspector.Create(AOwner: TComponent);
 begin
-  inherited create(aOwner);
-  visible:= false;
-  ShowEvents:= 1;
-  ShowAttributes:= 1;
-  ELPropertyInspector:= TELPropertyInspector.Create(Self);
-  with ELPropertyInspector do begin
-    Parent:= Self;
-    Align:= alClient;
-    BorderStyle:= bsNone;
-    OnFilterProp:= ELPropertyInspectorFilterProp;
-    OnModified  := ELPropertyInspectorModified;
-    OnClick     := ELPropertyInspectorClick;
-    OnGetComponentNames:= MyOnGetComponentNames;
+  inherited Create(AOwner);
+  Visible := False;
+  FShowEvents := 1;
+  FShowAttributes := 1;
+  FELPropertyInspector := TELPropertyInspector.Create(Self);
+  with ELPropertyInspector do
+  begin
+    Parent := Self;
+    Align := alClient;
+    BorderStyle := bsNone;
+    OnFilterProp := ELPropertyInspectorFilterProp;
+    OnModified := ELPropertyInspectorModified;
+    OnClick := ELPropertyInspectorClick;
+    OnGetComponentNames := MyOnGetComponentNames;
     OnMouseDown := OnMouseDownEvent;
-    OnEnter     := OnEnterEvent;
+    OnEnter := OnEnterEvent;
   end;
-  ELEventInspector:= TELPropertyInspector.Create(Self);
-  with ELEventInspector do begin
-    Parent:= self;
-    Align:= alClient;
-    BorderStyle:= bsNone;
-    Visible:= False;
-    ReadOnly:= true;
-    OnFilterProp:= ELEventInspectorFilterProp;
-    OnClick     := ELEventInspectorClick;
-    OnDblClick  := ELEventInspectorDblClick;
+  FELEventInspector := TELPropertyInspector.Create(Self);
+  with ELEventInspector do
+  begin
+    Parent := Self;
+    Align := alClient;
+    BorderStyle := bsNone;
+    Visible := False;
+    ReadOnly := True;
+    OnFilterProp := ELEventInspectorFilterProp;
+    OnClick := ELEventInspectorClick;
+    OnDblClick := ELEventInspectorDblClick;
     OnMouseDown := OnMouseDownEvent;
-    OnEnter     := OnEnterEvent;
+    OnEnter := OnEnterEvent;
   end;
-  OnDeactivate:= ELObjectInspectorDeactivate;
-  PObjects.Autosize:= true;
+  OnDeactivate := ELObjectInspectorDeactivate;
+  PObjects.AutoSize := True;
   LoadWindow;
   ChangeStyle;
 end;
@@ -154,7 +195,8 @@ procedure TFObjectInspector.OnMouseDownEvent(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   // due to wrong determination auf parent form if form is docked
-  if canFocus then SetFocus;
+  if CanFocus then
+    SetFocus;
 end;
 
 destructor TFObjectInspector.Destroy;
@@ -166,47 +208,68 @@ end;
 
 procedure TFObjectInspector.LoadWindow;
 begin
-  UndockLeft:= PPIScale(FConfiguration.ReadIntegerU('ObjectInspector', 'UndockLeft', 1));
-  UndockTop:= PPIScale(FConfiguration.ReadIntegerU('ObjectInspector', 'UndockTop', 1));
-  UndockWidth:= PPIScale(FConfiguration.ReadIntegerU('ObjectInspector', 'UndockWidth', 200));
-  UndockHeight:= PPIScale(FConfiguration.ReadIntegerU('ObjectInspector', 'UndockHeight', 200));
-  UndockLeft:= min(UndockLeft, Screen.DesktopWidth - 50);
-  UndockTop:= min(UndockTop, Screen.DesktopHeight - 50);
-  ManualFloat(Rect(UnDockLeft, UnDockTop, UnDockLeft + UnDockWidth, UnDockTop + UnDockHeight));
-  CBObjects.Align:= alTop;
-  ELPropertyInspector.Splitter:= PPIScale(FConfiguration.ReadIntegerU('ObjectInspector', 'ELPropertyInspector.Splitter', 100));
-  ELEventInspector.Splitter:=    PPIScale(FConfiguration.ReadIntegerU('ObjectInspector', 'ELEventInspector.Splitter', 100));
-  Font.Size:= PPIScale(FConfiguration.ReadIntegerU('ObjectInspector', 'Font.Size', 10));
-  Font.Name:= FConfiguration.ReadStringU('ObjectInspector', 'Font.Name', 'Segoe UI');
+  UndockLeft := PPIScale(FConfiguration.ReadIntegerU('ObjectInspector',
+    'UndockLeft', 1));
+  UndockTop := PPIScale(FConfiguration.ReadIntegerU('ObjectInspector',
+    'UndockTop', 1));
+  UndockWidth := PPIScale(FConfiguration.ReadIntegerU('ObjectInspector',
+    'UndockWidth', 200));
+  UndockHeight := PPIScale(FConfiguration.ReadIntegerU('ObjectInspector',
+    'UndockHeight', 200));
+  UndockLeft := Min(UndockLeft, Screen.DesktopWidth - 50);
+  UndockTop := Min(UndockTop, Screen.DesktopHeight - 50);
+  ManualFloat(Rect(UndockLeft, UndockTop, UndockLeft + UndockWidth,
+    UndockTop + UndockHeight));
+  CBObjects.Align := alTop;
+  ELPropertyInspector.Splitter :=
+    PPIScale(FConfiguration.ReadIntegerU('ObjectInspector',
+    'ELPropertyInspector.Splitter', 100));
+  ELEventInspector.Splitter :=
+    PPIScale(FConfiguration.ReadIntegerU('ObjectInspector',
+    'ELEventInspector.Splitter', 100));
+  Font.Size := PPIScale(FConfiguration.ReadIntegerU('ObjectInspector',
+    'Font.Size', 10));
+  Font.Name := FConfiguration.ReadStringU('ObjectInspector', 'Font.Name',
+    'Segoe UI');
 end;
 
 procedure TFObjectInspector.SaveWindow;
 begin
   FConfiguration.WriteBoolU('ObjectInspector', 'Visible', Visible);
   FConfiguration.WriteBoolU('ObjectInspector', 'Floating', Floating);
-  if Floating then begin
+  if Floating then
+  begin
     FConfiguration.WriteIntegerU('ObjectInspector', 'UndockLeft', Left);
-    FConfiguration.WriteIntegerU('ObjectInspector', 'UndockTop',  Top);
+    FConfiguration.WriteIntegerU('ObjectInspector', 'UndockTop', Top);
     FConfiguration.WriteIntegerU('ObjectInspector', 'UndockWidth', Width);
     FConfiguration.WriteIntegerU('ObjectInspector', 'UndockHeight', Height);
-  end else begin
+  end
+  else
+  begin
     FConfiguration.WriteIntegerU('ObjectInspector', 'UndockLeft', UndockLeft);
-    FConfiguration.WriteIntegerU('ObjectInspector', 'UndockTop',  UndockTop);
+    FConfiguration.WriteIntegerU('ObjectInspector', 'UndockTop', UndockTop);
     FConfiguration.WriteIntegerU('ObjectInspector', 'UndockWidth', UndockWidth);
-    FConfiguration.WriteIntegerU('ObjectInspector', 'UndockHeight', UndockHeight);
+    FConfiguration.WriteIntegerU('ObjectInspector', 'UndockHeight',
+      UndockHeight);
   end;
-  FConfiguration.WriteIntegerU('ObjectInspector', 'ELPropertyInspector.Splitter', PPIUnScale(ELPropertyInspector.Splitter));
-  FConfiguration.WriteIntegerU('ObjectInspector', 'ELEventInspector.Splitter', PPIUnscale(ELEventInspector.Splitter));
-  FConfiguration.WriteIntegerU('ObjectInspector', 'Font.Size', PPIUnScale(Font.Size));
+  FConfiguration.WriteIntegerU('ObjectInspector',
+    'ELPropertyInspector.Splitter', PPIUnScale(ELPropertyInspector.Splitter));
+  FConfiguration.WriteIntegerU('ObjectInspector', 'ELEventInspector.Splitter',
+    PPIUnScale(ELEventInspector.Splitter));
+  FConfiguration.WriteIntegerU('ObjectInspector', 'Font.Size',
+    PPIUnScale(Font.Size));
   FConfiguration.WriteStringU('ObjectInspector', 'Font.Name', Font.Name);
 end;
 
-procedure TFObjectInspector.MyOnGetComponentNames(Sender: TObject; AClass: TComponentClass; AResult: TStrings);
+procedure TFObjectInspector.MyOnGetComponentNames(Sender: TObject;
+  AClass: TComponentClass; AResult: TStrings);
 begin
-  if not FGUIDesigner.ELDesigner.Active then exit;
-  var Form:= TFForm(FGUIDesigner.ELDesigner.DesignControl);
-  for var i:= 0 to Form.ComponentCount - 1 do
-    AResult.Add(Form.Components[i].Name);
+  if not FGUIDesigner.ELDesigner.Active then
+    Exit;
+  var
+  Form := TFForm(FGUIDesigner.ELDesigner.DesignControl);
+  for var I := 0 to Form.ComponentCount - 1 do
+    AResult.Add(Form.Components[I].Name);
 end;
 
 procedure TFObjectInspector.OnEnterEvent(Sender: TObject);
@@ -214,51 +277,67 @@ begin
   UpdateState;
 end;
 
-procedure TFObjectInspector.RefreshCB(newname: string = '');
-  var i, index: integer; typ, nam, namtyp: string; Form: TFForm; Partner: TFEditForm;
+procedure TFObjectInspector.RefreshCB(NewName: string = '');
+var
+  Index: Integer;
+  Typ, Nam, NamTyp: string;
+  Form: TFForm;
+  Partner: TFEditForm;
 begin
-  if not FGUIDesigner.ELDesigner.Active then exit;
-  Form:= TFForm(FGUIDesigner.ELDesigner.DesignControl);
-  Partner:= TFEditForm(Form.Partner);
-  if Assigned(Form) then begin
-    index:= CBObjects.ItemIndex;
+  if not FGUIDesigner.ELDesigner.Active then
+    Exit;
+  Form := TFForm(FGUIDesigner.ELDesigner.DesignControl);
+  Partner := TFEditForm(Form.Partner);
+  if Assigned(Form) then
+  begin
+    Index := CBObjects.ItemIndex;
     CBObjects.Clear;
-    CBObjects.Items.AddObject(Form.Name + ': ' + Partner.FrameTypToString, Form);
-    for i:= 0 to Form.ComponentCount - 1 do begin
-      nam:= Form.Components[i].Name;
-      if Form.Components[i] is TJEComponent then
-        typ:= (Form.Components[i] as TJEComponent).JavaType;
-      if (nam <> '') and (typ <> '') then begin
-        CBObjects.Items.AddObject(nam + ': ' + typ, Form.Components[i]);
-        if nam = newname then
-          namtyp:= nam + ': ' + typ;
+    CBObjects.Items.AddObject(Form.Name + ': ' +
+      Partner.FrameTypToString, Form);
+    for var I := 0 to Form.ComponentCount - 1 do
+    begin
+      Nam := Form.Components[I].Name;
+      if Form.Components[I] is TJEComponent then
+        Typ := (Form.Components[I] as TJEComponent).JavaType;
+      if (Nam <> '') and (Typ <> '') then
+      begin
+        CBObjects.Items.AddObject(Nam + ': ' + Typ, Form.Components[I]);
+        if Nam = NewName then
+          NamTyp := Nam + ': ' + Typ;
       end;
     end;
-    if newname = ''
-      then CBObjects.ItemIndex:= index
-      else CBObjects.ItemIndex:= CBObjects.Items.IndexOf(namtyp);
+    if NewName = '' then
+      CBObjects.ItemIndex := Index
+    else
+      CBObjects.ItemIndex := CBObjects.Items.IndexOf(NamTyp);
   end;
 end;
 
 procedure TFObjectInspector.RefreshCBObjects;
 begin
   RefreshCB;
-  if FGUIDesigner.ELDesigner.SelectedControls.Count = 1 then begin
-    CBObjects.ItemIndex:= CBObjects.Items.IndexOfObject(FGUIDesigner.ELDesigner.SelectedControls[0]);
+  if FGUIDesigner.ELDesigner.SelectedControls.Count = 1 then
+  begin
+    CBObjects.ItemIndex := CBObjects.Items.IndexOfObject
+      (FGUIDesigner.ELDesigner.SelectedControls[0]);
     try
       SetSelectedObject(FGUIDesigner.ELDesigner.SelectedControls[0]);
-    except
+    except on E: Exception do
+        OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
     end;
   end;
 end;
 
 procedure TFObjectInspector.SetSelectedObject(Control: TControl);
 begin
-  if Control = nil then begin
-    CBObjects.ItemIndex:= -1;
+  if not Assigned(Control) then
+  begin
+    CBObjects.ItemIndex := -1;
     CBObjects.Repaint;
-  end else begin
-    CBObjects.ItemIndex:= CBObjects.Items.IndexOfObject(Control);
+  end
+  else
+  begin
+    CBObjects.ItemIndex := CBObjects.Items.IndexOfObject(Control);
     ELPropertyInspector.Clear;
     ELEventInspector.Clear;
     ELPropertyInspector.Add(Control);
@@ -268,22 +347,28 @@ end;
 
 procedure TFObjectInspector.CBObjectsChange(Sender: TObject);
 begin
-  if CBObjects.ItemIndex <= -1 then exit;
-  var Control:= TControl(CBObjects.Items.Objects[CBObjects.ItemIndex]);
-  if assigned(Control) then begin
+  if CBObjects.ItemIndex <= -1 then
+    Exit;
+  var
+  Control := TControl(CBObjects.Items.Objects[CBObjects.ItemIndex]);
+  if Assigned(Control) then
+  begin
     Control.BringToFront;
-    if Control is TJPanel then (Control as TJPanel).setTab;
-    if FGUIDesigner.ELDesigner.Active then begin
+    if Control is TJPanel then
+      (Control as TJPanel).SetTab;
+    if FGUIDesigner.ELDesigner.Active then
+    begin
       FGUIDesigner.ELDesigner.SelectedControls.Clear;
       FGUIDesigner.ELDesigner.SelectedControls.Add(Control);
     end;
   end;
 end;
 
-procedure TFObjectInspector.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TFObjectInspector.FormClose(Sender: TObject;
+  var Action: TCloseAction);
 begin
   inherited;
-  FJava.ActiveTool:= -1;
+  FJava.ActiveTool := -1;
 end;
 
 procedure TFObjectInspector.FormCreate(Sender: TObject);
@@ -300,20 +385,20 @@ procedure TFObjectInspector.FormMouseActivate(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y, HitTest: Integer;
   var MouseActivate: TMouseActivate);
 begin
-  FJava.ActiveTool:= 8;
+  FJava.ActiveTool := 8;
   FJava.UpdateMenuItems(Self);
-  if ELPropertyInspector.Visible and ELPropertyInspector.canFocus
-    then ELPropertyInspector.SetFocus
-  else if ELEventInspector.Visible and ELEventInspector.canFocus
-    then ELEventInspector.SetFocus;
+  if ELPropertyInspector.Visible and ELPropertyInspector.CanFocus then
+    ELPropertyInspector.SetFocus
+  else if ELEventInspector.Visible and ELEventInspector.CanFocus then
+    ELEventInspector.SetFocus;
 end;
 
 procedure TFObjectInspector.FormShow(Sender: TObject);
 begin
-  FJava.ActiveTool:= 8;
+  FJava.ActiveTool := 8;
   SetButtonCaption(1);
-  TCAttributesEvents.Height:= Canvas.TextHeight('Attribute') + 10;
-  PObjects.Height:= TCAttributesEvents.Height;
+  TCAttributesEvents.Height := Canvas.TextHeight('Attribute') + 10;
+  PObjects.Height := TCAttributesEvents.Height;
   if ELPropertyInspector.CanFocus then
     ELPropertyInspector.SetFocus;
 end;
@@ -346,16 +431,17 @@ end;
 procedure TFObjectInspector.MIFontClick(Sender: TObject);
 begin
   FJava.FDFont.Font.Assign(Font);
-  FJava.FDFont.Options:= [];
-  if FJava.FDFont.Execute then begin
+  FJava.FDFont.Options := [];
+  if FJava.FDFont.Execute then
+  begin
     Font.Assign(FJava.FDFont.Font);
-    ELPropertyInspector.Font.Size:= Font.Size;
-    ELPropertyInspector.Font.Name:= Font.Name;
-    ELEventInspector.Font.Size:= Font.Size;
-    ELEventInspector.Font.Name:= Font.Name;
+    ELPropertyInspector.Font.Size := Font.Size;
+    ELPropertyInspector.Font.Name := Font.Name;
+    ELEventInspector.Font.Size := Font.Size;
+    ELEventInspector.Font.Name := Font.Name;
   end;
-  TCAttributesEvents.Height:= Canvas.TextHeight('Attribute') + 10;
-  PObjects.Height:= TCAttributesEvents.Height;
+  TCAttributesEvents.Height := Canvas.TextHeight('Attribute') + 10;
+  PObjects.Height := TCAttributesEvents.Height;
 end;
 
 // DPI awareness for object inspector
@@ -366,100 +452,106 @@ end;
 // this is done in TELPropertyInspectorItem.UpdateParams;
 
 procedure TFObjectInspector.ELPropertyInspectorModified(Sender: TObject);
-  var i, iValue: integer; Partner: TFEditForm;
-      OldName, NewName, Caption, Events: string;
-      PropertyItem: TELPropertyInspectorItem;
-      Control: TControl;
-      JEControl: TJEComponent;
-      Designer: TELDesigner;
+var
+  IValue: Integer;
+  Partner: TFEditForm;
+  OldName, NewName, Caption, Events: string;
+  PropertyItem: TELPropertyInspectorItem;
+  Control: TControl;
+  JEControl: TJEComponent;
+  Designer: TELDesigner;
 
-  function PPIScale(ASize: integer): integer;
+  function PPIScale(ASize: Integer): Integer;
   begin
     Result := MulDiv(ASize, FCurrentPPI, 96);
   end;
 
 begin
-  PropertyItem:= TELPropertyInspectorItem(ELPropertyInspector.ActiveItem);
-  if PropertyItem = nil then exit;
-  Caption:= PropertyItem.Caption;
-  Designer:= FGUIDesigner.ELDesigner;
+  PropertyItem := TELPropertyInspectorItem(ELPropertyInspector.ActiveItem);
+  if not Assigned(PropertyItem) then
+    Exit;
+  Caption := PropertyItem.Caption;
+  Designer := FGUIDesigner.ELDesigner;
 
-  TFForm(Designer.DesignControl).Modified:= true;
-  Partner:= TFEditForm(TFForm(Designer.DesignControl).Partner);
+  TFForm(Designer.DesignControl).Modified := True;
+  Partner := TFEditForm(TFForm(Designer.DesignControl).Partner);
   Partner.EnsureStartEnd;
-  if (Caption = 'Name') and (PropertyItem.Level = 0) then begin
-    OldName:= CBObjects.Text;
-    delete(OldName, Pos(':', OldName), length(OldName));
-    Control:= Designer.SelectedControls.Items[0];
-    NewName:= Control.Name;
+  if (Caption = 'Name') and (PropertyItem.Level = 0) then
+  begin
+    OldName := CBObjects.Text;
+    Delete(OldName, Pos(':', OldName), Length(OldName));
+    Control := Designer.SelectedControls[0];
+    NewName := Control.Name;
     (Control as TJEComponent).Rename(OldName, NewName, Events);
     RefreshCB(NewName);
-  end else begin
-    for i:= 0 to Designer.SelectedControls.Count-1 do begin
-      Control:= Designer.SelectedControls.Items[i];
-      if Control is TJEComponent
-        then JEControl:= Control as TJEComponent
-        else JEControl:= nil;
-      if ((Caption = 'Width') or (Caption = 'Height') or
-         (Caption = 'X') or (Caption = 'Y') or // X,Y in JFrame
-         (Caption = 'LayoutX') or (Caption = 'LayoutY') or
-         (Caption = 'PrefWidth') or (Caption = 'PrefHeight')) and
-         assigned(JEControl) and TryStrToInt(PropertyItem.Editor.Value, iValue)
-      then begin
+  end
+  else
+  begin
+    for var I := 0 to Designer.SelectedControls.Count - 1 do
+    begin
+      Control := Designer.SelectedControls[I];
+      if Control is TJEComponent then
+        JEControl := Control as TJEComponent
+      else
+        JEControl := nil;
+      if ((Caption = 'Width') or (Caption = 'Height') or (Caption = 'X') or
+        (Caption = 'Y') or // X,Y in JFrame
+        (Caption = 'LayoutX') or (Caption = 'LayoutY') or
+        (Caption = 'PrefWidth') or (Caption = 'PrefHeight')) and
+        Assigned(JEControl) and TryStrToInt(PropertyItem.Editor.Value, IValue)
+      then
+      begin
         if Caption = 'Width' then
-          JEControl.Width:= PPIScale(iValue)
+          JEControl.Width := PPIScale(IValue)
         else if Caption = 'Height' then
-          JEControl.Height:= PPIScale(iValue)
+          JEControl.Height := PPIScale(IValue)
         else if Caption = 'X' then
-          JEControl.Left:= PPIScale(iValue)
+          JEControl.Left := PPIScale(IValue)
         else if Caption = 'Y' then
-          JEControl.Top:= PPIScale(iValue);
-       { else if Caption = 'LayoutX' then
-          JEControl.LayoutX:= PPIScale(iValue)
-        else if Caption = 'LayoutY' then
-          JEControl.LayoutY:= PPIScale(iValue);
-        else if Caption = 'X' then
-          JEControl.Left:= PPIScale(iValue)
-        else if Caption = 'Y' then
-          JEControl.Top:= PPIScale(iValue);}
-        FGuiDesigner.MoveComponent(JEControl)
-      end else begin
-        if (Caption = 'Text') and assigned(JEControl) then begin
+          JEControl.Top := PPIScale(IValue);
+        FGUIDesigner.MoveComponent(JEControl);
+      end
+      else
+      begin
+        if (Caption = 'Text') and Assigned(JEControl) then
+        begin
           JEControl.SizeToText;
-          if FConfiguration.NameFromText then begin
-            OldName:= JEControl.Name;
+          if FConfiguration.NameFromText then
+          begin
+            OldName := JEControl.Name;
             JEControl.NameFromText;
-            Newname:= JEControl.Name;
+            NewName := JEControl.Name;
             (Control as TJEComponent).Rename(OldName, NewName, Events);
             RefreshCB(JEControl.Name);
             UpdatePropertyInspector;
           end;
         end;
-        FGuiDesigner.SetAttributForComponent(
-          Caption, PropertyItem.Editor.Value,
+        FGUIDesigner.SetAttributForComponent(Caption, PropertyItem.Editor.Value,
           string(PropertyItem.Editor.PropTypeInfo.Name), Control);
       end;
     end;
   end;
 end;
 
-procedure TFObjectInspector.ELPropertyInspectorFilterProp(
-  Sender: TObject; AInstance: TPersistent; APropInfo: PPropInfo; var AIncludeProp: Boolean);
+procedure TFObjectInspector.ELPropertyInspectorFilterProp(Sender: TObject;
+  AInstance: TPersistent; APropInfo: PPropInfo; var AIncludeProp: Boolean);
 begin
-  AIncludeProp:= false;
-  if not (assigned(APropInfo) and assigned(AInstance)) then
-    exit;
-  var s:= string(APropInfo.Name);
-  if (length(s) > 0) and not IsLower(s[1]) then
-    if AInstance.ClassName = 'TFont'
-      then AIncludeProp:= (Pos(' ' + s + ' ', ' Name Size Style ') > 0)
-      else AIncludeProp:= (Pos('|' + s + '|', Attributes) > 0);
+  AIncludeProp := False;
+  if not(Assigned(APropInfo) and Assigned(AInstance)) then
+    Exit;
+  var
+  Str := string(APropInfo.Name);
+  if (Length(Str) > 0) and not IsLower(Str[1]) then
+    if AInstance.ClassName = 'TFont' then
+      AIncludeProp := (Pos(' ' + Str + ' ', ' Name Size Style ') > 0)
+    else
+      AIncludeProp := (Pos('|' + Str + '|', Attributes) > 0);
 end;
 
-procedure TFObjectInspector.ELEventInspectorFilterProp(
-  Sender: TObject; AInstance: TPersistent; APropInfo: PPropInfo; var AIncludeProp: Boolean);
+procedure TFObjectInspector.ELEventInspectorFilterProp(Sender: TObject;
+  AInstance: TPersistent; APropInfo: PPropInfo; var AIncludeProp: Boolean);
 begin
-  AIncludeProp:= Pos('|' + string(APropInfo.Name) + '|', Events) > 0;
+  AIncludeProp := Pos('|' + string(APropInfo.Name) + '|', Events) > 0;
 end;
 
 procedure TFObjectInspector.ELPropertyInspectorClick(Sender: TObject);
@@ -468,7 +560,7 @@ begin
 end;
 
 procedure TFObjectInspector.ELObjectInspectorDeactivate(Sender: TObject);
-  // take last input from ObjectInspector
+// take last input from ObjectInspector
 begin
   ELPropertyInspector.UpdateActiveRow;
 end;
@@ -476,21 +568,25 @@ end;
 procedure TFObjectInspector.TCAttributesEventsChange(Sender: TObject);
 begin
   case TCAttributesEvents.TabIndex of
-    0: begin
-         ELEventInspector.Visible:= false;
-         ELPropertyInspector.Visible:= true;
-         BNewDelete.visible:= false;
-         SetButtonCaption(ShowAttributes);
-         if ELPropertyInspector.canFocus then ELPropertyInspector.SetFocus;
+    0:
+      begin
+        ELEventInspector.Visible := False;
+        ELPropertyInspector.Visible := True;
+        BNewDelete.Visible := False;
+        SetButtonCaption(ShowAttributes);
+        if ELPropertyInspector.CanFocus then
+          ELPropertyInspector.SetFocus;
       end;
-   1: begin
-         ELPropertyInspector.Visible:= false;
-         ELEventInspector.Visible:= true;
-         BNewDelete.Visible:= true;
-         SetBNewDeleteCaption;
-         SetButtonCaption(ShowEvents);
-         if ELEventInspector.CanFocus then ELEventInspector.SetFocus;
-       end;
+    1:
+      begin
+        ELPropertyInspector.Visible := False;
+        ELEventInspector.Visible := True;
+        BNewDelete.Visible := True;
+        SetBNewDeleteCaption;
+        SetButtonCaption(ShowEvents);
+        if ELEventInspector.CanFocus then
+          ELEventInspector.SetFocus;
+      end;
   end;
   UpdateState;
 end;
@@ -498,46 +594,56 @@ end;
 procedure TFObjectInspector.TCAttributesEventsMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if canFocus then
+  if CanFocus then
     SetFocus;
 end;
 
-procedure TFObjectInspector.setButtonCaption(aShow: integer);
+procedure TFObjectInspector.SetButtonCaption(AShow: Integer);
 begin
-  case aShow of
-      1: BMore.Caption:= _('More');
-      2: BMore.Caption:= _('Full');
-    else BMore.Caption:= _('Default');
+  case AShow of
+    1:
+      BMore.Caption := _('More');
+    2:
+      BMore.Caption := _('Full');
+  else
+    BMore.Caption := _('Default');
   end;
 end;
 
 procedure TFObjectInspector.SetBNewDeleteCaption;
 begin
-  if ELEventInspector.ActiveItem = nil then exit;
-  if ELEventInspector.ActiveItem.DisplayValue = ''
-    then BNewDelete.Caption:= _('New')
-    else BNewDelete.Caption:= _('Delete');
+  if ELEventInspector.ActiveItem = nil then
+    Exit;
+  if ELEventInspector.ActiveItem.DisplayValue = '' then
+    BNewDelete.Caption := _('New')
+  else
+    BNewDelete.Caption := _('Delete');
   UpdateEventInspector;
 end;
 
 procedure TFObjectInspector.BMoreClick(Sender: TObject);
 begin
-  if ELEventInspector.Visible then begin
-    Inc(ShowEvents);
-    if ShowEvents = 4 then
-       ShowEvents:= 1;
-    if FGUIDesigner.ELDesigner.SelectedControls.Count > 0 then begin
+  if ELEventInspector.Visible then
+  begin
+    Inc(FShowEvents);
+    if FShowEvents = 4 then
+      FShowEvents := 1;
+    if FGUIDesigner.ELDesigner.SelectedControls.Count > 0 then
+    begin
       ELEventInspector.Clear;
       Add(FGUIDesigner.ELDesigner.SelectedControls[0]);
       ELEventInspector.Add(FGUIDesigner.ELDesigner.SelectedControls[0]);
     end;
     SetButtonCaption(ShowEvents);
     SetBNewDeleteCaption;
-  end else begin
-    Inc(ShowAttributes);
-    if ShowAttributes = 4 then
-       ShowAttributes:= 1;
-    if FGUIDesigner.ELDesigner.SelectedControls.Count > 0 then begin
+  end
+  else
+  begin
+    Inc(FShowAttributes);
+    if FShowAttributes = 4 then
+      FShowAttributes := 1;
+    if FGUIDesigner.ELDesigner.SelectedControls.Count > 0 then
+    begin
       ELPropertyInspector.Clear;
       Add(FGUIDesigner.ELDesigner.SelectedControls[0]);
       ELPropertyInspector.Add(FGUIDesigner.ELDesigner.SelectedControls[0]);
@@ -548,50 +654,60 @@ begin
 end;
 
 procedure TFObjectInspector.BNewDeleteClick(Sender: TObject);
-  var PropertyItem: TELPropsPageItem;
-      Partner: TFEditForm;
-      Control: TControl;
-      JEComponent: TJEComponent;
+var
+  PropertyItem: TELPropsPageItem;
+  Partner: TFEditForm;
+  Control: TControl;
+  JEComponent: TJEComponent;
 
   procedure setListener(Control: TJEComponent);
   begin
-    var Event:= PropertyItem.Caption;
+    var
+    Event := PropertyItem.Caption;
     Control.DeleteListener(Event);
-    if PropertyItem.DisplayValue <> '' then   // Delete
-      PropertyItem.DisplayValue:= ''
-    else begin                                // Add
-      PropertyItem.DisplayValue:= Control.MakeEventProcedureName(Event);
+    if PropertyItem.DisplayValue <> '' then // Delete
+      PropertyItem.DisplayValue := ''
+    else
+    begin // Add
+      PropertyItem.DisplayValue := Control.MakeEventProcedureName(Event);
       Control.AddListener(Event);
     end;
   end;
 
 begin
-  PropertyItem:= ELEventInspector.ActiveItem;
-  var i:= CBObjects.ItemIndex;
-  if not assigned(PropertyItem) or (i = -1) then
-    exit;
-  Control:= TControl(CBObjects.Items.Objects[i]);
-  Partner:= TFEditForm(TFForm(FGUIDesigner.ELDesigner.DesignControl).Partner);
+  PropertyItem := ELEventInspector.ActiveItem;
+  var
+  Idx := CBObjects.ItemIndex;
+  if not Assigned(PropertyItem) or (Idx = -1) then
+    Exit;
+  Control := TControl(CBObjects.Items.Objects[Idx]);
+  Partner := TFEditForm(TFForm(FGUIDesigner.ELDesigner.DesignControl).Partner);
   Partner.Editor.BeginUpdate;
   Partner.EnsureStartEnd;
 
-  if Control is TFXGuiForm  then begin
-    JEComponent:= TFXNode.Create(Control);
-    JEComponent.Name:= 'primaryStage';
+  if Control is TFXGUIForm then
+  begin
+    JEComponent := TFXNode.Create(Control);
+    JEComponent.Name := 'primaryStage';
     setListener(JEComponent);
     Partner.InsertImport('javafx.scene.input.*');
     Partner.InsertImport('javafx.event.*');
     FreeAndNil(JEComponent);
-  end else if Control is TFGuiForm then begin
-    JEComponent:= TJGuiForm.Create(Control);
-    JEComponent.Name:= 'cp';
+  end
+  else if Control is TFGUIForm then
+  begin
+    JEComponent := TJGuiForm.Create(Control);
+    JEComponent.Name := 'cp';
     setListener(JEComponent);
     FreeAndNil(JEComponent);
-  end else if Control is TFXNode then begin
+  end
+  else if Control is TFXNode then
+  begin
     setListener(Control as TFXNode);
     Partner.InsertImport('javafx.scene.input.*');
     Partner.InsertImport('javafx.event.*');
-  end else if Control is TAWTComponent then
+  end
+  else if Control is TAWTComponent then
     setListener(Control as TAWTComponent);
   Partner.Editor.EndUpdate;
   ELEventInspector.UpdateItems;
@@ -605,15 +721,20 @@ end;
 
 procedure TFObjectInspector.ELEventInspectorDblClick(Sender: TObject);
 begin
-  if assigned(ELEventInspector.ActiveItem) then begin
-    var s:= ELEventInspector.ActiveItem.DisplayValue;
-    if s = '' then
+  if Assigned(ELEventInspector.ActiveItem) then
+  begin
+    var
+    Str := ELEventInspector.ActiveItem.DisplayValue;
+    if Str = '' then
       BNewDeleteClick(Self)
-    else begin
-      var Partner:= TFEditForm(TFForm(FGUIDesigner.ELDesigner.DesignControl).Partner);
-      Partner.Go_To('public void ' + s);
-      if assigned(FGuiDesigner) then
-        FGuiDesigner.GUIDesignerTimer.Enabled:= true;
+    else
+    begin
+      var
+      Partner := TFEditForm
+        (TFForm(FGUIDesigner.ELDesigner.DesignControl).Partner);
+      Partner.Go_To('public void ' + Str);
+      if Assigned(FGUIDesigner) then
+        FGUIDesigner.GUIDesignerTimer.Enabled := True;
     end;
   end;
   UpdateEventInspector;
@@ -621,102 +742,121 @@ end;
 
 procedure TFObjectInspector.PMObjectInspectorPopup(Sender: TObject);
 begin
-  MICut.Visible:= (TCAttributesEvents.TabIndex = 0);
-  MICopy.Visible:= MICut.Visible;
-  MIPaste.Visible:= MICut.Visible;
+  MICut.Visible := (TCAttributesEvents.TabIndex = 0);
+  MICopy.Visible := MICut.Visible;
+  MIPaste.Visible := MICut.Visible;
 end;
 
 procedure TFObjectInspector.CutToClipboard;
 begin
-  if TCAttributesEvents.TabIndex = 0 then begin
-    var PropertyItem:= TELPropertyInspectorItem(ELPropertyInspector.ActiveItem);
-    if assigned(PropertyItem) then begin
-      Clipboard.AsText:= PropertyItem.DisplayValue;
-      PropertyItem.DisplayValue:= '';
+  if TCAttributesEvents.TabIndex = 0 then
+  begin
+    var
+    PropertyItem := TELPropertyInspectorItem(ELPropertyInspector.ActiveItem);
+    if Assigned(PropertyItem) then
+    begin
+      Clipboard.AsText := PropertyItem.DisplayValue;
+      PropertyItem.DisplayValue := '';
     end;
   end;
 end;
 
 procedure TFObjectInspector.CopyToClipboard;
 begin
-  if TCAttributesEvents.TabIndex = 0 then begin
-    var PropertyItem:= TELPropertyInspectorItem(ELPropertyInspector.ActiveItem);
-    if assigned(PropertyItem) then
-      Clipboard.AsText:= PropertyItem.DisplayValue;
+  if TCAttributesEvents.TabIndex = 0 then
+  begin
+    var
+    PropertyItem := TELPropertyInspectorItem(ELPropertyInspector.ActiveItem);
+    if Assigned(PropertyItem) then
+      Clipboard.AsText := PropertyItem.DisplayValue;
   end;
 end;
 
 procedure TFObjectInspector.PasteFromClipboard;
 begin
-  if TCAttributesEvents.TabIndex = 0 then begin
-    var PropertyItem:= TELPropertyInspectorItem(ELPropertyInspector.ActiveItem);
-    if assigned(PropertyItem) then
-      PropertyItem.DisplayValue:= Clipboard.AsText;
+  if TCAttributesEvents.TabIndex = 0 then
+  begin
+    var
+    PropertyItem := TELPropertyInspectorItem(ELPropertyInspector.ActiveItem);
+    if Assigned(PropertyItem) then
+      PropertyItem.DisplayValue := Clipboard.AsText;
   end;
 end;
 
-procedure TFObjectInspector.ChangeSelection(SelectedControls: TELDesignerSelectedControls);
-  var i: integer; s: string;
+procedure TFObjectInspector.ChangeSelection(SelectedControls
+  : TELDesignerSelectedControls);
+var
+  Str: string;
 begin
-  if assigned(ELPropertyInspector.ActiveItem)
-    then s:= ELPropertyInspector.ActiveItem.Caption
-    else s:= '';
+  if Assigned(ELPropertyInspector.ActiveItem) then
+    Str := ELPropertyInspector.ActiveItem.Caption
+  else
+    Str := '';
   try
     ELPropertyInspector.Clear;
     ELEventInspector.Clear;
-  except
+  except on E: Exception do
+      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
   end;
-  if SelectedControls.Count <> 1
-    then CBObjects.ItemIndex:= -1
-    else CBObjects.ItemIndex:=
-           CBObjects.Items.IndexOfObject(SelectedControls[0]);
+  if SelectedControls.Count <> 1 then
+    CBObjects.ItemIndex := -1
+  else
+    CBObjects.ItemIndex := CBObjects.Items.IndexOfObject(SelectedControls[0]);
   if SelectedControls.Count > 0 then
     Add(SelectedControls[0]);
-  for i:= 0 to SelectedControls.Count - 1 do begin
-    ELPropertyInspector.Add(SelectedControls[i]);
-    ELEventInspector.Add(SelectedControls[i]);
+  for var I := 0 to SelectedControls.Count - 1 do
+  begin
+    ELPropertyInspector.Add(SelectedControls[I]);
+    ELEventInspector.Add(SelectedControls[I]);
   end;
-  if s <> '' then
-    ELPropertyInspector.SelectByCaption(s);
+  if Str <> '' then
+    ELPropertyInspector.SelectByCaption(Str);
   SetBNewDeleteCaption;
 end;
 
-procedure TFObjectInspector.SetFont(aFont: TFont);
+procedure TFObjectInspector.SetFont(AFont: TFont);
 begin
-  Font.Assign(aFont);
-  ELPropertyInspector.Font.Size:= Font.Size;
-  ELPropertyInspector.Font.Name:= Font.Name;
-  ELEventInspector.Font.Size:= Font.Size;
-  ELEventInspector.Font.Name:= Font.Name;
-  TCAttributesEvents.Height:= Canvas.TextHeight('Attribute') + 10;
-  PObjects.Height:= TCAttributesEvents.Height;
+  Font.Assign(AFont);
+  ELPropertyInspector.Font.Size := Font.Size;
+  ELPropertyInspector.Font.Name := Font.Name;
+  ELEventInspector.Font.Size := Font.Size;
+  ELEventInspector.Font.Name := Font.Name;
+  TCAttributesEvents.Height := Canvas.TextHeight('Attribute') + 10;
+  PObjects.Height := TCAttributesEvents.Height;
 end;
 
-procedure TFObjectInspector.SetFontSize(Delta: integer);
+procedure TFObjectInspector.SetFontSize(Delta: Integer);
 begin
-  var Size:= Font.Size + Delta;
-  if Size < 6 then Size:= 6;
-  Font.Size:= Size;
-  ELPropertyInspector.Font.Size:= Font.Size;
-  ELEventInspector.Font.Size:= Font.Size;
-  TCAttributesEvents.Height:= Canvas.TextHeight('Attribute') + 10;
-  PObjects.Height:= TCAttributesEvents.Height;
+  var
+  Size := Font.Size + Delta;
+  if Size < 6 then
+    Size := 6;
+  Font.Size := Size;
+  ELPropertyInspector.Font.Size := Font.Size;
+  ELEventInspector.Font.Size := Font.Size;
+  TCAttributesEvents.Height := Canvas.TextHeight('Attribute') + 10;
+  PObjects.Height := TCAttributesEvents.Height;
   Show;
 end;
 
 procedure TFObjectInspector.UpdateState;
 begin
-  var b:= (TCAttributesEvents.TabIndex = 0) and (ELPropertyInspector.SelText <> '');
-  with FJava do begin
-    SetEnabledMI(MICut, b);
-    SetEnabledMI(MICopy, b);
-    SetEnabledMI(MIPaste, Clipboard.HasFormat(CF_Text) and (TCAttributesEvents.TabIndex = 0));
+  var
+  Enable := (TCAttributesEvents.TabIndex = 0) and
+    (ELPropertyInspector.SelText <> '');
+  with FJava do
+  begin
+    SetEnabledMI(MICut, Enable);
+    SetEnabledMI(MICopy, Enable);
+    SetEnabledMI(MIPaste, Clipboard.HasFormat(CF_TEXT) and
+      (TCAttributesEvents.TabIndex = 0));
   end;
 end;
 
 procedure TFObjectInspector.UpdatePropertyInspector;
 begin
-  TThread.ForceQueue(nil, procedure
+  TThread.ForceQueue(nil,
+    procedure
     begin
       ELPropertyInspector.UpdateItems;
     end);
@@ -724,7 +864,8 @@ end;
 
 procedure TFObjectInspector.UpdateEventInspector;
 begin
-  TThread.ForceQueue(nil, procedure
+  TThread.ForceQueue(nil,
+    procedure
     begin
       ELEventInspector.UpdateItems;
     end);
@@ -738,25 +879,30 @@ end;
 
 procedure TFObjectInspector.Add(AObject: TControl);
 begin
-  if AObject is TJEComponent then begin
-    Events:= (AObject as TJEComponent).getEvents(ShowEvents);
-    Attributes:= (AObject as TJEComponent).getAttributes(ShowAttributes) + '|';
-  end else if AObject is TFXGuiForm then begin
-    Events:= (AObject as TFXGuiForm).getEvents(ShowEvents);
-    Attributes:= (AObject as TFXGuiForm).getAttributes(ShowAttributes);
-  end else if AObject is TFGuiForm then begin
-    Events:= (AObject as TFGuiForm).getEvents(ShowEvents);
-    Attributes:= (AObject as TFGuiForm).getAttributes(ShowAttributes);
+  if AObject is TJEComponent then
+  begin
+    FEvents := (AObject as TJEComponent).GetEvents(ShowEvents);
+    FAttributes := (AObject as TJEComponent).GetAttributes(ShowAttributes) + '|';
+  end
+  else if AObject is TFXGUIForm then
+  begin
+    FEvents := (AObject as TFXGUIForm).GetEvents(ShowEvents);
+    FAttributes := (AObject as TFXGUIForm).GetAttributes(ShowAttributes);
+  end
+  else if AObject is TFGUIForm then
+  begin
+    FEvents := (AObject as TFGUIForm).GetEvents(ShowEvents);
+    FAttributes := (AObject as TFGUIForm).GetAttributes(ShowAttributes);
   end;
 end;
 
 procedure TFObjectInspector.ChangeName(const OldName, NewName: string);
 begin
-  var i:= CBObjects.ItemIndex;
-  var s:= ReplaceStr(CBObjects.Items[i], OldName, NewName);
-  CBObjects.Items[i]:= s;
-  CBObjects.ItemIndex:= i;
-  FGUIDesigner.ELDesigner.SelectedControls.Items[0].Repaint;
+  var Idx := CBObjects.ItemIndex;
+  var Str := ReplaceStr(CBObjects.Items[Idx], OldName, NewName);
+  CBObjects.Items[Idx] := Str;
+  CBObjects.ItemIndex := Idx;
+  FGUIDesigner.ELDesigner.SelectedControls[0].Repaint;
 end;
 
 procedure TFObjectInspector.ShowIt;
@@ -771,33 +917,40 @@ end;
 
 procedure TFObjectInspector.ChangeHideShow;
 begin
-  if Visible
-    then HideIt
-    else ShowIt;
+  if Visible then
+    HideIt
+  else
+    ShowIt;
 end;
 
 procedure TFObjectInspector.ChangeStyle;
 begin
-  if StyleServices.IsSystemStyle then begin
-    ELPropertyInspector.Color:= clBtnFace;
-    ELPropertyInspector.Font.Color:= clBlack;
-    ELPropertyInspector.ValuesColor:= clNavy;
-    ELEventInspector.Color:= clBtnFace;
-    ELEventInspector.Font.Color:= clBlack;
-    ELEventInspector.ValuesColor:= clNavy;
-  end else begin
-    ELPropertyInspector.Color:= StyleServices.GetSystemColor(clBtnFace);
-    ELPropertyInspector.Font.Color:= StyleServices.getStyleFontColor(sfTabTextInactiveNormal);
-    ELPropertyInspector.ValuesColor:= StyleServices.getStyleFontColor(sfTabTextActiveNormal);
-    ELEventInspector.Color:= StyleServices.GetSystemColor(clBtnFace);
-    ELEventInspector.Font.Color:= StyleServices.getStyleFontColor(sfTabTextInactiveNormal);
-    ELEventInspector.ValuesColor:= StyleServices.getStyleFontColor(sfTabTextActiveNormal);
+  if StyleServices.IsSystemStyle then
+  begin
+    ELPropertyInspector.Color := clBtnFace;
+    ELPropertyInspector.Font.Color := clBlack;
+    ELPropertyInspector.ValuesColor := clNavy;
+    ELEventInspector.Color := clBtnFace;
+    ELEventInspector.Font.Color := clBlack;
+    ELEventInspector.ValuesColor := clNavy;
+  end
+  else
+  begin
+    ELPropertyInspector.Color := StyleServices.GetSystemColor(clBtnFace);
+    ELPropertyInspector.Font.Color := StyleServices.GetStyleFontColor
+      (sfTabTextInactiveNormal);
+    ELPropertyInspector.ValuesColor := StyleServices.GetStyleFontColor
+      (sfTabTextActiveNormal);
+    ELEventInspector.Color := StyleServices.GetSystemColor(clBtnFace);
+    ELEventInspector.Font.Color := StyleServices.GetStyleFontColor
+      (sfTabTextInactiveNormal);
+    ELEventInspector.ValuesColor := StyleServices.GetStyleFontColor
+      (sfTabTextActiveNormal);
   end;
-  if FConfiguration.isDark
-    then PMObjectInspector.Images:= vilObjectInspectorDark
-    else PMObjectInspector.Images:= vilObjectInspectorLight;
+  if FConfiguration.IsDark then
+    PMObjectInspector.Images := vilObjectInspectorDark
+  else
+    PMObjectInspector.Images := vilObjectInspectorLight;
 end;
 
 end.
-
-

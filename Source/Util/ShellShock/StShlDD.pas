@@ -239,7 +239,6 @@ function TStDataObject.GetData(const formatetcIn: TFormatEtc;
   out medium: TStgMedium): HResult;
 var
   Offset : UINT;
-  I      : Integer;
   Buff   : Pointer;
   HMem   : THandle;
   Pidl   : PItemIDList;
@@ -273,14 +272,14 @@ begin
       MS1.Write(Offset, SizeOf(Offset));
       Inc(Offset, ILGetSize(FParentPidl));
       { Now write out the remaining offset values. }
-      for I := 0 to Pred(PidlCount) do begin
+      for var I := 0 to Pred(PidlCount) do begin
         MS1.Write(Offset, SizeOf(UINT));
         Inc(Offset, ILGetSize(PidlArray[I]));
       end;
       { Write the parent pidl. }
       MS1.Write(FParentPidl^, ILGetSize(FParentPidl));
       { Write the pidl array. }
-      for I := 0 to Pred(PidlCount) do
+      for var I := 0 to Pred(PidlCount) do
         MS1.Write(PidlArray[I]^, ILGetSize(PidlArray[I]));
       { Get some global memory and copy the memory stream to it. }
     end;
@@ -303,7 +302,7 @@ begin
       DF.fWide := True;
       {$ENDIF}
       MS2.Write(DF, SizeOf(DF));
-      for I := 0 to Pred(PidlCount) do begin
+      for var I := 0 to Pred(PidlCount) do begin
         Pidl := ILCombine(FParentPidl, PidlArray[I]);
         ZeroMemory(@FName, SizeOf(FName));
         SHGetPathFromIdList(Pidl, FName);
@@ -339,11 +338,11 @@ end;
 
 function TStDataObject.QueryGetData(const formatetc: TFormatEtc): HResult;
 var
-  I, Count : Integer;
+  Count : Integer;
 begin
   Count := 0;
   { See how many formats we have. }
-  for I := 0 to 255 do
+  for var I := 0 to 255 do
     if Formats[I].cfFormat = 0 then begin
       Count := I;
       Break;
@@ -351,7 +350,7 @@ begin
   Result := DV_E_FORMATETC;
   if (formatetc.dwAspect <> DVASPECT_CONTENT) then
     Exit;
-  for I := 0 to Pred(Count) do
+  for var I := 0 to Pred(Count) do
     if Formats[I].cfFormat = formatetc.cfFormat then begin
       Result := DV_E_TYMED;
       if (Formats[I].tymed and formatetc.tymed) <> 0 then begin
@@ -389,24 +388,24 @@ end;
 function TStEnumFormatEtc.Next(celt: Integer; out elt;
   pceltFetched: PLongint): HResult;
 var
-  I, Count : Integer;
+  Int, Count : Integer;
 begin
   Count := 0;
   { See how many formats we have. }
-  for I := 0 to 255 do
+  for var I := 0 to 255 do
     if Formats[I].cfFormat = 0 then begin
       Count := I;
       Break;
     end;
-  I := 0;
-  while (I < celt) and (FCurrentIndex < Count) do begin
-    TStFormatArray(elt)[I] := Formats[FCurrentIndex];
-    Inc(I);
+  Int := 0;
+  while (Int < celt) and (FCurrentIndex < Count) do begin
+    TStFormatArray(elt)[Int] := Formats[FCurrentIndex];
+    Inc(Int);
     Inc(FCurrentIndex);
   end;
   if pceltFetched <> nil then
-    pceltFetched^ := I;
-  if I = 0 then begin
+    pceltFetched^ := Int;
+  if Int = 0 then begin
     Result := S_FALSE;
     Exit;
   end;
@@ -424,12 +423,12 @@ end;
 
 function TStEnumFormatEtc.Skip(celt: Integer): HResult;
 var
-  I, Count : Integer;
+  Count : Integer;
 begin
   Inc(FCurrentIndex, celt);
   { See how many formats we have. }
   Count := 0;
-  for I := 0 to 255 do
+  for var I := 0 to 255 do
     if Formats[I].cfFormat = 0 then begin
       Count := I;
       Break;

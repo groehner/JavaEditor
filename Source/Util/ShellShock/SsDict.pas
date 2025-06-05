@@ -96,7 +96,7 @@ type
 {.Z-}
 
   TDictHashFunc =
-    function(const S : string; Size : Integer) : Integer;
+    function(const Str : string; Size : Integer) : Integer;
 
   TStDictionary = class(TStContainer)
 {.Z+}
@@ -126,9 +126,9 @@ type
     destructor Destroy; override;
       {-Destroy a dictionary}
 
-    procedure LoadFromStream(S : TStream); override;
+    procedure LoadFromStream(Str : TStream); override;
       {-Read a dictionary and its data from a stream}
-    procedure StoreToStream(S : TStream); override;
+    procedure StoreToStream(Str : TStream); override;
       {-Write a dictionary and its data to a stream}
 
     procedure Clear; override;
@@ -141,9 +141,9 @@ type
       {-Add new Name and Data to the dictionary}
     procedure Delete(const Name : string);
       {-Delete a Name from the dictionary}
-    procedure GetItems(S : TStrings);
+    procedure GetItems(Str : TStrings);
       {-Fill the string list with all stored strings}
-    procedure SetItems(S : TStrings);
+    procedure SetItems(Str : TStrings);
       {-Fill the container with the strings and objects in S}
     procedure Update(const Name : string; Data : Pointer);
       {-Update the data for an existing element}
@@ -180,13 +180,13 @@ type
   end;
 
 
-function AnsiHashText(const S : string; Size : Integer) : Integer;
+function AnsiHashText(const Str : string; Size : Integer) : Integer;
   {-Case-insensitive hash function that uses the current language driver}
-function AnsiHashStr(const S : string; Size : Integer) : Integer;
+function AnsiHashStr(const Str : string; Size : Integer) : Integer;
   {-Case-sensitive hash function}
-function AnsiELFHashText(const S : string; Size : Integer) : Integer;
+function AnsiELFHashText(const Str : string; Size : Integer) : Integer;
   {-Case-insensitive ELF hash function that uses the current language driver}
-function AnsiELFHashStr(const S : string; Size : Integer) : Integer;
+function AnsiELFHashStr(const Str : string; Size : Integer) : Integer;
   {-Case-sensitive ELF hash function}
 
 
@@ -214,10 +214,10 @@ end;
 function HashElf(const Buf;  BufSize : LongInt) : LongInt;
 var
   Bytes : TByteArray absolute Buf;
-  I, X  : LongInt;
+  X  : LongInt;
 begin
   Result := 0;
-  for I := 0 to BufSize - 1 do begin
+  for var I := 0 to BufSize - 1 do begin
     Result := (Result shl 4) + Bytes[I];
     X := Result and $F0000000;
     if (X <> 0) then
@@ -226,18 +226,18 @@ begin
   end;
 end;
 
-function AnsiELFHashText(const S : string; Size : Integer) : Integer;
+function AnsiELFHashText(const Str : string; Size : Integer) : Integer;
 begin
   {$IFDEF WStrings}
-  Result := AnsiELFHashStr(AnsiUpperCaseShort32(S), Size);
+  Result := AnsiELFHashStr(AnsiUpperCaseShort32(Str), Size);
   {$ELSE}
-  Result := AnsiELFHashStr(AnsiUpperCase(S), Size);
+  Result := AnsiELFHashStr(AnsiUpperCase(Str), Size);
   {$ENDIF}
 end;
 
-function AnsiELFHashStr(const S : string; Size : Integer) : Integer;
+function AnsiELFHashStr(const Str : string; Size : Integer) : Integer;
 begin
-  Result := HashElf(S[1], Length(S)) mod Size;
+  Result := HashElf(Str[1], Length(Str)) mod Size;
   if Result < 0 then
     Inc(Result, Size);
 end;
@@ -259,21 +259,19 @@ begin
   Result := dnName;
 end;
 
-function AnsiHashStr(const S : string; Size : Integer) : Integer;
-var
-  I: Integer;
+function AnsiHashStr(const Str : string; Size : Integer) : Integer;
 begin
   Result := 0;
-  for I := 1 to Length(S) do
+  for var I := 1 to Length(Str) do
     Result := ((Result shl 2) or (Result shr (SizeOf(Result) * 8 - 2))) xor  // ROL Result, 2
-      Ord(S[I]);
+      Ord(Str[I]);
   Result := Result mod Size; // return hash mod size
   if Result < 0 then Result:= Result + Size;   // correction: only not negative values
 end;
 
-function AnsiHashText(const S : string; Size : Integer) : Integer;
+function AnsiHashText(const Str : string; Size : Integer) : Integer;
 begin
-  Result := AnsiHashStr(AnsiUpperCase(S), Size);
+  Result := AnsiHashStr(AnsiUpperCase(Str), Size);
 end;
 
 function FindNodeData(Container : TStContainer;
@@ -288,11 +286,11 @@ function JoinNode(Container : TStContainer;
                   OtherData : Pointer) : Boolean; far;
 var
   H : Integer;
-  P, T : TStDictNode;
+  Posi, T : TStDictNode;
 begin
   Result := True;
   with TStDictionary(OtherData) do begin
-    dyFindNode(TStDictNode(Node).dnName, H, P, T);
+    dyFindNode(TStDictNode(Node).dnName, H, Posi, T);
     if Assigned(T) then
       if dyIgnoreDups then begin
         Node.Free;
@@ -314,7 +312,7 @@ function AssignNode(Container : TStContainer;
     OurDict : TStDictionary absolute OtherData;
   begin
     OurDict.Add(DictNode.Name, DictNode.Data);
-    Result := true;
+    Result := True;
   end;
 
 {----------------------------------------------------------------------}
@@ -322,13 +320,13 @@ function AssignNode(Container : TStContainer;
 procedure TStDictionary.Add(const Name : string; Data : Pointer);
 var
   H : Integer;
-  P, T : TStDictNode;
+  Posi, T : TStDictNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    dyFindNode(Name, H, P, T);
+    dyFindNode(Name, H, Posi, T);
     if Assigned(T) then
       RaiseContainerError(ssscDupNode);
     T := dySymbols^[H];
@@ -343,8 +341,6 @@ begin
 end;
 
 procedure TStDictionary.Assign(Source: TPersistent);
-  var
-    i : integer;
   begin
     {The only two containers that we allow to be assigned to a string
      dictionary are (1) another string dictionary and (2) a Delphi string
@@ -357,8 +353,8 @@ procedure TStDictionary.Assign(Source: TPersistent);
     else if (Source is TStrings) then
       begin
         Clear;
-        for i := 0 to pred(TStrings(Source).Count) do
-          Add(TStrings(Source).Strings[i], TStrings(Source).Objects[i]);
+        for var I := 0 to pred(TStrings(Source).Count) do
+          Add(TStrings(Source).Strings[I], TStrings(Source).Objects[I]);
       end
     else
       inherited Assign(Source);
@@ -376,7 +372,7 @@ begin
     C := 0;
     T := dySymbols^[H];
     while Assigned(T) do begin
-      inc(C);
+      Inc(C);
       T := T.dnNext;
     end;
     Result := C;
@@ -421,16 +417,16 @@ end;
 procedure TStDictionary.Delete(const Name : string);
 var
   H : Integer;
-  P, T : TStDictNode;
+  Posi, T : TStDictNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    dyFindNode(Name, H, P, T);
+    dyFindNode(Name, H, Posi, T);
     if Assigned(T) then begin
-      if Assigned(P) then
-        P.dnNext := T.dnNext
+      if Assigned(Posi) then
+        Posi.dnNext := T.dnNext
       else
         dySymbols^[H] := T.dnNext;
       DestroyNode(Self, T, nil);
@@ -465,24 +461,24 @@ end;
 procedure TStDictionary.dyFindNode(const Name : string; var H : Integer;
                                    var Prev, This : TStDictNode);
 var
-  P, T : TStDictNode;
+  Posi, T : TStDictNode;
 begin
   Prev := nil;
   This := nil;
   H := Hash(Name, HashSize);
   T := dySymbols^[H];
-  P := nil;
+  Posi := nil;
   while Assigned(T) do begin
 {$IFDEF HStrings}
     if DoEqual(Name, T.dnName) = 0 then begin
 {$ELSE}
     if DoEqual(Name, T.dnName^) = 0 then begin
 {$ENDIF}
-      Prev := P;
+      Prev := Posi;
       This := T;
       Exit;
     end;
-    P := T;
+    Posi := T;
     T := T.dnNext;
   end;
 
@@ -587,17 +583,17 @@ end;
 function TStDictionary.Exists(const Name : string; var Data : Pointer) : Boolean;
 var
   H : Integer;
-  P, T : TStDictNode;
+  Posi, T : TStDictNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    dyFindNode(Name, H, P, T);
+    dyFindNode(Name, H, Posi, T);
     if Assigned(T) then begin
-      if Assigned(P) then begin
+      if Assigned(Posi) then begin
         {Move T to front of list}
-        P.dnNext := T.dnNext;
+        Posi.dnNext := T.dnNext;
         T.dnNext := dySymbols^[H];
         dySymbols^[H] := T;
       end;
@@ -638,12 +634,12 @@ begin
 {$ENDIF}
 end;
 
-procedure TStDictionary.GetItems(S : TStrings);
+procedure TStDictionary.GetItems(Str : TStrings);
 var
   H : Integer;
   T : TStDictNode;
 begin
-  S.Clear;
+  Str.Clear;
 {$IFDEF ThreadSafe}
   EnterCS;
   try
@@ -652,7 +648,7 @@ begin
       for H := 0 to FHashSize-1 do begin
         T := dySymbols^[H];
         while Assigned(T) do begin
-          S.AddObject(T.Name, T.Data);
+          Str.AddObject(T.Name, T.Data);
           T := T.dnNext;
         end;
       end;
@@ -664,17 +660,15 @@ begin
 {$ENDIF}
 end;
 
-procedure TStDictionary.SetItems(S : TStrings);
-var
-  I : Integer;
+procedure TStDictionary.SetItems(Str : TStrings);
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
     Clear;
-    for I := 0 to S.Count-1 do
-      Add(S.Strings[I], S.Objects[I]);
+    for var I := 0 to Str.Count-1 do
+      Add(Str.Strings[I], Str.Objects[I]);
 {$IFDEF ThreadSafe}
   finally
     LeaveCS;
@@ -740,13 +734,13 @@ end;
 procedure TStDictionary.Update(const Name : string; Data : Pointer);
 var
   H : Integer;
-  P, T : TStDictNode;
+  Posi, T : TStDictNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    dyFindNode(Name, H, P, T);
+    dyFindNode(Name, H, Posi, T);
     if Assigned(T) then
       T.Data := Data;
 {$IFDEF ThreadSafe}
@@ -756,7 +750,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TStDictionary.LoadFromStream(S : TStream);
+procedure TStDictionary.LoadFromStream(Str : TStream);
 var
   Data : pointer;
   Reader : TReader;
@@ -771,7 +765,7 @@ begin
   try
 {$ENDIF}
     Clear;
-    Reader := TReader.Create(S, 1024);
+    Reader := TReader.Create(Str, 1024);
     try
       with Reader do
         begin
@@ -807,7 +801,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TStDictionary.StoreToStream(S : TStream);
+procedure TStDictionary.StoreToStream(Str : TStream);
 var
   H      : Integer;
   Walker : TStDictNode;
@@ -817,7 +811,7 @@ begin
   EnterCS;
   try
 {$ENDIF}
-    Writer := TWriter.Create(S, 1024);
+    Writer := TWriter.Create(Str, 1024);
     try
       with Writer do
         begin

@@ -2,43 +2,47 @@ unit UATextField;
 
 { Classes
   TATextField = class (TAWTComponent)
-    TANumberField
+  TANumberField
 }
 
 interface
 
 uses
-  Classes, StdCtrls, UAComponents;
+  Classes,
+  StdCtrls,
+  UAComponents;
 
 type
 
-  TATextField = class (TAWTComponent)
+  TATextField = class(TAWTComponent)
   private
     FText: string;
     FEchoChar: string;
-    FCaretPosition: integer;
-    FEditable: boolean;
-    FSelectionEnd: integer;
-    FSelectionStart: integer;
-    procedure setEchoChar(aValue: string);
-    procedure setText(const aValue: string);
-    procedure setEditable(aValue: boolean);
-    function isNumeric(const s: string): boolean;
+    FCaretPosition: Integer;
+    FEditable: Boolean;
+    FSelectionEnd: Integer;
+    FSelectionStart: Integer;
+    procedure SetEchoChar(AValue: string);
+    procedure SetText(const AValue: string);
+    procedure SetEditable(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aEdit: TEdit);
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor CreateFrom(AEdit: TEdit);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure Paint; override;
   published
-    property EchoChar: string read FEchoChar write setEchoChar;
-    property Text: string read FText write setText;
-    property CaretPosition: integer read FCaretPosition write FCaretPosition default 0;
-    property Editable: boolean read FEditable write setEditable;
-    property SelectionEnd: integer read FSelectionEnd write FSelectionEnd default 0;
-    property SelectionStart: integer read FSelectionStart write FSelectionStart default 0;
+    property EchoChar: string read FEchoChar write SetEchoChar;
+    property Text: string read FText write SetText;
+    property CaretPosition: Integer read FCaretPosition write FCaretPosition
+      default 0;
+    property Editable: Boolean read FEditable write SetEditable;
+    property SelectionEnd: Integer read FSelectionEnd write FSelectionEnd
+      default 0;
+    property SelectionStart: Integer read FSelectionStart write FSelectionStart
+      default 0;
 
     property actionPerformed;
     property textValueChanged;
@@ -52,42 +56,47 @@ type
 
 implementation
 
-uses SysUtils, Graphics, Controls, UObjectInspector;
+uses
+  Graphics,
+  Controls,
+  UObjectInspector;
 
-{--- TATextField --------------------------------------------------------------}
+{ --- TATextField -------------------------------------------------------------- }
 
 constructor TATextField.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= -2;
-  Width:= 80;
-  Height:= 24;
-  Editable:= true;
-  Cursor:= crIBeam;
-  JavaType:= 'TextField';
+  Tag := -2;
+  Width := 80;
+  Height := 24;
+  Editable := True;
+  Cursor := crIBeam;
+  JavaType := 'TextField';
 end;
 
-constructor TATextField.CreateFrom(aEdit: TEdit);
+constructor TATextField.CreateFrom(AEdit: TEdit);
 begin
-  Create(aEdit.Owner);
-  CreateFromA(aEdit);
-  Text:= aEdit.Text;
-  Font:= aEdit.Font;
-  Foreground:= Font.Color;
-  Background:= aEdit.Color;
-  if Background = clBtnFace then Background:= clWhite;
-  CaretPosition:= aEdit.MaxLength;
+  Create(AEdit.Owner);
+  CreateFromA(AEdit);
+  Text := AEdit.Text;
+  Font := AEdit.Font;
+  Foreground := Font.Color;
+  Background := AEdit.Color;
+  if Background = clBtnFace then
+    Background := clWhite;
+  CaretPosition := AEdit.MaxLength;
 end;
 
-function TATextField.getAttributes(ShowAttributes: integer): string;
+function TATextField.GetAttributes(ShowAttributes: Integer): string;
 begin
-  if ShowAttributes = 1
-    then Result:= '|Text'
-    else Result:= '|Text|CaretPosition|EchoChar|Editable|SelectionEnd|SelectionStart';
-  Result:= Result + inherited getAttributes(ShowAttributes)
+  if ShowAttributes = 1 then
+    Result := '|Text'
+  else
+    Result := '|Text|CaretPosition|EchoChar|Editable|SelectionEnd|SelectionStart';
+  Result := Result + inherited GetAttributes(ShowAttributes);
 end;
 
-procedure TATextField.setAttribute(Attr, Value, Typ: string);
+procedure TATextField.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'EchoChar' then
     MakeEchoChar(Value)
@@ -95,9 +104,9 @@ begin
     inherited;
 end;
 
-function TATextField.getEvents(ShowEvents: integer): string;
+function TATextField.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|actionPerformed|textValueChanged' + inherited;
+  Result := '|actionPerformed|textValueChanged' + inherited;
 end;
 
 procedure TATextField.NewControl;
@@ -109,77 +118,74 @@ end;
 procedure TATextField.Paint;
 begin
   CanvasFontAssign;
-  Canvas.Font.Color:= Foreground;
-  Canvas.Pen.Color:= AWTGray;
-  Canvas.Brush.Color:= clWhite;
+  Canvas.Font.Color := Foreground;
+  Canvas.Pen.Color := AWTGray;
+  Canvas.Brush.Color := clWhite;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  if Editable = false then begin
-    Canvas.Pen.Color:= DefaultBackground;
-    Canvas.Brush.Color:= DefaultBackground;
-    Canvas.Rectangle(Rect(2, 2, Width-2, Height-2));
+  if not Editable then
+  begin
+    Canvas.Pen.Color := DefaultBackground;
+    Canvas.Brush.Color := DefaultBackground;
+    Canvas.Rectangle(Rect(2, 2, Width - 2, Height - 2));
   end;
-  if Background <> clWhite then begin
-    Canvas.Pen.Color:= Background;
-    Canvas.Brush.Color:= Background;
-    Canvas.Rectangle(Rect(2, 2, Width-2, Height-2));
+  if Background <> clWhite then
+  begin
+    Canvas.Pen.Color := Background;
+    Canvas.Brush.Color := Background;
+    Canvas.Rectangle(Rect(2, 2, Width - 2, Height - 2));
   end;
-  if (Self is TANumberField) and not isNumeric(FText) then begin
-    Canvas.Brush.Color:= clRed;
-    Canvas.Rectangle(Rect(2, 2, Width-2, Height-2));
+  if (Self is TANumberField) and not IsNumeric(FText) then
+  begin
+    Canvas.Brush.Color := clRed;
+    Canvas.Rectangle(Rect(2, 2, Width - 2, Height - 2));
   end;
-  var s:= FText;
+  var
+  Str := FText;
   if EchoChar <> '' then
-    s:= StringOfChar(EchoChar[1], Length(s));
-  Canvas.TextRect(Rect(2, 2, Width-2, Height-2), 4, 3, s);
+    Str := StringOfChar(EchoChar[1], Length(Str));
+  Canvas.TextRect(Rect(2, 2, Width - 2, Height - 2), 4, 3, Str);
 end;
 
-procedure TATextField.setEchoChar(aValue: string);
+procedure TATextField.SetEchoChar(AValue: string);
 begin
-  if Length(aValue) > 1 then begin
-    aValue:= copy(aValue, 1, 1);
-    FEchoChar:= aValue;
+  if Length(AValue) > 1 then
+  begin
+    AValue := Copy(AValue, 1, 1);
+    FEchoChar := AValue;
     FObjectInspector.UpdatePropertyInspector;
   end;
-  if aValue <> FEchoChar then begin
-    FEchoChar:= aValue;
+  if AValue <> FEchoChar then
+  begin
+    FEchoChar := AValue;
     Invalidate;
   end;
 end;
 
-procedure TATextField.setText(const aValue: string);
+procedure TATextField.SetText(const AValue: string);
 begin
-  if aValue <> FText then begin
-    FText:= aValue;
+  if AValue <> FText then
+  begin
+    FText := AValue;
     Invalidate;
   end;
 end;
 
-procedure TATextField.setEditable(aValue: boolean);
+procedure TATextField.SetEditable(AValue: Boolean);
 begin
-  if aValue <> FEditable then begin
-    FEditable:= aValue;
+  if AValue <> FEditable then
+  begin
+    FEditable := AValue;
     Invalidate;
   end;
 end;
 
-{$HINTS OFF}  {$WARNINGS OFF}
-function TATextField.isNumeric(const s: string): boolean;
-  var v: double; c: integer;
-begin
-  val(s, v, c);
-  Result:= (c = 0);
-  if not Result and ((s = '-') or (s = '.') or (s = ''))
-    then Result:= true;
-end;
-{$HINTS ON}  {$WARNINGS ON}
-
-{--- TNumberField -------------------------------------------------------------}
+{ --- TNumberField ------------------------------------------------------------- }
 
 constructor TANumberField.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= -21;
-  JavaType:= 'NumberField';
+  inherited Create(AOwner);
+  Tag := -21;
+  JavaType := 'NumberField';
 end;
 
 procedure TANumberField.NewControl;

@@ -3,7 +3,9 @@ unit UJSplitPane;
 interface
 
 uses
-  Classes, ExtCtrls, UJComponents;
+  Classes,
+  ExtCtrls,
+  UJComponents;
 
 type
   TJSplitPane = class(TSwingComponent)
@@ -12,77 +14,87 @@ type
     FRightComponent: string;
     FTopComponent: string;
     FBottomComponent: string;
-    FResizeWeight: real;
-    FOneTouchExpandable: boolean;
-    FContinuousLayout: boolean;
-    FDividerSize: integer;
-    FDividerLocation: integer;
+    FResizeWeight: Real;
+    FOneTouchExpandable: Boolean;
+    FContinuousLayout: Boolean;
+    FDividerSize: Integer;
+    FDividerLocation: Integer;
     FOrientation: TOrientation;
-    procedure setOrientation(aValue: TOrientation);
-    procedure setDividerSize(aValue: integer);
-    procedure setDividerLocation(aValue: integer);
-    procedure setOneTouchExpandable(aValue: boolean);
+    procedure SetOrientation(AValue: TOrientation);
+    procedure SetDividerSize(AValue: Integer);
+    procedure SetDividerLocation(AValue: Integer);
+    procedure SetOneTouchExpandable(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aSplitter: TSplitter);
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    constructor CreateFrom(ASplitter: TSplitter);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
     procedure Paint; override;
   published
     property LeftComponent: string read FLeftComponent write FLeftComponent;
     property RightComponent: string read FRightComponent write FRightComponent;
     property TopComponent: string read FTopComponent write FTopComponent;
-    property BottomComponent: string read FBottomComponent write FBottomComponent;
-    property ResizeWeight: real read FResizeWeight write FResizeWeight;
-    property OneTouchExpandable: boolean read FOneTouchExpandable write setOneTouchExpandable;
-    property ContinuousLayout: boolean read FContinuousLayout write FContinuousLayout;
-    property Orientation: TOrientation read FOrientation write setOrientation;
-    property DividerSize: integer read FDividerSize write setDividerSize;
-    property DividerLocation: integer read FDividerLocation write setDividerLocation;
+    property BottomComponent: string read FBottomComponent
+      write FBottomComponent;
+    property ResizeWeight: Real read FResizeWeight write FResizeWeight;
+    property OneTouchExpandable: Boolean read FOneTouchExpandable
+      write SetOneTouchExpandable;
+    property ContinuousLayout: Boolean read FContinuousLayout
+      write FContinuousLayout;
+    property Orientation: TOrientation read FOrientation write SetOrientation;
+    property DividerSize: Integer read FDividerSize write SetDividerSize;
+    property DividerLocation: Integer read FDividerLocation
+      write SetDividerLocation;
   end;
 
-var LeftKey: string;
-    RightKey: string;
+var
+  LeftKey: string;
+  RightKey: string;
 
 implementation
 
-uses Windows, Types, Graphics, Controls;
+uses
+  Windows,
+  Types,
+  Graphics,
+  Controls;
 
-constructor TJSplitPane.create(AOwner: TComponent);
+constructor TJSplitPane.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= 17;
-  Width:= 160;
-  Height:= 80;
-  FResizeWeight:= 0;
-  FDividerSize:= 10;
-  FDividerLocation:= 80;
-  FOrientation:= VERTICAL;
-  JavaType:= 'JSplitPane';
+  Tag := 17;
+  Width := 160;
+  Height := 80;
+  FResizeWeight := 0;
+  FDividerSize := 10;
+  FDividerLocation := 80;
+  FOrientation := VERTICAL;
+  JavaType := 'JSplitPane';
 end;
 
-constructor TJSplitPane.CreateFrom(aSplitter: TSplitter);
+constructor TJSplitPane.CreateFrom(ASplitter: TSplitter);
 begin
-  Create(aSplitter.Owner);
-  CreateFromJ(aSplitter);
+  Create(ASplitter.Owner);
+  CreateFromJ(ASplitter);
 end;
 
-function TJSplitPane.getAttributes(ShowAttributes: integer): string;
-  const
-    Pane1 = '|LeftComponent|RightComponent|TopComponent|BottomComponent|Orientation';
-    Pane2 = '|ResizeWeight|OneTouchExpandable|ContinuousLayout|DividerSize|DividerLocation';
+function TJSplitPane.GetAttributes(ShowAttributes: Integer): string;
+const
+  Pane1 = '|LeftComponent|RightComponent|TopComponent|BottomComponent|Orientation';
+  Pane2 = '|ResizeWeight|OneTouchExpandable|ContinuousLayout|DividerSize|DividerLocation';
 begin
-  if ShowAttributes = 1
-    then Result:= Pane1
-    else Result:= Pane1 + Pane2;
-  Result:= Result + inherited;
+  if ShowAttributes = 1 then
+    Result := Pane1
+  else
+    Result := Pane1 + Pane2;
+  Result := Result + inherited;
 end;
 
-procedure TJSplitPane.setAttribute(Attr, Value, Typ: string);
+procedure TJSplitPane.SetAttribute(Attr, Value, Typ: string);
 begin
   if (Attr = 'TopComponent') or (Attr = 'BottomComponent') or
-     (Attr = 'LeftComponent') or (Attr = 'RightComponent') then
+    (Attr = 'LeftComponent') or (Attr = 'RightComponent') then
     MakeAttribut(Attr, Value)
   else
     inherited;
@@ -96,140 +108,159 @@ begin
 end;
 
 procedure TJSplitPane.Paint;
-  var Gray1, Gray2, Gray3, Gray4, Blue,
-      x1, x2, y1, y2, tw, th: integer;
-      R1, R2, R3: TRect;
-      Points: array[0..2] of TPoint;
-      s1, s2: string;
+var
+  Gray1, Gray2, Gray3, Gray4, Blue, X1Pos, X2Pos, Y1Pos, Y2Pos, TextWidth,
+    TextHeight: Integer;
+  Rect1, Rect2, Rect3: TRect;
+  Points: array [0 .. 2] of TPoint;
+  Str1, Str2: string;
 begin
-  Gray1:= RGB(240, 240, 240);
-  Gray2:= RGB(218, 218, 218);
-  Gray3:= RGB(105, 105, 105);
-  Gray4:= RGB(50, 50, 50);
+  Gray1 := RGB(240, 240, 240);
+  Gray2 := RGB(218, 218, 218);
+  Gray3 := RGB(105, 105, 105);
+  Gray4 := RGB(50, 50, 50);
   Blue := BlueColor;
 
-  s1:= LeftKey;
-  s2:= Rightkey;
+  Str1 := LeftKey;
+  Str2 := RightKey;
   CanvasFontAssign;
-  Canvas.Font.Color:= Foreground;
-  Canvas.Pen.Color:= Gray4;
-  Canvas.Brush.Color:= Gray1;
+  Canvas.Font.Color := Foreground;
+  Canvas.Pen.Color := Gray4;
+  Canvas.Brush.Color := Gray1;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  th:= Canvas.TextHeight(s1);
+  TextHeight := Canvas.TextHeight(Str1);
 
-  if FOrientation = VERTICAL then begin
-    x1:= FDividerLocation;
-    x2:= FDividerLocation + FDividerSize;
-    y1:= Height div 2;
+  if FOrientation = VERTICAL then
+  begin
+    X1Pos := FDividerLocation;
+    X2Pos := FDividerLocation + FDividerSize;
+    Y1Pos := Height div 2;
     // 3 main rectangles
-    Canvas.Pen.Color:= Gray3;
-    Canvas.Brush.Color:= Gray1;
-    R1:= Rect( 1, 1, x1, Height-1);
-    R2:= Rect(x1, 1, x2, Height-1);
-    R3:= Rect(x2, 1, Width, Height-1);
-    Canvas.Rectangle(R1);
-    Canvas.FillRect (R2);
-    Canvas.Rectangle(R3);
+    Canvas.Pen.Color := Gray3;
+    Canvas.Brush.Color := Gray1;
+    Rect1 := Rect(1, 1, X1Pos, Height - 1);
+    Rect2 := Rect(X1Pos, 1, X2Pos, Height - 1);
+    Rect3 := Rect(X2Pos, 1, Width, Height - 1);
+    Canvas.Rectangle(Rect1);
+    Canvas.FillRect(Rect2);
+    Canvas.Rectangle(Rect3);
     // shading
-    Canvas.Brush.Color:= Gray2;
-    Canvas.FillRect(Rect(2, y1, x1-1, Height-1));
-    Canvas.FillRect(Rect(x2+1, y1, Width-1, Height-1));
+    Canvas.Brush.Color := Gray2;
+    Canvas.FillRect(Rect(2, Y1Pos, X1Pos - 1, Height - 1));
+    Canvas.FillRect(Rect(X2Pos + 1, Y1Pos, Width - 1, Height - 1));
     // text
-    Canvas.Brush.Style:= bsClear; // use transparent mode
-    Canvas.Font.Color:= Gray4;
-    tw:= Canvas.TextWidth(s1);
-    Canvas.TextRect(R1, (x1 - tw) div 2, (Height - th) div 2, s1);
-    tw:= Canvas.TextWidth(s2);
-    Canvas.TextRect(R3, x2 + (Width-x2-tw) div 2, (Height-th) div 2, s2);
+    Canvas.Brush.Style := bsClear; // use transparent mode
+    Canvas.Font.Color := Gray4;
+    TextWidth := Canvas.TextWidth(Str1);
+    Canvas.TextRect(Rect1, (X1Pos - TextWidth) div 2,
+      (Height - TextHeight) div 2, Str1);
+    TextWidth := Canvas.TextWidth(Str2);
+    Canvas.TextRect(Rect3, X2Pos + (Width - X2Pos - TextWidth) div 2,
+      (Height - TextHeight) div 2, Str2);
     // triangles
-    if OneTouchExpandable then begin
-      Canvas.Brush.Color:= Blue;
-      Points[0]:= Point(x1+2, 8);
-      Points[1]:= Point(x1+6, 4);
-      Points[2]:= Point(x1+6, 12);
+    if OneTouchExpandable then
+    begin
+      Canvas.Brush.Color := Blue;
+      Points[0] := Point(X1Pos + 2, 8);
+      Points[1] := Point(X1Pos + 6, 4);
+      Points[2] := Point(X1Pos + 6, 12);
       Canvas.Polygon(Points);
-      Points[0]:= Point(x1+2, 15);
-      Points[1]:= Point(x1+6, 19);
-      Points[2]:= Point(x1+2, 23);
+      Points[0] := Point(X1Pos + 2, 15);
+      Points[1] := Point(X1Pos + 6, 19);
+      Points[2] := Point(X1Pos + 2, 23);
       Canvas.Polygon(Points);
     end;
-  end else begin
-    y1:= FDividerLocation;
-    y2:= FDividerLocation + FDividerSize;
+  end
+  else
+  begin
+    Y1Pos := FDividerLocation;
+    Y2Pos := FDividerLocation + FDividerSize;
     // 3 main rectangles
-    Canvas.Pen.Color:= Gray3;
-    Canvas.Brush.Color:= Gray1;
-    R1:= Rect(1,  1, Width-1, y1);
-    R2:= Rect(1, y1, Width-1, y2);
-    R3:= Rect(1, y2, Width-1, Height);
-    Canvas.Rectangle(R1);
-    Canvas.FillRect (R2);
-    Canvas.Rectangle(R3);
+    Canvas.Pen.Color := Gray3;
+    Canvas.Brush.Color := Gray1;
+    Rect1 := Rect(1, 1, Width - 1, Y1Pos);
+    Rect2 := Rect(1, Y1Pos, Width - 1, Y2Pos);
+    Rect3 := Rect(1, Y2Pos, Width - 1, Height);
+    Canvas.Rectangle(Rect1);
+    Canvas.FillRect(Rect2);
+    Canvas.Rectangle(Rect3);
     // shading
-    Canvas.Brush.Color:= Gray2;
-    Canvas.FillRect(Rect(2, y1 div 2, Width-2, y1-1));
-    Canvas.FillRect(Rect(2, y2 + (Height-y2) div 2, Width-2, Height-1));
+    Canvas.Brush.Color := Gray2;
+    Canvas.FillRect(Rect(2, Y1Pos div 2, Width - 2, Y1Pos - 1));
+    Canvas.FillRect(Rect(2, Y2Pos + (Height - Y2Pos) div 2, Width - 2,
+      Height - 1));
     // text
-    Canvas.Brush.Style:= bsClear; // use transparent mode
-    Canvas.Font.Color:= Gray4;
-    tw:= Canvas.TextWidth('Linke Taste');
-    Canvas.TextRect(R1, (Width-tw) div 2, y1 div 2, 'Linke Taste');
-    tw:= Canvas.TextWidth('Rechte Taste');
-    Canvas.TextRect(R3, (Width-tw) div 2, (Height-y2) div 2 + y2, 'Rechte Taste');
+    Canvas.Brush.Style := bsClear; // use transparent mode
+    Canvas.Font.Color := Gray4;
+    TextWidth := Canvas.TextWidth('Linke Taste');
+    Canvas.TextRect(Rect1, (Width - TextWidth) div 2, Y1Pos div 2,
+      'Linke Taste');
+    TextWidth := Canvas.TextWidth('Rechte Taste');
+    Canvas.TextRect(Rect3, (Width - TextWidth) div 2, (Height - Y2Pos) div 2 +
+      Y2Pos, 'Rechte Taste');
     // triangles
-    if OneTouchExpandable then begin
-      Canvas.Brush.Color:= Blue;
-      Points[0]:= Point(8, y1+2);
-      Points[1]:= Point(4, y1+6);
-      Points[2]:= Point(12, y1+6);
+    if OneTouchExpandable then
+    begin
+      Canvas.Brush.Color := Blue;
+      Points[0] := Point(8, Y1Pos + 2);
+      Points[1] := Point(4, Y1Pos + 6);
+      Points[2] := Point(12, Y1Pos + 6);
       Canvas.Polygon(Points);
-      Points[0]:= Point(15, y1+2);
-      Points[1]:= Point(19, y1+6);
-      Points[2]:= Point(23, y1+2);
+      Points[0] := Point(15, Y1Pos + 2);
+      Points[1] := Point(19, Y1Pos + 6);
+      Points[2] := Point(23, Y1Pos + 2);
       Canvas.Polygon(Points);
     end;
   end;
 end;
 
-procedure TJSplitPane.setOrientation(aValue: TOrientation);
-  var h: integer;
+procedure TJSplitPane.SetOrientation(AValue: TOrientation);
+var
+  Tmp: Integer;
 begin
-  if aValue <> FOrientation then begin
-    FOrientation:= aValue;
-    if not (csLoading in ComponentState) then begin
-      h:= Width; Width:= Height; Height:= h;
+  if AValue <> FOrientation then
+  begin
+    FOrientation := AValue;
+    if not(csLoading in ComponentState) then
+    begin
+      Tmp := Width;
+      Width := Height;
+      Height := Tmp;
     end;
     Invalidate;
   end;
 end;
 
-procedure TJSplitPane.setDividerSize(aValue: integer);
+procedure TJSplitPane.SetDividerSize(AValue: Integer);
 begin
-  if aValue <> FDividerSize then begin
-    FDividerSize:= aValue;
+  if AValue <> FDividerSize then
+  begin
+    FDividerSize := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJSplitPane.setDividerLocation(aValue: integer);
+procedure TJSplitPane.SetDividerLocation(AValue: Integer);
 begin
-  if aValue <> FDividerLocation then begin
-    FDividerLocation:= aValue;
+  if AValue <> FDividerLocation then
+  begin
+    FDividerLocation := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJSplitPane.setOneTouchExpandable(aValue: boolean);
+procedure TJSplitPane.SetOneTouchExpandable(AValue: Boolean);
 begin
-  if aValue <> FOneTouchExpandable then begin
-    FOneTouchExpandable:= aValue;
+  if AValue <> FOneTouchExpandable then
+  begin
+    FOneTouchExpandable := AValue;
     Invalidate;
   end;
 end;
 
 initialization
-  LeftKey := 'Linke Taste';
-  RightKey:= 'Rechte Taste';
+
+LeftKey := 'Linke Taste';
+RightKey := 'Rechte Taste';
 
 end.
-

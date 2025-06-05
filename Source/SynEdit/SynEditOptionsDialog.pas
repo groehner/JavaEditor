@@ -229,7 +229,7 @@ type
     function GetColor(Item : TMenuItem) : TColor;
     procedure GetData;
     procedure PutData;
-    procedure EditStrCallback(const S: string);
+    procedure EditStrCallback(const Str: string);
     procedure FillInKeystrokeInfo(AKey: TSynEditKeystroke; AItem: TListItem);
   public
     eKeyShort2: TSynHotKey;
@@ -331,7 +331,7 @@ uses
 
 { TSynEditOptionsDialog }
 
-constructor TSynEditOptionsDialog.create(AOwner: TComponent);
+constructor TSynEditOptionsDialog.Create(AOwner: TComponent);
 begin
   inherited;
   FForm:= TfmEditorOptionsDialog.Create(Self);
@@ -432,7 +432,7 @@ begin
     inherited;
 end;
 
-constructor TSynEditorOptionsContainer.create(AOwner: TComponent);
+constructor TSynEditorOptionsContainer.Create(AOwner: TComponent);
 begin
   inherited;
   FBookmarks:= TSynBookMarkOpt.Create(Self);
@@ -512,14 +512,14 @@ begin
   //Get Data
   GetData;
   //Show the form
-  Result:= Showmodal = mrOk;
+  Result:= ShowModal = mrOk;
   //PutData
   if Result then PutData;
 end;
 
 
 procedure TfmEditorOptionsDialog.GetData;
-var I : Integer;
+var Int : Integer;
     Item : TListItem;
 begin
   //Gutter
@@ -575,11 +575,11 @@ begin
   KeyList.Items.BeginUpdate;
   try
     KeyList.Items.Clear;
-    for I:= 0 to FSynEdit.Keystrokes.Count-1 do
+    for Int:= 0 to FSynEdit.Keystrokes.Count-1 do
     begin
       Item:= KeyList.Items.Add;
-      FillInKeystrokeInfo(FSynEdit.Keystrokes.Items[I], Item);
-      Item.Data:= FSynEdit.Keystrokes.Items[I];
+      FillInKeystrokeInfo(FSynEdit.Keystrokes.Items[Int], Item);
+      Item.Data:= FSynEdit.Keystrokes.Items[Int];
     end;
     if (KeyList.Items.Count > 0) then KeyList.Items[0].Selected:= True;
   finally
@@ -669,7 +669,7 @@ begin
 end;
 
 procedure TfmEditorOptionsDialog.FormCreate(Sender: TObject);
-var I : Integer;
+var Int : Integer;
     C : TColor;
     B : TBitmap;
 begin
@@ -681,17 +681,17 @@ begin
     B.Width:= 16;
     B.Height:= 16;
     //Loop through and create colored images
-    for I:= 0 to ColorPopup.Items.Count-1 do
+    for Int:= 0 to ColorPopup.Items.Count-1 do
     begin
-      if ColorPopup.Items[I].Tag = -1 then Continue;
-      C:= GetColor(ColorPopup.Items[I]);
+      if ColorPopup.Items[Int].Tag = -1 then Continue;
+      C:= GetColor(ColorPopup.Items[Int]);
       B.Canvas.Brush.Color:= C;
       B.Canvas.Brush.Style:= bsSolid;
       B.Canvas.Pen.Style:= psSolid;
       B.Canvas.Pen.Color:= clBlack;
       B.Canvas.Rectangle(0,0,16,16);
       ImageList1.Add(B, nil);
-      ColorPopup.Items[I].ImageIndex:= ColorPopup.Items[I].Tag;
+      ColorPopup.Items[Int].ImageIndex:= ColorPopup.Items[Int].Tag;
     end;
   finally
     B.Free;
@@ -813,17 +813,17 @@ begin
   KeyList.Selected.Delete;
 end;
 
-procedure TfmEditorOptionsDialog.EditStrCallback(const S: string);
+procedure TfmEditorOptionsDialog.EditStrCallback(const Str: string);
 begin
   //Add the Item
   if FExtended then
-    cKeyCommand.Items.AddObject(S, TObject(ConvertExtendedToCommand(S)))
-  else cKeyCommand.Items.AddObject(S, TObject(ConvertCodeStringToCommand(S)));
+    cKeyCommand.Items.AddObject(Str, TObject(ConvertExtendedToCommand(Str)))
+  else cKeyCommand.Items.AddObject(Str, TObject(ConvertCodeStringToCommand(Str)));
 end;
 
 procedure TfmEditorOptionsDialog.FormShow(Sender: TObject);
 var Commands: TStringList;
-    i : Integer;
+    Int : Integer;
 begin
 //We need to do this now because it will not have been assigned when
 //create occurs
@@ -839,9 +839,9 @@ begin
     Commands := TStringList.Create;
     try
       FAllUserCommands(Commands);
-      for i := 0 to Commands.Count - 1 do
-        if Commands.Objects[i] <> nil then
-          cKeyCommand.Items.AddObject(Commands[i], Commands.Objects[i]);
+      for Int := 0 to Commands.Count - 1 do
+        if Commands.Objects[Int] <> nil then
+          cKeyCommand.Items.AddObject(Commands[Int], Commands.Objects[Int]);
     finally
       Commands.Free;
     end;
@@ -881,23 +881,23 @@ end;
 
 procedure TfmEditorOptionsDialog.btnRightEdgeMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var P : TPoint;
+var Posi : TPoint;
 begin
   FPoppedFrom:= cpRightEdge;
-  P:= pRightEdgeColor.ClientToScreen(Point(-1, pRightEdgeColor.Height-1));
+  Posi:= pRightEdgeColor.ClientToScreen(Point(-1, pRightEdgeColor.Height-1));
   btnRightEdge.BevelOuter := bvLowered;
-  ColorPopup.Popup(P.X, P.Y);
+  ColorPopup.Popup(Posi.X, Posi.Y);
   btnRightEdge.BevelOuter := bvNone;
 end;
 
 procedure TfmEditorOptionsDialog.btnGutterColorMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var P : TPoint;
+var Posi : TPoint;
 begin
   FPoppedFrom:= cpGutter;
-  P:= pGutterColor.ClientToScreen(Point(-1, pGutterColor.Height-1));
+  Posi:= pGutterColor.ClientToScreen(Point(-1, pGutterColor.Height-1));
   btnGutterColor.BevelOuter := bvLowered;
-  ColorPopup.Popup(P.X, P.Y);
+  ColorPopup.Popup(Posi.X, Posi.Y);
   btnGutterColor.BevelOuter := bvNone;
 end;
 
@@ -922,7 +922,7 @@ begin
     AItem.SubItems.Clear;
 
     TmpString := '';
-    if Shortcut <> 0 then
+    if ShortCut <> 0 then
       TmpString := ShortCutToText(ShortCut);
 
     if (TmpString <> '') and (Shortcut2 <> 0) then
@@ -942,7 +942,7 @@ procedure TfmEditorOptionsDialog.KeyListChanging(Sender: TObject;
   Item: TListItem; Change: TItemChange; var AllowChange: Boolean);
 begin
 //make sure that it's saved.
-  if InChanging then exit;
+  if InChanging then Exit;
   InChanging := True;
   if Visible then
   begin

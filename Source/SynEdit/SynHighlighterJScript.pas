@@ -123,13 +123,13 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     function IsKeyword(const AKeyword: string): Boolean; override;
     function IsEvent(const AKeyword: string): Boolean;
     function IsNonReserwedKeyWord(const AKeyword: string): Boolean;
@@ -247,7 +247,7 @@ const
 
 function TSynJScriptSyn.IsKeyword(const AKeyword: string): Boolean;
 var
-  First, Last, I, Compare: Integer;
+  First, Last, Int, Compare: Integer;
 begin
   First := 0;
   Last := High(Keywords);
@@ -255,21 +255,21 @@ begin
 
   while First <= Last do
   begin
-    I := (First + Last) shr 1;
-    Compare := CompareStr(Keywords[I], AKeyWord);
+    Int := (First + Last) shr 1;
+    Compare := CompareStr(Keywords[Int], AKeyWord);
     if Compare = 0 then
     begin
       Result := True;
-      break;
+      Break;
     end
     else
-      if Compare < 0 then First := I + 1 else Last := I - 1;
+      if Compare < 0 then First := Int + 1 else Last := Int - 1;
   end;
 end;
 
 function TSynJScriptSyn.IsEvent(const AKeyword: string): Boolean;
 var
-  First, Last, I, Compare: Integer;
+  First, Last, Int, Compare: Integer;
 begin
   First := 0;
   Last := High(Events);
@@ -277,21 +277,21 @@ begin
 
   while First <= Last do
   begin
-    I := (First + Last) shr 1;
-    Compare := CompareStr(Events[I], AKeyWord);
+    Int := (First + Last) shr 1;
+    Compare := CompareStr(Events[Int], AKeyWord);
     if Compare = 0 then
     begin
       Result := True;
-      break;
+      Break;
     end
     else
-      if Compare < 0 then First := I + 1 else Last := I - 1;
+      if Compare < 0 then First := Int + 1 else Last := Int - 1;
   end;
 end;
 
 function TSynJScriptSyn.IsNonReserwedKeyWord(const AKeyword: string): Boolean;
 var
-  First, Last, I, Compare: Integer;
+  First, Last, Int, Compare: Integer;
 begin
   First := 0;
   Last := High(NonReserwedKeyWords);
@@ -299,15 +299,15 @@ begin
 
   while First <= Last do
   begin
-    I := (First + Last) shr 1;
-    Compare := CompareStr(NonReserwedKeyWords[I], AKeyWord);
+    Int := (First + Last) shr 1;
+    Compare := CompareStr(NonReserwedKeyWords[Int], AKeyWord);
     if Compare = 0 then
     begin
       Result := True;
-      break;
+      Break;
     end
     else
-      if Compare < 0 then First := I + 1 else Last := I - 1;
+      if Compare < 0 then First := Int + 1 else Last := Int - 1;
   end;
 end;
 
@@ -350,8 +350,8 @@ end;
 procedure TSynJScriptSyn.AndSymbolProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if CharInSet(fLine[Run], ['=', '&']) then inc(Run);
+  Inc(Run);
+  if CharInSet(fLine[Run], ['=', '&']) then Inc(Run);
 end;
 
 procedure TSynJScriptSyn.CommentProc;
@@ -365,10 +365,10 @@ begin
       if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then 
       begin
         fRange := rsUnKnown;
-        inc(Run, 2);
-        break;
+        Inc(Run, 2);
+        Break;
       end;
-      inc(Run);
+      Inc(Run);
     until IsLineEnd(Run);
   end;
 end;
@@ -376,13 +376,13 @@ end;
 procedure TSynJScriptSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
-  if fLine[Run] = #10 then inc(Run);
+  Inc(Run);
+  if fLine[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynJScriptSyn.IdentProc;
 begin
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
   if IsEvent(GetToken) then
   begin
     fTokenId := tkEvent;
@@ -402,7 +402,7 @@ end;
 procedure TSynJScriptSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynJScriptSyn.LiteralsProc;
@@ -478,21 +478,21 @@ end;
 procedure TSynJScriptSyn.MinusProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if CharInSet(fLine[Run], ['=', '-', '>']) then inc(Run);
+  Inc(Run);
+  if CharInSet(fLine[Run], ['=', '-', '>']) then Inc(Run);
 end;
 
 procedure TSynJScriptSyn.ModSymbolProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if fLine[Run] = '=' then inc(Run);
+  Inc(Run);
+  if fLine[Run] = '=' then Inc(Run);
 end;
 
 procedure TSynJScriptSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynJScriptSyn.NumberProc;
@@ -550,22 +550,22 @@ end;
 procedure TSynJScriptSyn.OrSymbolProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if CharInSet(fLine[Run], ['=', '|']) then inc(Run);
+  Inc(Run);
+  if CharInSet(fLine[Run], ['=', '|']) then Inc(Run);
 end;
 
 procedure TSynJScriptSyn.PlusProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if CharInSet(fLine[Run], ['=', '+']) then inc(Run);
+  Inc(Run);
+  if CharInSet(fLine[Run], ['=', '+']) then Inc(Run);
 end;
 
 procedure TSynJScriptSyn.PointProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if (fLine[Run] = '.') and (fLine[Run + 1] = '.') then inc(Run, 2);
+  Inc(Run);
+  if (fLine[Run] = '.') and (fLine[Run + 1] = '.') then Inc(Run, 2);
 end;
 
 procedure TSynJScriptSyn.SlashProc;
@@ -588,7 +588,7 @@ begin
              if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then begin
                fRange := rsUnKnown;
                Inc(Run, 2);
-               break;
+               Break;
              end;
            until IsLineEnd(Run);
          end;
@@ -603,16 +603,16 @@ end;
 
 procedure TSynJScriptSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynJScriptSyn.StarProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if fLine[Run] = '=' then inc(Run);
+  Inc(Run);
+  if fLine[Run] = '=' then Inc(Run);
 end;
 
 procedure TSynJScriptSyn.StringProc;
@@ -624,15 +624,15 @@ begin
   l_strChar := FLine[Run];   // We could have '"' or #39
   { we will handle escaped quotes }
   IsEscaped := False;
-  if (FLine[Run + 1] = l_strChar) and (FLine[Run + 2] = l_strChar) then inc(Run, 2);
+  if (FLine[Run + 1] = l_strChar) and (FLine[Run + 2] = l_strChar) then Inc(Run, 2);
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
       '\': IsEscaped := not IsEscaped;
     else
       IsEscaped := False;
     end;
-    inc(Run);
+    Inc(Run);
   until (FLine[Run] = l_strChar) and (FLine[Pred(Run)] <> '\') and not IsEscaped;
   if not IsLineEnd(Run) then
     Inc(Run);
@@ -640,13 +640,13 @@ end;
 
 procedure TSynJScriptSyn.SymbolProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
 procedure TSynJScriptSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -687,7 +687,7 @@ begin
   inherited;
 end;
 
-function TSynJScriptSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynJScriptSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -735,7 +735,7 @@ begin
   end;
 end;
 
-function TSynJScriptSyn.GetTokenKind: integer;
+function TSynJScriptSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;
@@ -790,8 +790,8 @@ begin
     fTokenID := tkSpecVar
   else
     fTokenID := tkIdentifier;
-  inc(Run);
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  Inc(Run);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
 end;
 
 //++ CodeFolding
@@ -801,25 +801,25 @@ var
   CurLine: string;
   Line: Integer;
 
-  function LineHasChar(Line: Integer; character: char;
-  StartCol : Integer): boolean; // faster than Pos!
+  function LineHasChar(Line: Integer; character: Char;
+  StartCol : Integer): Boolean; // faster than Pos!
   var
-    i: Integer;
+    Int: Integer;
   begin
-    result := false;
-    for I := StartCol to Length(CurLine) do begin
-      if CurLine[i] = character then begin
+    Result := False;
+    for Int := StartCol to Length(CurLine) do begin
+      if CurLine[Int] = character then begin
         // Char must have proper highlighting (ignore stuff inside comments...)
-        if GetHighlighterAttriAtRowCol(LinesToScan, Line, I) <> fCommentAttri then begin
-          result := true;
-          break;
+        if GetHighlighterAttriAtRowCol(LinesToScan, Line, Int) <> fCommentAttri then begin
+          Result := True;
+          Break;
         end;
       end;
     end;
   end;
 
   function FindBraces(Line: Integer) : Boolean;
-  Var
+  var
     Col : Integer;
   begin
     Result := False;
@@ -838,7 +838,7 @@ var
             Result := True;
           end;
           // Skip until a newline
-          break;
+          Break;
         end;
       end else if CurLine[col] = '}' then
       begin
@@ -850,24 +850,24 @@ var
             Result := True;
           end;
           // Skip until a newline
-          break;
+          Break;
         end;
       end;
     end; // for Col
   end;
 
   function FoldRegion(Line: Integer): Boolean;
-  Var
-    S : string;
+  var
+    Str : string;
   begin
     Result := False;
-    S := TrimLeft(CurLine);
-    if Uppercase(Copy(S, 1, 9)) = '//#REGION' then
+    Str := TrimLeft(CurLine);
+    if UpperCase(Copy(Str, 1, 9)) = '//#REGION' then
     begin
       FoldRanges.StartFoldRange(Line + 1, FoldRegionType);
       Result := True;
     end
-    else if Uppercase(Copy(S, 1, 12)) = '//#ENDREGION' then
+    else if UpperCase(Copy(Str, 1, 12)) = '//#ENDREGION' then
     begin
       FoldRanges.StopFoldRange(Line + 1, FoldRegionType);
       Result := True;

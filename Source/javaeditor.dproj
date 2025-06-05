@@ -192,6 +192,8 @@
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
         <VerInfo_MinorVer>6</VerInfo_MinorVer>
         <VerInfo_Build>0</VerInfo_Build>
+        <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
+        <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -226,7 +228,7 @@
         <DCCReference Include="UDlgHelp.pas">
             <Form>FHelpDialog</Form>
         </DCCReference>
-        <DCCReference Include="UDlgFavoriten.pas">
+        <DCCReference Include="UDlgFavorites.pas">
             <Form>FFavoritenDialog</Form>
         </DCCReference>
         <DCCReference Include="essmodel\System\UUMLModule.pas">
@@ -471,7 +473,6 @@
         <DCCReference Include="SequenceDiagram\UDlgConnect.pas">
             <Form>FConnectDialog</Form>
         </DCCReference>
-        <DCCReference Include="SequenceDiagram\ULifeLine.pas"/>
         <DCCReference Include="SequenceDiagram\USequenceForm.pas">
             <Form>FSequenceForm</Form>
         </DCCReference>
@@ -588,6 +589,7 @@
         <DCCReference Include="..\..\delphi-markdown\source\MarkdownTables.pas"/>
         <DCCReference Include="..\..\delphi-markdown\source\MarkdownTxtMark.pas"/>
         <DCCReference Include="..\..\delphi-markdown\source\MarkdownUtils.pas"/>
+        <DCCReference Include="Sequencediagram\ULifeline.pas"/>
         <None Include="version.txt">
             <ContainerId>File</ContainerId>
         </None>
@@ -648,8 +650,8 @@
                     <VersionInfoKeys Name="Comments"/>
                 </VersionInfoKeys>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k290.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automatisierungsserver</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp290.bpl">Microsoft Office XP Beispiele für gekapselte Komponenten für Automation Server</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k290.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp290.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>

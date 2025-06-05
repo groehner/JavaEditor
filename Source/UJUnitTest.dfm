@@ -29,7 +29,6 @@ object FJUnitTests: TFJUnitTests
     Align = alTop
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 360
   end
   object TVJUnitTests: TTreeView
     Left = 0

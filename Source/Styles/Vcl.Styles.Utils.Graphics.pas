@@ -396,7 +396,7 @@ var
   x, y: Integer;
 begin
   if ABitMap.PixelFormat <> pf32bit then
-    exit;
+    Exit;
 
   for y := 0 to ABitMap.Height - 1 do
   begin
@@ -423,29 +423,29 @@ end;
 procedure FlipBitmap24Horizontal(ABitMap: TBitmap);
 begin
   if ABitMap.PixelFormat <> pf24bit then
-    exit;
+    Exit;
   MirrorBitMap(ABitMap, TMirrorKind.mtHorizontal);
 end;
 
 procedure FlipBitmap32Horizontal(ABitMap: TBitmap);
 begin
   if ABitMap.PixelFormat <> pf32bit then
-    exit;
+    Exit;
   MirrorBitMap(ABitMap, TMirrorKind.mtHorizontal);
 end;
 
 procedure RotateBitmap(ABitMap: TBitmap; Rads: Single; AdjustSize: Boolean; BackGroundColor: TColor = clNone);
 var
   C: Single;
-  S: Single;
+  Str: Single;
   LXForm: TXForm;
   LBuffer: TBitmap;
 begin
   C := Cos(Rads);
-  S := Sin(Rads);
+  Str := Sin(Rads);
   LXForm.eM11 := C;
-  LXForm.eM12 := S;
-  LXForm.eM21 := -S;
+  LXForm.eM12 := Str;
+  LXForm.eM21 := -Str;
   LXForm.eM22 := C;
   LBuffer := TBitmap.Create;
   try
@@ -455,17 +455,17 @@ begin
     LBuffer.Canvas.Brush.Color := BackGroundColor;
     if AdjustSize then
     begin
-      LBuffer.Width := Round(ABitMap.Width * Abs(C) + ABitMap.Height * Abs(S));
-      LBuffer.Height := Round(ABitMap.Width * Abs(S) + ABitMap.Height * Abs(C));
-      LXForm.eDx := (LBuffer.Width - ABitMap.Width * C + ABitMap.Height * S) / 2;
-      LXForm.eDy := (LBuffer.Height - ABitMap.Width * S - ABitMap.Height * C) / 2;
+      LBuffer.Width := Round(ABitMap.Width * Abs(C) + ABitMap.Height * Abs(Str));
+      LBuffer.Height := Round(ABitMap.Width * Abs(Str) + ABitMap.Height * Abs(C));
+      LXForm.eDx := (LBuffer.Width - ABitMap.Width * C + ABitMap.Height * Str) / 2;
+      LXForm.eDy := (LBuffer.Height - ABitMap.Width * Str - ABitMap.Height * C) / 2;
     end
     else
     begin
       LBuffer.Width := ABitMap.Width;
       LBuffer.Height := ABitMap.Height;
-      LXForm.eDx := (ABitMap.Width - ABitMap.Width * C + ABitMap.Height * S) / 2;
-      LXForm.eDy := (ABitMap.Height - ABitMap.Width * S - ABitMap.Height * C) / 2;
+      LXForm.eDx := (ABitMap.Width - ABitMap.Width * C + ABitMap.Height * Str) / 2;
+      LXForm.eDy := (ABitMap.Height - ABitMap.Width * Str - ABitMap.Height * C) / 2;
     end;
     SetGraphicsMode(LBuffer.Canvas.Handle, GM_ADVANCED);
     SetWorldTransform(LBuffer.Canvas.Handle, LXForm);
@@ -484,19 +484,19 @@ var
   LColors: array [0 .. 255] of TRGBQuad;
 begin
   if ABitMap.PixelFormat <> pf8bit then
-    exit;
+    Exit;
   LPalette := ABitMap.Palette;
   if LPalette = 0 then
-    exit;
+    Exit;
 
   if GetPaletteEntries(LPalette, 0, 256, LColors) = 0 then
-    exit;
+    Exit;
   Lbyte := 0;
 
   while (LColors[Lbyte].rgbBlue = Lbyte) and (LColors[Lbyte].rgbGreen = Lbyte) and (LColors[Lbyte].rgbRed = Lbyte) do
     Inc(Lbyte);
   if Lbyte > 256 then
-    exit;
+    Exit;
   LMaxLogPalette.palVersion := $0300;
   LMaxLogPalette.palNumEntries := 256;
   for Lbyte := 0 to 255 do
@@ -521,7 +521,7 @@ var
   LRGBTriple: PRGBTriple;
 begin
   if ABitMap.PixelFormat <> pf24bit then
-    exit;
+    Exit;
 
   for y := 0 to ABitMap.Height - 1 do
   begin
@@ -545,7 +545,7 @@ var
   LRGBQuad: PRGBQuad;
 begin
   if ABitMap.PixelFormat <> pf32bit then
-    exit;
+    Exit;
   for y := 0 to ABitMap.Height - 1 do
   begin
     LRGBQuad := ABitMap.ScanLine[y];
@@ -565,7 +565,7 @@ var
 begin
   GetRGB(AColor, R, G, B);
   if ABitMap.PixelFormat <> pf32bit then
-    exit;
+    Exit;
   for y := 0 to ABitMap.Height - 1 do
   begin
     LRGBQuad := ABitMap.ScanLine[y];
@@ -586,7 +586,7 @@ var
   LRGBQuad: PRGBQuad;
 begin
   if ABitMap.PixelFormat <> pf32bit then
-    exit;
+    Exit;
   for y := 0 to ABitMap.Height - 1 do
   begin
     LRGBQuad := ABitMap.ScanLine[y];
@@ -606,7 +606,7 @@ var
   LColorRef: COLORREF;
 begin
   if ABitMap.PixelFormat <> pf32bit then
-    exit;
+    Exit;
 
   LColorRef := Cardinal(ColorToRGB(AColor));
   for y := 0 to ABitMap.Height - 1 do
@@ -628,7 +628,7 @@ var
   LRGBQuad: PRGBQuad;
 begin
   if ABitMap.PixelFormat <> pf32bit then
-    exit;
+    Exit;
 
   for y := 0 to ABitMap.Height - 1 do
   begin
@@ -703,7 +703,7 @@ end;
 
 procedure DrawStyleDownArrow(HDC: HDC; LRect: TRect; AColor: TColor);
 var
-  SaveIndex, x, y, I: Integer;
+  SaveIndex, x, y: Integer;
   LColor: TColor;
   LCanvas: TCanvas;
 begin
@@ -718,7 +718,7 @@ begin
         Pen.Color := AColor;
         x := LRect.Right - 8;
         y := LRect.Top + (LRect.Height div 2) + 1;
-        for I := 3 downto 0 do
+        for var I := 3 downto 0 do
         begin
           MoveTo(x - I, y - I);
           LineTo(x + I + 1, y - I);
@@ -741,7 +741,7 @@ var
   LParentHandle: THandle;
 begin
   if (Handle = 0) or (ARect.Width <= 0) or (ARect.Height <= 0) then
-    exit;
+    Exit;
 
   LPoint := Point(ARect.Left, ARect.Top);
   LBuffer := TBitmap.Create;
@@ -768,7 +768,7 @@ var
   LParentHandle: THandle;
 begin
   if (Handle = 0) or (ARect.Width <= 0) or (ARect.Height <= 0) then
-    exit;
+    Exit;
   LPoint := Point(ARect.Left, ARect.Top);
   LBuffer := TBitmap.Create;
   try
@@ -911,14 +911,14 @@ begin
   end;
 end;
 
-function RoundIntToByte(I: Integer): byte;
+function RoundIntToByte(Int: Integer): byte;
 begin
-  if I > 255 then
+  if Int > 255 then
     Result := 255
-  else if I < 0 then
+  else if Int < 0 then
     Result := 0
   else
-    Result := I;
+    Result := Int;
 end;
 
 procedure _ProcessBitmap32(const Dest: TBitmap; Value: Integer; _Process: TImageFilterCallback); overload;
@@ -1187,11 +1187,11 @@ end;
 procedure _Hue(const AColor: TColor; Value: Integer; out NewColor: TColor);
 var
   ARGB: TColor;
-  H, S, L: Double;
+  H, Str, L: Double;
 begin
-  _RGBtoHSL(AColor, H, S, L);
+  _RGBtoHSL(AColor, H, Str, L);
   H := H + Value / 360;
-  ARGB := _HSLtoRGB(H, S, L);
+  ARGB := _HSLtoRGB(H, Str, L);
   NewColor := ARGB;
 end;
 

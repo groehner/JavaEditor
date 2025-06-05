@@ -5,10 +5,10 @@ interface
 type
 
   TNode = class
-    Status: integer;
+    Status: Integer;
     Command: string;
     Next: TNode;
-    constructor create;
+    constructor Create;
   end;
 
   TQueue = class
@@ -17,7 +17,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function ToString: string; override;
-    procedure Enter(status: integer; const command: string);
+    procedure Enter(Status: Integer; const Command: string);
     procedure Remove;
     function  Front: TNode;
     function  Empty: Boolean;
@@ -28,7 +28,7 @@ implementation
 
 uses SysUtils, UUtils;
 
-constructor TNode.create;
+constructor TNode.Create;
 begin
   Status:= 0;
   Command:= '';
@@ -43,26 +43,26 @@ end;
 
 function TQueue.ToString: string;
 begin
-  var s:= '';
+  var Str:= '';
   var Cursor:= First;
-  while Cursor <> nil do begin
-    s:= s + SysUtils.IntToStr(Cursor.Status) + '|' + Cursor.Command + '  ';
+  while Assigned(Cursor) do begin
+    Str:= Str + SysUtils.IntToStr(Cursor.Status) + '|' + Cursor.Command + '  ';
     Cursor:= Cursor.Next;
   end;
-  Result:= s;
+  Result:= Str;
 end;
 
-procedure TQueue.Enter(status: integer; const command: string);
+procedure TQueue.Enter(Status: Integer; const Command: string);
 begin
   var Node:= TNode.Create;
   if not Empty then
     Last.Next:= Node;
   Node.Status:= Status;
-  Node.Command:= command;
+  Node.Command:= Command;
   Node.Next:= nil;
   Last:= Node;
-  if First = nil then
-    First:= Last
+  if not Assigned(First) then
+    First:= Last;
 end;
 
 procedure TQueue.Remove;
@@ -73,7 +73,7 @@ begin
     var Node:= First;
     First := First.Next;
     FreeAndNil(Node);
-    if First = nil then Last:= nil;
+    if not Assigned(First) then Last:= nil;
   end;
 end;
 
@@ -87,18 +87,19 @@ end;
 
 function TQueue.Empty: Boolean;
 begin
-  Result:= (First = nil);
+  Result:= not Assigned(First);
 end;
 
 procedure TQueue.Clear;
 begin
-  while not empty do
-    remove;
+  while not Empty do
+    Remove;
 end;
 
 destructor TQueue.Destroy;
 begin
   Clear;
+  inherited;
 end;
 
 end.

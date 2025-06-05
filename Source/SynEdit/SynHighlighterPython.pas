@@ -129,13 +129,13 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -310,9 +310,9 @@ end;
 
 function TSynPythonSyn.IdentKind(MayBe: PWideChar): TtkTokenKind;
 var
-  i: Integer;
+  Int: Integer;
   temp: PWideChar;
-  s: string;
+  Str: string;
 begin
   // Extract the identifier out - it is assumed to terminate in a
   //   non-alphanumeric character
@@ -323,18 +323,18 @@ begin
   fStringLen := temp - fToIdent;
 
   // Check to see if it is a keyword
-  SetString(s, fToIdent, fStringLen);
-  if FKeywords.Find(s, i) then
+  SetString(Str, fToIdent, fStringLen);
+  if FKeywords.Find(Str, Int) then
   begin
     // TStringList is not case sensitive!
-    if s <> FKeywords[i] then
-      i := -1;
+    if Str <> FKeywords[Int] then
+      Int := -1;
   end
   else
-    i := -1;
+    Int := -1;
 
-  if i <> -1 then
-    Result := TtkTokenKind(FKeywords.Objects[i])
+  if Int <> -1 then
+    Result := TtkTokenKind(FKeywords.Objects[Int])
 
   // Check if it is a system identifier (__*__)
   else if (fStringLen >= 5) and
@@ -419,7 +419,7 @@ end;
 
 procedure TSynPythonSyn.SymbolProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
@@ -427,29 +427,29 @@ procedure TSynPythonSyn.CRProc;
 begin
   fTokenID := tkSpace;
   case FLine[Run + 1] of
-    #10: inc(Run, 2);
+    #10: Inc(Run, 2);
   else
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
 procedure TSynPythonSyn.CommentProc;
 begin
   fTokenID := tkComment;
-  inc(Run);
+  Inc(Run);
   while not IsLineEnd(Run) do
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynPythonSyn.GreaterProc;
 begin
   case FLine[Run + 1] of
     '=': begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
   else begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -458,28 +458,28 @@ end;
 procedure TSynPythonSyn.IdentProc;
 begin
   fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
+  Inc(Run, fStringLen);
 end;
 
 procedure TSynPythonSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynPythonSyn.LowerProc;
 begin
   case FLine[Run + 1] of
     '=': begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end;
     '>': begin
-        inc(Run, 2);
+        Inc(Run, 2);
         fTokenID := tkSymbol;
       end
   else begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
     end;
   end;
@@ -488,7 +488,7 @@ end;
 procedure TSynPythonSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynPythonSyn.NumberProc;
@@ -785,9 +785,9 @@ end;
 
 procedure TSynPythonSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynPythonSyn.String2Proc;
@@ -798,7 +798,7 @@ begin
   if (FLine[Run + 1] = '"') and (FLine[Run + 2] = '"') then
   begin
     fTokenID := tkTrippleQuotedString;
-    inc(Run, 3);
+    Inc(Run, 3);
 
     fRange := rsMultilineString2;
     while fLine[Run] <> #0 do
@@ -817,22 +817,22 @@ begin
                    while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
                      fBackslashCount := fBackslashCount + 1;
 
-                   if (fBackslashCount mod 2 = 1) then inc(Run)
+                   if (fBackslashCount mod 2 = 1) then Inc(Run)
                end;
-               inc(Run);
+               Inc(Run);
             end;// '\':
 
         '"':
           if (fLine[Run + 1] = '"') and (fLine[Run + 2] = '"') then begin
             fRange := rsUnKnown;
-            inc(Run, 3);
-            exit;
+            Inc(Run, 3);
+            Exit;
           end else
-            inc(Run);
-        #10: exit;
-        #13: exit;
+            Inc(Run);
+        #10: Exit;
+        #13: Exit;
         else
-          inc(Run);
+          Inc(Run);
       end;
     end;
   end
@@ -857,15 +857,15 @@ begin
                  while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
                    fBackslashCount := fBackslashCount + 1;
 
-                 if (fBackslashCount mod 2 = 1) then inc(Run)
+                 if (fBackslashCount mod 2 = 1) then Inc(Run)
              end;
-             inc(Run);
+             Inc(Run);
           end;// '\':
 
-      else inc(Run);
+      else Inc(Run);
     end; //case
   until (FLine[Run] = '"');
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynPythonSyn.PreStringProc;
@@ -913,7 +913,7 @@ begin
   fTokenID := tkString;
   if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then begin
     fTokenID := tkTrippleQuotedString;
-    inc(Run, 3);
+    Inc(Run, 3);
 
     fRange:=rsMultilineString;
     while fLine[Run] <> #0 do begin
@@ -931,22 +931,22 @@ begin
                   while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
                     fBackslashCount := fBackslashCount + 1;
 
-                  if (fBackslashCount mod 2 = 1) then inc(Run)
+                  if (fBackslashCount mod 2 = 1) then Inc(Run)
               end;
-              inc(Run);
+              Inc(Run);
             end;// '\':
 
         #39:
           if (fLine[Run + 1] = #39) and (fLine[Run + 2] = #39) then begin
             fRange := rsUnKnown;
-            inc(Run, 3);
+            Inc(Run, 3);
             EXIT;
           end else
-            inc(Run);
+            Inc(Run);
         #10: EXIT;
         #13: EXIT;
         else
-          inc(Run);
+          Inc(Run);
       end;
     end;
   end
@@ -970,15 +970,15 @@ begin
                  while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
                    fBackslashCount := fBackslashCount + 1;
 
-                 if (fBackslashCount mod 2 = 1) then inc(Run)
+                 if (fBackslashCount mod 2 = 1) then Inc(Run)
              end;
-             inc(Run);
+             Inc(Run);
           end;// '\':
 
-      else inc(Run);
+      else Inc(Run);
     end; //case
   until (FLine[Run] = #39);
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynPythonSyn.StringEndProc(EndChar: WideChar);
@@ -1011,7 +1011,7 @@ begin
   if fRange = rsMultilineString3 then begin
     repeat
       if FLine[Run]=fStringStarter then begin
-        inc(Run);
+        Inc(Run);
         fRange:=rsUnknown;
         EXIT;
       end else if FLine[Run]='\' then ;  {The same backslash stuff above...}
@@ -1023,11 +1023,11 @@ begin
                  while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
                    fBackslashCount := fBackslashCount + 1;
 
-                 if (fBackslashCount mod 2 = 1) then inc(Run);
+                 if (fBackslashCount mod 2 = 1) then Inc(Run);
              end;
            end;// if FLine[Run]...
 
-      inc(Run);
+      Inc(Run);
     until IsLineEnd(Run);
     if FLine[Run-1]<>'\' then begin
       fRange:=rsUnknown;
@@ -1044,21 +1044,21 @@ begin
            while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
              fBackslashCount := fBackslashCount + 1;
 
-           if (fBackslashCount mod 2 = 1) then inc(Run, 2);
+           if (fBackslashCount mod 2 = 1) then Inc(Run, 2);
        end;
      end;// if FLine[Run]...
     if (FLine[Run]=EndChar) and (FLine[Run+1]=EndChar) and (FLine[Run+2]=EndChar) then begin
-      inc(Run,3);
+      Inc(Run,3);
       fRange:=rsUnknown;
       EXIT;
     end;
-    inc(Run);
+    Inc(Run);
   until IsLineEnd(Run);
 end;
 
 procedure TSynPythonSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -1098,7 +1098,7 @@ begin
   inherited;
 end;
 
-function TSynPythonSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynPythonSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -1147,7 +1147,7 @@ begin
   end;
 end;
 
-function TSynPythonSyn.GetTokenKind: integer;
+function TSynPythonSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;
@@ -1171,15 +1171,15 @@ var
   LeftTrimmedLine : string;
   Line: Integer;
   Indent : Integer;
-  TabW : integer;
-  FoldType : integer;
+  TabW : Integer;
+  FoldType : Integer;
 const
   MultiLineStringFoldType = 2;
   ClassDefType = 3;
   FunctionDefType = 4;
 
 
-  function IsMultiLineString(Line : integer; Range : TRangeState; Fold : Boolean): Boolean;
+  function IsMultiLineString(Line : Integer; Range : TRangeState; Fold : Boolean): Boolean;
   begin
     Result := True;
     if TRangeState(GetLineRange(LinesToScan, Line)) = Range then
@@ -1199,12 +1199,12 @@ const
   function FoldRegion(Line: Integer): Boolean;
   begin
     Result := False;
-    if Uppercase(Copy(LeftTrimmedLine, 1, 7)) = '#REGION' then
+    if UpperCase(Copy(LeftTrimmedLine, 1, 7)) = '#REGION' then
     begin
       FoldRanges.StartFoldRange(Line + 1, FoldRegionType);
       Result := True;
     end
-    else if Uppercase(Copy(LeftTrimmedLine, 1, 10)) = '#ENDREGION' then
+    else if UpperCase(Copy(LeftTrimmedLine, 1, 10)) = '#ENDREGION' then
     begin
       FoldRanges.StopFoldRange(Line + 1, FoldRegionType);
       Result := True;
@@ -1213,19 +1213,19 @@ const
 
   function LeftSpaces: Integer;
   var
-    p: PWideChar;
+    Posi: PWideChar;
   begin
-    p := PWideChar(CurLine);
-    if Assigned(p) then
+    Posi := PWideChar(CurLine);
+    if Assigned(Posi) then
     begin
       Result := 0;
-      while (p^ >= #1) and (p^ <= #32) do
+      while (Posi^ >= #1) and (Posi^ <= #32) do
       begin
-        if (p^ = #9) then
+        if (Posi^ = #9) then
           Inc(Result, TabW)
         else
           Inc(Result);
-        Inc(p);
+        Inc(Posi);
       end;
     end
     else

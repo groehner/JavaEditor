@@ -378,13 +378,13 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -610,7 +610,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 798 + Ord(Str^) * 3;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 2439;
   fStringLen := Str - fToIdent;
@@ -631,11 +631,11 @@ end;
 
 procedure TSynDmlSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[435] := FuncAbs;
   fIdentFuncTable[41] := FuncAbsolute_position;
@@ -903,7 +903,7 @@ begin
   fIdentFuncTable[2350] := FuncYesno_block;
 end;
 
-function TSynDmlSyn.IsQuali: boolean;
+function TSynDmlSyn.IsQuali: Boolean;
 begin
   Result:= False;
   if Run > 0 then
@@ -3207,21 +3207,21 @@ begin
   // variables...
   fTokenID := tkVariable;
   repeat
-    inc(Run);
+    Inc(Run);
   until not IsAsciiChar;
 end;
 
 procedure TSynDmlSyn.SymbolProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
 procedure TSynDmlSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
-  if FLine[Run] = #10 then inc(Run);
+  Inc(Run);
+  if FLine[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynDmlSyn.GreaterProc;
@@ -3234,64 +3234,64 @@ end;
 procedure TSynDmlSyn.IdentProc;
 begin
   fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  Inc(Run, fStringLen);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
 end;
 
 procedure TSynDmlSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynDmlSyn.LowerProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
+  Inc(Run);
   if (fLine[Run]= '=') or (fLine[Run]= '>') then Inc(Run);
 end;
 
 procedure TSynDmlSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynDmlSyn.NumberProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while CharInSet(FLine[Run], ['0'..'9', '.']) do
   begin
     case FLine[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if FLine[Run + 1] = '.' then Break;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
 procedure TSynDmlSyn.PointProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if (fLine[Run]='.') or (fLine[Run]=')') then inc(Run);
+  Inc(Run);
+  if (fLine[Run]='.') or (fLine[Run]=')') then Inc(Run);
 end;
 
 procedure TSynDmlSyn.RemProc;
 var
-  p: PWideChar;
+  Posi: PWideChar;
 begin
-  p := PWideChar(@fLine[Run - 1]);
-  while p >= fLine do
+  Posi := PWideChar(@fLine[Run - 1]);
+  while Posi >= fLine do
   begin
-    if not CharInSet(p^, [#9, #32]) then
+    if not CharInSet(Posi^, [#9, #32]) then
     begin
-      inc(Run);
+      Inc(Run);
       fTokenID := tkSymbol;
-      exit;
+      Exit;
     end;
-    Dec(p);
+    Dec(Posi);
   end;
   // it is a comment...
   fTokenID := tkComment;
@@ -3303,23 +3303,23 @@ end;
 procedure TSynDmlSyn.SpaceProc;
 begin
   fTokenID := tkSpace;
-  while (fLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (fLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynDmlSyn.StringProc;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = '"') and (FLine[Run + 2] = '"') then inc(Run, 2);
+  if (FLine[Run + 1] = '"') and (FLine[Run + 2] = '"') then Inc(Run, 2);
   repeat
-    inc(Run);
+    Inc(Run);
   until (FLine[Run] = '"') or IsLineEnd(Run);
 
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynDmlSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -3352,7 +3352,7 @@ begin
   inherited;
 end;
 
-function TSynDmlSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynDmlSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -3397,7 +3397,7 @@ begin
   end;
 end;
 
-function TSynDmlSyn.GetTokenKind: integer;
+function TSynDmlSyn.GetTokenKind: Integer;
 begin
   Result := Ord(GetTokenID);
 end;

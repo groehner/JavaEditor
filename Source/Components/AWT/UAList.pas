@@ -3,31 +3,34 @@ unit UAList;
 interface
 
 uses
-  Classes, StdCtrls, UAComponents;
+  Classes,
+  StdCtrls,
+  UAComponents;
 
 type
 
-  TAList = class (TAWTComponent)
+  TAList = class(TAWTComponent)
   private
     FItems: TStrings;
-    FSelectedIndex: integer;
-    FMultipleMode: boolean; // non visible property
-    procedure setSelectedIndex(aIndex: integer);
-    procedure setItems(aItems: TStrings);
+    FSelectedIndex: Integer;
+    FMultipleMode: Boolean; // non visible property
+    procedure SetSelectedIndex(AIndex: Integer);
+    procedure SetItems(AItems: TStrings);
     procedure MakeList;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aListBox: TListBox);
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor CreateFrom(AListBox: TListBox);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     destructor Destroy; override;
     procedure Paint; override;
   published
-    property MultipleMode: boolean read FMultipleMode write FMultipleMode default false;
-    property SelectedIndex: integer read FSelectedIndex write setSelectedIndex;
-    property Items: TStrings read FItems write setItems;
+    property MultipleMode: Boolean read FMultipleMode write FMultipleMode
+      default False;
+    property SelectedIndex: Integer read FSelectedIndex write SetSelectedIndex;
+    property Items: TStrings read FItems write SetItems;
 
     property actionPerformed;
     property itemStateChanged;
@@ -35,38 +38,42 @@ type
 
 implementation
 
-uses SysUtils, Graphics, Controls;
+uses
+  SysUtils,
+  Graphics,
+  Controls;
 
-{--- TAList -------------------------------------------------------------------}
+{ --- TAList ------------------------------------------------------------------- }
 
 constructor TAList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= -8;
+  Tag := -8;
   Width := 120;
-  Height:= 80;
-  FItems:= TStringList.Create;
-  FItems.Text:= defaultItems;
-  FSelectedIndex:= -1;
-  JavaType:= 'List';
+  Height := 80;
+  FItems := TStringList.Create;
+  FItems.Text := defaultItems;
+  FSelectedIndex := -1;
+  JavaType := 'List';
 end;
 
-constructor TAList.CreateFrom(aListBox: TListBox);
+constructor TAList.CreateFrom(AListBox: TListBox);
 begin
-  Create(aListBox.Owner);
-  CreateFromA(aListBox);
-  Font:= aListBox.Font;
-  Background:= aListBox.Color;
-  Items.AddStrings(aListBox.Items);
-  FSelectedIndex:= -1;
+  Create(AListBox.Owner);
+  CreateFromA(AListBox);
+  Font := AListBox.Font;
+  Background := AListBox.Color;
+  Items.AddStrings(AListBox.Items);
+  FSelectedIndex := -1;
 end;
 
-function TAList.getAttributes(ShowAttributes: integer): string;
+function TAList.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|MultipleMode|SelectedIndex|Items' + inherited getAttributes(ShowAttributes);
+  Result := '|MultipleMode|SelectedIndex|Items' + inherited GetAttributes
+    (ShowAttributes);
 end;
 
-procedure TAList.setAttribute(Attr, Value, Typ: string);
+procedure TAList.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'Items' then
     MakeList
@@ -76,19 +83,22 @@ begin
     inherited;
 end;
 
-function TAList.getEvents(ShowEvents: integer): string;
+function TAList.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|actionPerformed|itemStateChanged' + inherited getEvents(ShowEvents);
+  Result := '|actionPerformed|itemStateChanged' + inherited GetEvents
+    (ShowEvents);
 end;
 
 procedure TAList.MakeList;
-  var i: integer; s: string;
+var
+  Str: string;
 begin
-  Partner.DeleteAttributeValues(Name + '.add(');
-  s:= '';
-  for i:= 0 to Items.Count - 1 do
-    s:= s + surroundFix(Indent1 + Name + '.add(' + asString(Items[i]) + ');');
-  Partner.InsertAttributValue(GetContainerAdd, s, 0);
+  FPartner.DeleteAttributeValues(Name + '.add(');
+  Str := '';
+  for var I := 0 to Items.Count - 1 do
+    Str := Str + surroundFix(Indent1 + Name + '.add(' +
+      AsString(Items[I]) + ');');
+  FPartner.InsertAttributValue(GetContainerAdd, Str, 0);
 end;
 
 procedure TAList.NewControl;
@@ -105,49 +115,56 @@ begin
 end;
 
 procedure TAList.Paint;
-  var y, th, i: integer; 
+var
+  YPos, TextH: Integer;
 begin
   CanvasFontAssign;
-  Canvas.Font.Color:= Foreground;
-  Canvas.Brush.Style:= bsClear;
-  Canvas.Pen.Color:= AWTDarkGray;
-  Canvas.Brush.Color:= Background;
+  Canvas.Font.Color := Foreground;
+  Canvas.Brush.Style := bsClear;
+  Canvas.Pen.Color := AWTDarkGray;
+  Canvas.Brush.Color := Background;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
 
-  y:= 2;
-  th:= Canvas.TextHeight('Hg');
-  for i:= 0 to FItems.Count - 1 do begin
-    if i = FSelectedIndex then begin
-      Canvas.Brush.Color:= AWTSelectionColor;
-      Canvas.Pen.Color:= AWTSelectionColor;
-      Canvas.Font.Color:= clWhite;
-      Canvas.Rectangle(Rect(0, y, Width, y + th + 0));
-      Canvas.TextOut(3, y + 0, FItems.Strings[i]);
-      Canvas.Brush.Color:= Background;
-      Canvas.Pen.Color:= Background;
-      Canvas.Font.Color:= Foreground;
-    end else
-      Canvas.TextOut(3, y + 0, FItems.Strings[i]);
-    inc(y, th);
-    if y + th > Height then begin
-      ScrollBar(Rect(Width-17, 1, Width-1, Height-1), false, false);
-      break;
+  YPos := 2;
+  TextH := Canvas.TextHeight('Hg');
+  for var I := 0 to FItems.Count - 1 do
+  begin
+    if I = FSelectedIndex then
+    begin
+      Canvas.Brush.Color := AWTSelectionColor;
+      Canvas.Pen.Color := AWTSelectionColor;
+      Canvas.Font.Color := clWhite;
+      Canvas.Rectangle(Rect(0, YPos, Width, YPos + TextH + 0));
+      Canvas.TextOut(3, YPos + 0, FItems[I]);
+      Canvas.Brush.Color := Background;
+      Canvas.Pen.Color := Background;
+      Canvas.Font.Color := Foreground;
+    end
+    else
+      Canvas.TextOut(3, YPos + 0, FItems[I]);
+    Inc(YPos, TextH);
+    if YPos + TextH > Height then
+    begin
+      Scrollbar(Rect(Width - 17, 1, Width - 1, Height - 1), False, False);
+      Break;
     end;
   end;
 end;
 
-procedure TAList.setItems(aItems: TStrings);
+procedure TAList.SetItems(AItems: TStrings);
 begin
-  if aItems.Text <> FItems.Text then begin
-    FItems.Assign(aItems);
+  if AItems.Text <> FItems.Text then
+  begin
+    FItems.Assign(AItems);
     Invalidate;
   end;
 end;
 
-procedure TAList.setSelectedIndex(aIndex: integer);
+procedure TAList.SetSelectedIndex(AIndex: Integer);
 begin
-  if aIndex <> FSelectedIndex then begin
-    FSelectedIndex:= aIndex;
+  if AIndex <> FSelectedIndex then
+  begin
+    FSelectedIndex := AIndex;
     Invalidate;
   end;
 end;

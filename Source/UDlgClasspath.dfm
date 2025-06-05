@@ -57,7 +57,7 @@ object FClasspath: TFClasspath
     Top = 8
     Width = 537
     Height = 177
-    ItemHeight = 13
+    ItemHeight = 17
     TabOrder = 4
     OnClick = CLBPfadeClick
   end

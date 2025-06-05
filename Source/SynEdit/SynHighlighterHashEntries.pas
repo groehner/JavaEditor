@@ -64,11 +64,11 @@ type
     { Points to the next keyword entry with the same hashvalue. }
     fNext: TSynHashEntry;
     { Length of the keyword. }
-    fKeyLen: integer;
+    fKeyLen: Integer;
     { The keyword itself. }
     fKeyword: string;
     { Keyword token kind, has to be typecasted to the real token kind type. }
-    fKind: integer;
+    fKind: Integer;
   public
     { Adds a keyword entry with the same hashvalue. Depending on the length of
       the two keywords it might return Self and store NewEntry in the Next
@@ -76,16 +76,16 @@ type
       to Self. This way the order of keyword length is preserved. }
     function AddEntry(NewEntry: TSynHashEntry): TSynHashEntry; virtual;
     { Creates a keyword entry for the given keyword and token kind. }
-    constructor Create(const AKey: string; AKind: integer);
+    constructor Create(const AKey: string; AKind: Integer);
     { Destroys the keyword entry and all other keyword entries Next points to. }
     destructor Destroy; override;
   public
     { The keyword itself. }
     property Keyword: string read fKeyword;
     { Length of the keyword. }
-    property KeywordLen: integer read fKeyLen;
+    property KeywordLen: Integer read fKeyLen;
     { Keyword token kind, has to be typecasted to the real token kind type. }
-    property Kind: integer read fKind;
+    property Kind: Integer read fKind;
     { Points to the next keyword entry with the same hashvalue. }
     property Next: TSynHashEntry read fNext;
   end;
@@ -105,18 +105,18 @@ type
     procedure Clear; override;
   public
     { Type-safe access to the first keyword entry for a hashvalue. }
-    property Items[Index: integer]: TSynHashEntry read Get write Put; default;
+    property Items[Index: Integer]: TSynHashEntry read Get write Put; default;
   end;
 
   { Procedural type for adding keyword entries to a TSynHashEntryList when
     iterating over all the keywords contained in a string. }
-  TEnumerateKeywordEvent = procedure(AKeyword: string; AKind: integer)
+  TEnumerateKeywordEvent = procedure(AKeyword: string; AKind: Integer)
     of object;
 
 { This procedure will call AKeywordProc for all keywords in KeywordList. A
   keyword is considered any number of successive chars that are contained in
   Identifiers, with chars not contained in Identifiers before and after them. }
-procedure EnumerateKeywords(AKind: integer; KeywordList: string;
+procedure EnumerateKeywords(AKind: Integer; KeywordList: string;
   IsIdentChar: TCategoryMethod; AKeywordProc: TEnumerateKeywordEvent);
 
 implementation
@@ -124,7 +124,7 @@ implementation
 uses
   SysUtils;
 
-procedure EnumerateKeywords(AKind: integer; KeywordList: string;
+procedure EnumerateKeywords(AKind: Integer; KeywordList: string;
   IsIdentChar: TCategoryMethod; AKeywordProc: TEnumerateKeywordEvent);
 var
   pStart, pEnd: PWideChar;
@@ -138,7 +138,7 @@ begin
       // skip over chars that are not in Identifiers
       while (pStart^ <> #0) and not IsIdentChar(pStart^) do
         Inc(pStart);
-      if pStart^ = #0 then break;
+      if pStart^ = #0 then Break;
       // find the last char that is in Identifiers
       pEnd := pStart + 1;
       while (pEnd^ <> #0) and IsIdentChar(pEnd^) do
@@ -155,7 +155,7 @@ end;
 
 { TSynHashEntry }
 
-constructor TSynHashEntry.Create(const AKey: string; AKind: integer);
+constructor TSynHashEntry.Create(const AKey: string; AKind: Integer);
 begin
   inherited Create;
   fKeyLen := Length(AKey);
@@ -191,10 +191,10 @@ end;
 
 procedure TSynHashEntryList.Clear ;
 var
-  i: integer;
+  Int: Integer;
 begin
-  for i := 0 to Count - 1 do
-    TSynHashEntry(Items[i]).Free;
+  for Int := 0 to Count - 1 do
+    TSynHashEntry(Items[Int]).Free;
   inherited Clear;
 end;
 

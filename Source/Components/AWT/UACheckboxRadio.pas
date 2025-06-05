@@ -2,7 +2,7 @@ unit UACheckboxRadio;
 
 { Classes
   TACheckBox = class (TAWTComponent)
-    TARadioButton
+  TARadioButton
   TACheckboxGroup = class (TAWTComponent)   deprecated
   TA2ButtonGroup = class(TAWTComponent)
 }
@@ -10,66 +10,68 @@ unit UACheckboxRadio;
 interface
 
 uses
-  Classes, StdCtrls, UAComponents;
+  Classes,
+  StdCtrls,
+  UAComponents;
 
 type
 
-  TACheckBox = class (TAWTComponent)
+  TACheckBox = class(TAWTComponent)
   private
     FText: string;
     FState: Boolean;
-    procedure setState(aValue: boolean);
-    procedure setText(const aValue: string);
+    procedure SetState(AValue: Boolean);
+    procedure SetText(const AValue: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aCheckbox: TCheckbox);
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor CreateFrom(ACheckBox: TCheckBox);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure Paint; override;
   published
-    property State: boolean read FState write setState;
-    property Text: string read FText write setText;
+    property State: Boolean read FState write SetState;
+    property Text: string read FText write SetText;
     property itemStateChanged;
   end;
 
   // deprecated
-  TARadioButton = class (TACheckBox)
+  TARadioButton = class(TACheckBox)
   private
     FCheckboxGroup: string;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aRadioButton: TRadioButton); overload;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    constructor CreateFrom(ARadioButton: TRadioButton); overload;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
   published
     property CheckboxGroup: string read FCheckboxGroup write FCheckboxGroup;
   end;
 
-  //deprecated
-  TACheckboxGroup = class (TAWTComponent)
+  // deprecated
+  TACheckboxGroup = class(TAWTComponent)
   public
-    constructor Create (AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor Create(AOwner: TComponent); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure DeleteComponent; override;
     procedure Paint; override;
   end;
 
-  TA2ButtonGroup = class (TAWTComponent)
+  TA2ButtonGroup = class(TAWTComponent)
   private
-    FCheckboxes: boolean;
-    FColumns: integer;
+    FCheckboxes: Boolean;
+    FColumns: Integer;
     FItems: TStrings;
     FOldItems: TStrings;
-    procedure setItems(Value: TStrings);
-    procedure setColumns(Value: integer);
-    procedure setCheckboxes(Value: boolean);
+    procedure SetItems(Value: TStrings);
+    procedure SetColumns(Value: Integer);
+    procedure SetCheckboxes(Value: Boolean);
     procedure MakeButtongroupItems;
-    function ItemsInColumn(i: integer): integer;
-    function RBName(i: integer): string;
+    function ItemsInColumn(Int: Integer): Integer;
+    function RBName(Int: Integer): string;
     procedure DeleteComponentAttributes;
     procedure DeleteComponentValues;
     procedure MakeSelectedLabelMethod;
@@ -78,165 +80,194 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DeleteComponent; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
-    procedure DeleteListener(const event: string); override;
-    procedure AddListener(const event: string); override;
-    function MakeEventProcedure(const Event: string ): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
+    procedure DeleteListener(const Event: string); override;
+    procedure AddListener(const Event: string); override;
+    function MakeEventProcedure(const Event: string): string; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure NewControl; override;
     procedure Paint; override;
     procedure SetPositionAndSize; override;
   published
-    property Items: TStrings read fItems write setItems; // must stay before columns or label
-    property Columns: integer read FColumns write setColumns;
-    property Checkboxes: boolean read FCheckboxes write setCheckboxes;
+    property Items: TStrings read FItems write SetItems;
+    // must stay before columns or label
+    property Columns: Integer read FColumns write SetColumns;
+    property Checkboxes: Boolean read FCheckboxes write SetCheckboxes;
     property itemStateChanged;
   end;
 
 implementation
 
-uses Windows, SysUtils, Graphics, Controls, UITypes, JvGnugettext,
-     UStringRessources, UConfiguration, UJava, UGUIDesigner;
+uses
+  Windows,
+  SysUtils,
+  Graphics,
+  Controls,
+  UITypes,
+  JvGnugettext,
+  UStringRessources,
+  UConfiguration,
+  UJava,
+  UGUIDesigner;
 
-{--- TACheckBox ---------------------------------------------------------------}
+{ --- TACheckBox --------------------------------------------------------------- }
 
 constructor TACheckBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= -5;
-  Height:= 24;
-  Width:= 80;
+  Tag := -5;
+  Height := 24;
+  Width := 80;
   FState := False;
-  Background:= clBtnFace;
-  Text:= 'Checkbox';
-  JavaType:= 'Checkbox';
+  Background := clBtnFace;
+  Text := 'Checkbox';
+  JavaType := 'Checkbox';
 end;
 
-constructor TACheckBox.CreateFrom(aCheckbox: TCheckbox);
+constructor TACheckBox.CreateFrom(ACheckBox: TCheckBox);
 begin
-  Create(aCheckbox.Owner);
-  CreateFromA(aCheckBox);
-  Text:= aCheckbox.Caption; // Label
-  Font:= aCheckbox.Font;
-  Foreground:= Font.Color;
-  Background:= aCheckbox.Color;
-  if Background = clBtnFace then Background:= clWhite;
-  State:= aCheckbox.Checked;
+  Create(ACheckBox.Owner);
+  CreateFromA(ACheckBox);
+  Text := ACheckBox.Caption; // Label
+  Font := ACheckBox.Font;
+  Foreground := Font.Color;
+  Background := ACheckBox.Color;
+  if Background = clBtnFace then
+    Background := clWhite;
+  State := ACheckBox.Checked;
 end;
 
-function TACheckBox.getAttributes(ShowAttributes: integer): string;
+function TACheckBox.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Text|State' + inherited getAttributes(ShowAttributes);
+  Result := '|Text|State' + inherited GetAttributes(ShowAttributes);
 end;
 
-procedure TACheckBox.setAttribute(Attr, Value, Typ: string);
+procedure TACheckBox.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'Text' then
-    inherited setAttribute('Label', Value, Typ)
+    inherited SetAttribute('Label', Value, Typ)
   else
     inherited;
 end;
 
-function TACheckBox.getEvents(ShowEvents: integer): string;
+function TACheckBox.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|itemStateChanged' + inherited getEvents(ShowEvents);
+  Result := '|itemStateChanged' + inherited GetEvents(ShowEvents);
 end;
 
 procedure TACheckBox.NewControl;
 begin
-  FText:= 'Checkbox';
+  FText := 'Checkbox';
   DefaultComponent;
   InsertNewVariable('private Checkbox ' + Name + ' = new Checkbox();');
-  MakeAttribut('Label', asString(Text));
+  MakeAttribut('Label', AsString(Text));
 end;
 
 procedure TACheckBox.Paint;
-  const BoxW = 13; // Width of rectangular checkbox
-        BoxH = 15;
+const
+  BoxW = 13; // Width of rectangular checkbox
+  BoxH = 15;
 
-  var th, x, y: Integer;
+var
+  TextH, XPos, YPos: Integer;
 
-   function TagToPicNr: integer;
-   begin
-     case Tag of
-       -5: Result:= 0;
-       +5: Result:= 2;
-       -6: Result:= 4;
-       +6: Result:= 6;
-     else  Result:= 0;
-     end;
-     if FState then inc(Result);
-   end;
+  function TagToPicNr: Integer;
+  begin
+    case Tag of
+      - 5:
+        Result := 0;
+      +5:
+        Result := 2;
+      -6:
+        Result := 4;
+      +6:
+        Result := 6;
+    else
+      Result := 0;
+    end;
+    if FState then
+      Inc(Result);
+  end;
 
 begin
   CanvasFontAssign;
-  Canvas.Font.Color:= Foreground;
-  th:= Canvas.TextHeight('Q');
+  Canvas.Font.Color := Foreground;
+  TextH := Canvas.TextHeight('Q');
 
   // write the text
-  Canvas.Pen.Color:= Font.Color;
-  if Background = ColorNone
-    then Canvas.Brush.Color:= (Parent as TWinControl).Brush.Color
-    else Canvas.Brush.Color:= Background;
+  Canvas.Pen.Color := Font.Color;
+  if Background = ColorNone then
+    Canvas.Brush.Color := Parent.Brush.Color
+  else
+    Canvas.Brush.Color := Background;
   Canvas.FillRect(Self.GetClientRect);
-  if Tag > 0 then x:= BoxW + 8 else x:= BoxW + 4;
-  x:= PPIScale(x);
-  y:= (Height - th) div 2;
-  Canvas.TextOut(x, y, FText);
+  if Tag > 0 then
+    XPos := BoxW + 8
+  else
+    XPos := BoxW + 4;
+  XPos := PPIScale(XPos);
+  YPos := (Height - TextH) div 2;
+  Canvas.TextOut(XPos, YPos, FText);
 
   // paint the picture
-  if Tag > 0 then x:= PPIScale(4) else x:= 0;
-  y:= (Height - PPIScale(BoxH)) div 2;
-  FGUIDesigner.vilControls1315.Draw(Canvas, x, y, TagToPicNr);
+  if Tag > 0 then
+    XPos := PPIScale(4)
+  else
+    XPos := 0;
+  YPos := (Height - PPIScale(BoxH)) div 2;
+  FGUIDesigner.vilControls1315.Draw(Canvas, XPos, YPos, TagToPicNr);
 end;
 
-procedure TACheckBox.setState(aValue: Boolean);
+procedure TACheckBox.SetState(AValue: Boolean);
 begin
-  if FState <> aValue then begin
-    FState := aValue;
+  if FState <> AValue then
+  begin
+    FState := AValue;
     Invalidate;
   end;
 end;
 
-procedure TACheckBox.setText(const aValue: string);
+procedure TACheckBox.SetText(const AValue: string);
 begin
-  if FText <> aValue then begin
-    FText:= aValue;
+  if FText <> AValue then
+  begin
+    FText := AValue;
     Invalidate;
   end;
 end;
 
-{--- TARadioButton ------------------------------------------------------------}
+{ --- TARadioButton ------------------------------------------------------------ }
 
 constructor TARadioButton.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= -6;
-  Width:= 80;
-  JavaType:= 'Checkbox';
+  inherited Create(AOwner);
+  Tag := -6;
+  Width := 80;
+  JavaType := 'Checkbox';
 end;
 
-constructor TARadioButton.CreateFrom(aRadioButton: TRadioButton);
+constructor TARadioButton.CreateFrom(ARadioButton: TRadioButton);
 begin
-  Create(aRadioButton.Owner);
-  CreateFromA(aRadioButton);
-  Text:= aRadioButton.Caption;
-  Font:= aRadioButton.Font;
-  Foreground:= Font.Color;
-  Background:= aRadioButton.Color;
-  if Background = clBtnFace then Background:= clWhite;
-  CheckboxGroup:= aRadioButton.HelpKeyWord;
-  State:= aRadioButton.Checked;
+  Create(ARadioButton.Owner);
+  CreateFromA(ARadioButton);
+  Text := ARadioButton.Caption;
+  Font := ARadioButton.Font;
+  Foreground := Font.Color;
+  Background := ARadioButton.Color;
+  if Background = clBtnFace then
+    Background := clWhite;
+  CheckboxGroup := ARadioButton.HelpKeyword;
+  State := ARadioButton.Checked;
 end;
 
-function TARadioButton.getAttributes(ShowAttributes: integer): string;
+function TARadioButton.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|CheckboxGroup' + inherited getAttributes(ShowAttributes);
+  Result := '|CheckboxGroup' + inherited GetAttributes(ShowAttributes);
 end;
 
-procedure TARadioButton.setAttribute(Attr, Value, Typ: string);
+procedure TARadioButton.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'CheckboxGroup' then
     MakeAttribut(Attr, Value)
@@ -244,39 +275,39 @@ begin
     inherited;
 end;
 
-{--- CheckboxGroup ------------------------------------------------------------}
+{ --- CheckboxGroup ------------------------------------------------------------ }
 
 constructor TACheckboxGroup.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= -7;
-  Height:= 28;
-  Width:= 32;
-  Sizeable:= false;
-  JavaType:= 'CheckboxGroup';
+  inherited Create(AOwner);
+  Tag := -7;
+  Height := 28;
+  Width := 32;
+  Sizeable := False;
+  JavaType := 'CheckboxGroup';
 end;
 
-function TACheckboxGroup.getAttributes(ShowAttributes: integer): string;
+function TACheckboxGroup.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Name';
+  Result := '|Name';
 end;
 
-function TACheckboxGroup.getEvents(ShowEvents: integer): string;
+function TACheckboxGroup.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '';
+  Result := '';
 end;
 
 procedure TACheckboxGroup.Rename(const OldName, NewName, Events: string);
 begin
   inherited;
-  Partner.ReplaceWord(OldName + '_getSelectedButtonGroupLabel',
-                      NewName + '_getSelectedButtonGroupLabel', false);
+  FPartner.ReplaceWord(OldName + '_getSelectedButtonGroupLabel',
+    NewName + '_getSelectedButtonGroupLabel', False);
 end;
 
 procedure TACheckboxGroup.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteMethod(Name + '_getSelectedRadioButtonLabel', false);
+  FPartner.DeleteMethod(Name + '_getSelectedRadioButtonLabel', False);
 end;
 
 procedure TACheckboxGroup.Paint;
@@ -285,21 +316,22 @@ begin
   FJava.vilAWTLight.Draw(Canvas, 6, 4, 7);
 end;
 
-{--- TA2ButtonGroup -----------------------------------------------------------}
+{ --- TA2ButtonGroup ----------------------------------------------------------- }
 
 constructor TA2ButtonGroup.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= -50;
-  Width:= 120;
-  Height:= 80;
-  FColumns:= 1;
-  FItems:= TStringList.Create;
-  FItems.Text:= _('America') + ', ' + _('selected') + #13#10 + _('Europe') + #13#10 + _('Asia');
-  FOldItems:= TStringList.Create;
-  FCheckboxes:= false;
-  ItemStateChanged:= '';
-  JavaType:= 'ButtonGroup';
+  inherited Create(AOwner);
+  Tag := -50;
+  Width := 120;
+  Height := 80;
+  FColumns := 1;
+  FItems := TStringList.Create;
+  FItems.Text := _('America') + ', ' + _('selected') + #13#10 + _('Europe') +
+    #13#10 + _('Asia');
+  FOldItems := TStringList.Create;
+  FCheckboxes := False;
+  itemStateChanged := '';
+  JavaType := 'ButtonGroup';
 end;
 
 destructor TA2ButtonGroup.Destroy;
@@ -314,312 +346,361 @@ begin
   inherited;
   DeleteComponentAttributes;
   DeleteComponentValues;
-  Partner.DeleteAttribute('private Panel ' + Name);
-  Partner.DeleteAttributeValue(Name + '.setLayout');
-  Partner.DeleteAttributeValue(GetContainer + '.add(' + Name + ')');
+  FPartner.DeleteAttribute('private Panel ' + Name);
+  FPartner.DeleteAttributeValue(Name + '.setLayout');
+  FPartner.DeleteAttributeValue(GetContainer + '.add(' + Name + ')');
   DeleteSelectedLabelMethod;
 end;
 
 procedure TA2ButtonGroup.DeleteComponentAttributes;
 begin
-  Partner.DeleteAttribute(Name + 'BG');
-  for var i:= 0 to FOldItems.Count - 1 do
-    Partner.DeleteAttribute(RBName(i));
+  FPartner.DeleteAttribute(Name + 'BG');
+  for var I := 0 to FOldItems.Count - 1 do
+    FPartner.DeleteAttribute(RBName(I));
 end;
 
 procedure TA2ButtonGroup.DeleteComponentValues;
 begin
-  for var i:= 0 to FOldItems.Count - 1 do
-    Partner.DeleteAttributeValues(RBName(i));
-  Partner.DeleteAttributeValues(Name + '.setBorder');
+  for var I := 0 to FOldItems.Count - 1 do
+    FPartner.DeleteAttributeValues(RBName(I));
+  FPartner.DeleteAttributeValues(Name + '.setBorder');
 end;
 
-function TA2ButtonGroup.getAttributes(ShowAttributes: integer): string;
+function TA2ButtonGroup.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Columns|Items|Checkboxes|Font';
-  Result:= Result + inherited getAttributes(ShowAttributes);
+  Result := '|Columns|Items|Checkboxes|Font';
+  Result := Result + inherited GetAttributes(ShowAttributes);
 end;
 
-procedure TA2ButtonGroup.setAttribute(Attr, Value, Typ: string);
+procedure TA2ButtonGroup.SetAttribute(Attr, Value, Typ: string);
 begin
   if (Attr = 'Items') or (Attr = 'Checkboxes') then
-    MakeButtonGroupItems
+    MakeButtongroupItems
   else if (Attr = 'Columns') or isFontAttribute(Attr) then
-    setPositionAndSize
+    SetPositionAndSize
   else
     inherited;
 end;
 
-function TA2ButtonGroup.getEvents(ShowEvents: integer): string;
+function TA2ButtonGroup.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|itemStateChanged|';
+  Result := '|itemStateChanged|';
 end;
 
-procedure TA2ButtonGroup.DeleteListener(const event: string);
-  var EventMethodName, Listener: string;
+procedure TA2ButtonGroup.DeleteListener(const Event: string);
+var
+  EventMethodName, Listener: string;
 begin
-  EventMethodName:= MakeEventProcedureName(Event);
-  Partner.DeleteMethod(EventMethodName);
-  for var i:= 0 to FItems.Count - 1 do begin
-    Listener:= RBName(i) + '.addItemListener((event) -> {' + EventMethodName + '(event);});';
-    Partner.DeleteLambdaListener(Listener);
+  EventMethodName := MakeEventProcedureName(Event);
+  FPartner.DeleteMethod(EventMethodName);
+  for var I := 0 to FItems.Count - 1 do
+  begin
+    Listener := RBName(I) + '.addItemListener((event) -> {' + EventMethodName
+      + '(event);});';
+    FPartner.DeleteLambdaListener(Listener);
   end;
 end;
 
-procedure TA2ButtonGroup.AddListener(const event: string);
-  var EventMethodName, Listener: string; i: integer;
+procedure TA2ButtonGroup.AddListener(const Event: string);
+var
+  EventMethodName, Listener: string;
 begin
-  EventMethodName:= MakeEventProcedureName(Event);
-  for i:= 0 to FItems.Count - 1 do begin
-    Listener:= Indent2 + RBName(i) + '.addItemListener((event) -> {' + EventMethodName + '(event);});';
-    Partner.InsertListener(RBName(i) + '.setBounds', Listener);
+  EventMethodName := MakeEventProcedureName(Event);
+  for var I := 0 to FItems.Count - 1 do
+  begin
+    Listener := Indent2 + RBName(I) + '.addItemListener((event) -> {' +
+      EventMethodName + '(event);});';
+    FPartner.InsertListener(RBName(I) + '.setBounds', Listener);
   end;
-  if not Partner.hasText('public void ' + EventMethodName) then
-    Partner.InsertProcedure(0, MakeEventProcedure(Event));
+  if not FPartner.HasText('public void ' + EventMethodName) then
+    FPartner.InsertProcedure(0, MakeEventProcedure(Event));
 end;
 
 function TA2ButtonGroup.MakeEventProcedure(const Event: string): string;
 begin
-  Result:= Indent1 + 'public void ' + Name + '_ItemStateChanged(ItemEvent evt) {' + CrLf +
-           Indent2 + _(LNGToDo) + CrLf +
-           Indent2 + 'System.out.println(evt.getItem());' + CrLf +
-           Indent1 + '}';
+  Result := Indent1 + 'public void ' + Name +
+    '_ItemStateChanged(ItemEvent evt) {' + CrLf + Indent2 + _(LNGTODO) + CrLf +
+    Indent2 + 'System.out.println(evt.getItem());' + CrLf + Indent1 + '}';
   if FConfiguration.CommentClosingBrackets then
-    Result:= Result + ' // end of ' + Name + '_ItemStateChanged';
-  Result:= Result + CrLf + CrLf;
+    Result := Result + ' // end of ' + Name + '_ItemStateChanged';
+  Result := Result + CrLf + CrLf;
 end;
 
-function TA2ButtonGroup.RBName(i: integer): string;
+function TA2ButtonGroup.RBName(Int: Integer): string;
 begin
-  Result:= Name + 'RB' + IntToStr(i);
+  Result := Name + 'RB' + IntToStr(Int);
 end;
 
 procedure TA2ButtonGroup.MakeButtongroupItems;
-  var i, p: integer; s, s1: string;
+var
+  Posi: Integer;
+  Str, Str1: string;
 begin
-  Partner.Editor.BeginUpdate;
+  FPartner.Editor.BeginUpdate;
   DeleteComponentAttributes;
   DeleteSelectedLabelMethod;
-  s1:= '';
-  if not FCheckboxes then begin
-    s1:= s1 + surroundIndent('  private CheckboxGroup ' + Name +
-         'BG = new CheckboxGroup();');
+  Str1 := '';
+  if not FCheckboxes then
+  begin
+    Str1 := Str1 + surroundIndent('  private CheckboxGroup ' + Name +
+      'BG = new CheckboxGroup();');
     MakeSelectedLabelMethod;
   end;
-  for i:= 0 to FItems.Count - 1 do begin
-    s:= FItems[i];
-    p:= Pos(', ' + _('selected'), s);
-    if p > 0
-      then s:= asString(copy(s, 1, p-1))
-      else s:= asString(s);
-    s1:= s1 + surroundIndent('  private Checkbox ' + RBName(i) +
-         ' = new Checkbox(' + s + ');');
+  for var I := 0 to FItems.Count - 1 do
+  begin
+    Str := FItems[I];
+    Posi := Pos(', ' + _('selected'), Str);
+    if Posi > 0 then
+      Str := AsString(Copy(Str, 1, Posi - 1))
+    else
+      Str := AsString(Str);
+    Str1 := Str1 + surroundIndent('  private Checkbox ' + RBName(I) +
+      ' = new Checkbox(' + Str + ');');
   end;
-  Partner.InsertAttribute(GetContainer, s1, false);
-  setPositionAndSize;
-  FOldItems.Text:= FItems.Text;
-  Partner.Editor.EndUpdate;
+  FPartner.InsertAttribute(GetContainer, Str1, False);
+  SetPositionAndSize;
+  FOldItems.Text := FItems.Text;
+  FPartner.Editor.EndUpdate;
 end;
 
-procedure TA2ButtonGroup.setPositionAndSize;
-  const circle = 18;
-  var col, row, ItemsInCol, line, x, y, dx, dy: integer;
-      RadioHeight, RadioWidth, ColWidth, RowHeight, ColWidthRest, RowHeightRest: integer;
-      xold, yold,ColWidthI, RowHeightI: integer;
-      s, nam: string;
+procedure TA2ButtonGroup.SetPositionAndSize;
+const
+  Circle = 18;
+var
+  Col, Row, ItemsInCol, Line, XPos, YPos, DeltaX, DeltaY: Integer;
+  RadioHeight, RadioWidth, ColWidth, RowHeight, ColWidthRest,
+    RowHeightRest: Integer;
+  XOld, YOld, ColWidthI, RowHeightI: Integer;
+  Str, Nam: string;
 begin
-  Partner.Editor.BeginUpdate;
+  FPartner.Editor.BeginUpdate;
   inherited;
   CanvasFontAssign;
   DeleteComponentValues;
-  s:= '';
-  dx:= Canvas.TextWidth('x');
-  RadioWidth:= Width - 2*dx;
-  RadioHeight:= Height - 2*dx;
-  dy:= dx;
+  Str := '';
+  DeltaX := Canvas.TextWidth('XPos');
+  RadioWidth := Width - 2 * DeltaX;
+  RadioHeight := Height - 2 * DeltaX;
+  DeltaY := DeltaX;
 
-  if FItems.Count > 0 then begin
-    ColWidth:= RadioWidth div FColumns;
-    RowHeight:= RadioHeight div ItemsInColumn(1);
-    line:= 0;
-    xold:= 0;
-    ColWidthRest:= RadioWidth mod FColumns;
-    for col:= 0 to FColumns - 1 do begin
-      if ColWidthRest > 0
-        then ColWidthI:= ColWidth + 1
-        else ColWidthI:= ColWidth;
-      if col = 0
-        then x:= dx
-        else x:= xold + ColWidthI;
-      dec(ColWidthRest);
+  if FItems.Count > 0 then
+  begin
+    ColWidth := RadioWidth div FColumns;
+    RowHeight := RadioHeight div ItemsInColumn(1);
+    Line := 0;
+    XOld := 0;
+    ColWidthRest := RadioWidth mod FColumns;
+    for Col := 0 to FColumns - 1 do
+    begin
+      if ColWidthRest > 0 then
+        ColWidthI := ColWidth + 1
+      else
+        ColWidthI := ColWidth;
+      if Col = 0 then
+        XPos := DeltaX
+      else
+        XPos := XOld + ColWidthI;
+      Dec(ColWidthRest);
 
-      yold:= 0;
-      ItemsInCol:= ItemsInColumn(col+1);
-      RowHeightRest:= RadioHeight mod ItemsInColumn(1);
-      for row:= 0 to ItemsInCol - 1 do begin
-        if RowHeightRest > 0
-          then RowHeightI:= RowHeight + 1
-          else RowHeightI:= RowHeight;
-        if row = 0
-          then y:= dy
-          else y:= yold + RowHeightI;
-        dec(RowHeightRest);
-        nam:= RBName(line);
-        s:= s + surroundFix('  ' + nam + '.setBounds' + '(' + IntToStr(PPIUnScale(x)) + ', ' +
-                  IntToStr(PPIUnScale(y)) + ', ' + IntToStr(PPIUnScale(ColWidthI)) + ', ' + IntToStr(PPIUnScale(RowHeightI)) + ');');
-        if Pos(', ' + _('selected'), FItems[line]) > 0 then
-          s:= s + surroundFix('  ' + nam + '.setState(true);');
-        if ItemStateChanged <> '' then
-          s:= s + surroundFix('  ' + nam + '.addItemListener((event) -> {' + Name + '_ItemStateChanged(event);});');
+      YOld := 0;
+      ItemsInCol := ItemsInColumn(Col + 1);
+      RowHeightRest := RadioHeight mod ItemsInColumn(1);
+      for Row := 0 to ItemsInCol - 1 do
+      begin
+        if RowHeightRest > 0 then
+          RowHeightI := RowHeight + 1
+        else
+          RowHeightI := RowHeight;
+        if Row = 0 then
+          YPos := DeltaY
+        else
+          YPos := YOld + RowHeightI;
+        Dec(RowHeightRest);
+        Nam := RBName(Line);
+        Str := Str + surroundFix('  ' + Nam + '.setBounds' + '(' +
+          IntToStr(PPIUnScale(XPos)) + ', ' + IntToStr(PPIUnScale(YPos)) + ', '
+          + IntToStr(PPIUnScale(ColWidthI)) + ', ' +
+          IntToStr(PPIUnScale(RowHeightI)) + ');');
+        if Pos(', ' + _('selected'), FItems[Line]) > 0 then
+          Str := Str + surroundFix('  ' + Nam + '.setState(true);');
+        if itemStateChanged <> '' then
+          Str := Str + surroundFix('  ' + Nam + '.addItemListener((event) -> {'
+            + Name + '_ItemStateChanged(event);});');
         if FontChanged then
-          s:= s + surroundFix('  ' + nam + '.setFont(new Font(' + asString(Font.Name) +
-                    ', Font.PLAIN, ' + IntToStr(PPIUnScale(Font.Size)) + '));');
+          Str := Str + surroundFix('  ' + Nam + '.setFont(new Font(' +
+            AsString(Font.Name) + ', Font.PLAIN, ' +
+            IntToStr(PPIUnScale(Font.Size)) + '));');
         if not FCheckboxes then
-          s:= s + surroundFix('  ' + nam + '.setCheckboxGroup(' + Name + 'BG);');
-        s:= s + surroundFix('  ' + Name + '.add(' + nam + ');');
-        inc(line);
-        yold:= y;
+          Str := Str + surroundFix('  ' + Nam + '.setCheckboxGroup(' + Name
+            + 'BG);');
+        Str := Str + surroundFix('  ' + Name + '.add(' + Nam + ');');
+        Inc(Line);
+        YOld := YPos;
       end;
-      xold:= x;
+      XOld := XPos;
     end;
   end;
-  Partner.InsertAttributValue(Name, s, 1);
-  if ItemStateChanged <> '' then begin
-    if not Partner.hasText('public void ' + MakeEventProcedureName('itemStateChanged')) then
-      Partner.InsertProcedure(0, MakeEventProcedure('itemStateChanged'));
+  FPartner.InsertAttributValue(Name, Str, 1);
+  if itemStateChanged <> '' then
+  begin
+    if not FPartner.HasText('public void ' + MakeEventProcedureName
+      ('itemStateChanged')) then
+      FPartner.InsertProcedure(0, MakeEventProcedure('itemStateChanged'));
   end;
-  Partner.Editor.EndUpdate;
+  FPartner.Editor.EndUpdate;
 end;
 
 procedure TA2ButtonGroup.NewControl;
 begin
   InsertNewVariable('private Panel ' + Name + ' = new Panel();');
-  var s:= surroundFix('  ' + Name + '.setLayout(null);') +
-          surroundFix('  ' + GetContainer + '.add(' + Name + ');');
-  Partner.InsertAttributValue(Name, s, 1);
+  var
+  Str := surroundFix('  ' + Name + '.setLayout(null);') +
+    surroundFix('  ' + GetContainer + '.add(' + Name + ');');
+  FPartner.InsertAttributValue(Name, Str, 1);
   MakeButtongroupItems;
 end;
 
-procedure TA2ButtonGroup.setItems(Value: TStrings);
+procedure TA2ButtonGroup.SetItems(Value: TStrings);
 begin
-  if FItems.Text <> Value.Text then begin
-    FOldItems.Text:= FItems.Text;
-    FItems.Text:= Value.Text;
+  if FItems.Text <> Value.Text then
+  begin
+    FOldItems.Text := FItems.Text;
+    FItems.Text := Value.Text;
     Invalidate;
   end;
 end;
 
-procedure TA2ButtonGroup.setColumns(Value: integer);
+procedure TA2ButtonGroup.SetColumns(Value: Integer);
 begin
-  if (FColumns <> Value) and (Value > 0) then begin
-    FColumns:= Value;
+  if (FColumns <> Value) and (Value > 0) then
+  begin
+    FColumns := Value;
     Invalidate;
   end;
 end;
 
-procedure TA2ButtonGroup.setCheckboxes(Value: boolean);
+procedure TA2ButtonGroup.SetCheckboxes(Value: Boolean);
 begin
-  if FCheckboxes <> Value then begin
-    FCheckboxes:= Value;
+  if FCheckboxes <> Value then
+  begin
+    FCheckboxes := Value;
     Invalidate;
   end;
 end;
 
-function TA2ButtonGroup.ItemsInColumn(i: integer): integer;
-  var quot, rest: integer;
+function TA2ButtonGroup.ItemsInColumn(Int: Integer): Integer;
+var
+  Quot, Rest: Integer;
 begin
-  quot:= FItems.Count div FColumns;
-  rest:= FItems.Count mod FColumns;
-  if i <= rest
-    then Result:= quot + 1
-    else Result:= quot;
+  Quot := FItems.Count div FColumns;
+  Rest := FItems.Count mod FColumns;
+  if Int <= Rest then
+    Result := Quot + 1
+  else
+    Result := Quot;
 end;
 
 procedure TA2ButtonGroup.Paint;
-  const cRadius = 6;
-  var ColumnWidth, RowWidth, RadioHeight, LabelHeight,
-      col, row, yc, ItemsInCol, line, x, y, th, tw, p, Radius: integer;
-      R: TRect; s: string;
+const
+  CRadius = 6;
+var
+  ColumnWidth, RowWidth, RadioHeight, LabelHeight, Col, Row, YCenter,
+    ItemsInCol, Line, XPos, YPos, TextH, TextW, Posi, Radius: Integer;
+  ARect: TRect;
+  Str: string;
 begin
-  FOldItems.Text:= FItems.Text;
+  FOldItems.Text := FItems.Text;
   inherited;
   CanvasFontAssign;
-  Canvas.Brush.Color:= clWhite;
+  Canvas.Brush.Color := clWhite;
   Canvas.FillRect(ClientRect);
-  th:= Canvas.TextHeight('Hg');
-  tw:= Canvas.TextWidth('x');
-  LabelHeight:= 0;
-  RadioHeight:= Height;
+  TextH := Canvas.TextHeight('Hg');
+  TextW := Canvas.TextWidth('XPos');
+  LabelHeight := 0;
+  RadioHeight := Height;
 
-  if FItems.Count > 0 then begin
-    Radius:= PPIScale(cRadius);
-    Canvas.Pen.Color:= $333333;
-    ColumnWidth:= Width div FColumns;
-    RowWidth:= RadioHeight div ItemsInColumn(1);
-    line:= 0;
-    for col:= 1 to FColumns do begin
-      ItemsInCol:= ItemsInColumn(col);
-      for row:= 1 to ItemsInCol do begin
-        s:= FItems[line];
-        p:= Pos(', ' + _('selected'), s);
-        if p > 0 then
-          s:= copy(s, 1, p-1);
-        x:= tw + (col - 1)*ColumnWidth;
-        y:= LabelHeight + 2 + (row - 1)*RowWidth;
-        Canvas.Brush.Color:= clWhite;
-        yc:= y + RowWidth div 2 - th div 2;
-        if FCheckboxes then begin
-          R:= Rect(x, yc + 0, x + 13, yc + 13);
-          Canvas.Rectangle(R);
-          if p > 0 then begin
-            Canvas.Pen.Width:= 2;
-            Canvas.MoveTo(x + 3, yc + 6);
-            Canvas.LineTo(x + 4, yc + 9);
-            Canvas.LineTo(x + 9, yc + 3);
-            Canvas.Pen.Width:= 1;
+  if FItems.Count > 0 then
+  begin
+    Radius := PPIScale(CRadius);
+    Canvas.Pen.Color := $333333;
+    ColumnWidth := Width div FColumns;
+    RowWidth := RadioHeight div ItemsInColumn(1);
+    Line := 0;
+    for Col := 1 to FColumns do
+    begin
+      ItemsInCol := ItemsInColumn(Col);
+      for Row := 1 to ItemsInCol do
+      begin
+        Str := FItems[Line];
+        Posi := Pos(', ' + _('selected'), Str);
+        if Posi > 0 then
+          Str := Copy(Str, 1, Posi - 1);
+        XPos := TextW + (Col - 1) * ColumnWidth;
+        YPos := LabelHeight + 2 + (Row - 1) * RowWidth;
+        Canvas.Brush.Color := clWhite;
+        YCenter := YPos + RowWidth div 2 - TextH div 2;
+        if FCheckboxes then
+        begin
+          ARect := Rect(XPos, YCenter + 0, XPos + 13, YCenter + 13);
+          Canvas.Rectangle(ARect);
+          if Posi > 0 then
+          begin
+            Canvas.Pen.Width := 2;
+            Canvas.MoveTo(XPos + 3, YCenter + 6);
+            Canvas.LineTo(XPos + 4, YCenter + 9);
+            Canvas.LineTo(XPos + 9, YCenter + 3);
+            Canvas.Pen.Width := 1;
           end;
-        end else begin
-          yc:= y + RowWidth div 2 - Radius;
-          Canvas.Ellipse(x, yc, x + 2*Radius, yc + 2*Radius);
-          if p > 0 then begin
-            Canvas.Brush.Color:= clBlack;
-            Canvas.Ellipse(x+3, yc+3, x + 2*Radius-3, yc + 2*Radius-3);
-            Canvas.Brush.Color:= clWhite;
+        end
+        else
+        begin
+          YCenter := YPos + RowWidth div 2 - Radius;
+          Canvas.Ellipse(XPos, YCenter, XPos + 2 * Radius,
+            YCenter + 2 * Radius);
+          if Posi > 0 then
+          begin
+            Canvas.Brush.Color := clBlack;
+            Canvas.Ellipse(XPos + 3, YCenter + 3, XPos + 2 * Radius - 3,
+              YCenter + 2 * Radius - 3);
+            Canvas.Brush.Color := clWhite;
           end;
         end;
-        yc:= y + RowWidth div 2 - th div 2;
-        R:= Rect(x + PPIScale(19), yc, col*ColumnWidth, yc + RowWidth);
-        Canvas.TextRect(R, s);
-        inc(line);
+        YCenter := YPos + RowWidth div 2 - TextH div 2;
+        ARect := Rect(XPos + PPIScale(19), YCenter, Col * ColumnWidth,
+          YCenter + RowWidth);
+        Canvas.TextRect(ARect, Str);
+        Inc(Line);
       end;
     end;
   end;
 end;
 
 procedure TA2ButtonGroup.MakeSelectedLabelMethod;
-  var s: string;
+var
+  Str: string;
 begin
-  s:= 'public String ' + Name + 'BG_getSelectedButtonGroupLabel)';
-  if Partner.getLineNumberWith(s) = -1 then begin
-    s:= surroundFix('public String ' + Name + 'BG_getSelectedButtonGroupLabel() {') +
-        surroundFix('  Checkbox cb = ' + Name + 'BG.getSelectedCheckbox();') +
-        surroundFix('  if (cb != null) return cb.getLabel();')+
-        surroundFix('  return "";') +
-        surroundFix('}') + CrLf;
-    Partner.InsertProcedure(s);
+  Str := 'public String ' + Name + 'BG_getSelectedButtonGroupLabel)';
+  if FPartner.GetLineNumberWith(Str) = -1 then
+  begin
+    Str := surroundFix('public String ' + Name +
+      'BG_getSelectedButtonGroupLabel() {') +
+      surroundFix('  Checkbox cb = ' + Name + 'BG.getSelectedCheckbox();') +
+      surroundFix('  if (cb != null) return cb.getLabel();') +
+      surroundFix('  return "";') + surroundFix('}') + CrLf;
+    FPartner.InsertProcedure(Str);
   end;
 end;
 
 procedure TA2ButtonGroup.DeleteSelectedLabelMethod;
 begin
-  Partner.DeleteMethod(Name + 'BG_getSelectedButtonGroupLabel', false);
+  FPartner.DeleteMethod(Name + 'BG_getSelectedButtonGroupLabel', False);
 end;
 
 procedure TA2ButtonGroup.Rename(const OldName, NewName, Events: string);
 begin
   inherited;
-  Partner.ReplaceWord(OldName + 'BG_getSelectedButtonGroupLabel',
-                      NewName + 'BG_getSelectedButtonGroupLabel', false);
+  FPartner.ReplaceWord(OldName + 'BG_getSelectedButtonGroupLabel',
+    NewName + 'BG_getSelectedButtonGroupLabel', False);
 end;
 
 end.

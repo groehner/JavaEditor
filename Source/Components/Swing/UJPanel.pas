@@ -3,20 +3,22 @@ unit UJPanel;
 interface
 
 uses
-  Classes, ExtCtrls, UJComponents;
+  Classes,
+  ExtCtrls,
+  UJComponents;
 
 type
 
-  TJPanel = class (TSwingComponent)
+  TJPanel = class(TSwingComponent)
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aPanel: TPanel);
-    function getAttributes(ShowAttributes: integer): string; override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor CreateFrom(APanel: TPanel);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure Paint; override;
-    function getIndex: integer;
-    procedure setTab;
+    function GetIndex: Integer;
+    procedure SetTab;
   published
     property Border;
   end;
@@ -35,37 +37,42 @@ type
 
 implementation
 
-uses Graphics, Controls, UJTabbedPane, UITypes, ULink;
+uses
+  Graphics,
+  Controls,
+  UJTabbedPane,
+  UITypes,
+  ULink;
 
-{--- TJPanel ------------------------------------------------------------------}
+{ --- TJPanel ------------------------------------------------------------------ }
 
 constructor TJPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= +12;
-  ControlStyle:= [csAcceptsControls];
-  Background:= clBtnFace;
-  ShowFont:= false;
-  Opaque:= false;
-  JavaType:= 'JPanel';
+  Tag := +12;
+  ControlStyle := [csAcceptsControls];
+  Background := clBtnFace;
+  ShowFont := False;
+  Opaque := False;
+  JavaType := 'JPanel';
 end;
 
-constructor TJPanel.CreateFrom(aPanel: TPanel);
+constructor TJPanel.CreateFrom(APanel: TPanel);
 begin
-  Create(aPanel.Owner);
-  CreateFromJ(aPanel);
-  Background:= aPanel.Color;
+  Create(APanel.Owner);
+  CreateFromJ(APanel);
+  Background := APanel.Color;
 end;
 
-function TJPanel.getAttributes(ShowAttributes: integer): string;
+function TJPanel.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Border|Background' + inherited;
+  Result := '|Border|Background' + inherited;
 end;
 
-function TJPanel.getEvents(ShowEvents: integer): string;
+function TJPanel.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|componentAdded|componentRemoved|propertyChange' +
-           MouseEvents + inherited;
+  Result := '|componentAdded|componentRemoved|propertyChange' + MouseEvents +
+    inherited;
 end;
 
 procedure TJPanel.NewControl;
@@ -78,47 +85,51 @@ end;
 procedure TJPanel.Paint;
 begin
   CanvasFontAssign;
-  if Background = ColorNone
-    then Canvas.Brush.Color:= (Parent as TWinControl).Brush.Color
-    else Canvas.Brush.Color:= Background;
+  if Background = ColorNone then
+    Canvas.Brush.Color := Parent.Brush.Color
+  else
+    Canvas.Brush.Color := Background;
   Canvas.FillRect(ClientRect);
   Border.Show(Self, Canvas);
 end;
 
-procedure TJPanel.setTab;
+procedure TJPanel.SetTab;
 begin
   if Parent is TJTabbedPane then
-    (Parent as TJTabbedPane).SelectedIndex:= getIndex;
+    (Parent as TJTabbedPane).SelectedIndex := GetIndex;
 end;
 
-function TJPanel.getIndex: integer;
-  var i: integer; aTabPane: TJTabbedPane;
+function TJPanel.GetIndex: Integer;
+var
+  Int: Integer;
+  ATabPane: TJTabbedPane;
 begin
-  aTabPane:= (Parent as TJTabbedPane);
-  i:= 0;
-  while (i < aTabPane.Tabs.Count) and
-        (aTabPane.Name + 'TabPanel' + aTabPane.Tabs[i] <> Self.Name)
-  do
-    inc(i);
-  if i < aTabPane.Tabs.Count
-    then Result:= i
-    else Result:= -1;
+  ATabPane := (Parent as TJTabbedPane);
+  Int := 0;
+  while (Int < ATabPane.Tabs.Count) and
+    (ATabPane.Name + 'TabPanel' + ATabPane.Tabs[Int] <> Self.Name) do
+    Inc(Int);
+  if Int < ATabPane.Tabs.Count then
+    Result := Int
+  else
+    Result := -1;
 end;
 
-{--- TJSubPanel -----------------------------------------------------------------}
+{ --- TJSubPanel ----------------------------------------------------------------- }
 
 constructor TJSubPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= 38;
-  SubType:= ULink.PanelCanvasType;
-  JavaType:= SubType;
+  Tag := 38;
+  SubType := ULink.PanelCanvasType;
+  JavaType := SubType;
 end;
 
 procedure TJSubPanel.NewControl;
 begin
   DefaultComponent;
-  InsertNewVariable('private ' + SubType + ' ' + Name + ' = new ' + SubType + '();');
+  InsertNewVariable('private ' + SubType + ' ' + Name + ' = new ' +
+    SubType + '();');
 end;
 
 procedure TJSubPanel.MakeUniqueName(FromText: string = '');
@@ -129,7 +140,8 @@ end;
 procedure TJSubPanel.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteAttribute('private ' + SubType + ' ' + Name + ' = new ' + SubType);
+  FPartner.DeleteAttribute('private ' + SubType + ' ' + Name + ' = new '
+    + SubType);
 end;
 
 end.

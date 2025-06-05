@@ -3,73 +3,82 @@ unit UAComboBox;
 interface
 
 uses
-  Classes, StdCtrls, UAComponents;
+  Classes,
+  StdCtrls,
+  UAComponents;
 
 type
 
-  TAComboBox = class (TAWTComponent)
+  TAComboBox = class(TAWTComponent)
   private
-    FFocusable: boolean;
+    FFocusable: Boolean;
     FItems: TStrings;
-    FSelectedIndex: integer;
-    procedure setSelectedIndex(aIndex: integer);
-    procedure setItems(aItems: TStrings);
+    FSelectedIndex: Integer;
+    procedure SetSelectedIndex(AIndex: Integer);
+    procedure SetItems(AItems: TStrings);
     procedure MakeList;
   protected
-    FEditable: boolean;
-    procedure setEditable(aValue: boolean);
+    FEditable: Boolean;
+    procedure SetEditable(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aComboBox: TComboBox);
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    constructor CreateFrom(AComboBox: TComboBox);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     destructor Destroy; override;
     procedure Paint; override;
   published
-    property Focusable: boolean read FFocusable write FFocusable default true;
-    property SelectedIndex: integer read FSelectedIndex write setSelectedIndex;
-    property Items: TStrings read FItems write setItems;
+    property Focusable: Boolean read FFocusable write FFocusable default True;
+    property SelectedIndex: Integer read FSelectedIndex write SetSelectedIndex;
+    property Items: TStrings read FItems write SetItems;
     property itemStateChanged;
   end;
 
 implementation
 
-uses Math, Types, Controls, Graphics, SysUtils;
+uses
+  Math,
+  Types,
+  Controls,
+  Graphics,
+  SysUtils;
 
-{--- TAComboBox ---------------------------------------------------------------}
+{ --- TAComboBox --------------------------------------------------------------- }
 
 constructor TAComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= -9;
-  Width:= 80;
-  Height:= 24;
-  FItems:= TStringList.Create;
-  FItems.Text:= defaultItems;
-  FSelectedIndex:= 0;
-  FFocusable:= true;
-  JavaType:= 'Choice';
+  Tag := -9;
+  Width := 80;
+  Height := 24;
+  FItems := TStringList.Create;
+  FItems.Text := defaultItems;
+  FSelectedIndex := 0;
+  FFocusable := True;
+  JavaType := 'Choice';
 end;
 
-constructor TAComboBox.CreateFrom(aComboBox: TComboBox);
+constructor TAComboBox.CreateFrom(AComboBox: TComboBox);
 begin
-  Create(aComboBox.Owner);
-  CreateFromA(aComboBox);
-  Font:= aComboBox.Font;
-  Background:= aComboBox.Color;
-  if Background = clBtnFace then Background:= clWhite;
-  Items.AddStrings(aComboBox.Items);
-  FSelectedIndex:= Math.min(aComboBox.maxLength, aComboBox.Items.Count-1);
+  Create(AComboBox.Owner);
+  CreateFromA(AComboBox);
+  Font := AComboBox.Font;
+  Background := AComboBox.Color;
+  if Background = clBtnFace then
+    Background := clWhite;
+  Items.AddStrings(AComboBox.Items);
+  FSelectedIndex := Math.Min(AComboBox.MaxLength, AComboBox.Items.Count - 1);
 end;
 
-function TAComboBox.getAttributes(ShowAttributes: integer): string;
+function TAComboBox.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Focusable|SelectedIndex|Items' + inherited getAttributes(ShowAttributes);
+  Result := '|Focusable|SelectedIndex|Items' + inherited GetAttributes
+    (ShowAttributes);
 end;
 
-procedure TAComboBox.setAttribute(Attr, Value, Typ: string);
+procedure TAComboBox.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'Items' then
     MakeList
@@ -79,22 +88,25 @@ begin
     inherited;
 end;
 
-function TAComboBox.getEvents(ShowEvents: integer): string;
+function TAComboBox.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|itemStateChanged' + inherited getEvents(ShowEvents);
+  Result := '|itemStateChanged' + inherited GetEvents(ShowEvents);
 end;
 
 procedure TAComboBox.MakeList;
-  var i: integer; s: string;
+var
+  Str: string;
 begin
-  Partner.DeleteAttributeValues(Name + '.add(');
-  s:= '';
-  for i:= 0 to Items.Count - 1 do
-    s:= s + surroundFix(Indent1 + Name + '.add(' + asString(Items[i]) + ');');
-  Partner.InsertAttributValue(getContainerAdd, s, 0);
-  if Items.Count > 0
-    then FSelectedIndex:= 0
-    else FSelectedIndex:= -1;
+  FPartner.DeleteAttributeValues(Name + '.add(');
+  Str := '';
+  for var I := 0 to Items.Count - 1 do
+    Str := Str + surroundFix(Indent1 + Name + '.add(' +
+      AsString(Items[I]) + ');');
+  FPartner.InsertAttributValue(GetContainerAdd, Str, 0);
+  if Items.Count > 0 then
+    FSelectedIndex := 0
+  else
+    FSelectedIndex := -1;
 end;
 
 procedure TAComboBox.NewControl;
@@ -111,56 +123,63 @@ begin
 end;
 
 procedure TAComboBox.Paint;
-  var x, y, dxy, th: integer; s: string;
-      Points: array[0..2] of TPoint; R1: TRect;
+var
+  XPos, YPos, Dxy, TextH: Integer;
+  Str: string;
+  Points: array [0 .. 2] of TPoint;
+  Rect1: TRect;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= AWTGray;
-  Canvas.Brush.Color:= clWhite;
+  Canvas.Pen.Color := AWTGray;
+  Canvas.Brush.Color := clWhite;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  Canvas.Brush.Color:= Background;
-  Canvas.Rectangle(Rect(0, 0, Width-18, Height));
+  Canvas.Brush.Color := Background;
+  Canvas.Rectangle(Rect(0, 0, Width - 18, Height));
 
-  Canvas.Pen.Color:= DefaultForeground;
-  Canvas.Brush.Color:= DefaultForeground;
-  dxy:= 3;
-  x:= Width - 10;
-  y:= (Height + dxy) div 2;
-  Points[0]:= Point(x, y);
-  Points[1]:= Point(x - dxy, y - dxy);
-  Points[2]:= Point(x + dxy, y - dxy);
+  Canvas.Pen.Color := DefaultForeground;
+  Canvas.Brush.Color := DefaultForeground;
+  Dxy := 3;
+  XPos := Width - 10;
+  YPos := (Height + Dxy) div 2;
+  Points[0] := Point(XPos, YPos);
+  Points[1] := Point(XPos - Dxy, YPos - Dxy);
+  Points[2] := Point(XPos + Dxy, YPos - Dxy);
   Canvas.Polygon(Points);
 
-  if (FSelectedIndex > -1) and (FSelectedIndex < FItems.Count) then begin
-    Canvas.Font.Color:= Foreground;
-    Canvas.Brush.Style:= bsClear;
-    s:= FItems.Strings[FSelectedIndex];
-    th:= Canvas.TextHeight(s);
-    R1:= Rect(0, 0, Width - 20, Height);
-    Canvas.TextRect(R1, 2, (Height - th) div 2, s);
+  if (FSelectedIndex > -1) and (FSelectedIndex < FItems.Count) then
+  begin
+    Canvas.Font.Color := Foreground;
+    Canvas.Brush.Style := bsClear;
+    Str := FItems[FSelectedIndex];
+    TextH := Canvas.TextHeight(Str);
+    Rect1 := Rect(0, 0, Width - 20, Height);
+    Canvas.TextRect(Rect1, 2, (Height - TextH) div 2, Str);
   end;
 end;
 
-procedure TAComboBox.setItems(aItems: TStrings);
+procedure TAComboBox.SetItems(AItems: TStrings);
 begin
-  if aItems.Text <> FItems.Text then begin
-    FItems.Assign(aItems);
+  if AItems.Text <> FItems.Text then
+  begin
+    FItems.Assign(AItems);
     Invalidate;
   end;
 end;
 
-procedure TAComboBox.setSelectedIndex(aIndex: integer);
+procedure TAComboBox.SetSelectedIndex(AIndex: Integer);
 begin
-  if aIndex <> FSelectedIndex then begin
-    FSelectedIndex:= aIndex;
+  if AIndex <> FSelectedIndex then
+  begin
+    FSelectedIndex := AIndex;
     Invalidate;
   end;
 end;
 
-procedure TAComboBox.setEditable(aValue: boolean);
+procedure TAComboBox.SetEditable(AValue: Boolean);
 begin
-  if aValue <> FEditable then begin
-    FEditable:= aValue;
+  if AValue <> FEditable then
+  begin
+    FEditable := AValue;
     Invalidate;
   end;
 end;

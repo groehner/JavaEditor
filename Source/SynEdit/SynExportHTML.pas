@@ -50,7 +50,7 @@ type
   private
     FStyleNameCache: TDictionary<TSynHighlighterAttributes, string>;
     FStyleValueCache: TDictionary<TSynHighlighterAttributes, string>;
-    FSuppressFragmentInfo: boolean;
+    FSuppressFragmentInfo: Boolean;
     function AttriToCSS(Attri: TSynHighlighterAttributes;
       UniqueAttriName: string): string;
     function AttriToCSSCallback(Highlighter: TSynCustomHighlighter;
@@ -70,15 +70,15 @@ type
   protected
     // CreateHTMLFragment is used to indicate that this is for the clipboard "HTML Format" output.
     // Note: SynEdit's default OLE clipboard handling bypasses SynEditExport's clipboard handling.
-    FCreateHTMLFragment: boolean;   // True if format should be "HTML Format", always uses inline css.
-    FInlineCSS: boolean;
+    FCreateHTMLFragment: Boolean;   // True if format should be "HTML Format", always uses inline css.
+    FInlineCSS: Boolean;
     procedure FormatAfterLastAttribute; override;
-    procedure FormatAttributeDone(BackgroundChanged, ForegroundChanged: boolean;
+    procedure FormatAttributeDone(BackgroundChanged, ForegroundChanged: Boolean;
       FontStylesChanged: TFontStyles); override;
-    procedure FormatAttributeInit(BackgroundChanged, ForegroundChanged: boolean;
+    procedure FormatAttributeInit(BackgroundChanged, ForegroundChanged: Boolean;
       FontStylesChanged: TFontStyles); override;
     procedure FormatBeforeFirstAttribute(BackgroundChanged,
-      ForegroundChanged: boolean; FontStylesChanged: TFontStyles); override;
+      ForegroundChanged: Boolean; FontStylesChanged: TFontStyles); override;
     procedure FormatNewLine; override;
     function GetFooter: string; override;
     function GetFormatName: string; override;
@@ -92,11 +92,11 @@ type
     procedure Clear; override;
   published
     property Color;
-    property CreateHTMLFragment: boolean read FCreateHTMLFragment
+    property CreateHTMLFragment: Boolean read FCreateHTMLFragment
       write FCreateHTMLFragment default False;
-    property InlineCSS: boolean read FInlineCSS
+    property InlineCSS: Boolean read FInlineCSS
       write FInlineCSS default False;
-    property SuppressFragmentInfo: boolean read FSuppressFragmentInfo
+    property SuppressFragmentInfo: Boolean read FSuppressFragmentInfo
       write FSuppressFragmentInfo default False;
     property DefaultFilter;
     property Encoding;
@@ -261,13 +261,13 @@ begin
 end;
 
 procedure TSynExporterHTML.FormatAttributeDone(BackgroundChanged,
-  ForegroundChanged: boolean; FontStylesChanged: TFontStyles);
+  ForegroundChanged: Boolean; FontStylesChanged: TFontStyles);
 begin
   AddData('</span>');
 end;
 
 procedure TSynExporterHTML.FormatAttributeInit(BackgroundChanged,
-  ForegroundChanged: boolean; FontStylesChanged: TFontStyles);
+  ForegroundChanged: Boolean; FontStylesChanged: TFontStyles);
 var
   StyleName: string;
   StyleValue: string;
@@ -288,7 +288,7 @@ begin
 end;
 
 procedure TSynExporterHTML.FormatBeforeFirstAttribute(BackgroundChanged,
-  ForegroundChanged: boolean; FontStylesChanged: TFontStyles);
+  ForegroundChanged: Boolean; FontStylesChanged: TFontStyles);
 var
   StyleName: string;
   StyleValue: string;
@@ -389,14 +389,14 @@ end;
 
 function TSynExporterHTML.MakeValidName(Name: string): string;
 var
-  i: Integer;
+  Int: Integer;
 begin
   Result := LowerCase(Name);
-  for i := Length(Result) downto 1 do
-    if CharInSet(Result[i], ['.', '_']) then
-      Result[i] := '-'
-    else if not CharInSet(Result[i], ['a'..'z', '0'..'9', '-']) then
-      Delete(Result, i, 1);
+  for Int := Length(Result) downto 1 do
+    if CharInSet(Result[Int], ['.', '_']) then
+      Result[Int] := '-'
+    else if not CharInSet(Result[Int], ['a'..'z', '0'..'9', '-']) then
+      Delete(Result, Int, 1);
 end;
 
 function TSynExporterHTML.ReplaceReservedChar(AChar: WideChar): string;

@@ -26,231 +26,263 @@ uses Classes;
 type
   TConstBase = class
   private
-    tag : integer;
+    FTag: Integer;
   public
-    procedure Read(Input : TStream); virtual; abstract;
-    procedure set_ref(const objAry : array of TConstBase); virtual;
-    function getString : string; virtual;
+    procedure Read(Input: TStream); virtual; abstract;
+    procedure SetRef(const ObjAry: array of TConstBase); virtual;
+    function GetString: string; virtual;
   end;
 
   TConstPool = class
   private
-    constPoolCnt : integer;
-    constPool : array of TConstBase;
-    function allocConstEntry(tag  : integer) : TConstBase;
-    procedure resolveConstPool;
-    procedure readConstPool(Input : TStream);
+    FConstPoolCnt: Integer;
+    FConstPool: array of TConstBase;
+    function AllocConstEntry(FTag: Integer): TConstBase;
+    procedure ResolveConstPool;
+    procedure ReadConstPool(Input: TStream);
   public
-    constructor Create(Input : TStream);
+    constructor Create(Input: TStream);
     destructor Destroy; override;
-    function ConstPoolElem(ix : integer) : TConstBase;
+    function ConstPoolElem(FIndex: Integer): TConstBase;
   end;
 
   TConstUtf8 = class(TConstBase)
   private
-    str : string;
+    FStr: string;
   public
-    procedure Read(Input : TStream); override;
-    function getString : string; override;
+    procedure Read(Input: TStream); override;
+    function GetString: string; override;
   end;
 
-  TConstClass_or_String = class(TConstBase)
+  TConstClassOrString = class(TConstBase)
   private
-    index : integer;
-    Utf8 : TConstUtf8;
+    FIndex: Integer;
+    FUtf8: TConstUtf8;
   public
-    procedure Read(Input : TStream); override;
-    procedure set_ref(const objAry : array of TConstBase); override;
-    function getString : string; override;
+    procedure Read(Input: TStream); override;
+    procedure SetRef(const ObjAry: array of TConstBase); override;
+    function GetString: string; override;
   end;
 
   TConstLongConvert = class(TConstBase)
   private
-    function toLong(h,l : integer) : int64;
+    function ToLong(High, Low: Integer): Int64;
   protected
-    function readLong(Input : TStream) : int64;
+    function ReadLong(Input: TStream): Int64;
   end;
 
   TConstDouble = class(TConstLongConvert)
   private
-    d : double;
+    FDo: Double;
   public
-    procedure Read(Input : TStream); override;
+    procedure Read(Input: TStream); override;
   end;
 
   TConstFloat = class(TConstBase)
   private
-    f : single;
+    FSin: Single;
   public
-    procedure Read(Input : TStream); override;
+    procedure Read(Input: TStream); override;
   end;
 
   TConstInt = class(TConstBase)
   private
-    val : integer;
+    FVal: Integer;
   public
-    procedure Read(Input : TStream); override;
+    procedure Read(Input: TStream); override;
   end;
 
   TConstLong = class(TConstLongConvert)
   private
-    longVal : int64;
+    FLongVal: Int64;
   public
-    procedure Read(Input : TStream); override;
+    procedure Read(Input: TStream); override;
   end;
 
-  TConstName_and_Type_info = class(TConstClass_or_String)
+  TConstNameAndTypeInfo = class(TConstClassOrString)
   private
-    descriptor_index : integer;
-    descriptor_Utf8 : TConstUtf8;
+    FDescriptorIndex: Integer;
+    FDescriptorUtf8: TConstUtf8;
   public
-    procedure Read(Input : TStream); override;
-    procedure set_ref(const objAry : array of TConstBase); override;
+    procedure Read(Input: TStream); override;
+    procedure SetRef(const ObjAry: array of TConstBase); override;
   end;
 
   TConstRef = class(TConstBase)
   private
-    index,name_and_type_index : integer;
-    class_ref : TConstClass_or_String;
-    name_ref : TConstName_and_Type_info;
+    FIndex: Integer;
+    FNameAndTypeIndex: Integer;
+    FClassRef: TConstClassOrString;
+    FNameRef: TConstNameAndTypeInfo;
   public
-    procedure Read(Input : TStream); override;
-    procedure set_ref(const objAry : array of TConstBase); override;
+    procedure Read(Input: TStream); override;
+    procedure SetRef(const ObjAry: array of TConstBase); override;
   end;
 
   TAccData = class
   public
-    class function isPublic(Val : integer) : boolean;
-    class function isPrivate(Val : integer) : boolean;
-    class function isProtected(Val : integer) : boolean;
-    class function isStatic(Val : integer) : boolean;
-    class function isFinal(Val : integer) : boolean;
-    class function isSync(Val : integer) : boolean;
-    class function isSuper(Val : integer) : boolean;
-    class function isVolatile(Val : integer) : boolean;
-    class function isTransient(Val : integer) : boolean;
-    class function isNative(Val : integer) : boolean;
-    class function isInterface(Val : integer) : boolean;
-    class function isAbstract(Val : integer) : boolean;
-    class function isStrict(Val : integer) : boolean;
+    class function IsPublic(Val: Integer): Boolean;
+    class function IsPrivate(Val: Integer): Boolean;
+    class function IsProtected(Val: Integer): Boolean;
+    class function IsStatic(Val: Integer): Boolean;
+    class function IsFinal(Val: Integer): Boolean;
+    class function IsSync(Val: Integer): Boolean;
+    class function IsSuper(Val: Integer): Boolean;
+    class function IsVolatile(Val: Integer): Boolean;
+    class function IsTransient(Val: Integer): Boolean;
+    class function IsNative(Val: Integer): Boolean;
+    class function IsInterface(Val: Integer): Boolean;
+    class function IsAbstract(Val: Integer): Boolean;
+    class function IsStrict(Val: Integer): Boolean;
   end;
 
   TObjNameFormat = class
   public
-    class function ToDotSeparator(const SlashName : string) : string;
+    class function ToDotSeparator(const SlashName: string): string;
   end;
 
   TAttrInfo = class
   private
-    AttrName : string;
-    Len : integer;
+    FAttrName: string;
+    FLen: Integer;
   public
-    constructor Create(const Name : string; Length  : integer);
-    function GetName : string;
+    constructor Create(const Name: string; Length: Integer);
+    function GetName: string;
   end;
 
   TAttrFactory = class
   private
-    class procedure Skip_data(len : integer; Input : TStream);
+    class procedure SkipData(FLen: Integer; Input: TStream);
   public
-    class function AllocAttr(Input : TStream; constPoolSec : TConstPool) : TAttrInfo;
+    class function AllocAttr(Input: TStream; ConstPoolSec: TConstPool)
+      : TAttrInfo;
   end;
 
   TClassFileHeader = class
   private
-    magic : longword;
-    minor_version : shortint;
-    major_version : shortint;
+    FMagic: LongWord;
+    FMinorVersion: ShortInt;
+    FMajorVersion: ShortInt;
   public
-    constructor Create(Input : TStream);
+    constructor Create(Input: TStream);
   end;
+
+  TConstBaseArr = array of TConstBase;
 
   TClassDeclSec = class
+  private
+    FAccessFlags: Integer;
+    FThisClass: TConstBase;
+    FSuperClass: TConstBase;
+    FInterfaces: TConstBaseArr;
   public
-    accessFlags : integer;
-    thisClass : TConstBase;
-    superClass : TConstBase;
-    interfaces : array of TConstBase;
-  public
-    constructor Create(Input : TStream; ConstPoolSec : TConstPool);
-    function GetClassName : string;
+    constructor Create(Input: TStream; ConstPoolSec: TConstPool);
+    function GetClassName: string;
+    property AccessFlags: Integer read FAccessFlags;
+    property ThisClass: TConstBase read FThisClass;
+    property SuperClass: TConstBase read FSuperClass;
+    property Interfaces: TConstBaseArr read FInterfaces;
   end;
+
+  TAttrInfoArr = array of TAttrInfo;
 
   TFieldInfo = class
+  private
+    FAccessFlags: Integer;
+    FAttributes: TAttrInfoArr;
+    FDescriptor: TConstUtf8;
+    FName: TConstUtf8;
   public
-    access_flags : integer;
-    name : TConstUtf8;
-    descriptor : TConstUtf8 ;
-    attributes : array of TAttrInfo;
-  public
-    constructor Create(Input : TStream; constPoolSec : TConstPool);
+    constructor Create(Input: TStream; ConstPoolSec: TConstPool);
+    property AccessFlags: Integer read FAccessFlags;
+    property Attributes: TAttrInfoArr read FAttributes;
+    property Descriptor: TConstUtf8 read FDescriptor;
+    property Name: TConstUtf8 read FName;
   end;
 
-  TClassFieldSec = class
+  TFieldInfoArr = array of TFieldInfo;
+
+  TClassFieldsec = class
+  private
+    FClassFields: TFieldInfoArr;
   public
-    classFields : array of TFieldInfo;
-  public
-    constructor Create(Input : TStream; constPoolSec : TConstPool);
+    constructor Create(Input: TStream; ConstPoolSec: TConstPool);
+    property ClassFields: TFieldInfoArr read FClassFields;
   end;
 
   TMethodInfo = class
-  public
-    access_flags : integer;
-    name : TConstUtf8 ;
-    descriptor : TConstUtf8 ;
-    attributes : array of TAttrInfo;
-  public
-    constructor Create(Input : TStream; constPoolSec : TConstPool);
-    function isConstructor : boolean;
-  end;
-
-  TClassMethodSec = class
-  public
-    classMethods : array of TMethodInfo;
-  public
-    constructor Create(Input : TStream; constPoolSec : TConstPool; aClassName : string);
-    destructor Destroy; override;
-  end;
-
-  TClassAttrSec = class
   private
-    classAttrTab : array of TAttrInfo;
+    FAccessFlags: Integer;
+    FAttributes: TAttrInfoArr;
+    FDescriptor: TConstUtf8;
+    FName: TConstUtf8;
   public
-    constructor Create(Input : TStream; constPoolSec : TConstPool);
+    constructor Create(Input: TStream; ConstPoolSec: TConstPool);
+    function IsConstructor: Boolean;
+    property AccessFlags: Integer read FAccessFlags;
+    property Attributes: TAttrInfoArr read FAttributes;
+    property Descriptor: TConstUtf8 read FDescriptor;
+    property Name: TConstUtf8 read FName;
+  end;
+
+  TMethodInfoArr = array of TMethodInfo;
+
+  TClassMethodsec = class
+  private
+    FClassMethods: TMethodInfoArr;
+  public
+    constructor Create(Input: TStream; ConstPoolSec: TConstPool);
+    destructor Destroy; override;
+    property ClassMethods: TMethodInfoArr read FClassMethods;
+  end;
+
+  TClassAttrsec = class
+  private
+    FClassAttrTab: array of TAttrInfo;
+  public
+    constructor Create(Input: TStream; ConstPoolSec: TConstPool);
   end;
 
   TClassFile = class
+  private
+    FClassname: string;
+    FClassAttrs: TClassAttrsec;
+    FClassConstPool: TConstPool;
+    FClassDecl: TClassDeclSec;
+    FClassFields: TClassFieldsec;
+    FClassMethods: TClassMethodsec;
+    FHeader: TClassFileHeader;
   public
-    header : TClassFileHeader;
-    classConstPool : TConstPool;
-    classDecl : TClassDeclSec;
-    classFields : TClassFieldSec;
-    classMethods : TClassMethodSec;
-    classAttrs : TClassAttrSec;
-    aClassName : string;
-  public
-    constructor Create(Input : TStream);
+    constructor Create(Input: TStream);
     destructor Destroy; override;
+    property AClassName: string read FClassname;
+    property ClassAttrs: TClassAttrsec read FClassAttrs;
+    property ClassConstPool: TConstPool read FClassConstPool;
+    property ClassDecl: TClassDeclSec read FClassDecl;
+    property ClassFields: TClassFieldsec read FClassFields;
+    property ClassMethods: TClassMethodsec read FClassMethods;
+    property Header: TClassFileHeader read FHeader;
   end;
-
 
 implementation
 
-uses SysUtils, UUtils;
+uses
+  SysUtils,
+  UUtils;
 
 const
-  ACC_PUBLIC    : word = $0001;
-  ACC_PRIVATE   : word = $0002;
-  ACC_PROTECTED : word = $0004;
-  ACC_STATIC    : word = $0008;
-  ACC_FINAL     : word = $0010;
-  ACC_SYNC      : word = $0020;
-  ACC_VOLATILE  : word = $0040;
-  ACC_TRANSIENT : word = $0080;
-  ACC_NATIVE    : word = $0100;
-  ACC_INTERFACE : word = $0200;
-  ACC_ABSTRACT  : word = $0400;
-  ACC_STRICT    : word = $0800;
+  ACC_PUBLIC: Word = $0001;
+  ACC_PRIVATE: Word = $0002;
+  ACC_PROTECTED: Word = $0004;
+  ACC_STATIC: Word = $0008;
+  ACC_FINAL: Word = $0010;
+  ACC_SYNC: Word = $0020;
+  ACC_VOLATILE: Word = $0040;
+  ACC_TRANSIENT: Word = $0080;
+  ACC_NATIVE: Word = $0100;
+  ACC_INTERFACE: Word = $0200;
+  ACC_ABSTRACT: Word = $0400;
+  ACC_STRICT: Word = $0800;
 
   CONSTANT_Class = 7;
   CONSTANT_Fieldref = 9;
@@ -264,190 +296,184 @@ const
   CONSTANT_NameAndType = 12;
   CONSTANT_Utf8 = 1;
 
-
-function ReadU1(Input: TStream): integer;
+function ReadU1(Input: TStream): Integer;
 var
-  ByteVal : byte;
+  ByteVal: Byte;
 begin
-  Input.Read(ByteVal,1);
+  Input.Read(ByteVal, 1);
   Result := ByteVal;
 end;
 
-function ReadU2(Input: TStream): integer;
+function ReadU2(Input: TStream): Integer;
 var
-  tmp : array[0..1] of byte;
+  Tmp: array [0 .. 1] of Byte;
 begin
-  fillchar(tmp, 2, 0); 
-  Input.Read(tmp,2);
-  Result := (tmp[0] shl 8) or tmp[1];
+  FillChar(Tmp, 2, 0);
+  Input.Read(Tmp, 2);
+  Result := (Tmp[0] shl 8) or Tmp[1];
 end;
 
-function ReadU4(Input: TStream): longword;
+function ReadU4(Input: TStream): LongWord;
 var
-  tmp : array[0..3] of byte;
+  Tmp: array [0 .. 3] of Byte;
 begin
   // $BEBAFECA
-  Input.Read(tmp,4);
-  Result := (tmp[0] shl 24) or (tmp[1] shl 16) or (tmp[2] shl 8) or tmp[3];
+  Input.Read(Tmp, 4);
+  Result := (Tmp[0] shl 24) or (Tmp[1] shl 16) or (Tmp[2] shl 8) or Tmp[3];
 end;
-
-
 
 { TClassFileHeader }
 
 constructor TClassFileHeader.Create(Input: TStream);
 begin
-  magic := readU4( Input );
-  minor_version := readU2( Input );
-  major_version := readU2( Input );
+  FMagic := ReadU4(Input);
+  FMinorVersion := ReadU2(Input);
+  FMajorVersion := ReadU2(Input);
 end;
 
 { TClassDeclSec }
 
 constructor TClassDeclSec.Create(Input: TStream; ConstPoolSec: TConstPool);
 var
-  thisClassIx, superClassIx, interfaceCnt, ix, i : integer;
+  ThisClassIdx, SuperClassIdx, IinterfaceCnt, Idx: Integer;
 begin
-  accessFlags := readU2( Input );
-  thisClassIx := readU2( Input );
-  superClassIx := readU2( Input );
+  FAccessFlags := ReadU2(Input);
+  ThisClassIdx := ReadU2(Input);
+  SuperClassIdx := ReadU2(Input);
 
-  thisClass := constPoolSec.constPoolElem( thisClassIx );
-  superClass := constPoolSec.constPoolElem( superClassIx );
+  FThisClass := ConstPoolSec.ConstPoolElem(ThisClassIdx);
+  FSuperClass := ConstPoolSec.ConstPoolElem(SuperClassIdx);
 
-  interfaceCnt := readU2( Input );
+  IinterfaceCnt := ReadU2(Input);
 
-  if (interfaceCnt > 0) then
+  if IinterfaceCnt > 0 then
   begin
-    SetLength(interfaces,interfaceCnt);
-    for I := 0 to interfaceCnt-1 do
+    SetLength(FInterfaces, IinterfaceCnt);
+    for var I := 0 to IinterfaceCnt - 1 do
     begin
-      ix := readU2( Input );
-      interfaces[ i ] := constPoolSec.constPoolElem( ix );
+      Idx := ReadU2(Input);
+      FInterfaces[I] := ConstPoolSec.ConstPoolElem(Idx);
     end;
   end;
 end;
 
 function TClassDeclSec.GetClassName: string;
 var
-  name : string;
+  Name: string;
 begin
-  if Assigned(thisClass) then
-    if (thisClass is TConstClass_or_String) then
-      name := TObjNameFormat.toDotSeparator( thisClass.getString );
+  if Assigned(FThisClass) then
+    if FThisClass is TConstClassOrString then
+      Name := TObjNameFormat.ToDotSeparator(FThisClass.GetString);
   Result := Name;
 end;
 
 { TFieldInfo }
 
-constructor TFieldInfo.Create(Input: TStream; constPoolSec: TConstPool);
+constructor TFieldInfo.Create(Input: TStream; ConstPoolSec: TConstPool);
 var
-  name_index,desc_index,attr_cnt,I : integer;
-  obj : TConstBase;
+  NameIndex, DescIndex, AttrCnt: Integer;
+  Obj: TConstBase;
 begin
-  access_flags := readU2( Input );
-  name_index   := readU2( Input );
-  desc_index   := readU2( Input );
-  attr_cnt     := readU2( Input );
+  FAccessFlags := ReadU2(Input);
+  NameIndex := ReadU2(Input);
+  DescIndex := ReadU2(Input);
+  AttrCnt := ReadU2(Input);
 
-  obj := constPoolSec.constPoolElem( name_index );
-  if Assigned(obj) and (obj is TConstUtf8) then
-    Name := obj as TConstUtf8;
+  Obj := ConstPoolSec.ConstPoolElem(NameIndex);
+  if Assigned(Obj) and (Obj is TConstUtf8) then
+    FName := Obj as TConstUtf8;
 
-  obj := constPoolSec.constPoolElem( desc_index );
-  if Assigned(obj) and (obj is TConstUtf8) then
-    descriptor := obj as TConstUtf8;
+  Obj := ConstPoolSec.ConstPoolElem(DescIndex);
+  if Assigned(Obj) and (Obj is TConstUtf8) then
+    FDescriptor := Obj as TConstUtf8;
 
-  if (attr_cnt > 0) then
+  if AttrCnt > 0 then
   begin
-    SetLength(attributes,attr_cnt);
-    for I := 0 to attr_cnt-1 do
-      attributes[i] := TAttrFactory.allocAttr( Input, constPoolSec );
+    SetLength(FAttributes, AttrCnt);
+    for var I := 0 to AttrCnt - 1 do
+      FAttributes[I] := TAttrFactory.AllocAttr(Input, ConstPoolSec);
   end;
 end;
 
-{ TClassFieldSec }
+{ TClassFieldsec }
 
-constructor TClassFieldSec.Create(Input: TStream; constPoolSec: TConstPool);
+constructor TClassFieldsec.Create(Input: TStream; ConstPoolSec: TConstPool);
 var
-  field_cnt,i : integer;
+  FieldCnt: Integer;
 begin
-  field_cnt := readU2( Input );
-  if (field_cnt > 0) then
-    SetLength(classFields,field_cnt);
+  FieldCnt := ReadU2(Input);
+  if FieldCnt > 0 then
+    SetLength(FClassFields, FieldCnt);
 
-  for I := 0 to field_cnt-1 do
-    classFields[i] := TFieldInfo.Create( Input, constPoolSec );
+  for var I := 0 to FieldCnt - 1 do
+    FClassFields[I] := TFieldInfo.Create(Input, ConstPoolSec);
 end;
 
 { TMethodInfo }
 
-constructor TMethodInfo.Create(Input: TStream; constPoolSec: TConstPool);
+constructor TMethodInfo.Create(Input: TStream; ConstPoolSec: TConstPool);
 var
-  name_index,desc_index,attr_cnt,I : integer;
-  obj : TConstBase;
+  NameIndex, DescIndex, AttrCnt: Integer;
+  Obj: TConstBase;
 begin
-  access_flags := readU2( Input );
-  name_index   := readU2( Input );
-  desc_index   := readU2( Input );
-  attr_cnt     := readU2( Input );
+  FAccessFlags := ReadU2(Input);
+  NameIndex := ReadU2(Input);
+  DescIndex := ReadU2(Input);
+  AttrCnt := ReadU2(Input);
 
-  obj := constPoolSec.constPoolElem( name_index );
-  if Assigned(obj) and  (obj is TConstUtf8) then
-    name := obj as TConstUtf8;
+  Obj := ConstPoolSec.ConstPoolElem(NameIndex);
+  if Assigned(Obj) and (Obj is TConstUtf8) then
+    FName := Obj as TConstUtf8;
 
-  obj := constPoolSec.constPoolElem( desc_index );
-  if Assigned(obj) and  (obj is TConstUtf8) then
-    descriptor := obj as TConstUtf8;
+  Obj := ConstPoolSec.ConstPoolElem(DescIndex);
+  if Assigned(Obj) and (Obj is TConstUtf8) then
+    FDescriptor := Obj as TConstUtf8;
 
-  if (attr_cnt > 0) then
+  if AttrCnt > 0 then
   begin
-    SetLength(attributes,attr_cnt);
-    for I := 0 to attr_cnt-1 do
-      attributes[i] := TAttrFactory.allocAttr( Input, constPoolSec );
+    SetLength(FAttributes, AttrCnt);
+    for var I := 0 to AttrCnt - 1 do
+      FAttributes[I] := TAttrFactory.AllocAttr(Input, ConstPoolSec);
   end;
 end;
 
-function TMethodInfo.isConstructor: boolean;
+function TMethodInfo.IsConstructor: Boolean;
 begin
-  Result := (name.getString()='<init>');
+  Result := (FName.GetString = '<init>');
 end;
 
+{ TClassMethodsec }
 
-{ TClassMethodSec }
-
-constructor TClassMethodSec.Create(Input: TStream; constPoolSec: TConstPool; aClassName: string);
+constructor TClassMethodsec.Create(Input: TStream; ConstPoolSec: TConstPool);
 var
-  methodCnt,I : integer;
+  MethodCnt: Integer;
 begin
-  methodCnt := readU2(Input);
-  if (methodCnt > 0) then
-    SetLength(classMethods,methodCnt);
-  for I := 0 to methodCnt-1 do
-    classMethods[i] := TMethodInfo.Create( Input, constPoolSec );
+  MethodCnt := ReadU2(Input);
+  if MethodCnt > 0 then
+    SetLength(FClassMethods, MethodCnt);
+  for var I := 0 to MethodCnt - 1 do
+    FClassMethods[I] := TMethodInfo.Create(Input, ConstPoolSec);
 end;
 
-destructor TClassMethodSec.Destroy;
-var
-  I : integer;
+destructor TClassMethodsec.Destroy;
 begin
-  for I := 0 to High(classMethods) do
-    FreeAndNil(ClassMethods[I]);
+  for var I := 0 to High(FClassMethods) do
+    FreeAndNil(FClassMethods[I]);
   inherited;
 end;
 
-{ TClassAttrSec }
+{ TClassAttrsec }
 
-constructor TClassAttrSec.Create(Input: TStream; constPoolSec: TConstPool);
+constructor TClassAttrsec.Create(Input: TStream; ConstPoolSec: TConstPool);
 var
-  numAttr,I : integer;
+  NumAttr: Integer;
 begin
-  numAttr := readU2( Input );
-  if (numAttr > 0) then
+  NumAttr := ReadU2(Input);
+  if NumAttr > 0 then
   begin
-    SetLength(classAttrTab,numAttr);
-    for I := 0 to numAttr-1 do
-      classAttrTab[i] := TAttrFactory.allocAttr( Input, constPoolSec );
+    SetLength(FClassAttrTab, NumAttr);
+    for var I := 0 to NumAttr - 1 do
+      FClassAttrTab[I] := TAttrFactory.AllocAttr(Input, ConstPoolSec);
   end;
 end;
 
@@ -456,93 +482,91 @@ end;
 constructor TClassFile.Create(Input: TStream);
 begin
   try
-    header := TClassFileHeader.Create( Input );
-    if header.magic = $CAFEBABE then begin
-      classConstPool := TConstPool.Create( Input );
-      classDecl := TClassDeclSec.Create( Input, classConstPool );
-      classFields := TClassFieldSec.Create(Input, classConstPool);
-      aClassName := classDecl.getClassName;
-      classMethods := TClassMethodSec.Create(Input, classConstPool, aClassName);
-      classAttrs := TClassAttrSec.Create(Input, classConstPool);
-    end else
-      FreeAndNil(header);
+    FHeader := TClassFileHeader.Create(Input);
+    if FHeader.FMagic = $CAFEBABE then
+    begin
+      FClassConstPool := TConstPool.Create(Input);
+      FClassDecl := TClassDeclSec.Create(Input, FClassConstPool);
+      FClassFields := TClassFieldsec.Create(Input, FClassConstPool);
+      FClassname := FClassDecl.GetClassName;
+      FClassMethods := TClassMethodsec.Create(Input, FClassConstPool);
+      FClassAttrs := TClassAttrsec.Create(Input, FClassConstPool);
+    end
+    else
+      FreeAndNil(FHeader);
   finally
     FreeAndNil(Input);
   end;
 end;
 
-
 destructor TClassFile.Destroy;
 begin
-  FreeAndNil(header);
-  FreeAndNil(classConstPool);
-  FreeAndNil(classDecl);
-  FreeAndNil(classFields);
-  FreeAndNil(classMethods);
-  FreeAndNil(classAttrs);
+  FreeAndNil(FHeader);
+  FreeAndNil(FClassConstPool);
+  FreeAndNil(FClassDecl);
+  FreeAndNil(FClassFields);
+  FreeAndNil(FClassMethods);
+  FreeAndNil(FClassAttrs);
   inherited;
 end;
 
 { TAttrInfo }
 
-constructor TAttrInfo.Create(const Name: string; Length: integer);
+constructor TAttrInfo.Create(const Name: string; Length: Integer);
 begin
-  attrName := Name;
-  len := length;
+  FAttrName := Name;
+  FLen := Length;
 end;
 
 function TAttrInfo.GetName: string;
 begin
-  Result := attrName;
+  Result := FAttrName;
 end;
 
 { TAttrFactory }
 
-class function TAttrFactory.allocAttr(Input: TStream; constPoolSec: TConstPool): TAttrInfo;
+class function TAttrFactory.AllocAttr(Input: TStream; ConstPoolSec: TConstPool)
+  : TAttrInfo;
 var
-  length : integer;
-  retObj : TAttrInfo;
+  Length: Integer;
+  RetObj: TAttrInfo;
 begin
-  retObj := nil;
+  RetObj := nil;
 
   ReadU2(Input);
-  length := ReadU4(Input);
+  Length := ReadU4(Input);
 
-  //Skip all attributes
-  skip_data(length,Input);
+  // Skip all Attributes
+  SkipData(Length, Input);
 
-  Result := retObj;
+  Result := RetObj;
 end;
 
-class procedure TAttrFactory.skip_data(len: integer; Input: TStream);
+class procedure TAttrFactory.SkipData(FLen: Integer; Input: TStream);
 begin
-  if (Input.Position>=Input.Size) and (Len<>0) then
+  if (Input.Position >= Input.Size) and (FLen <> 0) then
     raise Exception.Create('Unexpected end of file');
-  Input.Position := Input.Position + Len;
+  Input.Position := Input.Position + FLen;
 end;
-
-
 
 { TConstBase }
 
-
-function TConstBase.getString: string;
+function TConstBase.GetString: string;
 begin
   Result := '**noname';
 end;
 
-procedure TConstBase.set_ref(const objAry: array of TConstBase);
+procedure TConstBase.SetRef(const ObjAry: array of TConstBase);
 begin
-  //nothing
+  // nothing
 end;
 
 { TConstPool }
 
-
-function TConstPool.allocConstEntry(tag: integer): TConstBase;
+function TConstPool.AllocConstEntry(FTag: Integer): TConstBase;
 begin
   Result := nil;
-  case Tag of
+  case FTag of
     CONSTANT_Utf8:
       Result := TConstUtf8.Create;
     CONSTANT_Integer:
@@ -553,338 +577,315 @@ begin
       Result := TConstLong.Create;
     CONSTANT_Double:
       Result := TConstDouble.Create;
-    CONSTANT_Class,
-    CONSTANT_String:
-      Result := TConstClass_or_String.Create;
-    CONSTANT_Fieldref,
-    CONSTANT_Methodref,
-    CONSTANT_InterfaceMethodref:
+    CONSTANT_Class, CONSTANT_String:
+      Result := TConstClassOrString.Create;
+    CONSTANT_Fieldref, CONSTANT_Methodref, CONSTANT_InterfaceMethodref:
       Result := TConstRef.Create;
     CONSTANT_NameAndType:
-      Result := TConstName_and_Type_info.Create;
+      Result := TConstNameAndTypeInfo.Create;
   else
-    ErrorMsg('allocConstEntry: bad tag value = ' + IntToStr(tag));
+    ErrorMsg('allocConstEntry: bad FTag value = ' + IntToStr(FTag));
   end;
 
   if Assigned(Result) then
-    Result.Tag := Tag;
+    Result.FTag := FTag;
 end;
 
-function TConstPool.ConstPoolElem(ix: integer): TConstBase;
+function TConstPool.ConstPoolElem(FIndex: Integer): TConstBase;
 begin
   Result := nil;
-  if (ix>0) and (ix<Length(constPool)) then
-    Result := constPool[ix];
+  if (FIndex > 0) and (FIndex < Length(FConstPool)) then
+    Result := FConstPool[FIndex];
 end;
 
 constructor TConstPool.Create(Input: TStream);
 begin
-  constPoolCnt := readU2(Input);
+  FConstPoolCnt := ReadU2(Input);
 
-  SetLength(constPool,constPoolCnt);
+  SetLength(FConstPool, FConstPoolCnt);
 
-  readConstPool(Input);
-  resolveConstPool;
+  ReadConstPool(Input);
+  ResolveConstPool;
 end;
 
 destructor TConstPool.Destroy;
-var
-  I : integer;
 begin
-  for I:=0 to High(ConstPool) do
-    FreeAndNil(ConstPool[I]);
+  for var I := 0 to High(FConstPool) do
+    FreeAndNil(FConstPool[I]);
   inherited;
 end;
 
-procedure TConstPool.readConstPool(Input: TStream);
+procedure TConstPool.ReadConstPool(Input: TStream);
 var
-  i,tag : integer;
-  constObj : TConstBase;
+  Int, FTag: Integer;
+  ConstObj: TConstBase;
 begin
-  I := 1;
-  while I<constPoolCnt do
+  Int := 1;
+  while Int < FConstPoolCnt do
   begin
-    Tag := ReadU1(Input);
-    if (Tag > 0) then
+    FTag := ReadU1(Input);
+    if FTag > 0 then
     begin
-      constObj := allocConstEntry( tag );
-      constObj.read( Input );
-      constPool[i] := constObj;
-      if (constObj is TConstLong) or (constObj is TConstDouble) then
+      ConstObj := AllocConstEntry(FTag);
+      ConstObj.Read(Input);
+      FConstPool[Int] := ConstObj;
+      if (ConstObj is TConstLong) or (ConstObj is TConstDouble) then
       begin
-        Inc(I);
-        constPool[i] := nil;
+        Inc(Int);
+        FConstPool[Int] := nil;
       end;
-    end
-    else
-      ; //ErrorHandler.Trace('tag == 0');
-    Inc(I);
+    end;
+    Inc(Int);
   end;
 end;
 
-procedure TConstPool.resolveConstPool;
+procedure TConstPool.ResolveConstPool;
+begin
+  // FIndex 0 is not used
+  for var I := 1 to FConstPoolCnt - 1 do
+    if Assigned(FConstPool[I]) then
+      FConstPool[I].SetRef(FConstPool);
+end;
+
+{ TConstClassOrString }
+
+function TConstClassOrString.GetString: string;
+begin
+  Result := FUtf8.GetString;
+end;
+
+procedure TConstClassOrString.Read(Input: TStream);
+begin
+  FIndex := ReadU2(Input);
+end;
+
+procedure TConstClassOrString.SetRef(const ObjAry: array of TConstBase);
 var
-  I : integer;
+  Tmp: TConstBase;
 begin
-  //Index 0 is not used
-  for I:=1 to constPoolCnt-1 do
-    if Assigned(constPool[I]) then
-      constPool[I].set_ref(constPool);
+  Tmp := ObjAry[FIndex];
+  if Tmp is TConstUtf8 then
+    FUtf8 := Tmp as TConstUtf8;
 end;
-
-
-{ TConstClass_or_String }
-
-function TConstClass_or_String.GetString: string;
-begin
-  Result := Utf8.GetString;
-end;
-
-procedure TConstClass_or_String.Read(Input: TStream);
-begin
-  index := readU2( Input );
-end;
-
-procedure TConstClass_or_String.set_ref(const objAry: array of TConstBase);
-var
-  tmp : TConstBase;
-begin
-  tmp := objAry[ index ];
-  if (tmp is TConstUtf8) then
-    Utf8 := tmp as TConstUtf8
-  else
-    ;//ErrorHandler.Trace('not utf8');
-end;
-
 
 { TConstLongConvert }
 
-function TConstLongConvert.readLong(Input: TStream): int64;
+function TConstLongConvert.ReadLong(Input: TStream): Int64;
 var
-  h,l : integer;
+  High, Low: Integer;
 begin
-  h := readU4(Input);
-  l := readU4(Input);
-  Result := toLong(h,l);
+  High := ReadU4(Input);
+  Low := ReadU4(Input);
+  Result := ToLong(High, Low);
 end;
 
-function TConstLongConvert.toLong(h, l: integer): int64;
+function TConstLongConvert.ToLong(High, Low: Integer): Int64;
 begin
-  Result := (h shl 32) or l;
+  Result := (High shl 32) or Low;
 end;
 
 { TConstDouble }
 
 procedure TConstDouble.Read(Input: TStream);
 var
-  I : int64;
+  Int: Int64;
 begin
-  //Is this cast ok?
-  I := ReadLong(Input);
-  Move(I,D,SizeOf(D));
+  // Is this cast ok?
+  Int := ReadLong(Input);
+  Move(Int, FDo, SizeOf(FDo));
 end;
 
 { TConstFloat }
 
 procedure TConstFloat.Read(Input: TStream);
 var
-  L : longword;
+  Lon: LongWord;
 begin
-  L := ReadU4(Input);
-  //Is this cast ok?
-  Move(L,F,SizeOf(F));
+  Lon := ReadU4(Input);
+  // Is this cast ok?
+  Move(Lon, FSin, SizeOf(FSin));
 end;
 
 { TConstInt }
 
 procedure TConstInt.Read(Input: TStream);
 var
-  L : longword;
+  Lon: LongWord;
 begin
-  L := ReadU4(Input);
-  Val := L;
+  Lon := ReadU4(Input);
+  FVal := Lon;
 end;
 
 { TConstLong }
 
 procedure TConstLong.Read(Input: TStream);
 begin
-  longVal := ReadLong(Input);
+  FLongVal := ReadLong(Input);
 end;
 
-{ TConstName_and_Type_info }
+{ TConstNameAndTypeInfo }
 
-procedure TConstName_and_Type_info.Read(Input: TStream);
+procedure TConstNameAndTypeInfo.Read(Input: TStream);
 begin
-  inherited read(Input);
-  descriptor_index := readU2(Input);
+  inherited Read(Input);
+  FDescriptorIndex := ReadU2(Input);
 end;
 
-procedure TConstName_and_Type_info.set_ref(const objAry: array of TConstBase);
+procedure TConstNameAndTypeInfo.SetRef(const ObjAry: array of TConstBase);
 var
-  tmp : TConstBase;
+  Tmp: TConstBase;
 begin
-  inherited set_ref( objAry );
-  Tmp := objAry[ descriptor_index ];
-  if (tmp is TConstUtf8) then
-    descriptor_Utf8 := tmp as TConstUtf8
-  else
-    ; //ErrorHandler.Trace('utf8');
+  inherited SetRef(ObjAry);
+  Tmp := ObjAry[FDescriptorIndex];
+  if Tmp is TConstUtf8 then
+    FDescriptorUtf8 := Tmp as TConstUtf8;
 end;
 
 { TConstRef }
 
 procedure TConstRef.Read(Input: TStream);
 begin
-  index := readU2( Input );
-  name_and_type_index := readU2( Input );
+  FIndex := ReadU2(Input);
+  FNameAndTypeIndex := ReadU2(Input);
 end;
 
-procedure TConstRef.set_ref(const objAry: array of TConstBase);
+procedure TConstRef.SetRef(const ObjAry: array of TConstBase);
 var
-  tmp : TConstBase;
+  Tmp: TConstBase;
 begin
-  Tmp := objAry[ index ];
-  if (tmp is TConstClass_or_String) then
-    class_ref := tmp as TconstClass_or_String
-  else
-    ; //ErrorHandler.Trace('nix');
+  Tmp := ObjAry[FIndex];
+  if Tmp is TConstClassOrString then
+    FClassRef := Tmp as TConstClassOrString;
 
-  Tmp := objAry[ name_and_type_index ];
-  if (tmp is TConstName_and_Type_info) then
-    name_ref := tmp as TConstName_and_Type_info
-  else
-    ;//ErrorHandler.Trace('nix');
+  Tmp := ObjAry[FNameAndTypeIndex];
+  if Tmp is TConstNameAndTypeInfo then
+    FNameRef := Tmp as TConstNameAndTypeInfo;
 end;
 
 { TConstUtf8 }
 
-
 procedure TConstUtf8.Read(Input: TStream);
 var
-  one_char : word;
-  len, charCnt : integer;
-  one_byte,first_byte : byte;
-  tmp : word;
+  OneChar: Word;
+  FLen, CharCnt: Integer;
+  OneByte, FirstByte: Byte;
+  Tmp: Word;
 begin
-  len := readU2( Input );
+  FLen := ReadU2(Input);
 
-  charCnt := 0;
-  while (charCnt < len) do
+  CharCnt := 0;
+  while CharCnt < FLen do
   begin
-    one_byte := readU1( Input );
-    Inc(charCnt);
-    if ((one_byte shr 7) = 1) then
+    OneByte := ReadU1(Input);
+    Inc(CharCnt);
+    if (OneByte shr 7) = 1 then
     begin
-      tmp := (one_byte and $3f);  // Bits 5..0 (six bits)
-      first_byte := one_byte;
-      one_byte := readU1( Input );
-      Inc(charCnt);
-      tmp := (tmp or ((one_byte and $3f) shl 6));
-      if ((first_byte shr 4) = 2+4+8) then
+      Tmp := (OneByte and $3F); // Bits 5..0 (six bits)
+      FirstByte := OneByte;
+      OneByte := ReadU1(Input);
+      Inc(CharCnt);
+      Tmp := (Tmp or ((OneByte and $3F) shl 6));
+      if (FirstByte shr 4) = 2 + 4 + 8 then
       begin
-        one_byte := readU1( Input );
-        Inc(charCnt);
-        one_byte := (one_byte and $0F);
-        tmp := (tmp or (one_byte shl 12));
+        OneByte := ReadU1(Input);
+        Inc(CharCnt);
+        OneByte := (OneByte and $0F);
+        Tmp := (Tmp or (OneByte shl 12));
       end;
-      one_char := tmp;
+      OneChar := Tmp;
     end
     else
-      one_char := one_byte;
-    Str := Str + char(Lo(One_Char));
+      OneChar := OneByte;
+    FStr := FStr + Char(Lo(OneChar));
   end;
 end;
 
 function TConstUtf8.GetString: string;
 begin
-  Result := str;
+  Result := FStr;
 end;
 
 { TAccData }
 
-class function TAccData.isAbstract(Val: integer): boolean;
+class function TAccData.IsAbstract(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_ABSTRACT) <> 0;
 end;
 
-class function TAccData.isFinal(Val: integer): boolean;
+class function TAccData.IsFinal(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_FINAL) <> 0;
 end;
 
-class function TAccData.isInterface(Val: integer): boolean;
+class function TAccData.IsInterface(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_INTERFACE) <> 0;
 end;
 
-class function TAccData.isNative(Val: integer): boolean;
+class function TAccData.IsNative(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_NATIVE) <> 0;
 end;
 
-class function TAccData.isPrivate(Val: integer): boolean;
+class function TAccData.IsPrivate(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_PRIVATE) <> 0;
 end;
 
-class function TAccData.isProtected(Val: integer): boolean;
+class function TAccData.IsProtected(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_PROTECTED) <> 0;
 end;
 
-class function TAccData.isPublic(Val: integer): boolean;
+class function TAccData.IsPublic(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_PUBLIC) <> 0;
 end;
 
-class function TAccData.isStatic(Val: integer): boolean;
+class function TAccData.IsStatic(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_STATIC) <> 0;
 end;
 
-class function TAccData.isStrict(Val: integer): boolean;
+class function TAccData.IsStrict(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_STRICT) <> 0;
 end;
 
-class function TAccData.isSuper(Val: integer): boolean;
+class function TAccData.IsSuper(Val: Integer): Boolean;
 begin
-  Result := (Val and ACC_SYNC) <> 0;  //sync and super share the same bit-flag
+  Result := (Val and ACC_SYNC) <> 0; // sync and super share the same bit-flag
 end;
 
-class function TAccData.isSync(Val: integer): boolean;
+class function TAccData.IsSync(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_SYNC) <> 0;
 end;
 
-class function TAccData.isTransient(Val: integer): boolean;
+class function TAccData.IsTransient(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_TRANSIENT) <> 0;
 end;
 
-class function TAccData.isVolatile(Val: integer): boolean;
+class function TAccData.IsVolatile(Val: Integer): Boolean;
 begin
   Result := (Val and ACC_VOLATILE) <> 0;
 end;
 
-
 { TObjNameFormat }
 
-
-class function TObjNameFormat.toDotSeparator(const slashName: string): string;
+class function TObjNameFormat.ToDotSeparator(const SlashName: string): string;
 var
-  I : integer;
-  Ch : char;
+  Chr: Char;
 begin
   Result := '';
-  for I:=1 to Length(SlashName) do
+  for var I := 1 to Length(SlashName) do
   begin
-    ch := SlashName[I];
-    if ch='/' then
+    Chr := SlashName[I];
+    if Chr = '/' then
       Result := Result + '.'
-    else if ch<>';' then
-      Result := Result + ch;
+    else if Chr <> ';' then
+      Result := Result + Chr;
   end;
 end;
 

@@ -2,7 +2,9 @@ unit ULink;
 
 interface
 
-uses Graphics, Classes;
+uses
+  Graphics,
+  Classes;
 
 const
   DelphiBounds = ' Name Left Top Width Height Resizable Undecorated Caption ';
@@ -28,20 +30,20 @@ const
   }
 
 var
-  ComponentNrToInsert: integer;
+  GComponentNrToInsert: Integer;
   PanelCanvasType: string;
-  SelectStrings: TStrings;
+  GSelectStrings: TStrings;
 
-  function Delphi2JavaValues(const s: string): string;
-  function Delphi2JavaNames(Tag: integer; const aClass, Attr: string): string;
-  function Java2DelphiValues(const d, j: string): string;
-  function Java2DelphiColors(const s: string): string;
-  function Delphi2JavaColors(s: string): string;
-  function Java2DelphiCursor(const s: string): string;
-  function Delphi2JavaCursor(const s: string): string;
-  function turnRGB(const s: string): string;
-  function TColorToString(Color: TColor): string;
-  function toJavaColor(Color: TColor): string;
+function Delphi2JavaValues(const Str: string): string;
+function Delphi2JavaNames(Tag: Integer; const AClass, Attr: string): string;
+function Java2DelphiValues(const DValue, JValue: string): string;
+function Java2DelphiColors(const Str: string): string;
+function Delphi2JavaColors(Str: string): string;
+function Java2DelphiCursor(const Str: string): string;
+function Delphi2JavaCursor(const Str: string): string;
+function TurnRGB(const Str: string): string;
+function TColorToString(Color: TColor): string;
+function ToJavaColor(Color: TColor): string;
 
 implementation
 
@@ -51,9 +53,10 @@ const
   DelphiValues  = ' False True ';
   JavaValues    = ' false true ';
 
-  DelphiColors   = ' clBlack $00404040  clGray $00C0C0C0 clBlue $00AFAFFF $0000C8FF clLime clFuchsia clAqua clRed clWhite clYellow clBtnFace clWindowText clWindow ';
-  JavaColors     = ' BLACK   DARKGRAY   GRAY   LIGHTGRAY BLUE   PINK      ORANGE    GREEN  MAGENTA   CYAN   RED   WHITE   YELLOW   (NONE)    (NONE)       (NONE)   ';
-
+  DelphiColors   = ' clBlack $00404040  clGray $00C0C0C0 clBlue $00AFAFFF $0000C8FF clLime' +
+                   ' clFuchsia clAqua clRed clWhite clYellow clBtnFace clWindowText clWindow ';
+  JavaColors     = ' BLACK   DARKGRAY   GRAY   LIGHTGRAY BLUE   PINK      ORANGE    GREEN ' +
+                   ' MAGENTA   CYAN   RED   WHITE   YELLOW   (NONE)    (NONE)       (NONE)   ';
 
   DelphiCursor   = ' crDefault crCross   crIBeam crHourGlass crSizeNESW crSizeNWSE crSizeNESW' +
                    ' crSizeNESW crSizeNS crSizeNS crSizeWE crSizeWE crHandPoint crSizeAll ';
@@ -63,23 +66,24 @@ const
 var
   Delphi, Java: string;
 
-function FromTo(s: string; const d, j: string): string;
+function FromTo(Str: string; const Delphi, Java: string): string;
 begin
-  Result:= s;
-  if trim(s) = '' then exit;
-  var p:= Pos(' ' + s + ' ', d);
-  if p > 0 then begin
-    s:= copy(j, p + 1, 255);
-    delete(s, pos(' ', s), 255);
-    Result:= s;
+  Result:= Str;
+  if Trim(Str) = '' then
+    Exit;
+  var Posi:= Pos(' ' + Str + ' ', Delphi);
+  if Posi > 0 then begin
+    Str:= Copy(Java, Posi + 1, 255);
+    Delete(Str, Pos(' ', Str), 255);
+    Result:= Str;
   end;
 end;
 
-procedure SetChangeAttributeNames(Tag: integer; const Klasse: string);
+procedure SetChangeAttributeNames(Tag: Integer; const Style: string);
   // from Delphi to Java
 begin
   case Tag of
-    0: if Klasse = 'Style' then begin
+    0: if Style = 'Style' then begin
          Delphi:= ' fsBold fsItalic ';
          Java  := ' Bold   Italic   ';
        end;
@@ -98,85 +102,92 @@ begin
   end;
 end;
 
-function Delphi2JavaNames(Tag: integer; const aClass, Attr: string): string;
+function Delphi2JavaNames(Tag: Integer; const AClass, Attr: string): string;
 begin
-  SetChangeAttributeNames(Tag, aClass); // Frame/AWT
-  Result:= FromTo(Attr, DelphiBounds + Delphi, JavaBounds + Java)
+  SetChangeAttributeNames(Tag, AClass); // Frame/AWT
+  Result:= FromTo(Attr, DelphiBounds + Delphi, JavaBounds + Java);
 end;
 
-function Java2DelphiValues(const d, j: string): string;
-  var dw, jw, prefix: string; 
+function Java2DelphiValues(const DValue, JValue: string): string;
+  var DCursor, JCursor, Prefix: string;
 begin
-  prefix:= copy(d, 1, 2);
-  if prefix = 'cr' then begin
-    dw:= DelphiCursor;
-    jw:= JavaCursor;
-  end;
+  Prefix:= Copy(DValue, 1, 2);
+  if Prefix = 'cr' then begin
+    DCursor:= DelphiCursor;
+    JCursor:= JavaCursor;
+  end else
+  // ToDo
+  ;
 
-  Result:= FromTo(j, jw, dw);
-  if Result = '' then Result:= j;
+  Result:= FromTo(JValue, JCursor, DCursor);
+  if Result = '' then
+    Result:= JValue;
 end;
 
-function Delphi2JavaValues(const s: string): string;
+function Delphi2JavaValues(const Str: string): string;
 begin // used to change attributes of type TColor
-  Result:= FromTo(s, DelphiValues + DelphiCursor, JavaValues + JavaCursor);
-  if Result = '' then Result:= s;
+  Result:= FromTo(Str, DelphiValues + DelphiCursor, JavaValues + JavaCursor);
+  if Result = '' then
+    Result:= Str;
 end;
 
-function Java2DelphiColors(const s: string): string;
+function Java2DelphiColors(const Str: string): string;
 begin // used to show color combo box
-  Result:= FromTo(s, JavaColors, DelphiColors);
-  if Result = '' then Result:= 'clBtnFace';
+  Result:= FromTo(Str, JavaColors, DelphiColors);
+  if Result = '' then
+    Result:= 'clBtnFace';
 end;
 
-function Delphi2JavaColors(s: string): string;
+function Delphi2JavaColors(Str: string): string;
 begin
-  s:= FromTo(s, DelphiColors, JavaColors);
-  if copy(s, 1, 3) = '$00'
-    then s:= '0x' + copy(s, 8, 2) + copy(s, 6, 2) + copy(s, 4, 2);
-  if s = '' then s:= '(NONE)';
-  Result:= s;
+  Str:= FromTo(Str, DelphiColors, JavaColors);
+  if Copy(Str, 1, 3) = '$00'
+    then Str:= '0x' + Copy(Str, 8, 2) + Copy(Str, 6, 2) + Copy(Str, 4, 2);
+  if Str = '' then
+    Str:= '(NONE)';
+  Result:= Str;
 end;
 
-function turnRGB(const s: string): string;
+function TurnRGB(const Str: string): string;
 begin
-  Result:= s;
-  if copy(s, 1, 2) = '0x' then
-    Result:= '0x' + copy(s, 7, 2) + copy(s, 5, 2) + copy(s, 3, 2);
+  Result:= Str;
+  if Copy(Str, 1, 2) = '0x' then
+    Result:= '0x' + Copy(Str, 7, 2) + Copy(Str, 5, 2) + Copy(Str, 3, 2);
 end;
 
 function TColorToString(Color: TColor): string;
 begin
-  var s:= ColorToString(Color);
-  s:= Delphi2JavaColors(s);
-  if copy(s, 1, 2) = 'cl' then
-    FmtStr(s, '%s%.8x', [HexDisplayPrefix, Color]);
-  if copy(s, 1, 2) = '$0' then
-    s:= '0x' + copy(s, 8, 2) + copy(s, 6, 2) + copy(s, 4, 2);
-  Result:= s;
+  var Str:= ColorToString(Color);
+  Str:= Delphi2JavaColors(Str);
+  if Copy(Str, 1, 2) = 'cl' then
+    FmtStr(Str, '%s%.8x', [HexDisplayPrefix, Color]);
+  if Copy(Str, 1, 2) = '$0' then
+    Str:= '0x' + Copy(Str, 8, 2) + Copy(Str, 6, 2) + Copy(Str, 4, 2);
+  Result:= Str;
 end;
 
-function toJavaColor(Color: TColor): string;
+function ToJavaColor(Color: TColor): string;
 begin
-  var col:= TColorToString(Color);
-  if copy(col, 1, 2) = '0x'
-    then Result:= 'new Color(' + col + ')'
-    else Result:= 'Color.' + col;
+  var Col:= TColorToString(Color);
+  if Copy(Col, 1, 2) = '0x'
+    then Result:= 'new Color(' + Col + ')'
+    else Result:= 'Color.' + Col;
 end;
 
-function Java2DelphiCursor(const s: string): string;
-begin // used to show cursor combo box
-  Result:= FromTo(s, JavaCursor, DelphiCursor);
-end;
-
-function Delphi2JavaCursor(const s: string): string;
+function Java2DelphiCursor(const Str: string): string;
 begin
-  Result:= FromTo(s, DelphiCursor, JavaCursor);
+  Result:= FromTo(Str, JavaCursor, DelphiCursor);
+end;
+
+function Delphi2JavaCursor(const Str: string): string;
+begin
+  Result:= FromTo(Str, DelphiCursor, JavaCursor);
 end;
 
 initialization
-  SelectStrings:= TStringlist.Create;
+  GSelectStrings:= TStringList.Create;
 
 finalization
-  SelectStrings.Destroy;
+  GSelectStrings.Destroy;
+
 end.

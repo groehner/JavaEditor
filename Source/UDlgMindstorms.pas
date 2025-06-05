@@ -3,7 +3,10 @@ unit UDlgMindstorms;
 interface
 
 uses
-  Forms, StdCtrls, System.Classes, Vcl.Controls;
+  Forms,
+  StdCtrls,
+  System.Classes,
+  Vcl.Controls;
 
 type
   TFMindstormsDialog = class(TForm)
@@ -23,7 +26,7 @@ type
     procedure BFlashClick(Sender: TObject);
     procedure BBrowserClick(Sender: TObject);
     procedure BConsoleViewerClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var AAction: TCloseAction);
   public
     procedure Save;
   end;
@@ -32,40 +35,45 @@ implementation
 
 {$R *.dfm}
 
-uses UConfiguration, UJava, UJavaCommands, JvGnugettext;
+uses
+  JvGnugettext,
+  UConfiguration,
+  UJava,
+  UJavaCommands;
 
 procedure TFMindstormsDialog.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
-  CBVerbose.Checked:= FConfiguration.MindstormsVerbose;
-  CBDebug.Checked  := FConfiguration.MindstormsDebug;
-  CBRun.Checked    := FConfiguration.MindstormsRun;
+  CBVerbose.Checked := FConfiguration.MindstormsVerbose;
+  CBDebug.Checked := FConfiguration.MindstormsDebug;
+  CBRun.Checked := FConfiguration.MindstormsRun;
 end;
 
-procedure TFMindstormsDialog.FormClose(Sender: TObject; var aAction: TCloseAction);
+procedure TFMindstormsDialog.FormClose(Sender: TObject;
+  var AAction: TCloseAction);
 begin
   Save;
-  aAction:= caFree;
+  AAction := caFree;
 end;
 
 procedure TFMindstormsDialog.BBrowserClick(Sender: TObject);
 begin
-  myJavaCommands.MindstormsUtility('nxjbrowse.bat');
+  MyJavaCommands.MindstormsUtility('nxjbrowse.bat');
 end;
 
 procedure TFMindstormsDialog.BConsoleViewerClick(Sender: TObject);
 begin
-  myJavaCommands.MindstormsUtility('nxjconsoleviewer.bat');
+  MyJavaCommands.MindstormsUtility('nxjconsoleviewer.bat');
 end;
 
 procedure TFMindstormsDialog.BControlCenterClick(Sender: TObject);
 begin
-  myJavaCommands.MindstormsUtility('nxjcontrol.bat');
+  MyJavaCommands.MindstormsUtility('nxjcontrol.bat');
 end;
 
 procedure TFMindstormsDialog.BFlashClick(Sender: TObject);
 begin
-  myJavaCommands.MindstormsUtility('nxjflashg.bat');
+  MyJavaCommands.MindstormsUtility('nxjflashg.bat');
 end;
 
 procedure TFMindstormsDialog.BRunClick(Sender: TObject);
@@ -76,9 +84,9 @@ end;
 
 procedure TFMindstormsDialog.Save;
 begin
-  FConfiguration.MindstormsVerbose:= CBVerbose.Checked;
-  FConfiguration.MindstormsDebug:= CBDebug.Checked;
-  FConfiguration.MindstormsRun:= CBRun.Checked;
+  FConfiguration.MindstormsVerbose := CBVerbose.Checked;
+  FConfiguration.MindstormsDebug := CBDebug.Checked;
+  FConfiguration.MindstormsRun := CBRun.Checked;
   FConfiguration.WriteBoolU('Mindstorms', 'Verbose', CBVerbose.Checked);
   FConfiguration.WriteBoolU('Mindstorms', 'Debug', CBDebug.Checked);
   FConfiguration.WriteBoolU('Mindstorms', 'Run', CBRun.Checked);

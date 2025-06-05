@@ -21,183 +21,207 @@ unit UViewIntegrator;
 
 interface
 
-uses Controls, Graphics, IniFiles, Classes, Types, Forms,
-     ExtCtrls, uIntegrator, uModel, uModelEntity, UUtils;
+uses
+  Controls,
+  Graphics,
+  IniFiles,
+  Classes,
+  Types,
+  Forms,
+  ExtCtrls,
+  UIntegrator,
+  UModel,
+  UModelEntity,
+  UUtils;
 
 type
-  //Baseclass for integrators that are parented
+  // Baseclass for integrators that are parented
   TViewIntegrator = class(TTwowayIntegrator)
   private
-    Parent: TWinControl;
+    FParent: TWinControl;
     function GetCurrentEntity: TModelEntity;
     class procedure SetCurrentEntity(const Value: TModelEntity);
   protected
     procedure CurrentEntityChanged; virtual;
   public
-    constructor Create(om: TObjectModel; aParent: TWinControl); virtual;
+    constructor Create(ObjectModel: TObjectModel; Parent: TWinControl); virtual;
     destructor Destroy; override;
-    //Current entity, all view integratros share the same instance
-    property CurrentEntity : TModelEntity read GetCurrentEntity write SetCurrentEntity;
+    // Current entity, all view integratros share the same instance
+    property CurrentEntity: TModelEntity read GetCurrentEntity
+      write SetCurrentEntity;
   end;
 
-  // Class to show/edit a model in a powerpointy view
+  // Class to Show/edit a model in a powerpointy view
   // TRtfdDiagram is a descendet of this class
   TDiagramIntegrator = class(TViewIntegrator)
   private
-    FShowConnections: integer;
-    FShowParameter: integer;
-    FSortOrder: integer;
-    FShowIcons: integer;
-    FShowView: integer;
-    FShowObjectDiagram: boolean;
+    FShowConnections: Integer;
+    FShowParameter: Integer;
+    FSortOrder: Integer;
+    FShowIcons: Integer;
+    FShowView: Integer;
+    FShowObjectDiagram: Boolean;
     FFont: TFont;
   protected
     FVisibilityFilter: TVisibility;
     FPackage: TAbstractPackage;
     procedure SetVisibilityFilter(const Value: TVisibility); virtual;
     procedure SetPackage(const Value: TAbstractPackage); virtual;
-    procedure SetConnections(const Value: integer); virtual;
-    procedure SetShowView(Value: integer); virtual;
-    procedure SetShowParameter(const Value: integer); virtual;
-    procedure SetSortOrder(const Value: integer); virtual;
-    procedure SetShowIcons(const Value: integer); virtual;
-    procedure SetShowObjectDiagram(const Value: boolean); virtual;
-    function GetStorage(aCreate : boolean = False) : TMemIniFile; virtual;
+    procedure SetConnections(const Value: Integer); virtual;
+    procedure SetShowView(Value: Integer); virtual;
+    procedure SetShowParameter(const Value: Integer); virtual;
+    procedure SetSortOrder(const Value: Integer); virtual;
+    procedure SetShowIcons(const Value: Integer); virtual;
+    procedure SetShowObjectDiagram(const Value: Boolean); virtual;
+    function GetStorage(Create: Boolean = False): TMemIniFile; virtual;
   public
-    //class function CreateDiagram(om: TObjectModel; aParent: TWinControl; aFeedback : IEldeanFeedback = nil) : TDiagramIntegrator;
-    constructor Create(om: TObjectModel; aParent: TWinControl); override;
+    constructor Create(ObjectModel: TObjectModel; Parent: TWinControl);
+      override;
     destructor Destroy; override;
-    procedure GetDiagramSize(var W, H : integer); virtual; abstract;
-    function GetSelectedRect : TRect; virtual; abstract;
-    procedure PaintTo(Canvas: TCanvas; X, Y: integer; SelectedOnly : boolean); virtual; abstract;
-    procedure SaveAsPicture(const FileName : string);
+    procedure GetDiagramSize(var Width, Height: Integer); virtual; abstract;
+    function GetSelectedRect: TRect; virtual; abstract;
+    procedure PaintTo(Canvas: TCanvas; X, Y: Integer; SelectedOnly: Boolean);
+      virtual; abstract;
+    procedure SaveAsPicture(const FileName: string);
     procedure DoLayout; virtual; abstract;
-    function GetClickAreas : TStringList; virtual; abstract;
-    procedure ScreenCenterEntity(E : TModelEntity); virtual; abstract;
+    function GetClickAreas: TStringList; virtual; abstract;
+    procedure ScreenCenterEntity(E: TModelEntity); virtual; abstract;
     procedure DeleteSelectedControlsAndRefresh; virtual; abstract;
     procedure DeleteObjects; virtual; abstract;
-    function hasObjects: boolean; virtual; abstract;
+    function HasObjects: Boolean; virtual; abstract;
     procedure ClassEditSelectedDiagramElements; overload; virtual; abstract;
-    procedure ClassEditSelectedDiagramElements(Sender: TObject); overload; virtual; abstract;
-    procedure SourceEditSelectedDiagramElementsControl(C: TControl); virtual; abstract;
+    procedure ClassEditSelectedDiagramElements(Sender: TObject); overload;
+      virtual; abstract;
+    procedure SourceEditSelectedDiagramElementsControl(Control: TControl);
+      virtual; abstract;
     procedure UnSelectAllElements; virtual; abstract;
-    procedure StoreDiagram(filename: string); virtual; abstract;
-    procedure FetchDiagram(filename: string); virtual; abstract;
+    procedure StoreDiagram(FileName: string); virtual; abstract;
+    procedure FetchDiagram(FileName: string); virtual; abstract;
     procedure RefreshDiagram; virtual; abstract;
     procedure ClearDiagram; virtual; abstract;
     procedure RecalcPanelSize; virtual; abstract;
     procedure SelectAssociation; virtual; abstract;
-    procedure InitShowParameter(const Value: integer);
+    procedure InitShowParameter(const Value: Integer);
     function GetPanel: TCustomPanel; virtual; abstract;
     procedure ResolveAssociations; virtual; abstract;
     procedure ResolveObjectAssociations; virtual; abstract;
-    function hasEditableClass: boolean; virtual; abstract;
-    function hasSelectedControl: boolean; virtual; abstract;
-    function hasSelectedConnection: boolean; virtual; abstract;
-    procedure SetInteractive(UMLForm: TForm; path: string; OnInteractiveModified: TNotifyEvent); virtual; abstract;
-    procedure SetFormMouseDown(OnFormMouseDown: TNotifyEvent); virtual; abstract;
-    function hasInteractiveCode: boolean; virtual; abstract;
-    procedure InteractiveSetModified(Modified: boolean); virtual; abstract;
-    function getSourcePath: string; virtual; abstract;
-    procedure SetFont(const aFont: TFont); virtual;
-    function  GetFont: TFont; virtual;
-    procedure Lock(b: boolean); virtual; abstract;
+    function HasEditableClass: Boolean; virtual; abstract;
+    function HasSelectedControl: Boolean; virtual; abstract;
+    function HasSelectedConnection: Boolean; virtual; abstract;
+    procedure SetInteractive(UMLForm: TForm; Path: string;
+      OnInteractiveModified: TNotifyEvent); virtual; abstract;
+    procedure SetFormMouseDown(OnFormMouseDown: TNotifyEvent); virtual;
+      abstract;
+    function HasInteractiveCode: Boolean; virtual; abstract;
+    procedure InteractiveSetModified(Modified: Boolean); virtual; abstract;
+    function GetSourcePath: string; virtual; abstract;
+    procedure SetFont(const Font: TFont); virtual;
+    function GetFont: TFont; virtual;
+    procedure Lock(ALock: Boolean); virtual; abstract;
     procedure PopMenuClassPopup(Sender: TObject); virtual; abstract;
-    procedure PopMenuObjectPopup(Sender: TOBject); virtual; abstract;
+    procedure PopMenuObjectPopup(Sender: TObject); virtual; abstract;
     procedure PopMenuConnectionPopup(Sender: TObject); virtual; abstract;
-    procedure CompileOneWith(C: TControl; Compiler: string); virtual; abstract;
-    procedure Run(C: TControl); virtual; abstract;
-    procedure DoShowParameter(aControl: TControl; Mode: integer); virtual; abstract;
-    procedure DoShowVisibility(aControl: TControl; Mode: integer); virtual; abstract;
-    procedure DoShowVisibilityFilter(aControl: TControl; Mode: integer); virtual; abstract;
-    procedure ShowInheritedMethodsFromSystemClasses(C: TControl; ShowOrHide: boolean); virtual; abstract;
-    procedure AddCommentBoxTo(aControl: TControl); virtual; abstract;
-    procedure DoConnection(Item: integer); virtual; abstract;
-    procedure DoAlign(Item: integer); virtual; abstract;
+    procedure CompileOneWith(Control: TControl; Compiler: string);
+      virtual; abstract;
+    procedure Run(Control: TControl); virtual; abstract;
+    procedure DoShowParameter(Control: TControl; Mode: Integer);
+      virtual; abstract;
+    procedure DoShowVisibility(Control: TControl; Mode: Integer);
+      virtual; abstract;
+    procedure DoShowVisibilityFilter(Control: TControl; Mode: Integer);
+      virtual; abstract;
+    procedure ShowInheritedMethodsFromSystemClasses(Control: TControl;
+      ShowOrHide: Boolean); virtual; abstract;
+    procedure AddCommentBoxTo(Control: TControl); virtual; abstract;
+    procedure DoConnection(Item: Integer); virtual; abstract;
+    procedure DoAlign(Item: Integer); virtual; abstract;
     procedure ClearSelection; virtual; abstract;
-    procedure CreateTestClass(aControl: TControl); virtual; abstract;
-    procedure RunTests(aControl: TControl; const Method: string); virtual; abstract;
-    procedure EditObject(C: TControl); virtual; abstract;
-    procedure OpenClass(C: TControl); virtual; abstract;
+    procedure CreateTestClass(Control: TControl); virtual; abstract;
+    procedure RunTests(Control: TControl; const Method: string);
+      virtual; abstract;
+    procedure EditObject(Control: TControl); virtual; abstract;
+    procedure OpenClass(Control: TControl); virtual; abstract;
     procedure OpenClassWithDialog; virtual; abstract;
     procedure ClassInsert; virtual; abstract;
     procedure NewClass; virtual; abstract;
     procedure ShowAllNewObjects(Sender: TObject); virtual; abstract;
     procedure ShowUnnamedObject(Sender: TObject); virtual; abstract;
-    procedure SetRecursiv(P: TPoint; pos: integer); virtual; abstract;
+    procedure SetRecursiv(Posi: TPoint; Pos: Integer); virtual; abstract;
     procedure CopyDiagramToClipboard; virtual; abstract;
     procedure ClearMarkerAndConnections(Control: TControl); virtual; abstract;
-    procedure DrawMarkers(r: TRect; show: boolean); virtual; abstract;
+    procedure DrawMarkers(Rect: TRect; Show: Boolean); virtual; abstract;
     procedure EditBox(Control: TControl); virtual; abstract;
-    procedure SetModified(const Value: boolean); virtual; abstract;
+    procedure SetModified(const Value: Boolean); virtual; abstract;
     procedure SetOnModified(OnBoolEvent: TBoolEvent); virtual; abstract;
     procedure SetOnSelectionChanged(Sender: TNotifyEvent); virtual; abstract;
     procedure ChangeStyle; virtual; abstract;
     procedure DeleteComment; virtual; abstract;
-    function getSVG: string; virtual; abstract;
-    function getClasses: TStringList; virtual; abstract;
+    function GetSVG: string; virtual; abstract;
+    function GetClasses: TStringList; virtual; abstract;
     procedure Retranslate; virtual; abstract;
     procedure SetUMLFont; virtual; abstract;
-    function HasAInvalidClass: boolean; virtual; abstract;
+    function HasAInvalidClass: Boolean; virtual; abstract;
 
-    //Current package
+    // Current package
     property Package: TAbstractPackage read FPackage write SetPackage;
-    property VisibilityFilter : TVisibility read FVisibilityFilter write SetVisibilityFilter;
-    property ShowConnections : integer read FShowConnections write SetConnections;
-    property ShowView: integer read FShowView write SetShowView;
-    property ShowParameter: integer read FShowParameter write SetShowParameter;
-    property SortOrder: integer read FSortOrder write SetSortOrder;
-    property ShowIcons: integer read FShowIcons write SetShowIcons;
-    property ShowObjectDiagram: boolean read FShowObjectDiagram write SetShowObjectDiagram;
+    property VisibilityFilter: TVisibility read FVisibilityFilter
+      write SetVisibilityFilter;
+    property ShowConnections: Integer read FShowConnections
+      write SetConnections;
+    property ShowView: Integer read FShowView write SetShowView;
+    property ShowParameter: Integer read FShowParameter write SetShowParameter;
+    property SortOrder: Integer read FSortOrder write SetSortOrder;
+    property ShowIcons: Integer read FShowIcons write SetShowIcons;
+    property ShowObjectDiagram: Boolean read FShowObjectDiagram
+      write SetShowObjectDiagram;
     property Font: TFont read GetFont write SetFont;
   end;
 
-  procedure SetCurrentEntity(Value: TModelEntity);
+procedure SetCurrentEntity(Value: TModelEntity);
 
 implementation
 
-uses SysUtils, Contnrs, Vcl.Imaging.pngimage,
-     JvGnugettext, UStringRessources, UConfiguration;
+uses
+  SysUtils,
+  Contnrs,
+  Vcl.Imaging.pngimage,
+  JvGnugettext,
+  UStringRessources,
+  UConfiguration;
 
 var
-  _CurrentEntity : TModelEntity = nil;
-  _ViewIntegrators : TObjectList;
+  GCurrentEntity: TModelEntity = nil;
+  GViewIntegrators: TObjectList;
 
-{ TViewIntegrator }
+  { TViewIntegrator }
 
-constructor TViewIntegrator.Create(om: TObjectModel; aParent: TWinControl);
+constructor TViewIntegrator.Create(ObjectModel: TObjectModel;
+  Parent: TWinControl);
 begin
-  inherited Create(om);
-  Self.Parent:= aParent;
-  _ViewIntegrators.Add(Self);
+  inherited Create(ObjectModel);
+  Self.FParent := Parent;
+  GViewIntegrators.Add(Self);
 end;
 
 { TDiagramIntegrator }
-
-//Factoryfunction, creates an instance of TDiagramIntegrator
-
-{class function TDiagramIntegrator.CreateDiagram(om: TObjectModel; aParent: TWinControl; aFeedback : IEldeanFeedback = nil): TDiagramIntegrator;
-begin
-  // Parent.Owner = MainForm
-  Result:= TRtfdDiagram.Create(om, aParent, aFeedback);
-end;}
-
 
 procedure TDiagramIntegrator.SetPackage(const Value: TAbstractPackage);
 begin
   FPackage := Value;
 end;
 
-//Creates storage space for the diagram
-function TDiagramIntegrator.GetStorage(aCreate: boolean): TMemIniFile;
+// Creates storage space for the diagram
+function TDiagramIntegrator.GetStorage(Create: Boolean): TMemIniFile;
 begin
   Result := nil;
-  if Assigned(FPackage) then begin
-    var F:= FPackage.GetConfigFile;
-    if F = '' then
-      F:= ChangeFileExt(Application.ExeName,ConfigFileExt);
-    if FileExists(F) or aCreate then
-      Result := TMemIniFile.Create(F);
+  if Assigned(FPackage) then
+  begin
+    var
+    ConfigFile := FPackage.GetConfigFile;
+    if ConfigFile = '' then
+      ConfigFile := ChangeFileExt(Application.ExeName, ConfigFileExt);
+    if FileExists(ConfigFile) or Create then
+      Result := TMemIniFile.Create(ConfigFile);
   end;
 end;
 
@@ -207,58 +231,62 @@ begin
     FVisibilityFilter := Value;
 end;
 
-procedure TDiagramIntegrator.SetShowParameter(const Value: integer);
+procedure TDiagramIntegrator.SetShowParameter(const Value: Integer);
 begin
-  if FShowParameter<>Value then
+  if FShowParameter <> Value then
     FShowParameter := Value;
 end;
 
-procedure TDiagramIntegrator.SetSortOrder(const Value: integer);
+procedure TDiagramIntegrator.SetSortOrder(const Value: Integer);
 begin
-  if FSortOrder<>Value then
+  if FSortOrder <> Value then
     FSortOrder := Value;
 end;
 
-procedure TDiagramIntegrator.SetShowIcons(const Value: integer);
+procedure TDiagramIntegrator.SetShowIcons(const Value: Integer);
 begin
   if FShowIcons <> Value then
-    FShowIcons:= Value;
+    FShowIcons := Value;
 end;
 
-procedure TDiagramIntegrator.SetShowObjectDiagram(const Value: boolean);
+procedure TDiagramIntegrator.SetShowObjectDiagram(const Value: Boolean);
 begin
   if FShowObjectDiagram <> Value then
-    FShowObjectDiagram:= Value;
+    FShowObjectDiagram := Value;
 end;
 
-procedure TDiagramIntegrator.SetFont(const aFont: TFont);
+procedure TDiagramIntegrator.SetFont(const Font: TFont);
 begin
-  FFont.Assign(aFont);
-  FConfiguration.UMLFont.Assign(aFont);
+  FFont.Assign(Font);
+  FConfiguration.UMLFont.Assign(Font);
 end;
 
 function TDiagramIntegrator.GetFont: TFont;
 begin
-  Result:= FFont;
+  Result := FFont;
 end;
 
 procedure TDiagramIntegrator.SaveAsPicture(const FileName: string);
-  var W, H: integer;
+var
+  Width, Height: Integer;
 
   procedure InToPng;
   begin
-    var Bitmap:= Graphics.TBitmap.Create;
-    var png:= TPngImage.Create;
+    var
+    Bitmap := Graphics.TBitmap.Create;
+    var
+    Png := TPngImage.Create;
     try
-      Bitmap.PixelFormat:= pf8bit;
-      Bitmap.Width := W;
-      Bitmap.Height := H;
+      Bitmap.PixelFormat := pf8bit;
+      Bitmap.Width := Width;
+      Bitmap.Height := Height;
       PaintTo(Bitmap.Canvas, 0, 0, False);
       Png.Assign(Bitmap);
       try
         Png.SaveToFile(FileName);
-      except on e: Exception do
-        ErrorMsg(Format(_(LNGCanNotCreateFile), [Filename, e.Message]));
+      except
+        on E: Exception do
+          ErrorMsg(Format(_(LNGCanNotCreateFile), [FileName, E.Message]));
       end;
     finally
       FreeAndNil(Bitmap);
@@ -268,76 +296,79 @@ procedure TDiagramIntegrator.SaveAsPicture(const FileName: string);
 
   procedure InToSVG;
   begin
-    var SL:= TStringList.Create;
-    SL.Text:= getSVG;
-    SL.SaveToFile(Filename, TEncoding.UTF8);
-    FreeAndNil(SL);
+    var
+    StringList := TStringList.Create;
+    StringList.Text := GetSVG;
+    StringList.SaveToFile(FileName, TEncoding.UTF8);
+    FreeAndNil(StringList);
   end;
 
 begin
-  GetDiagramSize(W, H);
-  if LowerCase(ExtractFileExt(FileName)) = '.svg'
-    then InToSVG
-    else InToPng;
+  GetDiagramSize(Width, Height);
+  if LowerCase(ExtractFileExt(FileName)) = '.svg' then
+    InToSVG
+  else
+    InToPng;
 end;
 
-procedure TDiagramIntegrator.SetConnections(const Value: integer);
+procedure TDiagramIntegrator.SetConnections(const Value: Integer);
 begin
   FShowConnections := Value;
 end;
 
-procedure TDiagramIntegrator.SetShowView(Value: integer);
+procedure TDiagramIntegrator.SetShowView(Value: Integer);
 begin
   FShowView := Value;
 end;
 
-procedure TDiagramIntegrator.InitShowParameter(const Value: integer);
+procedure TDiagramIntegrator.InitShowParameter(const Value: Integer);
 begin
   FShowParameter := Value;
 end;
 
-//--------------------------------------
+// --------------------------------------
 
 procedure TViewIntegrator.CurrentEntityChanged;
 begin
-//stub
+  // stub
 end;
 
 destructor TViewIntegrator.Destroy;
 begin
-  _ViewIntegrators.Remove(Self);
+  GViewIntegrators.Remove(Self);
   inherited;
 end;
 
 function TViewIntegrator.GetCurrentEntity: TModelEntity;
 begin
-  Result := _CurrentEntity;
+  Result := GCurrentEntity;
 end;
 
-
-procedure SetCurrentEntity(Value : TModelEntity);
+procedure SetCurrentEntity(Value: TModelEntity);
 begin
-  if Value<>_CurrentEntity then begin
-    _CurrentEntity := Value;
-    for var i:= 0 to _ViewIntegrators.Count-1 do
-      (_ViewIntegrators[i] as TViewIntegrator).CurrentEntityChanged;
+  if Value <> GCurrentEntity then
+  begin
+    GCurrentEntity := Value;
+    for var I := 0 to GViewIntegrators.Count - 1 do
+      (GViewIntegrators[I] as TViewIntegrator).CurrentEntityChanged;
   end;
 end;
 
 class procedure TViewIntegrator.SetCurrentEntity(const Value: TModelEntity);
 begin
-  uViewIntegrator.SetCurrentEntity(Value);
+  UViewIntegrator.SetCurrentEntity(Value);
 end;
 
-constructor TDiagramIntegrator.Create(om: TObjectModel; aParent: TWinControl);
+constructor TDiagramIntegrator.Create(ObjectModel: TObjectModel;
+  Parent: TWinControl);
 begin
-  inherited Create(om, aParent);
-  FFont:= TFont.Create;
+  inherited Create(ObjectModel, Parent);
+  FFont := TFont.Create;
   FFont.Assign(FConfiguration.UMLFont);
-  FVisibilityFilter:= TVisibility(FConfiguration.DiVisibilityFilter);
-  FSortOrder:= FConfiguration.DiSortOrder;
-  FShowParameter:= FConfiguration.DiShowParameter;
-  FShowIcons:= FConfiguration.DiShowIcons;
+  FVisibilityFilter := TVisibility(FConfiguration.DiVisibilityFilter);
+  FSortOrder := FConfiguration.DiSortOrder;
+  FShowParameter := FConfiguration.DiShowParameter;
+  FShowIcons := FConfiguration.DiShowIcons;
 end;
 
 destructor TDiagramIntegrator.Destroy;
@@ -347,9 +378,11 @@ begin
 end;
 
 initialization
-  _ViewIntegrators := TObjectList.Create(False);
+
+GViewIntegrators := TObjectList.Create(False);
 
 finalization
-  FreeAndNil(_ViewIntegrators);
-end.
 
+FreeAndNil(GViewIntegrators);
+
+end.

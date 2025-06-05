@@ -3,7 +3,10 @@ unit UDlgGotoLine;
 interface
 
 uses
-  Forms, StdCtrls, Vcl.Controls, System.Classes;
+  Forms,
+  StdCtrls,
+  Vcl.Controls,
+  System.Classes;
 
 type
   TFGotoLineDialog = class(TForm)
@@ -11,13 +14,16 @@ type
     CBLinenumber: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure CBLinenumberKeyPress(Sender: TObject; var Key: Char);
+  private
+    FLine: Integer;
   public
-    Line: Integer;
+    property Line: Integer read FLine;
   end;
 
 implementation
 
-uses JvGnugettext;
+uses
+  JvGnugettext;
 
 {$R *.DFM}
 
@@ -27,25 +33,32 @@ begin
 end;
 
 procedure TFGotoLineDialog.CBLinenumberKeyPress(Sender: TObject; var Key: Char);
-  var code, i, j: Integer;
-      s: string;
+var
+  Code, Idx, Value: Integer;
+  Str: string;
 begin
-  if Key = #13 then begin
-    s:= CBLinenumber.Text;
-    Val(s, Line, code);
-    if code <> 0 then exit;
-    if CBLinenumber.Items.IndexOf(s) = -1 then begin
-      i:= 0;
-      while i < CBLinenumber.Items.Count do begin
-        val(CBLinenumber.Items[i], j, code);
-        if Line < j then break;
-        inc(i);
+  if Key = #13 then
+  begin
+    Str := CBLinenumber.Text;
+    Val(Str, FLine, Code);
+    if Code <> 0 then
+      Exit;
+    if CBLinenumber.Items.IndexOf(Str) = -1 then
+    begin
+      Idx := 0;
+      while Idx < CBLinenumber.Items.Count do
+      begin
+        Val(CBLinenumber.Items[Idx], Value, Code);
+        if Line < Value then
+          Break;
+        Inc(Idx);
       end;
-      CBLinenumber.Items.Insert(i, s);
+      CBLinenumber.Items.Insert(Idx, Str);
     end;
-    ModalResult:= mrOK;
-  end else if Key = #27 then
-    ModalResult:= mrNo;
+    ModalResult := mrOk;
+  end
+  else if Key = #27 then
+    ModalResult := mrNo;
 end;
 
 end.

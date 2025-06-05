@@ -38,7 +38,8 @@ type
     FProcessInformation: TProcessInformation;
     FProcessRunning: Boolean;
 
-    FCompileFile: string;
+    FCompileFilepath: string;
+    FCompileFilename: string;
     FCompileDirectory: string;
     FCompileParameter: string;
     FCompilePackage: string;
@@ -52,6 +53,7 @@ type
     function GetCompilerNumber: Integer;
     procedure ShowSuccessfull;
     procedure ShowErrors;
+    procedure OutputCompileInfos(CompilerNr: integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -59,7 +61,6 @@ type
     procedure CompileForm(Form: TFEditForm);
     procedure CompileAll;
 
-    procedure OutputCompileInfos;
     function HasValidClass(const Programm: string): Boolean;
     function AcceptableError(const Pathname: string): Boolean;
     procedure AdjustCarets(StringList: TStringList);
@@ -134,27 +135,26 @@ begin
   FreeAndNil(FTVJUnitTests);
 end;
 
-procedure TJavaCommands.OutputCompileInfos;
-  var Num: Integer; Str: string;
+procedure TJavaCommands.OutputCompileInfos(CompilerNr: integer);
+  var Compiler: string;
 begin
-  Num:= GetCompilerNumber;
-  case Num of
-    1: Str:= ' Java compiler';
-    2: Str:= ' Lejos compiler';
-    3: Str:= ' Intern compiler';
+  case CompilerNr of
+    1: Compiler:= ' javac.exe';
+    2: Compiler:= ' Lejos compiler';
+    3: Compiler:= ' Intern compiler';
   end;
-  FMessages.OutputLineTo(K_Compiler, Format(_(LNGCompileWith), [FCompileFile]) + Str);
+  FMessages.OutputLineTo(K_Compiler, Format(_(LNGCompileWith), [FCompileFilename]) + Compiler);
   if FConfiguration.ShowCompilerCall then
-    FMessages.OutputLineTo(K_Compiler, Str + ' ' + FCompileParameter + ' ' +
-      ExtractFileName(FCompileFile));
+    FMessages.OutputLineTo(K_Compiler, Compiler + ' ' + FCompileParameter + ' ' +
+      FCompileFilename);
   if not FManyCompilingErrorOccured then
-    FMessages.StatusMessage(Str);
+    FMessages.StatusMessage(Compiler);
   FMessages.Update;
   FMessages.LBCompiler.Update;
 end;
 
 procedure TJavaCommands.AdjustCarets(StringList: TStringList);
-    var Posi, Int1, Int2: Integer; Str, Str1, Str2: string;
+  var Posi, Int1, Int2: Integer; Str, Str1, Str2: string;
 begin
   FMessages.Canvas.Font.Assign(FMessages.MInterpreter.Font);
   for var I:= 0 to StringList.Count - 1 do begin
@@ -176,7 +176,7 @@ begin
       Int2:= Pos('.java:', Str) + 7;
       while Str[Int2] <> ':' do
         Inc(Int2);
-      Insert(IntToStr(Posi) + ':', Str, Int2 + 1);
+      Insert(Posi.ToString + ':', Str, Int2 + 1);
       StringList[Int1]:= Str;
     end;
   end;
@@ -191,7 +191,7 @@ begin
       try
         Append(AFile);
         Writeln(AFile, DateTimeToStr(Now) + ' ' + GetComputerNetName + ' Version: ' + UDlgAbout.Version);
-        Writeln(AFile, FCompiler + ' ' + FCompileParameter + ' ' + FCompileFile);
+        Writeln(AFile, FCompiler + ' ' + FCompileParameter + ' ' + FCompileFilename);
         Writeln(AFile, FCompileList.Text);
       except
         on e: Exception do
@@ -208,11 +208,10 @@ end;
 procedure TJavaCommands.CompileWithProcess;
   var BatFile, Call, WinCodepage: string;
 begin
-  OutputCompileInfos;
   FSuccessfullCompiled:= False;
-  WinCodepage:= IntToStr(GetACP);  // Codepage of Windows
+  WinCodepage:= GetACP.ToString;  // Codepage of Windows
   BatFile:= FConfiguration.TempDir + 'CompileJava.bat';
-  Call:= ExtractFileName(FCompiler) + ' ' + FCompileParameter + ' ' + FCompileFile;
+  Call:= ExtractFileName(FCompiler) + ' ' + FCompileParameter + ' ' + FCompileFilename;
   if IsUNC(GetCurrentDir) then
     SetCurrentDir('C:\');
   var CompileJava:= TStringList.Create;
@@ -261,9 +260,9 @@ end;
 
 procedure TJavaCommands.ShowSuccessfull;
 begin
-  FMessages.OutputLineTo(K_Compiler, FCompileFile + ' ' + _(LNGSuccessfullCompiled));
+  FMessages.OutputLineTo(K_Compiler, FCompileFilepath + ' ' + _(LNGSuccessfullCompiled));
   if not FManyCompilingErrorOccured then
-    FMessages.StatusMessage(FCompileFile + ' ' + _(LNGSuccessfullCompiled), 1);
+    FMessages.StatusMessage(FCompileFilepath + ' ' + _(LNGSuccessfullCompiled), 1);
   AdjustCarets(FCompileList);
   FMessages.LBCompiler.Items.AddStrings(FCompileList);
 end;
@@ -286,30 +285,29 @@ begin
   then begin
     FSuccessfullCompiled:= True;
     if not FManyCompilingErrorOccured then
-      FMessages.StatusMessage(FCompileFile + ' ' + LNGSuccessfullCompiled, 1);
+      FMessages.StatusMessage(FCompileFilepath + ' ' + LNGSuccessfullCompiled, 1);
   end else begin
     if not FMessages.MyIsVisible then
       FMessages.ShowIt;
     FMessages.ShowTab(K_Compiler);
-    FMessages.StatusMessage(FCompileFile + ' ' + _('contains errors.'), 2);
+    FMessages.StatusMessage(FCompileFilepath + ' ' + _('contains errors.'), 2);
     FManyCompilingErrorOccured:= True;
   end;
 end;
 
 procedure TJavaCommands.CompileOneFile;
-  var Programname: string;
 begin
-  if not FileExists(FCompileFile) then begin
-    FMessages.StatusMessage(Format(_(LNGFileNotFound), [FCompileFile]), 2);
+  if not FileExists(FCompileFilepath) then begin
+    FMessages.StatusMessage(Format(_(LNGFileNotFound), [FCompileFilepath]), 2);
     Exit;
   end;
   FErrFile:= TPath.Combine(FConfiguration.TempDir, 'error.txt');
   FCompiler:= FConfiguration.JavaCompiler;
-  FCompileDirectory:= ExtractFilePath(FCompileFile);
-  Programname:= ExtractFileName(FCompileFile);
+  FCompileDirectory:= ExtractFilePath(FCompileFilepath);
+  FCompileFilename:= ExtractFileName(FCompileFilepath);
   if FCompilePackage <> '' then begin
-    Programname:= ReplaceStr(FCompilePackage, '.', '/') + '/' + Programname;
-    var CountSlashes:= CountChar('/', Programname);
+    FCompileFilename:= ReplaceStr(FCompilePackage, '.', '/') + '/' + FCompileFilename;
+    var CountSlashes:= CountChar('/', FCompileFilename);
     while CountSlashes > 0 do begin
       FCompileDirectory:= Copy(FCompileDirectory, 1, Length(FCompileDirectory)-1);
       FCompileDirectory:= Copy(FCompileDirectory, 1, LastDelimiter('\', FCompileDirectory));
@@ -319,21 +317,28 @@ begin
   Screen.Cursor:= crHourGlass;
   FCompileList:= TStringList.Create;
   try
-    var ComJava:= getComJava;
+    var ComJava:= GetComJava;
     if Assigned(ComJava) and Assigned(ComJava.ClassList) and
-      (ComJava.ClassList.IndexOf(ChangeFileExt(Programname, '')) > -1) then  // TODO check
+      (ComJava.ClassList.IndexOf(ChangeFileExt(FCompileFilename, '')) > -1) then  // TODO check
         FReload:= True;
     var CompilerNum:= GetCompilerNumber;
     if CompilerNum = 3 then begin
+      OutputCompileInfos(3);
       CompileInternally;
       if FSuccessfullCompiled
         then FCompiler:= _('Intern compiler')
-        else CompileWithProcess;
+        else begin
+          OutputCompileInfos(1);
+          CompileWithProcess;
+        end;
     end else begin
       if CompilerNum = 2 then begin
         FCompiler:= FConfiguration.LejosCompiler;
         FCompileParameter:= '';  // parameters are for Uploader only
-      end;
+        OutputCompileInfos(2);
+      end
+      else
+        OutputCompileInfos(1);
       CompileWithProcess;
     end;
     FCompileList.Add('');
@@ -349,10 +354,9 @@ end;
 
 procedure TJavaCommands.CompileInternally;
 begin
-  OutputCompileInfos;
-  var ComJava:= getComJava;
+  var ComJava:= GetComJava;
   var Str:= ComJava.ExecuteCommand('compile'#4 +
-              FConfiguration.JavaCompilerParameter + #4 + FCompileFile);
+              FConfiguration.JavaCompilerParameter + #4 + FCompileFilepath);
   FSuccessfullCompiled:= (UUtils.Left(Str, 3) = '+OK');
   if FSuccessfullCompiled then
     FCompileList.Text:= Right(Str, 6);
@@ -364,7 +368,7 @@ begin
   if not FManyCompiling then
     FMessages.DeleteTab(K_Compiler);
   FReload:= False;
-  var E:= TFEditForm(FJava.getTDIWindowType(Pathname, '%E%'));
+  var E:= TFEditForm(FJava.GetTDIWindowType(Pathname, '%E%'));
   if Assigned(E) then
     E.InitShowCompileErrors
   else begin
@@ -372,17 +376,17 @@ begin
     if E.Modified then FJava.DoSave(E, False);
   end;
   FCompileParameter:= FConfiguration.GetCompileParameter(Pathname, Package, E.Encoding);
-  FCompileFile:= Pathname;
+  FCompileFilepath:= Pathname;
   FCompilePackage:= Package;
   CompileOneFile;
   if FReload then
-    getComJava.JavaReset;
+    GetComJava.JavaReset;
 end;
 
 procedure TJavaCommands.CompileForm(Form: TFEditForm);
 begin
   if Assigned(Form) then
-    Compile(Form.Pathname, Form.getPackage);
+    Compile(Form.Pathname, Form.GetPackage);
 end;
 
 procedure TJavaCommands.CompileAll;
@@ -398,19 +402,19 @@ begin
   FileList.Sorted:= True;
   for var I:= 0 to FJava.TDIEditFormCount - 1 do begin
     EForm:= FJava.TDIEditFormGet(I);
-    if EForm.isJava then
+    if EForm.IsJava then
       FileList.Add(EForm.Pathname);
   end;
 
   for var I:= 0 to FileList.Count - 1 do begin
-    FEditForm:= FJava.getTDIWindow(FileList[I]) as TFEditForm;
+    FEditForm:= FJava.GetTDIWindow(FileList[I]) as TFEditForm;
     if not FEditForm.Visible then
       Continue;
     FEditForm.InitShowCompileErrors;
     FCompileParameter:= FConfiguration.GetCompileParameter(FEditForm.Pathname,
-                          FEditForm.getPackage, FEditForm.Encoding);
-    FCompileFile:= FEditForm.Pathname;
-    FCompilePackage:= FEditForm.getPackage;
+                          FEditForm.GetPackage, FEditForm.Encoding);
+    FCompileFilepath:= FEditForm.Pathname;
+    FCompilePackage:= FEditForm.GetPackage;
     CompileOneFile;
     FMessages.LBCompiler.Items.Add('');
   end;
@@ -418,7 +422,7 @@ begin
     FJava.ShowCompileErrors;
   SetManyCompiling(False);
   if FReload then
-    getComJava.JavaReset;
+    GetComJava.JavaReset;
   FreeAndNil(FileList);
 end;
 
@@ -427,7 +431,7 @@ function TJavaCommands.HasValidClass(const Programm: string): Boolean;
 begin
   Result:= False;
   FileAge(Programm, Age1);
-  Path:= getClass(FConfiguration.GetClassPath, FConfiguration.JavaCompilerParameter, Programm);
+  Path:= GetClass(FConfiguration.GetClassPath, FConfiguration.JavaCompilerParameter, Programm);
   if Path <> '' then begin
     FileAge(Path, Age2);
     Result:= Age1 <= Age2;
@@ -444,7 +448,7 @@ procedure TJavaCommands.MakeRunJavaBat(Directory, ApplicationName,
                           CommandLine: string; WithPause: Boolean = True);
   var Path, Codepage, WinCodepage: string;
 begin
-  WinCodepage:= IntToStr(GetACP); // Codepage of Windows
+  WinCodepage:= GetACP.ToString; // Codepage of Windows
   Path:= FConfiguration.TempDir + 'RunJava.bat';
   Codepage:= FConfiguration.Codepage;
   var Posi:= Pos(' ', Codepage);
@@ -508,7 +512,7 @@ begin
   CodePa:= '';
   ApplicationName:= FConfiguration.JavaInterpreter;
   CommandLine:= CodePa + ' -classpath ' + Classpath +
-                AddWithSpace(FConfiguration.getJavaInterpreterParameter(JavaFX)) +
+                AddWithSpace(FConfiguration.GetJavaInterpreterParameter(JavaFX)) +
                 AddWithSpace(MyProgram) + AddWithSpace(CallParameter);
   if FConfiguration.ShowInterpreterCall then
     FMessages.OutputLineTo(K_Interpreter, ApplicationName + AddWithSpace(CommandLine));
@@ -842,7 +846,7 @@ begin
           if PeekNamedPipe(FPipeOutput.hRead, nil, 0, nil, @Read, nil) and (Read > 0) then begin
             SetLength(UBuffer, Read);
             ReadFile(FPipeOutput.hRead, UBuffer[1], Read, Read, nil);
-            Buffer:= String(AnsiToUtf8(String(UBuffer)));
+            Buffer:= string(AnsiToUtf8(string(UBuffer)));
             if FConfiguration.MindstormsMode and (FConfiguration.MindstormsVersion = 0)
               then EditBuffer(Buffer)
             else if FConfiguration.AndroidMode then begin
@@ -934,21 +938,21 @@ begin
 end;
 
 procedure TJavaCommands.AppletViewer(Pathname: string);
-  var Filename, Params: string;
+  var FileName, Params: string;
 begin
   FMessages.ShowTab(K_Interpreter);
   FMessages.DeleteTab(K_Interpreter);
   FMessages.StatusMessage('Appletviewer: ' + Pathname);
 
   Pathname:= ExpandFileName(Pathname);
-  Filename:= FConfiguration.JavaAppletviewer;
+  FileName:= FConfiguration.JavaAppletviewer;
   Params  := ' -J-Djava.security.policy=file:'+
              HideBlanks(FConfiguration.EditorFolder + 'java.policy.applet') + ' ' +
              HideBlanks(Pathname);
   ChDir(ExtractFilePath(Pathname));
   if FConfiguration.ShowInterpreterCall then
-    FMessages.OutputLineTo(K_Interpreter, Filename + ' ' + Params);
-  ExecWithPipe(Filename, Params, '.');
+    FMessages.OutputLineTo(K_Interpreter, FileName + ' ' + Params);
+  ExecWithPipe(FileName, Params, '.');
 end;
 
 procedure TJavaCommands.SetManyCompiling(OnOff: Boolean);
@@ -958,7 +962,7 @@ begin
 end;
 
 procedure TJavaCommands.RunTests(AClass: TClass; const Method: string);
-  var PictureNr, I, Posi: Integer;
+  var PictureNr, Idx, Posi: Integer;
       Call, AClassname, Classpath, Output: string;
       Ite: IModelIterator;
       AMethod: TOperation;
@@ -999,24 +1003,24 @@ begin
           Continue;
         if (AMethod.Name <> Method) and (Method <> 'Class') then
           Continue;
-        I:= 1;
-        Posi:= Pos('-- ' + AMethod.Name, StringList[I]);
-        while (Posi = 0) and (I < StringList.Count-1) do begin
-          Inc(I);
-          Posi:= Pos('-- ' + AMethod.Name, StringList[I]);
-          if not IsWordInLine(AMethod.Name, StringList[I]) then
+        Idx:= 1;
+        Posi:= Pos('-- ' + AMethod.Name, StringList[Idx]);
+        while (Posi = 0) and (Idx < StringList.Count-1) do begin
+          Inc(Idx);
+          Posi:= Pos('-- ' + AMethod.Name, StringList[Idx]);
+          if not IsWordInLine(AMethod.Name, StringList[Idx]) then
             Posi:= 0;
         end;
-        if I < StringList.Count then begin
-          if Pos('[OK]', StringList[I]) > 0 then
+        if Idx < StringList.Count then begin
+          if Pos('[OK]', StringList[Idx]) > 0 then
             PictureNr:= 0
           else begin
             PictureNr:= 1;
             PJUnit.Color:= clRed;
           end;
-          Output:= Copy(StringList[I], Posi + 3, 255);
+          Output:= Copy(StringList[Idx], Posi + 3, 255);
         end;
-        Node:= FTVJUnitTests.Items.AddObject(nil, Output, TInteger.create(AMethod.LineS));
+        Node:= FTVJUnitTests.Items.AddObject(nil, Output, TInteger.Create(AMethod.LineS));
         Node.ImageIndex:= PictureNr;
         Node.SelectedIndex:= PictureNr;
         Node.HasChildren:= False;

@@ -91,7 +91,7 @@ uses Forms;
 //  no keys       = "move"
 //  control only  = "copy"
 //  control/shift = "link" - ignored in this case
-function StandardEffect (Keys : TShiftState) : integer;
+function StandardEffect (Keys : TShiftState) : Integer;
 begin
   Result := deMove;
   if ssCtrl in Keys then

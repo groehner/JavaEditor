@@ -1,88 +1,91 @@
 unit UFXMenu;
 
 { Classes
-    TFXMenuBar = class (TFXControl)
-    TFXMenuItem = class (TFXNode)
-      TFXMenu
-    TFXContextMenu = class (TFXNode)
+  TFXMenuBar = class (TFXControl)
+  TFXMenuItem = class (TFXNode)
+  TFXMenu
+  TFXContextMenu = class (TFXNode)
 }
 
 interface
 
 uses
-  Classes, UFXComponents;
+  Classes,
+  UFXComponents;
 
 type
 
-  TFXMenuBar = class (TFXControl)
+  TFXMenuBar = class(TFXControl)
   private
-    FUseSystemMenuBar: boolean;
+    FUseSystemMenuBar: Boolean;
   public
-    constructor Create (AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetPositionAndSize; override;
   published
-    property UseSystemMenuBar: boolean read FUseSystemMenuBar write FUseSystemMenuBar;
+    property UseSystemMenuBar: Boolean read FUseSystemMenuBar
+      write FUseSystemMenuBar;
   end;
 
-  TFXMenuBarWithMenus = class (TFXControl)
+  TFXMenuBarWithMenus = class(TFXControl)
   private
     FMenuItems: TStrings;
+    FMenuItemsOld: TStrings;
   protected
-    procedure setItems(aItems: TStrings);
+    procedure SetItems(AItems: TStrings);
   public
-    MenuItemsOld: TStrings;
-    constructor Create (AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
     procedure DeleteComponent; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure SetPositionAndSize; override;
     procedure Paint; override;
   published
-    property MenuItems: TStrings read FMenuItems write setItems;
+    property MenuItems: TStrings read FMenuItems write SetItems;
   end;
 
-  TFXMenuItem = class (TFXNode)
+  TFXMenuItem = class(TFXNode)
   private
-    FDisable: boolean;
+    FDisable: Boolean;
     FGraphic: string;
     FId: string;
-    FMnemonicParsing: boolean;
+    FMnemonicParsing: Boolean;
     FParentMenu: string;
     FParentPopup: string;
     FText: string;
-    FVisible: boolean;
-    FSeparator: integer;
+    FVisible: Boolean;
+    FSeparator: Integer;
 
     FMenuBar: string;
     Faction: string;
     FmenuValidation: string;
   public
-    constructor Create (AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     procedure InsertMenuItem(const Title, IndentStr: string);
-    function getMenuItemName(const SubMenu, s: string): string;
-    function getEvents(ShowEvents: integer): string; override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    function GetMenuItemName(const SubMenu, Str: string): string;
+    function GetEvents(ShowEvents: Integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure NewControl; override;
   published
-    property Disable: boolean read FDisable write FDisable;
+    property Disable: Boolean read FDisable write FDisable;
     property Text: string read FText write FText;
     property Id: string read FId write FId;
     property ParentMenu: string read FParentMenu write FParentMenu;
     property ParentPopup: string read FParentPopup write FParentPopup;
     property Graphic: string read FGraphic write FGraphic;
-    property MnemonicParsing: boolean read FMnemonicParsing write FMnemonicParsing;
-    property Visible: boolean read FVisible write FVisible;
+    property MnemonicParsing: Boolean read FMnemonicParsing
+      write FMnemonicParsing;
+    property Visible: Boolean read FVisible write FVisible;
     property MenuBar: string read FMenuBar write FMenuBar;
-    property Separator: integer read FSeparator write FSeparator;
+    property Separator: Integer read FSeparator write FSeparator;
 
-    property action: string read FAction write FAction;
+    property action: string read Faction write Faction;
     property menuValidation: string read FmenuValidation write FmenuValidation;
   end;
 
@@ -93,20 +96,20 @@ type
     Fhiding: string;
     Fshowing: string;
     Fshown: string;
-    procedure setItems(aItems: TStrings);
+    FMenuItemsOld: TStrings;
+    procedure SetItems(AItems: TStrings);
   public
-    MenuItemsOld: TStrings;
-    constructor Create (AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
     procedure NewControl; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure DeleteComponent; override;
     procedure Rename(const OldName, NewName, Events: string); override;
   published
-    property MenuItems: TStrings read FMenuItems write setItems;
+    property MenuItems: TStrings read FMenuItems write SetItems;
 
     property hidden: string read Fhidden write Fhidden;
     property hiding: string read Fhiding write Fhiding;
@@ -114,7 +117,7 @@ type
     property shown: string read Fshown write Fshown;
   end;
 
-  TFXContextMenu = class (TFXNode)
+  TFXContextMenu = class(TFXNode)
   private
     FMenuItems: TStrings;
     FListener: string;
@@ -126,26 +129,26 @@ type
     Fhiding: string;
     Fshowing: string;
     Fshown: string;
-    procedure setItems(aItems: TStrings);
+    FMenuItemsOld: TStrings;
+    procedure SetItems(AItems: TStrings);
     procedure MakeListener(Value: string);
-    function getContextMenuListener(Value: string): string;
+    function GetContextMenuListener(Value: string): string;
   public
-    MenuItemsOld: TStrings;
-    constructor Create (AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure DeleteComponent; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure Paint; override;
   published
-    property MenuItems: TStrings read FMenuItems write setItems;
+    property MenuItems: TStrings read FMenuItems write SetItems;
     property Listener: string read FListener write FListener;
     property Id: string read FId write FId;
 
-    property action: string read FAction write FAction;
+    property action: string read Faction write Faction;
     property closeRequest: string read FcloseRequest write FcloseRequest;
     property hidden: string read Fhidden write Fhidden;
     property hiding: string read Fhiding write Fhiding;
@@ -155,38 +158,48 @@ type
 
 implementation
 
-uses SysUtils, Graphics,
-     UGUIForm, UJava, UUtils, UJEComponents, UEditorForm;
+uses
+  SysUtils,
+  Graphics,
+  UGUIForm,
+  UJava,
+  UUtils,
+  UJEComponents;
 
-{--- TFXMenuBar ---------------------------------------------------------------}
+{ --- TFXMenuBar --------------------------------------------------------------- }
 
 constructor TFXMenuBar.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= 115;
-  Height:= 24;
-  Width:= 104;
-  JavaType:= 'MenuBar';
+  inherited Create(AOwner);
+  Tag := 115;
+  Height := 24;
+  Width := 104;
+  JavaType := 'MenuBar';
 end;
 
 procedure TFXMenuBar.Paint;
-  var Form: TFGUIForm;
-      i, x: integer; s: string;
+var
+  Form: TFGUIForm;
+  XPos: Integer;
+  Str: string;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= DarkShadow;  // DefaultBorderColor;
-  if Background = ColorNone
-    then Canvas.Brush.Color:= $F0F0F0
-    else Canvas.Brush.Color:= Background;
+  Canvas.Pen.Color := DarkShadow; // DefaultBorderColor
+  if Background = ColorNone then
+    Canvas.Brush.Color := $F0F0F0
+  else
+    Canvas.Brush.Color := Background;
   Canvas.Rectangle(0, 0, Width, Height);
-  x:= 8;
-  if Parent is TFGUIForm then begin
-    Form:= Parent as TFGUIForm;
-    for i:= 0 to Form.ComponentCount - 1 do
-      if Form.Components[i] is TFXMenu then begin
-        s:= (Form.Components[i] as TFXMenu).Text;
-        Canvas.TextOut(x + 8, 7, s);
-        x:= x + 8 + Canvas.TextWidth(s) + 8;
+  XPos := 8;
+  if Parent is TFGUIForm then
+  begin
+    Form := Parent as TFGUIForm;
+    for var I := 0 to Form.ComponentCount - 1 do
+      if Form.Components[I] is TFXMenu then
+      begin
+        Str := (Form.Components[I] as TFXMenu).Text;
+        Canvas.TextOut(XPos + 8, 7, Str);
+        XPos := XPos + 8 + Canvas.TextWidth(Str) + 8;
       end;
   end;
 end;
@@ -194,179 +207,194 @@ end;
 procedure TFXMenuBar.NewControl;
 begin
   InsertNewVariable('private MenuBar ' + Name + ' = new MenuBar();');
-  Partner.InsertComponent(surroundFix2(AddFXVariable) +
-                          surroundFix2(Name + '.setPrefWidth(4000);'));
+  FPartner.InsertComponent(SurroundFix2(AddFXVariable) +
+    SurroundFix2(Name + '.setPrefWidth(4000);'));
 end;
 
-function TFXMenuBar.getAttributes(ShowAttributes: integer): string;
+function TFXMenuBar.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Name|UseSystemMenuBar' + inherited;
-  var p:= Pos('|LayoutX|LayoutY', Result);
-  if p > 0 then
-    delete(Result, p, length('|LayoutX|LayoutY'));
-  p:= Pos('|PrefHeight|PrefWidth', Result);
-  if p > 0 then
-    delete(Result, p, length('|PrefHeight|PrefWidth'));
+  Result := '|Name|UseSystemMenuBar' + inherited;
+  var
+  Posi := Pos('|LayoutX|LayoutY', Result);
+  if Posi > 0 then
+    Delete(Result, Posi, Length('|LayoutX|LayoutY'));
+  Posi := Pos('|PrefHeight|PrefWidth', Result);
+  if Posi > 0 then
+    Delete(Result, Posi, Length('|PrefHeight|PrefWidth'));
 end;
 
 procedure TFXMenuBar.SetPositionAndSize;
 begin
-  LayoutX:= 0;
-  LayoutY:= 0;
-  Height:= 24;
-  Width:= Parent.Width - 16;
+  LayoutX := 0;
+  LayoutY := 0;
+  Height := 24;
+  Width := Parent.Width - 16;
 end;
 
-{--- TFXMenuBarWithMenu--------------------------------------------------------}
+{ --- TFXMenuBarWithMenu-------------------------------------------------------- }
 
 constructor TFXMenuBarWithMenus.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= 124;
-  Height:= 23;
-  Width:= 80;
-  FMenuItems:= TStringList.Create;
-  FMenuItems.Text:= DefaultMenu;
-  MenuItemsOld:= TStringList.Create;
-  JavaType:= 'MenuBar';
+  inherited Create(AOwner);
+  Tag := 124;
+  Height := 23;
+  Width := 80;
+  FMenuItems := TStringList.Create;
+  FMenuItems.Text := DefaultMenu;
+  FMenuItemsOld := TStringList.Create;
+  JavaType := 'MenuBar';
 end;
 
 destructor TFXMenuBarWithMenus.Destroy;
 begin
   FreeAndNil(FMenuItems);
-  FreeAndNil(MenuItemsOld);
+  FreeAndNil(FMenuItemsOld);
   inherited;
 end;
 
-function TFXMenuBarWithMenus.getAttributes(ShowAttributes: integer): string;
+function TFXMenuBarWithMenus.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Name|MenuItems|UseSystemMenuBar' + inherited;
-  var p:= Pos('|LayoutX|LayoutY', Result);
-  if p > 0 then
-    delete(Result, p, length('|LayoutX|LayoutY'));
-  p:= Pos('|PrefHeight|PrefWidth', Result);
-  if p > 0 then
-    delete(Result, p, length('|PrefHeight|PrefWidth'));
+  Result := '|Name|MenuItems|UseSystemMenuBar' + inherited;
+  var
+  Posi := Pos('|LayoutX|LayoutY', Result);
+  if Posi > 0 then
+    Delete(Result, Posi, Length('|LayoutX|LayoutY'));
+  Posi := Pos('|PrefHeight|PrefWidth', Result);
+  if Posi > 0 then
+    Delete(Result, Posi, Length('|PrefHeight|PrefWidth'));
 end;
 
-procedure TFXMenuBarWithMenus.setAttribute(Attr, Value, Typ: string);
+procedure TFXMenuBarWithMenus.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'MenuItems' then
-    MakeMenuItems(MenuItemsOld, MenuItems, true)
+    MakeMenuItems(FMenuItemsOld, MenuItems, True)
   else
     inherited;
 end;
 
 procedure TFXMenuBarWithMenus.NewControl;
 begin
-  Partner.InsertImport('javafx.scene.input.*');
+  FPartner.InsertImport('javafx.scene.input.*');
   InsertNewVariable('private MenuBar ' + Name + ' = new MenuBar();');
-  MakeMenuItems(MenuItemsOld, MenuItems, true);
-  Partner.InsertComponent(surroundFix2(Name + '.setPrefWidth(4000);'));
+  MakeMenuItems(FMenuItemsOld, MenuItems, True);
+  FPartner.InsertComponent(SurroundFix2(Name + '.setPrefWidth(4000);'));
 end;
 
 procedure TFXMenuBarWithMenus.DeleteComponent;
 begin
   DeleteEvents;
-  DeleteMenuItems(MenuItemsOld, MenuItems);
-  Partner.DeleteAttribute('private MenuBar ' + Name);
-  Partner.DeleteAttributeValue('root.getChildren().add(');
-  Partner.DeleteAttributeValues('setAccelerator(KeyCombination.keyCombination');
-  Partner.DeleteAttributeValues(Name + '.getMenus().add');
-  Partner.DeleteAttributeValues(Name + '.set');
+  DeleteMenuItems(FMenuItemsOld, MenuItems);
+  FPartner.DeleteAttribute('private MenuBar ' + Name);
+  FPartner.DeleteAttributeValue('root.getChildren().add(');
+  FPartner.DeleteAttributeValues
+    ('setAccelerator(KeyCombination.keyCombination');
+  FPartner.DeleteAttributeValues(Name + '.getMenus().add');
+  FPartner.DeleteAttributeValues(Name + '.set');
 end;
 
 procedure TFXMenuBarWithMenus.Rename(const OldName, NewName, Events: string);
 begin
-  Partner.Editor.BeginUpdate;
+  FPartner.Editor.BeginUpdate;
   RenameMenu(OldName, NewName);
   inherited;
-  Partner.Editor.EndUpdate;
+  FPartner.Editor.EndUpdate;
 end;
 
 procedure TFXMenuBarWithMenus.Paint;
-  var i, x: integer;
+var
+  XPos: Integer;
 begin
   CanvasFontAssign;
-  Canvas.Font.Size:= 9;
-  Canvas.Pen.Color:= $F0F0F0;
-  Canvas.Brush.Color:= Background;
+  Canvas.Font.Size := 9;
+  Canvas.Pen.Color := $F0F0F0;
+  Canvas.Brush.Color := Background;
   Canvas.Rectangle(0, 0, Width, Height);
-  x:= 8;
-  for i:= 0 to FMenuItems.Count - 1 do
-    if LeftSpaces(FMenuItems[i], 2) = 0 then begin
-      Canvas.TextOut(x + 8, 3, FMenuItems[i]);
-      x:= x + 8 + Canvas.TextWidth(FMenuItems[i]) + 8;
+  XPos := 8;
+  for var I := 0 to FMenuItems.Count - 1 do
+    if LeftSpaces(FMenuItems[I], 2) = 0 then
+    begin
+      Canvas.TextOut(XPos + 8, 3, FMenuItems[I]);
+      XPos := XPos + 8 + Canvas.TextWidth(FMenuItems[I]) + 8;
     end;
 end;
 
 procedure TFXMenuBarWithMenus.SetPositionAndSize;
 begin
-  Left:= 0;
-  Top:= 0;
-  Height:= 23;
-  Width:= Parent.Width - 16;
+  Left := 0;
+  Top := 0;
+  Height := 23;
+  Width := Parent.Width - 16;
 end;
 
-procedure TFXMenuBarWithMenus.setItems(aItems: TStrings);
+procedure TFXMenuBarWithMenus.SetItems(AItems: TStrings);
 begin
-  MenuItemsOld.Text:= FMenuItems.Text;
-  if aItems.Text <> FMenuItems.Text then
-    FMenuItems.Assign(aItems);
+  FMenuItemsOld.Text := FMenuItems.Text;
+  if AItems.Text <> FMenuItems.Text then
+    FMenuItems.Assign(AItems);
 end;
 
-{--- TFXMenuItem --------------------------------------------------------------}
+{ --- TFXMenuItem -------------------------------------------------------------- }
 
 constructor TFXMenuItem.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Height:= 28;
-  Width:= 32;
-  FSeparator:= 1;
-  Sizeable:= false;
+  inherited Create(AOwner);
+  Height := 28;
+  Width := 32;
+  FSeparator := 1;
+  Sizeable := False;
 end;
 
 procedure TFXMenuItem.InsertMenuItem(const Title, IndentStr: string);
-  var s1, s2: string; ch: char; p: integer;
+var
+  Str1, Str2: string;
+  Chr: Char;
+  Posi: Integer;
 begin
-  s1:= trim(Title);
-  p:= Pos('&', s1);
-  if p > 0 then begin
-    ch:= s1[p+1];
-    Delete(s1, p, 1);
-    InsertAttributValue(Indent1 + IndentStr + 'private MenuItem ' + Name + ' = new MenuItem("' + s1 + '", ' + '''' + Ch + ''');' );
-    end
+  Str1 := Trim(Title);
+  Posi := Pos('&', Str1);
+  if Posi > 0 then
+  begin
+    Chr := Str1[Posi + 1];
+    Delete(Str1, Posi, 1);
+    InsertAttributValue(Indent1 + IndentStr + 'private MenuItem ' + Name +
+      ' = new MenuItem("' + Str1 + '", ' + '''' + Chr + ''');');
+  end
   else
-    InsertAttributValue(Indent1 + IndentStr + 'private MenuItem ' + Name + ' = new MenuItem("' + s1 + '");');
-  s1:= MakeEventProcedure('action');
-  s2:= MakeEventProcedureName('action');
-  if not Partner.hasText('public void ' + s2) then
-    Partner.InsertProcedure(0, s1);
-  Partner.InsertListener(GetContainerAdd, getListener('action'));
+    InsertAttributValue(Indent1 + IndentStr + 'private MenuItem ' + Name +
+      ' = new MenuItem("' + Str1 + '");');
+  Str1 := MakeEventProcedure('action');
+  Str2 := MakeEventProcedureName('action');
+  if not FPartner.HasText('public void ' + Str2) then
+    FPartner.InsertProcedure(0, Str1);
+  FPartner.InsertListener(GetContainerAdd, GetListener('action'));
 end;
 
-function TFXMenuItem.getMenuItemName(const SubMenu, s: string): string;
+function TFXMenuItem.GetMenuItemName(const SubMenu, Str: string): string;
 begin
-  if Copy(trim(s), 1, 1) = '-' then begin
-    Result:= '_Separator' + IntToStr(FSeparator);
-    inc(FSeparator);
-  end else
-    Result:= SubMenu + '_' + OnlyCharsAndDigits(s);
+  if Copy(Trim(Str), 1, 1) = '-' then
+  begin
+    Result := '_Separator' + IntToStr(FSeparator);
+    Inc(FSeparator);
+  end
+  else
+    Result := SubMenu + '_' + OnlyCharsAndDigits(Str);
 end;
 
-function TFXMenuItem.getEvents(ShowEvents: integer): string;
+function TFXMenuItem.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|action|menuValidation';
+  Result := '|action|menuValidation';
 end;
 
-function TFXMenuItem.getAttributes(ShowAttributes: integer): string;
-  const MenuItemsAttributes1 = '|Text|Name';
-        MenuItemsAttributes2 = MenuItemsAttributes1 +
-                          '|Disable|Graphic|Id|MnemonicParsing|ParentMenu|ParentPopup|Style|Visible';
+function TFXMenuItem.GetAttributes(ShowAttributes: Integer): string;
+const
+  MenuItemsAttributes1 = '|Text|Name';
+  MenuItemsAttributes2 = MenuItemsAttributes1 +
+    '|Disable|Graphic|Id|MnemonicParsing|ParentMenu|ParentPopup|Style|Visible';
 begin
-  if ShowAttributes = 1
-    then Result:= MenuItemsAttributes1
-    else Result:= MenuItemsAttributes2;
+  if ShowAttributes = 1 then
+    Result := MenuItemsAttributes1
+  else
+    Result := MenuItemsAttributes2;
 end;
 
 procedure TFXMenuItem.NewControl;
@@ -375,37 +403,37 @@ begin
 end;
 
 procedure TFXMenuItem.Rename(const OldName, NewName, Events: string);
-  procedure rename(var name: string);
+  procedure Rename(var Name: string);
   begin
-    if name <> '' then
-      name:= NewName + UUtils.Right(name, Length(OldName) + 1);
+    if Name <> '' then
+      Name := NewName + UUtils.Right(Name, Length(OldName) + 1);
   end;
 
 begin
   inherited;
-  rename(Faction);
-  rename(FmenuValidation);
+  Rename(Faction);
+  Rename(FmenuValidation);
 end;
 
-{--- TFXMenu ------------------------------------------------------------------}
+{ --- TFXMenu ------------------------------------------------------------------ }
 
 constructor TFXMenu.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= 116;
-  Height:= 28;
-  Width:= 32;
-  Sizeable:= false;
-  FMenuItems:= TStringList.Create;    // new menu items from user
-  FMenuItems.Text:= DefaultMenu;
-  MenuItemsOld:= TStringList.Create;  // old menu itens from user
-  JavaType:= 'Menu';
+  inherited Create(AOwner);
+  Tag := 116;
+  Height := 28;
+  Width := 32;
+  Sizeable := False;
+  FMenuItems := TStringList.Create; // new menu items from user
+  FMenuItems.Text := DefaultMenu;
+  FMenuItemsOld := TStringList.Create; // old menu itens from user
+  JavaType := 'Menu';
 end;
 
 destructor TFXMenu.Destroy;
 begin
   FreeAndNil(FMenuItems);
-  FreeAndNil(MenuItemsOld);
+  FreeAndNil(FMenuItemsOld);
   inherited;
 end;
 
@@ -415,11 +443,11 @@ begin
   FJava.vilSwing1Light.Draw(Canvas, 5, 2, 16);
 end;
 
-procedure TFXMenu.setItems(aItems: TStrings);
+procedure TFXMenu.SetItems(AItems: TStrings);
 begin
-  MenuItemsOld.Text:= FMenuItems.Text;
-  if aItems.Text <> FMenuItems.Text then
-    FMenuItems.Assign(aItems);
+  FMenuItemsOld.Text := FMenuItems.Text;
+  if AItems.Text <> FMenuItems.Text then
+    FMenuItems.Assign(AItems);
 end;
 
 procedure TFXMenu.NewControl;
@@ -427,88 +455,96 @@ begin
   InsertImport('javafx.scene.control.*');
   InsertImport('javafx.scene.input.KeyCombination');
   InsertNewVariable('private Menu ' + Name + ' = new Menu();');
-  MakeMenuItems(MenuItemsOld, MenuItems);
+  MakeMenuItems(FMenuItemsOld, MenuItems);
 end;
 
 procedure TFXMenu.SetAttribute(Attr, Value, Typ: string);
-  var key: string;
+var
+  Key: string;
 begin
-  if Attr = 'MenuBar' then begin
-    key:= '.getMenus().add(' + Name + ');';
-    Partner.DeleteAttributeValue(key);
+  if Attr = 'MenuBar' then
+  begin
+    Key := '.getMenus().add(' + Name + ');';
+    FPartner.DeleteAttributeValue(Key);
     if Value <> '' then
-      setAttributValue(key, Indent2 + menuBar + '.getMenus().add(' + Name + ');');
-  end else if Attr = 'MenuItems' then
-    MakeMenuItems(MenuItemsOld, MenuItems)
+      SetAttributValue(Key, Indent2 + MenuBar + '.getMenus().add(' +
+        Name + ');');
+  end
+  else if Attr = 'MenuItems' then
+    MakeMenuItems(FMenuItemsOld, MenuItems)
   else if Attr = 'Text' then
-    setAttributValue('private Menu ' + Name, 'private Menu ' + Name + ' = new Menu("' + Value + '");')
+    SetAttributValue('private Menu ' + Name, 'private Menu ' + Name +
+      ' = new Menu("' + Value + '");')
   else if Attr = 'Graphic' then
-    MakeGraphic(Attr, Value, 'Menu')
+    MakeGraphic(Attr, Value, 'Menu');
 end;
 
 procedure TFXMenu.DeleteComponent;
 begin
   DeleteEvents;
-  DeleteMenuItems(MenuItemsOld, MenuItems);
-  Partner.DeleteAttribute('private Menu ' + Name);
+  DeleteMenuItems(FMenuItemsOld, MenuItems);
+  FPartner.DeleteAttribute('private Menu ' + Name);
 end;
 
 procedure TFXMenu.Rename(const OldName, NewName, Events: string);
 
-  procedure rename(var name: string);
+  procedure Rename(var Name: string);
   begin
-    if name <> '' then
-      name:= NewName + UUtils.Right(name, Length(OldName) + 1);
+    if Name <> '' then
+      Name := NewName + UUtils.Right(Name, Length(OldName) + 1);
   end;
 
 begin
-  Partner.Editor.BeginUpdate;
+  FPartner.Editor.BeginUpdate;
   RenameMenu(OldName, NewName);
   inherited;
-  rename(Fhidden);
-  rename(Fhiding);
-  rename(Fshowing);
-  rename(Fshown);
-  Partner.Editor.EndUpdate;
+  Rename(Fhidden);
+  Rename(Fhiding);
+  Rename(Fshowing);
+  Rename(Fshown);
+  FPartner.Editor.EndUpdate;
 end;
 
-function TFXMenu.getEvents(ShowEvents: integer): string;
-  const Events1 = '|hidden|hiding|showing|shown';
-        Events2 = Events1 + '|menuValidation';
+function TFXMenu.GetEvents(ShowEvents: Integer): string;
+const
+  Events1 = '|hidden|hiding|showing|shown';
+  Events2 = Events1 + '|menuValidation';
 begin
-  if ShowEvents = 1
-    then Result:= Events1 + inherited getEvents(ShowEvents)
-    else Result:= Events2 + inherited getEvents(ShowEvents);
+  if ShowEvents = 1 then
+    Result := Events1 + inherited GetEvents(ShowEvents)
+  else
+    Result := Events2 + inherited GetEvents(ShowEvents);
 end;
 
-function TFXMenu.getAttributes(ShowAttributes: integer): string;
+function TFXMenu.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:='|MenuItems|MenuBar|Name|Text' + inherited;
-  var p:= Pos('|ParentMenu|ParentPopup', Result);
-  if p > 0 then
-    Delete(Result, p, length('|ParentMenu|ParentPopup'));
+  Result := '|MenuItems|MenuBar|Name|Text' + inherited;
+  var
+  Posi := Pos('|ParentMenu|ParentPopup', Result);
+  if Posi > 0 then
+    Delete(Result, Posi, Length('|ParentMenu|ParentPopup'));
 end;
 
-{--- TFXContextMenu -----------------------------------------------------------}
+{ --- TFXContextMenu ----------------------------------------------------------- }
 
 constructor TFXContextMenu.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= 117;
-  Height:= 28;
-  Width:= 32;
-  Sizeable:= false;
-  FMenuItems:= TStringList.Create;
-  FMenuItems.Text:= DefaultMenu;
-  MenuItemsOld:= TStringList.Create;
-  Listener:= 'scene';
-  JavaType:= 'ContextMenu';
+  inherited Create(AOwner);
+  Tag := 117;
+  Height := 28;
+  Width := 32;
+  Sizeable := False;
+  FMenuItems := TStringList.Create;
+  FMenuItems.Text := DefaultMenu;
+  FMenuItemsOld := TStringList.Create;
+  Listener := 'scene';
+  JavaType := 'ContextMenu';
 end;
 
 destructor TFXContextMenu.Destroy;
 begin
   FreeAndNil(FMenuItems);
-  FreeAndNil(MenuItemsOld);
+  FreeAndNil(FMenuItemsOld);
   inherited;
 end;
 
@@ -518,90 +554,92 @@ begin
   FJava.vilSwing1Light.Draw(Canvas, 7, 4, 17);
 end;
 
-procedure TFXContextMenu.setItems(aItems: TStrings);
+procedure TFXContextMenu.SetItems(AItems: TStrings);
 begin
-  MenuItemsOld.Text:= FMenuItems.Text;
-  if aItems.Text <> FMenuItems.Text then
-    FMenuItems.Assign(aItems);
+  FMenuItemsOld.Text := FMenuItems.Text;
+  if AItems.Text <> FMenuItems.Text then
+    FMenuItems.Assign(AItems);
 end;
 
 procedure TFXContextMenu.NewControl;
 begin
   InsertImport('javafx.scene.control.*');
   InsertNewVariable('private ContextMenu ' + Name + ' = new ContextMenu();');
-  MakeMenuItems(MenuItemsOld, MenuItems);
-  Partner.InsertListener(GetContainerAdd, getContextMenuListener(Listener));
+  MakeMenuItems(FMenuItemsOld, MenuItems);
+  FPartner.InsertListener(GetContainerAdd, GetContextMenuListener(Listener));
 end;
 
 procedure TFXContextMenu.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'MenuItems' then
-    MakeMenuItems(MenuItemsOld, MenuItems)
+    MakeMenuItems(FMenuItemsOld, MenuItems)
   else if Attr = 'Listener' then
     MakeListener(Value)
   else
-    inherited
+    inherited;
 end;
 
-function TFXContextMenu.getEvents(ShowEvents: integer): string;
-  const show1 = '|action|closeRequest';
-        show2 = '|hidden|hiding|showing|shown|';
+function TFXContextMenu.GetEvents(ShowEvents: Integer): string;
+const
+  Show1 = '|action|closeRequest';
+  Show2 = '|hidden|hiding|showing|shown|';
 begin
-  if ShowEvents = 1
-    then Result:= show1
-    else Result:= show1 + show2;
+  if ShowEvents = 1 then
+    Result := Show1
+  else
+    Result := Show1 + Show2;
 end;
 
-function TFXContextMenu.getAttributes(ShowAttributes: integer): string;
+function TFXContextMenu.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|MenuItems|Name|Id|Style|Listener';
+  Result := '|MenuItems|Name|Id|Style|Listener';
 end;
 
 procedure TFXContextMenu.DeleteComponent;
 begin
   DeleteEvents;
-  DeleteMenuItems(MenuItemsOld, MenuItems);
-  Partner.DeleteAttribute('private ContextMenu ' + Name);
-  Partner.DeleteListener(getContextMenuListener(Listener));
+  DeleteMenuItems(FMenuItemsOld, MenuItems);
+  FPartner.DeleteAttribute('private ContextMenu ' + Name);
+  FPartner.DeleteListener(GetContextMenuListener(Listener));
 end;
 
 procedure TFXContextMenu.Rename(const OldName, NewName, Events: string);
-  procedure rename(var name: string);
+  procedure Rename(var Name: string);
   begin
-    if name <> '' then
-      name:= NewName + UUtils.Right(name, Length(OldName) + 1);
+    if Name <> '' then
+      Name := NewName + UUtils.Right(Name, Length(OldName) + 1);
   end;
 
 begin
-  Partner.Editor.BeginUpdate;
+  FPartner.Editor.BeginUpdate;
   RenameMenu(OldName, NewName);
   inherited;
-  rename(Faction);
-  rename(Fhidden);
-  rename(Fhiding);
-  rename(Fshowing);
-  rename(Fshown);
-  rename(FcloseRequest);
-  Partner.Editor.EndUpdate;
+  Rename(Faction);
+  Rename(Fhidden);
+  Rename(Fhiding);
+  Rename(Fshowing);
+  Rename(Fshown);
+  Rename(FcloseRequest);
+  FPartner.Editor.EndUpdate;
 end;
 
-function TFXContextMenu.getContextMenuListener(Value: string): string;
+function TFXContextMenu.GetContextMenuListener(Value: string): string;
 begin
-  Result:= surroundFix2(Value + '.setOnMouseReleased(') +
-           surroundFix3('(event) -> {') +
-           surroundFix3(Indent1 + 'if (event.isPopupTrigger()) {') +
-           surroundFix3(Indent2 + 'MouseEvent me = (MouseEvent)event;') +
-           surroundFix3(Indent2 + Name + '.show(root, me.getScreenX(), me.getScreenY());') +
-           surroundFix3('}') +
-           surroundFix2('}') +
-           surroundFix(');');
+  Result := SurroundFix2(Value + '.setOnMouseReleased(') +
+    SurroundFix3('(event) -> {') +
+    SurroundFix3(Indent1 + 'if (event.isPopupTrigger()) {') +
+    SurroundFix3(Indent2 + 'MouseEvent me = (MouseEvent)event;') +
+    SurroundFix3(Indent2 + Name +
+    '.show(root, me.getScreenX(), me.getScreenY());') + SurroundFix3('}') +
+    SurroundFix2('}') + SurroundFix(');');
 end;
 
 procedure TFXContextMenu.MakeListener(Value: string);
-  var i: integer;
+var
+  Int: Integer;
 begin
-  i:= Partner.getLineNumberWith(Name + '.show(root, me.getScreenX()');
-  Partner.ReplaceLineWith(i-4, Indent2 + Value + '.setOnMouseReleased(');
+  Int := FPartner.GetLineNumberWith(Name + '.show(root, me.getScreenX()');
+  FPartner.ReplaceLineWith(Int - 4, Indent2 + Value + '.setOnMouseReleased(');
 end;
 
 end.

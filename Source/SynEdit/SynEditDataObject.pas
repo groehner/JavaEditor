@@ -41,7 +41,7 @@ type
   TSynEnumFormatEtc = class (TInterfacedObject, IEnumFORMATETC)
   private
     FList : TArray<TClipFormat>;
-    FIndex : integer;
+    FIndex : Integer;
   protected
     function GetFormatEtc(ClipFormat : TClipFormat): TFormatEtc;
     {IEnumFORMATETC}
@@ -50,7 +50,7 @@ type
     function Reset : HResult; stdcall;
     function Clone (out Enum: IEnumFormatEtc): HResult; stdcall;
   public
-    constructor Create (FormatList : TArray<TClipFormat>; Index : integer = 0);
+    constructor Create (FormatList : TArray<TClipFormat>; Index : Integer = 0);
   end;
 
   TSynEditDataObject = class (TInterfacedObject, IDataObject)
@@ -75,9 +75,9 @@ type
     destructor Destroy; override;
   end;
 
-function MakeGlobal (Value : integer) : hGlobal; overload;
-function MakeGlobal (const S: string): hGlobal; overload;
-function MakeGlobal (var P; Size : integer) : hGlobal; overload;
+function MakeGlobal (Value : Integer) : hGlobal; overload;
+function MakeGlobal (const Str: string): hGlobal; overload;
+function MakeGlobal (var Posi; Size : Integer) : hGlobal; overload;
 function HasFormat(DataObject : IDataObject; Format : TClipFormat): Boolean;
 
 var
@@ -91,29 +91,29 @@ uses
   SynEdit,
   SynExportHTML;
 
-function MakeGlobal (const S: string): hGlobal;
+function MakeGlobal (const Str: string): hGlobal;
 var
-  P : PChar;
+  Posi : PChar;
   Size : Integer;
 begin
-  Size := ByteLength(S) + SizeOf(Char);
+  Size := ByteLength(Str) + SizeOf(Char);
   Result := GlobalAlloc (GHND, Size);
   if Result = 0 then
     OutOfMemoryError;
-  P := GlobalLock (Result);
+  Posi := GlobalLock (Result);
   try
-    Move(PChar(S)^, P^, Size)
+    Move(PChar(Str)^, Posi^, Size)
   finally
     GlobalUnlock (Result)
   end
 end;
 
-function MakeGlobal (Value : integer) : hGlobal;
+function MakeGlobal (Value : Integer) : hGlobal;
 begin
-  Result := MakeGlobal (Value, sizeof (integer))
+  Result := MakeGlobal (Value, sizeof (Integer))
 end;
 
-function MakeGlobal (var P; Size : integer) : hGlobal;
+function MakeGlobal (var Posi; Size : Integer) : hGlobal;
 var
   D : pointer;
 begin
@@ -122,7 +122,7 @@ begin
     OutOfMemoryError;
   D := GlobalLock (Result);
   try
-    Move (P, D^, Size)
+    Move (Posi, D^, Size)
   finally
     GlobalUnlock (Result)
   end
@@ -132,7 +132,7 @@ function HasFormat(DataObject : IDataObject; Format : TClipFormat):Boolean;
 var
   FormatEnumerator : IEnumFormatEtc;
   FormatEtc  : TFormatEtc;
-  Returned : integer;
+  Returned : Integer;
 begin
   Result := False;
   if (DataObject.EnumFormatEtc (DATADIR_GET, FormatEnumerator) = S_OK) then begin
@@ -271,7 +271,7 @@ end;
 //=== BASE ENUM FORMATETC CLASS ================================================
 
 constructor TSynEnumFormatEtc.Create(FormatList: TArray<TClipFormat>;
-  Index: integer);
+  Index: Integer);
 begin
   inherited Create;
   FList := FormatList;
@@ -292,22 +292,22 @@ end;
 
 function TSynEnumFormatEtc.Next (celt: Longint; out elt; pceltFetched: PLongint): HResult;
 var
-  I : integer;
+  Int : Integer;
   FormatEtc: PFormatEtc;
 begin
-  I := 0;
+  Int := 0;
   FormatEtc:= PFormatEtc(@Elt);
-  while (I < Celt) and (FIndex < Length(FList)) do
+  while (Int < Celt) and (FIndex < Length(FList)) do
   begin
     FormatEtc^ := GetFormatEtc(FList[FIndex]);
     Inc(FormatEtc);
     Inc (FIndex);
-    Inc (I)
+    Inc (Int)
   end;
 
-  if (pCeltFetched <> nil) then pCeltFetched^:= i;
+  if (pCeltFetched <> nil) then pCeltFetched^:= Int;
 
-  if (I = Celt) then
+  if (Int = Celt) then
     Result:= S_OK
   else
     Result:= S_FALSE;

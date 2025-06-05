@@ -111,6 +111,7 @@ object FJava: TFJava
       Align = alClient
       Constraints.MaxHeight = 59
       TabOrder = 1
+      ExplicitWidth = 624
       object DebugToolbar: TSpTBXToolbar
         Left = 3
         Top = 28
@@ -267,11 +268,12 @@ object FJava: TFJava
         Width = 595
         Height = 55
         Color = clBtnFace
-        ActiveTabIndex = 3
+        ActiveTabIndex = 0
         TabAutofitMaxSize = 80
         HiddenItems = <>
         object TabProgram: TSpTBXTabItem
           Caption = 'Program'
+          Checked = True
           CustomWidth = 65
         end
         object TabAWT: TSpTBXTabItem
@@ -284,7 +286,6 @@ object FJava: TFJava
         end
         object TabSwing2: TSpTBXTabItem
           Caption = 'Swing2'
-          Checked = True
           CustomWidth = 60
         end
         object TabLayout: TSpTBXTabItem
@@ -1790,157 +1791,6 @@ object FJava: TFJava
             end
           end
         end
-        object TSProgram: TSpTBXTabSheet
-          Left = 0
-          Top = 25
-          Width = 595
-          Height = 30
-          Caption = 'Program'
-          ImageIndex = -1
-          TabItem = 'TabProgram'
-          object ToolbarProgram: TToolBar
-            Left = 2
-            Top = 0
-            Width = 589
-            Height = 26
-            Align = alClient
-            AutoSize = True
-            ButtonHeight = 27
-            ButtonWidth = 30
-            Color = clBtnFace
-            Images = vilProgramLight
-            ParentColor = False
-            TabOrder = 0
-            object TBNew: TToolButton
-              Left = 0
-              Top = 0
-              Hint = 'New'
-              ImageIndex = 0
-              ImageName = 'New1'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBNewClick
-            end
-            object TBClass: TToolButton
-              Left = 30
-              Top = 0
-              Hint = 'New class'
-              ImageIndex = 1
-              ImageName = 'NewClass'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBClassClick
-            end
-            object TBStructogram: TToolButton
-              Left = 60
-              Top = 0
-              Hint = 'New structogram'
-              ImageIndex = 2
-              ImageName = 'Structogram1'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBStructogramClick
-            end
-            object TBSequence: TToolButton
-              Left = 90
-              Top = 0
-              Hint = 'New sequence diagram'
-              ImageIndex = 3
-              ImageName = 'Sequencediagram'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBSequenceClick
-            end
-            object TBConsole: TToolButton
-              Tag = 1
-              Left = 120
-              Top = 0
-              Hint = 'Console'
-              ImageIndex = 4
-              ImageName = 'Console'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBProgramClick
-            end
-            object TBFrame: TToolButton
-              Tag = 2
-              Left = 150
-              Top = 0
-              Hint = 'Frame'
-              ImageIndex = 5
-              ImageName = 'AWT'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBDialog: TToolButton
-              Tag = 3
-              Left = 180
-              Top = 0
-              Hint = 'Dialog'
-              ImageIndex = 6
-              ImageName = 'AWTDialog'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBApplet: TToolButton
-              Tag = 4
-              Left = 210
-              Top = 0
-              Hint = 'Applet'
-              ImageIndex = 7
-              ImageName = 'AWTApplet'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBJFrame: TToolButton
-              Tag = 5
-              Left = 240
-              Top = 0
-              Hint = 'JFrame'
-              ImageIndex = 8
-              ImageName = 'Swing'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBJDialog: TToolButton
-              Tag = 6
-              Left = 270
-              Top = 0
-              Hint = 'JDialog'
-              ImageIndex = 9
-              ImageName = 'SwingDialog'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBJApplet: TToolButton
-              Tag = 7
-              Left = 300
-              Top = 0
-              Hint = 'JApplet'
-              ImageIndex = 10
-              ImageName = 'SwingApplet'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-            object TBApplication: TToolButton
-              Tag = 8
-              Left = 330
-              Top = 0
-              Hint = 'Application'
-              ImageIndex = 11
-              ImageName = 'JavaFX'
-              ParentShowHint = False
-              ShowHint = True
-              OnClick = SBGUIFrameClick
-            end
-          end
-        end
         object TSLayout: TSpTBXTabSheet
           Left = 0
           Top = 25
@@ -2367,6 +2217,157 @@ object FJava: TFJava
             end
           end
         end
+        object TSProgram: TSpTBXTabSheet
+          Left = 0
+          Top = 25
+          Width = 595
+          Height = 30
+          Caption = 'Program'
+          ImageIndex = -1
+          TabItem = 'TabProgram'
+          object ToolbarProgram: TToolBar
+            Left = 2
+            Top = 0
+            Width = 589
+            Height = 26
+            Align = alClient
+            AutoSize = True
+            ButtonHeight = 27
+            ButtonWidth = 30
+            Color = clBtnFace
+            Images = vilProgramLight
+            ParentColor = False
+            TabOrder = 0
+            object TBNew: TToolButton
+              Left = 0
+              Top = 0
+              Hint = 'New'
+              ImageIndex = 0
+              ImageName = 'New1'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBNewClick
+            end
+            object TBClass: TToolButton
+              Left = 30
+              Top = 0
+              Hint = 'New class'
+              ImageIndex = 1
+              ImageName = 'NewClass'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBClassClick
+            end
+            object TBStructogram: TToolButton
+              Left = 60
+              Top = 0
+              Hint = 'New structogram'
+              ImageIndex = 2
+              ImageName = 'Structogram1'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBStructogramClick
+            end
+            object TBSequence: TToolButton
+              Left = 90
+              Top = 0
+              Hint = 'New sequence diagram'
+              ImageIndex = 3
+              ImageName = 'Sequencediagram'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBSequenceClick
+            end
+            object TBConsole: TToolButton
+              Tag = 1
+              Left = 120
+              Top = 0
+              Hint = 'Console'
+              ImageIndex = 4
+              ImageName = 'Console'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBProgramClick
+            end
+            object TBFrame: TToolButton
+              Tag = 2
+              Left = 150
+              Top = 0
+              Hint = 'Frame'
+              ImageIndex = 5
+              ImageName = 'AWT'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBDialog: TToolButton
+              Tag = 3
+              Left = 180
+              Top = 0
+              Hint = 'Dialog'
+              ImageIndex = 6
+              ImageName = 'AWTDialog'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBApplet: TToolButton
+              Tag = 4
+              Left = 210
+              Top = 0
+              Hint = 'Applet'
+              ImageIndex = 7
+              ImageName = 'AWTApplet'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBJFrame: TToolButton
+              Tag = 5
+              Left = 240
+              Top = 0
+              Hint = 'JFrame'
+              ImageIndex = 8
+              ImageName = 'Swing'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBJDialog: TToolButton
+              Tag = 6
+              Left = 270
+              Top = 0
+              Hint = 'JDialog'
+              ImageIndex = 9
+              ImageName = 'SwingDialog'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBJApplet: TToolButton
+              Tag = 7
+              Left = 300
+              Top = 0
+              Hint = 'JApplet'
+              ImageIndex = 10
+              ImageName = 'SwingApplet'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+            object TBApplication: TToolButton
+              Tag = 8
+              Left = 330
+              Top = 0
+              Hint = 'Application'
+              ImageIndex = 11
+              ImageName = 'JavaFX'
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = SBGUIFrameClick
+            end
+          end
+        end
       end
       object MainToolBar: TSpTBXToolbar
         Left = 3
@@ -2471,7 +2472,7 @@ object FJava: TFJava
             Caption = 'HTML'
             OnClick = MINewClick
           end
-          object N19: TSpTBXSeparatorItem
+          object N19Sep: TSpTBXSeparatorItem
           end
           object MIFileNewClass: TSpTBXItem
             Caption = 'Class'
@@ -2491,7 +2492,7 @@ object FJava: TFJava
             ImageName = '92'
             OnClick = MINewSequencediagramClick
           end
-          object N10: TSpTBXSeparatorItem
+          object N10Sep: TSpTBXSeparatorItem
           end
           object MINewConsole: TSpTBXItem
             Tag = 1
@@ -2544,7 +2545,7 @@ object FJava: TFJava
         object MIReopen: TSpTBXSubmenuItem
           Caption = 'Reopen'
         end
-        object N15: TSpTBXSeparatorItem
+        object N15Sep: TSpTBXSeparatorItem
         end
         object MISave: TSpTBXItem
           Caption = 'Save'
@@ -2596,7 +2597,7 @@ object FJava: TFJava
           Caption = 'Export'
           OnClick = MIExportClick
         end
-        object N1: TSpTBXSeparatorItem
+        object N1Sep: TSpTBXSeparatorItem
         end
         object MIPrint: TSpTBXItem
           Caption = 'Print'
@@ -2615,7 +2616,7 @@ object FJava: TFJava
           ImageName = '32'
           OnClick = MIPrintSetupClick
         end
-        object N9: TSpTBXSeparatorItem
+        object N9Sep: TSpTBXSeparatorItem
         end
         object MIExit: TSpTBXItem
           Caption = 'Exit'
@@ -2640,7 +2641,7 @@ object FJava: TFJava
           ImageName = '13'
           OnClick = MIRedoClick
         end
-        object N3: TSpTBXSeparatorItem
+        object N3Sep: TSpTBXSeparatorItem
         end
         object MICut: TSpTBXItem
           Caption = 'Cut'
@@ -2689,7 +2690,7 @@ object FJava: TFJava
           ShortCut = 16470
           OnClick = MIPasteClick
         end
-        object N4: TSpTBXSeparatorItem
+        object N4Sep: TSpTBXSeparatorItem
         end
         object MISearch: TSpTBXItem
           Caption = 'Search'
@@ -2718,7 +2719,7 @@ object FJava: TFJava
           ImageName = '51'
           OnClick = MISearchInFilesClick
         end
-        object N8: TSpTBXSeparatorItem
+        object N8Sep: TSpTBXSeparatorItem
         end
         object MIUnindent: TSpTBXItem
           Caption = 'Unindent'
@@ -2815,7 +2816,7 @@ object FJava: TFJava
           ImageName = '35'
           OnClick = MIParameterClick
         end
-        object MIStrich7: TSpTBXSeparatorItem
+        object MI30Sep: TSpTBXSeparatorItem
         end
         object MIHTMLforApplet: TSpTBXItem
           Caption = 'HTML for applet'
@@ -2831,7 +2832,7 @@ object FJava: TFJava
           ImageName = '22'
           OnClick = MIAppletviewerClick
         end
-        object N6: TSpTBXSeparatorItem
+        object N6Sep: TSpTBXSeparatorItem
         end
         object MIDebugger: TSpTBXItem
           Caption = 'Debugger'
@@ -2911,7 +2912,7 @@ object FJava: TFJava
           ImageName = '76'
           OnClick = MIShowExecutionPointClick
         end
-        object N12: TSpTBXSeparatorItem
+        object N12Sep: TSpTBXSeparatorItem
         end
         object MIBreakpoint: TSpTBXItem
           Caption = 'Breakpoint on/off'
@@ -2926,7 +2927,7 @@ object FJava: TFJava
           ImageName = '40'
           OnClick = MIBreakpointsClearClick
         end
-        object N13: TSpTBXSeparatorItem
+        object N13Sep: TSpTBXSeparatorItem
         end
         object MIExpression: TSpTBXItem
           Caption = 'Evaluate'
@@ -3062,7 +3063,7 @@ object FJava: TFJava
             Caption = 'Compare files'
             OnClick = MISVNCompareClick
           end
-          object N16: TSpTBXSeparatorItem
+          object N16Sep: TSpTBXSeparatorItem
           end
           object MISVNStatus: TSpTBXItem
             Caption = 'Status of folder'
@@ -3101,7 +3102,7 @@ object FJava: TFJava
             Caption = 'Log'
             OnClick = MIGitClick
           end
-          object N20: TSpTBXSeparatorItem
+          object N20Sep: TSpTBXSeparatorItem
           end
           object MIGitReset: TSpTBXItem
             Tag = 5
@@ -3118,7 +3119,7 @@ object FJava: TFJava
             Caption = 'Remove'
             OnClick = MIGitClick
           end
-          object N21: TSpTBXSeparatorItem
+          object N21Sep: TSpTBXSeparatorItem
           end
           object MIGitRemote: TSpTBXItem
             Tag = 8
@@ -3135,7 +3136,7 @@ object FJava: TFJava
             Caption = 'Push'
             OnClick = MIGitClick
           end
-          object N22: TSpTBXSeparatorItem
+          object N22Sep: TSpTBXSeparatorItem
           end
           object MIGitGUI: TSpTBXItem
             Tag = 11
@@ -3166,7 +3167,7 @@ object FJava: TFJava
             OnClick = MIJUnitCreateTestclassClick
           end
         end
-        object N17: TSpTBXSeparatorItem
+        object N17Sep: TSpTBXSeparatorItem
         end
         object MIConfigureTools: TSpTBXItem
           Caption = 'Configure tools'
@@ -3214,7 +3215,7 @@ object FJava: TFJava
             Caption = 'JApplet'
             OnClick = SBGUIFrameClick
           end
-          object N5: TSpTBXSeparatorItem
+          object N5Sep: TSpTBXSeparatorItem
           end
           object MIJavaDoc1: TSpTBXItem
             Caption = 'JavaDoc'
@@ -3717,7 +3718,7 @@ object FJava: TFJava
           ImageName = '28'
           OnClick = MIConfigurationClick
         end
-        object N14: TSpTBXSeparatorItem
+        object N14Sep: TSpTBXSeparatorItem
         end
         object MIMaximized: TSpTBXItem
           Caption = 'Maximize'
@@ -3743,7 +3744,7 @@ object FJava: TFJava
           ImageName = '06'
           OnClick = MITileHorizontalClick
         end
-        object N11: TSpTBXSeparatorItem
+        object N11Sep: TSpTBXSeparatorItem
         end
       end
       object MIHelp: TSpTBXSubmenuItem
@@ -3769,7 +3770,7 @@ object FJava: TFJava
           Caption = 'JUnit'
           OnClick = MIJunitManualClick
         end
-        object N7: TSpTBXSeparatorItem
+        object N7Sep: TSpTBXSeparatorItem
         end
         object MIDemos: TSpTBXItem
           Caption = 'Demos'
@@ -3791,7 +3792,7 @@ object FJava: TFJava
           ImageName = '61'
           OnClick = MIMindstormsHelpClick
         end
-        object N2: TSpTBXSeparatorItem
+        object N2Sep: TSpTBXSeparatorItem
         end
         object MIWebsite: TSpTBXItem
           Caption = 'Website'

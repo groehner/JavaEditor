@@ -66,21 +66,21 @@ implementation
 function TFilterEdForm.GetValue : string;
 var
   R : Integer;
-  S : string;
+  Str : string;
 begin
   R := 1;
   if FilterGrid.Cells[0, R] = '' then begin
     Result := '';
     Exit;
   end;
-  S := FilterGrid.Cells[0, R];
-  S := S + '|' + FilterGrid.Cells[1, R];
+  Str := FilterGrid.Cells[0, R];
+  Str := Str + '|' + FilterGrid.Cells[1, R];
   Inc(R);
   while FilterGrid.Cells[0, R] <> '' do begin
-    S := S + '|' + FilterGrid.Cells[0, R] + '|' + FilterGrid.Cells[1, R];
+    Str := Str + '|' + FilterGrid.Cells[0, R] + '|' + FilterGrid.Cells[1, R];
     Inc(R);
   end;
-  Result := S;
+  Result := Str;
 end;
 
 procedure TFilterEdForm.FormShow(Sender: TObject);
@@ -91,28 +91,28 @@ end;
 
 procedure TFilterEdForm.LoadGrid(Value : string);
 var
-  P, R, C : Integer;
-  S : string;
+  Posi, R, C : Integer;
+  Str : string;
 begin
   if Value = '' then
     Exit;
-  P := Pos('|', Value);
+  Posi := Pos('|', Value);
   R := 1;
   C := 0;
-  while P <> 0 do begin
-    S := Copy(Value, 1, P - 1);
-    FilterGrid.Cells[C, R] := S;
+  while Posi <> 0 do begin
+    Str := Copy(Value, 1, Posi - 1);
+    FilterGrid.Cells[C, R] := Str;
     Inc(C);
-    Delete(Value, 1, P);
-    P := Pos('|', Value);
-    if P = 0 then
+    Delete(Value, 1, Posi);
+    Posi := Pos('|', Value);
+    if Posi = 0 then
       FilterGrid.Cells[C, R] := Value
     else begin
-      S := Copy(Value, 1, P - 1);
-      FilterGrid.Cells[C, R] := S;
-      Delete(Value, 1, P);
+      Str := Copy(Value, 1, Posi - 1);
+      FilterGrid.Cells[C, R] := Str;
+      Delete(Value, 1, Posi);
     end;
-    P := Pos('|', Value);
+    Posi := Pos('|', Value);
     Inc(R);
     C := 0;
   end;

@@ -34,7 +34,7 @@ type
 
   PPJavaVM = ^PJavaVM;
   TGetDefaultArgs = function (args: Pointer): jint; stdcall;
-  TCreateVM = function (vm: PPJavaVM; penv: PPJNIEnv; p: Pointer): jint; stdcall;
+  TCreateVM = function (vm: PPJavaVM; penv: PPJNIEnv; Posi: Pointer): jint; stdcall;
   TGetCreatedVMs = function (vmBuf: PPJavaVM; buflen: Integer; nVMs: PJInt): jint; stdcall;
   TExitProc = procedure (exitCode: jint); stdcall;
   TAbortProc = procedure; stdcall;
@@ -76,11 +76,11 @@ type
     FDebugPort, FVerbose, FDisableAsyncGC, FVerboseGC, FEnableClassGC,
     FVerifyMode, FCheckSource, FMinHeapSize, FMaxHeapSize, FJavaStackSize,
     FNativeStackSize: Integer;
-    FDebugging: boolean;
+    FDebugging: Boolean;
     FConnectionAddress: string;
     function FindJava12: Boolean;
     function getClasspath: string;
-    procedure setClasspath(const S: string);
+    procedure setClasspath(const Str: string);
     procedure setNativeStackSize(Size: Integer);
     procedure setJavaStackSize(Size: Integer);
     procedure setMinHeapSize(Size: Integer);
@@ -92,7 +92,7 @@ type
     procedure SetDisableAsyncGC(B: Boolean);
     procedure setVerbose(B: Boolean);
     procedure setDebugPort(Port: Integer);
-    procedure setDebugging(Arg: boolean);
+    procedure setDebugging(Arg: Boolean);
     procedure setConnectionAddress(const ConnAddress: string);
     procedure setAbortProc(proc: TAbortProc);
     procedure setExitProc(proc: TExitProc);
@@ -102,17 +102,17 @@ type
   public
     ErrorMessage: string;
     // processes a command-line option
-    procedure processCommandLineOption(const S: string);
+    procedure processCommandLineOption(const Str: string);
     // processes a bunch of command line options passed in a container.
     procedure processCommandLine(Options: TStrings);
-    procedure addProperty(const S: string);
+    procedure addProperty(const Str: string);
     procedure addToClasspath(const filename: string);
     function GetVM: TJavaVM; //Instantiates the JVM
     procedure CallMain(const aClassName: string; args: TStrings);
     procedure CallExit(val: Integer);
-    property RuntimeLib: String read FRuntimeLib;
-    property JavaHome: String read FJavaHome;
-    property Classpath: String read getClasspath write setClasspath;
+    property RuntimeLib: string read FRuntimeLib;
+    property JavaHome: string read FJavaHome;
+    property Classpath: string read getClasspath write setClasspath;
     property Hotspot: Boolean read FHotspot write FHotspot;
     
     // write-only properties that only work before instantiating VM.
@@ -128,7 +128,7 @@ type
     property Verbose: Boolean write setVerbose;
     property DebugPort: Integer write setDebugPort;
     property Debugging: Boolean write setDebugging;
-    property ConnectionAddress: String write setConnectionAddress;
+    property ConnectionAddress: string write setConnectionAddress;
     property AbortProc: TAbortProc write setAbortProc;
     property ExitProc: TExitProc write setExitProc;
     property Printf: TPrintf write setPrintf;
@@ -143,7 +143,7 @@ implementation
 uses UUtils;
 
 const
-  BootClasspath: String = '';
+  BootClasspath: string = '';
 
 var
   CreateVM: TCreateVM;
@@ -154,18 +154,18 @@ var
 
   procedure TJavaRuntime.LoadJVMDLL;
   begin
-    if DLLHandle <> 0 then exit; // already initialized.
+    if DLLHandle <> 0 then Exit; // already initialized.
     DLLHandle:= SafeLoadLibrary(FRuntimeLib);
     if DLLHandle = 0 then begin
       errormessage:= 'Could not load DLL ' + FRuntimeLib;
-      exit;
+      Exit;
     end;
     @CreateVM      := getProcAddress(DLLHandle, 'JNI_CreateJavaVM');
     @GetDefaultArgs:= getProcAddress(DLLHandle, 'JNI_GetDefaultJavaVMInitArgs');
     @GetCreatedVMs := getProcAddress(DLLHandle, 'JNI_GetCreatedJavaVMs');
     if (@CreateVM = Nil) or (@GetDefaultArgs = Nil) or (@GetCreatedVMs = Nil) then begin
       errormessage:= 'Dynamic Link Library ' + FRuntimeLib + ' is not valid.';
-      exit;
+      Exit;
     end;
     vmargs.version := $00010001;
     vmargs2.version:= $00010002;
@@ -179,7 +179,7 @@ var
       args: Pointer;
   begin
     Result:= FJavaVM;
-    if FJavaVM <> nil then exit;
+    if FJavaVM <> nil then Exit;
     PVM:= nil;
     PEnv:= nil;
     // not working on 64-Bit-Version, makes PipeError
@@ -188,19 +188,19 @@ var
     {$IFDEF  WIN32}
     if not FileIs32Bit(FRuntimeLib) then begin
       errormessage:= 'The JVM ' + FRuntimeLib + ' is 64-Bit and cannot be used!'#13#10'Install a separate 32-Bit JDK or a 64-Bit JavaEditor.';
-      exit;
+      Exit;
     end;
     {$ENDIF}
     {$IFDEF WIN64}
     if FileIs32Bit(FRuntimeLib) then begin
       errormessage:= 'The JVM ' + FRuntimeLib + ' is 32-Bit and cannot be used!'#13#10'Install a separate 64-Bit JDK or a 32-Bit JavaEditor.';
-      exit;
+      Exit;
     end;
     {$ENDIF}
 
     if @CreateVM = nil then begin
       LoadJVMDLL;
-      if errormessage <> '' then exit;
+      if errormessage <> '' then Exit;
     end;
 
     SetJVMOptions;
@@ -212,7 +212,7 @@ var
       errormessage:= 'Could not create JVM' + #13#10 +
                      'DLL: ' + RuntimeLib + #13#10 +
                      'Options: ' + ShowOptions;
-      exit;
+      Exit;
     end;
     {$D+}
     TJavaVM.setThreadPenv(penv);
@@ -222,114 +222,114 @@ var
 
   procedure TJavaRuntime.SetJVMOptions;
   var
-    i, p: Integer;
-    s: AnsiString;
+    Int, Posi: Integer;
+    Str: AnsiString;
     cp, cp1: string;
     PVMOption, PVO: PJavaVMOption;
   begin
     // 1 = classpath
     // 2 = -XX:ErrorFile
     VMArgs2.Noptions:= 2 + FProperties.Count;
-    if (FVerbose <> 0) or (FVerboseGC <> 0) then inc(VMArgs2.Noptions);
-    if FVerboseGC <> 0 then inc(VMArgs2.Noptions);
-    if FMinHeapSize > 0 then inc(VMArgs2.Noptions);
-    if FMaxHeapSize > 0 then inc(VMArgs2.Noptions);
-    if BootClasspath <> '' then inc(VMArgs2.Noptions);
-    if FEnableClassGC <> 0 then inc(VMArgs2.NOptions);
-    if FDebugging then inc(VMArgs2.NOptions);
+    if (FVerbose <> 0) or (FVerboseGC <> 0) then Inc(VMArgs2.Noptions);
+    if FVerboseGC <> 0 then Inc(VMArgs2.Noptions);
+    if FMinHeapSize > 0 then Inc(VMArgs2.Noptions);
+    if FMaxHeapSize > 0 then Inc(VMArgs2.Noptions);
+    if BootClasspath <> '' then Inc(VMArgs2.Noptions);
+    if FEnableClassGC <> 0 then Inc(VMArgs2.NOptions);
+    if FDebugging then Inc(VMArgs2.NOptions);
 
-    if Assigned(FExitProc) then inc(VMargs2.NOptions);
-    if Assigned(FAbortProc) then inc(VMArgs2.NOptions);
-    if Assigned(FPrintf) then inc(VMArgs2.NOptions);
+    if Assigned(FExitProc) then Inc(VMargs2.NOptions);
+    if Assigned(FAbortProc) then Inc(VMArgs2.NOptions);
+    if Assigned(FPrintf) then Inc(VMArgs2.NOptions);
 
-    vmargs2.ignoreUnrecognized:= true;
+    vmargs2.ignoreUnrecognized:= True;
     PVMOption:= AllocMem(sizeof(JavaVMOption) * VMargs2.NOptions);
     PVO:= PVMOption;
     ShowOptions:= 'Anzahl = ' + IntToStr(VMargs2.NOptions) + #13#10;
 
-    s:= '-Djava.class.path=' + AnsiString(Classpath);
-    PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(S));
+    Str:= '-Djava.class.path=' + AnsiString(Classpath);
+    PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(Str));
     PVO^.extraInfo:= nil;
-    inc(PVO);
+    Inc(PVO);
 
     ShowOptions:= ShowOptions + '-Djava.class.path='  + #13#10;
     cp:= Classpath + ';';
-    p:= 1 ;
-    while p > 0 do begin
-      p:= Pos(';', cp);
-      cp1:= Copy(cp, 1, p);
-      delete(cp, 1, p);
+    Posi:= 1 ;
+    while Posi > 0 do begin
+      Posi:= Pos(';', cp);
+      cp1:= Copy(cp, 1, Posi);
+      Delete(cp, 1, Posi);
       ShowOptions:= ShowOptions + cp1 + #13#10;
     end;
 
-    for i:= 0 to FProperties.Count - 1 do begin
-      s:= '-D' + AnsiString(FProperties[i]);
-      PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(s));
-      inc(PVO);
-      ShowOptions:= ShowOptions + String(s) + #13#10;
+    for Int:= 0 to FProperties.Count - 1 do begin
+      Str:= '-D' + AnsiString(FProperties[Int]);
+      PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(Str));
+      Inc(PVO);
+      ShowOptions:= ShowOptions + string(Str) + #13#10;
     end;
 
     if (FVerbose <> 0) or (FVerboseGC <> 0) then begin
-      S:= '-verbose:';
+      Str:= '-verbose:';
       if FVerbose <> 0
-        then S:= S + 'class';
+        then Str:= Str + 'class';
       if FVerboseGC <> 0
-        then S:= S + ',';
+        then Str:= Str + ',';
       if FVerboseGC <> 0
-        then S:= S + 'gc';
-      PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(S));
-      inc(PVO);
-      ShowOptions:= ShowOptions + String(s) + #13#10;
+        then Str:= Str + 'gc';
+      PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(Str));
+      Inc(PVO);
+      ShowOptions:= ShowOptions + string(Str) + #13#10;
     end;
 
     if FMinHeapSize > 0 then begin
       PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(AnsiString('-Xms' + IntToStr(FMinHeapSize))));
-      inc(PVO);
+      Inc(PVO);
       ShowOptions:= ShowOptions + '-Xms' + IntToStr(FMinHeapSize) + #13#10;
     end;
 
     if FMaxHeapSize > 0 then begin
       PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(AnsiString('-Xmx' + IntToStr(FMaxHeapSize))));
-      inc(PVO);
+      Inc(PVO);
       ShowOptions:= ShowOptions + '-Xmx' + IntToStr(FMaxHeapSize) + #13#10;
     end;
       
     if FEnableClassGC <> 0 then begin
       PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar('-Xnoclassgc'));
-      inc(PVO);
+      Inc(PVO);
       ShowOptions:= ShowOptions + '-Xnoclassgc' + #13#10;
     end;
       
     if BootClasspath <> '' then begin
       PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(AnsiString('-Xbootclasspath/p:' + BootClasspath)));
-      inc(PVO);
+      Inc(PVO);
       ShowOptions:= ShowOptions + '-Xbootclasspath/p:' + BootClasspath + #13#10;
     end;
 
     if FDebugging then begin
       PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar(AnsiString('-agentlib:jdwp=transport=dt_shmem,address='+FConnectionAddress+',server=y,suspend=n')));
-      inc(PVO);
+      Inc(PVO);
       ShowOptions:= ShowOptions + '-agentlib:jdwp=transport=dt_shmem,address='+FConnectionAddress+',server=y,suspend=n' + #13#10;
     end;
 
     if Assigned(FPrintf) then begin
       PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar('exit'));
       PVO^.ExtraInfo:= @FPrintf;
-      inc(PVO);
+      Inc(PVO);
       ShowOptions:= ShowOptions + 'exit' + #13#10;
     end;
 
     if Assigned(FExitProc) then begin
       PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar('exit'));
       PVO^.ExtraInfo:= @FExitProc;
-      inc(PVO);
+      Inc(PVO);
       ShowOptions:= ShowOptions + 'exit' + #13#10;
     end;
 
     if Assigned(FAbortProc) then begin
       PVO^.optionString:= AnsiStrings.StrNew(PAnsiChar('abort'));
       PVO^.ExtraInfo:= @FAbortProc;
-      inc(PVO);
+      Inc(PVO);
       ShowOptions:= ShowOptions + 'abort' + #13#10;
     end;
 
@@ -352,32 +352,32 @@ var
     TJavaVm.CallExit(val);
   end;
 
-  procedure TJavaRuntime.processCommandLineOption(const s: string);
+  procedure TJavaRuntime.processCommandLineOption(const Str: string);
     var L: string;
 
-    function extractSize(s: string): Integer;
+    function extractSize(Str: string): Integer;
     begin
-      if S[length(S)] = 'k'
+      if Str[Length(Str)] = 'k'
         then Result:= $400
       else
-        if S[length(S)] = 'm'
+        if Str[Length(Str)] = 'm'
           then Result:= $100000
           else Result:= 1;
       if Result <> 1
-        then S:= Copy(S, 1, length(S)-1);
-      Result:= Result * StrToIntDef(S, 0);
+        then Str:= Copy(Str, 1, Length(Str)-1);
+      Result:= Result * StrToIntDef(Str, 0);
     end;
 
   begin
-    L := LowerCase(S);
+    L := LowerCase(Str);
     if (L = '-v') or (L = 'verbose') 
-      then Verbose:= true
+      then Verbose:= True
     else if (L = '-verbosegc') 
-      then VerboseGC:= true
+      then VerboseGC:= True
     else if (L = '-noasync') 
-      then DisableAsyncGC:= true
+      then DisableAsyncGC:= True
     else if (L = '-noclassgc') 
-      then EnableClassGC:= false
+      then EnableClassGC:= False
     else if (L = '-verify') 
       then VerifyMode:= 2
     else if (L = '-noverify') 
@@ -387,26 +387,26 @@ var
     else if (L = '-nojit') 
       then addProperty('java.compiler=')
     else if Copy(L, 1, 3) = '-cp' 
-      then FClasspath.addPath(Copy(S, 5, length(S)))
+      then FClasspath.addPath(Copy(Str, 5, Length(Str)))
     else if Copy(L, 1, 10) = '-classpath' 
-      then FClasspath.addPath(Copy(S, 12, length(S)))
+      then FClasspath.addPath(Copy(Str, 12, Length(Str)))
     else if Copy(L, 1, 2) = '-d' 
-      then addProperty(Copy(S, 3, length(S)))
+      then addProperty(Copy(Str, 3, Length(Str)))
     else if Copy(L, 1, 3) = '-ms' 
-      then MinHeapSize:= ExtractSize(Copy(L, 4, length(L)))
+      then MinHeapSize:= ExtractSize(Copy(L, 4, Length(L)))
     else if Copy(L, 1, 3) = '-mx' 
-      then MaxHeapSize:= ExtractSize(Copy(L, 4, length(L)))
+      then MaxHeapSize:= ExtractSize(Copy(L, 4, Length(L)))
     else if Copy(L, 1, 3) = '-ss' 
-      then NativeStackSize:= ExtractSize(Copy(L, 4, length(L)))
+      then NativeStackSize:= ExtractSize(Copy(L, 4, Length(L)))
     else if Copy(L, 1, 3) = '-oss' 
-      then NativeStackSize:= ExtractSize(Copy(L, 5, length(L)));
+      then NativeStackSize:= ExtractSize(Copy(L, 5, Length(L)));
   end;
 
   procedure TJavaRuntime.processCommandLine(Options: TStrings);
-    var i: Integer;
+    var Int: Integer;
   begin
-    for i:= 0 to Options.Count-1 do
-      processCommandLineOption(Options[I]);
+    for Int:= 0 to Options.Count-1 do
+      processCommandLineOption(Options[Int]);
   end;
 
   class function TJavaRuntime.GetDefault(const JavaPath: string): TJavaRuntime;
@@ -416,7 +416,7 @@ var
         DefaultRuntime:= TJavaRuntime.Create(JavaPath);
       finally
       end;
-    result:= DefaultRuntime;
+    Result:= DefaultRuntime;
   end;
   
   procedure TJavaRuntime.addToClasspath(const filename: string);
@@ -428,13 +428,13 @@ var
     var CPath: TClasspath;
   begin
     CPath:= TClasspath.getDefault;
-    result:= CPath.Fullpath;
+    Result:= CPath.Fullpath;
   end;
   
-  procedure TJavaRuntime.setClasspath(const S: string);
+  procedure TJavaRuntime.setClasspath(const Str: string);
   begin
     FClasspath:= TClasspath.getDefault;
-    FClasspath.addPath(S);
+    FClasspath.addPath(Str);
   end;
 
   constructor TJavaRuntime.Create(const JavaPath: string);
@@ -446,7 +446,7 @@ var
         + JavaPath + '\jre\bin\server\jvm.dll'#13#10
         + JavaPath + '\bin\client\jvm.dll'#13#10
         + JavaPath + '\bin\server\jvm.dll';
-      exit;
+      Exit;
     end;
     ErrorMessage:= '';
     DefaultRuntime:= Self; // set the singleton
@@ -457,7 +457,7 @@ var
 
   destructor TJavaRuntime.Destroy;
     var PVMOptions, PVO: PJavaVMOption;
-        count: integer;
+        Count: Integer;
   begin
     DefaultRuntime:= Nil;
     if dllHandle <> 0 then
@@ -467,12 +467,12 @@ var
     FreeAndNil(FProperties);
 
     PVMOptions:= vmargs2.options;
-    count:= vmargs2.NOptions;
+    Count:= vmargs2.NOptions;
     PVO:= PVMOptions;
-    while count > 0 do begin
+    while Count > 0 do begin
       AnsiStrings.StrDispose(PVO.OptionString);
-      inc(PVO);
-      dec(count);
+      Inc(PVO);
+      Dec(Count);
     end;
     FreeMem(PVMOptions);
     FreeAndNil(FJavaVM);
@@ -480,20 +480,20 @@ var
   end;
   
   function TJavaRuntime.FindJava12: Boolean;
-    var s, Key: string;
+    var Str, Key: string;
   begin
-    result:= false;
+    Result:= False;
     key:= FJavaPath;
-    s:= key + '\jre\bin\client\jvm.dll';
-    if not FileExists(s) then
-      s:= key + '\jre\bin\server\jvm.dll';
-    if not FileExists(s) then
-      s:= key + '\bin\client\jvm.dll';
-    if not FileExists(s) then
-      s:= key + '\bin\server\jvm.dll';
-    if FileExists(s) then begin
-      result:= true;
-      FRuntimeLib:= s;
+    Str:= key + '\jre\bin\client\jvm.dll';
+    if not FileExists(Str) then
+      Str:= key + '\jre\bin\server\jvm.dll';
+    if not FileExists(Str) then
+      Str:= key + '\bin\client\jvm.dll';
+    if not FileExists(Str) then
+      Str:= key + '\bin\server\jvm.dll';
+    if FileExists(Str) then begin
+      Result:= True;
+      FRuntimeLib:= Str;
       FJavaHome:= key;
     end
   end;
@@ -557,7 +557,7 @@ var
     FDebugPort:= Port;
   end;
 
-  procedure TJavaRuntime.setDebugging(Arg: boolean);
+  procedure TJavaRuntime.setDebugging(Arg: Boolean);
   begin
     FDebugging:= Arg;
   end;
@@ -582,9 +582,9 @@ var
     fprintf:= printproc;
   end;
   
-  procedure TJavaRuntime.addProperty(const S: string);
+  procedure TJavaRuntime.addProperty(const Str: string);
   begin
-    FProperties.add(S);
+    FProperties.Add(Str);
   end;
 
   // -- TClassPath -------------------------------------------------------------
@@ -593,7 +593,7 @@ var
   begin
     if cpath = nil then
       cpath:= TClasspath.Create;
-    result:= cpath;
+    Result:= cpath;
   end;
 
   constructor TClasspath.Create;
@@ -606,7 +606,7 @@ var
   var
     Len: Integer;
     Dirs : TStringList;
-    I: Integer;
+    Int: Integer;
   begin
     Path:= Path + ';';
     Dirs:= TStringList.Create;
@@ -614,11 +614,11 @@ var
       repeat
         Len:= Pos(';', Path);
         if Len > 1 then
-          Dirs.add(Copy(Path, 1, Len-1));
+          Dirs.Add(Copy(Path, 1, Len-1));
         Path:= Copy(Path, Len + 1, Length(Path));
       until Len=0;
-      for i:= Dirs.Count-1 downto 0 do
-        addDir(Dirs[i]);
+      for Int:= Dirs.Count-1 downto 0 do
+        addDir(Dirs[Int]);
     finally
       FreeAndNil(Dirs);
     end;
@@ -626,30 +626,30 @@ var
   
   procedure TClasspath.addDir(const dir: string);
   var
-    S: string;
-    I: Integer;
+    Str: string;
+    Int: Integer;
   begin
     if Dir = '.' then
-      add(Dir)
+      Add(Dir)
     else begin
-      S:= ExpandFileName(dir);
-      if (S[length(S)] = '\') and (S[length(S)-1] <> ':') then
-        S:= Copy(S, 1, length(S)-1);
-      I:= IndexOf(S);
-      if I>=0 then
-        Delete(I);
-      add(S);
+      Str:= ExpandFileName(dir);
+      if (Str[Length(Str)] = '\') and (Str[Length(Str)-1] <> ':') then
+        Str:= Copy(Str, 1, Length(Str)-1);
+      Int:= IndexOf(Str);
+      if Int>=0 then
+        Delete(Int);
+      Add(Str);
     end;
   end;
 
   function TClasspath.FullPath: string;
-    var I: Integer;
+    var Int: Integer;
   begin
-    result:= '';
-    for I:= Count downto 1 do begin
-      if I < Count then
-        result:= result + ';';
-      result:= result + Strings[I-1];
+    Result:= '';
+    for Int:= Count downto 1 do begin
+      if Int < Count then
+        Result:= Result + ';';
+      Result:= Result + Strings[Int-1];
     end;
   end;
 

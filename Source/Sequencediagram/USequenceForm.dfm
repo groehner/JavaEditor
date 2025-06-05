@@ -24,10 +24,10 @@ object FSequenceForm: TFSequenceForm
     Width = 627
     Height = 339
     Align = alClient
+    Color = clBtnFace
+    ParentColor = False
     TabOrder = 1
     OnResize = SequenceScrollboxResize
-    ExplicitWidth = 623
-    ExplicitHeight = 338
   end
   object EMessage: TEdit
     Left = 504
@@ -44,7 +44,6 @@ object FSequenceForm: TFSequenceForm
     Height = 23
     Images = vilToolbarLight
     TabOrder = 2
-    ExplicitWidth = 623
     object TBClose: TToolButton
       Left = 0
       Top = 0
@@ -160,11 +159,17 @@ object FSequenceForm: TFSequenceForm
       ImageName = 'Refresh'
       OnClick = MIPopupRefreshClick
     end
+    object SpTBXSeparatorItem2: TSpTBXSeparatorItem
+    end
     object MIPopupAsText: TSpTBXItem
       Caption = 'As text'
       ImageIndex = 8
       ImageName = 'AsText'
       OnClick = MIPopupAsTextClick
+    end
+    object MIPopupCopyAsPicture: TSpTBXItem
+      Caption = 'Copy as picture'
+      OnClick = MIPopupCopyAsPictureClick
     end
     object MIPopupFont: TSpTBXItem
       Caption = 'Font'

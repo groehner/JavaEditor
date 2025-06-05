@@ -121,14 +121,14 @@ object FGUIDesigner: TFGUIDesigner
         OnClick = MIAlignClick
       end
     end
-    object N1: TSpTBXSeparatorItem
+    object N1Sep: TSpTBXSeparatorItem
     end
     object MISnapToGrid: TSpTBXItem
       Caption = 'Snap to grid'
       Checked = True
       OnClick = MISnapToGridClick
     end
-    object N2: TSpTBXSeparatorItem
+    object N2Sep: TSpTBXSeparatorItem
     end
     object MIDelete: TSpTBXItem
       Caption = 'Delete'
@@ -157,7 +157,7 @@ object FGUIDesigner: TFGUIDesigner
       ShortCut = 16470
       OnClick = PasteClick
     end
-    object N4: TSpTBXSeparatorItem
+    object N4Sep: TSpTBXSeparatorItem
     end
     object MIZoomOut: TSpTBXItem
       Caption = 'Font zoom out'

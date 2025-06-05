@@ -488,7 +488,7 @@ begin
     p:= Pos(user, s);
     if p > 0 then begin
       Delete(s, p, Length(user));
-      Insert('%Username%', s, p);
+      Insert('%USERNAME%', s, p);
     end
   end;
   Result:= s;

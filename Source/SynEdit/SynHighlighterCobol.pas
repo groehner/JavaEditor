@@ -99,7 +99,7 @@ type
     fTagAreaAttri: TSynHighlighterAttributes;
     fDebugLinesAttri: TSynHighlighterAttributes;
     fKeywords: TSynHashEntryList;
-    procedure DoAddKeyword(AKeyword: string; AKind: integer);
+    procedure DoAddKeyword(AKeyword: string; AKind: Integer);
     function HashKey(Str: PWideChar): Integer;
     function IdentKind(MayBe: PWideChar): TtkTokenKind;
     procedure IdentProc;
@@ -133,11 +133,11 @@ type
     function GetRange: Pointer; override;
     procedure ResetRange; override;
     procedure SetRange(Value: Pointer); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes; override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     function IsIdentChar(AChar: WideChar): Boolean; override;
     procedure Next; override;
   published
@@ -265,9 +265,9 @@ const
 const
   StringChars: array[TRangeState] of WideChar = (#0, '"', '''', '=',  '"', '''');
 
-procedure TSynCobolSyn.DoAddKeyword(AKeyword: string; AKind: integer);
+procedure TSynCobolSyn.DoAddKeyword(AKeyword: string; AKind: Integer);
 var
-  HashValue: integer;
+  HashValue: Integer;
 begin
   HashValue := HashKey(PWideChar(AKeyword));
   fKeywords[HashValue] := TSynHashEntry.Create(AKeyword, AKind);
@@ -300,7 +300,7 @@ begin
     Result := (7 * Result + GetOrd) and $FFFFFF;
 {$ENDIF}
     Inc(Str);
-    inc(fRun);
+    Inc(fRun);
   end;
   
   Result := Result and $FF; // 255
@@ -310,14 +310,14 @@ end;
 function TSynCobolSyn.IdentKind(MayBe: PWideChar): TtkTokenKind;
 var
   Entry: TSynHashEntry;
-  I: Integer;
+  Int: Integer;
 begin
   fToIdent := MayBe;
   Entry := fKeywords[HashKey(MayBe)];
   while Assigned(Entry) do
   begin
     if Entry.KeywordLen > fStringLen then
-      break
+      Break
     else if Entry.KeywordLen = fStringLen then
       if IsCurrentToken(Entry.Keyword) then
       begin
@@ -327,11 +327,11 @@ begin
         begin
           if IsCurrentToken('label') then
           begin
-            I := Run + Length('label');
-            while fLine[I] = ' ' do
-              Inc(I);
-            if (AnsiStrLComp(PWideChar(@fLine[I]), 'record', Length('record')) = 0)
-              and (I + Length('record') - 1 <= fCodeEndPos) then
+            Int := Run + Length('label');
+            while fLine[Int] = ' ' do
+              Inc(Int);
+            if (AnsiStrLComp(PWideChar(@fLine[Int]), 'record', Length('record')) = 0)
+              and (Int + Length('record') - 1 <= fCodeEndPos) then
                 Result := tkKey
               else
                 Result := tkPreprocessor;
@@ -340,7 +340,7 @@ begin
             Result := tkIdentifier;
         end;
         
-        exit;
+        Exit;
       end;
     Entry := Entry.Next;
   end;
@@ -351,13 +351,13 @@ procedure TSynCobolSyn.SpaceProc;
 begin
   fTokenID := tkSpace;
   repeat
-    inc(Run);
+    Inc(Run);
   until not CharInSet(fLine[Run], [#1..#32]);
 end;
 
 procedure TSynCobolSyn.FirstCharsProc;
 var
-  I: Integer;
+  Int: Integer;
 begin
   if IsLineEnd(Run) then
     NextProcedure
@@ -365,7 +365,7 @@ begin
   begin
     fTokenID := tkSequence;
     repeat
-      inc(Run);
+      Inc(Run);
     until (Run = fCodeStartPos - 1) or IsLineEnd(Run);
   end
   else
@@ -375,15 +375,15 @@ begin
       '*', '/', 'D', 'd': fIndicator := fLine[Run];
       '-': if fRange in [rsQuoteStringMayBe, rsApostStringMayBe] then
            begin
-             I := Run + 1;
-             while fLine[I] = ' ' do
-               Inc(I);
-             if (AnsiStrLComp(PWideChar(@fLine[I]), PWideChar(StringofChar(StringChars[fRange], 2)), 2) <> 0)
-               or (I + 1 > fCodeEndPos) then
+             Int := Run + 1;
+             while fLine[Int] = ' ' do
+               Inc(Int);
+             if (AnsiStrLComp(PWideChar(@fLine[Int]), PWideChar(StringofChar(StringChars[fRange], 2)), 2) <> 0)
+               or (Int + 1 > fCodeEndPos) then
                  fRange := rsUnknown;
            end;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
@@ -395,7 +395,7 @@ begin
   begin
     fTokenID := tkTagArea;
     repeat
-      inc(Run);
+      Inc(Run);
     until IsLineEnd(Run);
   end;
 end;
@@ -482,21 +482,21 @@ end;
 procedure TSynCobolSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynCobolSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
   if fLine[Run] = #10 then
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynCobolSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynCobolSyn.StringOpenProc;
@@ -666,7 +666,7 @@ begin
     fTokenID := IdentKind((fLine + Run));
     if (fTokenID = tkIdentifier) and (Run < fCodeMediumPos) then
       fTokenID := tkAIdentifier;
-    inc(Run, fStringLen);
+    Inc(Run, fStringLen);
 
     while IsIdentChar(fLine[Run]) and (Run <= fCodeEndPos) do
       Inc(Run);
@@ -675,7 +675,7 @@ end;
 
 procedure TSynCobolSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -722,7 +722,7 @@ begin
   end;
 end;
 
-function TSynCobolSyn.GetDefaultAttribute(Index: integer): TSynHighLighterAttributes;
+function TSynCobolSyn.GetDefaultAttribute(Index: Integer): TSynHighLighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -767,7 +767,7 @@ begin
   end;
 end;
 
-function TSynCobolSyn.GetTokenKind: integer;
+function TSynCobolSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

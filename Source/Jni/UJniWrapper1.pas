@@ -2,7 +2,9 @@ unit UJniWrapper1;
 
 interface
 
-uses Classes, Jni;
+uses
+  Classes,
+  jni;
 
 type
 
@@ -15,20 +17,21 @@ type
     FValueAsString: string;
     FKind: TNumType;
     FSig: string;
-    procedure setSig(const Sig: string);
+    procedure SetSig(const Sig: string);
   public
-    constructor create(Typ: string; ComJava: TObject); overload;
+    constructor Create(Typ: string; ComJava: TObject); overload;
     // duplicate dummy due to '%s' with identical parameters; Cannot access from C++ (Delphi)
-    constructor createFromString(const s: string; ComJava: TObject; const dummy: boolean = true);
-    constructor create(const Value, Sig: string; ComJava: TObject); overload;
+    constructor CreateFromString(const Str: string; ComJava: TObject;
+      const Dummy: Boolean = True);
+    constructor Create(const Value, Sig: string; ComJava: TObject); overload;
 
     function AsFormattedString: string;
-    procedure setFromString(s: string);
+    procedure SetFromString(Str: string);
     function ToString: string; override;
     function AsString: string;
-    function AsStringWithout(c: char): string;
+    function AsStringWithout(Chr: Char): string;
     property Kind: TNumType read FKind write FKind;
-    property Sig: string read FSig write setSig;
+    property Sig: string read FSig write SetSig;
     property Value: string read FValueAsString write FValueAsString;
   end;
 
@@ -37,7 +40,7 @@ type
     FParams: string;
     FSig: string;
   public
-    procedure addToParams(const Value, Sig: string);
+    procedure AddToParams(const Value, Sig: string);
     property Signature: string read FSig;
     property Params: string read FParams;
   end;
@@ -47,9 +50,11 @@ type
     FComJava: TObject;
     FClass: TComJavaClass;
   public
-    constructor Create(cls: TComJavaClass; ComJava: TObject);
-    function  GetAttributeValue(jobj: TComJavaObject; const Attributename, Typename: string; IsStatic: boolean): string;
-    procedure SetAttributeValue(jobj: TComJavaObject; const Attributename, Typename, Value: string; IsStatic: boolean);
+    constructor Create(Cls: TComJavaClass; ComJava: TObject);
+    function GetAttributeValue(JObj: TComJavaObject;
+      const Attributename, Typename: string; IsStatic: Boolean): string;
+    procedure SetAttributeValue(JObj: TComJavaObject;
+      const Attributename, Typename, Value: string; IsStatic: Boolean);
   end;
 
   TComJavaClass = class
@@ -69,35 +74,38 @@ type
     FNotStaticMethods: TStringList;
     FAllMethods: TStringList;
     FSuperclass: string;
-    FGetSuperclass: boolean;
-    function getTyp: string;
-    function getImportTyp: string;
-    function getGenericName: string;
+    FGetSuperclass: Boolean;
+    function GetTyp: string;
+    function GetImportTyp: string;
+    function GetGenericName: string;
   public
     constructor CreateClass(const Name: string; ComJava: TObject);
     constructor CreateLoadClass(const Name, Path: string; ComJava: TObject);
     // duplicate dummy due to '%s' with identical parameters; Cannot access from C++ (Delphi)
-    constructor CreateWithHandle(const aClassname: string; ComJava: TObject; const dummy: boolean = true);
-    class function IsInterface(const Interfacename: string; ComJava: TObject): boolean;
-    class function findClass(const aClassname: string; ComJava: TObject): boolean;
+    constructor CreateWithHandle(const AClassname: string; ComJava: TObject;
+      const Dummy: Boolean = True);
+    class function IsInterface(const Interfacename: string;
+      ComJava: TObject): Boolean;
+    class function FindClass(const AClassname: string;
+      ComJava: TObject): Boolean;
     destructor Destroy; override;
-    procedure init;
-    function getConstructors: TStringList;
-    function getMethods(const static: string): TStringList;
-    function getClassAttributes: TStringList;
-    function getClassAttributeNames: TStringlist;
-    function getRefreshedClassAttributeNames: TStringList;
-    function getSuperclassName: string;
+    procedure Init;
+    function GetConstructors: TStringList;
+    function GetMethods(const AStatic: string): TStringList;
+    function GetClassAttributes: TStringList;
+    function GetClassAttributeNames: TStringList;
+    function GetRefreshedClassAttributeNames: TStringList;
+    function GetSuperclassName: string;
+    function GetGenericTyp: string;
     property Signature: string read FSig write FSig;
-    property Typ: string read getTyp;
-    property ImportTyp: string read getImportTyp;
+    property Typ: string read GetTyp;
+    property ImportTyp: string read GetImportTyp;
     property IsValid: Boolean read FValid;
     property Pathname: string read FPathname write FPathname;
     property Name: string read FName;
     property Error: string read FError;
-    property GenericName: string read getGenericName write FGenericName;
+    property GenericName: string read GetGenericName write FGenericName;
     property Generic: string read FGeneric write FGeneric;
-    function getGenericTyp: string;
   end;
 
   TComJavaObject = class
@@ -110,831 +118,1036 @@ type
     FCreateValue: string;
     FAttributeValues: TStringList;
   public
-    constructor Create(const Objectname: string; jcl: TComJavaClass; ComParams: TComJavaParams; ComJava: TObject);
-    constructor CreateByName(const Objectname: string; jcl: TComJavaClass; ComJava: TObject);
-    constructor CreateNewUnnamedObject(const Objectname: string; ComJava: TObject);
+    constructor Create(const Objectname: string; Jcl: TComJavaClass;
+      ComParams: TComJavaParams; ComJava: TObject);
+    constructor CreateByName(const Objectname: string; Jcl: TComJavaClass;
+      ComJava: TObject);
+    constructor CreateNewUnnamedObject(const Objectname: string;
+      ComJava: TObject);
     destructor Destroy; override;
     procedure Delete;
     function ToString: string; override;
-    function getObjectAttributes: TStringList;
-    function getAttributeValues: TStringlist;
+    function GetObjectAttributes: TStringList;
+    function GetAttributeValues: TStringList;
     function DebugGetAttributeValues: string;
-    function getAttributeNames: TStringList;
-    function getRefreshedAttributeNames: TStringList;
-    function getObjectAttributeValues(withType: boolean): TStringList;
-    function getObjectAttributeNames: TStringlist;
+    function GetAttributeNames: TStringList;
+    function GetRefreshedAttributeNames: TStringList;
+    function GetObjectAttributeValues(WithType: Boolean): TStringList;
+    function GetObjectAttributeNames: TStringList;
     property ClassRef: TComJavaClass read FClass;
-    property isValid: Boolean read FValid;
+    property IsValid: Boolean read FValid;
     property Name: string read FName;
     property Error: string read FError;
     property CreateValue: string read FCreateValue;
-    property AttributeValues: TStringList read FAttributeValues write FAttributeValues;
+    property AttributeValues: TStringList read FAttributeValues
+      write FAttributeValues;
   end;
 
   TComJavaMethod = class
   private
     FComJava: TObject;
-    Fclass: TComJavaClass;
+    FClass: TComJavaClass;
     FMethodname: string;
     FMethodType: TMethodAttribute;
     FParams: TComJavaParams;
     FSig: string;
     FRetVal: TNumType;
     FReturnType: string;
-    FValid: boolean;
+    FValid: Boolean;
     FError: string;
   public
-    constructor Create(cls: TComJavaClass;
-                       const aMethodname: string;
-                       methodType: TMethodAttribute;
-                       const theReturnType: string;
-                       params: TComJavaParams;
-                       ComJava: TObject);
-    function Call(jobj: TComJavaObject): TComJavaValue;
-    function getExpressionValue: TComJavaValue;
-    function getExpressionType: string;
-    property isValid: boolean read FValid;
+    constructor Create(Cls: TComJavaClass; const AMethodname: string;
+      MethodType: TMethodAttribute; const AReturnType: string;
+      Params: TComJavaParams; ComJava: TObject);
+    function Call(JObj: TComJavaObject): TComJavaValue;
+    function GetExpressionValue: TComJavaValue;
+    function GetExpressionType: string;
+    property IsValid: Boolean read FValid;
     property Error: string read FError;
-    property aMethodname: string read FMethodname;
+    property AMethodname: string read FMethodname;
   end;
 
 implementation
 
-  uses SysUtils, StrUtils, UUtils, UConfiguration, UComJava1;
+uses
+  SysUtils,
+  StrUtils,
+  UUtils,
+  UConfiguration,
+  UComJava1;
 
-  function TryStrToFloat(var s: string; var f: double): boolean;
-    var p: integer; error: boolean;
+function TryStrToFloat(var Str: string; var AFloat: Double): Boolean;
+var
+  Posi: Integer;
+  Error: Boolean;
 
-    function StrToFloat(const S: string): Extended;
-      var e: extended;
-    begin
-      if TextToFloat(PChar(S), e, fvExtended) then
-        Result:= e
-      else begin
-        Result:= 0;
-        error:= true;
-      end;
-    end;
-
+  function StrToFloat(const Str: string): Extended;
+  var
+    Extd: Extended;
   begin
-    error:= false;
-    p:= Pos('.', s);
-    if (p > 0) and (FormatSettings.DecimalSeparator <> '.') then s[p]:= Formatsettings.DecimalSeparator;
-    p:= Pos(',', s);
-    if (p > 0) and (Formatsettings.DecimalSeparator <> ',') then s[p]:= Formatsettings.DecimalSeparator;
-    f:= StrToFloat(s);
-    Result:= not error;
+    if TextToFloat(PChar(Str), Extd, fvExtended) then
+      Result := Extd
+    else
+    begin
+      Result := 0;
+      Error := True;
+    end;
   end;
 
-  function TypToSig(Typ: string): string;
-    var s, dimension: string; p: integer;
-  begin
-    Result:= '';
-    dimension:= '';
-    p:= Pos('[]', Typ);
-    while p > 0 do begin
-      dimension:= dimension + '[';
-      delete(Typ, p, 2);
-      p:= Pos('[]', Typ);
-    end;
+begin
+  Error := False;
+  Posi := Pos('.', Str);
+  if (Posi > 0) and (FormatSettings.DecimalSeparator <> '.') then
+    Str[Posi] := FormatSettings.DecimalSeparator;
+  Posi := Pos(',', Str);
+  if (Posi > 0) and (FormatSettings.DecimalSeparator <> ',') then
+    Str[Posi] := FormatSettings.DecimalSeparator;
+  AFloat := StrToFloat(Str);
+  Result := not Error;
+end;
 
-    if Typ = 'String'    then Result:= 'Ljava/lang/String;' else
-    if Typ = 'java.lang.String' then Result:= 'Ljava/lang/String;' else
-    if Typ = 'boolean'   then Result:= 'Z' else
-    if Typ = 'char'      then Result:= 'C' else
-    if Typ = 'byte'      then Result:= 'B' else
-    if Typ = 'short'     then Result:= 'S' else
-    if Typ = 'int'       then Result:= 'I' else
-    if Typ = 'long'      then Result:= 'J' else
-    if Typ = 'float'     then Result:= 'F' else
-    if Typ = 'double'    then Result:= 'D' else
-    if Typ = 'void'      then Result:= 'V'
-    else begin
-      Typ:= WithoutGeneric(Typ); // z. B. LinkedList<pupil>
-      s:= (getComJava as TComJava1).GetSignature(Typ);  // java/util/ArrayList   // TODO
-      if s = '' then
-        if length(Typ) = 1  // generic
-          then Result:= 'Ljava/lang/Object;'
-          else Result:= 'L' + ReplaceStr(Typ, '.', '/') + ';'
+function TypToSig(Typ: string): string;
+var
+  Str, Dimension: string;
+  Posi: Integer;
+begin
+  Result := '';
+  Dimension := '';
+  Posi := Pos('[]', Typ);
+  while Posi > 0 do
+  begin
+    Dimension := Dimension + '[';
+    Delete(Typ, Posi, 2);
+    Posi := Pos('[]', Typ);
+  end;
+
+  if Typ = 'String' then
+    Result := 'Ljava/lang/String;'
+  else if Typ = 'java.lang.String' then
+    Result := 'Ljava/lang/String;'
+  else if Typ = 'boolean' then
+    Result := 'Z'
+  else if Typ = 'char' then
+    Result := 'C'
+  else if Typ = 'byte' then
+    Result := 'B'
+  else if Typ = 'short' then
+    Result := 'S'
+  else if Typ = 'int' then
+    Result := 'I'
+  else if Typ = 'long' then
+    Result := 'J'
+  else if Typ = 'float' then
+    Result := 'F'
+  else if Typ = 'double' then
+    Result := 'D'
+  else if Typ = 'void' then
+    Result := 'V'
+  else
+  begin
+    Typ := WithoutGeneric(Typ); // z. B. LinkedList<pupil>
+    Str := GetComJava.GetSignature(Typ);
+    // java/util/ArrayList   // TODO
+    if Str = '' then
+      if Length(Typ) = 1 // generic
+      then
+        Result := 'Ljava/lang/Object;'
       else
-        Result:= s;
-    end;
-    Result:= dimension + Result;
+        Result := 'L' + ReplaceStr(Typ, '.', '/') + ';'
+    else
+      Result := Str;
   end;
+  Result := Dimension + Result;
+end;
 
-  function ClassTypToSig(Typ: string): string;
+function ClassTypToSig(Typ: string): string;
+begin
+  var
+  Dimension := '';
+  var
+  Posi := Pos('[]', Typ);
+  while Posi > 0 do
   begin
-    var dimension:= '';
-    var p:= Pos('[]', Typ);
-    while p > 0 do begin
-      dimension:= dimension + '[';
-      delete(Typ, p, 2);
-      p:= Pos('[]', Typ);
-    end;
-    Typ:= WithoutGeneric(Typ); // z. B. LinkedList<pupil>
-    Result:= dimension + 'L' + ReplaceStr(Typ, '.', '/') + ';';
+    Dimension := Dimension + '[';
+    Delete(Typ, Posi, 2);
+    Posi := Pos('[]', Typ);
   end;
+  Typ := WithoutGeneric(Typ); // z. B. LinkedList<pupil>
+  Result := Dimension + 'L' + ReplaceStr(Typ, '.', '/') + ';';
+end;
 
-  function SigToClassTyp(Sig: string): string;
+function SigToClassTyp(Sig: string): string;
+begin
+  Delete(Sig, Length(Sig), 1);
+  while Sig[1] = '[' do
   begin
-    delete(Sig, length(Sig), 1);
-    while Sig[1] = '[' do begin
-      delete(Sig, 1, 1);
-      Sig:= Sig + '[]';
-    end;
-    delete(Sig, 1, 1); // L
-    Result:= Sig;
+    Delete(Sig, 1, 1);
+    Sig := Sig + '[]';
   end;
+  Delete(Sig, 1, 1); // L
+  Result := Sig;
+end;
 
-  procedure TComJavaClass.init;
+procedure TComJavaClass.Init;
+begin
+  FConstructors := nil;
+  FAttributes := nil;
+  FClassAttributeNames := nil;
+  FStaticMethods := nil;
+  FNotStaticMethods := nil;
+  FAllMethods := nil;
+  FGetSuperclass := False;
+end;
+
+constructor TComJavaClass.CreateClass(const Name: string; ComJava: TObject);
+begin
+  FPathname := FName;
+  FComJava := ComJava;
+  FName := WithoutGeneric(Name);
+  FSig := ClassTypToSig(FName);
+  var
+  Str := (FComJava as TComJava1).ExecuteCommand('createClass'#4 + FName);
+  FValid := (Left(Str, 4) <> '-ERR');
+  FError := Right(Str, 6);
+  Init;
+end;
+
+constructor TComJavaClass.CreateLoadClass(const Name, Path: string;
+  ComJava: TObject);
+begin
+  FPathname := Path;
+  FComJava := ComJava;
+  FName := WithoutGeneric(Name);
+  FSig := ClassTypToSig(FName);
+  var
+  Str := (FComJava as TComJava1).ExecuteCommand('loadClass'#4 + FName +
+    #4 + Path);
+  FValid := (Left(Str, 4) <> '-ERR');
+  FError := Right(Str, 6);
+  Init;
+end;
+
+constructor TComJavaClass.CreateWithHandle(const AClassname: string;
+  ComJava: TObject; const Dummy: Boolean = True);
+begin
+  FPathname := '';
+  FComJava := ComJava;
+  FName := WithoutGeneric(AClassname);
+  FSig := ClassTypToSig(FName);
+  FValid := True;
+  Init;
+end;
+
+destructor TComJavaClass.Destroy;
+begin
+  FreeAndNil(FConstructors);
+  FreeAndNil(FAttributes);
+  FreeAndNil(FClassAttributeNames);
+  FreeAndNil(FStaticMethods);
+  FreeAndNil(FNotStaticMethods);
+  FreeAndNil(FAllMethods);
+  inherited;
+end;
+
+class function TComJavaClass.IsInterface(const Interfacename: string;
+  ComJava: TObject): Boolean;
+begin
+  var
+  Str := (ComJava as TComJava1).ExecuteCommand('isInterface'#4 + Interfacename);
+  Result := (Left(Str, 3) = '+OK');
+end;
+
+class function TComJavaClass.FindClass(const AClassname: string;
+  ComJava: TObject): Boolean;
+begin
+  if (AClassname = 'T') or (AClassname = 'E') then
+    Result := False
+  else
   begin
-    FConstructors:= nil;
-    FAttributes:= nil;
-    FClassAttributeNames:= nil;
-    FStaticMethods:= nil;
-    FNotStaticMethods:= nil;
-    FAllMethods:= nil;
-    FGetSuperclass:= false;
+    var
+    Str := (ComJava as TComJava1).ExecuteCommandWithoutDebugger
+      ('findClass'#4 + AClassname);
+    Result := (Left(Str, 3) = '+OK');
   end;
+end;
 
-  constructor TComJavaClass.CreateClass(const Name: string; ComJava: TObject);
+function TComJavaClass.GetTyp: string;
+begin
+  var
+  Str := FSig;
+  var
+  Posi := Pos('/', Str);
+  while Posi > 0 do
   begin
-    FPathname:= FName;
-    FComJava:= ComJava;
-    FName:= WithoutGeneric(Name);
-    FSig:= ClassTypToSig(FName);
-    var s:= (FComJava as TComJava1).ExecuteCommand('createClass'#4 + FName);
-    FValid:= (Left(s, 4) <> '-ERR');
-    FError:= Right(s, 6);
-    Init;
+    Delete(Str, 1, Posi);
+    Posi := Pos('/', Str);
   end;
+  Result := Str;
+end;
 
-  constructor TComJavaClass.CreateLoadClass(const Name, Path: string; ComJava: TObject);
+function TComJavaClass.GetGenericTyp: string;
+begin
+  Result := SigToClassTyp(FSig);
+  if Generic <> '' then
+    Result := Result + '<' + Generic + '>';
+end;
+
+function TComJavaClass.GetImportTyp: string;
+begin
+  Result := ReplaceStr(FName, '/', '.');
+end;
+
+function TComJavaClass.GetGenericName: string;
+begin
+  if FGenericName = '' then
+    Result := FName
+  else
+    Result := FGenericName;
+end;
+
+function TComJavaClass.GetSuperclassName: string;
+begin
+  if not FGetSuperclass then
   begin
-    FPathname:= Path;
-    FComJava:= ComJava;
-    FName:= WithoutGeneric(Name);
-    FSig:= ClassTypToSig(FName);
-    var s:= (FComJava as TComJava1).ExecuteCommand('loadClass'#4 + FName + #4 + Path);
-    FValid:= (Left(s, 4) <> '-ERR');
-    FError:= Right(s, 6);
-    Init;
+    FSuperclass := (FComJava as TComJava1)
+      .ExecuteCommand('getSuperClass'#4 + FName);
+    if Pos('+OK ', FSuperclass) = 1 then
+      Delete(FSuperclass, 1, 4)
+    else
+      FSuperclass := '';
+    FGetSuperclass := True;
   end;
+  Result := FSuperclass;
+end;
 
-  constructor TComJavaClass.CreateWithHandle(const aClassname: string; ComJava: TObject; const Dummy: boolean = true);
+function TComJavaClass.GetConstructors: TStringList;
+begin
+  if not Assigned(FConstructors) then
   begin
-    FPathname:= '';
-    FComJava:= ComJava;
-    FName:= WithoutGeneric(aClassname);
-    FSig:= ClassTypToSig(FName);
-    FValid:= true;
-    Init;
+    var
+    Str := (FComJava as TComJava1).ExecuteCommand('getConstructors'#4 + FName);
+    if Pos('+OK ', Str) = 1 then
+      Delete(Str, 1, 6)
+    else
+      Str := '';
+    FConstructors := TStringList.Create;
+    FConstructors.Text := Str;
   end;
+  Result := FConstructors;
+end;
 
-  destructor TComJavaClass.Destroy;
+function TComJavaClass.GetClassAttributes: TStringList;
+begin
+  if not Assigned(FAttributes) then
   begin
-    FreeAndNil(FConstructors);
-    FreeAndNil(FAttributes);
-    FreeAndNil(FClassAttributeNames);
-    FreeAndNil(FStaticMethods);
-    FreeAndNil(FNotStaticMethods);
-    FreeAndNil(FAllMethods);
+    var
+    Str := (FComJava as TComJava1).ExecuteCommand('getAttributes'#4 + FName);
+    if Pos('+OK', Str) = 1 then
+      Delete(Str, 1, 5)
+    else
+      Str := '';
+    FAttributes := Split(#4, Str);
   end;
+  Result := FAttributes;
+end;
 
-  class function TComJavaClass.IsInterface(const Interfacename: string; ComJava: TObject): boolean;
+function TComJavaClass.GetClassAttributeNames: TStringList;
+begin
+  if not Assigned(FClassAttributeNames) then
   begin
-    var s:= (ComJava as TComJava1).ExecuteCommand('isInterface'#4 + Interfacename);
-    Result:= (Left(s, 3) = '+OK');
+    var
+    Str := (FComJava as TComJava1).ExecuteCommand('getAttributeNames'#4
+      + FName);
+    if Pos('+OK', Str) = 1 then
+      Delete(Str, 1, 5)
+    else
+      Str := '';
+    FClassAttributeNames := Split(#4, Str);
+    if Str = '' then
+      FClassAttributeNames.Text := '';
   end;
+  Result := FClassAttributeNames;
+end;
 
-  class function TComJavaClass.findClass(const aClassname: string; ComJava: TObject): boolean;
+function TComJavaClass.GetRefreshedClassAttributeNames: TStringList;
+begin
+  FreeAndNil(FClassAttributeNames);
+  var
+  Str := (FComJava as TComJava1).ExecuteCommand
+    ('getRefreshedAttributeNames'#4 + FName);
+  if Pos('+OK', Str) = 1 then
+    Delete(Str, 1, 5)
+  else
+    Str := '';
+  FClassAttributeNames := Split(#4, Str);
+  if Str = '' then
+    FClassAttributeNames.Text := '';
+  Result := FClassAttributeNames;
+end;
+
+function TComJavaClass.GetMethods(const AStatic: string): TStringList;
+
+  function GetMethods_(const AStatic: string): string;
   begin
-    if (aClassname = 'T') or (aClassname = 'E') then
-      Result:= false
-    else begin
-      var s:= (ComJava as TComJava1).ExecuteCommandWithoutDebugger('findClass'#4 + aClassname);
-      Result:= (Left(s, 3) = '+OK');
-    end;
+    var
+    Str := (FComJava as TComJava1).ExecuteCommand('getMethods'#4 + FName + #4
+      + AStatic);
+    if Pos('+OK ', Str) = 1 then
+      Delete(Str, 1, 6)
+    else
+      Str := '';
+    Result := Str;
   end;
 
-  function TComJavaClass.getTyp: string;
+begin
+  if AStatic = 'static' then
   begin
-    var s:= FSig;
-    var p:= Pos('/', s);
-    while p > 0 do begin
-      delete(s, 1, p);
-      p:= Pos('/', s);
-    end;
-    Result:= s;
-  end;
-
-  function TComJavaClass.getGenericTyp: string;
-  begin
-    Result:= SigToClassTyp(FSig);
-    if Generic <> '' then
-      Result:= Result + '<' + Generic + '>';
-  end;
-
-  function TComJavaClass.getImportTyp: string;
-  begin
-    Result:= ReplaceStr(FName, '/', '.');
-  end;
-
-  function TComJavaClass.getGenericName: string;
-  begin
-    if FGenericname = ''
-      then Result:= FName
-      else Result:= FGenericname;
-  end;
-
-  function TComJavaClass.getSuperclassName: string;
-  begin
-    if not FGetSuperclass then begin
-      FSuperclass:= (FComJava as TComJava1).ExecuteCommand('getSuperClass'#4 + FName);
-      if Pos('+OK ', FSuperclass) = 1
-        then Delete(FSuperclass, 1, 4)
-        else FSuperclass:= '';
-      FGetSuperclass:= true;
-    end;
-    Result:= FSuperclass;
-  end;
-
-  function TComJavaClass.getConstructors: TStringList;
-  begin
-    if FConstructors = nil then begin
-      var s:= (FComJava as TComJava1).ExecuteCommand('getConstructors'#4 + FName);
-      if Pos('+OK ', s) = 1
-        then delete(s, 1, 6)
-        else s:= '';
-      FConstructors:= TStringList.Create;
-      FConstructors.Text:= s;
-    end;
-    Result:= FConstructors;
-  end;
-
-  function TComJavaClass.getClassAttributes: TStringList;
-  begin
-    if FAttributes = nil then begin
-      var s:= (FComJava as TComJava1).ExecuteCommand('getAttributes'#4 + FName);
-      if Pos('+OK', s) = 1
-        then delete(s, 1, 5)
-        else s:= '';
-      FAttributes:= split(#4, s);
-    end;
-    Result:= FAttributes;
-  end;
-
-  function TComJavaClass.getClassAttributeNames: TStringList;
-  begin
-    if FClassAttributeNames = nil then begin
-      var s:= (FComJava as TComJava1).ExecuteCommand('getAttributeNames'#4 + FName);
-      if Pos('+OK', s) = 1
-        then delete(s, 1, 5)
-        else s:= '';
-      FClassAttributeNames:= split(#4, s);
-      if s = '' then FClassAttributeNames.Text:= '';
-    end;
-    Result:= FClassAttributeNames;
-  end;
-
-  function TComJavaClass.getRefreshedClassAttributeNames: TStringList;
-  begin
-    if assigned(FClassAttributeNames) then
-      FreeAndNil(FClassAttributeNames);
-    var s:= (FComJava as TComJava1).ExecuteCommand('getRefreshedAttributeNames'#4 + FName);
-    if Pos('+OK', s) = 1
-      then delete(s, 1, 5)
-      else s:= '';
-    FClassAttributeNames:= split(#4, s);
-    if s = '' then FClassAttributeNames.Text:= '';
-    Result:= FClassAttributeNames;
-  end;
-
-  function TComJavaClass.getMethods(const static: string): TStringList;
-
-    function getmethods_(const static: string): string;
+    if not Assigned(FStaticMethods) then
     begin
-      var s:= (FComJava as TComJava1).ExecuteCommand('getMethods'#4 + FName+ #4 + static);
-      if Pos('+OK ', s) = 1
-        then delete(s, 1, 6)
-        else s:= '';
-      Result:= s;
+      FStaticMethods := TStringList.Create;
+      FStaticMethods.Text := GetMethods_(AStatic);
     end;
-
+    Result := FStaticMethods;
+  end
+  else if AStatic = 'not static' then
   begin
-    if static = 'static' then begin
-      if FStaticMethods = nil then begin
-        FStaticMethods:= TStringList.Create;
-        FStaticMethods.Text:= getmethods_(static);
-      end;
-      Result:= FStaticMethods;
-    end else if static = 'not static' then begin
-      if FNotStaticMethods = nil then begin
-        FNotStaticMethods:= TStringList.Create;
-        FNotStaticMethods.Text:= getmethods_(static);
-      end;
-      Result:= FNotStaticMethods;
-    end else begin
-      if FAllMethods = nil then begin
-        FAllMethods:= TStringList.Create;
-        FAllMethods.Text:= getmethods_(static);
-      end;
-      Result:= FAllMethods;
+    if not Assigned(FNotStaticMethods) then
+    begin
+      FNotStaticMethods := TStringList.Create;
+      FNotStaticMethods.Text := GetMethods_(AStatic);
     end;
-  end;
-
-  {--- TJavaObject ------------------------------------------------------------}
-
-  constructor TComJavaObject.Create(const Objectname: string; jcl: TComJavaClass;
-                                    ComParams: TComJavaParams; ComJava: TObject);
-    var Signature, Params, s: string;
+    Result := FNotStaticMethods;
+  end
+  else
   begin
-    FComJava:= ComJava;
-    FName:= Objectname;
-    FAttributeValues:= nil;
-    FClass:= jcl;
-    FError:= '';
-    FCreateValue:= '';
-    Signature:= '';
-    if ComParams =  nil then begin
-      Signature:= '()V';
-      Params:= '';
-    end else begin
-      Signature:= '(' + ComParams.Signature + ')V';
-      Params:= ComParams.Params;
+    if not Assigned(FAllMethods) then
+    begin
+      FAllMethods := TStringList.Create;
+      FAllMethods.Text := GetMethods_(AStatic);
     end;
-    s:= (FComJava as TComJava1).
-          ExecuteCommand('createObject'#4 + jcl.Name + #4 +
-            Objectname + #4 + Signature + #4 + Params);
-    FValid:= (Left(s, 3) = '+OK');
-    if FValid
-      then FCreateValue:= Right(s, 5)
-      else FError:= Right(s, 6);
+    Result := FAllMethods;
   end;
+end;
 
-  constructor TComJavaObject.CreateByName(const Objectname: string; jcl: TComJavaClass; ComJava: TObject);
+{ --- TJavaObject ------------------------------------------------------------ }
+
+constructor TComJavaObject.Create(const Objectname: string; Jcl: TComJavaClass;
+  ComParams: TComJavaParams; ComJava: TObject);
+var
+  Signature, Params, Str: string;
+begin
+  FComJava := ComJava;
+  FName := Objectname;
+  FAttributeValues := nil;
+  FClass := Jcl;
+  FError := '';
+  FCreateValue := '';
+  Signature := '';
+  if not Assigned(ComParams) then
   begin
-    FComJava:= ComJava;
-    FName:= Objectname;
-    FAttributeValues:= nil;
-    FClass:= jcl;
-    FValid:= true;
+    Signature := '()V';
+    Params := '';
+  end
+  else
+  begin
+    Signature := '(' + ComParams.Signature + ')V';
+    Params := ComParams.Params;
   end;
+  Str := (FComJava as TComJava1).ExecuteCommand('createObject'#4 + Jcl.Name + #4
+    + Objectname + #4 + Signature + #4 + Params);
+  FValid := (Left(Str, 3) = '+OK');
+  if FValid then
+    FCreateValue := Right(Str, 5)
+  else
+    FError := Right(Str, 6);
+end;
 
-  constructor TComJavaObject.CreateNewUnnamedObject(const Objectname: string; ComJava: TObject);
-    var s, aClassname: string; i, p: integer; ClassList: TStringList;
-  begin
-    FComJava:= ComJava;
-    FName:= Objectname;
-    FAttributeValues:= nil;
-    s:= (FComJava as TComJava1).executeCommand('getClassOf'#4 + Objectname);
-    FValid:= (Left(s, 3) = '+OK');
-    if FValid then begin
-      s:= Right(s, 5);
-      p:= Pos('|', s);
-      FCreateValue:= copy(s, p+1, length(s));
-      aClassname:= copy(s, 1, p-1);
-      ClassList:= TComJava1(ComJava).ClassList;
-      i:= ClassList.IndexOf(aClassname);
-      if i = -1 then begin
-        FClass:= TComJavaClass.CreateWithHandle(aClassname, FComJava);
-        ClassList.AddObject(aClassname, FClass);
-      end else
-        FClass:= TComJavaClass(ClassList.Objects[i]);
-      FError:= '';
-    end else
-      FError:= Right(s, 6);
-  end;
+constructor TComJavaObject.CreateByName(const Objectname: string;
+  Jcl: TComJavaClass; ComJava: TObject);
+begin
+  FComJava := ComJava;
+  FName := Objectname;
+  FAttributeValues := nil;
+  FClass := Jcl;
+  FValid := True;
+end;
 
-  destructor TComJavaObject.Destroy;
+constructor TComJavaObject.CreateNewUnnamedObject(const Objectname: string;
+  ComJava: TObject);
+var
+  Str, AClassname: string;
+  Int, Posi: Integer;
+  ClassList: TStringList;
+begin
+  FComJava := ComJava;
+  FName := Objectname;
+  FAttributeValues := nil;
+  Str := (FComJava as TComJava1).ExecuteCommand('getClassOf'#4 + Objectname);
+  FValid := (Left(Str, 3) = '+OK');
+  if FValid then
   begin
-    FreeAndNil(FAttributeValues);
-    inherited;
-  end;
+    Str := Right(Str, 5);
+    Posi := Pos('|', Str);
+    FCreateValue := Copy(Str, Posi + 1, Length(Str));
+    AClassname := Copy(Str, 1, Posi - 1);
+    ClassList := TComJava1(ComJava).ClassList;
+    Int := ClassList.IndexOf(AClassname);
+    if Int = -1 then
+    begin
+      FClass := TComJavaClass.CreateWithHandle(AClassname, FComJava);
+      ClassList.AddObject(AClassname, FClass);
+    end
+    else
+      FClass := TComJavaClass(ClassList.Objects[Int]);
+    FError := '';
+  end
+  else
+    FError := Right(Str, 6);
+end;
 
-  procedure TComJavaObject.Delete;
-  begin
-    if not (FComJava as TComJava1).Terminated then
-      (FComJava as TComJava1).ExecuteCommand('deleteObject'#4 + FName);
-  end;
+destructor TComJavaObject.Destroy;
+begin
+  FreeAndNil(FAttributeValues);
+  inherited;
+end;
 
-  function TComJavaObject.toString: string;
-  begin
-    var s:= (FComJava as TComJava1).ExecuteCommand('toString'#4 + FName);
-    Result:= right(s, 5)
-  end;
+procedure TComJavaObject.Delete;
+begin
+  if not(FComJava as TComJava1).Terminated then
+    (FComJava as TComJava1).ExecuteCommand('deleteObject'#4 + FName);
+end;
 
-  function TComJavaObject.getAttributeValues: TStringlist;
-    var s1, s: string;
-  begin
-    Result:= nil;
-    try
-      s1:= 'getAttributeValues'#4 + FName;
-      if FConfiguration.ArrayListAsIntegratedList
-        then s1:= s1 + #4 + 'ArrayList'
-        else s1:= s1 + #4;
-      if FComJava is TComJava1 then
-        s:= (FComJava as TComJava1).ExecuteCommand(s1);
-      if Pos('+OK ', s) = 1 then begin
-        s:= right(s, 6);
-        if assigned(FAttributeValues) then
-          FreeAndNil(FAttributeValues);
-        FAttributeValues:= split(#4, s);
-        if FAttributeValues.Count > 0 then begin
-          FCreateValue:= FAttributeValues[FAttributeValues.Count-1];
-          FAttributeValues.Delete(FAttributeValues.Count-1);
-        end;
-        Result:= FAttributeValues;
-      end else begin
-        FConfiguration.Log('TComJavaObject.getAttributeValues: ' + s1 + ' - ' + s);
-        Result:= TStringList.Create;
-        Result.Add(s)
+function TComJavaObject.ToString: string;
+begin
+  var
+  Str := (FComJava as TComJava1).ExecuteCommand('toString'#4 + FName);
+  Result := Right(Str, 5);
+end;
+
+function TComJavaObject.GetAttributeValues: TStringList;
+var
+  Str1, Str: string;
+begin
+  Result := nil;
+  try
+    Str1 := 'getAttributeValues'#4 + FName;
+    if FConfiguration.ArrayListAsIntegratedList then
+      Str1 := Str1 + #4 + 'ArrayList'
+    else
+      Str1 := Str1 + #4;
+    if FComJava is TComJava1 then
+      Str := (FComJava as TComJava1).ExecuteCommand(Str1);
+    if Pos('+OK ', Str) = 1 then
+    begin
+      Str := Right(Str, 6);
+      FreeAndNil(FAttributeValues);
+      FAttributeValues := Split(#4, Str);
+      if FAttributeValues.Count > 0 then
+      begin
+        FCreateValue := FAttributeValues[FAttributeValues.Count - 1];
+        FAttributeValues.Delete(FAttributeValues.Count - 1);
       end;
-    except on e: exception do
+      Result := FAttributeValues;
+    end
+    else
+    begin
+      FConfiguration.Log('TComJavaObject.getAttributeValues: ' + Str1 +
+        ' - ' + Str);
+      Result := TStringList.Create;
+      Result.Add(Str);
+    end;
+  except
+    on e: Exception do
       FConfiguration.Log('TComJavaObject.getAttributeValues', e);
-    end;
   end;
+end;
 
-  function TComJavaObject.DebugGetAttributeValues: string;
+function TComJavaObject.DebugGetAttributeValues: string;
+begin
+  var
+  Str := 'DebugGetAttributeValues'#4 + FName;
+  Result := (FComJava as TComJava1).ExecuteCommand(Str);
+end;
+
+function TComJavaObject.GetAttributeNames: TStringList;
+begin
+  if Assigned(FClass) then
+    Result := FClass.GetClassAttributeNames
+  else
   begin
-    var s:= 'DebugGetAttributeValues'#4 + FName;
-    Result:= (FComJava as TComJava1).ExecuteCommand(s);
+    Result := TStringList.Create;
+    FConfiguration.Log('TComJavaObject.getAttributeNames');
   end;
+end;
 
-  function TComJavaObject.getAttributeNames: TStringList;
+function TComJavaObject.GetRefreshedAttributeNames: TStringList;
+begin
+  if Assigned(FClass) then
+    Result := FClass.GetRefreshedClassAttributeNames
+  else
   begin
-    if assigned(FClass) then
-      Result:= FClass.getClassAttributeNames
-    else begin
-      Result:= TStringList.Create;
-      FConfiguration.Log('TComJavaObject.getAttributeNames');
-    end;
+    Result := TStringList.Create;
+    FConfiguration.Log('TComJavaObject.getRefreshedAttributeNames');
   end;
+end;
 
-  function TComJavaObject.getRefreshedAttributeNames: TStringList;
+function TComJavaObject.GetObjectAttributes: TStringList;
+begin
+  if Assigned(FClass) then
+    Result := FClass.GetClassAttributes
+  else
   begin
-    if assigned(FClass) then
-      Result:= FClass.getRefreshedClassAttributeNames
-    else begin
-      Result:= TStringList.Create;
-      FConfiguration.Log('TComJavaObject.getRefreshedAttributeNames');
-    end;
+    Result := TStringList.Create;
+    FConfiguration.Log('TComJavaObject.getObjectAttributes');
   end;
+end;
 
-  function TComJavaObject.getObjectAttributes: TStringList;
+function TComJavaObject.GetObjectAttributeValues(WithType: Boolean)
+  : TStringList;
+begin
+  var
+  Str := 'getObjectAttributeValues'#4 + FName;
+  if WithType then
+    Str := Str + #4'WithType'
+  else
+    Str := Str + #4;
+  if FConfiguration.ArrayListAsIntegratedList then
+    Str := Str + #4'ArrayList'
+  else
+    Str := Str + #4;
+  Str := Right((FComJava as TComJava1).ExecuteCommand(Str), 6);
+  Result := Split(#4, Str);
+end;
+
+function TComJavaObject.GetObjectAttributeNames: TStringList;
+begin
+  var
+  Str := 'getObjectAttributeNames'#4 + FName;
+  Str := Right((FComJava as TComJava1).ExecuteCommand(Str), 6);
+  Result := Split(#4, Str);
+end;
+
+{ --- TJavaParams ------------------------------------------------------------ }
+
+procedure TComJavaParams.AddToParams(const Value, Sig: string);
+begin
+  FParams := FParams + Value + '|';
+  FSig := FSig + Sig + '|';
+end;
+
+{ --- TComJavaValue ----------------------------------------------------------- }
+
+constructor TComJavaValue.Create(const Value, Sig: string; ComJava: TObject);
+begin
+  FComJava := ComJava;
+  FSig := Sig;
+  FKind := SigToNumType(Sig);
+  FValueAsString := Value;
+end;
+
+constructor TComJavaValue.CreateFromString(const Str: string; ComJava: TObject;
+  const Dummy: Boolean = True);
+var
+  Int: Integer;
+  BigInt: Int64;
+  ADouble: Double;
+  Str1, Suffix, WithoutSuffix: string;
+begin
+  // ntByte, ntShort not possible as Literals
+  FComJava := ComJava;
+  FKind := ntUnknown;
+  FValueAsString := Str;
+  Str1 := LowerCase(Str);
+  Suffix := Right(Str1, -1);
+  WithoutSuffix := Left(Str1, Length(Str1) - 1);
+
+  if Str = 'null' then
+    FKind := ntNull
+  else if (Copy(Str, 1, 1) = '"') and (Suffix = '"') then
+    FKind := ntString
+  else if (Copy(Str, 1, 1) = '''') and (Suffix = '''') and (Length(Str) = 3)
+  then
+    FKind := ntChar
+  else if Suffix = 'BigInt' then
   begin
-    if assigned(FClass) then
-      Result:= FClass.getClassAttributes
-    else begin
-      Result:= TStringList.Create;
-      FConfiguration.Log('TComJavaObject.getObjectAttributes');
-    end;
+    if TryStrToInt64(WithoutSuffix, BigInt) then
+      FKind := ntLong;
+  end
+  else if Suffix = 'f' then
+  begin
+    if TryStrToFloat(WithoutSuffix, ADouble) then
+      FKind := ntFloat;
+  end
+  else if Suffix = 'd' then
+  begin
+    if TryStrToFloat(WithoutSuffix, ADouble) then
+      FKind := ntDouble;
+  end
+  else if TryStrToInt(Str1, Int) then
+    FKind := ntInt
+  else if TryStrToFloat(Str1, ADouble) then
+    FKind := ntDouble
+  else if (Str1 = 'true') or (Str1 = 'false') then
+    FKind := ntBool;
+  if FKind = ntUnknown then
+    FKind := ntObject;
+end;
+
+constructor TComJavaValue.Create(Typ: string; ComJava: TObject);
+begin
+  FComJava := ComJava;
+  FValueAsString := '_x_';
+  FSig := TypToSig(Typ);
+  Delete(Typ, 1, LastDelimiter('.', Typ));
+  FKind := TypToNumType(Typ);
+end;
+
+function TComJavaValue.AsFormattedString: string;
+begin
+  var
+  Str := AsString;
+  case FKind of
+    ntChar:
+      Str := '''' + Str + '''';
+    ntStringArray:
+      Str := 'new String[] ' + Str;
   end;
+  Result := Str;
+end;
 
-  function TComJavaObject.getObjectAttributeValues(WithType: boolean): TStringlist;
-  begin
-    var s:= 'getObjectAttributeValues'#4 + FName;
-    if WithType
-      then s:= s + #4'withtype'
-      else s:= s + #4;
-    if FConfiguration.ArrayListAsIntegratedList
-      then s:= s + #4'ArrayList'
-      else s:= s + #4;
-    s:= Right((FComJava as TComJava1).ExecuteCommand(s), 6);
-    Result:= split(#4, s);
+procedure TComJavaValue.SetFromString(Str: string);
+var
+  StrArr, Str1: string;
+  Posi: Integer;
+  JavaObject: TComJavaObject;
+begin
+  FValueAsString := Str;
+  case FKind of
+    ntStringArray:
+      begin
+        if Str = 'null' then
+          FValueAsString := '{}'
+        else
+        begin
+          StrArr := '';
+          Str := Copy(Trim(Str), 2, Length(Str) - 2) + ',';
+          Posi := Pos(',', Str);
+          while Posi > 0 do
+          begin
+            Str1 := Trim(Copy(Str, 1, Posi - 1));
+            Delete(Str, 1, Posi);
+            JavaObject := (FComJava as TComJava1).GetObject(Str1);
+            if not Assigned(JavaObject) and not IsJavaString(Str1) then
+              Str1 := '"' + Str1 + '"';
+            StrArr := StrArr + ', ' + Str1;
+            Posi := Pos(',', Str);
+          end;
+          FValueAsString := '{' + Right(StrArr, 3) + '}';
+        end;
+      end;
+    ntString:
+      begin
+        JavaObject := (FComJava as TComJava1).GetObject(Str);
+        if not Assigned(JavaObject) and not IsJavaString(Str) then
+          Str := '"' + Str + '"';
+        FValueAsString := Str;
+      end;
+    ntChar:
+      begin
+        JavaObject := (FComJava as TComJava1).GetObject(Str);
+        if not Assigned(JavaObject) and not IsJavaChar(Str) then
+          Str := '''' + Str + '''';
+        FValueAsString := Str;
+      end;
   end;
+end;
 
-  function TComJavaObject.getObjectAttributeNames: TStringList;
-  begin
-    var s:= 'getObjectAttributeNames'#4 + FName;
-    s:= Right((FComJava as TComJava1).ExecuteCommand(s), 6);
-    Result:= split(#4, s);
-  end;
+procedure TComJavaValue.SetSig(const Sig: string);
+begin
+  FKind := SigToNumType(Sig);
+  FSig := Sig;
+end;
 
-  { --- TJavaParams ------------------------------------------------------------ }
+function TComJavaValue.ToString: string;
+begin
+  var
+  Str := (FComJava as TComJava1).ExecuteCommand('toString'#4 + FValueAsString);
+  Result := Right(Str, 5);
+end;
 
-  procedure TComJavaParams.addToParams(const Value, Sig: string);
-  begin
-    FParams:= FParams +  Value + '|';
-    FSig   := FSig + Sig + '|';
-  end;
-
-{ --- TComJavaValue -----------------------------------------------------------}
-
-  constructor TComJavaValue.create(const Value, Sig: string; ComJava: TObject);
-  begin
-    FComJava:= ComJava;
-    FSig:= Sig;
-    FKind:= SigToNumType(Sig);
-    FValueAsString:= Value;
-  end;
-
-  constructor TComJavaValue.createFromString(const s: string; ComJava: TObject; const dummy: boolean = true);
-    var i: integer; l: int64; d: double; s1, Suffix, withoutSuffix: string;
-  begin
-    // ntByte, ntShort not possible as Literals
-    FComJava:= ComJava;
-    FKind:= ntUnknown;
-    FValueAsString:= s;
-    s1:= LowerCase(s);
-    Suffix:= Right(s1, -1);
-    WithoutSuffix:= Left(s1, length(s1)-1);
-
-    if s = 'null' then FKind:= ntNull
-    else if (copy(s, 1, 1) = '"') and (Suffix = '"') then FKind:= ntString
-    else if (copy(s, 1, 1) = '''') and (Suffix = '''') and (length(s) = 3) then FKind:= ntChar
-    else if Suffix = 'l' then begin
-      if TryStrToInt64(withoutSuffix, l) then FKind:= ntLong;
-    end
-    else if Suffix = 'f' then begin
-      if TryStrToFloat(withoutSuffix, d) then FKind:= ntFloat;
-    end
-    else if Suffix = 'd' then begin
-      if TryStrToFloat(withoutSuffix, d) then FKind:= ntDouble;
-    end
-    else if TryStrToInt(s1, i) then FKind:= ntInt
-    else if TryStrToFloat(s1, d) then FKind:= ntDouble
-    else if (s1 = 'true') or (s1 = 'false') then FKind:= ntBool;
-    if FKind = ntUnknown then FKind:= ntObject;
-  end;
-
-  constructor TComJavaValue.create(Typ: string; ComJava: TObject);
-  begin
-    FComJava:= ComJava;
-    FValueAsString:= '_x_';
-    FSig:= TypToSig(Typ);
-    delete(Typ, 1, LastDelimiter('.', Typ));
-    FKind:= TypToNumType(Typ);
-  end;
-
-  function TComJavaValue.AsFormattedString: string;
-  begin
-    var s:= AsString;
+function TComJavaValue.AsString: string;
+var
+  Str: string;
+  Int: Integer;
+  BigInt: Int64;
+  ADouble: Double;
+begin
+  if FValueAsString = '_x_' then
     case FKind of
-      ntChar:        s:= '''' + s + '''';
-      ntStringArray: s:= 'new String[] ' + s;
-    end;
-    Result:= s;
-  end;
-
-  procedure TComJavaValue.setFromString(s: string);
-    var r, s1: string; p: integer;
-        aJavaObject: TComJavaObject;
+      ntBool:
+        FValueAsString := 'false';
+      ntByte:
+        FValueAsString := '0';
+      ntChar:
+        FValueAsString := '';
+      ntShort:
+        FValueAsString := '0';
+      ntInt:
+        FValueAsString := '0';
+      ntLong:
+        FValueAsString := '0';
+      ntFloat:
+        FValueAsString := '0';
+      ntDouble:
+        FValueAsString := '0';
+      ntString:
+        FValueAsString := '';
+      ntObject:
+        FValueAsString := 'null';
+      ntBoolArray:
+        FValueAsString := '{true, false}';
+      ntByteArray:
+        FValueAsString := '{127, -127}';
+      ntCharArray:
+        FValueAsString := '{A, B}';
+      ntShortArray:
+        FValueAsString := '{0, 1}';
+      ntIntArray:
+        FValueAsString := '{0, 1}';
+      ntLongArray:
+        FValueAsString := '{0, 1}';
+      ntFloatArray:
+        FValueAsString := '{0.0, 1.0}';
+      ntDoubleArray:
+        FValueAsString := '{0.0, 1.0}';
+      ntStringArray:
+        FValueAsString := 'null';
+      ntObjectArray:
+        FValueAsString := 'null';
+    else
+      FValueAsString := 'null';
+    end
+  else
   begin
-    FValueAsString:= s;
+    Str := FValueAsString;
     case FKind of
-      ntStringArray: begin
-        if s = 'null' then
-          FValueAsString:= '{}'
-        else begin
-          r:= '';
-          s:= copy(trim(s), 2, length(s) -2) + ',';
-          p:= Pos(',', s);
-          while p > 0 do begin
-            s1:= trim(copy(s, 1, p-1));
-            delete(s, 1, p);
-            aJavaObject:= (FComJava as TComJava1).getObject(s1);
-            if not assigned(aJavaObject) and not IsJavaString(s1)
-              then s1:= '"' + s1 + '"';
-            r:= r + ', ' + s1;
-            p:= Pos(',', s);
-          end;
-          FValueAsString:= '{' + Right(r, 3) + '}';
+      ntBool:
+        begin
+          Str := LowerCase(Str);
+          if (Str <> 'true') and (Str <> 'false') then
+            Str := 'false';
         end;
-      end;
-      ntString: begin
-        aJavaObject:= (FComJava as TComJava1).getObject(s);
-        if not assigned(aJavaObject) and not IsJavaString(s)
-          then s:= '"' + s + '"';
-        FValueAsString:= s;
-      end;
-      ntChar: begin
-        aJavaObject:= (FComJava as TComJava1).getObject(s);
-        if not assigned(aJavaObject) and not IsJavaChar(s)
-          then s:= '''' + s + '''';
-        FValueAsString:= s;
-      end;
+      ntChar:
+        begin
+          if (Pos('''', Str) = 1) and (Length(Str) > 1) then
+            Str := Copy(Str, 2, 1)
+          else
+            Str := Copy(Str, 1, 1);
+        end;
+      ntByte:
+        begin
+          while Length(Str) > 0 do
+          begin
+            if TryStrToInt(Str, Int) and (-128 <= Int) and (Int <= 127) then
+              Break;
+            Str := Right(Str, -1);
+          end;
+          if Str = '' then
+            Str := '0';
+        end;
+      ntShort:
+        begin
+          while Length(Str) > 0 do
+          begin
+            if TryStrToInt(Str, Int) and (-32768 <= Int) and (Int <= 32767) then
+              Break;
+            Str := Left(Str, Length(Str) - 1);
+          end;
+          if Str = '' then
+            Str := '0';
+        end;
+      ntInt:
+        begin
+          while Length(Str) > 0 do
+          begin
+            if TryStrToInt(Str, Int) then
+              Break;
+            Str := Left(Str, Length(Str) - 1);
+          end;
+          if Str = '' then
+            Str := '0';
+        end;
+      ntLong:
+        begin
+          while Length(Str) > 0 do
+          begin
+            if TryStrToInt64(Str, BigInt) then
+              Break;
+            Str := Left(Str, Length(Str) - 1);
+          end;
+          if Str = '' then
+            Str := '0';
+        end;
+      ntFloat, ntDouble:
+        begin
+          while Length(Str) > 0 do
+          begin
+            if TryStrToFloat(Str, ADouble) then
+              Break;
+            Str := Left(Str, Length(Str) - 1);
+          end;
+          Str := ReplaceStr(Str, ',', '.');
+          if Str = '' then
+            Str := '0';
+        end;
     end;
+    FValueAsString := Str;
   end;
+  Result := FValueAsString;
+end;
 
-  procedure TComJavaValue.setSig(const Sig: string);
-  begin
-    FKind:= SigToNumType(Sig);
-    FSig:= Sig;
-  end;
-
-  function TComJavaValue.toString: string;
-  begin
-    var s:= (FComJava as TComJava1).ExecuteCommand('toString'#4 + FValueAsString);
-    Result:= right(s, 5)
-  end;
-
-  function TComJavaValue.AsString: string;
-    var s: string; i: integer; l: int64; d: double;
-  begin
-    if FValueAsString = '_x_' then
-      case FKind of
-        ntBool : FValueAsString:= 'false';
-        ntByte : FValueAsString:= '0';
-        ntChar : FValueAsstring:= '';
-        ntShort: FValueAsString:= '0';
-        ntInt  : FValueAsString:= '0';
-        ntLong : FValueAsString:= '0';
-        ntFloat: FValueAsString:= '0';
-        ntDouble: FValueAsString:= '0';
-        ntString: FValueAsString:= '';
-        ntObject:    FValueAsString:= 'null';
-        ntBoolArray: FValueAsString:= '{true, false}';
-        ntByteArray: FValueAsString:= '{127, -127}';
-        ntCharArray: FValueAsString:= '{A, B}';
-        ntShortArray:FValueAsString:= '{0, 1}';
-        ntIntArray:  FValueAsString:= '{0, 1}';
-        ntLongArray: FValueAsString:= '{0, 1}';
-        ntFloatArray: FValueAsString:= '{0.0, 1.0}';
-        ntDoubleArray: FValueAsString:= '{0.0, 1.0}';
-        ntStringArray: FValueAsString:= 'null';
-        ntObjectArray: FValueAsString:= 'null';
-      else
-        FValueAsString:= 'null';
-      end
-    else begin
-      s:= FValueAsString;
-      case FKind of
-        ntBool: begin
-          s:= LowerCase(s);
-          if (s <> 'true') and (s <> 'false') then s:= 'false';
-        end;
-        ntChar: begin
-          if (Pos('''', s) = 1) and (length(s) > 1)
-            then s:= copy(s, 2, 1)
-            else s:= copy(s, 1, 1);
-          //if Left(s, 1) = '\' then s:= Left(s, 2) else s:= Left(s, 1);
-        end;
-        ntByte: begin
-          while length(s) > 0 do begin
-            if TryStrToInt(s, i) and (-128 <= i) and (i <= 127) then break;
-            s:= Right(s, -1);
-          end;
-          if s = '' then s:= '0';
-        end;
-        ntShort: begin
-          while length(s) > 0 do begin
-            if TryStrToInt(s, i) and (-32768 <= i) and (i <= 32767) then break;
-            s:= Left(s, length(s)-1);
-          end;
-          if s = '' then s:= '0';
-        end;
-        ntInt: begin
-          while length(s) > 0 do begin
-            if TryStrToInt(s, i) then break;
-            s:= Left(s, length(s)-1);
-          end;
-          if s = '' then s:= '0';
-        end;
-        ntLong: begin
-          while length(s) > 0 do begin
-            if TryStrToInt64(s, l) then break;
-            s:= Left(s, length(s)-1);
-          end;
-          if s = '' then s:= '0';
-        end;
-        ntFloat,
-        ntDouble: begin
-          while length(s) > 0 do begin
-            if TryStrToFloat(s, d) then break;
-            s:= Left(s, length(s)-1);
-          end;
-          s:= ReplaceStr(s, ',', '.');
-          if s = '' then s:= '0';
-        end;
-      end;
-      FValueAsString:= s;
-    end;
-    Result:= FValueAsString;
-  end;
-
-  function TComJavaValue.AsStringWithout(c: char): string;
-    var s: string;
-  begin
-    s:= AsString;
-    if (length(s) > 0) and (s[1] = c)
-      then Result:= copy(s, 2, length(s)-2)
-      else Result:= s;
-  end;
+function TComJavaValue.AsStringWithout(Chr: Char): string;
+var
+  Str: string;
+begin
+  Str := AsString;
+  if (Length(Str) > 0) and (Str[1] = Chr) then
+    Result := Copy(Str, 2, Length(Str) - 2)
+  else
+    Result := Str;
+end;
 
 { --- TJavaField ------------------------------------------------------------- }
 
-  constructor TComJavaAttribute.Create(cls: TComJavaClass; ComJava: TObject);
-  begin
-    FComJava:= ComJava; 
-    FClass:= cls;
-  end;
+constructor TComJavaAttribute.Create(Cls: TComJavaClass; ComJava: TObject);
+begin
+  FComJava := ComJava;
+  FClass := Cls;
+end;
 
-  function TComJavaAttribute.GetAttributeValue(JObj: TComJavaObject; const Attributename, Typename: string; isStatic: boolean): string;
-    const _static = 's';
-    var s, s1: string;
+function TComJavaAttribute.GetAttributeValue(JObj: TComJavaObject;
+  const Attributename, Typename: string; IsStatic: Boolean): string;
+const
+  CStatic = 's';
+var
+  Str, Str1: string;
+begin
+  Str := 'getAttributeValue'#4 + FClass.FName + #4 + JObj.FName + #4 +
+    Attributename + #4 + TypToSig(Typename) + #4;
+  if IsStatic then
+    Str := Str + CStatic;
+  Str1 := (FComJava as TComJava1).ExecuteCommand(Str);
+  if (Left(Str1, 3) = '+OK') then
+    Result := Copy(Str1, 5, Length(Str1))
+  else
   begin
-    s:= 'getAttributeValue'#4 + FClass.FName+ #4 + JObj.FName + #4 + Attributename + #4 + TypToSig(Typename) + #4;
-    if IsStatic then s:= s + _static;
-    s1:= (FComJava as TComJava1).ExecuteCommand(s);
-    if (Left(s1, 3) = '+OK') then
-      Result:= copy(s1, 5, length(s1))
-    else begin
-      FConfiguration.Log('TComJavaAttribute.GetAttributeValue: ' + s);
-      Result:= '<error>';
-    end;
+    FConfiguration.Log('TComJavaAttribute.GetAttributeValue: ' + Str);
+    Result := '<error>';
   end;
+end;
 
-  procedure TComJavaAttribute.SetAttributeValue(JObj: TComJavaObject; const Attributename, Typename, Value: string; IsStatic: boolean);
-    const _static = 's';
-  begin
-    var s:= 'setAttributeValue'#4 + FClass.FName + #4 + JObj.FName + #4 + Attributename + #4 + TypToSig(Typename) + #4 + Value + #4;
-    if IsStatic then s:= s + 's';
-    s:= (FComJava as TComJava1).ExecuteCommand(s);
-  end;
+procedure TComJavaAttribute.SetAttributeValue(JObj: TComJavaObject;
+  const Attributename, Typename, Value: string; IsStatic: Boolean);
+begin
+  var
+  Str := 'setAttributeValue'#4 + FClass.FName + #4 + JObj.FName + #4 +
+    Attributename + #4 + TypToSig(Typename) + #4 + Value + #4;
+  if IsStatic then
+    Str := Str + 's';
+  Str := (FComJava as TComJava1).ExecuteCommand(Str);
+end;
 
 { --- TJavaMethod ------------------------------------------------------------ }
 
-  constructor TComJavaMethod.Create(
-                                 cls: TComJavaClass;
-                                 const aMethodname: string;
-                                 methodType: TMethodAttribute;
-                                 const theReturnType: string;
-                                 params: TComJavaParams;
-                                 ComJava: TObject);
-    var aRetClass: TComJavaClass;
-  begin
-    FComJava:= ComJava;
-    FClass:= cls;
-    FMethodname:= aMethodname;
-    FMethodType:= MethodType;
-    FReturnType:= withoutGeneric(theReturnType);
-    FParams:= Params;
-    if params = nil
-      then FSig:= '()'
-      else FSig:= '(' + params.signature + ')';
+constructor TComJavaMethod.Create(Cls: TComJavaClass; const AMethodname: string;
+  MethodType: TMethodAttribute; const AReturnType: string;
+  Params: TComJavaParams; ComJava: TObject);
+var
+  RetClass: TComJavaClass;
+begin
+  FComJava := ComJava;
+  FClass := Cls;
+  FMethodname := AMethodname;
+  FMethodType := MethodType;
+  FReturnType := WithoutGeneric(AReturnType);
+  FParams := Params;
+  if not Assigned(Params) then
+    FSig := '()'
+  else
+    FSig := '(' + Params.Signature + ')';
 
-    FRetVal:= TypToNumType(FReturnType);
-    if FRetVal = ntObject  // TODO ntObjectArray?
-      then aRetClass:= (FComJava as TComJava1).GetClass(FReturnType)
-      else aRetClass:= nil;
-    if assigned(aRetClass)
-      then FSig:= FSig + NumTypeToSig(FRetVal, aRetClass.Signature)
-      else FSig:= FSig + NumTypeToSig(FRetVal, '');
-  end;
+  FRetVal := TypToNumType(FReturnType);
+  if FRetVal = ntObject // TODO ntObjectArray?
+  then
+    RetClass := (FComJava as TComJava1).GetClass(FReturnType)
+  else
+    RetClass := nil;
+  if Assigned(RetClass) then
+    FSig := FSig + NumTypeToSig(FRetVal, RetClass.Signature)
+  else
+    FSig := FSig + NumTypeToSig(FRetVal, '');
+end;
 
-  function TComJavaMethod.Call(jobj: TComJavaObject): TComJavaValue;
-    var s, s1: string; 
-  begin
-    Result:= nil;
-    if assigned(jobj)
-      then s:= 'callMethod'#4 + Fclass.Name + #4 + jobj.Name + #4
-      else s:= 'callMethod'#4 + Fclass.Name + #4#4;
-    s:= s + FMethodname + #4 + FReturnType +#4 + FSig + #4;
-    if assigned(FParams) then s:= s + FParams.FParams;
-    s:= s + #4 + IntToStr(Ord(FMethodType));
-    s:= (FComJava as TComJava1).ExecuteCommand(s);
-    FValid:= (Left(s, 3) = '+OK');
-    if FValid
-      then Result:= TComJavaValue.create(right(s, 5), right(FSig, Pos(')', Fsig) + 1), FComJava)
-    else begin
-      if assigned(jobj)
-        then s1:= jobj.Name + '.'
-        else s1:= '';
-      if Pos('Java terminated', s) + Pos('Java disconnected', s) = 0  then
-        FError:= Right(s, 6);
-    end;
-  end;
+function TComJavaMethod.Call(JObj: TComJavaObject): TComJavaValue;
+var
+  Str: string;
+begin
+  Result := nil;
+  if Assigned(JObj) then
+    Str := 'callMethod'#4 + FClass.Name + #4 + JObj.Name + #4
+  else
+    Str := 'callMethod'#4 + FClass.Name + #4#4;
+  Str := Str + FMethodname + #4 + FReturnType + #4 + FSig + #4;
+  if Assigned(FParams) then
+    Str := Str + FParams.FParams;
+  Str := Str + #4 + IntToStr(Ord(FMethodType));
+  Str := (FComJava as TComJava1).ExecuteCommand(Str);
+  FValid := (Left(Str, 3) = '+OK');
+  if FValid then
+    Result := TComJavaValue.Create(Right(Str, 5),
+      Right(FSig, Pos(')', FSig) + 1), FComJava)
+  else
+    if Pos('Java terminated', Str) + Pos('Java disconnected', Str) = 0 then
+      FError := Right(Str, 6);
+end;
 
-  function TComJavaMethod.getExpressionValue: TComJavaValue;
+function TComJavaMethod.GetExpressionValue: TComJavaValue;
+begin
+  Result := nil;
+  var
+  Str := (FComJava as TComJava1).ExecuteCommand('getExpressionValue'#4 +
+    FClass.Name);
+  FValid := (Left(Str, 3) = '+OK');
+  if FValid then
   begin
-    Result:= nil;
-    var s:= (FComJava as TComJava1).ExecuteCommand('getExpressionValue'#4 + Fclass.Name);
-    FValid:= (Left(s, 3) = '+OK');
-    if FValid then begin
-      s:= Right(s, 5);
-      var p:= Pos('_|_', s);
-      s:= Left(s, p-1);
-      Result:= TComJavaValue.create(s, right(FSig, Pos(')', FSig) + 1), FComJava);
-    end else
-      if Pos('Java terminated', s) + Pos('Java disconnected', s) = 0 then
-        FError:= Right(s, 6);
-  end;
+    Str := Right(Str, 5);
+    var
+    Posi := Pos('_|_', Str);
+    Str := Left(Str, Posi - 1);
+    Result := TComJavaValue.Create(Str, Right(FSig, Pos(')', FSig) + 1),
+      FComJava);
+  end
+  else if Pos('Java terminated', Str) + Pos('Java disconnected', Str) = 0 then
+    FError := Right(Str, 6);
+end;
 
-  function TComJavaMethod.getExpressionType: string;
+function TComJavaMethod.GetExpressionType: string;
+begin
+  Result := '';
+  var
+  Str := (FComJava as TComJava1).ExecuteCommand('getExpressionValue'#4 +
+    FClass.Name);
+  FValid := (Left(Str, 3) = '+OK');
+  if FValid then
   begin
-    Result:= '';
-    var s:= (FComJava as TComJava1).ExecuteCommand('getExpressionValue'#4 + Fclass.Name);
-    FValid:= (Left(s, 3) = '+OK');
-    if FValid then begin
-      s:= Right(s, 5);
-      var p:= pos('_|_', s);
-      s:= Right(s, p + 3);
-      Result:= s;
-    end else
-      if Pos('Java terminated', s) + Pos('Java disconnected', s) = 0 then
-        FError:= Right(s, 6);
-  end;
+    Str := Right(Str, 5);
+    var
+    Posi := Pos('_|_', Str);
+    Str := Right(Str, Posi + 3);
+    Result := Str;
+  end
+  else if Pos('Java terminated', Str) + Pos('Java disconnected', Str) = 0 then
+    FError := Right(Str, 6);
+end;
 
 end.
-

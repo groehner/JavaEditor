@@ -3,9 +3,20 @@ unit UScpHint;
 interface
 
 uses
-  Messages, Classes, Graphics, Controls, Forms, StdCtrls, Menus,
-  System.ImageList, Vcl.ImgList, Vcl.VirtualImageList, Vcl.BaseImageCollection,
-  SVGIconImageCollection, TB2Item, SpTBXItem;
+  Messages,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  StdCtrls,
+  Menus,
+  System.ImageList,
+  Vcl.ImgList,
+  Vcl.VirtualImageList,
+  Vcl.BaseImageCollection,
+  SVGIconImageCollection,
+  TB2Item,
+  SpTBXItem;
 
 type
   TFScpHint = class(TForm)
@@ -21,8 +32,7 @@ type
     procedure MIFontClick(Sender: TObject);
     procedure MICloseClick(Sender: TObject);
     procedure PopupMenuHintPopup(Sender: TObject);
-    procedure MHintKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure MHintKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure FormMouseActivate(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y, HitTest: Integer;
@@ -31,7 +41,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
-    WindowOpened: boolean;
+    FTabActiv: Boolean;
+    FWindowOpened: Boolean;
     function IsBorderless: Boolean;
     function GetBorderSpace: Integer;
     procedure LoadSettings;
@@ -42,10 +53,10 @@ type
     procedure Resize; override;
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    TabActiv: boolean;
-    procedure SetFont(aFont: TFont);
-    procedure SetFontSize(Delta: integer);
+    procedure SetFont(AFont: TFont);
+    procedure SetFontSize(Delta: Integer);
     procedure ChangeStyle;
+    property TabActiv: Boolean read FTabActiv write FTabActiv;
   end;
 
 var
@@ -53,46 +64,56 @@ var
 
 implementation
 
-uses Windows, SysUtils, Dialogs, Clipbrd, Math, UJava, UConfiguration, UUtils;
+uses
+  Windows,
+  Dialogs,
+  Clipbrd,
+  UJava,
+  UConfiguration,
+  UUtils;
 
 {$R *.dfm}
 
 procedure TFScpHint.FormCreate(Sender: TObject);
 begin
-  BorderWidth:= 0;
-  StyleElements:= []; // StyleElement [seBorder] prevents resizing!
-  Position:= poDefault; // poScreenCenter displaces the window
-  WindowOpened:= false;
+  BorderWidth := 0;
+  StyleElements := []; // StyleElement [seBorder] prevents resizing!
+  Position := poDefault; // poScreenCenter displaces the window
+  FWindowOpened := False;
 end;
 
 procedure TFScpHint.FormMouseActivate(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y, HitTest: Integer;
   var MouseActivate: TMouseActivate);
 begin
-  FJava.ActiveTool:= 10;
+  FJava.ActiveTool := 10;
 end;
 
 procedure TFScpHint.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   SaveSettings;
-  Action:= caHide;
-  FJava.ActiveTool:= -1;
+  Action := caHide;
+  FJava.ActiveTool := -1;
 end;
 
 procedure TFScpHint.FormResize(Sender: TObject);
 begin
-  if Sender = Self then begin
-    var H:= FJava.scpJava.Form.Height;
-    FJava.scpJava.Form.SetBounds(Left, Top - H + 7, Width, H);
+  if Sender = Self then
+  begin
+    var
+    Height := FJava.scpJava.Form.Height;
+    FJava.scpJava.Form.SetBounds(Left, Top - Height + 7, Width, Height);
   end;
 end;
 
 procedure TFScpHint.FormShow(Sender: TObject);
 begin
-  FJava.ActiveTool:= 13;  // not 10 because this is called by TSynBaseCompletionProposal.DoShow
-  if not WindowOpened then begin
+  FJava.ActiveTool := 13;
+  // not 10 because this is called by TSynBaseCompletionProposal.DoShow
+  if not FWindowOpened then
+  begin
     LoadSettings;
-    WindowOpened:= true;
+    FWindowOpened := True;
   end;
 end;
 
@@ -105,23 +126,20 @@ function TFScpHint.GetBorderSpace: Integer;
 begin
   case BorderStyle of
     bsSingle:
-      Result :=
-        GetSystemMetrics(SM_CYFIXEDFRAME);
+      Result := GetSystemMetrics(SM_CYFIXEDFRAME);
     bsDialog, bsToolWindow:
-      Result :=
-        GetSystemMetrics(SM_CYDLGFRAME);
+      Result := GetSystemMetrics(SM_CYDLGFRAME);
     bsSizeable, bsSizeToolWin:
-      Result :=
-        GetSystemMetrics(SM_CYSIZEFRAME) +
+      Result := GetSystemMetrics(SM_CYSIZEFRAME) +
         GetSystemMetrics(SM_CXPADDEDBORDER);
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
 end;
 
 procedure TFScpHint.PopupMenuHintPopup(Sender: TObject);
 begin
-  MICopy.Enabled:= (MHint.SelLength > 0);
+  MICopy.Enabled := (MHint.SelLength > 0);
 end;
 
 procedure TFScpHint.Resize;
@@ -138,8 +156,10 @@ end;
 procedure TFScpHint.WM_NCCalcSize(var Msg: TWMNCCalcSize);
 begin
   inherited;
-  if BorderStyle = bsNone then exit;
-  var CaptionBarHeight := GetSystemMetrics(SM_CYCAPTION);
+  if BorderStyle = bsNone then
+    Exit;
+  var
+  CaptionBarHeight := GetSystemMetrics(SM_CYCAPTION);
   if WindowState = wsNormal then
     Inc(CaptionBarHeight, GetBorderSpace);
   Dec(Msg.CalcSize_Params.rgrc[0].Top, CaptionBarHeight);
@@ -148,34 +168,36 @@ end;
 procedure TFScpHint.WM_NCHitTest(var Msg: TWMNCHitTest);
 begin
   inherited;
-  var ResizeSpace := GetBorderSpace;
-  if (WindowState = wsNormal) and
-     (BorderStyle in [bsSizeable, bsSizeToolWin]) and
-     (Msg.YPos - BoundsRect.Top <= ResizeSpace) then
-    begin
-      if Msg.XPos - BoundsRect.Left <= 2 * ResizeSpace then
-        Msg.Result := HTTOPLEFT
-      else if BoundsRect.Right - Msg.XPos <= 2 * ResizeSpace then
-        Msg.Result := HTTOPRIGHT
-      else
-        Msg.Result := HTTOP;
-    end;
+  var
+  ResizeSpace := GetBorderSpace;
+  if (WindowState = wsNormal) and (BorderStyle in [bsSizeable, bsSizeToolWin])
+    and (Msg.YPos - BoundsRect.Top <= ResizeSpace) then
+  begin
+    if Msg.XPos - BoundsRect.Left <= 2 * ResizeSpace then
+      Msg.Result := HTTOPLEFT
+    else if BoundsRect.Right - Msg.XPos <= 2 * ResizeSpace then
+      Msg.Result := HTTOPRIGHT
+    else
+      Msg.Result := HTTOP;
+  end;
 end;
 
-procedure TFScpHint.SetFont(aFont: TFont);
+procedure TFScpHint.SetFont(AFont: TFont);
 begin
-  MHint.Font.Assign(aFont);
-  FJava.scpJava.Form.Font.Assign(aFont);
+  MHint.Font.Assign(AFont);
+  FJava.scpJava.Form.Font.Assign(AFont);
   if Assigned(FJava.EditorForm) then
     FJava.scpJava.ActivateTimer(FJava.EditorForm.Editor);
 end;
 
-procedure TFScpHint.SetFontSize(Delta: integer);
+procedure TFScpHint.SetFontSize(Delta: Integer);
 begin
-  var Size:= MHint.Font.Size + Delta;
-  if Size < 6 then Size:= 6;
-  MHint.Font.Size:= Size;
-  FJava.scpJava.Form.Font.Size:= Size;
+  var
+  Size := MHint.Font.Size + Delta;
+  if Size < 6 then
+    Size := 6;
+  MHint.Font.Size := Size;
+  FJava.scpJava.Form.Font.Size := Size;
   if Assigned(FJava.EditorForm) then
     FJava.scpJava.ActivateTimer(FJava.EditorForm.Editor);
 end;
@@ -183,19 +205,27 @@ end;
 procedure TFScpHint.SaveSettings;
 begin
   FConfiguration.WriteStringU('CodeCompletion', 'FontName', MHint.Font.Name);
-  FConfiguration.WriteIntegerU('CodeCompletion', 'FontSize', PPIUnScale(MHint.Font.Size));
-  FConfiguration.WriteIntegerU('CodeCompletion', 'Width', PPIUnScale(FJava.scpJava.Width));
-  FConfiguration.WriteIntegerU('CodeCompletion', 'Lines', FJava.scpJava.NbLinesInWindow);
+  FConfiguration.WriteIntegerU('CodeCompletion', 'FontSize',
+    PPIUnScale(MHint.Font.Size));
+  FConfiguration.WriteIntegerU('CodeCompletion', 'Width',
+    PPIUnScale(FJava.scpJava.Width));
+  FConfiguration.WriteIntegerU('CodeCompletion', 'Lines',
+    FJava.scpJava.NbLinesInWindow);
   FConfiguration.WriteIntegerU('CodeCompletion', 'Height', PPIUnScale(Height));
 end;
 
 procedure TFScpHint.LoadSettings;
 begin
-  Font.Name:= FConfiguration.ReadStringU('CodeCompletion', 'FontName', 'Consolas');
-  Font.Size:= PPIScale(FConfiguration.ReadIntegerU('CodeCompletion', 'FontSize', 10));
-  FJava.scpJava.Width:= PPIScale(FConfiguration.ReadIntegerU('CodeCompletion', 'Width', 260));
-  FJava.scpJava.NbLinesInWindow:= FConfiguration.ReadIntegerU('CodeCompletion', 'Lines', 8);
-  Height:= PPIScale(FConfiguration.ReadIntegerU('CodeCompletion', 'Height', 100));
+  Font.Name := FConfiguration.ReadStringU('CodeCompletion', 'FontName',
+    'Consolas');
+  Font.Size := PPIScale(FConfiguration.ReadIntegerU('CodeCompletion',
+    'FontSize', 10));
+  FJava.scpJava.Width := PPIScale(FConfiguration.ReadIntegerU('CodeCompletion',
+    'Width', 260));
+  FJava.scpJava.NbLinesInWindow := FConfiguration.ReadIntegerU('CodeCompletion',
+    'Lines', 8);
+  Height := PPIScale(FConfiguration.ReadIntegerU('CodeCompletion',
+    'Height', 100));
   SetFont(Font);
   ChangeStyle;
 end;
@@ -203,11 +233,12 @@ end;
 procedure TFScpHint.MHintKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_Tab then
+  if Key = VK_TAB then
     if TabActiv then
-      if FJava.scpJava.Form.canFocus then FJava.scpJava.Form.SetFocus
-    else
-      TabActiv:= true;
+      if FJava.scpJava.Form.CanFocus then
+        FJava.scpJava.Form.SetFocus
+      else
+        FTabActiv := True;
 end;
 
 procedure TFScpHint.MICloseClick(Sender: TObject);
@@ -217,13 +248,14 @@ end;
 
 procedure TFScpHint.MICopyClick(Sender: TObject);
 begin
-  Clipboard.AsText:= MHint.SelText;
+  Clipboard.AsText := MHint.SelText;
 end;
 
 procedure TFScpHint.MIFontClick(Sender: TObject);
 begin
-  with FJava.FDFont do begin
-    Options:= [];
+  with FJava.FDFont do
+  begin
+    Options := [];
     Font.Assign(MHint.Font);
     if Execute then
       SetFont(Font);
@@ -232,9 +264,10 @@ end;
 
 procedure TFScpHint.ChangeStyle;
 begin
-  if FConfiguration.isDark
-    then PopupMenuHint.Images:= vilPopupMenuDark
-    else PopupMenuHint.Images:= vilPopupMenuLight;
+  if FConfiguration.IsDark then
+    PopupMenuHint.Images := vilPopupMenuDark
+  else
+    PopupMenuHint.Images := vilPopupMenuLight;
 end;
 
 procedure TFScpHint.CreateParams(var Params: TCreateParams);

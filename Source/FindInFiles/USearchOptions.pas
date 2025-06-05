@@ -6,186 +6,205 @@ uses Forms;
 
 type
     TSearchOptions = class         // Tag number of component
+    private
+      FBackwards: Boolean;         // Tag = 9
+      FCaseSensitive: Boolean;     // Tag = 4
+      FDirectory: string;          // Tag = 13
+      FDirectoryHistory: string;   // Tag = 13
+      FExcludeCommentsAndStrings: Boolean; // Tag = 16
+      FFilemask: string;           // Tag = 14
+      FFilemaskHistory: string;    // Tag = 14
+      FFromCursor: Boolean;        // Tag = 6
+      FGrepAction: Integer;        // Tag = 10, 11, 12
+      FIncludeSubdirs: Boolean;    // Tag = 15
+      FRegEx: Boolean;             // Tag = 8
+      FReplace: Boolean;           // Tag = 3
+      FReplaceText: string;        // Tag = 2
+      FReplaceTextHistory: string; // Tag = 2
+      FSearchText: string;         // Tag = 1
+      FSearchTextHistory: string;  // Tag = 1
+      FSelectionOnly: Boolean;     // Tag = 7
+      FSystemFromCursor: Boolean;  // system setting for SearchAgain
+      FWholeWords: Boolean;        // Tag = 5
     public
-      SearchText: string;          // Tag = 1
-      SearchTextHistory: string;   // Tag = 1
-      ReplaceText: string;         // Tag = 2
-      ReplaceTextHistory: string;  // Tag = 2
-
-      Replace: Boolean;            // Tag = 3
-      CaseSensitive: boolean;      // Tag = 4
-      WholeWords: boolean;         // Tag = 5
-      FromCursor: boolean;         // Tag = 6, user setting
-      SelectionOnly: boolean;      // Tag = 7
-      ExcludeCommentsAndStrings: boolean;  // Tag = 16
-      RegEx: boolean;              // Tag = 8
-      Backwards: boolean;          // Tag = 9
-      fFromCursor: boolean;        // system setting for SearchAgain
-
-      GrepAction: integer;         // Tag = 10, 11, 12
-      Directory: string;           // Tag = 13
-      DirectoryHistory: string;    // Tag = 13
-      Filemask: string;            // Tag = 14
-      FilemaskHistory: string;     // Tag = 14
-      IncludeSubdirs: boolean;     // Tag = 15
       constructor Create;
-      destructor Destroy; override;
       procedure SaveSearchOptions;
       procedure LoadToForm(Form: TForm);
       procedure SaveFromForm(Form: TForm);
       procedure ShowRegSearchHelp;
+      property Backwards: Boolean read FBackwards;
+      property CaseSensitive: Boolean read FCaseSensitive;
+      property Directory: string read FDirectory write  FDirectory;
+      property DirectoryHistory: string read FDirectoryHistory write  FDirectoryHistory;
+      property ExcludeCommentsAndStrings: Boolean read FExcludeCommentsAndStrings;
+      property Filemask: string read FFilemask write FFilemask;
+      property FilemaskHistory: string read FFilemaskHistory;
+      property FromCursor: Boolean read FFromCursor;
+      property GrepAction: Integer read FGrepAction;
+      property IncludeSubdirs: Boolean read FIncludeSubdirs;
+      property RegEx: Boolean read FRegEx;
+      property Replace: Boolean read FReplace;
+      property ReplaceText: string read FReplaceText;
+      property ReplaceTextHistory: string read FReplaceTextHistory;
+      property SearchText: string read FSearchText;
+      property SearchTextHistory: string read FSearchTextHistory;
+      property SelectionOnly: Boolean read FSelectionOnly;
+      property SystemFromCursor: Boolean read FSystemFromCursor write FSystemFromCursor;
+      property WholeWords: Boolean read FWholeWords;
     end;
 
 var
-  mySearchOptions: TSearchOptions;
+  MySearchOptions: TSearchOptions;
 
 implementation
 
-uses Classes, Windows, StdCtrls, ExtCtrls, SysUtils, StrUtils,
-     UConfiguration, UJavaCommands, UUtils;
+uses
+  Classes,
+  Windows,
+  StdCtrls,
+  ExtCtrls,
+  StrUtils,
+  UConfiguration,
+  UJavaCommands,
+  UUtils;
 
-constructor TSearchOptions.create;
+constructor TSearchOptions.Create;
 begin
-  SearchText:= FConfiguration.ReadStringU('SearchReplace', 'SearchText', '');
-  SearchTextHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'SearchTextHistory', ''));
-  ReplaceText:= FConfiguration.ReadStringU('SearchReplace', 'ReplaceText', '');
-  ReplaceTextHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'ReplaceTextHistory', ''));
+  FSearchText:= FConfiguration.ReadStringU('SearchReplace', 'FSearchText', '');
+  FSearchTextHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FSearchTextHistory', ''));
+  FReplaceText:= FConfiguration.ReadStringU('SearchReplace', 'FReplaceText', '');
+  FReplaceTextHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FReplaceTextHistory', ''));
 
-  Replace:= FConfiguration.ReadBoolU('SearchReplace', 'Replace', false);
-  CaseSensitive:= FConfiguration.ReadBoolU('SearchReplace', 'CaseSensitive', false);
-  WholeWords:= FConfiguration.ReadBoolU('SearchReplace', 'WholeWords', false);
-  FromCursor:= FConfiguration.ReadBoolU('SearchReplace', 'FromCursor', false);
-  SelectionOnly:= FConfiguration.ReadBoolU('SearchReplace', 'SelectionOnly', false);
-  ExcludeCommentsAndStrings:= FConfiguration.ReadBoolU('SearchReplace', 'ExcludeCommentsAndStrings', False);
-  RegEx:= FConfiguration.ReadBoolU('SearchReplace', 'RegEx', false);
-  Backwards:= false;
+  FReplace:= FConfiguration.ReadBoolU('SearchReplace', 'FReplace', False);
+  FCaseSensitive:= FConfiguration.ReadBoolU('SearchReplace', 'FCaseSensitive', False);
+  FWholeWords:= FConfiguration.ReadBoolU('SearchReplace', 'FWholeWords', False);
+  FFromCursor:= FConfiguration.ReadBoolU('SearchReplace', 'FFromCursor', False);
+  FSelectionOnly:= FConfiguration.ReadBoolU('SearchReplace', 'FSelectionOnly', False);
+  FExcludeCommentsAndStrings:= FConfiguration.ReadBoolU('SearchReplace', 'FExcludeCommentsAndStrings', False);
+  FRegEx:= FConfiguration.ReadBoolU('SearchReplace', 'FRegEx', False);
+  FBackwards:= False;
 
-  GrepAction:= FConfiguration.ReadIntegerU('SearchReplace', 'Where', 1);
-  Directory:= FConfiguration.ReadStringU('SearchReplace', 'Directory', '');
-  DirectoryHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'DirectoryHistory', ''));
-  Filemask:= FConfiguration.ReadStringU('SearchReplace', 'Filemask', '*.java');
-  FilemaskHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FilemaskHistory', ''));
-  IncludeSubdirs:= FConfiguration.ReadBoolU('SearchReplace', 'IncludeSubdirs', true);
-end;
-
-destructor TSearchOptions.Destroy;
-begin
-  inherited;
+  FGrepAction:= FConfiguration.ReadIntegerU('SearchReplace', 'Where', 1);
+  FDirectory:= FConfiguration.ReadStringU('SearchReplace', 'FDirectory', '');
+  FDirectoryHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FDirectoryHistory', ''));
+  FFilemask:= FConfiguration.ReadStringU('SearchReplace', 'FFilemask', '*.java');
+  FFilemaskHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FFilemaskHistory', ''));
+  FIncludeSubdirs:= FConfiguration.ReadBoolU('SearchReplace', 'FIncludeSubdirs', True);
 end;
 
 procedure TSearchOptions.LoadToForm(Form: TForm);
-  var i: integer; Component: TComponent;
+  var Component: TComponent;
 begin
   with Form do
-    for i:= 0 to ComponentCount -1 do begin
-      Component:= Components[i];
+    for var I:= 0 to ComponentCount -1 do begin
+      Component:= Components[I];
       case Component.Tag of
         1: with Component as TComboBox do begin
-             Text:= SearchText;
-             Items.Text:= SearchTextHistory;
+             Text:= FSearchText;
+             Items.Text:= FSearchTextHistory;
            end;
         2: with Component as TComboBox do begin
-             Text:= ReplaceText;
-             Items.Text:= ReplaceTextHistory;
+             Text:= FReplaceText;
+             Items.Text:= FReplaceTextHistory;
            end;
-        3: (Component as TCheckBox).Checked:= Replace;
-        4: (Component as TCheckBox).Checked:= CaseSensitive;
-        5: (Component as TCheckBox).Checked:= WholeWords;
-        6: (Component as TCheckBox).Checked:= FromCursor;
-        7: (Component as TCheckBox).Checked:= SelectionOnly;
-       16: (Component as TCheckBox).Checked:= ExcludeCommentsAndStrings;
-        8: (Component as TCheckBox).Checked:= RegEx;
-        9: if Backwards
+        3: (Component as TCheckBox).Checked:= FReplace;
+        4: (Component as TCheckBox).Checked:= FCaseSensitive;
+        5: (Component as TCheckBox).Checked:= FWholeWords;
+        6: (Component as TCheckBox).Checked:= FFromCursor;
+        7: (Component as TCheckBox).Checked:= FSelectionOnly;
+       16: (Component as TCheckBox).Checked:= FExcludeCommentsAndStrings;
+        8: (Component as TCheckBox).Checked:= FRegEx;
+        9: if FBackwards
              then (Component as TRadioGroup).ItemIndex:= 1
              else (Component as TRadioGroup).ItemIndex:= 0;
-       10: (Component as TRadioButton).Checked:= (GrepAction = 1);
-       11: (Component as TRadioButton).Checked:= (GrepAction = 2);
-       12: (Component as TRadioButton).Checked:= (GrepAction = 3);
+       10: (Component as TRadioButton).Checked:= (FGrepAction = 1);
+       11: (Component as TRadioButton).Checked:= (FGrepAction = 2);
+       12: (Component as TRadioButton).Checked:= (FGrepAction = 3);
        13: with Component as TComboBox do begin
-             Text:= Directory;
-             Items.Text:= DirectoryHistory;
-             FConfiguration.ShortenPath(Component as TComboBox, Directory);
+             Text:= FDirectory;
+             Items.Text:= FDirectoryHistory;
+             FConfiguration.ShortenPath(Component as TComboBox, FDirectory);
            end;
        14: with Component as TComboBox do begin
-             Text:= Filemask;
-             Items.Text:= FilemaskHistory;
+             Text:= FFilemask;
+             Items.Text:= FFilemaskHistory;
            end;
-       15: (Component as TCheckBox).Checked:= IncludeSubdirs;
+       15: (Component as TCheckBox).Checked:= FIncludeSubdirs;
     end;
   end;
 end;
 
 procedure TSearchOptions.SaveFromForm(Form: TForm);
-  var i: integer; Component: TComponent;
+  var Component: TComponent;
 begin
   with Form do
-    for i:= 0 to ComponentCount -1 do begin
-      Component:= Components[i];
+    for var I:= 0 to ComponentCount - 1 do begin
+      Component:= Components[I];
       case Component.Tag of
         1: with Component as TComboBox do begin
-             SearchText:= Text;
-             SearchTextHistory:= Items.Text;
+             FSearchText:= Text;
+             FSearchTextHistory:= Items.Text;
            end;
         2: with Component as TComboBox do begin
-             ReplaceText:= Text;
-             ReplaceTextHistory:= Items.Text;
+             FReplaceText:= Text;
+             FReplaceTextHistory:= Items.Text;
            end;
-        3: Replace:= (Component as TCheckBox).Checked;
-        4: CaseSensitive:= (Component as TCheckBox).Checked;
-        5: WholeWords:= (Component as TCheckBox).Checked;
-        6: FromCursor:= (Component as TCheckBox).Checked;
-        7: SelectionOnly:= (Component as TCheckBox).Checked;
-       16: ExcludeCommentsAndStrings:= (Component as TCheckBox).Checked;
-        8: RegEx:= (Component as TCheckBox).Checked;
-        9: Backwards:= ((Component as TRadioGroup).ItemIndex = 1);
-       10: if (Component as TRadioButton).Checked then GrepAction:= 1;
-       11: if (Component as TRadioButton).Checked then GrepAction:= 2;
-       12: if (Component as TRadioButton).Checked then GrepAction:= 3;
+        3: FReplace:= (Component as TCheckBox).Checked;
+        4: FCaseSensitive:= (Component as TCheckBox).Checked;
+        5: FWholeWords:= (Component as TCheckBox).Checked;
+        6: FFromCursor:= (Component as TCheckBox).Checked;
+        7: FSelectionOnly:= (Component as TCheckBox).Checked;
+       16: FExcludeCommentsAndStrings:= (Component as TCheckBox).Checked;
+        8: FRegEx:= (Component as TCheckBox).Checked;
+        9: FBackwards:= ((Component as TRadioGroup).ItemIndex = 1);
+       10: if (Component as TRadioButton).Checked then FGrepAction:= 1;
+       11: if (Component as TRadioButton).Checked then FGrepAction:= 2;
+       12: if (Component as TRadioButton).Checked then FGrepAction:= 3;
        13: with Component as TComboBox do begin
-             Directory:= FConfiguration.ExtendPath(Component as TComboBox);
-             DirectoryHistory:= Items.Text;
+             FDirectory:= FConfiguration.ExtendPath(Component as TComboBox);
+             FDirectoryHistory:= Items.Text;
            end;
        14: with Component as TComboBox do begin
-             Filemask:= Text;
-             FilemaskHistory:= Items.Text;
+             FFilemask:= Text;
+             FFilemaskHistory:= Items.Text;
            end;
-       15: IncludeSubdirs:= (Component as TCheckBox).Checked;
+       15: FIncludeSubdirs:= (Component as TCheckBox).Checked;
     end;
   end;
-  if SelectionOnly and FromCursor then FromCursor:= false;
-  fFromCursor:= FromCursor;
+  if FSelectionOnly and FFromCursor then FFromCursor:= False;
+  FSystemFromCursor:= FFromCursor;
 end;
 
 procedure TSearchOptions.SaveSearchOptions;
 begin
-  FConfiguration.WriteStringU('SearchReplace', 'SearchText', SearchText);
-  FConfiguration.WriteStringU('SearchReplace', 'SearchTextHistory', SaveComboBoxItems(SearchTextHistory));
-  FConfiguration.WriteStringU('SearchReplace', 'ReplaceText', ReplaceText);
-  FConfiguration.WriteStringU('SearchReplace', 'ReplaceTextHistory', SaveComboBoxItems(ReplaceTextHistory));
+  FConfiguration.WriteStringU('SearchReplace', 'FSearchText', FSearchText);
+  FConfiguration.WriteStringU('SearchReplace', 'FSearchTextHistory', SaveComboBoxItems(FSearchTextHistory));
+  FConfiguration.WriteStringU('SearchReplace', 'FReplaceText', FReplaceText);
+  FConfiguration.WriteStringU('SearchReplace', 'FReplaceTextHistory', SaveComboBoxItems(FReplaceTextHistory));
 
-  FConfiguration.WriteBoolU('SearchReplace', 'Replace', Replace);
-  FConfiguration.WriteBoolU('SearchReplace', 'CaseSensitive', CaseSensitive);
-  FConfiguration.WriteBoolU('SearchReplace', 'WholeWords', WholeWords);
-  FConfiguration.WriteBoolU('SearchReplace', 'FromCursor', FromCursor);
-  FConfiguration.WriteBoolU('SearchReplace', 'SelectionOnly', SelectionOnly);
-  FConfiguration.WriteBoolU('SearchReplace', 'ExcludeCommentsAndStrings', ExcludeCommentsAndStrings);
-  FConfiguration.WriteBoolU('SearchReplace', 'RegEx', RegEx);
+  FConfiguration.WriteBoolU('SearchReplace', 'FReplace', FReplace);
+  FConfiguration.WriteBoolU('SearchReplace', 'FCaseSensitive', FCaseSensitive);
+  FConfiguration.WriteBoolU('SearchReplace', 'FWholeWords', FWholeWords);
+  FConfiguration.WriteBoolU('SearchReplace', 'FFromCursor', FFromCursor);
+  FConfiguration.WriteBoolU('SearchReplace', 'FSelectionOnly', FSelectionOnly);
+  FConfiguration.WriteBoolU('SearchReplace', 'FExcludeCommentsAndStrings', FExcludeCommentsAndStrings);
+  FConfiguration.WriteBoolU('SearchReplace', 'FRegEx', FRegEx);
 
-  FConfiguration.WriteIntegerU('SearchReplace', 'Where', GrepAction);
-  FConfiguration.WriteStringU('SearchReplace', 'Directory', Directory);
-  FConfiguration.WriteStringU('SearchReplace', 'DirectoryHistory', SaveComboBoxItems(DirectoryHistory));
-  FConfiguration.WriteStringU('SearchReplace', 'Filemask', Filemask);
-  FConfiguration.WriteStringU('SearchReplace', 'FilemaskHistory', SaveComboBoxItems(FilemaskHistory));
-  FConfiguration.WriteBoolU('SearchReplace', 'IncludeSubdirs', IncludeSubdirs);
+  FConfiguration.WriteIntegerU('SearchReplace', 'Where', FGrepAction);
+  FConfiguration.WriteStringU('SearchReplace', 'FDirectory', FDirectory);
+  FConfiguration.WriteStringU('SearchReplace', 'FDirectoryHistory', SaveComboBoxItems(FDirectoryHistory));
+  FConfiguration.WriteStringU('SearchReplace', 'FFilemask', FFilemask);
+  FConfiguration.WriteStringU('SearchReplace', 'FFilemaskHistory', SaveComboBoxItems(FFilemaskHistory));
+  FConfiguration.WriteBoolU('SearchReplace', 'FIncludeSubdirs', FIncludeSubdirs);
 end;
 
 procedure TSearchOptions.ShowRegSearchHelp;
-  var s: string;
+  var Str: string;
 begin
   if LeftStr(FConfiguration.LanguageCode, 2) = 'de'
-    then s:= FConfiguration.EditorFolder + 'docs/TRegExpr_DE.pdf'
-    else s:= FConfiguration.EditorFolder + 'docs/TRegExpr_EN.pdf';
-  myJavaCommands.ShellExecuteFile(s, '', '', SW_SHOWNORMAL)
+    then Str:= FConfiguration.EditorFolder + 'docs/TRegExpr_DE.pdf'
+    else Str:= FConfiguration.EditorFolder + 'docs/TRegExpr_EN.pdf';
+  MyJavaCommands.ShellExecuteFile(Str, '', '', SW_SHOWNORMAL);
 end;
 
 end.

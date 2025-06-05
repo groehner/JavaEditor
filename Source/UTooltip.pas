@@ -3,9 +3,21 @@ unit UTooltip;
 interface
 
 uses
-  Windows, Classes, Controls, Forms, ExtCtrls, ComCtrls, SHDocVw, Vcl.ToolWin,
-  Vcl.OleCtrls, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList,
-  Vcl.BaseImageCollection, SVGIconImageCollection, TB2Item, SpTBXItem, TB2Dock,
+  Windows,
+  Classes,
+  Controls,
+  Forms,
+  ExtCtrls,
+  SHDocVw,
+  System.ImageList,
+  Vcl.OleCtrls,
+  Vcl.ImgList,
+  Vcl.VirtualImageList,
+  Vcl.BaseImageCollection,
+  SVGIconImageCollection,
+  TB2Item,
+  SpTBXItem,
+  TB2Dock,
   TB2Toolbar;
 
 type
@@ -37,110 +49,128 @@ type
     procedure OpenTooltipTimerExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var AAction: TCloseAction);
     procedure FormMouseActivate(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y, HitTest: Integer;
       var MouseActivate: TMouseActivate);
   private
-    EditForm: TForm;
-    TokenRect: TRect;
-    URL: string;
-    base: string;
-    Line: string;
-    Pathname: string;
+    FEditForm: TForm;
+    FTokenRect: TRect;
+    FUrl: string;
+    FBase: string;
+    FCloseManually: Boolean;
+    FLine: string;
+    FPathname: string;
     procedure Hide;
-    procedure SetFontSize(Delta: integer);
-    procedure FindAdress(const s: string);
-    procedure WebBrowserOnCommandStateChange(Sender: TObject; Command: Integer; Enable: WordBool);
+    procedure SetFontSize(Delta: Integer);
+    procedure FindAdress(const Str: string);
+    procedure WebBrowserOnCommandStateChange(Sender: TObject; Command: Integer;
+      Enable: WordBool);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    closemanually: boolean;
-    procedure Init(Form: TForm; P: TPoint; Rect: TRect; const Token: string);
-    procedure setFile(const aPathname, aLine: string);
-    procedure setURL(const aUrl: string);
-    function getHead: string;
+    procedure Init(Form: TForm; Posi: TPoint; Rect: TRect; const Token: string);
+    procedure SetFile(const Pathname, Line: string);
+    procedure SetURL(const Url: string);
+    function GetHead: string;
     procedure ChangeStyle;
+    property CloseManually: Boolean read FCloseManually;
   end;
 
- var FTooltip: TFTooltip = nil;
+var
+  FTooltip: TFTooltip = nil;
 
 implementation
 
-uses SysUtils, JvGnugettext, UJava, UConfiguration, UUtils, UEditorForm;
+uses
+  SysUtils,
+  JvGnugettext,
+  UJava,
+  UConfiguration,
+  UUtils,
+  UEditorForm;
 
 {$R *.dfm}
 
-procedure TFTooltip.Init(Form: TForm; P: TPoint; Rect: TRect; const Token: string);
+procedure TFTooltip.Init(Form: TForm; Posi: TPoint; Rect: TRect;
+  const Token: string);
 begin
   // new Tooltip due to browser.history (forward/backward)  ?
-  EditForm:= Form;
-  setBounds(P.x, P.y, FConfiguration.TooltipWidth, FConfiguration.TooltipHeight);
-  Webbrowser.OnCommandStateChange:= WebBrowserOnCommandStateChange;
-  TokenRect:= Rect;
-  closemanually:= (Token = '# VK_F2 #');
+  FEditForm := Form;
+  SetBounds(Posi.X, Posi.Y, FConfiguration.TooltipWidth,
+    FConfiguration.TooltipHeight);
+  WebBrowser.OnCommandStateChange := WebBrowserOnCommandStateChange;
+  FTokenRect := Rect;
+  FCloseManually := (Token = '# VK_F2 #');
 end;
 
 procedure TFTooltip.CreateParams(var Params: TCreateParams);
 begin
   inherited;
-  with Params do begin
-    Style := WS_POPUP or WS_BORDER OR WS_SIZEBOX;
-    ExStyle := WS_EX_TOOLWINDOW OR WS_EX_TOPMOST;
+  with Params do
+  begin
+    Style := WS_POPUP or WS_BORDER or WS_SIZEBOX;
+    ExStyle := WS_EX_TOOLWINDOW or WS_EX_TOPMOST;
   end;
 end;
 
-procedure TFTooltip.SetFontSize(Delta: integer);
+procedure TFTooltip.SetFontSize(Delta: Integer);
 begin
-  FConfiguration.TooltipFontSize:= FConfiguration.TooltipFontSize + Delta;
-  if FConfiguration.TooltipFontSize < 6 then FConfiguration.TooltipFontSize:= 6;
-  var SL:= TStringList.Create;
+  FConfiguration.TooltipFontSize := FConfiguration.TooltipFontSize + Delta;
+  if FConfiguration.TooltipFontSize < 6 then
+    FConfiguration.TooltipFontSize := 6;
+  var
+  StringList := TStringList.Create;
   try
-    try
-      SL.LoadFromFile(FConfiguration.TempDir + 'Tooltip.html');
-      SL.Strings[0]:= getHead;
-      SL.SaveToFile(FConfiguration.TempDir + 'Tooltip.html');
-      TBRefreshClick(Self);
-    except
-    end;
+    StringList.LoadFromFile(FConfiguration.TempDir + 'Tooltip.html');
+    StringList[0] := GetHead;
+    StringList.SaveToFile(FConfiguration.TempDir + 'Tooltip.html');
+    TBRefreshClick(Self);
   finally
-    FreeAndNil(SL);
+    FreeAndNil(StringList);
   end;
 end;
 
 procedure TFTooltip.OpenTooltipTimerExecute(Sender: TObject);
 begin
-  OpenTooltipTimer.Enabled:= false;
-  if Application.Active and (PtInRect(TokenRect, Mouse.CursorPos) or closemanually) then begin
+  OpenTooltipTimer.Enabled := False;
+  if Application.Active and (PtInRect(FTokenRect, Mouse.CursorPos) or
+    FCloseManually) then
+  begin
     Show;
-    if (EditForm as TFEditForm).Editor.CanFocus then
-      (EditForm as TFEditForm).Editor.SetFocus;
+    if (FEditForm as TFEditForm).Editor.CanFocus then
+      (FEditForm as TFEditForm).Editor.SetFocus;
     FindAdress(FConfiguration.TempDir + 'Tooltip.html');
-    CloseTooltipTimer.Enabled:= not closemanually;
-  end else if Visible then
+    CloseTooltipTimer.Enabled := not FCloseManually;
+  end
+  else if Visible then
     Hide;
 end;
 
 procedure TFTooltip.CloseTooltipTimerExecute(Sender: TObject);
 begin
-  if Visible and not (IsMouseOverControl(Self) or IsMouseOverControl(EditForm) or PtInRect(TokenRect, Mouse.CursorPos)) then begin
+  if Visible and not(IsMouseOverControl(Self) or IsMouseOverControl(FEditForm) or
+    PtInRect(FTokenRect, Mouse.CursorPos)) then
+  begin
     Hide;
-    (EditForm as TFEditForm).LastToken:= '';
+    (FEditForm as TFEditForm).LastToken := '';
   end;
 end;
 
 procedure TFTooltip.TBOpenUrlClick(Sender: TObject);
 begin
-  if Url <> '' then begin
-    FJava.callHelp(url);
+  if FUrl <> '' then
+  begin
+    FJava.CallHelp(FUrl);
     Hide;
   end;
 end;
 
 procedure TFTooltip.TBGotoSourcecodeClick(Sender: TObject);
 begin
-  if (Pathname <> '') and (Line <> '0') then begin
-    FJava.NewEditor(Pathname, 'T' + Line + ')X1)Y' + Line + ')W1)');
+  if (FPathname <> '') and (FLine <> '0') then
+  begin
+    FJava.NewEditor(FPathname, 'T' + FLine + ')X1)Y' + FLine + ')W1)');
     Hide;
   end;
 end;
@@ -150,57 +180,63 @@ begin
   Hide;
 end;
 
-procedure TFTooltip.setURL(const aurl: string);
+procedure TFTooltip.SetURL(const Url: string);
 begin
-  url:= ToWeb('', aurl);
-  base:= ToWeb('', ExtractFilepath(aurl));
+  FUrl := ToWeb('', Url);
+  FBase := ToWeb('', ExtractFilePath(Url));
 end;
 
-procedure TFTooltip.setFile(const aPathname, aLine: string);
+procedure TFTooltip.SetFile(const Pathname, Line: string);
 begin
-  Pathname:= aPathname;
-  Line:= aLine;
+  Self.FPathname := Pathname;
+  Self.FLine := Line;
 end;
 
-function TFTooltip.getHead: string;
+function TFTooltip.GetHead: string;
 begin
-  Result:= '<html><head>';
-  if url <> '' then
-    Result:= Result + '<base href="' + base + '">';
-  Result:= Result + '</head><body style="font-size: ' + IntToStr(PPIScale(FConfiguration.TooltipFontSize)) + 'px; background-color: #FFFFB2">';
+  Result := '<html><head>';
+  if FUrl <> '' then
+    Result := Result + '<FBase href="' + FBase + '">';
+  Result := Result + '</head><body style="font-size: ' +
+    IntToStr(PPIScale(FConfiguration.TooltipFontSize)) +
+    'px; background-color: #FFFFB2">';
 end;
 
 procedure TFTooltip.Hide;
 begin
-  OpenTooltipTimer.Enabled:= false;
-  CloseTooltipTimer.Enabled:= false;
-  FConfiguration.TooltipWidth:=  Width;
-  FConfiguration.TooltipHeight:= Height;
+  OpenTooltipTimer.Enabled := False;
+  CloseTooltipTimer.Enabled := False;
+  FConfiguration.TooltipWidth := Width;
+  FConfiguration.TooltipHeight := Height;
   inherited;
 end;
 
 procedure TFTooltip.WebBrowserOnCommandStateChange(Sender: TObject;
   Command: Integer; Enable: WordBool);
 begin
-  if assigned(TBBack) then begin
+  if Assigned(TBBack) then
+  begin
     case Command of
-      CSC_NAVIGATEBACK:    TBBack.Enabled := Enable;
-      CSC_NAVIGATEFORWARD: TBForward.Enabled := Enable;
+      CSC_NAVIGATEBACK:
+        TBBack.Enabled := Enable;
+      CSC_NAVIGATEFORWARD:
+        TBForward.Enabled := Enable;
     end;
   end;
 end;
 
-procedure TFTooltip.FindAdress(const s: string);
-  var Flags: OLEVariant;
+procedure TFTooltip.FindAdress(const Str: string);
+var
+  Flags: OleVariant;
 begin
-  Flags:= 0;
-  WebBrowser.Navigate(s, Flags, Flags, Flags, Flags);
+  Flags := 0;
+  WebBrowser.Navigate(Str, Flags, Flags, Flags, Flags);
 end;
 
-procedure TFTooltip.FormClose(Sender: TObject; var aAction: TCloseAction);
+procedure TFTooltip.FormClose(Sender: TObject; var AAction: TCloseAction);
 begin
-  Webbrowser.OnCommandStateChange:= nil;
-  FJava.ActiveTool:= -1
+  WebBrowser.OnCommandStateChange := nil;
+  FJava.ActiveTool := -1;
 end;
 
 procedure TFTooltip.FormCreate(Sender: TObject);
@@ -210,32 +246,33 @@ begin
 end;
 
 procedure TFTooltip.FormMouseActivate(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y, HitTest: Integer; var MouseActivate: TMouseActivate);
+  Shift: TShiftState; X, Y, HitTest: Integer;
+  var MouseActivate: TMouseActivate);
 begin
-  FJava.ActiveTool:= 12;
+  FJava.ActiveTool := 12;
 end;
 
 procedure TFTooltip.FormShow(Sender: TObject);
 begin
-  FJava.ActiveTool:= 12;
+  FJava.ActiveTool := 12;
 end;
 
 procedure TFTooltip.TBBackClick(Sender: TObject);
 begin
-  if not WebBrowser.Busy
-    then WebBrowser.GoBack;
+  if not WebBrowser.Busy then
+    WebBrowser.GoBack;
 end;
 
 procedure TFTooltip.TBForwardClick(Sender: TObject);
 begin
-  if not WebBrowser.Busy
-    then WebBrowser.GoForward;
+  if not WebBrowser.Busy then
+    WebBrowser.GoForward;
 end;
 
 procedure TFTooltip.TBRefreshClick(Sender: TObject);
 begin
-  if not WebBrowser.Busy
-    then WebBrowser.Refresh;
+  if not WebBrowser.Busy then
+    WebBrowser.Refresh;
 end;
 
 procedure TFTooltip.TBZoomInClick(Sender: TObject);
@@ -250,9 +287,10 @@ end;
 
 procedure TFTooltip.ChangeStyle;
 begin
-  if FConfiguration.isDark
-    then ToolBarTooltip.Images:= vilToolbarDark
-    else ToolBarTooltip.Images:= vilToolbarLight;
+  if FConfiguration.IsDark then
+    ToolbarTooltip.Images := vilToolbarDark
+  else
+    ToolbarTooltip.Images := vilToolbarLight;
 end;
 
 end.

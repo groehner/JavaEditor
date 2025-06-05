@@ -9,7 +9,7 @@
 // and is subject to that software license agreement.
 
 //---------------------------------------------------------------------------
-unit uConjoinHost;
+unit UConjoinHost;
 
 interface
 
@@ -18,7 +18,7 @@ uses
 
 type
   TConjoinDockHost = class(TForm)
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var AAction: TCloseAction);
     procedure FormDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
     procedure FormUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
     procedure FormDockOver(Sender: TObject; Source: TDragDockObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
@@ -48,15 +48,15 @@ begin
   AControl.ManualFloat(ARect);
 end;
 
-procedure TConjoinDockHost.FormClose(Sender: TObject; var aAction: TCloseAction);
+procedure TConjoinDockHost.FormClose(Sender: TObject; var AAction: TCloseAction);
 begin
   if DockClientCount = 1 then
   begin
     DoFloat(DockClients[0]);
-    aAction := caFree;
+    AAction := caFree;
   end
   else
-    aAction := caHide;
+    AAction := caHide;
 end;
 
 procedure TConjoinDockHost.UpdateCaption(Exclude: TControl);
@@ -65,9 +65,9 @@ begin
   //because even it hasn't actually been taken out of the DockClient array
   //at this point.
   Caption := '';
-  for var i:= 0 to DockClientCount-1 do
-    if DockClients[i].Visible and (DockClients[i] <> Exclude) then
-      Caption := Caption + TDockableForm(DockClients[i]).Caption + ' ';
+  for var I:= 0 to DockClientCount-1 do
+    if DockClients[I].Visible and (DockClients[I] <> Exclude) then
+      Caption := Caption + TDockableForm(DockClients[I]).Caption + ' ';
 end;
 
 procedure TConjoinDockHost.FormDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);

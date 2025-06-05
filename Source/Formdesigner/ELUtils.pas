@@ -503,13 +503,13 @@ var
 
   procedure __RecursSearch(const ADir, AMask: string);
   var
-    I, I1, I2: Integer;
+    Int1, Int2: Integer;
   begin
     if (AStopBit <> nil) and AStopBit^ then Exit;
-    I1 := High(LDirs) + 1;
+    Int1 := High(LDirs) + 1;
     __FindFiles(ADir, AMask);
-    I2 := High(LDirs);
-    for I := I1 to I2 do __RecursSearch(LDirs[I], AMask);
+    Int2 := High(LDirs);
+    for var I := Int1 to Int2 do __RecursSearch(LDirs[I], AMask);
   end;
 
 begin

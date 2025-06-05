@@ -79,16 +79,16 @@ type
     procedure ForEachPointer(Action : TIteratePointerFunc;
                              OtherData : pointer);
       override;
-  function StoresPointers : boolean;
+  function StoresPointers : Boolean;
     override;
   {.Z-}
   public
     constructor Create(NodeClass : TStNodeClass); virtual;
       {-Initialize an empty list}
 
-    procedure LoadFromStream(S : TStream); override;
+    procedure LoadFromStream(Str : TStream); override;
       {-Create a list and its data from a stream}
-    procedure StoreToStream(S : TStream); override;
+    procedure StoreToStream(Str : TStream); override;
       {-Write a list and its data to a stream}
 
     procedure Clear; override;
@@ -98,39 +98,39 @@ type
       {-Add a new node to the end of a list}
     function Insert(Data : Pointer) : TStListNode;
       {-Insert a new node at the start of a list}
-    function Place(Data : Pointer; P : TStListNode) : TStListNode;
+    function Place(Data : Pointer; Posi : TStListNode) : TStListNode;
       {-Place a new node into a list after an existing node P}
-    function PlaceBefore(Data : Pointer; P : TStListNode) : TStListNode;
+    function PlaceBefore(Data : Pointer; Posi : TStListNode) : TStListNode;
       {-Place a new node into a list before an existing node P}
     function InsertSorted(Data : Pointer) : TStListNode;
       {-Insert a new node in sorted order}
-    procedure MoveToHead(P : TStListNode);
+    procedure MoveToHead(Posi : TStListNode);
       {-Move P to the head of the list}
 
     procedure Assign(Source: TPersistent); override;
       {-Assign another container's contents to this one}
-    procedure Join(P : TStListNode; L : TStList);
+    procedure Join(Posi : TStListNode; L : TStList);
       {-Join list L after P in the current list. L is freed}
-    function Split(P : TStListNode) : TStList;
+    function Split(Posi : TStListNode) : TStList;
       {-Split list, creating a new list that starts with P}
 
     procedure Sort;
       {-Put the list into sorted order}
 
-    procedure Delete(P : TStListNode);
+    procedure Delete(Posi : TStListNode);
       {-Remove an element and dispose of its contents}
 
-    function Next(P : TStListNode) : TStListNode;
+    function Next(Posi : TStListNode) : TStListNode;
       {-Return the node after P, nil if none}
-    function Prev(P : TStListNode) : TStListNode;
+    function Prev(Posi : TStListNode) : TStListNode;
       {-Return the node before P, nil if none}
     function Nth(Index : LongInt) : TStListNode;
       {-Return the Index'th node in the list, Index >= 0 (cached)}
-    function NthFrom(P : TStListNode; Index : LongInt) : TStListNode;
+    function NthFrom(Posi : TStListNode; Index : LongInt) : TStListNode;
       {-Return the Index'th node from P, either direction}
-    function Posn(P : TStListNode) : LongInt;
+    function Posn(Posi : TStListNode) : LongInt;
       {-Return the ordinal position of an element in the list}
-    function Distance(P1, P2 : TStListNode) : LongInt;
+    function Distance(Posi1, Posi2 : TStListNode) : LongInt;
       {-Return the number of nodes separating P1 and P2 (signed)}
     function Find(Data : Pointer) : TStListNode;
       {-Return the first node whose data equals Data}
@@ -201,7 +201,7 @@ function AssignData(Container : TStContainer;
     OurList : TStList absolute OtherData;
   begin
     OurList.Append(Data);
-    Result := true;
+    Result := True;
   end;
 
 {----------------------------------------------------------------------}
@@ -281,18 +281,18 @@ begin
   Clear;
 end;
 
-procedure TStList.Delete(P : TStListNode);
+procedure TStList.Delete(Posi : TStListNode);
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    if (not Assigned(P)) or (Count <= 0) then
+    if (not Assigned(Posi)) or (Count <= 0) then
       Exit;
-    if not (P is conNodeClass) then
+    if not (Posi is conNodeClass) then
       RaiseContainerError(ssscBadType);
 
-    with P do begin
+    with Posi do begin
       {Fix pointers of surrounding nodes}
       if Assigned(FNext) then
         FNext.FPrev := FPrev;
@@ -301,14 +301,14 @@ begin
     end;
 
     {Fix head and tail of list}
-    if FTail = P then
+    if FTail = Posi then
       FTail := FTail.FPrev;
-    if FHead = P then
+    if FHead = Posi then
       FHead := FHead.FNext;
 
     {Dispose of the node}
-    DisposeNodeData(P);
-    P.Free;
+    DisposeNodeData(Posi);
+    Posi.Free;
     Dec(FCount);
     lsLastI := -1;
 {$IFDEF ThreadSafe}
@@ -318,9 +318,9 @@ begin
 {$ENDIF}
 end;
 
-function TStList.Distance(P1, P2 : TStListNode) : LongInt;
+function TStList.Distance(Posi1, Posi2 : TStListNode) : LongInt;
 var
-  I : LongInt;
+  Int : LongInt;
   N : TStListNode;
 begin
 {$IFDEF ThreadSafe}
@@ -328,26 +328,26 @@ begin
   try
 {$ENDIF}
     {Count forward}
-    I := 0;
-    N := P1;
-    while Assigned(N) and (N <> P2) do begin
-      Inc(I);
+    Int := 0;
+    N := Posi1;
+    while Assigned(N) and (N <> Posi2) do begin
+      Inc(Int);
       N := N.FNext;
     end;
-    if N = P2 then begin
-      Result := I;
+    if N = Posi2 then begin
+      Result := Int;
       Exit;
     end;
 
     {Count backward}
-    I := 0;
-    N := P1;
-    while Assigned(N) and (N <> P2) do begin
-      Dec(I);
+    Int := 0;
+    N := Posi1;
+    while Assigned(N) and (N <> Posi2) do begin
+      Dec(Int);
       N := N.FPrev;
     end;
-    if N = P2 then begin
-      Result := I;
+    if N = Posi2 then begin
+      Result := Int;
       Exit;
     end;
 
@@ -378,7 +378,7 @@ procedure TStList.ForEachPointer(Action : TIteratePointerFunc;
                                  OtherData : pointer);
 var
   N : TStListNode;
-  P : TStListNode;
+  Posi : TStListNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
@@ -386,9 +386,9 @@ begin
 {$ENDIF}
     N := FHead;
     while Assigned(N) do begin
-      P := N.FNext;
+      Posi := N.FNext;
       if Action(Self, N.Data, OtherData) then
-        N := P
+        N := Posi
       else
         Exit;
     end;
@@ -430,7 +430,7 @@ end;
 function TStList.InsertSorted(Data : Pointer) : TStListNode;
 var
   N : TStListNode;
-  P : TStListNode;
+  Posi : TStListNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
@@ -446,21 +446,21 @@ begin
       FHead := N;
       FTail := N;
     end else begin
-      P := FHead;
-      while Assigned(P) do begin
-        if DoCompare(N.Data, P.Data) < 0 then begin
-          if not Assigned(P.FPrev) then begin
+      Posi := FHead;
+      while Assigned(Posi) do begin
+        if DoCompare(N.Data, Posi.Data) < 0 then begin
+          if not Assigned(Posi.FPrev) then begin
             {New head}
             FHead := N;
           end else begin
-            P.FPrev.FNext := N;
-            N.FPrev := P.FPrev;
+            Posi.FPrev.FNext := N;
+            N.FPrev := Posi.FPrev;
           end;
-          P.FPrev := N;
-          N.FNext := P;
+          Posi.FPrev := N;
+          N.FNext := Posi;
           Exit;
         end;
-        P := P.FNext;
+        Posi := Posi.FNext;
       end;
       {New tail}
       FTail.FNext := N;
@@ -478,7 +478,7 @@ function TStList.Iterate(Action : TIterateFunc; Up : Boolean;
                          OtherData : Pointer) : TStListNode;
 var
   N : TStListNode;
-  P : TStListNode;
+  Posi : TStListNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
@@ -487,9 +487,9 @@ begin
     if Up then begin
       N := FHead;
       while Assigned(N) do begin
-        P := N.FNext;
+        Posi := N.FNext;
         if Action(Self, N, OtherData) then
-          N := P
+          N := Posi
         else begin
           Result := N;
           Exit;
@@ -498,9 +498,9 @@ begin
     end else begin
       N := FTail;
       while Assigned(N) do begin
-        P := N.FPrev;
+        Posi := N.FPrev;
         if Action(Self, N, OtherData) then
-          N := P
+          N := Posi
         else begin
           Result := N;
           Exit;
@@ -515,7 +515,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TStList.Join(P : TStListNode; L : TStList);
+procedure TStList.Join(Posi : TStListNode; L : TStList);
 var
   N : TStListNode;
   Q : TStListNode;
@@ -527,13 +527,13 @@ begin
   try
 {$ENDIF}
     if Assigned(L) then begin
-      if Assigned(P) and (L.Count > 0) then begin
+      if Assigned(Posi) and (L.Count > 0) then begin
         {Patch the list into the current one}
         N := L.Head;
-        Q := P.FNext;
+        Q := Posi.FNext;
 
-        P.FNext := N;
-        N.FPrev := P;
+        Posi.FNext := N;
+        N.FPrev := Posi;
 
         if Assigned(Q) then begin
           N := L.Tail;
@@ -558,7 +558,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TStList.LoadFromStream(S : TStream);
+procedure TStList.LoadFromStream(Str : TStream);
 var
   Data : pointer;
   Reader : TReader;
@@ -572,7 +572,7 @@ begin
   try
 {$ENDIF}
     Clear;
-    Reader := TReader.Create(S, 1024);
+    Reader := TReader.Create(Str, 1024);
     try
       with Reader do
         begin
@@ -608,17 +608,17 @@ begin
 {$ENDIF}
 end;
 
-procedure TStList.MoveToHead(P : TStListNode);
+procedure TStList.MoveToHead(Posi : TStListNode);
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    if Assigned(P) then
-      if P <> Head then begin
-        with P do begin
+    if Assigned(Posi) then
+      if Posi <> Head then begin
+        with Posi do begin
           {Fix pointers of surrounding nodes}
-          if FTail = P then
+          if FTail = Posi then
             FTail := FTail.FPrev
           else
             FNext.FPrev := FPrev;
@@ -627,8 +627,8 @@ begin
           FNext := FHead;
           FPrev := nil;
         end;
-        FHead.FPrev := P;
-        FHead := P;
+        FHead.FPrev := Posi;
+        FHead := Posi;
      end;
 {$IFDEF ThreadSafe}
   finally
@@ -637,13 +637,13 @@ begin
 {$ENDIF}
 end;
 
-function TStList.Next(P : TStListNode) : TStListNode;
+function TStList.Next(Posi : TStListNode) : TStListNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    Result := P.FNext;
+    Result := Posi.FNext;
 {$IFDEF ThreadSafe}
   finally
     LeaveCS;
@@ -691,32 +691,30 @@ begin
 {$ENDIF}
 end;
 
-function TStList.NthFrom(P : TStListNode; Index : LongInt) : TStListNode;
-var
-  I : LongInt;
+function TStList.NthFrom(Posi : TStListNode; Index : LongInt) : TStListNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    if Assigned(P) then begin
-      if not (P is conNodeClass) then
+    if Assigned(Posi) then begin
+      if not (Posi is conNodeClass) then
         RaiseContainerError(ssscBadType);
       if Index > 0 then begin
-        for I := 1 to Index do begin
-          P := P.FNext;
-          if not Assigned(P) then
-            break;
+        for var I := 1 to Index do begin
+          Posi := Posi.FNext;
+          if not Assigned(Posi) then
+            Break;
         end;
       end else begin
-        for I := 1 to -Index do begin
-          P := P.FPrev;
-          if not Assigned(P) then
-            break;
+        for var I := 1 to -Index do begin
+          Posi := Posi.FPrev;
+          if not Assigned(Posi) then
+            Break;
         end;
       end;
     end;
-    Result := P;
+    Result := Posi;
 {$IFDEF ThreadSafe}
   finally
     LeaveCS;
@@ -724,7 +722,7 @@ begin
 {$ENDIF}
 end;
 
-function TStList.Place(Data : Pointer; P : TStListNode) : TStListNode;
+function TStList.Place(Data : Pointer; Posi : TStListNode) : TStListNode;
 var
   N : TStListNode;
 begin
@@ -732,16 +730,16 @@ begin
   EnterCS;
   try
 {$ENDIF}
-    if not Assigned(P) then
+    if not Assigned(Posi) then
       Result := Insert(Data)
-    else if P = FTail then
+    else if Posi = FTail then
       Result := Append(Data)
     else begin
       N := TStListNode(conNodeClass.Create(Data));
-      N.FPrev := P;
-      N.FNext := P.FNext;
-      P.FNext.FPrev := N;
-      P.FNext := N;
+      N.FPrev := Posi;
+      N.FNext := Posi.FNext;
+      Posi.FNext.FPrev := N;
+      Posi.FNext := N;
       Inc(FCount);
       lsLastI := -1;
       Result := N;
@@ -753,7 +751,7 @@ begin
 {$ENDIF}
 end;
 
-function TStList.PlaceBefore(Data : Pointer; P : TStListNode) : TStListNode;
+function TStList.PlaceBefore(Data : Pointer; Posi : TStListNode) : TStListNode;
 var
   N : TStListNode;
 begin
@@ -761,16 +759,16 @@ begin
   EnterCS;
   try
 {$ENDIF}
-    if (not Assigned(P)) or (P = Head) then
+    if (not Assigned(Posi)) or (Posi = Head) then
       {Place the new element at the start of the list}
       Result := Insert(Data)
     else begin
       {Patch in the new element}
       N := TStListNode(conNodeClass.Create(Data));
-      N.FNext := P;
-      N.FPrev := P.FPrev;
-      P.FPrev.FNext := N;
-      P.FPrev := N;
+      N.FNext := Posi;
+      N.FPrev := Posi.FPrev;
+      Posi.FPrev.FNext := N;
+      Posi.FPrev := N;
       lsLastI := -1;
       Inc(FCount);
       Result := N;
@@ -782,28 +780,28 @@ begin
 {$ENDIF}
 end;
 
-function TStList.Posn(P : TStListNode) : LongInt;
+function TStList.Posn(Posi : TStListNode) : LongInt;
 var
-  I : LongInt;
+  Int : LongInt;
   N : TStListNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    if not Assigned(P) then
+    if not Assigned(Posi) then
       Result := -1
     else begin
-      if not (P is conNodeClass) then
+      if not (Posi is conNodeClass) then
         RaiseContainerError(ssscBadType);
-      I := 0;
+      Int := 0;
       N := FHead;
       while Assigned(N) do begin
-        if P = N then begin
-          Result := I;
-          exit;
+        if Posi = N then begin
+          Result := Int;
+          Exit;
         end;
-        Inc(I);
+        Inc(Int);
         N := N.FNext;
       end;
       Result := -1;
@@ -815,13 +813,13 @@ begin
 {$ENDIF}
 end;
 
-function TStList.Prev(P : TStListNode) : TStListNode;
+function TStList.Prev(Posi : TStListNode) : TStListNode;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    Result := P.FPrev;
+    Result := Posi.FPrev;
 {$IFDEF ThreadSafe}
   finally
     LeaveCS;
@@ -952,16 +950,16 @@ begin
 {$ENDIF}
 end;
 
-function TStList.Split(P : TStListNode) : TStList;
+function TStList.Split(Posi : TStListNode) : TStList;
 var
-  I : LongInt;
+  Int : LongInt;
 begin
 {$IFDEF ThreadSafe}
   EnterCS;
   try
 {$ENDIF}
-    I := Posn(P);
-    if I < 0 then begin
+    Int := Posn(Posi);
+    if Int < 0 then begin
       Result := nil;
       Exit;
     end;
@@ -976,20 +974,20 @@ begin
     Result.OnLoadData := OnLoadData;
     Result.StoreData := StoreData;
     Result.OnStoreData := OnStoreData;
-    Result.FHead := P;
+    Result.FHead := Posi;
     Result.FTail := FTail;
-    Result.FCount := Count-I;
+    Result.FCount := Count-Int;
     Result.lsLastI := -1;
 
     {Truncate the old list}
-    if Assigned(P.FPrev) then begin
-      P.FPrev.FNext := nil;
-      FTail := P.FPrev;
-      P.FPrev := nil;
+    if Assigned(Posi.FPrev) then begin
+      Posi.FPrev.FNext := nil;
+      FTail := Posi.FPrev;
+      Posi.FPrev := nil;
     end;
-    if P = FHead then
+    if Posi = FHead then
       FHead := nil;
-    FCount := I;
+    FCount := Int;
     lsLastI := -1;
 {$IFDEF ThreadSafe}
   finally
@@ -1000,10 +998,10 @@ end;
 
 function TStList.StoresPointers : Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
-procedure TStList.StoreToStream(S : TStream);
+procedure TStList.StoreToStream(Str : TStream);
 var
   Writer : TWriter;
   Walker : TStListNode;
@@ -1012,7 +1010,7 @@ begin
   EnterCS;
   try
 {$ENDIF}
-    Writer := TWriter.Create(S, 1024);
+    Writer := TWriter.Create(Str, 1024);
     try
       with Writer do
         begin

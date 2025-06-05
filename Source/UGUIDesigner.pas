@@ -3,10 +3,21 @@
 interface
 
 uses
-  Windows, Classes, Controls, Forms, Menus, Messages, ExtCtrls, ElDsgnr,
-  System.ImageList, Vcl.ImgList, UGUIForm, UEditorForm, Vcl.VirtualImageList,
-  Vcl.BaseImageCollection, SVGIconImageCollection, TB2Item, SpTBXItem,
-  SVGIconImage;
+  Classes,
+  Controls,
+  Forms,
+  Menus,
+  ExtCtrls,
+  System.ImageList,
+  Vcl.ImgList,
+  Vcl.VirtualImageList,
+  Vcl.BaseImageCollection,
+  SVGIconImageCollection,
+  TB2Item,
+  SpTBXItem,
+  ELDsgnr,
+  UGUIForm,
+  UEditorForm;
 
 type
   TFGUIDesigner = class(TForm)
@@ -15,9 +26,9 @@ type
     MIToSource: TSpTBXItem;
     MIForeground: TSpTBXItem;
     MIBackground: TSpTBXItem;
-    N1: TSpTBXSeparatorItem;
+    N1Sep: TSpTBXSeparatorItem;
     MISnapToGrid: TSpTBXItem;
-    N2: TSpTBXSeparatorItem;
+    N2Sep: TSpTBXSeparatorItem;
     MIDelete: TSpTBXItem;
     MICopy: TSpTBXItem;
     MICut: TSpTBXItem;
@@ -35,7 +46,7 @@ type
     MISameDistanceHorz: TSpTBXItem;
     MIAlignCenteredInWindowVert: TSpTBXItem;
     MISameDistanceVert: TSpTBXItem;
-    N4: TSpTBXSeparatorItem;
+    N4Sep: TSpTBXSeparatorItem;
     MIZoomIn: TSpTBXItem;
     MIZoomOut: TSpTBXItem;
     scGuiDesigner: TSVGIconImageCollection;
@@ -69,8 +80,9 @@ type
     procedure ELDesignerDblClick(Sender: TObject);
     procedure ELDesignerGetUniqueName(Sender: TObject; const ABaseName: string;
       var AUniqueName: string);
-    procedure ELDragDrop(Sender, ASource, ATarget: TObject; AX, AY: Integer);
-    procedure ELDragOver(Sender, ASource, ATarget: TObject; AX, AY: Integer;
+    procedure ELDragDrop(Sender, ASource, ATarget: TObject;
+      XPos, YPos: Integer);
+    procedure ELDragOver(Sender, ASource, ATarget: TObject; XPos, YPos: Integer;
       AState: TDragState; var Accept: Boolean);
     procedure MIDeleteClick(Sender: TObject);
     procedure MICloseClick(Sender: TObject);
@@ -89,19 +101,19 @@ type
     procedure MIZoomOutClick(Sender: TObject);
     procedure MIConfigurationClick(Sender: TObject);
   private
-    ComponentToInsert: TControlClass;
-    function getParent(ATarget: TObject; AX, AY: Integer): TWinControl;
-    procedure ComponentToBackground(aPartner: TFEditForm; Control: TControl);
-    procedure ComponentToForeground(aPartner: TFEditForm; Control: TControl);
-    function GetPixelsPerInchOfFile(Filename: string): integer;
-    procedure RemovePixelsPerInch0(Filename: string);
-    procedure RemoveMDIChild(Filename: string);
-    procedure RemoveFrameType(Filename: string);
+    FComponentToInsert: TControlClass;
+    FDesignForm: TFGUIForm;
+    FELDesigner: TELDesigner;
+    function GetParent(ATarget: TObject; XPos, YPos: Integer): TWinControl;
+    procedure ComponentToBackground(APartner: TFEditForm; Control: TControl);
+    procedure ComponentToForeground(APartner: TFEditForm; Control: TControl);
+    function GetPixelsPerInchOfFile(FileName: string): Integer;
+    procedure RemovePixelsPerInch0(FileName: string);
+    procedure RemoveMDIChild(FileName: string);
+    procedure RemoveFrameType(FileName: string);
   public
-    ELDesigner: TELDesigner;
-    DesignForm: TFGuiForm;
-    procedure Save(const Filename: string; aForm: TFGuiForm);
-    function Open(const Filename, JavaFilename: string): TFGuiForm;
+    procedure Save(const FileName: string; AForm: TFGUIForm);
+    function Open(const FileName, JavaFilename: string): TFGUIForm;
     procedure FindMethod(Reader: TReader; const MethodName: string;
       var Address: Pointer; var Error: Boolean);
     procedure ErrorMethod(Reader: TReader; const Message: string;
@@ -111,14 +123,14 @@ type
     procedure MIAWTSwing(Tag: Integer);
     procedure TBAWTSwing(Tag: Integer);
     procedure TBJavaFX(Tag: Integer);
-    procedure ChangeTo(aForm: TFGuiForm);
+    procedure ChangeTo(AForm: TFGUIForm);
     function GetEditForm: TFEditForm;
     procedure UpdateState(Modified: Boolean);
-    procedure DoPanelCanvas(TagNr: Integer; const Filename: string);
-    function getPath: string;
+    procedure DoPanelCanvas(TagNr: Integer; const FileName: string);
+    function GetPath: string;
     function Tag2Class(Tag: Integer): TControlClass;
-    procedure Zooming(delta: Integer);
-    procedure SetComponentValues(DesignForm: TFGuiForm; Control: TControl);
+    procedure Zooming(Delta: Integer);
+    procedure SetComponentValues(DesignForm: TFGUIForm; Control: TControl);
     procedure SetAttributForComponent(Attr, Value, Typ: string;
       Control: TControl);
     procedure ScaleImages;
@@ -126,6 +138,8 @@ type
     procedure InsertComponent(Control: TControl);
     procedure MoveComponent(Control: TControl);
     procedure DeleteComponent(Control: TControl);
+    property DesignForm: TFGUIForm read FDesignForm write FDesignForm;
+    property ELDesigner: TELDesigner read FELDesigner write FELDesigner;
   end;
 
   TMyDragObject = class(TDragControlObjectEx)
@@ -144,13 +158,41 @@ var
 implementation
 
 uses
-  SysUtils,Graphics, ActnList, Mask, Clipbrd,
-  Comctrls, Dialogs, Grids, Buttons, Tabs, Ddeman, Mplayer, Olectnrs, Tabnotbk,
-  {$WARNINGS OFF} FileCtrl, Outline, {$WARNINGS ON}  Spin, UJComponents,
-  System.Types, UITypes, TypInfo, StdCtrls, ELPropInsp,
+  Windows,
+  Messages,
+  SysUtils,
+  Graphics,
+  ActnList,
+  Mask,
+  Clipbrd,
+  ComCtrls,
+  Dialogs,
+  Grids,
+  Buttons,
+  Tabs,
+  DdeMan,
+  MPlayer,
+  OleCtnrs,
+  TabNotBk,
+  FileCtrl,
+  Outline,
+  Spin,
+  System.Types,
+  UITypes,
+  TypInfo,
+  StdCtrls,
+  ELPropInsp,
   JvGnugettext,
-  UJava, UBaseForm, UObjectGenerator, ULink, UConfiguration, UUtils,
-  UJEComponents, UJUtilities, UObjectInspector,
+  UJava,
+  UBaseForm,
+  UObjectGenerator,
+  ULink,
+  UConfiguration,
+  UUtils,
+  UJComponents,
+  UJEComponents,
+  UJUtilities,
+  UObjectInspector,
 
   UAButton, UACheckboxRadio, UAComboBox, UALabel, UAList, UAMenu,
   UAPanel, UAScrollBar, UAScrollPane, UATextArea, UATextField,
@@ -166,7 +208,7 @@ uses
   UFXMenu, UFXSlider, UFXProgressBar, UFXToolBar, UFXSeparator, UFXChoiceBox,
   UFXHTMLEditor, UFXPagination, UFXFileChooser, UFXImageView, UFXWebView,
   UFXTableView, UFXMediaView, UFXTreeView, UFXCircle, UFXRectangle,
-  UFXPolygon, UFXLine, UFXText, UFXBezier, UFXSVGPath, UFXTurtle, UFXGuiForm;
+  UFXPolygon, UFXLine, UFXText, UFXBezier, UFXSVGPath, UFXTurtle, UFXGUIForm;
 
 {$R *.dfm}
 
@@ -174,14 +216,14 @@ type
   TClassArray = array [1 .. 226] of TPersistentClass;
 
 const
-  Modified = true;
+  Modified = True;
 
   ClassArray: TClassArray = (TBitmap, TGraphic, TOutlineNode, TGraphicsObject,
     TBrush, THeaderSection, TCanvas, THeaderSections, TPen, TIcon, TPicture,
     TIconOptions, TCollection, TCollectionItem, TStatusPanel, TStatusPanels,
     TClipboard, TControlScrollBar, TListColumn, TStringList, TListItem,
     TStrings, TListItems, TMetafile, TMetafileCanvas, TTreeNode, TFont,
-    TParaAttributes, TTreeNodes, TApplication, TDDEServerItem, TPanel,
+    TParaAttributes, TTreeNodes, TApplication, TDdeServerItem, TPanel,
     TDirectoryListBox, TPopupMenu, TDrawGrid, TPrintDialog, TDriveComboBox,
     TPrinterSetupDialog, TBevel, TEdit, TProgressBar, TBitBtn, TFileListBox,
     TRadioButton, TFilterComboBox, TRadioGroup, TButton, TFindDialog,
@@ -192,12 +234,12 @@ const
     TMainMenu, TTabbedNotebook, TMaskEdit, TTabControl, TMediaPlayer, TMemo,
     TTabSet, TTabSheet, TToolBar, TCoolBar, TToolButton, TMenuItem, TNotebook,
     TOleContainer, TTimer, TOpenDialog, TTrackBar, TOutline, TTreeView,
-    TDDEClientConv, TOutline, TDDEClientItem, TPageControl, TUpDown,
-    TDDEServerConv, TPaintBox, TSpinEdit, TSplitter, TActionList, TAction,
-    TFGuiForm,
+    TDdeClientConv, TOutline, TDdeClientItem, TPageControl, TUpDown,
+    TDdeServerConv, TPaintBox, TSpinEdit, TSplitter, TActionList, TAction,
+    TFGUIForm,
 
     TALabel, TJLabel, TATextField, TJTextField, TANumberField, TJNumberField,
-    TATextArea, TJTextArea, TAButton, TJButton, TACheckbox, TJCheckbox,
+    TATextArea, TJTextArea, TAButton, TJButton, TACheckBox, TJCheckBox,
     TARadioButton, TJRadioButton, TAList, TJList, TAComboBox, TJComboBox,
     TAScrollBar, TJScrollBar, TAScrollPane, TJScrollPane, TAPanel, TASubPanel,
     TJPanel, TJSubPanel, TACanvas, TASubCanvas, TATurtle, TJSlider,
@@ -213,7 +255,7 @@ const
     TFXComboBox, TFXSpinner, TFXScrollBar, TFXScrollPane, TFXCanvas, TFXMenuBar,
     TFXMenuBarWithMenus, TFXMenu, TFXContextMenu, TFXSlider, TFXProgressBar,
     TFXProgressIndicator, TFXToolBar, TFXSeparator, TFXToggleButton,
-    TFXPasswordField, TFXChoiceBox, TFXHyperlink, TFXButtongroup, TFXHTMLEditor,
+    TFXPasswordField, TFXChoiceBox, TFXHyperlink, TFXButtonGroup, TFXHTMLEditor,
     TFXColorPicker, TFXDatePicker, TFXPagination, TFXFileOpenChooser,
     TFXFileSaveChooser, TFXDirectoryChooser, TFXImageView, TFXWebView,
     TFXTableView, TFXMediaView, TFXMenuButton, TFXSplitMenuButton,
@@ -226,8 +268,9 @@ begin
   TranslateComponent(Self);
   ELDesigner := TELDesigner.Create(Self);
   ELDesigner.PopupMenu := PopupMenu;
-  with ELDesigner do begin
-    ShowingHints := [htControl, htSize, htMove, htInsert];
+  with ELDesigner do
+  begin
+    ShowingHints := [htControl, TELDesignerHintType.htSize, htMove, htInsert];
     ClipboardFormat := 'Extension Library designer components';
     OnModified := ELDesignerModified;
     OnGetUniqueName := ELDesignerGetUniqueName;
@@ -242,15 +285,17 @@ begin
   end;
 end;
 
-procedure TFGUIDesigner.ChangeTo(aForm: TFGuiForm);
+procedure TFGUIDesigner.ChangeTo(AForm: TFGUIForm);
 begin
-  if assigned(ELDesigner) then begin
-    if (ELDesigner.DesignControl <> aForm) or not ELDesigner.Active then begin
-      ELDesigner.Active:= false;
-      ELDesigner.DesignControl:= aForm;
-      DesignForm:= aForm;
-      if assigned(aForm) then
-        ELDesigner.Active:= true;
+  if Assigned(ELDesigner) then
+  begin
+    if (ELDesigner.DesignControl <> AForm) or not ELDesigner.Active then
+    begin
+      ELDesigner.Active := False;
+      ELDesigner.DesignControl := AForm;
+      DesignForm := AForm;
+      if Assigned(AForm) then
+        ELDesigner.Active := True;
       if FObjectInspector.Visible then
         FObjectInspector.RefreshCBObjects;
     end;
@@ -266,21 +311,22 @@ end;
 procedure TFGUIDesigner.ELDesignerModified(Sender: TObject);
 begin
   FObjectInspector.ELPropertyInspector.Modified;
-  for var i := 0 to ELDesigner.SelectedControls.Count - 1 do
-    MoveComponent(ELDesigner.SelectedControls.Items[i]);
+  for var I := 0 to ELDesigner.SelectedControls.Count - 1 do
+    MoveComponent(ELDesigner.SelectedControls[I]);
   UpdateState(Modified);
 end;
 
 procedure TFGUIDesigner.UpdateState(Modified: Boolean);
 begin
-  with FJava do begin
+  with FJava do
+  begin
     SetEnabledMI(MICut, ELDesigner.CanCut);
-    SetEnabledMI(MICopy, true);
-    SetEnabledMI(MICopyNormal, true);
+    SetEnabledMI(MICopy, True);
+    SetEnabledMI(MICopyNormal, True);
     SetEnabledMI(MIPaste, ELDesigner.CanPaste);
   end;
-  if Modified and assigned(ELDesigner.DesignControl) then
-    TFForm(ELDesigner.DesignControl).Modified := true;
+  if Modified and Assigned(ELDesigner.DesignControl) then
+    TFForm(ELDesigner.DesignControl).Modified := True;
 end;
 
 procedure TFGUIDesigner.PopupMenuPopup(Sender: TObject);
@@ -291,11 +337,12 @@ begin
   SetEnabledMI(MIPaste, ELDesigner.CanPaste);
   SetEnabledMI(MIAlign, ELDesigner.SelectedControls.Count >= 2);
   MISnapToGrid.Checked := ELDesigner.SnapToGrid;
-  var en := (ELDesigner.SelectedControls.Count > 1) or
+  var
+  Enable := (ELDesigner.SelectedControls.Count > 1) or
     ((ELDesigner.SelectedControls.Count = 1) and
     (ELDesigner.SelectedControls[0].ClassName <> 'TFGUIForm') and
     (ELDesigner.SelectedControls[0].ClassName <> 'TFXGuiForm'));
-  SetEnabledMI(MIDelete, en);
+  SetEnabledMI(MIDelete, Enable);
 end;
 
 procedure TFGUIDesigner.MIDeleteClick(Sender: TObject);
@@ -309,40 +356,40 @@ end;
 
 procedure TFGUIDesigner.MIForegroundClick(Sender: TObject);
 begin
-  for var i := 0 to ELDesigner.SelectedControls.Count - 1 do
-    ComponentToForeground(GetEditForm, ELDesigner.SelectedControls.Items[i]);
+  for var I := 0 to ELDesigner.SelectedControls.Count - 1 do
+    ComponentToForeground(GetEditForm, ELDesigner.SelectedControls[I]);
 end;
 
 procedure TFGUIDesigner.MIBackgroundClick(Sender: TObject);
 begin
-  for var i := 0 to ELDesigner.SelectedControls.Count - 1 do
-    ComponentToBackground(GetEditForm, ELDesigner.SelectedControls.Items[i]);
+  for var I := 0 to ELDesigner.SelectedControls.Count - 1 do
+    ComponentToBackground(GetEditForm, ELDesigner.SelectedControls[I]);
 end;
 
-procedure TFGUIDesigner.ComponentToBackground(aPartner: TFEditForm;
+procedure TFGUIDesigner.ComponentToBackground(APartner: TFEditForm;
   Control: TControl);
 begin
-  if assigned(Control) then
+  if Assigned(Control) then
   begin
     Control.SendToBack;
-    aPartner.ToBackground(Control);
+    APartner.ToBackground(Control);
   end;
 end;
 
-procedure TFGUIDesigner.ComponentToForeground(aPartner: TFEditForm;
+procedure TFGUIDesigner.ComponentToForeground(APartner: TFEditForm;
   Control: TControl);
 begin
-  if assigned(Control) then
+  if Assigned(Control) then
   begin
     Control.BringToFront;
-    aPartner.ToForeground(Control);
+    APartner.ToForeground(Control);
   end;
 end;
 
 procedure TFGUIDesigner.MIAlignClick(Sender: TObject);
 var
   AHorzAlign, AVertAlign: TELDesignerAlignType;
-  Tag: Integer;
+  Tag: NativeInt;
 begin
   Tag := (Sender as TSpTBXItem).Tag;
   AHorzAlign := atNoChanges;
@@ -376,13 +423,13 @@ procedure TFGUIDesigner.ELDesignerControlInserting(Sender: TObject;
   var AControlClass: TControlClass);
 begin
   if not DesignForm.ReadOnly then
-    AControlClass := ComponentToInsert;
+    AControlClass := FComponentToInsert;
 end;
 
-function TFGUIDesigner.getParent(ATarget: TObject; AX, AY: Integer)
+function TFGUIDesigner.GetParent(ATarget: TObject; XPos, YPos: Integer)
   : TWinControl;
 var
-  w, h: Integer;
+  Wid, Hei: Integer;
   WinControl: TWinControl;
 begin
   WinControl := nil;
@@ -396,20 +443,20 @@ begin
     WinControl := ATarget as TFXPane
   else if ATarget is TJPlayground then
     WinControl := ATarget as TJPlayground;
-  if assigned(WinControl) then
+  if Assigned(WinControl) then
   begin
-    w := WinControl.ClientWidth;
-    h := WinControl.ClientHeight;
+    Wid := WinControl.ClientWidth;
+    Hei := WinControl.ClientHeight;
   end
   else
   begin
-    w := -1;
-    h := -1;
+    Wid := -1;
+    Hei := -1;
   end;
-  if ComponentNrToInsert = 34 then
-    if assigned(WinControl) and not(WinControl is TJPlayground) then
+  if GComponentNrToInsert = 34 then
+    if Assigned(WinControl) and not(WinControl is TJPlayground) then
       Exit(nil);
-  if (AX >= 0) and (AY >= 0) and (AX <= w) and (AY <= h) then
+  if (XPos >= 0) and (YPos >= 0) and (XPos <= Wid) and (YPos <= Hei) then
     Result := WinControl
   else
     Result := nil;
@@ -422,18 +469,22 @@ type
   end;
 
 procedure TFGUIDesigner.ELDragDrop(Sender, ASource, ATarget: TObject;
-  AX, AY: Integer);
-  var LInsertingControl: TControl;
-      LName: string;
+  XPos, YPos: Integer);
+var
+  LInsertingControl: TControl;
+  LName: string;
 begin
-  if csAcceptsControls in (ATarget as TControl).ControlStyle then begin
+  if csAcceptsControls in (ATarget as TControl).ControlStyle then
+  begin
     LInsertingControl := ASource as TControl;
-    ELDesigner.getUniqueName((LInsertingControl as TJEComponent).Tag2JavaType(LInsertingControl.Tag), LName);
-    LInsertingControl.Name:= LName;
+    ELDesigner.GetUniqueName((LInsertingControl as TJEComponent)
+      .Tag2JavaType(Integer(LInsertingControl.Tag)), LName);
+    LInsertingControl.Name := LName;
     LInsertingControl.Parent := ATarget as TWinControl;
-    LInsertingControl.SetBounds(AX-LInsertingControl.Width, AY-LInsertingControl.Height,
-                                   LInsertingControl.Width, LInsertingControl.Height);
-    TControlEx(LInsertingControl).Font.Size:= DesignForm.FontSize;
+    LInsertingControl.SetBounds(XPos - LInsertingControl.Width,
+      YPos - LInsertingControl.Height, LInsertingControl.Width,
+      LInsertingControl.Height);
+    TControlEx(LInsertingControl).Font.Size := DesignForm.FontSize;
     ELDesigner.SelectedControls.ClearExcept(LInsertingControl);
     ELDesignerControlInserted(nil);
     UpdateState(Modified);
@@ -441,9 +492,9 @@ begin
 end;
 
 procedure TFGUIDesigner.ELDragOver(Sender, ASource, ATarget: TObject;
-  AX, AY: Integer; AState: TDragState; var Accept: Boolean);
+  XPos, YPos: Integer; AState: TDragState; var Accept: Boolean);
 begin
-  Accept := assigned(getParent(ATarget, AX, AY));
+  Accept := Assigned(GetParent(ATarget, XPos, YPos));
 end;
 
 function TFGUIDesigner.Tag2Class(Tag: Integer): TControlClass;
@@ -458,7 +509,7 @@ begin
     -4:
       Result := TAButton;
     -5:
-      Result := TACheckbox;
+      Result := TACheckBox;
     -6:
       Result := TARadioButton;
     -7:
@@ -503,7 +554,7 @@ begin
     4:
       Result := TJButton;
     5:
-      Result := TJCheckbox;
+      Result := TJCheckBox;
     6:
       Result := TJRadioButton;
     7:
@@ -627,7 +678,7 @@ begin
     122:
       Result := TFXSubCanvas;
     123:
-      Result := TFXButtongroup;
+      Result := TFXButtonGroup;
     124:
       Result := TFXMenuBarWithMenus;
 
@@ -706,235 +757,274 @@ end;
 
 procedure TFGUIDesigner.MIAWTSwing(Tag: Integer);
 var
-  x, y, dx, dy: Integer;
-  ctrl: TWinControl;
-  myMouse: TPoint;
+  XPos, YPos, DeltaX, DeltaY: Integer;
+  Ctrl: TWinControl;
+  MyMouse: TPoint;
 begin
   TBAWTSwing(Tag); // set Component to insert
-  if assigned(ComponentToInsert) then
+  if Assigned(FComponentToInsert) then
   begin
-    GetCursorPos(myMouse);
+    GetCursorPos(MyMouse);
     if ELDesigner.SnapToGrid then
     begin
-      dx := random(5) * ELDesigner.Grid.XStep;
-      dy := random(5) * ELDesigner.Grid.YStep;
+      DeltaX := Random(5) * ELDesigner.Grid.XStep;
+      DeltaY := Random(5) * ELDesigner.Grid.YStep;
     end
     else
     begin
-      dx := random(40);
-      dy := random(40);
+      DeltaX := Random(40);
+      DeltaY := Random(40);
     end;
-    x := FJava.Left + ELDesigner.DesignControl.Left + 18 + dx;
-    y := FJava.Top + ELDesigner.DesignControl.Top + 170 + dy;
-    SetCursorPos(x, y);
-    ctrl := FindVCLWindow(Mouse.CursorPos);
-    if ctrl <> nil then
+    XPos := FJava.Left + ELDesigner.DesignControl.Left + 18 + DeltaX;
+    YPos := FJava.Top + ELDesigner.DesignControl.Top + 170 + DeltaY;
+    SetCursorPos(XPos, YPos);
+    Ctrl := FindVCLWindow(Mouse.CursorPos);
+    if Assigned(Ctrl) then
     begin
-      SendMessage(ctrl.Handle, WM_LBUTTONDOWN, MK_LBUTTON, 0);
-      SendMessage(ctrl.Handle, WM_LBUTTONUP, 0, 0);
+      SendMessage(Ctrl.Handle, WM_LBUTTONDOWN, MK_LBUTTON, 0);
+      SendMessage(Ctrl.Handle, WM_LBUTTONUP, 0, 0);
     end;
-    SetCursorPos(myMouse.x, myMouse.y);
+    SetCursorPos(MyMouse.X, MyMouse.Y);
   end;
 end;
 
 procedure TFGUIDesigner.TBAWTSwing(Tag: Integer);
 begin
-  ComponentToInsert := nil;
-  var Form := GetEditForm;
-  if assigned(Form) and (Form.FrameType in [2..8]) then begin
-    ULink.ComponentNrToInsert := Tag;
-    ComponentToInsert := Tag2Class(Tag);
+  FComponentToInsert := nil;
+  var
+  Form := GetEditForm;
+  if Assigned(Form) and (Form.FrameType in [2 .. 8]) then
+  begin
+    GComponentNrToInsert := Tag;
+    FComponentToInsert := Tag2Class(Tag);
     ScaleImages;
   end;
 end;
 
 procedure TFGUIDesigner.TBJavaFX(Tag: Integer);
 begin
-  ComponentToInsert := nil;
-  var Form := GetEditForm;
-  if assigned(Form) and (Form.FrameType = 8) then begin
-    ULink.ComponentNrToInsert := Tag;
-    ComponentToInsert := Tag2Class(Tag);
+  FComponentToInsert := nil;
+  var
+  Form := GetEditForm;
+  if Assigned(Form) and (Form.FrameType = 8) then
+  begin
+    GComponentNrToInsert := Tag;
+    FComponentToInsert := Tag2Class(Tag);
     ScaleImages;
   end;
 end;
 
 procedure TFGUIDesigner.ELDesignerControlInserted(Sender: TObject);
 begin
-  var Control:= ELDesigner.SelectedControls[0];
-  if (Control is TJTurtle) and not (Control.Parent is TJPlayground) then begin
+  var
+  Control := ELDesigner.SelectedControls[0];
+  if (Control is TJTurtle) and not(Control.Parent is TJPlayground) then
+  begin
     FreeAndNil(Control);
     Exit;
   end;
 
-  Control.Tag := ComponentNrToInsert;
+  Control.Tag := GComponentNrToInsert;
   Control.HelpKeyword := PanelCanvasType;
   Control.HelpType := htContext;
   Control.Hint := Control.Name;
-  Control.ShowHint := true;
+  Control.ShowHint := True;
 
   FObjectInspector.RefreshCBObjects;
   FObjectInspector.SetSelectedObject(Control);
-  ComponentToInsert := nil;
+  FComponentToInsert := nil;
   InsertComponent(Control);
   UpdateState(Modified);
   FJava.ResetToolbars;
 end;
 
-procedure TFGUIDesigner.Save(const Filename: string; aForm: TFGuiForm);
+procedure TFGUIDesigner.Save(const FileName: string; AForm: TFGUIForm);
 begin
-  var BinStream := TMemoryStream.Create;
+  var
+  BinStream := TMemoryStream.Create;
   try
     try
-      var FilStream := TFileStream.Create(Filename, fmCreate or fmShareExclusive);
+      var
+      FilStream := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
       try
-        BinStream.WriteComponent(aForm);
+        BinStream.WriteComponent(AForm);
         BinStream.Seek(0, soFromBeginning);
         ObjectBinaryToText(BinStream, FilStream);
       finally
         FreeAndNil(FilStream);
       end;
     except
-      on e: exception do
+      on e: Exception do
         ErrorMsg(e.Message);
     end;
   finally
-    FreeAndNil(BinStream)
+    FreeAndNil(BinStream);
   end;
-  if assigned(ELDesigner.DesignControl) then
-    TFForm(ELDesigner.DesignControl).Modified := false;
+  if Assigned(ELDesigner.DesignControl) then
+    TFForm(ELDesigner.DesignControl).Modified := False;
 end;
 
-procedure TFGUIDesigner.RemovePixelsPerInch0(Filename: string);
+procedure TFGUIDesigner.RemovePixelsPerInch0(FileName: string);
 begin
-  var SL:= TStringList.Create;
+  var
+  StringList := TStringList.Create;
   try
-    SL.LoadFromFile(Filename);
-    for var i:= 0 to SL.Count -1 do begin
-      var s:= SL[i];
-      var p:= Pos('PixelsPerInch', s);
-      if p > 0 then begin
-        p:= Pos('=', s);
-        delete(s, 1, p);
-        p:= StrToInt(trim(s));
-        if p = 0 then begin
-          SL.Delete(i);
-          SL.SaveToFile(Filename);
-          break;
-        end
-      end else if Pos('  object', s) > 0 then
-        break;
-    end;
-  finally
-    FreeAndNil(SL);
-  end;
-end;
-
-procedure TFGUIDesigner.RemoveMDIChild(Filename: string);
-begin
-  var SL:= TStringList.Create;
-  try
-    SL.LoadFromFile(Filename);
-    for var i:= 0 to SL.Count -1 do begin
-      var s:= SL[i];
-      var p:= Pos('FormStyle = fsMDIChild', s);
-      if p > 0 then begin
-        SL.Delete(i);
-        SL.SaveToFile(Filename);
-        Break;
-      end else if Pos('  object', s) > 0 then
+    StringList.LoadFromFile(FileName);
+    for var I := 0 to StringList.Count - 1 do
+    begin
+      var
+      Str := StringList[I];
+      var
+      Posi := Pos('PixelsPerInch', Str);
+      if Posi > 0 then
+      begin
+        Posi := Pos('=', Str);
+        Delete(Str, 1, Posi);
+        Posi := StrToInt(Trim(Str));
+        if Posi = 0 then
+        begin
+          StringList.Delete(I);
+          StringList.SaveToFile(FileName);
+          Break;
+        end;
+      end
+      else if Pos('  object', Str) > 0 then
         Break;
     end;
   finally
-    FreeAndNil(SL);
+    FreeAndNil(StringList);
   end;
 end;
 
-procedure TFGUIDesigner.RemoveFrameType(Filename: string);
+procedure TFGUIDesigner.RemoveMDIChild(FileName: string);
 begin
-  var SL:= TStringList.Create;
+  var
+  StringList := TStringList.Create;
   try
-    SL.LoadFromFile(Filename);
-    for var i:= 0 to SL.Count -1 do begin
-      var s:= SL[i];
-      var p:= Pos('FrameType =', s);
-      if p > 0 then begin
-        SL.Delete(i);
-        SL.SaveToFile(Filename);
+    StringList.LoadFromFile(FileName);
+    for var I := 0 to StringList.Count - 1 do
+    begin
+      var
+      Str := StringList[I];
+      var
+      Posi := Pos('FormStyle = fsMDIChild', Str);
+      if Posi > 0 then
+      begin
+        StringList.Delete(I);
+        StringList.SaveToFile(FileName);
         Break;
-      end else if Pos('  object', s) > 0 then
+      end
+      else if Pos('  object', Str) > 0 then
         Break;
     end;
   finally
-    FreeAndNil(SL);
+    FreeAndNil(StringList);
   end;
 end;
 
-function TFGUIDesigner.GetPixelsPerInchOfFile(Filename: string): integer;
+procedure TFGUIDesigner.RemoveFrameType(FileName: string);
 begin
-  Result:= 96;
-  var SL:= TStringList.Create;
+  var
+  StringList := TStringList.Create;
   try
-    SL.LoadFromFile(Filename);
-    for var i:= 0 to SL.Count -1 do begin
-      var s:= SL[i];
-      var p:= Pos('PixelsPerInch', s);
-      if p > 0 then begin
-        p:= Pos('=', s);
-        delete(s, 1, p);
-        Exit(StrToInt(trim(s)));
-      end else if Pos('  object', s) > 0 then
-        break;
+    StringList.LoadFromFile(FileName);
+    for var I := 0 to StringList.Count - 1 do
+    begin
+      var
+      Str := StringList[I];
+      var
+      Posi := Pos('FrameType =', Str);
+      if Posi > 0 then
+      begin
+        StringList.Delete(I);
+        StringList.SaveToFile(FileName);
+        Break;
+      end
+      else if Pos('  object', Str) > 0 then
+        Break;
     end;
   finally
-    FreeAndNil(SL);
+    FreeAndNil(StringList);
   end;
 end;
 
-function TFGUIDesigner.Open(const Filename, JavaFilename: string): TFGuiForm;
+function TFGUIDesigner.GetPixelsPerInchOfFile(FileName: string): Integer;
+begin
+  Result := 96;
+  var
+  StringList := TStringList.Create;
+  try
+    StringList.LoadFromFile(FileName);
+    for var I := 0 to StringList.Count - 1 do
+    begin
+      var
+      Str := StringList[I];
+      var
+      Posi := Pos('PixelsPerInch', Str);
+      if Posi > 0 then
+      begin
+        Posi := Pos('=', Str);
+        Delete(Str, 1, Posi);
+        Exit(StrToInt(Trim(Str)));
+      end
+      else if Pos('  object', Str) > 0 then
+        Break;
+    end;
+  finally
+    FreeAndNil(StringList);
+  end;
+end;
+
+function TFGUIDesigner.Open(const FileName, JavaFilename: string): TFGUIForm;
 var
   FilStream: TFileStream;
   BinStream: TMemoryStream;
   JavaForm: TFEditForm;
   Reader: TReader;
-  PPI: integer;
+  PPI: Integer;
   NewName: string;
 
   function getName: string;
-    var SL: TStringList; i, index, Nr: integer; s: string;
+  var
+    StringList: TStringList;
+    Index, Num: Integer;
+    Str: string;
   begin
-    SL:= TStringList.Create;
+    StringList := TStringList.Create;
     try
-      SL.Sorted:= true;
-      for i:= 0 to screen.FormCount -1 do
-         if startsWith(Screen.Forms[I].Name, 'FGUIForm') then
-           SL.Add(Screen.Forms[i].Name);
-      if not SL.Find('FGUIForm', index) then exit('FGUIForm');
-      Nr:= 1;
+      StringList.Sorted := True;
+      for var I := 0 to Screen.FormCount - 1 do
+        if StartsWith(Screen.Forms[I].Name, 'FGUIForm') then
+          StringList.Add(Screen.Forms[I].Name);
+      if not StringList.Find('FGUIForm', Index) then
+        Exit('FGUIForm');
+      Num := 1;
       repeat
-        s:= 'FGUIForm_' + IntToStr(Nr);
-        if not SL.Find(s, index) then exit(s);
-        Inc(Nr);
-      until false;
+        Str := 'FGUIForm_' + IntToStr(Num);
+        if not StringList.Find(Str, Index) then
+          Exit(Str);
+        Inc(Num);
+      until False;
     finally
-      FreeAndNil(SL);
+      FreeAndNil(StringList);
     end;
   end;
 
 begin
   Result := nil;
-  if not FileExists(Filename) then
+  if not FileExists(FileName) then
     Exit;
-  PPI:= GetPixelsPerInchOfFile(Filename);
-  if PPI = 0 then begin
-    RemovePixelsPerInch0(Filename);
-    PPI:= 96;
+  PPI := GetPixelsPerInchOfFile(FileName);
+  if PPI = 0 then
+  begin
+    RemovePixelsPerInch0(FileName);
+    PPI := 96;
   end;
-  RemoveMDIChild(Filename);
-  RemoveFrameType(Filename);
-  JavaForm := TFEditForm(FJava.getTDIWindow(JavaFilename));
+  RemoveMDIChild(FileName);
+  RemoveFrameType(FileName);
+  JavaForm := TFEditForm(FJava.GetTDIWindow(JavaFilename));
   FObjectGenerator.Partner := JavaForm;
-  FilStream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
+  FilStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
   BinStream := TMemoryStream.Create;
   Reader := TReader.Create(BinStream, 4096);
   Reader.OnError := ErrorMethod;
@@ -942,19 +1032,21 @@ begin
   Reader.OnCreateComponent := CreateComponent;
   try
     try
-      NewName:= getName;
+      NewName := getName;
       ObjectTextToResource(FilStream, BinStream);
       BinStream.Seek(0, soFromBeginning);
       BinStream.ReadResHeader;
-      if JavaForm.FrameType = 8
-        then DesignForm := TFXGUIForm(FJava.FormFactory(fkFXGUI))
-        else DesignForm := TFGUIForm(FJava.FormFactory(fkGUI));
+      if JavaForm.FrameType = 8 then
+        DesignForm := TFXGUIForm(FJava.FormFactory(fkFXGUI))
+      else
+        DesignForm := TFGUIForm(FJava.FormFactory(fkGUI));
       DesignForm.Partner := JavaForm;
       Reader.ReadRootComponent(DesignForm);
-      if JavaForm.FrameType = 8
-        then (DesignForm as TFXGUIForm).Open(Filename, '')
-        else DesignForm.Open(Filename, '');
-      DesignForm.Name:= NewName;
+      if JavaForm.FrameType = 8 then
+        (DesignForm as TFXGUIForm).Open(FileName, '')
+      else
+        DesignForm.Open(FileName, '');
+      DesignForm.Name := NewName;
       if DesignForm.Monitor.PixelsPerInch > PPI then
         DesignForm.Scale(DesignForm.Monitor.PixelsPerInch, PPI);
       ScaleImages;
@@ -963,10 +1055,10 @@ begin
       ChangeTo(DesignForm);
       if not JavaForm.Editor.Modified and not DesignForm.Modified and
         TFEditForm(DesignForm.Partner).Modified then
-        TFEditForm(DesignForm.Partner).Modified := false;
-      Result:= DesignForm;
+        TFEditForm(DesignForm.Partner).Modified := False;
+      Result := DesignForm;
     except
-      on e: exception do
+      on e: Exception do
         ErrorMsg(e.Message);
     end;
   finally
@@ -975,29 +1067,30 @@ begin
     FreeAndNil(BinStream);
     FObjectInspector.RefreshCBObjects;
   end;
-  if assigned(DesignForm) and DesignForm.ReadOnly then
-    ELDesigner.LockAll([lmNoMove, lmNoResize, lmNoDelete, lmNoInsertIn, lmNoCopy]);
+  if Assigned(DesignForm) and DesignForm.ReadOnly then
+    ELDesigner.LockAll([lmNoMove, lmNoResize, lmNoDelete, lmNoInsertIn,
+      lmNoCopy]);
 end;
 
 procedure TFGUIDesigner.FindMethod(Reader: TReader; const MethodName: string;
   var Address: Pointer; var Error: Boolean);
 begin
   Address := nil;
-  Error := false;
+  Error := False;
 end;
 
 procedure TFGUIDesigner.ErrorMethod(Reader: TReader; const Message: string;
   var Handled: Boolean);
 begin
   Handled := (Pos('ShowName', Message) + Pos('Number', Message) > 0);
-  Handled := true; // read form anyway
+  Handled := True; // read form anyway
 end;
 
 procedure TFGUIDesigner.CreateComponent(Reader: TReader;
   ComponentClass: TComponentClass; var Component: TComponent);
 begin
   if ComponentClass = TSpinEdit then
-    Component := TSpinEdit.Create(Reader.Owner)
+    Component := TSpinEdit.Create(Reader.Owner);
 end;
 
 procedure TFGUIDesigner.MICloseClick(Sender: TObject);
@@ -1014,23 +1107,21 @@ procedure TFGUIDesigner.ELDesignerDesignFormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   Action := caFree;
-  if assigned(ELDesigner.DesignControl) then
+  if Assigned(ELDesigner.DesignControl) then
     TForm(ELDesigner.DesignControl).Close;
 end;
 
 procedure TFGUIDesigner.ELDesignerControlDeleting(Sender: TObject;
   SelectedControls: TELDesignerSelectedControls);
-var
-  i: Integer;
 begin
   FObjectGenerator.Partner := GetEditForm;
-  i := SelectedControls.Count - 1;
-  while i > -1 do
+  var Idx := SelectedControls.Count - 1;
+  while Idx > -1 do
   begin
     // don't delete Panels of a JTabbedPane
-    if not(SelectedControls.Items[i].Parent is TJTabbedPane) then
-      DeleteComponent(SelectedControls.Items[i]);
-    dec(i);
+    if not(SelectedControls[Idx].Parent is TJTabbedPane) then
+      DeleteComponent(SelectedControls[Idx]);
+    Dec(Idx);
   end;
   FObjectInspector.SetSelectedObject(nil);
   UpdateState(Modified);
@@ -1044,47 +1135,47 @@ end;
 
 procedure TFGUIDesigner.MIZoomInClick(Sender: TObject);
 begin
-  DesignForm.Zooming(true);
+  DesignForm.Zooming(True);
 end;
 
 procedure TFGUIDesigner.MIZoomOutClick(Sender: TObject);
 begin
-  DesignForm.Zooming(false);
+  DesignForm.Zooming(False);
 end;
 
-procedure TFGUIDesigner.Zooming(delta: Integer);
+procedure TFGUIDesigner.Zooming(Delta: Integer);
 begin
-  if delta = 1 then
-    DesignForm.Zooming(true)
+  if Delta = 1 then
+    DesignForm.Zooming(True)
   else
-    DesignForm.Zooming(false);
+    DesignForm.Zooming(False);
 end;
 
-procedure TFGUIDesigner.SetComponentValues(DesignForm: TFGuiForm;
+procedure TFGUIDesigner.SetComponentValues(DesignForm: TFGUIForm;
   Control: TControl);
 var
   NewComp, Comp2: TControl;
-  S, Attr, AllowedEvents, AllowedAttributes, ForbiddenAttributes: string;
-  f1, f2: TFont;
-  b1, b2: TBorder;
+  Str, Attr, AllowedEvents, AllowedAttributes, ForbiddenAttributes: string;
+  Font1, Font2: TFont;
+  Border1, Border2: TBorder;
   PropInfos1, PropInfos2: PPropList;
-  Count, i: Integer;
+  Count: Integer;
   PropEditor1: TELPropEditor;
   PropEditor2: TELPropEditor;
-  aEditorClass: TELPropEditorClass;
-  aPropertyInspector: TELCustomPropertyInspector;
+  AEditorClass: TELPropEditorClass;
+  APropertyInspector: TELCustomPropertyInspector;
   Partner: TFEditForm;
 begin
   Partner := DesignForm.Partner as TFEditForm;
   Partner.EnsureStartEnd;
   Partner.Editor.BeginUpdate;
   NewComp := Control;
-  S := NewComp.ClassName;
-  Comp2 := TControlClass(Classes.GetClass(S)).Create(DesignForm);
+  Str := NewComp.ClassName;
+  Comp2 := TControlClass(Classes.GetClass(Str)).Create(DesignForm);
   if NewComp is TJEComponent then
   begin
-    AllowedEvents := (NewComp as TJEComponent).getEvents(3);
-    AllowedAttributes := (NewComp as TJEComponent).getAttributes(3);
+    AllowedEvents := (NewComp as TJEComponent).GetEvents(3);
+    AllowedAttributes := (NewComp as TJEComponent).GetAttributes(3);
     ForbiddenAttributes := ULink.DelphiBounds;
   end;
 
@@ -1094,31 +1185,31 @@ begin
   try
     GetPropList(NewComp.ClassInfo, tkAny, PropInfos1);
     GetPropList(Comp2.ClassInfo, tkAny, PropInfos2);
-    aPropertyInspector := TELCustomPropertyInspector.Create(nil);
-    for i := 0 to Count - 1 do
+    APropertyInspector := TELCustomPropertyInspector.Create(nil);
+    for var I := 0 to Count - 1 do
     begin
-      Attr := string(PropInfos1[i].Name);
+      Attr := string(PropInfos1[I].Name);
       if IsLower(Attr[1]) and (Attr <> NewComp.Name) then // the events
         SetStrProp(NewComp, Attr, '')
       else if (Pos(' ' + Attr + ' ', ForbiddenAttributes) = 0) and
         (Pos('|' + Attr + '|', AllowedAttributes) > 0) then
       begin
-        aEditorClass := aPropertyInspector.GetEditorClass(NewComp,
-          PropInfos1[i]);
-        if assigned(aEditorClass) then
+        AEditorClass := APropertyInspector.GetEditorClass(NewComp,
+          PropInfos1[I]);
+        if Assigned(AEditorClass) then
         begin
-          PropEditor1 := aEditorClass.Create2(NewComp, PropInfos1[i]);
-          PropEditor2 := aEditorClass.Create2(Comp2, PropInfos2[i]);
+          PropEditor1 := AEditorClass.Create2(NewComp, PropInfos1[I]);
+          PropEditor2 := AEditorClass.Create2(Comp2, PropInfos2[I]);
           try
             if PropEditor2.Value <> PropEditor1.Value then
               SetAttributForComponent(Attr, PropEditor1.Value,
                 string(PropEditor1.PropTypeInfo.Name), NewComp)
             else if (PropEditor1.PropTypeInfo.Name = 'TFont') then
             begin
-              f1 := (PropEditor1 as TELFontPropEditor).getFont;
-              f2 := (PropEditor2 as TELFontPropEditor).getFont;
-              if (f1.Name <> f2.Name) or (f1.Size <> f2.Size) or
-                (f1.Style <> f2.Style) then
+              Font1 := (PropEditor1 as TELFontPropEditor).getFont;
+              Font2 := (PropEditor2 as TELFontPropEditor).getFont;
+              if (Font1.Name <> Font2.Name) or (Font1.Size <> Font2.Size) or
+                (Font1.Style <> Font2.Style) then
                 SetAttributForComponent(Attr, PropEditor1.Value,
                   string(PropEditor1.PropTypeInfo.Name), NewComp);
             end
@@ -1131,27 +1222,28 @@ begin
             end
             else if PropEditor1.PropTypeInfo.Name = 'TBorder' then
             begin
-              b1 := (PropEditor1 as TELBorderPropEditor).getBorder;
-              b2 := (PropEditor2 as TELBorderPropEditor).getBorder;
-              if (b1.BorderType <> b2.BorderType) or
-                (b1.LineColor <> b2.LineColor) or
-                (b1.LineThickness <> b2.LineThickness) or
-                (b1.LineRounded <> b2.LineRounded) or
-                (b1.EtchHighlightColor <> b2.EtchHighlightColor) or
-                (b1.EtchShadowColor <> b2.EtchShadowColor) or
-                (b1.Etchtype <> b2.Etchtype) or
-                (b1.BevelHighlightColor <> b2.BevelHighlightColor) or
-                (b1.BevelHighlightColor <> b2.BevelHighlightColor) or
-                (b1.Beveltype <> b2.Beveltype) or (b1.Title <> b2.Title) or
-                (b1.MatteColor <> b2.MatteColor) or assigned(b1.Font) and
-                assigned(b2.Font) and
-                ((b1.Font.Name <> b2.Font.Name) or
-                (b1.Font.Size <> b2.Font.Size) or
-                (b1.Font.Style <> b2.Font.Style)) or
-                (b1.MatteColor <> b2.MatteColor) or
-                (b1.MatteLeft <> b2.MatteLeft) or
-                (b1.MatteBottom <> b2.MatteBottom) or
-                (b1.MatteBottom <> b2.MatteBottom) then
+              Border1 := (PropEditor1 as TELBorderPropEditor).getBorder;
+              Border2 := (PropEditor2 as TELBorderPropEditor).getBorder;
+              if (Border1.BorderType <> Border2.BorderType) or
+                (Border1.LineColor <> Border2.LineColor) or
+                (Border1.LineThickness <> Border2.LineThickness) or
+                (Border1.LineRounded <> Border2.LineRounded) or
+                (Border1.EtchHighlightColor <> Border2.EtchHighlightColor) or
+                (Border1.EtchShadowColor <> Border2.EtchShadowColor) or
+                (Border1.Etchtype <> Border2.Etchtype) or
+                (Border1.BevelHighlightColor <> Border2.BevelHighlightColor) or
+                (Border1.BevelHighlightColor <> Border2.BevelHighlightColor) or
+                (Border1.Beveltype <> Border2.Beveltype) or
+                (Border1.Title <> Border2.Title) or
+                (Border1.MatteColor <> Border2.MatteColor) or
+                Assigned(Border1.Font) and Assigned(Border2.Font) and
+                ((Border1.Font.Name <> Border2.Font.Name) or
+                (Border1.Font.Size <> Border2.Font.Size) or
+                (Border1.Font.Style <> Border2.Font.Style)) or
+                (Border1.MatteColor <> Border2.MatteColor) or
+                (Border1.MatteLeft <> Border2.MatteLeft) or
+                (Border1.MatteBottom <> Border2.MatteBottom) or
+                (Border1.MatteBottom <> Border2.MatteBottom) then
                 SetAttributForComponent(Attr, PropEditor1.Value,
                   string(PropEditor1.PropTypeInfo.Name), NewComp);
             end;
@@ -1159,13 +1251,13 @@ begin
             FreeAndNil(PropEditor1);
             FreeAndNil(PropEditor2);
           end;
-        end
+        end;
       end;
-    end
+    end;
   finally
     FreeMem(PropInfos1, Count * SizeOf(PPropInfo));
     FreeMem(PropInfos2, Count * SizeOf(PPropInfo));
-    FreeAndNil(aPropertyInspector);
+    FreeAndNil(APropertyInspector);
     FreeAndNil(Comp2);
   end;
   Partner.Editor.EndUpdate;
@@ -1175,12 +1267,12 @@ procedure TFGUIDesigner.SetAttributForComponent(Attr, Value, Typ: string;
   Control: TControl);
 begin
   Value := Delphi2JavaValues(Value);
-  if Control is TFGuiForm then
-    (Control as TFGuiForm).setAttribute(Attr, Value, Typ)
+  if Control is TFGUIForm then
+    (Control as TFGUIForm).SetAttribute(Attr, Value, Typ)
   else if Control is TFXGUIForm then
-    (Control as TFXGUIForm).setAttribute(Attr, Value, Typ)
+    (Control as TFXGUIForm).SetAttribute(Attr, Value, Typ)
   else if Control is TJEComponent then
-    (Control as TJEComponent).setAttribute(Attr, Value, Typ)
+    (Control as TJEComponent).SetAttribute(Attr, Value, Typ);
 end;
 
 procedure TFGUIDesigner.MISnapToGridClick(Sender: TObject);
@@ -1193,28 +1285,30 @@ end;
 
 procedure TFGUIDesigner.ELDesignerDblClick(Sender: TObject);
 var
-  S: string;
+  Str: string;
 begin
   if ELDesigner.SelectedControls.Count = 1 then
   begin
-    if Abs(ELDesigner.SelectedControls[0].Tag) = 4 then
-      S := 'public void ' + ELDesigner.SelectedControls[0].Name +
+    if Abs(ELDesigner.SelectedControls[0].Tag) = NativeInt(4) then
+      Str := 'public void ' + ELDesigner.SelectedControls[0].Name +
         '_ActionPerformed'
-    else if ELDesigner.SelectedControls[0].Tag = 105 then
-      S := 'public void ' + ELDesigner.SelectedControls[0].Name + '_Action'
+    else if ELDesigner.SelectedControls[0].Tag = NativeInt(105) then
+      Str := 'public void ' + ELDesigner.SelectedControls[0].Name + '_Action'
     else
-      S := ELDesigner.SelectedControls[0].Name;
-    GetEditForm.Go_To(S);
-    GUIDesignerTimer.Enabled := true;
+      Str := ELDesigner.SelectedControls[0].Name;
+    GetEditForm.Go_To(Str);
+    GUIDesignerTimer.Enabled := True;
   end;
   UpdateState(not Modified);
 end;
 
 procedure TFGUIDesigner.GUIDesignerTimerTimer(Sender: TObject);
 begin
-  GUIDesignerTimer.Enabled := false;
-  var EditForm := GetEditForm;
-  if assigned(EditForm) then begin
+  GUIDesignerTimer.Enabled := False;
+  var
+  EditForm := GetEditForm;
+  if Assigned(EditForm) then
+  begin
     EditForm.BringToFront;
     EditForm.Enter(Self);
     if EditForm.Editor.CanFocus then
@@ -1236,27 +1330,26 @@ end;
 
 procedure TFGUIDesigner.PasteClick(Sender: TObject);
 var
-  i, j: Integer;
   PasteInContainer: Boolean;
   Container, Control: TControl;
   WinControl: TWinControl;
   EditForm: TFEditForm;
 begin
   Container := nil;
-  PasteInContainer := false;
+  PasteInContainer := False;
   if ELDesigner.SelectedControls.Count > 0 then
   begin
     Container := ELDesigner.SelectedControls[0];
-    if Abs(Container.Tag) in [12, 121] then
-      PasteInContainer := true;
+    if Abs(Integer(Container.Tag)) in [12, 121] then
+      PasteInContainer := True;
   end;
   ELDesigner.Paste;
   EditForm := GetEditForm;
   EditForm.Editor.BeginUpdate;
 
-  for i := 0 to ELDesigner.SelectedControls.Count - 1 do
+  for var I := 0 to ELDesigner.SelectedControls.Count - 1 do
   begin
-    Control := ELDesigner.SelectedControls[i];
+    Control := ELDesigner.SelectedControls[I];
     if PasteInContainer then
     begin
       if Control.Left + Control.Width > Container.Width then
@@ -1265,16 +1358,16 @@ begin
         Control.Top := Container.Height - Control.Height;
     end;
     FObjectInspector.SetSelectedObject(Control);
-    ComponentNrToInsert := ELDesigner.SelectedControls.Items[i].Tag;
+    GComponentNrToInsert := Integer(ELDesigner.SelectedControls[I].Tag);
     InsertComponent(Control);
     SetComponentValues(DesignForm, Control);
     WinControl := TWinControl(Control);
-    for j := 0 to WinControl.ControlCount - 1 do
+    for var J := 0 to WinControl.ControlCount - 1 do
     begin
-      FObjectInspector.SetSelectedObject(WinControl.Controls[j]);
-      ComponentNrToInsert := WinControl.Controls[j].Tag;
-      InsertComponent(WinControl.Controls[j]);
-      SetComponentValues(DesignForm, WinControl.Controls[j]);
+      FObjectInspector.SetSelectedObject(WinControl.Controls[J]);
+      GComponentNrToInsert := Integer(WinControl.Controls[J].Tag);
+      InsertComponent(WinControl.Controls[J]);
+      SetComponentValues(DesignForm, WinControl.Controls[J]);
     end;
   end;
   FObjectInspector.RefreshCBObjects;
@@ -1282,22 +1375,22 @@ begin
   EditForm.Editor.EndUpdate;
 
   // otherwise the source code isn't shown
-  EditForm.Editor.ExecuteCommand(ecRight, #0, nil);
+  EditForm.Editor.ExecuteCommand(CecRight, #0, nil);
 end;
 
 procedure TFGUIDesigner.InsertComponent(Control: TControl);
 begin
   var
-  Partner:= GetEditForm;
+  Partner := GetEditForm;
   Partner.Editor.BeginUpdate;
-  Partner.Editor.LockBuildStructure := true;
+  Partner.Editor.LockBuildStructure := True;
   Partner.EnsureStartEnd;
   if Control is TJEComponent then
     (Control as TJEComponent).NewControl;
   if ELDesigner.SnapToGrid then
     ELDesigner.SelectedControls.AlignToGrid;
-  Partner.Editor.LockBuildStructure := false;
-  Partner.NeedsParsing := true;
+  Partner.Editor.LockBuildStructure := False;
+  Partner.NeedsParsing := True;
   Partner.Editor.EndUpdate;
   FObjectInspector.UpdateItems;
 end;
@@ -1314,69 +1407,74 @@ procedure TFGUIDesigner.DeleteComponent(Control: TControl);
 
   procedure DeleteAComponent(Control: TControl);
   begin
-    if Control is TJEComponent then begin
+    if Control is TJEComponent then
+    begin
       (Control as TJEComponent).DeleteComponent;
-      var Typ := (Control as TJEComponent).JavaType;
-      var i := FObjectInspector.CBObjects.Items.IndexOf(Control.Name + ': ' + Typ);
-      FObjectInspector.CBObjects.Items.Delete(i);
+      var
+      Typ := (Control as TJEComponent).JavaType;
+      var
+      Idx := FObjectInspector.CBObjects.Items.IndexOf
+        (Control.Name + ': ' + Typ);
+      FObjectInspector.CBObjects.Items.Delete(Idx);
     end;
   end;
 
   procedure DeleteAllComponents(Control: TControl);
   begin
     if Control is TWinControl then
-      for var i := 0 to (Control as TWinControl).ControlCount - 1 do
-        DeleteAllComponents((Control as TWinControl).Controls[i]);
+      for var I := 0 to (Control as TWinControl).ControlCount - 1 do
+        DeleteAllComponents((Control as TWinControl).Controls[I]);
     DeleteAComponent(Control);
   end;
 
 begin
-  var Partner := GetEditForm;
+  var
+  Partner := GetEditForm;
   Partner.Editor.BeginUpdate;
   Partner.EnsureStartEnd;
   DeleteAllComponents(Control);
-  Partner.ParseSourcecode(true);
+  Partner.ParseSourceCode(True);
   Partner.Editor.EndUpdate;
 end;
 
 procedure TFGUIDesigner.ELDesignerGetUniqueName(Sender: TObject;
   const ABaseName: string; var AUniqueName: string);
 var
-  i: Integer;
-  S, b: string;
+  Num: Integer;
+  Str, Base: string;
 begin
-  b := LowerUpper(ABaseName);
-  S := UUtils.Right(b, -1);
-  while (Pos(S, '0123456789') > 0) and (Length(b) > 2) do
+  Base := LowerUpper(ABaseName);
+  Str := UUtils.Right(Base, -1);
+  while (Pos(Str, '0123456789') > 0) and (Length(Base) > 2) do
   begin
-    b := UUtils.Left(b, Length(b) - 1);
-    S := UUtils.Right(b, -1);
+    Base := UUtils.Left(Base, Length(Base) - 1);
+    Str := UUtils.Right(Base, -1);
   end;
-  i := 1;
+  Num := 1;
   repeat
-    AUniqueName := b + IntToStr(i);
-    inc(i);
+    AUniqueName := Base + IntToStr(Num);
+    Inc(Num);
   until ELDesigner.IsUniqueName(AUniqueName);
 end;
 
 function TFGUIDesigner.GetEditForm: TFEditForm;
 begin
-  if assigned(ELDesigner) and assigned(ELDesigner.DesignControl) then
+  if Assigned(ELDesigner) and Assigned(ELDesigner.DesignControl) then
     Result := TFEditForm(TFForm(ELDesigner.DesignControl).Partner)
   else
     Result := nil;
 end;
 
-procedure TFGUIDesigner.DoPanelCanvas(TagNr: Integer; const Filename: string);
+procedure TFGUIDesigner.DoPanelCanvas(TagNr: Integer; const FileName: string);
 begin
   TBAWTSwing(TagNr);
-  ULink.PanelCanvasType := ChangeFileExt(Filename, '');
+  ULink.PanelCanvasType := ChangeFileExt(FileName, '');
 end;
 
-function TFGUIDesigner.getPath: string;
+function TFGUIDesigner.GetPath: string;
 begin
-  if assigned(TFGuiForm(ELDesigner.DesignControl)) then
-    Result := ExtractFilepath(TFGuiForm(ELDesigner.DesignControl).Pathname)
+  if Assigned(TFGUIForm(ELDesigner.DesignControl)) then
+    Result := ExtractFilePath(TFGUIForm(ELDesigner.DesignControl).Pathname)
   else
     Result := '';
 end;
@@ -1394,9 +1492,10 @@ end;
 
 procedure TFGUIDesigner.ChangeStyle;
 begin
-  if FConfiguration.isDark
-    then PopupMenu.Images:= vilGuiDesignerDark
-    else PopupMenu.Images:= vilGuiDesignerLight;
+  if FConfiguration.isDark then
+    PopupMenu.Images := vilGUIDesignerDark
+  else
+    PopupMenu.Images := vilGuiDesignerLight;
 end;
 
 { TMyDragObject }
@@ -1410,9 +1509,10 @@ constructor TMyDragObject.Create(AControl: TControl);
 begin
   inherited Create(AControl);
   FDragImages := TDragImageList.Create(AControl);
-  AlwaysShowDragImages := true;
+  AlwaysShowDragImages := True;
 
-  var Bitmap := TBitmap.Create;
+  var
+  Bitmap := TBitmap.Create;
   Bitmap.Width := AControl.Width;
   Bitmap.Height := AControl.Height;
   if AControl is TWinControl then

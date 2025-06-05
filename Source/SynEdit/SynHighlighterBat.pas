@@ -119,12 +119,12 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;        
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -164,7 +164,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 869 + Ord(Str^) * 61;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 25;
   fStringLen := Str - fToIdent;
@@ -185,11 +185,11 @@ end;
 
 procedure TSynBatSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
       
   fIdentFuncTable[15] := FuncCall;
   fIdentFuncTable[16] := FuncCd;
@@ -459,19 +459,19 @@ procedure TSynBatSyn.IdentProc;
 begin
   fTokenID := IdentKind((fLine + Run));
   Inc(Run, fStringLen);
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
 end;
 
 procedure TSynBatSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynBatSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynBatSyn.NumberProc;
@@ -492,7 +492,7 @@ begin
     Inc(Run, 3);
     while (FLine[Run] <> #0) do begin
       case FLine[Run] of
-        #10, #13: break;
+        #10, #13: Break;
       end; { case }
       Inc(Run);
     end; { while }
@@ -514,7 +514,7 @@ end;
 
 procedure TSynBatSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -538,7 +538,7 @@ begin
   inherited;
 end;
 
-function TSynBatSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynBatSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -574,7 +574,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynBatSyn.GetTokenKind: integer;
+function TSynBatSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

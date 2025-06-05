@@ -3,66 +3,71 @@ unit UFXTreeView;
 interface
 
 uses
-  Classes, ComCtrls, UFXComponents;
+  Classes,
+  UFXComponents;
 
 type
 
-  TFXTreeView = class (TFXControl)
+  TFXTreeView = class(TFXControl)
   private
-    FShowRoot: boolean;
-    FEditable: boolean;
+    FShowRoot: Boolean;
+    FEditable: Boolean;
     FItems: TStrings;
-    FFixedCellSize: double;
-
+    FFixedCellSize: Double;
     FEditCancel: string;
     FEditCommit: string;
     FEditStart: string;
-    //FScrollTo: string;
 
-    procedure setShowRoot(aValue: boolean);
-    procedure setItems(aItems: TStrings);
-    procedure setFixedCellSize(aValue: double);
-    function NodeName(Nr: integer): string;
+    procedure SetShowRoot(AValue: Boolean);
+    procedure SetItems(AItems: TStrings);
+    procedure SetFixedCellSize(AValue: Double);
+    function NodeName(Num: Integer): string;
     procedure MakeTree;
   public
-    constructor Create (AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure DeleteComponent; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure Paint; override;
   published
-    property ShowRoot: boolean read FShowRoot write setShowRoot;
-    property Items: TStrings read FItems write setItems;
-    property Editable: boolean read FEditable write FEditable;
-    property FixedCellSize: double read FFixedCellSize write setFixedCellSize;
+    property ShowRoot: Boolean read FShowRoot write SetShowRoot;
+    property Items: TStrings read FItems write SetItems;
+    property Editable: Boolean read FEditable write FEditable;
+    property FixedCellSize: Double read FFixedCellSize write SetFixedCellSize;
 
-    property editCancel: string read FeditCancel write FeditCancel;
-    property editCommit: string read FeditCommit write FeditCommit;
-    property editStart: string read FeditStart write FeditStart;
-    //property scrollTo: string read FscrollTo write FscrollTo;
+    property editCancel: string read FEditCancel write FEditCancel;
+    property editCommit: string read FEditCommit write FEditCommit;
+    property editStart: string read FEditStart write FEditStart;
   end;
 
 implementation
 
-uses SysUtils, Graphics, Controls, UJEComponents, UGUIDesigner, UUtils;
+uses
+  SysUtils,
+  Graphics,
+  Controls,
+  UJEComponents,
+  UGUIDesigner,
+  UUtils;
 
 constructor TFXTreeView.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= 152;
-  Width:= 240;
-  Height:= 120;
-  Background:= clWhite;
-  FEditable:= false;
-  FShowRoot:= true;
-  FItems:= TStringList.Create;
-  FItems.Text:= 'root'#13#10'  node 1'#13#10'    leaf 1'#13#10'    leaf 2'#13#10'    leaf 3'#13#10'  node 2'#13#10'    node 3'#13#10'      leaf 4'#13#10'    leaf 5'#13#10'  node 4'#13#10'    leaf 6'#13#10'    leaf 7';
-  Font.Style:= [];  // not bold;
-  JavaType:= 'TreeView';
+  inherited Create(AOwner);
+  Tag := 152;
+  Width := 240;
+  Height := 120;
+  Background := clWhite;
+  FEditable := False;
+  FShowRoot := True;
+  FItems := TStringList.Create;
+  FItems.Text :=
+    'root'#13#10'  node 1'#13#10'    leaf 1'#13#10'    leaf 2'#13#10'    leaf 3'#13#10'  node 2'#13#10'    node 3'#13#10'      leaf 4'#13#10'    leaf 5'#13#10'  node 4'#13#10'    leaf 6'#13#10'    leaf 7';
+  Font.Style := []; // not bold;
+  JavaType := 'TreeView';
 end;
 
 destructor TFXTreeView.Destroy;
@@ -71,12 +76,12 @@ begin
   inherited;
 end;
 
-function TFXTreeView.getAttributes(ShowAttributes: integer): string;
+function TFXTreeView.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|ShowRoot|Items|Editable|FixedCellSize' + inherited;
+  Result := '|ShowRoot|Items|Editable|FixedCellSize' + inherited;
 end;
 
-procedure TFXTreeView.setAttribute(Attr, Value, Typ: string);
+procedure TFXTreeView.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'Items' then
     MakeTree
@@ -84,196 +89,233 @@ begin
     inherited;
 end;
 
-function TFXTreeView.getEvents(ShowEvents: integer): string;
+function TFXTreeView.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|editCancel|editCommit|editStart' + inherited;
+  Result := '|editCancel|editCommit|editStart' + inherited;
 end;
 
 procedure TFXTreeView.NewControl;
-  var node1, node2, s: string;
+var
+  Node1, Node2, Str: string;
 begin
   InsertImport('javafx.scene.control.*');
-  InsertNewVariable('private TreeItem<String> ' + Name + 'Node0 = new TreeItem<>("root");');
-  InsertNewVariable('private TreeView<String> ' + Name + ' = new TreeView<>('+ Name + 'Node0);');
+  InsertNewVariable('private TreeItem<String> ' + Name +
+    'Node0 = new TreeItem<>("root");');
+  InsertNewVariable('private TreeView<String> ' + Name + ' = new TreeView<>(' +
+    Name + 'Node0);');
 
-  s:= '';
-  node1:= Name + 'Node1';
-  node2:= Name + 'Node2';
-  s:= s + surroundFix2('TreeItem<String> ' + node1 + ' = new TreeItem<>("node 1");');
-  s:= s + surroundFix2(node1 + '.getChildren().add(new TreeItem<String>("leaf 1"));');
-  s:= s + surroundFix2(node1 + '.getChildren().add(new TreeItem<String>("leaf 2"));');
-  s:= s + surroundFix2(node1 + '.getChildren().add(new TreeItem<String>("leaf 3"));');
-  s:= s + surroundFix2(Name + 'Node0.getChildren().add(' + node1 + ');');
-  s:= s + surroundFix2(node1 + ' = new TreeItem<String>("node 2");');
-  s:= s + surroundFix2('TreeItem<String> ' + node2 + ' = new TreeItem<String>("node 3");');
-  s:= s + surroundFix2(node2 + '.getChildren().add(new TreeItem<String>("leaf 4"));');
-  s:= s + surroundFix2(node1 + '.getChildren().add(' + node2 + ');');
-  s:= s + surroundFix2(node1 + '.getChildren().add(new TreeItem<String>("leaf 5"));');
-  s:= s + surroundFix2(Name + 'Node0.getChildren().add(' + node1 + ');');
-  s:= s + surroundFix2(node1 + ' = new TreeItem<String>("node 4");');
-  s:= s + surroundFix2(node1 + '.getChildren().add(new TreeItem<String>("leaf 6"));');
-  s:= s + surroundFix2(node1 + '.getChildren().add(new TreeItem<String>("leaf 7"));');
-  s:= s + surroundFix2(Name + 'Node0.getChildren().add(' + node1 + ');');
-  s:= s + surroundFix2(Name + 'Node0.setExpanded(true);');
-  s:= s + surroundFix2(GetContainerAdd);
-  Partner.InsertComponent(s);
+  Str := '';
+  Node1 := Name + 'Node1';
+  Node2 := Name + 'Node2';
+  Str := Str + SurroundFix2('TreeItem<String> ' + Node1 +
+    ' = new TreeItem<>("node 1");');
+  Str := Str + SurroundFix2
+    (Node1 + '.getChildren().add(new TreeItem<String>("leaf 1"));');
+  Str := Str + SurroundFix2
+    (Node1 + '.getChildren().add(new TreeItem<String>("leaf 2"));');
+  Str := Str + SurroundFix2
+    (Node1 + '.getChildren().add(new TreeItem<String>("leaf 3"));');
+  Str := Str + SurroundFix2(Name + 'Node0.getChildren().add(' + Node1 + ');');
+  Str := Str + SurroundFix2(Node1 + ' = new TreeItem<String>("node 2");');
+  Str := Str + SurroundFix2('TreeItem<String> ' + Node2 +
+    ' = new TreeItem<String>("node 3");');
+  Str := Str + SurroundFix2
+    (Node2 + '.getChildren().add(new TreeItem<String>("leaf 4"));');
+  Str := Str + SurroundFix2(Node1 + '.getChildren().add(' + Node2 + ');');
+  Str := Str + SurroundFix2
+    (Node1 + '.getChildren().add(new TreeItem<String>("leaf 5"));');
+  Str := Str + SurroundFix2(Name + 'Node0.getChildren().add(' + Node1 + ');');
+  Str := Str + SurroundFix2(Node1 + ' = new TreeItem<String>("node 4");');
+  Str := Str + SurroundFix2
+    (Node1 + '.getChildren().add(new TreeItem<String>("leaf 6"));');
+  Str := Str + SurroundFix2
+    (Node1 + '.getChildren().add(new TreeItem<String>("leaf 7"));');
+  Str := Str + SurroundFix2(Name + 'Node0.getChildren().add(' + Node1 + ');');
+  Str := Str + SurroundFix2(Name + 'Node0.setExpanded(true);');
+  Str := Str + SurroundFix2(GetContainerAdd);
+  FPartner.InsertComponent(Str);
 end;
 
 procedure TFXTreeView.MakeTree;
-  var s: string; NodesDepth, NodeNr: integer;
+var
+  Str: string;
+  NodesDepth, NodeNr: Integer;
 
-  function getIndent(const s: string): integer;
-    var i, l: integer;
+  function GetIndent(const Str: string): Integer;
+  var
+    Int, Len: Integer;
   begin
-    l:= Length(s);
-    i:= 1;
-    while (i <= l) and (s[i] <= ' ') do
-      inc(i);
-    Result:= i-1;
+    Len := Length(Str);
+    Int := 1;
+    while (Int <= Len) and (Str[Int] <= ' ') do
+      Inc(Int);
+    Result := Int - 1;
   end;
 
-  procedure makeNode(Depth: integer);
-    var IndentNr, IndentNr1: integer; s1, aLabel: string;
+  procedure MakeNode(Depth: Integer);
+  var
+    IndentNr, IndentNr1: Integer;
+    Str1, ALabel: string;
   begin
-    aLabel:= FItems[NodeNr];
-    IndentNr:= getIndent(aLabel);
-    aLabel:= trim(aLabel);
-    while NodeNr < FItems.Count do begin
-      if NodeNr +1 < FItems.Count
-        then IndentNr1:= getIndent(FItems[NodeNr+1])
-        else IndentNr1:= IndentNr;
-      if IndentNr1 > IndentNr then begin
-        s1:= NodeName(Depth) + ' = new TreeItem<String>("' + aLabel + '");';
-        if NodesDepth < Depth then begin
-          s:= s + surroundFix2('TreeItem<String> ' + s1);
-          inc(NodesDepth);
-        end else
-          s:= s + surroundFix2(s1);
+    ALabel := FItems[NodeNr];
+    IndentNr := GetIndent(ALabel);
+    ALabel := Trim(ALabel);
+    while NodeNr < FItems.Count do
+    begin
+      if NodeNr + 1 < FItems.Count then
+        IndentNr1 := GetIndent(FItems[NodeNr + 1])
+      else
+        IndentNr1 := IndentNr;
+      if IndentNr1 > IndentNr then
+      begin
+        Str1 := NodeName(Depth) + ' = new TreeItem<String>("' + ALabel + '");';
+        if NodesDepth < Depth then
+        begin
+          Str := Str + SurroundFix2('TreeItem<String> ' + Str1);
+          Inc(NodesDepth);
+        end
+        else
+          Str := Str + SurroundFix2(Str1);
         Inc(NodeNr);
-        makeNode(Depth + 1);
-        if NodeNr < FItems.Count
-          then IndentNr1:= getIndent(FItems[NodeNr])
-          else IndentNr1:= 0;
+        MakeNode(Depth + 1);
+        if NodeNr < FItems.Count then
+          IndentNr1 := GetIndent(FItems[NodeNr])
+        else
+          IndentNr1 := 0;
         if IndentNr1 <= IndentNr then
-          s:= s + surroundFix2(NodeName(Depth-1) + '.getChildren().add(' + NodeName(Depth) + ');');
-      end else if IndentNr1 <= IndentNr then begin
-        s:= s + surroundFix2(NodeName(Depth-1) + '.getChildren().add(new TreeItem<String>("' + aLabel + '"));');
+          Str := Str + SurroundFix2(NodeName(Depth - 1) + '.getChildren().add('
+            + NodeName(Depth) + ');');
+      end
+      else if IndentNr1 <= IndentNr then
+      begin
+        Str := Str + SurroundFix2(NodeName(Depth - 1) +
+          '.getChildren().add(new TreeItem<String>("' + ALabel + '"));');
         Inc(NodeNr);
       end;
       if IndentNr1 < IndentNr then
-        exit
+        Exit
       else if NodeNr < FItems.Count then
-        aLabel:= trim(FItems[NodeNr]);
+        ALabel := Trim(FItems[NodeNr]);
     end;
   end;
 
 begin
-  s:= Indent1 + 'private TreeItem<String> ' + Name +
-                'Node0 = new TreeItem<String>("' + Trim(FItems[0]) + '");';
-  Partner.ReplaceAttribute('private TreeItem<String> ' + Name, s);
-  Partner.DeleteAttributeValues(Name + '.setExpanded');
+  Str := Indent1 + 'private TreeItem<String> ' + Name +
+    'Node0 = new TreeItem<String>("' + Trim(FItems[0]) + '");';
+  FPartner.ReplaceAttribute('private TreeItem<String> ' + Name, Str);
+  FPartner.DeleteAttributeValues(Name + '.setExpanded');
 
-  for var i:= 0 to FItems.Count - 1 do
-    Partner.DeleteAttributeValues(NodeName(i));
-  NodesDepth:= 0;
-  NodeNr:= 1;
+  for var I := 0 to FItems.Count - 1 do
+    FPartner.DeleteAttributeValues(NodeName(I));
+  NodesDepth := 0;
+  NodeNr := 1;
   FormatItems(FItems);
-  s:= '';
+  Str := '';
   if FItems.Count > 1 then
-    makeNode(1);
-  s:= s + surroundFix2(Name + 'Node0.setExpanded(true);');
-  Partner.InsertComponent(s);
+    MakeNode(1);
+  Str := Str + SurroundFix2(Name + 'Node0.setExpanded(true);');
+  FPartner.InsertComponent(Str);
 end;
 
 procedure TFXTreeView.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteAttribute('private TreeView<String> ' + Name);
-  Partner.DeleteAttribute('private TreeItem<String> ' + Name + 'Node0');
-  for var i:= 0 to FItems.Count - 1 do
-    Partner.DeleteAttributeValues(NodeName(i));
+  FPartner.DeleteAttribute('private TreeView<String> ' + Name);
+  FPartner.DeleteAttribute('private TreeItem<String> ' + Name + 'Node0');
+  for var I := 0 to FItems.Count - 1 do
+    FPartner.DeleteAttributeValues(NodeName(I));
 end;
 
-function TFXTreeView.NodeName(Nr: integer): string;
+function TFXTreeView.NodeName(Num: Integer): string;
 begin
-  Result:= Name + 'Node' + IntToStr(Nr);
+  Result := Name + 'Node' + IntToStr(Num);
 end;
 
 procedure TFXTreeView.Rename(const OldName, NewName, Events: string);
-  procedure rename(var name: string);
+  procedure Rename(var Name: string);
   begin
-    if name <> '' then
-      name:= NewName + UUtils.Right(name, Length(OldName) + 1);
+    if Name <> '' then
+      Name := NewName + UUtils.Right(Name, Length(OldName) + 1);
   end;
 
 begin
   inherited;
-  rename(FEditCancel);
-  rename(FEditCommit);
-  rename(FEditStart);
-  //rename(FScrollTo);
-  for var i:= 0 to FItems.Count - 1 do
-    Partner.ReplaceWord(OldName + 'Node' + IntToStr(i), NewName + 'Node' + IntToStr(i), true);
+  Rename(FEditCancel);
+  Rename(FEditCommit);
+  Rename(FEditStart);
+  for var I := 0 to FItems.Count - 1 do
+    FPartner.ReplaceWord(OldName + 'Node' + IntToStr(I),
+      NewName + 'Node' + IntToStr(I), True);
 end;
 
 procedure TFXTreeView.Paint;
-  const cdx = 16;
-  var s: string;
-      i, x, y, dx, IndentS, RowHeight: integer;
+const
+  Cdx = 16;
+var
+  Str: string;
+  XPos, YPos, DeltaX, IndentS, RowHeight: Integer;
 begin
-  if FixedCellSize > 0
-    then RowHeight:= round(FixedCellSize)
-    else RowHeight:= 24;
+  if FixedCellSize > 0 then
+    RowHeight := Round(FixedCellSize)
+  else
+    RowHeight := 24;
 
   CanvasFontAssign;
-  Canvas.Font.Color:= DefaultForeground; 
-  Canvas.Pen.Color:= DarkShadow;
-  Canvas.Brush.Color:= clWhite;
+  Canvas.Font.Color := DefaultForeground;
+  Canvas.Pen.Color := DarkShadow;
+  Canvas.Brush.Color := clWhite;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  y:= PPIScale(2);
-  x:= PPIScale(4);
-  dx:= PPIScale(cdx);
-  RowHeight:= PPIScale(RowHeight);
+  YPos := PPIScale(2);
+  XPos := PPIScale(4);
+  DeltaX := PPIScale(Cdx);
+  RowHeight := PPIScale(RowHeight);
   // show root
-  if FShowRoot then begin
-    FGUIDesigner.vilControls1618.Draw(Canvas, x, y, 7);
-    Canvas.TextOut(x + dx, y + 2, FItems[0]);
-    x:= x + dx;
-    y:= y + RowHeight;
+  if FShowRoot then
+  begin
+    FGUIDesigner.vilControls1618.Draw(Canvas, XPos, YPos, 7);
+    Canvas.TextOut(XPos + DeltaX, YPos + 2, FItems[0]);
+    XPos := XPos + DeltaX;
+    YPos := YPos + RowHeight;
   end;
   // show nodes
-  for i:= 1 to FItems.Count - 1 do begin
-    s:= FItems[i];
-    indentS:= getIndent(s);
-    if IndentS = 2 then begin
-      FGUIDesigner.vilControls1618.Draw(Canvas, x, y, 8);
-      Canvas.TextOut(x + dx, y + 2, FItems[i]);
-      y:= y + RowHeight;
-      if y > Height then break;
+  for var I := 1 to FItems.Count - 1 do
+  begin
+    Str := FItems[I];
+    IndentS := GetIndent(Str);
+    if IndentS = 2 then
+    begin
+      FGUIDesigner.vilControls1618.Draw(Canvas, XPos, YPos, 8);
+      Canvas.TextOut(XPos + DeltaX, YPos + 2, FItems[I]);
+      YPos := YPos + RowHeight;
+      if YPos > Height then
+        Break;
     end;
   end;
 end;
 
-procedure TFXTreeView.setShowRoot(aValue: boolean);
+procedure TFXTreeView.SetShowRoot(AValue: Boolean);
 begin
-  if aValue <> FShowRoot then begin
-    FShowRoot:= aValue;
+  if AValue <> FShowRoot then
+  begin
+    FShowRoot := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXTreeView.setItems(aItems: TStrings);
+procedure TFXTreeView.SetItems(AItems: TStrings);
 begin
-  if FItems.Text <> aItems.Text then begin
-    FItems.Assign(aItems);
+  if FItems.Text <> AItems.Text then
+  begin
+    FItems.Assign(AItems);
     Invalidate;
   end;
 end;
 
-procedure TFXTreeView.setFixedCellSize(aValue: double);
+procedure TFXTreeView.SetFixedCellSize(AValue: Double);
 begin
-  if FFixedCellSize <> aValue then begin
-    FFixedCellSize:= aValue;
+  if FFixedCellSize <> AValue then
+  begin
+    FFixedCellSize := AValue;
     Invalidate;
   end;
 end;

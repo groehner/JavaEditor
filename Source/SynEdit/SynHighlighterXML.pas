@@ -139,13 +139,13 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -269,7 +269,7 @@ end;
 procedure TSynXMLSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynXMLSyn.CarriageReturnProc;
@@ -287,11 +287,11 @@ end;
 
 procedure TSynXMLSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
   while fLine[Run] <= #32 do
   begin
-    if CharInSet(fLine[Run], [#0, #9, #10, #13]) then break;
+    if CharInSet(fLine[Run], [#0, #9, #10, #13]) then Break;
     Inc(Run);
   end;
 end;
@@ -372,7 +372,7 @@ begin
     if (fLine[Run] = '-') and (fLine[Run + 1] = '-') and (fLine[Run + 2] = '>') then
     begin
       fRange := rsComment;
-      break;
+      Break;
     end;
     Inc(Run);
   end;
@@ -394,7 +394,7 @@ begin
     begin
       fRange := rsText;
       Inc(Run);
-      break;
+      Break;
     end;
     Inc(Run);
   end;
@@ -419,7 +419,7 @@ begin
             '[': begin
                    while True do
                    begin
-                     inc(Run);
+                     Inc(Run);
                      case fLine[Run] of
                        ']':
                          begin
@@ -440,7 +440,7 @@ begin
                    Break;
                  end;
           end;
-          inc(Run);
+          Inc(Run);
         end;
     end;
     rsDocTypeSquareBraces:
@@ -453,7 +453,7 @@ begin
             Inc(Run);
             Exit;
           end;
-          inc(Run);
+          Inc(Run);
         end;
       end;
   end;
@@ -475,7 +475,7 @@ begin
     begin
       fRange := rsText;
       Inc(Run);
-      break;
+      Break;
     end;
     Inc(Run);
   end;
@@ -605,7 +605,7 @@ begin
   if (fLine[Run] <= #31) or (fLine[Run] = '<') then
   begin
     NextProcedure;
-    exit;
+    Exit;
   end;
 
   fTokenID := tkText;
@@ -730,12 +730,12 @@ end;
 
 function TSynXMLSyn.NextTokenIs(Token: string): Boolean;
 var
-  I, Len: Integer;
+  Int, Len: Integer;
 begin
   Result := True;
   Len := Length(Token);
-  for I := 1 to Len do
-    if (fLine[Run + I] <> Token[I]) then
+  for Int := 1 to Len do
+    if (fLine[Run + Int] <> Token[Int]) then
     begin
       Result:= False;
       Break;
@@ -794,7 +794,7 @@ begin
   end;
 end;
 
-function TSynXMLSyn.GetTokenKind: integer;
+function TSynXMLSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

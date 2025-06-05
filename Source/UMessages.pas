@@ -66,7 +66,8 @@ type
     Executer: TInteractiveExecuter;
     ComJava: TComJava1;
     constructor Create(UML: TForm; IEdit: TInteractiveEdit; AMemo: TMemo;
-      SGrid: TStringGrid; AExecuter: TInteractiveExecuter; CJava: TComJava1);
+      SGrid: TStringGrid; Executer: TInteractiveExecuter; ComJava: TComJava1);
+    procedure SetFont(Font: TFont);
   end;
 
   { TFMessages }
@@ -239,6 +240,7 @@ type
     FToJavaConsole: string;
     FBGColor: TColor;
     FFGColor: TColor;
+    FMessagesFont: TFont;
 
     FInteractiveEditors: TStringList;
     FInteractiveMemos: TStringList;
@@ -318,6 +320,7 @@ type
     procedure DeleteDebuggingTreeViews;
     procedure DPIChanged;
     procedure SetDumpActive(Value: Boolean);
+    procedure SetOptions;
 
     property ActiveSubTool: Integer read FActiveSubTool write SetActiveSubTool;
     property ActiveInteractive: TInteractiveEdit read FActiveInteractive;
@@ -326,7 +329,7 @@ type
     property DumpActive: Boolean read FDumpActive;
     property SearchGoalLine: Integer read FSearchGoalLine;
     property SearchGoalPath: string read FSearchGoalPath;
-end;
+  end;
 
 var
   FMessages: TFMessages = nil;
@@ -357,15 +360,23 @@ uses
 { -- TInteractive ------------------------------------------------------------ }
 
 constructor TInteractive.Create(UML: TForm; IEdit: TInteractiveEdit;
-  AMemo: TMemo; SGrid: TStringGrid; AExecuter: TInteractiveExecuter;
-  CJava: TComJava1);
+  AMemo: TMemo; SGrid: TStringGrid; Executer: TInteractiveExecuter;
+  ComJava: TComJava1);
 begin
   UMLForm := UML;
   InteractiveEditor := IEdit;
   Memo := AMemo;
   SGVariables := SGrid;
-  Executer := AExecuter;
-  ComJava := CJava;
+  Self.Executer := Executer;
+  Self.ComJava := ComJava;
+end;
+
+procedure TInteractive.SetFont(Font: TFont);
+begin
+  Memo.Font.Assign(Font);
+  InteractiveEditor.Font.Size := Font.Size;
+  SGVariables.Font.Assign(Font);
+  SGVariables.DefaultRowHeight := Round(Font.Size * 1.8);
 end;
 
 { -- TInteractiveEdit -------------------------------------------------------- }
@@ -496,30 +507,30 @@ begin
   FDumpActive := False;
   FToJavaConsole := '';
   FActiveInteractive := nil;
+  FMessagesFont := TFont.Create;
 end;
 
 procedure TFMessages.FormDestroy(Sender: TObject);
 var
-  I: Integer;
   AObject: TObject;
 begin
   if TVSearch.Items.Count > 0 then
-    myGrepResults.DeleteSearchResults;
-  FreeAndNil(myGrepResults);
-  for I := 0 to FInteractiveEditors.Count - 1 do
+    MyGrepResults.DeleteSearchResults;
+  FreeAndNil(MyGrepResults);
+  for var I := 0 to FInteractiveEditors.Count - 1 do
   begin
     AObject := FInteractiveEditors.Objects[I];
     FreeAndNil(AObject);
   end;
   FreeAndNil(FInteractiveEditors);
-  for I := 0 to FInteractiveMemos.Count - 1 do
+  for var I := 0 to FInteractiveMemos.Count - 1 do
   begin
     AObject := FInteractiveMemos.Objects[I];
     FreeAndNil(AObject);
   end;
   FreeAndNil(FInteractiveMemos);
   FreeAndNil(FInteractiveUMLForms);
-  for I := 0 to FInteractiveVariables.Count - 1 do
+  for var I := 0 to FInteractiveVariables.Count - 1 do
   begin
     AObject := FInteractiveVariables.Objects[I];
     FreeAndNil(AObject);
@@ -527,8 +538,9 @@ begin
   FreeAndNil(FInteractiveVariables);
   FreeAndNil(FInteractiveExecuters);
   FreeAndNil(FInteractiveComJavas);
-  for I := 1 to 3 do
+  for var I := 1 to 3 do
     FreeAndNil(FExpanded[I]);
+  FMessagesFont.Free;
 end;
 
 procedure TFMessages.FormShow(Sender: TObject);
@@ -547,8 +559,9 @@ end;
 
 procedure TFMessages.SetStatusBarAndTabs;
 begin
-  StatusBar.Font.Size := FConfiguration.Fontsize;
-  StatusBar.Canvas.Font.Size := FConfiguration.Fontsize;
+  Font.Size:= FConfiguration.FontSize;
+  StatusBar.Font.Size := Font.Size;
+  StatusBar.Canvas.Font.Size := Font.Size;
   var
   Height := StatusBar.Canvas.TextHeight('Ag') + 4;
   StatusBar.Height := Height;
@@ -556,8 +569,8 @@ begin
   PLocalVariables.Height := Height;
   PWatches.Height := Height;
   PStack.Height := Height;
-  TabControlMessages.Font.Size := FConfiguration.Fontsize;
-  TabControlMessages.Canvas.Font.Size := FConfiguration.Fontsize;
+  TabControlMessages.Font.Size := Font.Size;
+  TabControlMessages.Canvas.Font.Size := Font.Size;
   TabControlMessages.Height := Height;
   TabControlMessages.TabHeight := Height;
 end;
@@ -581,7 +594,6 @@ end;
 procedure TFMessages.InitAndShow;
 var
   MyVisible, Docked: Boolean;
-  AFont: TFont;
   Left, Top, Width, Height: Integer;
 begin
   LockFormUpdate(Self);
@@ -615,12 +627,11 @@ begin
   if not MyVisible then
     HideIt;
 
-  AFont := TFont.Create;
-  AFont.Name := FConfiguration.ReadStringU('Messages', 'FontName', 'Consolas');
-  AFont.Size := PPIScale(FConfiguration.ReadIntegerU('Messages',
+  Font.Size:= FConfiguration.FontSize;
+  FMessagesFont.Name := FConfiguration.ReadStringU('Messages', 'FontName', 'Segoe UI');
+  FMessagesFont.Size := PPIScale(FConfiguration.ReadIntegerU('Messages',
     'FontSize', 10));
-  SetFont(AFont);
-  FreeAndNil(AFont);
+  SetFont(FMessagesFont);
   SetStatusBarAndTabs;
 
   PInteractiveLeft.Width := PPIScale(FConfiguration.ReadIntegerU('Messages',
@@ -645,9 +656,9 @@ begin
   // Don't use with, otherwise PPIUnScale is calculated for FConfiguration!
   FConfiguration.WriteBoolU('Messages', 'Visible', MyIsVisible);
   FConfiguration.WriteBoolU('Messages', 'Docked', not FMessages.Floating);
-  FConfiguration.WriteStringU('Messages', 'FontName', MInterpreter.Font.Name);
+  FConfiguration.WriteStringU('Messages', 'FontName', FMessagesFont.Name);
   FConfiguration.WriteIntegerU('Messages', 'FontSize',
-    PPIUnScale(MInterpreter.Font.Size));
+    PPIUnScale(FMessagesFont.Size));
   FConfiguration.WriteIntegerU('Messages', 'InteractiveLeft',
     PPIUnScale(PInteractiveLeft.Width));
   FConfiguration.WriteIntegerU('Messages', 'InteractiveMiddle',
@@ -700,27 +711,22 @@ begin
     0:
       begin
         PInterpreter.Visible := True;
-        //if MInterpreter.CanFocus then MInterpreter.SetFocus;    a lot of exceptions
       end;
     1:
       begin
         PCompiler.Visible := True;
-        // if LBCompiler.CanFocus then LBCompiler.SetFocus;
       end;
     2:
       begin
         PDebugger.Visible := True;
-        // if TVAttributes.CanFocus then TVAttributes.SetFocus;
       end;
     3:
       begin
         PSearch.Visible := True;
-        // if TVSearch.CanFocus then TVSearch.SetFocus;
       end;
     4:
       begin
         PMessages.Visible := True;
-        // if LBMessages.CanFocus then LBMessages.SetFocus;
       end;
   else
     begin
@@ -742,7 +748,7 @@ begin
         TStringGrid(FInteractiveVariables.Objects[NewTab - 5]).Show;
         AdjustVariablesWidths(NewTab);
         TComJava1(FInteractiveComJavas[NewTab - 5])
-          .setActiveComJava(TComJava1(FInteractiveComJavas[NewTab - 5]));
+          .SetActiveComJava(TComJava1(FInteractiveComJavas[NewTab - 5]));
         IEdit.Enter(Self);
       end;
       GetMemo(NewTab).Visible := True;
@@ -918,13 +924,14 @@ end;
 function TFMessages.GetFileWithPath(LBox: TListBox;
   var LineNo: Integer): string;
 var
-  Str, Pathname, Filename, Path: string;
+  Str, Pathname, FileName, Path: string;
 begin
   Result := '';
   while LineNo >= 0 do
   begin
     Str := LBox.Items[LineNo];
-    var Pos := Pos('.java:', Str);
+    var
+    Pos := Pos('.java:', Str);
     if Pos > 0 then
     begin
       Delete(Str, Pos + 5, Length(Str));
@@ -935,8 +942,8 @@ begin
       for var J := 0 to FJava.TDIEditFormCount - 1 do
       begin
         Pathname := FJava.TDIEditFormGet(J).Pathname;
-        Filename := ExtractFileName(Pathname);
-        if (Filename = Str) and FileExists(Pathname) then
+        FileName := ExtractFileName(Pathname);
+        if (FileName = Str) and FileExists(Pathname) then
           Exit(Pathname);
         Path := ExtractFilePath(Pathname);
         if FileExists(Path + Str) then
@@ -950,7 +957,7 @@ end;
 procedure TFMessages.LBCompilerDblClick(Sender: TObject);
 var
   I, Pos1, Pos2, Line, Column: Integer;
-  Str, Str1, Str2, FileWithPath: string;
+  Str, Str1, Str2, FileWithPath, Parameter: string;
 begin
   // activate double-clicked errorline in editor-window
   I := LBCompiler.ItemIndex;
@@ -987,41 +994,42 @@ begin
   begin
     I := LBCompiler.ItemIndex;
     Str := LBCompiler.Items[I];
+    Parameter := FConfiguration.JavaCompilerParameter;
     if (Pos('-deprecation', Str) > 0) and FileExists(FileWithPath) then
     begin
       FConfiguration.JavaCompilerParameter := '-deprecation ' +
         FConfiguration.JavaCompilerParameter;
-      myJavaCommands.Compile(FileWithPath, '');
-      Delete(FConfiguration.JavaCompilerParameter, 1, 13);
+      MyJavaCommands.Compile(FileWithPath, '');
     end
-    else if (Pos('-Xlint:unchecked ', Str) > 0) and FileExists(FileWithPath) then
+    else if (Pos('-Xlint:unchecked ', Str) > 0) and FileExists(FileWithPath)
+    then
     begin
       FConfiguration.JavaCompilerParameter := '-Xlint:unchecked ' +
         FConfiguration.JavaCompilerParameter;
-      myJavaCommands.Compile(FileWithPath, '');
-      Delete(FConfiguration.JavaCompilerParameter, 1, 17);
+      MyJavaCommands.Compile(FileWithPath, '');
     end;
+    FConfiguration.JavaCompilerParameter := Parameter;
   end;
 end;
 
 procedure TFMessages.MInterpreterDblClick(Sender: TObject);
 var
-  I, Pos0, Pos1, Pos2, Pos3, Line: Integer;
+  Idx, Pos0, Pos1, Pos2, Pos3, Line: Integer;
   Str1, Str2, FileWithPath: string;
 begin
   // activate double-clicked errorline in editor-window
-  I := MInterpreter.CaretPos.Y + 1;
+  Idx := MInterpreter.CaretPos.Y + 1;
   Pos3 := 0;
-  while (I > 0) and (Pos3 = 0) do
+  while (Idx > 0) and (Pos3 = 0) do
   begin
-    Dec(I);
-    Str1 := Trim(MInterpreter.Lines[I]);
+    Dec(Idx);
+    Str1 := Trim(MInterpreter.Lines[Idx]);
     Pos3 := Pos('Exception', Str1); // Exception at
   end;
 
   if Pos3 > 0 then
   begin
-    Str1 := MInterpreter.Lines[I + 1];
+    Str1 := MInterpreter.Lines[Idx + 1];
     Pos0 := Pos('(', Str1);
     Pos1 := Pos('.java:', Str1); // VisibleStack.java:12:
     if Pos1 > 0 then
@@ -1030,10 +1038,11 @@ begin
       Pos2 := Pos(')', Str2); // compile error
       if Pos2 > 0 then
       begin // errorline found
-        MInterpreter.CaretPos := Point(1, I + 1);
+        MInterpreter.CaretPos := Point(1, Idx + 1);
         if not TryStrToInt(Copy(Str2, 1, Pos2 - 1), Line) then
           Exit;
-        FileWithPath := FJava.GetPathnameForClass(Copy(Str1, Pos0 + 1, Pos1 - Pos0 + 4));
+        FileWithPath := FJava.GetPathnameForClass
+          (Copy(Str1, Pos0 + 1, Pos1 - Pos0 + 4));
         if FileWithPath <> '' then
           FJava.ChangeWindowWithPositioning(FileWithPath, -1, Line, True);
       end;
@@ -1067,29 +1076,29 @@ end;
 
 procedure TFMessages.LBMessagesDblClick(Sender: TObject);
 var
-  I, Pos1, Pos2, Line, Column: Integer;
-  Str, FileWithPath: string;
+  Idx, Pos1, Pos2, Line, Column: Integer;
+  ALine, FileWithPath: string;
 begin
   // Activate the double-clicked error line in the editor window
-  I := LBMessages.ItemIndex;
+  Idx := LBMessages.ItemIndex;
   Pos1 := 0;
   FileWithPath := GetFileWithPath(LBMessages, Pos1);
-  Str := LBMessages.Items[I];
-  Pos1 := Pos('.java:', Str); // VisibleStack.java:12:
+  ALine := LBMessages.Items[Idx];
+  Pos1 := Pos('.java:', ALine); // VisibleStack.java:12:
   if Pos1 > 0 then
   begin
-    Str := Copy(Str, Pos1 + 6, 255);
-    Pos2 := Pos(':', Str); // Style check failed
+    ALine := Copy(ALine, Pos1 + 6, 255);
+    Pos2 := Pos(':', ALine); // Style check failed
     if Pos2 > 0 then
     begin // error line found
-      LBMessages.ItemIndex := I;
-      if TryStrToInt(Copy(Str, 1, Pos2 - 1), Line) then
+      LBMessages.ItemIndex := Idx;
+      if TryStrToInt(Copy(ALine, 1, Pos2 - 1), Line) then
       begin
-        Str := Copy(Str, Pos2 + 1, 255);
-        Pos2 := Pos(':', Str);
+        ALine := Copy(ALine, Pos2 + 1, 255);
+        Pos2 := Pos(':', ALine);
         if Pos2 = 0 then
           Column := -1
-        else if not TryStrToInt(Copy(Str, 1, Pos2 - 1), Column) then
+        else if not TryStrToInt(Copy(ALine, 1, Pos2 - 1), Column) then
           Exit;
         FJava.ChangeWindowWithPositioning(ToWindows(FileWithPath), Column,
           Line, True);
@@ -1132,6 +1141,7 @@ end;
 
 procedure TFMessages.SetFont(Font: TFont);
 begin
+  FMessagesFont.Assign(Font);
   MInterpreter.Font.Assign(Font);
   LBCompiler.Font.Assign(Font);
   TVAttributes.Font.Assign(Font);
@@ -1143,7 +1153,7 @@ begin
   for var I := 0 to FInteractiveEditors.Count - 1 do
   begin
     GetMemo(I + 5).Font.Assign(Font);
-    GetInteractive(I + 5).Font.Assign(Font);
+    GetInteractive(I + 5).Font.Size:= Font.Size;
     TStringGrid(FInteractiveVariables.Objects[I]).Font.Assign(Font);
     TStringGrid(FInteractiveVariables.Objects[I]).DefaultRowHeight :=
       Round(Font.Size * 1.8);
@@ -1260,10 +1270,12 @@ begin
       Node := Selected;
       if Assigned(Node) and not Assigned(Node.Parent) then
       begin
-        var Str := Node.Text;
-        var Posi := Pos(' = ', Str);
+        var
+        Str := Node.Text;
+        var
+        Posi := Pos(' = ', Str);
         if Posi > 0 then
-          Delete(Str, Posi, Length(STr));
+          Delete(Str, Posi, Length(Str));
         Items.Delete(Node);
         FWatches.Delete(Str);
       end;
@@ -1297,6 +1309,9 @@ begin
         FJava.ChangeWindowWithPositioning(Path, 1, Line, False);
       end;
     except
+      on E: Exception do
+        OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
+          E.Message));
     end;
   end;
 end;
@@ -1379,31 +1394,29 @@ var
   Form: TFEditForm;
   IEdit: TSynEdit;
   Executer: TInteractiveExecuter;
-  Str: string;
+  Code: string;
 begin
   TBExecute.Enabled := False;
   Screen.Cursor := crHourGlass;
   try
-    var I := TabControlMessages.TabIndex - 5;
-    if I >= 0 then
+    var
+    I := TabControlMessages.TabIndex - 5;
+    if (I >= 0) and Assigned(FInteractiveUMLForms.Objects[I]) then
     begin
-      if Assigned(FInteractiveUMLForms.Objects[I]) then
-      begin
-        Form := FJava.getActiveEditor;
-        if TSynEdit(FInteractiveEditors.Objects[I]).SelAvail then
-          IEdit := TSynEdit(FInteractiveEditors.Objects[I])
-        else if Assigned(Form) and Form.Editor.SelAvail then
-          IEdit := Form.Editor
-        else
-          IEdit := TSynEdit(FInteractiveEditors.Objects[I]);
-        if IEdit.SelAvail then
-          Str := IEdit.GetLinesWithSelection
-        else
-          Str := IEdit.LineText;
-        IEdit.SelStart := IEdit.SelEnd;
-        Executer := TInteractiveExecuter(FInteractiveExecuters[I]);
-        Executer.Execute(Str);
-      end;
+      Form := FJava.GetActiveEditor;
+      if TSynEdit(FInteractiveEditors.Objects[I]).SelAvail then
+        IEdit := TSynEdit(FInteractiveEditors.Objects[I])
+      else if Assigned(Form) and Form.Editor.SelAvail then
+        IEdit := Form.Editor
+      else
+        IEdit := TSynEdit(FInteractiveEditors.Objects[I]);
+      if IEdit.SelAvail then
+        Code := IEdit.GetLinesWithSelection
+      else
+        Code := IEdit.LineText;
+      IEdit.SelStart := IEdit.SelEnd;
+      Executer := TInteractiveExecuter(FInteractiveExecuters[I]);
+      Executer.Execute(Code);
     end;
   finally
     Screen.Cursor := crDefault;
@@ -1643,8 +1656,10 @@ begin
   TVWatchedExpressions.Items.Clear;
   for var I := 0 to FWatches.LBWatches.Items.Count - 1 do
   begin
-    var Str := FWatches.LBWatches.Items[I];
-    var Node := TVWatchedExpressions.Items.Add(nil, Str);
+    var
+    Str := FWatches.LBWatches.Items[I];
+    var
+    Node := TVWatchedExpressions.Items.Add(nil, Str);
     if Pos('instance of', Str) > 0 then
       TVWatchedExpressions.Items.AddChild(Node, Str);
   end;
@@ -1701,7 +1716,7 @@ var
 begin
   Node := TVSearch.Selected;
   if Assigned(Node) then
-    myGrepResults.OpenSource(Node);
+    MyGrepResults.OpenSource(Node);
 end;
 
 procedure TFMessages.TreeViewDeleteSelected(TreeView: TTreeView);
@@ -1776,17 +1791,11 @@ begin
 end;
 
 procedure TFMessages.FormPaint(Sender: TObject);
-//var
-//  Msg: TWMMove;
 begin
   if FUndocking then
   begin
     FUndocking := False;
     ShowTab(K_Interpreter);
-  end;
-  try
-    // OnMove(Msg);  // exception reported when no valid java interpreter
-  except
   end;
 end;
 
@@ -1807,27 +1816,33 @@ begin
 end;
 
 procedure TFMessages.MISameWidthClick(Sender: TObject);
-  var aWidth: integer;
+var
+  AWidth: Integer;
 begin
-  if Floating
-    then aWidth:= (Self.Width - DebuggerToolbar.Width) div 4
-    else aWidth:= (FJava.ClientWidth - DebuggerToolbar.Width) div 4;
-  PDebuggerLeft.Width := aWidth;
-  PDebuggerCenterLeft.Width := aWidth;
-  PDebuggerCenterRight.Width := aWidth;
-  PDebuggerRight.Width := aWidth;
+  if Floating then
+    AWidth := (Self.Width - DebuggerToolbar.Width) div 4
+  else
+    AWidth := (FJava.ClientWidth - DebuggerToolbar.Width) div 4;
+  PDebuggerLeft.Width := AWidth;
+  PDebuggerCenterLeft.Width := AWidth;
+  PDebuggerCenterRight.Width := AWidth;
+  PDebuggerRight.Width := AWidth;
 
-  if Floating
-    then aWidth:= Self.Width div 3
-    else aWidth:= FJava.ClientWidth div 3;
-  PInteractiveLeft.Width := aWidth;
-  PInteractiveMiddle.Width := aWidth;
-  PInteractiveRight.Width := aWidth;
+  if Floating then
+    AWidth := Self.Width div 3
+  else
+    AWidth := FJava.ClientWidth div 3;
+  PInteractiveLeft.Width := AWidth;
+  PInteractiveMiddle.Width := AWidth;
+  PInteractiveRight.Width := AWidth;
   for var I := 0 to FInteractiveVariables.Count - 1 do
   begin
-    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[0] := aWidth div 3;
-    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[1] := aWidth div 3;
-    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[2] := aWidth div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[0] :=
+      AWidth div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[1] :=
+      AWidth div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[2] :=
+      AWidth div 3;
   end;
 end;
 
@@ -1835,7 +1850,7 @@ procedure TFMessages.TBJavaResetMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then
-    getComJava.JavaReset
+    GetComJava.JavaReset
   else
     FJava.Restart;
 end;
@@ -1853,7 +1868,7 @@ begin
         if MyDebugger.Running then
           MyDebugger.ToUserProgram(FToJavaConsole)
         else
-          getComJava.WriteToJava(FToJavaConsole + #13#10);
+          GetComJava.WriteToJava(FToJavaConsole + #13#10);
         if not MyDebugger.Running and (FToJavaConsole <> '') then
           Key := #0;
         FToJavaConsole := '';
@@ -1966,8 +1981,6 @@ begin
 
   SGVariables := TStringGrid.Create(Self);
   SGVariables.Parent := PInteractiveRight;
-  SGVariables.Font.Assign(Font);
-  SGVariables.Font.Size := FConfiguration.Fontsize;
   SGVariables.Align := alClient;
   SGVariables.ColCount := 3;
   SGVariables.RowCount := 2;
@@ -2006,6 +2019,7 @@ begin
   AdjustVariablesWidths(TabControlMessages.Tabs.Count - 1);
   Result := TInteractive.Create(UMLForm, IEdit, Memo, SGVariables,
     Executer, ComJava);
+  Result.SetFont(FMessagesFont);
 end;
 
 procedure TFMessages.AdjustVariablesWidths(Tab: Integer);
@@ -2297,7 +2311,7 @@ end;
 
 function TFMessages.GetCompileError(const Path: string): string;
 var
-  I, J, K: Integer;
+  I, J: Integer;
   FileWithPath: string;
 begin
   Result := '';
@@ -2308,7 +2322,7 @@ begin
     FileWithPath := GetFileWithPath(LBCompiler, I);
     if FileWithPath = Path then
     begin
-      for K := I to J do
+      for var K := I to J do
         Result := Result + '#13#10' + LBCompiler.Items[K];
       Exit;
     end
@@ -2382,7 +2396,7 @@ procedure TFMessages.ChangeStyle;
 var
   Details: TThemedElementDetails;
 begin
-  if FConfiguration.isDark then
+  if FConfiguration.IsDark then
   begin
     DebuggerToolbar.Images := vilDebuggerToolbarDark;
     TBInteractiveToolbar.Images := vilInteractiveDark;
@@ -2433,8 +2447,13 @@ end;
 
 procedure TFMessages.SetDumpActive(Value: Boolean);
 begin
-  FDumpActive:= Value;
+  FDumpActive := Value;
 end;
 
+procedure TFMessages.SetOptions;
+begin
+  Font.Size := FConfiguration.FontSize;
+  SetStatusBarAndTabs;
+end;
 
 end.

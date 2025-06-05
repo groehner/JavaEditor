@@ -99,7 +99,7 @@ object AFrameDiagram: TAFrameDiagram
       Caption = 'Hide inherited methods of system classes'
       OnClick = MIClassPopupHideInheritedClick
     end
-    object N1: TSpTBXSeparatorItem
+    object N1Sep: TSpTBXSeparatorItem
       Tag = 1
     end
     object MIClassPopupDisplay: TSpTBXSubmenuItem
@@ -377,7 +377,7 @@ object AFrameDiagram: TAFrameDiagram
       ImageName = 'InstanceOf'
       OnClick = MIConnectionClick
     end
-    object N3: TSpTBXSeparatorItem
+    object N3Sep: TSpTBXSeparatorItem
     end
     object MIConnectionRecursiv: TSpTBXSubmenuItem
       Caption = 'Recursive'
@@ -451,7 +451,7 @@ object AFrameDiagram: TAFrameDiagram
       ImageName = 'Right'
       OnClick = MIPopupAlignClick
     end
-    object N2: TSpTBXSeparatorItem
+    object N2Sep: TSpTBXSeparatorItem
     end
     object MIPopupTop: TSpTBXItem
       Tag = 4

@@ -34,12 +34,12 @@ type
       PipeContext: TPipeContext; ErrorCode: Integer);
   private
     aConsolePipe: HPIPE;
-    procedure WriteToPipe(Pipe: HPIPE; s: string);
-    procedure WriteToJava(const s: ANSIString);
+    procedure WriteToPipe(Pipe: HPIPE; Str: string);
+    procedure WriteToJava(const Str: ANSIString);
   public
-    procedure WriteToConsolePipe(s: string);
+    procedure WriteToConsolePipe(Str: string);
     procedure WMCOPYDATA(var msg: TWMCopyData); message WM_COPYDATA;
-    procedure ShowInMemo(s: string);
+    procedure ShowInMemo(Str: string);
   end;
 
 var
@@ -51,15 +51,15 @@ implementation
 
 uses UComJava2, UUtils;
 
-procedure TFJe2Java.WriteToConsolePipe(s: string);
+procedure TFJe2Java.WriteToConsolePipe(Str: string);
 begin
-  if not aConsolePipeServer.Write(aConsolePipe, s[1], length(s)*SizeOf(Char)) then
-    ShowInMemo('Cannot write to ConsolePipe: ' + s);
+  if not aConsolePipeServer.Write(aConsolePipe, Str[1], Length(Str)*SizeOf(Char)) then
+    ShowInMemo('Cannot write to ConsolePipe: ' + Str);
 end;
 
-procedure TFJe2Java.WriteToJava(const s: ANSIString);
+procedure TFJe2Java.WriteToJava(const Str: ANSIString);
 begin
-  myComJava2.WriteToJava(s);
+  myComJava2.WriteToJava(Str);
 end;
 
 procedure TFJe2Java.aPipeServerPipeConnect(Sender: TObject; Pipe: HPIPE);
@@ -87,65 +87,65 @@ end;
 
 procedure TFJe2Java.aPipeServerPipeMessage(Sender: TObject; Pipe: HPIPE;
   Stream: TStream);
-  var s: string;
+  var Str: string;
 begin
-  SetLength(s, Stream.Size div 2);
-  Stream.Read(Pointer(s)^, Stream.Size);
-  ShowInMemo('> ' + s);
+  SetLength(Str, Stream.Size div 2);
+  Stream.Read(Pointer(Str)^, Stream.Size);
+  ShowInMemo('> ' + Str);
   try
-    s:= myComJava2.ExecuteCommand(s);
+    Str:= myComJava2.ExecuteCommand(Str);
   except
-    on e: exception do
-      s:= '-ERR ' + e.Message;
+    on e: Exception do
+      Str:= '-ERR ' + e.Message;
   end;
-  ShowInMemo('< ' + s);
+  ShowInMemo('< ' + Str);
   ShowInMemo(myComJava2.ReadConsole);
-  WriteToPipe(Pipe, s);
+  WriteToPipe(Pipe, Str);
 end;
 
 procedure TFJe2Java.aConsolePipeServerPipeMessage(Sender: TObject; Pipe: HPIPE;
   Stream: TStream);
-  var s: string;
+  var Str: string;
       us: AnsiString;
 begin
   aConsolePipe:= Pipe;
-  SetLength(s, Stream.Size div 2);
-  Stream.Read(Pointer(s)^, Stream.Size);
-  ShowInMemo('CON> ' + s);
-  us:= AnsiString(s);
+  SetLength(Str, Stream.Size div 2);
+  Stream.Read(Pointer(Str)^, Stream.Size);
+  ShowInMemo('CON> ' + Str);
+  us:= AnsiString(Str);
   // __init__ is used to establish the ConsolePipe-Connection
-  if s <> '__init__' then WriteToJava(us);
+  if Str <> '__init__' then WriteToJava(us);
 end;
 
-procedure TFJe2Java.WriteToPipe(Pipe: HPIPE; s: string);
+procedure TFJe2Java.WriteToPipe(Pipe: HPIPE; Str: string);
 begin
-  aPipeServer.Write(Pipe, s[1], length(s)*SizeOf(Char));
+  aPipeServer.Write(Pipe, Str[1], Length(Str)*SizeOf(Char));
 end;
 
 procedure TFJe2Java.BExecuteClick(Sender: TObject);
 begin
   ShowInMemo(ECommand.Text);
-  var s:= myComJava2.ExecuteCommand(ECommand.Text);
-  ShowInMemo(s);
+  var Str:= myComJava2.ExecuteCommand(ECommand.Text);
+  ShowInMemo(Str);
 end;
 
 procedure TFJe2Java.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  aPipeserver.Active:= false;
-  aConsolePipeserver.Active:= false;
-  if assigned(myComJava2) then
+  aPipeserver.Active:= False;
+  aConsolePipeserver.Active:= False;
+  if Assigned(myComJava2) then
     myComJava2.Close;
 end;
 
 procedure TFJe2Java.FormCreate(Sender: TObject);
 begin
   var ConnectID:= ParamStr(1);
-  myComJava2:= TComJava2.create;
+  myComJava2:= TComJava2.Create;
   Caption:= 'FJe2Java' + ConnectID;
 
   // aPipeServer is for communicating commands
   aPipeServer.PipeName:= 'je2java' + ConnectID;
-  aPipeServer.Active:= true;
+  aPipeServer.Active:= True;
   ShowInMemo('Pipe server started with ' + aPipeServer.PipeName);
 
   // during the execution of a command (callMethod, createObject, ...) it's not
@@ -153,7 +153,7 @@ begin
 
   // aConsolePipeServer is for communicating with the java console
   aConsolePipeServer.PipeName:= 'javaconsole' + ConnectID;
-  aConsolePipeServer.Active:= true;
+  aConsolePipeServer.Active:= True;
   ShowInMemo('Console pipe server started with ' + aConsolePipeServer.PipeName);
 end;
 
@@ -163,18 +163,18 @@ begin
 end;
 
 procedure TFJe2Java.WMCOPYDATA(var msg: TWMCopyData);
-  var s: string;
+  var Str: string;
 begin
-  s:= PChar(msg.CopyDataStruct.lpData);
-  s:= copy(s, 1, msg.CopyDataStruct.cbData div 2);
-  myComJava2.processMessage(s);
-  if s = 'term' then
+  Str:= PChar(msg.CopyDataStruct.lpData);
+  Str:= Copy(Str, 1, msg.CopyDataStruct.cbData div 2);
+  myComJava2.processMessage(Str);
+  if Str = 'term' then
     Close;
 end;
 
-procedure TFJe2Java.ShowInMemo(s: string);
+procedure TFJe2Java.ShowInMemo(Str: string);
 begin
-  Memo1.Lines.Add(s);
+  Memo1.Lines.Add(Str);
 end;
 
 end.

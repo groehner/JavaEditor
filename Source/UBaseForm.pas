@@ -3,7 +3,11 @@ unit UBaseForm;
 interface
 
 uses
-  Messages, Classes, Graphics, Controls, Forms;
+  Messages,
+  Classes,
+  Graphics,
+  Controls,
+  Forms;
 
 { are derived from TFForm (with type identifier)
                         FormTag
@@ -64,7 +68,7 @@ type
     procedure SetOptions; virtual;
     function GetState: string; virtual;
     function GetFormType: string; virtual;
-    function DefaultFilename: Boolean;
+    function IsDefaultFilename: Boolean;
     procedure OpenWindow(Sender: TObject); virtual;
     procedure CollectClasses(StringList: TStringList); virtual;
     procedure ToMainPanel;
@@ -72,7 +76,7 @@ type
     function MyActiveControl: TWinControl;
     procedure SaveIn(const Dir: string); virtual;
     function GetSaveAsName: string; virtual;
-    procedure Save(MitBackup: Boolean); virtual;
+    procedure Save(WithBackup: Boolean); virtual;
     procedure DoExport; virtual;
     procedure Print; virtual;
     procedure Search; virtual;
@@ -105,8 +109,15 @@ type
 
 implementation
 
-uses Windows, SysUtils, JvGnugettext, UStringRessources,
-     UUtils, UJava, UConfiguration, UTabObject;
+uses
+  Windows,
+  SysUtils,
+  JvGnugettext,
+  UStringRessources,
+  UUtils,
+  UJava,
+  UConfiguration,
+  UTabObject;
 
 {$R *.dfm}
 
@@ -136,7 +147,7 @@ procedure TFForm.FormClose(Sender: TObject; var AAction: TCloseAction);
 begin
   try
     FJava.DeleteTabAndWindow(Number);
-    if not DefaultFilename and (FJava.ProjectFilename = '') then
+    if not IsDefaultFilename and (FJava.ProjectFilename = '') then
       FJava.RearrangeFileHistory(Pathname);
   finally
     FJava.TDIFormsList.Remove(Self);
@@ -161,13 +172,14 @@ begin
   MouseActivate:= maActivate;
 end;
 
-procedure TFForm.Save(MitBackup: Boolean);
+procedure TFForm.Save(WithBackup: Boolean);
 begin
   // in some descendet classes Save isn't needed
 end;
 
 procedure TFForm.SaveIn(const Dir: string);
 begin
+  // nothing to do
 end;
 
 function TFForm.GetSaveAsName: string;
@@ -225,38 +237,47 @@ end;
 
 procedure TFForm.SetOptions;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.Search;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.SearchAgain;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.Replace;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.CutToClipboard;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.CopyToClipboard;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.PasteFromClipboard;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.Undo;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.Redo;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.OpenWindow(Sender: TObject);
@@ -292,7 +313,7 @@ procedure TFForm.Enter(Sender: TObject);
 begin
   FJava.ActiveTool:= -1;
   FJava.SetSelectedTabAndWindow(Number);
-  FJava.myTabBarColorize;
+  FJava.MyTabBarColorize;
   FJava.ActiveTDIChild:= Self;
   FJava.UpdateMenuItems(Self);
   ChangeStyle;
@@ -328,6 +349,7 @@ end;
 
 procedure TFForm.ChangeStyle;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.DPIChanged;
@@ -337,14 +359,16 @@ end;
 
 procedure TFForm.DoExport;
 begin
+  // nothing to do
 end;
 
 procedure TFForm.CollectClasses(StringList: TStringList);
 begin
+  // nothing to do
 end;
 
-function TFForm.DefaultFilename: Boolean;
- var Int, Posi: Integer; Str, Default: string;
+function TFForm.IsDefaultFilename: Boolean;
+ var Posi: Integer; Str, Default: string;
 begin
   Result:= False;
   if Assigned(FConfiguration) then
@@ -355,7 +379,7 @@ begin
         Delete(Str, 1, Length(Default));
         Posi:= Pos('.', Str);
         Delete(Str, Posi, Length(Str));
-        Result:= TryStrToInt(Str, Int);
+        Result:= TryStrToInt(Str, Posi);
         end
       else
         Result:= False;

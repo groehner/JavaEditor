@@ -15,7 +15,7 @@ type
     private
       InputPipe: TPipeHandles;
       OutputPipe : TPipeHandles;
-      ExecThreadTerminated: boolean;
+      ExecThreadTerminated: Boolean;
       aJavaCompiler: TJavaCompiler;
       aJavaRuntime: TJavaRuntime;
       ErrorMessage: string;
@@ -37,35 +37,35 @@ type
       LNGUnknownClass: string;
       LNGIncompatibelTypes: string;
 
-      constructor create;
+      constructor Create;
       destructor Destroy; override;
-      procedure SendMessageSynchron(const s: string);
+      procedure SendMessageSynchron(const Str: string);
       procedure ClosePipeHandles(var Pipe: TPipeHandles);
       function ExecuteCommand(const cmd: string): string;
-      procedure ShowInMemo(const s: string);
+      procedure ShowInMemo(const Str: string);
       procedure processMessage(const command: string);
       procedure Close;
 
       // class methods
-      function LoadClass(const aClassname, Pathname: string): string;
-      function createClass(const aClassname: string): string;
-      function getClass(const aClassname: string): TJavaClass;
+      function LoadClass(const AClassname, Pathname: string): string;
+      function createClass(const AClassname: string): string;
+      function getClass(const AClassname: string): TJavaClass;
       function ClassToJavaClass(aClass: jClass): TJavaClass;
-      function hasSuperClass(const aClassname: string): string;
-      function getSuperClass(const aClassname: string): string;
-      function isInterface(const aClassname: string): string;
-      function findClass(const aClassname: string): string;
-      function getAttributes(const aClassname: string): string;
-      function getAttributeNames(const aClassname: string): string;
-      function getRefreshedAttributeNames(const aClassname: string): string;
-      function getMethods(const aClassname, _Static: string): string;
-      function getConstructors(const aClassname: string): string;
-      function getNewObjectName(const aClassname: string): string;
+      function hasSuperClass(const AClassname: string): string;
+      function getSuperClass(const AClassname: string): string;
+      function isInterface(const AClassname: string): string;
+      function findClass(const AClassname: string): string;
+      function GetAttributes(const AClassname: string): string;
+      function getAttributeNames(const AClassname: string): string;
+      function getRefreshedAttributeNames(const AClassname: string): string;
+      function getMethods(const AClassname, _Static: string): string;
+      function getConstructors(const AClassname: string): string;
+      function getNewObjectName(const AClassname: string): string;
       function getNewClassname: string;
-      function getPackage(const aClassname: string): string;
+      function getPackage(const AClassname: string): string;
 
       // object methods
-      function CreateObject(const aClassname, Objectname, Signature, Params: string): string;
+      function CreateObject(const AClassname, Objectname, Signature, Params: string): string;
       function GetObject(const Objectname: string): TJavaObject;
       function DeleteObject(const Objectname: string): string;
 
@@ -75,20 +75,20 @@ type
       function DebugGetAttributeValues(const Objectname: string): string;
       function getObjectAttributeValues(const Objectname, Withtype, ArrayList: string): string;
       function getObjectAttributeNames(const Objectname: string): string;
-      function getExpressionValue(const aClassname: string): string;
-      function callMethod(const aClassname, Objectname, aMethodname, Returntype, Signature, Params, Methodtype: string): string;
+      function getExpressionValue(const AClassname: string): string;
+      function callMethod(const AClassname, Objectname, aMethodname, Returntype, Signature, Params, Methodtype: string): string;
 
       function getVariables(): string;
-      function getAttributeValue(const aClassname, Objectname, Fieldname, Sig, IsStatic: string): string;
-      function setAttributeValue(const aClassname, Objectname, Fieldname, Sig, value, IsStatic: string): string;
+      function getAttributeValue(const AClassname, Objectname, Fieldname, Sig, IsStatic: string): string;
+      function setAttributeValue(const AClassname, Objectname, Fieldname, Sig, value, IsStatic: string): string;
 
       procedure InitConsole;
       procedure IgnoreConsole;
       function ReadConsole: string;
       procedure HideConsole;
-      procedure WriteToJava(const s: ANSIString);
+      procedure WriteToJava(const Str: ANSIString);
 
-      function IsPackageClass(const aClassname: string): boolean;
+      function IsPackageClass(const AClassname: string): Boolean;
       function GetSignature(const Typ: string): string;
       function cookClass(const Pathname: string): string;
       function compile(const Parameter, Pathname: string): string;
@@ -107,26 +107,26 @@ implementation
 Uses SysUtils, Forms, Dialogs, Graphics, Contnrs, ExtCtrls,
      UUtils, UJe2Java;
 
-constructor TComJava2.create;
+constructor TComJava2.Create;
 begin
   ObjectList:= TStringList.Create;
-  ObjectList.CaseSensitive:= true;
+  ObjectList.CaseSensitive:= True;
   ClassList := TStringList.Create;
-  ClassList.CaseSensitive:= true;
+  ClassList.CaseSensitive:= True;
   InitConsole;
 end;
 
 procedure TComJava2.Close;
   var aObject: TObject;
 begin
-  ExecThreadTerminated:= true;
-  for var i:= ClassList.Count - 1 downto 0 do begin
-    aObject:= TJavaClass(ClassList.Objects[i]);
+  ExecThreadTerminated:= True;
+  for var Int:= ClassList.Count - 1 downto 0 do begin
+    aObject:= TJavaClass(ClassList.Objects[Int]);
     FreeAndNil(aObject);
   end;
   ClassList.Clear;
-  for var i:= ObjectList.Count - 1 downto 0 do begin
-    aObject:= TObject(ObjectList.Objects[i]);
+  for var Int:= ObjectList.Count - 1 downto 0 do begin
+    aObject:= TObject(ObjectList.Objects[Int]);
     FreeAndNil(aObject);
   end;
   ObjectList.Clear;
@@ -156,7 +156,7 @@ begin
       else if SL[0] = 'createObject' then
         Result:= createObject(SL[1], SL[2], SL[3], SL[4])
       else if SL[0] = 'getAttributes' then
-        Result:= getAttributes(SL[1])
+        Result:= GetAttributes(SL[1])
       else if SL[0] = 'getAttributeNames' then
         Result:= getAttributeNames(SL[1])
       else if SL[0] = 'getMethods' then
@@ -215,7 +215,7 @@ begin
         Result:= getPackage(SL[1])
       else if SL[0] = 'term' then
         Result:= '+OK Java terminated';
-    except on e: exception do
+    except on e: Exception do
       Result:= '-ERR: ' + E.Message;
   end
   finally
@@ -224,29 +224,29 @@ begin
 end;
 
 procedure TComJava2.processMessage(const command: string);
-  var s: string;
+  var Str: string;
 begin
   if Pos('setParam', command) <> 1 then
     ShowInMemo('> ' + command);
   try
-    s:= ExecuteCommand(command);
+    Str:= ExecuteCommand(command);
   except
-    on e: exception do
-      s:= '-ERR ' + e.Message;
+    on e: Exception do
+      Str:= '-ERR ' + e.Message;
   end;
   if Pos('setParam', command) <> 1 then begin
-    ShowInMemo('< ' + s);
+    ShowInMemo('< ' + Str);
     ShowInMemo(ReadConsole);
   end;
-  SendMessageSynchron(s);
+  SendMessageSynchron(Str);
 end;
 
-procedure TComJava2.SendMessageSynchron(const s: string);
+procedure TComJava2.SendMessageSynchron(const Str: string);
   var cds: TCopyDataStruct;
 begin
   cds.dwData:= 0; // used to identify the message contents
-  cds.cbData:= Length(s)*sizeOf(Char);
-  cds.lpData:= PChar(s);
+  cds.cbData:= Length(Str)*sizeOf(Char);
+  cds.lpData:= PChar(Str);
   Windows.SendMessage(hWndFJava, WM_COPYDATA, FJe2Java.Handle, LPARAM(@cds))
 end;
 
@@ -260,7 +260,7 @@ begin
   HideConsole;
   SecAttr.nLength:= SizeOf(SecAttr);
   SecAttr.lpSecurityDescriptor:= nil;
-  SecAttr.bInheritHandle:= true;
+  SecAttr.bInheritHandle:= True;
 
   // Java outputs to OutputPipe.hWrite
   // ConsoleThread reads from OutputPipe.hRead and shows Java-Output in Interpreter-Window
@@ -294,28 +294,28 @@ begin
   end;
 end;
 
-procedure TComJava2.ShowInMemo(const s: string);
+procedure TComJava2.ShowInMemo(const Str: string);
 begin
-  FJe2Java.ShowInMemo(s);
+  FJe2Java.ShowInMemo(Str);
 end;
 
-function TComJava2.LoadClass(const aClassname, Pathname: string): string;
+function TComJava2.LoadClass(const AClassname, Pathname: string): string;
 begin
-  var aJavaClass:= TJavaClass.CreateLoadClass(aClassname, Pathname);
+  var aJavaClass:= TJavaClass.CreateLoadClass(AClassname, Pathname);
   try
     // if there is an exception in LoadClass then LoadClass is aborted
     // the exeception is handled in TComJava2.NewMessage
     ShowInMemo('Loadclass ausgeführt.');
-    if assigned(aJavaClass.Handle) then begin
-      aJavaClass.Global:= true;
-      var i:= ClassList.IndexOf(aClassname);
-      if i = -1 then
-        ClassList.AddObject(aClassname, aJavaClass);
+    if Assigned(aJavaClass.Handle) then begin
+      aJavaClass.Global:= True;
+      var Int:= ClassList.IndexOf(AClassname);
+      if Int = -1 then
+        ClassList.AddObject(AClassname, aJavaClass);
       Result:= '+OK'
     end else
       Result:= '-ERR Could not load ' + Pathname + #13#10 + aJavaClass.Error;
   except
-    on e: exception do begin
+    on e: Exception do begin
       ShowInMemo(e.message);
       ErrorMessage:= '-ERR ' + e.message;
       Result:= ErrorMessage;
@@ -323,15 +323,15 @@ begin
   end;
 end;
 
-function TComJava2.createClass(const aClassname: string): string;
+function TComJava2.createClass(const AClassname: string): string;
 begin
   Result:= '+OK';
-  var i:= ClassList.IndexOf(aClassname);
-  if i = -1 then begin
-    var aJavaClass:= TJavaClass.Create(aClassname);
+  var Int:= ClassList.IndexOf(AClassname);
+  if Int = -1 then begin
+    var aJavaClass:= TJavaClass.Create(AClassname);
     if aJavaClass.Valid then begin
-      aJavaClass.Global:= true;
-      ClassList.AddObject(aClassname, aJavaClass);
+      aJavaClass.Global:= True;
+      ClassList.AddObject(AClassname, aJavaClass);
       logClasslist;
     end else begin
       Result:= '-ERR ' + aJavaClass.Error;
@@ -340,30 +340,30 @@ begin
   end;
 end;
 
-function TComJava2.getClass(const aClassname: string): TJavaClass;
+function TComJava2.getClass(const AClassname: string): TJavaClass;
 begin
-  var i:= ClassList.IndexOf(aClassname);
-  if i = -1 then begin
-    ErrorMessage:= CreateClass(aClassname);
-    i:= ClassList.IndexOf(aClassname);
+  var Int:= ClassList.IndexOf(AClassname);
+  if Int = -1 then begin
+    ErrorMessage:= CreateClass(AClassname);
+    Int:= ClassList.IndexOf(AClassname);
   end;
-  if i = -1
+  if Int = -1
     then Result:= nil
-    else Result:= TJavaClass(ClassList.Objects[i]);
+    else Result:= TJavaClass(ClassList.Objects[Int]);
 end;
 
 function TComJava2.ClassToJavaClass(aClass: jClass): TJavaClass;
 begin
   var aJavaClass:= TJavaClass.Create(aClass);
   if aJavaClass.Valid then begin
-    var i:= ClassList.IndexOf(aJavaClass.Name);
-    if i = -1 then begin
-      aJavaClass.Global:= true;
+    var Int:= ClassList.IndexOf(aJavaClass.Name);
+    if Int = -1 then begin
+      aJavaClass.Global:= True;
       ClassList.AddObject(aJavaClass.Name, aJavaClass);
       logClasslist;
       Result:= aJavaClass;
     end else
-      Result:= TJavaClass(ClassList.Objects[i])
+      Result:= TJavaClass(ClassList.Objects[Int])
   end else begin
     FreeAndNil(aJavaClass);
     Result:= nil;
@@ -372,40 +372,40 @@ end;
 
 function TComJava2.getObject(const Objectname: string): TJavaObject;
 begin
-  var i:= ObjectList.IndexOf(Objectname);
-  if i = -1
+  var Int:= ObjectList.IndexOf(Objectname);
+  if Int = -1
     then Result:= nil
-    else Result:= TJavaObject(ObjectList.Objects[i]);
+    else Result:= TJavaObject(ObjectList.Objects[Int]);
 end;
 
-function TComJava2.getAttributeValue(const aClassname, Objectname, Fieldname, Sig, IsStatic: string): string;
+function TComJava2.getAttributeValue(const AClassname, Objectname, Fieldname, Sig, IsStatic: string): string;
   var myAttribute: TJavaAttribute; aJavaValue: TJavaValue;
       myClass: TJavaClass; myObject: TJavaObject;
 begin
-  myClass:= GetClass(aClassname);
+  myClass:= GetClass(AClassname);
   myObject:= GetObject(Objectname);
   myAttribute:= TJavaAttribute.Create(myClass);
   try
     if IsStatic = 's'
       then aJavaValue:= myAttribute.GetStaticAttributeValue(Fieldname, Sig)
       else aJavaValue:= myAttribute.GetAttributeValue(myObject, Fieldname, Sig);
-    if assigned(aJavaValue)
+    if Assigned(aJavaValue)
       then Result:= '+OK ' + aJavaValue.AsString
-      else Result:= '-ERR Unknown attribute ' + aClassname + '.' + Fieldname;
+      else Result:= '-ERR Unknown attribute ' + AClassname + '.' + Fieldname;
   finally
     FreeAndNil(myAttribute);
     FreeAndNil(aJavaValue);
   end;
 end;
 
-function TComJava2.setAttributeValue(const aClassname, Objectname, Fieldname, Sig, value, IsStatic: string): string;
+function TComJava2.setAttributeValue(const AClassname, Objectname, Fieldname, Sig, value, IsStatic: string): string;
   var myAttribute: TJavaAttribute; myJavaValue: TJavaValue;
       myClass: TJavaClass; myObject: TJavaObject;
 begin
-  myClass:= getClass(aClassname);
+  myClass:= getClass(AClassname);
   myObject:= getObject(Objectname);
   myAttribute:= TJavaAttribute.Create(myClass);
-  myJavaValue:= TJavaValue.create(Value, Sig);
+  myJavaValue:= TJavaValue.Create(Value, Sig);
   try
     if IsStatic = 's'
       then myAttribute.SetStaticAttributeValue(Fieldname, Sig, myJavaValue.Value)
@@ -421,141 +421,141 @@ function TComJava2.ToString(const Objectname: string): string;
   var myObject: TJavaObject;
 begin
   myObject:= GetObject(Objectname);
-  if assigned(myObject)
+  if Assigned(myObject)
     then Result:= '+OK ' + myObject.ToString
     else Result:= '-ERR';
 end;
 
-function TComJava2.hasSuperClass(const aClassname: string): string;
+function TComJava2.hasSuperClass(const AClassname: string): string;
 begin
-  var myClass:= getClass(aClassname);
+  var myClass:= getClass(AClassname);
   if myClass = nil then
-    TJavaClass.Create(aClassname);
+    TJavaClass.Create(AClassname);
   if myClass.Valid and myClass.hasSuperClass
     then Result:= '+OK '
     else Result:= '-NO ' + MyClass.Error;
 end;
 
-function TComJava2.getSuperClass(const aClassname: string): string;
+function TComJava2.getSuperClass(const AClassname: string): string;
 begin
-  var myClass:= getClass(aClassname);
-  if assigned(myClass)
+  var myClass:= getClass(AClassname);
+  if Assigned(myClass)
     then Result:= '+OK ' + myClass.getSuperclassName
-    else Result:= TJavaClass.getSuperClassFromName(aClassname);
+    else Result:= TJavaClass.getSuperClassFromName(AClassname);
 end;
 
-function TComJava2.findClass(const aClassname: string): string;
+function TComJava2.findClass(const AClassname: string): string;
 begin
-  Result:= TJavaClass.FindClass(aClassname);
+  Result:= TJavaClass.FindClass(AClassname);
 end;
 
 function TComJava2.getClassOf(const Objectname: string): string;
 begin
   var myObject:= getObject(Objectname);
-  if assigned(myObject) then begin
-    var s:= myObject.ClassRef.Name;  // Typ
-    if s = '' then begin
-      s:= getNewClassname;
-      ClassList.AddObject(s, myObject.ClassRef);
+  if Assigned(myObject) then begin
+    var Str:= myObject.ClassRef.Name;  // Typ
+    if Str = '' then begin
+      Str:= getNewClassname;
+      ClassList.AddObject(Str, myObject.ClassRef);
       logClasslist
     end;
-    Result:= '+OK ' + s + '|' + myObject.ToString;
+    Result:= '+OK ' + Str + '|' + myObject.ToString;
   end else
     Result:= '-ERR Unknown object "' + Objectname + '"';
 end;
 
-function TComJava2.IsInterface(const aClassname: string): string;
+function TComJava2.IsInterface(const AClassname: string): string;
 begin
-  Result:= TJavaClass.IsInterface(aClassname);
+  Result:= TJavaClass.IsInterface(AClassname);
 end;
 
-function TComJava2.getMethods(const aClassname, _Static: string): string;
+function TComJava2.getMethods(const AClassname, _Static: string): string;
 begin
-  var aJavaClass:= getClass(aClassname);
-  if not assigned(aJavaClass) then
-    aJavaClass:= TJavaClass.Create(aClassname); // maybe a system class
+  var aJavaClass:= getClass(AClassname);
+  if not Assigned(aJavaClass) then
+    aJavaClass:= TJavaClass.Create(AClassname); // maybe a system class
   if aJavaClass.Valid
     then Result:= aJavaClass.getMethods(_Static)
     else Result:= '-ERR ' + ReadConsole;
 end;
 
-function TComJava2.getConstructors(const aClassname: string): string;
+function TComJava2.getConstructors(const AClassname: string): string;
 begin
-  var aJavaClass:= getClass(aClassname);
-  if not assigned(aJavaClass) then
-    aJavaClass:= TJavaClass.Create(aClassname); // maybe a system class
+  var aJavaClass:= getClass(AClassname);
+  if not Assigned(aJavaClass) then
+    aJavaClass:= TJavaClass.Create(AClassname); // maybe a system class
   if aJavaClass.Valid
     then Result:= aJavaClass.getConstructors
     else Result:= '-ERR ' + ReadConsole;
 end;
 
-function TComJava2.getAttributes(const aClassname: string): string;
+function TComJava2.GetAttributes(const AClassname: string): string;
 begin
-  var aJavaClass:= getClass(aClassname);
-  if assigned(aJavaClass)
-    then Result:= '+OK ' + aJavaClass.getAttributes
-    else Result:= '-ERR ' + 'Unknown class: ' + aClassname;
+  var aJavaClass:= getClass(AClassname);
+  if Assigned(aJavaClass)
+    then Result:= '+OK ' + aJavaClass.GetAttributes
+    else Result:= '-ERR ' + 'Unknown class: ' + AClassname;
 end;
 
-function TComJava2.getAttributeNames(const aClassname: string): string;
+function TComJava2.getAttributeNames(const AClassname: string): string;
 begin
-  var aJavaClass:= getClass(aClassname);
-  if assigned(aJavaClass)
+  var aJavaClass:= getClass(AClassname);
+  if Assigned(aJavaClass)
     then Result:= '+OK ' + aJavaClass.getAttributeNames
-    else Result:= '-ERR ' + 'Unknown class: ' + aClassname;
+    else Result:= '-ERR ' + 'Unknown class: ' + AClassname;
 end;
 
-function TComJava2.getRefreshedAttributeNames(const aClassname: string): string;
+function TComJava2.getRefreshedAttributeNames(const AClassname: string): string;
 begin
-  var aJavaClass:= getClass(aClassname);
-  if assigned(aJavaClass)
+  var aJavaClass:= getClass(AClassname);
+  if Assigned(aJavaClass)
     then Result:= '+OK ' + aJavaClass.getRefreshedAttributeNames
-    else Result:= '-ERR ' + 'Unknown class: ' + aClassname;
+    else Result:= '-ERR ' + 'Unknown class: ' + AClassname;
 end;
 
 function TComJava2.getAttributeValues(const Objectname, ArrayList: string): string;
   var myObject: TJavaObject; myAttribute: TJavaAttribute; aJavaValue: TJavaValue;
-      i: integer; s: string; AttributesList: TObjectList;
+      Int: Integer; Str: string; AttributesList: TObjectList;
 
-  function ArrayListToList(s: string): string;
+  function ArrayListToList(Str: string): string;
   begin
-    s:= getObjectAttributeValues(s, '', ArrayList);
-    s:= copy(s, 7, length(s) - 7);
-    var SL:= split(',', s);
-    s:= '[';
+    Str:= getObjectAttributeValues(Str, '', ArrayList);
+    Str:= Copy(Str, 7, Length(Str) - 7);
+    var SL:= Split(',', Str);
+    Str:= '[';
     for var j:= 0 to SL.Count - 1 do begin
-      var s1:= trim(SL[j]);
-      if (s1 <> '') and (s1 <> 'null') then
-        s:= s + s1 + ', ';
+      var Str1:= Trim(SL[j]);
+      if (Str1 <> '') and (Str1 <> 'null') then
+        Str:= Str + Str1 + ', ';
     end;
-    if s = '['
-      then s:= '[]'
-      else s:= Left(s, length(s) - 2) + ']';
+    if Str = '['
+      then Str:= '[]'
+      else Str:= Left(Str, Length(Str) - 2) + ']';
     FreeAndNil(SL);
-    Result:= s;
+    Result:= Str;
   end;
 
 begin
   myObject:= getObject(Objectname);
-  if assigned(myObject) then
-    if assigned(myObject.ClassRef) then begin
-      if not assigned(myObject.ClassRef.AttributesList) then
-        myObject.getAttributes;
+  if Assigned(myObject) then
+    if Assigned(myObject.ClassRef) then begin
+      if not Assigned(myObject.ClassRef.AttributesList) then
+        myObject.GetAttributes;
       AttributesList:= myObject.ClassRef.AttributesList;
-      s:= '';
-      for i:= 0 to AttributesList.Count - 1 do begin
-        myAttribute:= TJavaAttribute(AttributesList.Items[i]);
+      Str:= '';
+      for Int:= 0 to AttributesList.Count - 1 do begin
+        myAttribute:= TJavaAttribute(AttributesList.Items[Int]);
         if myAttribute.Static_
           then aJavaValue:= myAttribute.GetStaticAttributeValue()
           else aJavaValue:= myAttribute.GetAttributeValue(myObject);
-        if assigned(aJavaValue) then
+        if Assigned(aJavaValue) then
           if (ArrayList = 'ArrayList') and (myAttribute.Typ = 'java.util.ArrayList')
-            then s:= s + #4 + ArrayListToList(aJavaValue.AsString)
-            else s:= s + #4 + aJavaValue.AsString
-          else s:= s + #4'<error>';
+            then Str:= Str + #4 + ArrayListToList(aJavaValue.AsString)
+            else Str:= Str + #4 + aJavaValue.AsString
+          else Str:= Str + #4'<error>';
         FreeAndNil(aJavaValue);
       end;
-      Result:= '+OK ' + s + #4 + myObject.ToString;
+      Result:= '+OK ' + Str + #4 + myObject.ToString;
     end else
       Result:= '-ERR unknown class for object ' + Objectname
   else
@@ -564,29 +564,29 @@ end;
 
 function TComJava2.DebugGetAttributeValues(const Objectname: string): string;
   var myObject: TJavaObject; myAttribute: TJavaAttribute; aJavaValue: TJavaValue;
-      i: integer; s: string; AttributesList: TObjectList;
+      Int: Integer; Str: string; AttributesList: TObjectList;
 begin
   myObject:= getObject(Objectname);
-  if assigned(myObject) then
-    if assigned(myObject.ClassRef) then begin
-      if assigned(myObject.ClassRef.AttributesList) then begin
+  if Assigned(myObject) then
+    if Assigned(myObject.ClassRef) then begin
+      if Assigned(myObject.ClassRef.AttributesList) then begin
         myObject.ClassRef.AttributesList.Free;
         myObject.ClassRef.AttributesList:= nil;
-        myObject.getAttributes;
+        myObject.GetAttributes;
       end;
       AttributesList:= myObject.ClassRef.AttributesList;
-      s:= '';
-      for i:= 0 to AttributesList.Count - 1 do begin
-        myAttribute:= TJavaAttribute(AttributesList.Items[i]);
+      Str:= '';
+      for Int:= 0 to AttributesList.Count - 1 do begin
+        myAttribute:= TJavaAttribute(AttributesList.Items[Int]);
         if myAttribute.Static_
           then aJavaValue:= myAttribute.GetStaticAttributeValue()
           else aJavaValue:= myAttribute.GetAttributeValue(myObject);
-        if assigned(aJavaValue)
-          then s:= s + #4 + myAttribute.Name + '=' + aJavaValue.AsString
-          else s:= s + #4 + myAttribute.Name + '=' + '<error>';
+        if Assigned(aJavaValue)
+          then Str:= Str + #4 + myAttribute.Name + '=' + aJavaValue.AsString
+          else Str:= Str + #4 + myAttribute.Name + '=' + '<error>';
         FreeAndNil(aJavaValue);
       end;
-      Result:= '+OK ' + 'Debug ' + Objectname + ':  ' + s;
+      Result:= '+OK ' + 'Debug ' + Objectname + ':  ' + Str;
     end else
       Result:= '-ERR unknown class for object ' + Objectname
   else
@@ -595,92 +595,92 @@ end;
 
 function TComJava2.getObjectAttributeValues(const Objectname, WithType, ArrayList: string): string;
   var myObject: TJavaObject; myAttribute: TJavaAttribute; aJavaValue: TJavaValue;
-      i, j: integer; s, s1, s2: string; SL: TStringList; AttributesList: TObjectList;
+      Int, j: Integer; Str, Str1, Str2: string; SL: TStringList; AttributesList: TObjectList;
 
   procedure AddObject(const obj: string);
   begin
     var aJavaObject:= getObject(obj);
-    if assigned(aJavaObject) and (WithType = 'withtype')
-      then s:= s + #4 + obj + '=' + aJavaObject.Classref.ImportTyp
-      else s:= s + #4 + obj;
+    if Assigned(aJavaObject) and (WithType = 'withtype')
+      then Str:= Str + #4 + obj + '=' + aJavaObject.Classref.ImportTyp
+      else Str:= Str + #4 + obj;
   end;
 
   procedure ArrayListToList(obj: string);
-    var s1, s2: string;
+    var Str1, Str2: string;
   begin
-    s2:= '[';
+    Str2:= '[';
     obj:= getObjectAttributeValues(obj, '', ArrayList);
-    obj:= copy(obj, 7, length(obj) - 7);
-    SL:= split(',', obj);
+    obj:= Copy(obj, 7, Length(obj) - 7);
+    SL:= Split(',', obj);
     for var j:= 0 to SL.Count - 1 do begin
-      s1:= trim(SL[j]);
-      if (s1 <> '') and (s1 <> 'null') then begin
-        var aJavaObject:= getObject(s1);
-        if assigned(aJavaObject) and (WithType = 'withtype')
-          then s2:= s2 + s1 + '=' + aJavaObject.Classref.ImportTyp + ', '
-          else s2:= s2 + s1 + ', ';
+      Str1:= Trim(SL[j]);
+      if (Str1 <> '') and (Str1 <> 'null') then begin
+        var aJavaObject:= getObject(Str1);
+        if Assigned(aJavaObject) and (WithType = 'withtype')
+          then Str2:= Str2 + Str1 + '=' + aJavaObject.Classref.ImportTyp + ', '
+          else Str2:= Str2 + Str1 + ', ';
       end;
     end;
-    if s2 = '['
-      then s2:= '[]'
-      else s2:= Left(s2, length(s2) - 2) + ']';
-    s:= s + #4 + s2;
+    if Str2 = '['
+      then Str2:= '[]'
+      else Str2:= Left(Str2, Length(Str2) - 2) + ']';
+    Str:= Str + #4 + Str2;
     FreeAndNil(SL);
   end;
 
 begin
-  s:= '';
+  Str:= '';
   myObject:= GetObject(Objectname);
-  if assigned(myObject) and assigned(myObject.ClassRef) then begin
-    if not assigned(myObject.ClassRef.AttributesList) then
-      myObject.getAttributes;
+  if Assigned(myObject) and Assigned(myObject.ClassRef) then begin
+    if not Assigned(myObject.ClassRef.AttributesList) then
+      myObject.GetAttributes;
     AttributesList:= myObject.ClassRef.AttributesList;
-    for i:= 0 to AttributesList.Count - 1 do begin
-      myAttribute:= TJavaAttribute(AttributesList.Items[i]);
+    for Int:= 0 to AttributesList.Count - 1 do begin
+      myAttribute:= TJavaAttribute(AttributesList.Items[Int]);
       if myAttribute.isObject then begin
         if myAttribute.Static_
           then aJavaValue:= myAttribute.GetStaticAttributeValue()
           else aJavaValue:= myAttribute.GetAttributeValue(myObject);
-        if assigned(aJavaValue) then begin
-          s1:= aJavaValue.AsString;
-          if (Pos('{', s1) = 1) and (Withtype = 'withtype') then begin   // array
-            s1:= copy(s1, 2, length(s1) - 2);
-            SL:= Split(',', s1);
+        if Assigned(aJavaValue) then begin
+          Str1:= aJavaValue.AsString;
+          if (Pos('{', Str1) = 1) and (Withtype = 'withtype') then begin   // array
+            Str1:= Copy(Str1, 2, Length(Str1) - 2);
+            SL:= Split(',', Str1);
             for j:= 0 to SL.Count - 1 do begin
-              s2:= trim(SL[j]);
-              AddObject(s2);
+              Str2:= Trim(SL[j]);
+              AddObject(Str2);
             end;
             FreeAndNil(SL);
           end else if (ArrayList = 'ArrayList') and (myAttribute.Typ = 'java.util.ArrayList') then
-            ArrayListToList(s1)
+            ArrayListToList(Str1)
           else
-            AddObject(s1);
+            AddObject(Str1);
         end else
           AddObject('<error>');
         FreeAndNil(aJavaValue);
       end;
     end;
-    Result:= '+OK ' + s;
+    Result:= '+OK ' + Str;
   end else
     Result:= '-ERR No object or no class';
 end;
 
 function TComJava2.getObjectAttributeNames(const Objectname: string): string;
   var myObject: TJavaObject; myAttribute: TJavaAttribute;
-      i: integer; s: string; AttributesList: TObjectList;
+      Int: Integer; Str: string; AttributesList: TObjectList;
 begin
-  s:= '';
+  Str:= '';
   myObject:= GetObject(Objectname);
-  if assigned(myObject) and assigned(myObject.ClassRef) then begin
-    if not assigned(myObject.ClassRef.AttributesList) then
-      myObject.getAttributes;
+  if Assigned(myObject) and Assigned(myObject.ClassRef) then begin
+    if not Assigned(myObject.ClassRef.AttributesList) then
+      myObject.GetAttributes;
     AttributesList:= myObject.ClassRef.AttributesList;
-    for i:= 0 to AttributesList.Count - 1 do begin
-      myAttribute:= TJavaAttribute(AttributesList.Items[i]);
+    for Int:= 0 to AttributesList.Count - 1 do begin
+      myAttribute:= TJavaAttribute(AttributesList.Items[Int]);
       if myAttribute.isObject then
-        s:= s + #4 + myAttribute.Name;
+        Str:= Str + #4 + myAttribute.Name;
     end;
-    Result:= '+OK ' + s;
+    Result:= '+OK ' + Str;
   end else
     Result:= '-ERR No object or no class';
 end;
@@ -692,7 +692,7 @@ begin
   while PeekNamedPipe(OutputPipe.hRead, nil, 0, nil, @Read, nil) and (Read > 0) do begin
     SetLength(Buffer, Read);
     ReadFile(OutputPipe.hRead, Buffer[1], Read, Read, nil);
-    Result:= Result + String(Buffer);
+    Result:= Result + string(Buffer);
   end;
 end;
 
@@ -701,21 +701,21 @@ begin
   HideThread:= THideThread.Create;
 end;
 
-procedure TComJava2.WriteToJava(const s: ANSIString);
-  var i: cardinal;
+procedure TComJava2.WriteToJava(const Str: ANSIString);
+  var Int: cardinal;
 begin
-  WriteFile(InputPipe.hWrite, s[1], length(s), i, nil);
+  WriteFile(InputPipe.hWrite, Str[1], Length(Str), Int, nil);
 end;
 
-function TComJava2.CreateObject(const aClassname, Objectname, Signature, Params: string): string;
+function TComJava2.CreateObject(const AClassname, Objectname, Signature, Params: string): string;
   var ConsoleThread: TConsoleThread; ExecThread: TExecThread;
       aJavaObject: TJavaObject; myClass: TJavaClass; theParams: TJavaParams;
       Error, aSignature: string;
 begin
   aJavaObject:= nil;
   ConsoleThread:= nil;
-  myClass:= getClass(aClassname);
-  aSignature:= copy(Signature, 2, length(Signature)-3);
+  myClass:= getClass(AClassname);
+  aSignature:= Copy(Signature, 2, Length(Signature)-3);
   theParams:= TJavaParams.CreateMakeParams(aSignature, Params);
   if theParams.IsValid then begin
     try
@@ -741,7 +741,7 @@ begin
       end;
     finally
       FreeAndNil(ExecThread);
-      if assigned(ConsoleThread) then begin
+      if Assigned(ConsoleThread) then begin
         ConsoleThread.Terminate;
         ConsoleThread.WaitFor;
         FreeAndNil(ConsoleThread);
@@ -750,27 +750,27 @@ begin
     end;
   end else
     Error:= theParams.Error;
-  if assigned(aJavaObject)
+  if Assigned(aJavaObject)
     then Result:= '+OK ' + aJavaObject.ToString
     else Result:= '-ERR ' + Error + #13#10 + ReadConsole;
 end;
 
-function TComJava2.callMethod(const aClassname, Objectname, aMethodname, Returntype, Signature, Params, Methodtype: string): string;
+function TComJava2.callMethod(const AClassname, Objectname, aMethodname, Returntype, Signature, Params, Methodtype: string): string;
   var ConsoleThread: TConsoleThread; ExecThread: TExecThread;
       aJavaObject: TJavaObject; theParams: TJavaParams; myClass: TJavaClass;
       aJavaTyp: TNumType; aJavaMethod: TJavaMethod; aJavaValue: TJavaValue;
-      p: integer; aReturnType: string;
+      Posi: Integer; aReturnType: string;
 begin
   Result:= '-ERR';
-  myClass:= getClass(aClassname);
+  myClass:= getClass(AClassname);
   if myClass = nil then begin
-    Result:= '-ERR Unknown class: ' + aClassname;
-    exit;
+    Result:= '-ERR Unknown class: ' + AClassname;
+    Exit;
   end;
   aJavaObject:= getObject(Objectname);
   if (aJavaObject = nil) and (Objectname <> '') then begin
     Result:= '-ERR Unknown object: ' + Objectname;
-    exit;
+    Exit;
   end;
   aJavaTyp:= TypToNumType(ReturnType);
   // check, if Returntype exists, due to generic problem
@@ -778,8 +778,8 @@ begin
     then aReturnType:= 'java.lang.Object'
     else aReturnType:= ReturnType;
   try
-    p:= Pos(')', Signature);
-    theParams:= TJavaParams.CreateMakeParams(copy(Signature, 2, p-2), Params);
+    Posi:= Pos(')', Signature);
+    theParams:= TJavaParams.CreateMakeParams(Copy(Signature, 2, Posi-2), Params);
     if theParams.IsValid then begin
       aJavaMethod:= TJavaMethod.Create(myClass, aMethodName, TMethodAttribute(StrToInt(Methodtype)),
                                        aJavaTyp, theParams, aReturnType);
@@ -791,7 +791,7 @@ begin
             try
               ExecThread.SetMethodCall(aJavaMethod, theParams, aJavaObject, aJavaTyp);
               ExecThread.OnTerminate:= {$IFDEF LCL}@{$ENDIF} ExecThreadOnTerminate;
-              ExecThreadTerminated:= false;
+              ExecThreadTerminated:= False;
               ExecThread.Start;
               repeat
                 Application.ProcessMessages;
@@ -800,12 +800,12 @@ begin
               aJavaValue:= ExecThread.aJavaValue;
               if aJavaValue.Error = ''
                 then Result:= '+OK '  + aJavaValue.AsString
-                else Result:= '-ERR ' + String(ConsoleThread.Buffer) + ConsoleThread.aException + aJavaValue.Error;
+                else Result:= '-ERR ' + string(ConsoleThread.Buffer) + ConsoleThread.aException + aJavaValue.Error;
               aJavaValue.Free;
             finally
               FreeAndNil(ExecThread);
             end;
-            for p:= 0 to 9 do begin
+            for Posi:= 0 to 9 do begin
               sleep(10);
               Application.ProcessMessages;
             end;
@@ -826,30 +826,30 @@ begin
   end;
 end;
 
-function TComJava2.getExpressionValue(const aClassname: string): string;
-  var s, Objectname, ExprType: string; 
+function TComJava2.getExpressionValue(const AClassname: string): string;
+  var Str, Objectname, ExprType: string; 
       myAttribute: TJavaAttribute;
       aJavaValue: TJavaValue;
       myObject: TJavaObject; SL: TStringList;
 begin
-  s:= callMethod(aClassname, '', 'run', 'java.lang.Object', '()Ljava/lang/Object;', '', '0');
-  if Left(s, 3) = '+OK' then begin
-    Objectname:= Right(s, 5);
+  Str:= callMethod(AClassname, '', 'run', 'java.lang.Object', '()Ljava/lang/Object;', '', '0');
+  if Left(Str, 3) = '+OK' then begin
+    Objectname:= Right(Str, 5);
     myObject:= GetObject(Objectname);
-    s:= getAttributes(myObject.ClassRef.Name);
+    Str:= GetAttributes(myObject.ClassRef.Name);
     // public int Shell$7.result;
-    if Left(s, 3) = '+OK' then begin
-      s:= Right(s, 5);
-      SL:= Split('|', s);
+    if Left(Str, 3) = '+OK' then begin
+      Str:= Right(Str, 5);
+      SL:= Split('|', Str);
       ExprType:= SL[4];
       SL.Free;
       //myObject:= GetObject(Objectname);
       myAttribute:= TJavaAttribute.Create(myObject.ClassRef);
       aJavaValue:= myAttribute.GetAttributeValue(myObject, 'result', TypToSig(ExprType));
       try
-        if assigned(aJavaValue)
+        if Assigned(aJavaValue)
           then Result:= '+OK ' + aJavaValue.AsString  + '_|_' + ExprType
-          else Result:= '-ERR Unknown attribute ' + aClassname + '.result';
+          else Result:= '-ERR Unknown attribute ' + AClassname + '.result';
       finally
         FreeAndNil(myAttribute);
         FreeAndNil(aJavaValue);
@@ -857,13 +857,13 @@ begin
       DeleteObject(Objectname);
     end
     else
-      Result:= s;
+      Result:= Str;
   end else
-    Result:= s;
+    Result:= Str;
 end;
 
 function TComJava2.getVariables(): string;
-  var s, s2, s3, obj, Name, Value: string; i, p, p1: integer;
+  var Str, Str2, Str3, obj, Name, Value: string; Int, Posi, Posi1: Integer;
       aJavaClass : TJavaClass;
       aJavaMethod: TJavaMethod;
       aJValue: JValue;
@@ -877,120 +877,120 @@ begin
   aJavaMethod:= TJavaMethod.Create(aJavaClass, 'getProperties', static, ntObject, nil, 'Ljava/util/Properties;');
   try
     aJValue:= aJavaMethod.call(nil, nil);
-    SystemProperties:= TJavaObject.createWithHandle(aJavaClass, aJValue.s);
+    SystemProperties:= TJavaObject.createWithHandle(aJavaClass, aJValue.Str);
     try
-      s:= SystemProperties.ToString;
-      s2:= '';
+      Str:= SystemProperties.ToString;
+      Str2:= '';
       repeat
-        p:= Pos('_lv', s);
-        if p > 0 then begin
-          delete(s, 1, p+2);
-          obj:= copy(s, 1, 2);
-          delete(s, 1, 2);
-          p1:= Pos('=', s);
-          Name:= copy(s, 1, p1-1);
-          p:= Pos(', ', s);
-          Value:= copy(s, p1+1, p-p1-1);
+        Posi:= Pos('_lv', Str);
+        if Posi > 0 then begin
+          Delete(Str, 1, Posi+2);
+          obj:= Copy(Str, 1, 2);
+          Delete(Str, 1, 2);
+          Posi1:= Pos('=', Str);
+          Name:= Copy(Str, 1, Posi1-1);
+          Posi:= Pos(', ', Str);
+          Value:= Copy(Str, Posi1+1, Posi-Posi1-1);
           if obj = 'o_' then begin
-            i:= ObjectList.IndexOf(Name);
-            if i >= 0 then begin
-              aJavaObject:= TJavaObject(ObjectList.Objects[i]);
-              s3:= aJavaObject.ToString;
-              if s3 <> Value then begin  // Object changed
+            Int:= ObjectList.IndexOf(Name);
+            if Int >= 0 then begin
+              aJavaObject:= TJavaObject(ObjectList.Objects[Int]);
+              Str3:= aJavaObject.ToString;
+              if Str3 <> Value then begin  // Object changed
                 aJavaObject.Destroy;
-                ObjectList.Delete(i);
+                ObjectList.Delete(Int);
                 aJavaObject:= TJavaObject.CreateFromProperties(Name);
                 ObjectList.AddObject(Name, aJavaObject);
               end;
-              s2:= s2 + #4 + aJavaObject.ClassRef.Name + '|' + Name + '=' +s3;
+              Str2:= Str2 + #4 + aJavaObject.ClassRef.Name + '|' + Name + '=' +Str3;
             end else begin
               aJavaObject:= TJavaObject.CreateFromProperties(Name);
               ObjectList.AddObject(Name, aJavaObject);
-              s2:= s2 + #4 + aJavaObject.ClassRef.Name + '|' + Name + '=' + Value;
+              Str2:= Str2 + #4 + aJavaObject.ClassRef.Name + '|' + Name + '=' + Value;
             end
           end else
-            s2:= s2 + #4 + Name + '=' + Value;
+            Str2:= Str2 + #4 + Name + '=' + Value;
         end;
-      until p=0;
+      until Posi=0;
     finally
       FreeAndNil(SystemProperties);
     end;
   finally
     FreeAndNil(aJavaMethod);
   end;
-  Result:= '+OK ' + copy(s2, 2, length(s2));
+  Result:= '+OK ' + Copy(Str2, 2, Length(Str2));
 end;
 
 procedure TComJava2.ExecThreadOnTerminate(Sender: TObject);
 begin
-  ExecThreadTerminated:= true;
+  ExecThreadTerminated:= True;
 end;
 
-function TComJava2.IsPackageClass(const aClassname: string): boolean;
+function TComJava2.IsPackageClass(const AClassname: string): Boolean;
 begin
-  Result:= (LastDelimiter('.', aClassname) > 0);
+  Result:= (LastDelimiter('.', AClassname) > 0);
 end;
 
 function TComJava2.GetSignature(const Typ: string): string;
 begin
   var aJavaClass:= getClass(Typ);
-  if assigned(aJavaClass)
+  if Assigned(aJavaClass)
     then Result:= aJavaClass.Signature
     else Result:= '';
 end;
 
-function TComJava2.getNewObjectName(const aClassname: string): string;
-  var i, Nr, j, k: integer; s, name: string;
+function TComJava2.getNewObjectName(const AClassname: string): string;
+  var Int, Nr, j, k: Integer; Str, Name: string;
 begin
-  name:= aClassname;
+  Name:= AClassname;
   if ObjectLowerCaseLetter = '-1' then
     // name:= LowerCase(copy(name, 1, 1)) + copy(name, 2, length(name));
-    name:= LowerCase(name);
+    Name:= LowerCase(Name);
   Nr:= 1;
-  for i:= 0 to ObjectList.Count - 1 do begin
-    s:= ObjectList[i];
-    j:= length(s);
+  for Int:= 0 to ObjectList.Count - 1 do begin
+    Str:= ObjectList[Int];
+    j:= Length(Str);
     // classnames can have digits too, example: Eval$5
-    while (j > length(aClassname)) and CharInSet(s[j], ['0'..'9']) do
-      dec(j);
-    if j < length(s) then begin
-      k:= StrToInt(copy(s, j+1, length(s)));
-      s:= copy(s, 1, j);
-      if (s = name) and (Nr <= k) then
+    while (j > Length(AClassname)) and CharInSet(Str[j], ['0'..'9']) do
+      Dec(j);
+    if j < Length(Str) then begin
+      k:= StrToInt(Copy(Str, j+1, Length(Str)));
+      Str:= Copy(Str, 1, j);
+      if (Str = Name) and (Nr <= k) then
         Nr:= k + 1;
     end;
   end;
-  Result:= name + IntToStr(Nr);
+  Result:= Name + IntToStr(Nr);
 end;
 
 function TComJava2.getNewClassname: string;
-  var i, Nr, j: integer; s, aClassname: string;
+  var Int, Nr, j: Integer; Str, AClassname: string;
 begin
-  aClassname:= 'Class';
+  AClassname:= 'Class';
   Nr:= 1;
-  for i:= 0 to ClassList.Count - 1 do begin
-    if Pos(aClassname, ClassList[i]) = 0 then
-      continue;
-    s:= Right(ClassList[i], Length(aClassname)+1);
-    j:= StrToInt(s);
-    if Nr <= j then inc(Nr);
+  for Int:= 0 to ClassList.Count - 1 do begin
+    if Pos(AClassname, ClassList[Int]) = 0 then
+      Continue;
+    Str:= Right(ClassList[Int], Length(AClassname)+1);
+    j:= StrToInt(Str);
+    if Nr <= j then Inc(Nr);
   end;
-  Result:= aClassname + IntToStr(Nr);
+  Result:= AClassname + IntToStr(Nr);
 end;
 
-function TComJava2.getPackage(const aClassname: string): string;
+function TComJava2.getPackage(const AClassname: string): string;
 begin
-  Result:= TJavaClass.getPackage(aClassname);
+  Result:= TJavaClass.getPackage(AClassname);
 end;
 
 function TComJava2.DeleteObject(const Objectname: string): string;
 begin
-  var i:= ObjectList.IndexOf(Objectname);
-  if i > -1 then begin
-    var aJavaObject:= TJavaObject(ObjectList.Objects[i]);
+  var Int:= ObjectList.IndexOf(Objectname);
+  if Int > -1 then begin
+    var aJavaObject:= TJavaObject(ObjectList.Objects[Int]);
     aJavaObject.DelFromProperties(Objectname);
     FreeAndNil(aJavaObject);
-    ObjectList.Delete(i);
+    ObjectList.Delete(Int);
   end;
   Result:= '+OK ';
 end;
@@ -1003,7 +1003,7 @@ end;
 function TComJava2.Compile(const Parameter, Pathname: string): string;
 begin
   if aJavaCompiler = nil then
-    aJavaCompiler:= TJavaCompiler.create;
+    aJavaCompiler:= TJavaCompiler.Create;
   Result:= aJavaCompiler.compile(Classpath, Parameter, Pathname);
 end;
 
@@ -1017,16 +1017,16 @@ begin
   aJavaRuntime:= TJavaRuntime.GetDefault(JavaFolder);
   if aJavaRuntime.errormessage <> '' then begin
     Result:= '-ERR ' + aJavaRuntime.ErrorMessage;
-    exit;
+    Exit;
   end;
 
   aJavaRuntime.processCommandLineOption('-cp ' + cp);
   // if debugging then we have to use different adresses in: jdwp=transport=dt_shmem,address=jdbconn
   if ConnectionAddress <> '' then begin
-    aJavaRuntime.Debugging:= true;
+    aJavaRuntime.Debugging:= True;
     aJavaRuntime.ConnectionAddress:= ConnectionAddress;
   end else
-    aJavaRuntime.Debugging:= false;
+    aJavaRuntime.Debugging:= False;
   VM:= aJavaRuntime.GetVM;
 
   // read debugging message: Listening for transport dt_shmem at address: jdbconn
@@ -1068,7 +1068,7 @@ begin
 end;
 
 function TComJava2.logMemo(const Pathname, aVersion: string): string;
-  var F: TextFile; i: integer;
+  var F: TextFile; Int: Integer;
 begin
   AssignFile(F, Pathname);
   try
@@ -1076,11 +1076,11 @@ begin
       Append(F);
       Writeln(F, DateTimeToStr(Now()) + ' ' + GetComputerNetName + ' Version: ' + aVersion);
       Writeln(F, 'logMemo(' + Pathname + ')');
-      for i:= 0 to FJe2Java.Memo1.Lines.Count - 1 do
-        Writeln(F, FJe2Java.Memo1.Lines[i]);
+      for Int:= 0 to FJe2Java.Memo1.Lines.Count - 1 do
+        Writeln(F, FJe2Java.Memo1.Lines[Int]);
       Result:= '+OK';
     except
-      on e: exception do
+      on e: Exception do
         Result:=  '-ERR ' + e.message;
     end;
   finally

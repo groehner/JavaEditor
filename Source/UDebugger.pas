@@ -1,64 +1,70 @@
 unit UDebugger;
 
 { command summary
-    NewCommand(0, 'run');
-    NewCommand(0, 'cont');
-    NewCommand(0, 'trace methods 0x1');
-    NweCommand(0, 'exclude jdk.*');
-    NewCommand(1, s);  ToCursor
-    NewCommand(1, 'stop in ' + JavaClass + '.init')
-    NewCommand(1, 'stop in ' + JavaClass + '.main');
-    NewCommand(2, 'stop at ' + Classname + ':' + line
-    NewCoomand(2, 'clear ' + Classname + ':' + line
-    NewCommand(2, ToCursorBreakpoint);
-    NewCommand(3, 'cont');
-    NewCommand(4, 'where');      stack
-    NewCommand(5, 'locals');     parameters and local variables
-    NewCommand(6, 'dump this');  attributes
-    NewCommand(7, 'dump ' + s);  expanded attributes
-    NewCommand(8, 'dump ' + s);  expanded local variables
-    NewCommand(9, 'dump ' + s);  expanded watches
-    NewCommand(10, 'dump ' + LBWatches.Items[i]);
-    NewCommand(11, 'print ' + LBWatches.Items[i]);
-    NewCommand(12, 'eval ' + EAusdruck.Text);
-    NewCommand(13, 'fields ' + JavaClass)           In native or static method
-    NewCommand(14, 'dump ' + JavaClass + '.' + s);  static variable
-    NewCommand(15, 'print this');  Sequence diagram Destination
-    NewCommand(16, 'print this');  Sequence diagram Source
-    NewCommand(17, 'locals');   parameters for Method entered
-    NewCommand(18, 'locals');   parameter renaming for objects (instance of)
-    NewCommand(19, 'locals');   LifeLine renaming
-    NewCommand(20, 'print ' + Name);  get print Name for LifeLine-Renaming
-    NewCommand(21, 'dump this');  Attributs renaming
+  NewCommand(0, 'run');
+  NewCommand(0, 'cont');
+  NewCommand(0, 'trace methods 0x1');
+  NweCommand(0, 'exclude jdk.*');
+  NewCommand(1, s);  ToCursor
+  NewCommand(1, 'stop in ' + FJavaClass + '.init')
+  NewCommand(1, 'stop in ' + FJavaClass + '.main');
+  NewCommand(2, 'stop at ' + Classname + ':' + line
+  NewCoomand(2, 'clear ' + Classname + ':' + line
+  NewCommand(2, FToCursorBreakpoint);
+  NewCommand(3, 'cont');
+  NewCommand(4, 'where');      stack
+  NewCommand(5, 'locals');     parameters and local variables
+  NewCommand(6, 'dump this');  FAttributes
+  NewCommand(7, 'dump ' + s);  expanded FAttributes
+  NewCommand(8, 'dump ' + s);  expanded local variables
+  NewCommand(9, 'dump ' + s);  expanded watches
+  NewCommand(10, 'dump ' + LBWatches.Items[i]);
+  NewCommand(11, 'print ' + LBWatches.Items[i]);
+  NewCommand(12, 'eval ' + EAusdruck.Text);
+  NewCommand(13, 'fields ' + FJavaClass)           In native or static method
+  NewCommand(14, 'dump ' + FJavaClass + '.' + s);  static variable
+  NewCommand(15, 'print this');  Sequence diagram Destination
+  NewCommand(16, 'print this');  Sequence diagram Source
+  NewCommand(17, 'locals');   parameters for Method entered
+  NewCommand(18, 'locals');   parameter renaming for objects (instance of)
+  NewCommand(19, 'locals');   LifeLine renaming
+  NewCommand(20, 'print ' + Name);  get print Name for LifeLine-Renaming
+  NewCommand(21, 'dump this');  Attributs renaming
 
-    0: DebuggerStart(Lines);
-    1: CheckValidBreakpoints(Lines);
-    2: Lines.Clear; // DeleteBreakpoints
-    3: StepCont(Lines);
-    4: ShowStack(Lines);
-    5: ShowParameterAndLocalVariables(Lines);
-    6: ShowAttributes(Lines);
-    7: ShowDetailedVariables(1, Lines);
-    8: ShowDetailedVariables(2, Lines);
-    9: ShowDetailedVariables(3, Lines);
-   10: Watch(Lines);
-   11: MonitoringType(Lines);
-   12: EvaluateExpression(Lines);
-   13: getStaticVariables(Lines);
-   14: showStaticVariable(Lines);
-   15: SequenceDiagramDestination(Lines);
-   16: SequenceDiagramSource(Lines);
-   17: SequenceDiagramParameter(Lines);
-   18: SequenceDiagramParameterRenaming(Lines);
-   19: SequenceDiagramChangeLifeLine(Lines);
-   20: SequenceDiagramPrintName(Lines);
-   21: SequenceDiagramChangeLifeLineAttributes(Lines);
+  0: DebuggerStart(Lines);
+  1: CheckValidBreakpoints(Lines);
+  2: Lines.Clear; // DeleteBreakpoints
+  3: StepCont(Lines);
+  4: ShowStack(Lines);
+  5: ShowParameterAndLocalVariables(Lines);
+  6: ShowAttributes(Lines);
+  7: ShowDetailedVariables(1, Lines);
+  8: ShowDetailedVariables(2, Lines);
+  9: ShowDetailedVariables(3, Lines);
+  10: Watch(Lines);
+  11: MonitoringType(Lines);
+  12: EvaluateExpression(Lines);
+  13: getStaticVariables(Lines);
+  14: showStaticVariable(Lines);
+  15: SequenceDiagramDestination(Lines);
+  16: SequenceDiagramSource(Lines);
+  17: SequenceDiagramParameter(Lines);
+  18: SequenceDiagramParameterRenaming(Lines);
+  19: SequenceDiagramChangeLifeLine(Lines);
+  20: SequenceDiagramPrintName(Lines);
+  21: SequenceDiagramChangeLifeLineAttributes(Lines);
 }
 
 interface
 
-uses Windows, System.Classes, ComCtrls,
-     UQueue, UEditorForm, USequenceForm, UUtils;
+uses
+  Windows,
+  System.Classes,
+  ComCtrls,
+  UQueue,
+  UEditorForm,
+  USequenceForm,
+  UUtils;
 
 const
   // constants for sub-windows
@@ -71,242 +77,289 @@ const
 
 type
 
-   TDebugger = class
-   private
-     LinesDebugger: TStringList;
-     Attributes: TTreeNodes;
-     LocalVariables: TTreeNodes;
-     WatchedExpressions: TTreeNodes;
-     InstanceOf2Participants: TStringList;  // instance of List(id=541) -> liste1
-     Status: integer;
-     Thread: string;
-   private
-     ShowDetailed: Boolean;
-     jdbReady: boolean;
-     BreakpointHit: boolean;
-     Commands: TQueue;
-     Watched: Integer;
-     Abort: boolean;
-     ToCursorBreakpoint: string;
-     EditForm: TFEditForm;
-     JavaClass: string;
-     PipeOutput: TPipeHandles;
-     PipeOutput1: TPipeHandles;
-     PipeInput1: TPipeHandles;
-     PipeOutput2: TPipeHandles;
-     PipeInput2: TPipeHandles;
-     ProcessInformation,
-     ProcessInformation1,
-     ProcessInformation2: TProcessinformation;
-     LogFile: TFileStream;
-     LogFilename: string;
-     PolicyFile: string;
-     Directory: string;
+  TDebugger = class
+  private
+    FLinesDebugger: TStringList;
+    FAttributes: TTreeNodes;
+    FLocalVariables: TTreeNodes;
+    FWatchedExpressions: TTreeNodes;
+    FInstanceOf2Participants: TStringList; // instance of List(id=541) -> liste1
+    FStatus: Integer;
+    FThread: string;
+    FShowDetailed: Boolean;
+    FJdbReady: Boolean;
+    FBreakpointHit: Boolean;
+    FCommands: TQueue;
+    FWatched: Integer;
+    FAbort: Boolean;
+    FBreakpointAtMain: Boolean;
+    FToCursorBreakpoint: string;
+    FEditForm: TFEditForm;
+    FJavaClass: string;
+    FPipeOutput: TPipeHandles;
+    FPipeOutput1: TPipeHandles;
+    FPipeInput1: TPipeHandles;
+    FPipeOutput2: TPipeHandles;
+    FPipeInput2: TPipeHandles;
+    FProcessInformation, FProcessInformation1, FProcessInformation2
+      : TProcessInformation;
+    FLogFile: TFileStream;
+    FLogFilename: string;
+    FPolicyFile: string;
+    FDirectory: string;
+    FReadyForInput: Boolean;
+    FRunning: Boolean;
+    FSequenceForm: TFSequenceForm;
 
-     procedure ExecAndWaitPipeDebugger(const Applicationname, Commandline, Debugger, DebuggerParameter, Dir: string; GUI, JavaFX: boolean);
-     procedure StartOfDebugging;
-     function StartProcess(const ApplicationName, CommandLine, Dir: string; JavaFX: boolean;
-           var SecAttr: TSecurityAttributes;
-           var PipeInput, aPipeOutput: TPipehandles;
-           var aProcessinformation: TProcessInformation;
-           var StartupInfo: TStartupInfo): boolean;
-     function StartConsoleProcess(const ApplicationName, CommandLine, Dir: string;
-           var aProcessinformation: TProcessInformation;
-           var StartupInfo: TStartupInfo): boolean;
-     procedure readUserProgram(aPipeOutput: TPipeHandles);
-     procedure readAndExecuteDebugger(aPipeOutput: TPipeHandles);
-     procedure readAndExecuteDebuggerUMLWindow(aPipeOutput: TPipeHandles);
-     function getExitCode(aProcessInformation: TProcessInformation; const Info: string): DWord;
-     function ReadBufferDebugger(aPipeOutput: TPipeHandles; BytesRead: DWord): TStringList;
-     function ReadBufferUserprogram(aPipeOutput: TPipeHandles; BytesRead: DWord): string;
-     procedure OpenLogFile(const Application, Debugger: string);
-     procedure GrantApplet;
-     procedure UnGrantApplet;
-     function getThread(Lines: TStringlist): string;
-     function DebuggerReady(Lines: TStringlist): boolean;
-     procedure DebuggerStart(Lines: TStringList);
-     function PositionOn(s: string): boolean;
-     procedure CheckValidBreakpoints(Lines: TStringList);
-     procedure ShowDetailedVariables(Section: integer; Lines: TStringlist);
-     procedure ShowAttributes(Lines: TStringlist);
-     procedure ShowParameterAndLocalVariables(Lines: TStringList);
-     procedure ShowStack(Lines: TStringList);
-     procedure StepCont(Lines: TStringList);
-     procedure MonitoringType(Lines: TStringList);
-     procedure EvaluateExpression(Lines: TStringList);
-     procedure getStaticVariables(Lines: TStringList);
-     procedure showStaticVariable(Lines: TStringlist);
+    procedure ExecAndWaitPipeDebugger(const Applicationname, Commandline,
+      Debugger, DebuggerParameter, Dir: string; GUI, JavaFX: Boolean);
+    procedure StartOfDebugging;
+    function StartProcess(const Applicationname, Commandline, Dir: string;
+      JavaFX: Boolean; var SecAttr: TSecurityAttributes;
+      var PipeInput, APipeOutput: TPipeHandles;
+      var AProcessinformation: TProcessInformation;
+      var StartupInfo: TStartupInfo): Boolean;
+    function StartConsoleProcess(const Applicationname, Commandline,
+      Dir: string; var AProcessinformation: TProcessInformation;
+      var StartupInfo: TStartupInfo): Boolean;
+    procedure ReadUserProgram(APipeOutput: TPipeHandles);
+    procedure ReadAndExecuteDebugger(APipeOutput: TPipeHandles);
+    procedure ReadAndExecuteDebuggerUMLWindow(APipeOutput: TPipeHandles);
+    function GetExitCode(AProcessinformation: TProcessInformation;
+      const Info: string): DWORD;
+    function ReadBufferDebugger(APipeOutput: TPipeHandles; BytesRead: DWORD)
+      : TStringList;
+    function ReadBufferUserprogram(APipeOutput: TPipeHandles;
+      BytesRead: DWORD): string;
+    procedure OpenLogFile(const Application, Debugger: string);
+    procedure GrantApplet;
+    procedure UnGrantApplet;
+    function GetThread(Lines: TStringList): string;
+    function DebuggerReady(Lines: TStringList): Boolean;
+    procedure DebuggerStart(Lines: TStringList);
+    function PositionOn(Str: string): Boolean;
+    procedure CheckValidBreakpoints(Lines: TStringList);
+    procedure ShowDetailedVariables(Section: Integer; Lines: TStringList);
+    procedure ShowAttributes(Lines: TStringList);
+    procedure ShowParameterAndLocalVariables(Lines: TStringList);
+    procedure ShowStack(Lines: TStringList);
+    procedure StepCont(Lines: TStringList);
+    procedure MonitoringType(Lines: TStringList);
+    procedure EvaluateExpression(Lines: TStringList);
+    procedure GetStaticVariables(Lines: TStringList);
+    procedure ShowStaticVariable(Lines: TStringList);
 
-     procedure SequenceDiagramDestination(Lines: TStringlist);
-     procedure SequenceDiagramSource(Lines: TStringlist);
-     procedure SequenceDiagramParameter(Lines: TStringlist);
-     function  SequenceDiagramLocals(Lines: TStringList): TStringList;
-     procedure SequenceDiagramParameterRenaming(Lines: TStringlist);
-     procedure SequenceDiagramChangeLifeLine(Lines: TStringList);
-     procedure SequenceDiagramPrintName(Lines: TStringList);
-     procedure SequenceDiagramChangeLifeLineAttributes(Lines: TStringList);
+    procedure SequenceDiagramDestination(Lines: TStringList);
+    procedure SequenceDiagramSource(Lines: TStringList);
+    procedure SequenceDiagramParameter(Lines: TStringList);
+    function SequenceDiagramLocals(Lines: TStringList): TStringList;
+    procedure SequenceDiagramParameterRenaming(Lines: TStringList);
+    procedure SequenceDiagramChangeLifeLine(Lines: TStringList);
+    procedure SequenceDiagramPrintName(Lines: TStringList);
+    procedure SequenceDiagramChangeLifeLineAttributes(Lines: TStringList);
 
-     procedure StartSetBreakpoints;
-     function InstanceOfJava(const s: string): boolean;
-     procedure ProcessDebuggerOutput(Lines: TStringList);
-     procedure ToDebugger(aStatus: integer; s: string);
-     function NextCommand: string;
-     procedure ShowAll;
-     procedure log(const s: string);
-     function FilterLog(s: string): string;
+    procedure StartSetBreakpoints;
+    function InstanceOfJava(const Str: string): Boolean;
+    procedure ProcessDebuggerOutput(Lines: TStringList);
+    procedure ToDebugger(AStatus: Integer; Str: string);
+    function NextCommand: string;
+    procedure ShowAll;
+    procedure Log(const Str: string);
+    function FilterLog(Str: string): string;
   public
-     BreakpointAtMain: Boolean;
-     ReadyForInput: boolean;
-     Running: Boolean;
-     SequenceForm: TFSequenceForm;
-     constructor Create;
-     destructor Destroy; override;
-     procedure DebugApplet(JavaProgram: string);
-     procedure DebugProgram(JavaProgram, CallParameter: string; const Package: string; GUI, JavaFX: boolean);
-     procedure ReadDebuggerForUMLWindow;
-     procedure StartDebuggerForUMLWindow(const Sourcepath, Number: string);
+    constructor Create;
+    destructor Destroy; override;
+    procedure DebugApplet(JavaProgram: string);
+    procedure DebugProgram(JavaProgram, CallParameter: string;
+      const Package: string; GUI, JavaFX: Boolean);
+    procedure ReadDebuggerForUMLWindow;
+    procedure StartDebuggerForUMLWindow(const Sourcepath, Number: string);
 
-     procedure Watch(Lines: TStringList); overload;
-     procedure Watch; overload;
-     procedure NewCommand(aStatus: integer; const s: string);
-     procedure SwitchDetails;
-     procedure ToUserProgram(const s: string);
-     procedure CloseNotify(Sender : TObject);
-     function hasBreakpoints: boolean;
-     procedure RunToCursorBreakpoint(const s: string);
-     procedure Terminate;
-   end;
+    procedure Watch(Lines: TStringList); overload;
+    procedure Watch; overload;
+    procedure NewCommand(Status: Integer; const Str: string);
+    procedure SwitchDetails;
+    procedure ToUserProgram(const Str: string);
+    procedure CloseNotify(Sender: TObject);
+    function HasBreakpoints: Boolean;
+    procedure RunToCursorBreakpoint(const Str: string);
+    procedure Terminate;
+    property BreakpointAtMain: Boolean read FBreakpointAtMain
+      write FBreakpointAtMain;
+    property ReadyForInput: Boolean read FReadyForInput write FReadyForInput;
+    property Running: Boolean read FRunning;
+    property SequenceForm: TFSequenceForm read FSequenceForm
+      write FSequenceForm;
+  end;
 
-var MyDebugger: TDebugger;
+var
+  MyDebugger: TDebugger;
 
 implementation
 
-uses Forms, Controls, StdCtrls, Dialogs, StrUtils, Graphics,
-     SysUtils, System.Threading,
-     JvGnugettext, UStringRessources,
-     UJava, UDlgEvaluate, UDlgAbout, UMessages, UJavaCommands,
-     UConfiguration, UWatches, UComJava1;
+uses
+  Forms,
+  StrUtils,
+  SysUtils,
+  System.Threading,
+  JvGnugettext,
+  UStringRessources,
+  UJava,
+  UDlgEvaluate,
+  UDlgAbout,
+  UMessages,
+  UJavaCommands,
+  UConfiguration,
+  UWatches,
+  UComJava1;
 
 constructor TDebugger.Create;
 begin
-  LogFile:= nil;
-  Running:= false;
-  ReadyForInput:= true;
-  ShowDetailed:= false;
-  Attributes:= FMessages.TVAttributes.Items;
-  LocalVariables:= FMessages.TVLocalVariables.Items;
-  WatchedExpressions:= FMessages.TVWatchedExpressions.Items;
-  Commands:= TQueue.Create;
-  LinesDebugger:= TStringList.Create;
-  InstanceOf2Participants:= TStringList.create;
-  InstanceOf2Participants.NameValueSeparator:= '#';
-  PolicyFile:= GetEnvironmentVar('USERPROFILE') + '\.java.policy';
+  FLogFile := nil;
+  FRunning := False;
+  FReadyForInput := True;
+  FShowDetailed := False;
+  FAttributes := FMessages.TVAttributes.Items;
+  FLocalVariables := FMessages.TVLocalVariables.Items;
+  FWatchedExpressions := FMessages.TVWatchedExpressions.Items;
+  FCommands := TQueue.Create;
+  FLinesDebugger := TStringList.Create;
+  FInstanceOf2Participants := TStringList.Create;
+  FInstanceOf2Participants.NameValueSeparator := '#';
+  FPolicyFile := GetEnvironmentVar('USERPROFILE') + '\.java.policy';
 end;
 
 destructor TDebugger.Destroy;
 begin
-  FreeAndNil(Commands);
-  FreeAndNil(LinesDebugger);
-  FreeAndNil(InstanceOf2Participants);
+  inherited;
+  FreeAndNil(FCommands);
+  FreeAndNil(FLinesDebugger);
+  FreeAndNil(FInstanceOf2Participants);
 end;
 
 procedure TDebugger.DebugApplet(JavaProgram: string);
+var
+  Dir, Filename: string;
 begin
   StartOfDebugging;
-  if EditForm = nil then exit;
-  JavaProgram:= ExpandFileName(JavaProgram);
-  var Dir:= ExtractFilePath(JavaProgram);
-  var Filename:= ChangeFileExt(ExtractFilename(JavaProgram), '.html');
-  LogFilename:= Directory + 'DebuggerProtocol.txt';   // ToDo what is Directory?
+  if not Assigned(FEditForm) then
+    Exit;
+  JavaProgram := ExpandFileName(JavaProgram);
+  Dir := ExtractFilePath(JavaProgram);
+  Filename := ChangeFileExt(ExtractFileName(JavaProgram), '.html');
+  FLogFilename := FDirectory + 'DebuggerProtocol.txt';
+  // ToDo what is FDirectory?
   TTask.Run(
-    procedure begin
+    procedure
+    begin
       GrantApplet;
-      ExecAndWaitPipeDebugger('', '', FConfiguration.JavaAppletviewer, ' -debug ' + Filename, Dir, true, false);
+      ExecAndWaitPipeDebugger('', '', FConfiguration.JavaAppletviewer,
+        ' -debug ' + Filename, Dir, True, False);
       UnGrantApplet;
     end);
 end;
 
 procedure TDebugger.DebugProgram(JavaProgram, CallParameter: string;
-                                 const Package: string; GUI, JavaFX: Boolean);
-  var ApplicationName, CallProgram, Classpath, Params, IntAsString: string;
+const Package: string; GUI, JavaFX: Boolean);
+var
+  Applicationname, CallProgram, Classpath, Params, IntAsString: string;
 begin
   StartOfDebugging;
-  if EditForm = nil then exit;
-  JavaProgram:= ExpandFileName(JavaProgram);
-  Directory:= FConfiguration.getPackageDirectorysecure(JavaProgram, Package);
-  Classpath:= FConfiguration.getClassPath(JavaProgram, Package);
-  JavaClass:= ChangeFileExt(ExtractFilename(JavaProgram), '');
+  if not Assigned(FEditForm) then
+    Exit;
+  JavaProgram := ExpandFileName(JavaProgram);
+  FDirectory := FConfiguration.GetPackageDirectorySecure(JavaProgram, Package);
+  Classpath := FConfiguration.GetClassPath(JavaProgram, Package);
+  FJavaClass := ChangeFileExt(ExtractFileName(JavaProgram), '');
   if Package <> '' then
-    JavaClass:= Package + '.' + JavaClass;
-  CallParameter:= trim(CallParameter + ' ' + FConfiguration.getJavaInterpreterParameter(JavaFX));
+    FJavaClass := Package + '.' + FJavaClass;
+  CallParameter := Trim(CallParameter + ' ' +
+    FConfiguration.GetJavaInterpreterParameter(JavaFX));
   FMessages.StatusMessage(_('Debug') + ' ' + JavaProgram);
-  LogFilename:= Directory + 'DebuggerProtocol.txt';
+  FLogFilename := FDirectory + 'DebuggerProtocol.txt';
 
-  ApplicationName:= FConfiguration.JavaInterpreter;
+  Applicationname := FConfiguration.JavaInterpreter;
   Randomize;
-  IntAsString:= IntToStr(random(100000));
-  if FConfiguration.getJavaVersion >= 5
-    then Params:= ' -agentlib:jdwp='
-    else Params:= ' -Xdebug -Xrunjdwp:';
-  CallProgram:= AddWithSpace(FConfiguration.JavaInterpreterParameter) +
-                Params + 'transport=dt_shmem,address=jdbconn' + IntAsString + ',server=y,suspend=y' +
-                ' -classpath ' + ClassPath + AddWithSpace(CallParameter) + ' ' + JavaClass;
-  if JavaFX then begin
-    myJavaCommands.MakeRunJavaBat(Directory, ApplicationName, CallProgram, false);
-    ApplicationName:= '';
-    CallProgram:= FConfiguration.TempDir + 'RunJava.bat';
+  IntAsString := IntToStr(Random(100000));
+  if FConfiguration.GetJavaVersion >= 5 then
+    Params := ' -agentlib:jdwp='
+  else
+    Params := ' -Xdebug -Xrunjdwp:';
+  CallProgram := AddWithSpace(FConfiguration.JavaInterpreterParameter) + Params
+    + 'transport=dt_shmem,address=jdbconn' + IntAsString + ',server=y,suspend=y'
+    + ' -classpath ' + Classpath + AddWithSpace(CallParameter) + ' ' +
+    FJavaClass;
+  if JavaFX then
+  begin
+    MyJavaCommands.MakeRunJavaBat(FDirectory, Applicationname,
+      CallProgram, False);
+    Applicationname := '';
+    CallProgram := FConfiguration.TempDir + 'RunJava.bat';
   end;
 
   TTask.Run(
-    procedure begin
-      ExecAndWaitPipeDebugger(ApplicationName, CallProgram, FConfiguration.JavaDebugger,
-        ' -attach jdbconn' + IntAsString, Directory, GUI, JavaFX);
+    procedure
+    begin
+      ExecAndWaitPipeDebugger(Applicationname, CallProgram,
+        FConfiguration.JavaDebugger, ' -attach jdbconn' + IntAsString,
+        FDirectory, GUI, JavaFX);
     end);
 end;
 
 procedure TDebugger.ExecAndWaitPipeDebugger(const Applicationname, Commandline,
-                Debugger, DebuggerParameter, Dir: string; GUI, JavaFX: Boolean);
-  var SecAttr1, SecAttr2: TSecurityAttributes;
-      StartupInfo1, StartupInfo2: TStartupInfo;
-      dwExitCode2: DWord;
-      error: boolean;
+  Debugger, DebuggerParameter, Dir: string; GUI, JavaFX: Boolean);
+var
+  SecAttr1, SecAttr2: TSecurityAttributes;
+  StartupInfo1, StartupInfo2: TStartupInfo;
+  DwExitCode2: DWORD;
+  Error: Boolean;
 begin
-  error:= false;
-  OpenLogFile(Applicationname + ' ' + Commandline, Debugger + ' ' + DebuggerParameter);
+  Error := False;
+  OpenLogFile(Applicationname + ' ' + Commandline,
+    Debugger + ' ' + DebuggerParameter);
   try
     try
       // start debuggie
-      if Applicationname + Commandline <> '' then begin // Applets have Applicationname + Commandline = ''
+      if Applicationname + Commandline <> '' then
+      begin // Applets have Applicationname + Commandline = ''
         if GUI then
-          error:= not startProcess(Applicationname, Commandline, Dir, JavaFX, SecAttr1,
-                             PipeInput1, PipeOutput1, ProcessInformation1, StartupInfo1)
+          Error := not StartProcess(Applicationname, Commandline, Dir, JavaFX,
+            SecAttr1, FPipeInput1, FPipeOutput1, FProcessInformation1,
+            StartupInfo1)
         else
-          error:= not startConsoleProcess(Applicationname, Commandline, Dir,
-                                          ProcessInformation1, StartupInfo1);
+          Error := not StartConsoleProcess(Applicationname, Commandline, Dir,
+            FProcessInformation1, StartupInfo1);
         Sleep(400); // give program time to start
       end;
 
-      if not error and startProcess(Debugger, DebuggerParameter, Dir, false, SecAttr2, PipeInput2, PipeOutput2, ProcessInformation2, StartupInfo2) then begin
-        // PipeInput2.hRead is the handle for the input in jdb, jdb receives input via FileWrite
-        Running:= true;
+      if not Error and StartProcess(Debugger, DebuggerParameter, Dir, False,
+        SecAttr2, FPipeInput2, FPipeOutput2, FProcessInformation2, StartupInfo2)
+      then
+      begin
+        // FPipeInput2.hRead is the handle for the input in jdb, jdb receives input via FileWrite
+        FRunning := True;
         StartSetBreakpoints;
-        if assigned(Sequenceform) then begin
+        if Assigned(SequenceForm) then
+        begin
           NewCommand(0, 'exclude java.*, javax.*, sun.*, com.sun.*, jdk.*');
           NewCommand(0, 'trace methods 0x1');
         end;
         NewCommand(0, 'run');
-        jdbReady:= false; // auf Bereitschaft des Debuggers warten
+        FJdbReady := False; // auf Bereitschaft des Debuggers warten
         repeat
           Sleep(20);
           if GUI then
-            readUserProgram(PipeOutput1);
-          readAndExecuteDebugger(PipeOutput2);
-          dwExitCode2:= getExitCode(ProcessInformation2, '### Debugger ExitCode');
-        until (dwExitCode2 <> STILL_ACTIVE) or Abort;
-      end else
-        ErrorMsg(SysErrorMessage(GetLasterror));
-    except on e: Exception do
-      ErrorMsg(E.Message);
+            ReadUserProgram(FPipeOutput1);
+          ReadAndExecuteDebugger(FPipeOutput2);
+          DwExitCode2 := GetExitCode(FProcessInformation2,
+            '### Debugger ExitCode');
+        until (DwExitCode2 <> STILL_ACTIVE) or FAbort;
+      end
+      else
+        ErrorMsg(SysErrorMessage(GetLastError));
+    except
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
   finally
     TThread.Synchronize(nil,
@@ -318,244 +371,292 @@ begin
 end;
 
 procedure TDebugger.StartDebuggerForUMLWindow(const Sourcepath, Number: string);
-  var SecAttr2: TSecurityAttributes;
-      StartupInfo2: TStartupInfo;
+var
+  SecAttr2: TSecurityAttributes;
+  StartupInfo2: TStartupInfo;
 begin
   StartOfDebugging;
-  Directory:= SourcePath;
-  LogFilename:= Directory + 'DebuggerProtocol.txt';
+  FDirectory := Sourcepath;
+  FLogFilename := FDirectory + 'DebuggerProtocol.txt';
   OpenLogFile('', FConfiguration.JavaDebugger + ' -attach jdbconn' + Number);
   // debug externally: see function TComJava1.StartJava(...)
   // --- start debugger ------------------------------------------------------
-  if startProcess(FConfiguration.JavaDebugger, ' -attach jdbconn' + Number, '.', false, SecAttr2, PipeInput2, PipeOutput2, ProcessInformation2, StartupInfo2) then begin
-    Running:= true;
+  if StartProcess(FConfiguration.JavaDebugger, ' -attach jdbconn' + Number, '.',
+    False, SecAttr2, FPipeInput2, FPipeOutput2, FProcessInformation2,
+    StartupInfo2) then
+  begin
+    FRunning := True;
     StartSetBreakpoints;
-    if assigned(Sequenceform) then begin
+    if Assigned(SequenceForm) then
+    begin
       NewCommand(0, 'exclude java.*, javax.*, sun.*, com.sun.*, jdk.*');
       NewCommand(0, 'trace methods');
     end;
-    jdbReady:= false; // auf Bereitschaft des Debuggers warten
-    readAndExecuteDebuggerUMLWindow(PipeOutput2);
-    myDebugger.ReadyForInput:= true;
+    FJdbReady := False; // auf Bereitschaft des Debuggers warten
+    ReadAndExecuteDebuggerUMLWindow(FPipeOutput2);
+    MyDebugger.FReadyForInput := True;
     FJava.ImperativeUpdateMenuItems;
-  end else
-    ErrorMsg(SysErrorMessage(GetLasterror));
+  end
+  else
+    ErrorMsg(SysErrorMessage(GetLastError));
 end;
 
-function TDebugger.startProcess(const ApplicationName, CommandLine, Dir: string;
-           JavaFX: boolean;
-           var SecAttr: TSecurityAttributes;
-           var PipeInput, aPipeOutput: TPipehandles;
-           var aProcessinformation: TProcessInformation;
-           var StartupInfo: TStartupInfo): boolean;
-  var CurrentDir: string; app: PChar;
+function TDebugger.StartProcess(const Applicationname, Commandline, Dir: string;
+JavaFX: Boolean; var SecAttr: TSecurityAttributes;
+var PipeInput, APipeOutput: TPipeHandles;
+var AProcessinformation: TProcessInformation;
+var StartupInfo: TStartupInfo): Boolean;
+var
+  CurrentDir: string;
+  App: PChar;
 begin
   SetEnvironmentVar('JAVA_TOOL_OPTIONS', '-Duser.language=en');
-  SecAttr.nLength:= SizeOf(SecAttr);
-  SecAttr.lpSecurityDescriptor:= nil;
-  SecAttr.bInheritHandle:= True;
+  SecAttr.nLength := SizeOf(SecAttr);
+  SecAttr.lpSecurityDescriptor := nil;
+  SecAttr.bInheritHandle := True;
   if not CreatePipe(PipeInput.hRead, PipeInput.hWrite, @SecAttr, BufSize) then
     ErrorMsg('Error on STDIN pipe creation: ' + SysErrorMessage(GetLastError));
-  if not CreatePipe(aPipeOutput.hRead, aPipeOutput.hWrite, @SecAttr, BufSize) then
+  if not CreatePipe(APipeOutput.hRead, APipeOutput.hWrite, @SecAttr, BufSize)
+  then
     ErrorMsg('Error on STDOUT pipe creation: ' + SysErrorMessage(GetLastError));
-  FillChar(aProcessinformation, SizeOf(aProcessinformation), 0);
+  FillChar(AProcessinformation, SizeOf(AProcessinformation), 0);
   FillChar(StartupInfo, SizeOf(StartupInfo), 0);
-  with StartupInfo do begin
-    cb          := SizeOf(StartupInfo);
-    dwFlags     := STARTF_USESHOWWINDOW + STARTF_USESTDHANDLES;
-    hStdInput   := PipeInput.hRead;    // Handle for input in user program,
-    hStdOutput  := aPipeOutput.hWrite;
-    hStdError   := aPipeOutput.hWrite;
-    wShowWindow := SW_Hide;
+  with StartupInfo do
+  begin
+    cb := SizeOf(StartupInfo);
+    dwFlags := STARTF_USESHOWWINDOW + STARTF_USESTDHANDLES;
+    hStdInput := PipeInput.hRead; // Handle for input in user program,
+    hStdOutput := APipeOutput.hWrite;
+    hStdError := APipeOutput.hWrite;
+    wShowWindow := SW_HIDE;
   end;
-  CurrentDir:= Dir;
+  CurrentDir := Dir;
   if (CurrentDir = '') or not DirectoryExists(CurrentDir) then
-    if ApplicationName <> ''
-      then CurrentDir:= ExtractFilePath(ApplicationName)
-      else CurrentDir:= ExtractFilePath(CommandLine);
-  if ApplicationName = ''
-    then app:= nil
-    else app:= PChar(Applicationname);
-  Result:= CreateProcess(
-           app,                  // lpApplicationName
-           PChar(CommandLine),   // lpCommandLine
-           nil,                  // lpProcessAttributes
-           nil,                  // lpThreadAttributes
-           true,                 // bInheritHandles
-                                 // dwCreationFlags
-           IDLE_PRIORITY_CLASS or CREATE_NEW_CONSOLE,
-           nil,                  // pEnvironment
-           PChar(CurrentDir),    // pCurrentDirectory
-           StartupInfo,          // lpStartupInfo,
-           aProcessInformation); // lpProcessInformation
+    if Applicationname <> '' then
+      CurrentDir := ExtractFilePath(Applicationname)
+    else
+      CurrentDir := ExtractFilePath(Commandline);
+  if Applicationname = '' then
+    App := nil
+  else
+    App := PChar(Applicationname);
+  Result := CreateProcess(App, // lpApplicationName
+  PChar(Commandline), // lpCommandLine
+  nil, // lpProcessAttributes
+  nil, // lpThreadAttributes
+  True, // bInheritHandles
+  // dwCreationFlags
+  IDLE_PRIORITY_CLASS or CREATE_NEW_CONSOLE, nil, // pEnvironment
+  PChar(CurrentDir), // pCurrentDirectory
+  StartupInfo, // lpStartupInfo,
+  AProcessinformation); // lpProcessInformation
 end;
 
-function TDebugger.startConsoleProcess(const ApplicationName, CommandLine, Dir: string;
-           var aProcessinformation: TProcessInformation;
-           var StartupInfo: TStartupInfo): boolean;
-  var CurrentDir: string; app: PChar;
+function TDebugger.StartConsoleProcess(const Applicationname, Commandline,
+  Dir: string; var AProcessinformation: TProcessInformation;
+var StartupInfo: TStartupInfo): Boolean;
+var
+  CurrentDir: string;
+  App: PChar;
 begin
-  FillChar(aProcessinformation, SizeOf(aProcessinformation), 0);
+  FillChar(AProcessinformation, SizeOf(AProcessinformation), 0);
   FillChar(StartupInfo, SizeOf(StartupInfo), 0);
-  with StartupInfo do begin
-    cb          := SizeOf(StartupInfo);
-    dwFlags     := STARTF_USESHOWWINDOW;
-    wShowWindow := SW_Show;
+  with StartupInfo do
+  begin
+    cb := SizeOf(StartupInfo);
+    dwFlags := STARTF_USESHOWWINDOW;
+    wShowWindow := SW_SHOW;
   end;
-  CurrentDir:= Dir;
+  CurrentDir := Dir;
   if (CurrentDir = '') or not DirectoryExists(CurrentDir) then
-    if ApplicationName <> ''
-      then CurrentDir:= ExtractFilePath(ApplicationName)
-      else CurrentDir:= ExtractFilePath(CommandLine);
-  if ApplicationName = ''
-    then app:= nil
-    else app:= PChar(Applicationname);
-  Result:= CreateProcess(
-           app,                  // lpApplicationName
-           PChar(CommandLine),   // lpCommandLine
-           nil,                  // lpProcessAttributes
-           nil,                  // lpThreadAttributes
-           true,                 // bInheritHandles
-                                 // dwCreationFlags
-           IDLE_PRIORITY_CLASS or CREATE_NEW_CONSOLE,
-           nil,                  // pEnvironment
-           PChar(CurrentDir),    // pCurrentDirectory
-           StartupInfo,          // lpStartupInfo,
-           aProcessInformation); // lpProcessInformation
+    if Applicationname <> '' then
+      CurrentDir := ExtractFilePath(Applicationname)
+    else
+      CurrentDir := ExtractFilePath(Commandline);
+  if Applicationname = '' then
+    App := nil
+  else
+    App := PChar(Applicationname);
+  Result := CreateProcess(App, // lpApplicationName
+  PChar(Commandline), // lpCommandLine
+  nil, // lpProcessAttributes
+  nil, // lpThreadAttributes
+  True, // bInheritHandles
+  // dwCreationFlags
+  IDLE_PRIORITY_CLASS or CREATE_NEW_CONSOLE, nil, // pEnvironment
+  PChar(CurrentDir), // pCurrentDirectory
+  StartupInfo, // lpStartupInfo,
+  AProcessinformation); // lpProcessInformation
 end;
 
-function TDebugger.getExitCode(aProcessInformation: TProcessInformation; const Info: string): DWord;
+function TDebugger.GetExitCode(AProcessinformation: TProcessInformation;
+const Info: string): DWORD;
 begin
-  WaitForSingleObject(aProcessInformation.hProcess, 0);
-  GetExitCodeProcess(aProcessInformation.hProcess, Result);
+  WaitForSingleObject(AProcessinformation.hProcess, 0);
+  GetExitCodeProcess(AProcessinformation.hProcess, Result);
   if Result <> STILL_ACTIVE then
-    log(Info + ' = ' + IntToStr(Result));
+    Log(Info + ' = ' + IntToStr(Result));
 end;
 
-procedure TDebugger.readUserProgram(aPipeOutput: TPipeHandles);
-  var OutputUserProgram: string; BytesRead: DWord;
+procedure TDebugger.ReadUserProgram(APipeOutput: TPipeHandles);
+var
+  OutputUserProgram: string;
+  BytesRead: DWORD;
 begin
-  if PeekNamedPipe(aPipeOutput.hRead, nil, 0, nil, @BytesRead, nil) and (BytesRead > 0) then begin
-    OutputUserprogram:= ReadBufferUserprogram(aPipeOutput, BytesRead);
-    if (Pos('Listening for transport', OutputUserprogram) = 0) and
-       (Pos('Picked up JAVA_TOOL_OPTIONS: -Duser.language=en', OutputUserprogram) = 0)
-    then
+  if PeekNamedPipe(APipeOutput.hRead, nil, 0, nil, @BytesRead, nil) and
+    (BytesRead > 0) then
+  begin
+    OutputUserProgram := ReadBufferUserprogram(APipeOutput, BytesRead);
+    if (Pos('Listening for transport', OutputUserProgram) = 0) and
+      (Pos('Picked up JAVA_TOOL_OPTIONS: -Duser.language=en',
+      OutputUserProgram) = 0) then
       TThread.Synchronize(nil,
         procedure
         begin
-          FMessages.OutputToTerminal(OutputUserprogram);
+          FMessages.OutputToTerminal(OutputUserProgram);
           FMessages.ShowTab(K_Interpreter);
         end);
-    log('### Console');
-    log(OutputUserprogram);
-    if Pos('Exception in thread', OutputUserprogram) > 0 then begin
-      var SL:= TStringList.Create;
-      SL.Text:= OutputUserprogram;
-      while (SL.Count > 0) and (Pos('Exception in thread', SL[0]) = 0)  do
-        SL.Delete(0);
-      ErrorMsg(SL.Text);
-      Abort:= true;
-      FreeAndNil(SL);
+    Log('### Console');
+    Log(OutputUserProgram);
+    if Pos('Exception in thread', OutputUserProgram) > 0 then
+    begin
+      var
+      StringList := TStringList.Create;
+      StringList.Text := OutputUserProgram;
+      while (StringList.Count > 0) and
+        (Pos('Exception in thread', StringList[0]) = 0) do
+        StringList.Delete(0);
+      ErrorMsg(StringList.Text);
+      FAbort := True;
+      FreeAndNil(StringList);
     end;
   end;
 end;
 
-procedure TDebugger.readAndExecuteDebugger(aPipeOutput: TPipeHandles);
-  var BytesRead: DWord;
+procedure TDebugger.ReadAndExecuteDebugger(APipeOutput: TPipeHandles);
+var
+  BytesRead: DWORD;
 begin
-  if PeekNamedPipe(aPipeOutput.hRead, nil, 0, nil, @BytesRead, nil) and (BytesRead > 0) then begin
-    LinesDebugger:= ReadBufferDebugger(aPipeoutput, BytesRead);
-    jdbReady:= DebuggerReady(LinesDebugger);
-    if jdbReady then
-      ProcessDebuggerOutput(LinesDebugger);
+  if PeekNamedPipe(APipeOutput.hRead, nil, 0, nil, @BytesRead, nil) and
+    (BytesRead > 0) then
+  begin
+    FLinesDebugger := ReadBufferDebugger(APipeOutput, BytesRead);
+    FJdbReady := DebuggerReady(FLinesDebugger);
+    if FJdbReady then
+      ProcessDebuggerOutput(FLinesDebugger);
   end;
-  if jdbReady then
-    if Commands.Empty then begin
-      if ReadyForInput = false then begin
-        ReadyForInput:= true;
+  if FJdbReady then
+    if FCommands.Empty then
+    begin
+      if not FReadyForInput then
+      begin
+        FReadyForInput := True;
         TThread.Synchronize(nil,
           procedure
           begin
             FJava.UpdateMenuItems(Self);
           end);
-      end
-    end else begin
-      ReadyForInput:= false;
+      end;
+    end
+    else
+    begin
+      FReadyForInput := False;
       NextCommand;
-      jdbReady:= false;
+      FJdbReady := False;
     end;
 end;
 
-procedure TDebugger.readAndExecuteDebuggerUMLWindow(aPipeOutput: TPipeHandles);
-  var dwExitCode2, BytesRead: DWord; hasAnswer: boolean; Command: string;
+procedure TDebugger.ReadAndExecuteDebuggerUMLWindow(APipeOutput: TPipeHandles);
+var
+  DwExitCode2, BytesRead: DWORD;
+  HasAnswer: Boolean;
 begin
-  hasAnswer:= false;
+  HasAnswer := False;
   repeat
     Sleep(20);
-    if PeekNamedPipe(aPipeOutput.hRead, nil, 0, nil, @BytesRead, nil) and (BytesRead > 0) then begin
-      LinesDebugger:= ReadBufferDebugger(aPipeOutput, BytesRead);
-      jdbReady:= DebuggerReady(LinesDebugger);
-      if jdbReady then
-        ProcessDebuggerOutput(LinesDebugger);
+    if PeekNamedPipe(APipeOutput.hRead, nil, 0, nil, @BytesRead, nil) and
+      (BytesRead > 0) then
+    begin
+      FLinesDebugger := ReadBufferDebugger(APipeOutput, BytesRead);
+      FJdbReady := DebuggerReady(FLinesDebugger);
+      if FJdbReady then
+        ProcessDebuggerOutput(FLinesDebugger);
     end;
-    if jdbReady then
-      if Commands.Empty then
-        hasAnswer:= true  // got answer of last command
-      else begin
-        Command:= NextCommand;
-        jdbReady:= false;
+    if FJdbReady then
+      if FCommands.Empty then
+        HasAnswer := True // got answer of last command
+      else
+      begin
+        NextCommand;
+        FJdbReady := False;
       end;
-    dwExitCode2:= getExitCode(ProcessInformation2, '### Debugger ExitCode');
-  until (dwExitCode2 <> STILL_ACTIVE) or hasAnswer;
+    DwExitCode2 := GetExitCode(FProcessInformation2, '### Debugger ExitCode');
+  until (DwExitCode2 <> STILL_ACTIVE) or HasAnswer;
 end;
 
-procedure TDebugger.ToUserProgram(const s: string);
-  var w: DWord; Enc: TEncoding; buf: TBytes;
+procedure TDebugger.ToUserProgram(const Str: string);
+var
+  Count: DWORD;
+  Enc: TEncoding;
+  Buf: TBytes;
 begin
-  Enc:= TEncoding.GetEncoding(1252);
-  buf:= Enc.GetBytes(s + #13#10);
-  WriteFile(PipeInput1.hWrite, buf[0], Length(buf), w, nil);
+  Enc := TEncoding.GetEncoding(1252);
+  Buf := Enc.GetBytes(Str + #13#10);
+  WriteFile(FPipeInput1.hWrite, Buf[0], Length(Buf), Count, nil);
   FreeAndNil(Enc);
 end;
 
-function TDebugger.ReadBufferDebugger(aPipeOutput: TPipeHandles; BytesRead: DWord): TStringList;
-  var s: string; ansi: ANSIString;
-      i: integer;
-begin
-  SetLength(ansi, BytesRead);
-  ReadFile(aPipeOutput.hRead, ansi[1], BytesRead, BytesRead, nil);
-  for i:= 1 to BytesRead do
-    if (ansi[i] = #9) or (ansi[i] = #0) then ansi[i]:= #32;
-  s:= string(ansi);
-  LinesDebugger.Text:= LinesDebugger.Text + s;
-  log('<<< FROM DEBUGGER ----- ' + #$0D#$0A + s + #$0D#$0A + '### END OF DEBUGGER' + #$0D#$0A);
-  Result:= LinesDebugger;
-end;
-
-function TDebugger.ReadBufferUserprogram(aPipeOutput: TPipeHandles; BytesRead: DWord): string;
-  var s: string; Ansi: ANSIString;
-      i: integer;
+function TDebugger.ReadBufferDebugger(APipeOutput: TPipeHandles;
+BytesRead: DWORD): TStringList;
+var
+  Str: string;
+  Ansi: AnsiString;
 begin
   SetLength(Ansi, BytesRead);
-  ReadFile(aPipeOutput.hRead, Ansi[1], BytesRead, BytesRead, nil);
-  for i:= 1 to BytesRead do
-    if (Ansi[i] = #9) or (Ansi[i] = #0) then Ansi[i]:= #32;
-  s:= string(Ansi);
-  if EndsWith(s, #10) then Delete(s, length(s), 1);
-  if EndsWith(s, #13) then Delete(s, length(s), 1);
-  if Pos('beliebige Taste', s)> 0  then
-    i:= 5;     // ToDo Umlaut problem
-  Result:= s;
+  ReadFile(APipeOutput.hRead, Ansi[1], BytesRead, BytesRead, nil);
+  for var I := 1 to BytesRead do
+    if (Ansi[I] = #9) or (Ansi[I] = #0) then
+      Ansi[I] := #32;
+  Str := string(Ansi);
+  FLinesDebugger.Text := FLinesDebugger.Text + Str;
+  Log('<<< FROM DEBUGGER ----- ' + #$0D#$0A + Str + #$0D#$0A +
+    '### END OF DEBUGGER' + #$0D#$0A);
+  Result := FLinesDebugger;
 end;
 
-procedure TDebugger.ToDebugger(aStatus: integer; s: string);
-  var w: DWord; Enc: TEncoding; buf: TBytes;
+function TDebugger.ReadBufferUserprogram(APipeOutput: TPipeHandles;
+BytesRead: DWORD): string;
+var
+  Str: string;
+  Ansi: AnsiString;
 begin
-  log(#$0D#$0A + '>>> TO DEBUGGER Status:' + IntToStr(aStatus) + ',  Command: ' + s);
-  Self.Status:= aStatus;
-  Enc:= TEncoding.GetEncoding(1252);
-  buf:= Enc.GetBytes(s + #13#10);
-  WriteFile(PipeInput2.hWrite, buf[0], Length(buf), w, nil);
+  SetLength(Ansi, BytesRead);
+  ReadFile(APipeOutput.hRead, Ansi[1], BytesRead, BytesRead, nil);
+  for var I := 1 to BytesRead do
+    if (Ansi[I] = #9) or (Ansi[I] = #0) then
+      Ansi[I] := #32;
+  Str := string(Ansi);
+  if EndsWith(Str, #10) then
+    Delete(Str, Length(Str), 1);
+  if EndsWith(Str, #13) then
+    Delete(Str, Length(Str), 1);
+  if Pos('beliebige Taste', Str) > 0 then
+    var Int := 5; // ToDo Umlaut problem
+  Result := Str;
+end;
+
+procedure TDebugger.ToDebugger(AStatus: Integer; Str: string);
+var
+  Count: DWORD;
+  Enc: TEncoding;
+  Buf: TBytes;
+begin
+  Log(#$0D#$0A + '>>> TO DEBUGGER Status:' + IntToStr(AStatus) +
+    ',  Command: ' + Str);
+  Self.FStatus := AStatus;
+  Enc := TEncoding.GetEncoding(1252);
+  Buf := Enc.GetBytes(Str + #13#10);
+  WriteFile(FPipeInput2.hWrite, Buf[0], Length(Buf), Count, nil);
   FreeAndNil(Enc);
 end;
 
@@ -563,80 +664,84 @@ procedure TDebugger.OpenLogFile(const Application, Debugger: string);
 begin
   if FConfiguration.DebuggerProtocol then
     try
-      FreeAndNil(LogFile);
-      FJava.CloseFile(LogFilename);
-      LogFile:= TFileStream.Create(LogFilename, fmCreate or fmShareExclusive);
-      StreamWriteln(LogFile, 'Windows: ' + TOSVersion.ToString);
-      StreamWriteln(LogFile, 'Java-Editor: ' + UDlgAbout.Version + #$D#$A);
-      StreamWriteln(LogFile, '----- Programcall' );
-      StreamWriteln(LogFile, Application);
-      StreamWriteln(LogFile, '');
-      StreamWriteln(LogFile, '----- Debuggercall' );
-      StreamWriteln(LogFile, Debugger);
-      StreamWriteln(LogFile, '');
-    except on e: Exception do
-      ErrorMsg(E.Message);
+      FreeAndNil(FLogFile);
+      FJava.CloseFile(FLogFilename);
+      FLogFile := TFileStream.Create(FLogFilename,
+        fmCreate or fmShareExclusive);
+      StreamWriteln(FLogFile, 'Windows: ' + TOSVersion.ToString);
+      StreamWriteln(FLogFile, 'Java-Editor: ' + UDlgAbout.Version + #$D#$A);
+      StreamWriteln(FLogFile, '----- Programcall');
+      StreamWriteln(FLogFile, Application);
+      StreamWriteln(FLogFile, '');
+      StreamWriteln(FLogFile, '----- Debuggercall');
+      StreamWriteln(FLogFile, Debugger);
+      StreamWriteln(FLogFile, '');
+    except
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
 end;
 
 procedure TDebugger.ReadDebuggerForUMLWindow;
 begin
-  readAndExecuteDebuggerUMLWindow(PipeOutput2);
+  ReadAndExecuteDebuggerUMLWindow(FPipeOutput2);
 end;
 
 procedure TDebugger.StartOfDebugging;
 begin
-  EditForm:= FJava.getActiveEditor;
+  FEditForm := FJava.GetActiveEditor;
   FMessages.ClearStack;
-  Attributes.Clear;
-  LocalVariables.Clear;
-  LinesDebugger.Clear;
-  for var i:= 1 to 3 do
-    FMessages.Expanded[i].clear;
+  FAttributes.Clear;
+  FLocalVariables.Clear;
+  FLinesDebugger.Clear;
+  for var I := 1 to 3 do
+    FMessages.Expanded[I].Clear;
   FMessages.ShowIt;
   FMessages.DeleteTab(K_Interpreter);
   FMessages.ShowTab(K_Debugger);
   FMessages.StatusMessage(_('Starting debugger, please wait...'));
-  FJava.CompileButtonToStop(true);
-  Abort:= false;
-  ReadyForInput:= false;
-  Status:= 0;
-  InstanceOf2Participants.Clear;
+  FJava.CompileButtonToStop(True);
+  FAbort := False;
+  FReadyForInput := False;
+  FStatus := 0;
+  FInstanceOf2Participants.Clear;
 end;
 
 procedure TDebugger.Terminate;
 begin
-  ReadyForInput:= true;
-  if not Running then exit;
-  Attributes.Clear;
-  LocalVariables.Clear;
-  Commands.Clear;
-  Running:= false;
-  Abort:= true;
+  FReadyForInput := True;
+  if not FRunning then
+    Exit;
+  FAttributes.Clear;
+  FLocalVariables.Clear;
+  FCommands.Clear;
+  FRunning := False;
+  FAbort := True;
   Application.ProcessMessages;
   Sleep(20);
-  var ComJava:= getComJava;
-  if assigned(ComJava) and (ComJava.ProcessInformation.dwProcessID <> 0) then
+  var
+  ComJava := GetComJava;
+  if Assigned(ComJava) and (ComJava.ProcessInformation.dwProcessId <> 0) then
     ComJava.JavaReset;
-  TerminateTask(Processinformation);
-  TerminateTask(Processinformation1);
-  TerminateTask(Processinformation2);
-  ClosePipeHandles(PipeOutput);
-  ClosePipeHandles(PipeInput1);
-  ClosePipeHandles(PipeOutput1);
-  ClosePipeHandles(PipeInput2);
-  ClosePipeHandles(PipeOutput2);
-  BreakPointAtMain:= False;
-  FJava.CompileButtonToStop(false);
-  FJava.RunButtonToStop(false);
-  myJavaCommands.ProcessRunning:= false;
-  if assigned(LogFile) then
-    FreeAndNil(LogFile);
+  TerminateTask(FProcessInformation);
+  TerminateTask(FProcessInformation1);
+  TerminateTask(FProcessInformation2);
+  ClosePipeHandles(FPipeOutput);
+  ClosePipeHandles(FPipeInput1);
+  ClosePipeHandles(FPipeOutput1);
+  ClosePipeHandles(FPipeInput2);
+  ClosePipeHandles(FPipeOutput2);
+  FBreakpointAtMain := False;
+  FJava.CompileButtonToStop(False);
+  FJava.RunButtonToStop(False);
+  MyJavaCommands.ProcessRunning := False;
+  FreeAndNil(FLogFile);
   if FConfiguration.DebuggerProtocol then
-    FJava.Open(LogFilename);
-  if assigned(EditForm) then
-    EditForm.DeleteDebuglineMark;
-  if assigned(FMessages) then begin
+    FJava.Open(FLogFilename);
+  if Assigned(FEditForm) then
+    FEditForm.DeleteDebuglineMark;
+  if Assigned(FMessages) then
+  begin
     FMessages.ClearStack;
     FMessages.ShowWatchedExpressions;
     FMessages.StatusMessage(_('Debugger finished.'));
@@ -644,443 +749,529 @@ begin
 end;
 
 procedure TDebugger.GrantApplet;
-  const GrantPermission = 'grant {permission java.security.AllPermission;};';
+const
+  GrantPermission = 'grant {permission java.security.AllPermission;};';
 begin
-  var SL:= TStringList.Create;
+  var
+  StringList := TStringList.Create;
   try
     try
-      if FileExists(PolicyFile) then
-        SL.LoadFromFile(PolicyFile);
-      if SL.IndexOf(GrantPermission) = -1 then
-        SL.Add(GrantPermission);
-      SL.SaveToFile(PolicyFile);
+      if FileExists(FPolicyFile) then
+        StringList.LoadFromFile(FPolicyFile);
+      if StringList.IndexOf(GrantPermission) = -1 then
+        StringList.Add(GrantPermission);
+      StringList.SaveToFile(FPolicyFile);
     except
       on e: Exception do
         ErrorMsg(e.Message);
     end;
   finally
-    FreeAndNil(SL);
+    FreeAndNil(StringList);
   end;
 end;
 
-procedure TDebugger.UngrantApplet;
-  const GrantPermission = 'grant {permission java.security.AllPermission;};';
+procedure TDebugger.UnGrantApplet;
+const
+  GrantPermission = 'grant {permission java.security.AllPermission;};';
 begin
-  if FileExists(PolicyFile) then begin
-    var SL:= TStringList.Create;
+  if FileExists(FPolicyFile) then
+  begin
+    var
+    StringList := TStringList.Create;
     try
       try
-        SL.LoadFromFile(PolicyFile);
-        var i:= SL.IndexOf(GrantPermission);
-        if i > -1 then SL.Delete(i);
-        SL.SaveToFile(PolicyFile);
+        StringList.LoadFromFile(FPolicyFile);
+        var
+        Int := StringList.IndexOf(GrantPermission);
+        if Int > -1 then
+          StringList.Delete(Int);
+        StringList.SaveToFile(FPolicyFile);
       except
         on e: Exception do
           ErrorMsg(e.Message);
       end;
     finally
-      FreeAndNil(SL);
+      FreeAndNil(StringList);
     end;
   end;
 end;
 
-function TDebugger.getThread(Lines: TStringlist): string;
-  var i, p: integer; s: string;
+function TDebugger.GetThread(Lines: TStringList): string;
+var
+  Posi: Integer;
+  Str: string;
 begin
   // Format
   // Breakpoint hit: "thread=AWT-EventQueue-0", MenueLeisteTest.actionPerformed(),
   // Debugging in UML-Window, answer to command "where"
-  //  [1] Auto.tanken (Auto.java:36)'#$D#$A'Thread-1[1] '#$D#$A
-  //  [1] ConAuto.main (ConAuto.java:14)'#$D#$A'main[1] '#$D#$A
+  // [1] Auto.tanken (Auto.java:36)'#$D#$A'Thread-1[1] '#$D#$A
+  // [1] ConAuto.main (ConAuto.java:14)'#$D#$A'main[1] '#$D#$A
   // #$D#$A'AWT-EventQueue-1[1] '#$D#$A
 
-  Result:= 'main[1]';
-  s:= Lines[Lines.Count-1];
-  if (pos('Thread', s) = 1) or
-     (pos('main', s) = 1) or
-     (pos('AWT-EventQueue', s) = 1) or
-     (pos('JavaFX Application Thread', s) = 1) then begin
-    Result:= trim(s);
-    exit;
+  Result := 'main[1]';
+  Str := Lines[Lines.Count - 1];
+  if (Pos('Thread', Str) = 1) or (Pos('main', Str) = 1) or
+    (Pos('AWT-EventQueue', Str) = 1) or
+    (Pos('JavaFX Application Thread', Str) = 1) then
+  begin
+    Result := Trim(Str);
+    Exit;
   end;
 
   if Pos('Breakpoint hit:', Lines.Text) = 0 then
-    exit;
-  for i:= Lines.Count - 1 downto 0 do begin
-    s:= Lines[i];
-    p:= Pos('"thread=', s);
-    if p > 0 then begin
-      delete(s, 1, p+7);
-      p:= Pos('"', s);
-      delete(s, p, length(s));
-      Result:= s + '[1]';
+    Exit;
+  for var I := Lines.Count - 1 downto 0 do
+  begin
+    Str := Lines[I];
+    Posi := Pos('"thread=', Str);
+    if Posi > 0 then
+    begin
+      Delete(Str, 1, Posi + 7);
+      Posi := Pos('"', Str);
+      Delete(Str, Posi, Length(Str));
+      Result := Str + '[1]';
       Exit;
     end;
   end;
 end;
 
-function TDebugger.DebuggerReady(Lines: TStringlist): boolean;
+function TDebugger.DebuggerReady(Lines: TStringList): Boolean;
 begin
-  Result:= false;
-  if Lines.Count = 0 then exit;
-  Thread:= getThread(Lines);
-  var s:= Lines.Strings[Lines.Count-1];
-  Result:= (Pos(Thread, s) > 0) or (s = '> ') or (s = '> '#$0D#$0A);
-  if (Lines.Count = 1) and StartsWith(Lines.Text, 'Set deferred breakpoint ') then
-    Result:= true;
-  if pos('NoSuchMethodError', Lines.Text) > 0 then begin
+  Result := False;
+  if Lines.Count = 0 then
+    Exit;
+  FThread := GetThread(Lines);
+  var
+  Str := Lines[Lines.Count - 1];
+  Result := (Pos(FThread, Str) > 0) or (Str = '> ') or (Str = '> '#$0D#$0A);
+  if (Lines.Count = 1) and StartsWith(Lines.Text, 'Set deferred breakpoint ')
+  then
+    Result := True;
+  if Pos('NoSuchMethodError', Lines.Text) > 0 then
+  begin
     ErrorMsg(_('main() method missing!'));
-    Result:= false;
-    Abort:= true;
+    Result := False;
+    FAbort := True;
   end;
-  if Pos('Exception occurred', Lines.Text)  > 0 then begin
-    while (Lines.Count > 0) and (Pos('Exception occurred', Lines[0]) = 0)  do
+  if Pos('Exception occurred', Lines.Text) > 0 then
+  begin
+    while (Lines.Count > 0) and (Pos('Exception occurred', Lines[0]) = 0) do
       Lines.Delete(0);
     ErrorMsg(Lines.Text);
-    Result:= false;
-    Abort:= true;
+    Result := False;
+    FAbort := True;
   end;
-  if Pos('Exception in thread', Lines.Text) > 0 then begin
-    while (Lines.Count > 0) and (Pos('Exception in thread', Lines[0]) = 0)  do
+  if Pos('Exception in thread', Lines.Text) > 0 then
+  begin
+    while (Lines.Count > 0) and (Pos('Exception in thread', Lines[0]) = 0) do
       Lines.Delete(0);
     ErrorMsg(Lines.Text);
-    Result:= false;
-    Abort:= true;
+    Result := False;
+    FAbort := True;
   end;
 end;
 
 procedure TDebugger.DebuggerStart(Lines: TStringList);
-  var i, p: Integer; s: string;
+var
+  Posi: Integer;
+  Str: string;
 begin
   if Pos('Initializing jdb', Lines.Text) > 0 then
     FMessages.StatusMessage(_('Debugger started.'));
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    p:= Pos('Unable to set', s);
-    if (p > 0) and assigned(EditForm) then
-      EditForm.DeleteBreakPoint(Copy(s, p, length(s)));
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos('Unable to set', Str);
+    if (Posi > 0) and Assigned(FEditForm) then
+      FEditForm.DeleteBreakpoint(Copy(Str, Posi, Length(Str)));
   end;
 end;
 
-function TDebugger.PositionOn(s: string): boolean;
-  var Line, p, p1, p2, q: Integer; aClassname: string;
-      MethodExited: boolean;
+function TDebugger.PositionOn(Str: string): Boolean;
+var
+  Line, Posi, Posi1, Posi2, Posi3: Integer;
+  AClassname: string;
+  MethodExited: Boolean;
 
-  function ReadDigits(s: string): string;
-    var i: Integer;
+  function ReadDigits(Str: string): string;
+  var
+    Int: Integer;
   begin
-    i:= 1;
-    while (i <= Length(s)) and (('0' <= s[i]) and (s[i] <= '9') or (s[i] = '.')) or (s[i] = '-') do
-      inc(i);
-    s:= Copy(s, 1, i-1);
-    Result:= ReplaceStr(s, '.', '');
+    Int := 1;
+    while (Int <= Length(Str)) and (('0' <= Str[Int]) and (Str[Int] <= '9') or
+      (Str[Int] = '.')) or (Str[Int] = '-') do
+      Inc(Int);
+    Str := Copy(Str, 1, Int - 1);
+    Result := ReplaceStr(Str, '.', '');
   end;
 
 begin
-  Result:= false;
-  p:= Pos(', line=', s);
-  if p > 0 then begin
-    MethodExited:= (Pos('Method exited', s) > 0);
+  Result := False;
+  Posi := Pos(', line=', Str);
+  if Posi > 0 then
+  begin
+    MethodExited := (Pos('Method exited', Str) > 0);
     // example: in package.class.method() we need package.class
-    p1:= p - 1;
-    while (p1 > 0) and (s[p1] <> '.') do
-      dec(p1);
-    p2:= p1;
-    dec(p1);
-    while (p1 > 0) and (s[p1] <> ' ') do
-      dec(p1);
-    aClassname:= Copy(s, p1+1, p2-(p1+1));
-    if StartsWith(aClassname, 'jdk.') or StartsWith(aClassname, 'java.') then begin
+    Posi1 := Posi - 1;
+    while (Posi1 > 0) and (Str[Posi1] <> '.') do
+      Dec(Posi1);
+    Posi2 := Posi1;
+    Dec(Posi1);
+    while (Posi1 > 0) and (Str[Posi1] <> ' ') do
+      Dec(Posi1);
+    AClassname := Copy(Str, Posi1 + 1, Posi2 - (Posi1 + 1));
+    if StartsWith(AClassname, 'jdk.') or StartsWith(AClassname, 'java.') then
+    begin
       NewCommand(3, 'step up');
-      exit;
+      Exit;
     end;
 
     // intern class, e.g. StackCalculator$3.actionPerformed
     // don't use inner classes to open editor with classname
-    q:= Pos('$', aClassname);
-    if q > 0 then aClassname:= copy(aClassname, 1, q-1);
+    Posi3 := Pos('$', AClassname);
+    if Posi3 > 0 then
+      AClassname := Copy(AClassname, 1, Posi3 - 1);
 
-    s:= copy(s, p + 7, 10);
-    s:= ReadDigits(s);
-    Line:= StrToInt(s);
+    Str := Copy(Str, Posi + 7, 10);
+    Str := ReadDigits(Str);
+    Line := StrToInt(Str);
     if Line = -1 then
       NewCommand(3, 'cont');
 
-    if FJava.OpenWindowWithClass(Directory, aClassname) then
-      EditForm:= FJava.getActiveEditor
-    else begin // no sourcecode
+    if FJava.OpenWindowWithClass(FDirectory, AClassname) then
+      FEditForm := FJava.GetActiveEditor
+    else
+    begin // no sourcecode
       NewCommand(3, 'cont');
-      exit;
+      Exit;
     end;
-    myJavaCommands.EditForm:= EditForm;
+    MyJavaCommands.EditForm := FEditForm;
 
     if not MethodExited then
-      EditForm.SetDebugLineMark(Line);
-    Result:= true;
+      FEditForm.SetDebuglineMark(Line);
+    Result := True;
   end;
 end;
 
 procedure TDebugger.CheckValidBreakpoints(Lines: TStringList);
-  var i, p: Integer; s: string;
+var
+  Posi: Integer;
+  Str: string;
 begin
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    p:= Pos('Unable to set', s);
-    if (p > 0) and assigned(EditForm) then
-      EditForm.DeleteBreakPoint(Copy(s, p, length(s)));
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos('Unable to set', Str);
+    if (Posi > 0) and Assigned(FEditForm) then
+      FEditForm.DeleteBreakpoint(Copy(Str, Posi, Length(Str)));
   end;
 end;
 
-procedure TDebugger.ShowDetailedVariables(Section: integer; Lines: TStringlist);
-  var j, p, count: integer;
-      s, TotalVariableFix: string;
-      AttVarAus: TTreeNodes;
-      CurNode, NewNode: TTreeNode;
+procedure TDebugger.ShowDetailedVariables(Section: Integer; Lines: TStringList);
+var
+  Posi, Count: Integer;
+  Str, TotalVariableFix: string;
+  AttVarAus: TTreeNodes;
+  CurNode, NewNode: TTreeNode;
 
   procedure EliminateSingleCommas;
-    var s, s1, s2: string;
+  var
+    Str, Str1, Str2: string;
   begin
-    s:= Lines.Text;
-    s1:= #$D#$A', ';
-    s2:= ', '#$D#$A;
-    s:= ANSIReplaceStr(s, s1, s2);
-    s1:= ', ';
-    s2:= ','#$D#$A;
-    s:= ANSIReplaceStr(s, s1, s2);
-    s1:= #$D#$A#$D#$A;
-    s2:= #$D#$A;
-    s:= ANSIReplaceStr(s, s1, s2);
-    Lines.Text:= s;
+    Str := Lines.Text;
+    Str1 := #$D#$A', ';
+    Str2 := ', '#$D#$A;
+    Str := AnsiReplaceStr(Str, Str1, Str2);
+    Str1 := ', ';
+    Str2 := ','#$D#$A;
+    Str := AnsiReplaceStr(Str, Str1, Str2);
+    Str1 := #$D#$A#$D#$A;
+    Str2 := #$D#$A;
+    Str := AnsiReplaceStr(Str, Str1, Str2);
+    Lines.Text := Str;
   end;
 
-  function getArrayVariable(s: string): string;
+  function getArrayVariable(Str: string): string;
   begin
-    var p:= Pos('.', s);
-    while p > 0 do begin
-      delete(s, 1, p);
-      p:= Pos('.', s);
+    var
+    Posi := Pos('.', Str);
+    while Posi > 0 do
+    begin
+      Delete(Str, 1, Posi);
+      Posi := Pos('.', Str);
     end;
-    Result:= s;
+    Result := Str;
   end;
 
-  function getInstanceOf(s: string): string;
-    var p: integer;
+  function getInstanceOf(Str: string): string;
+  var
+    Posi: Integer;
   begin
-    p:= Pos(')', s);
-    if p > 0 then
-      delete(s, p+1, length(s));
-    Result:= s;
+    Posi := Pos(')', Str);
+    if Posi > 0 then
+      Delete(Str, Posi + 1, Length(Str));
+    Result := Str;
   end;
 
-  function getStartNodeArray(aNode: TTreeNode; s: string): TTreeNode;
-    var p: integer; s1: string;
+  function getStartNodeArray(ANode: TTreeNode; Str: string): TTreeNode;
+  var
+    Posi: Integer;
+    Str1: string;
   begin
-    s1:= copy(s, 1, Pos('[', s) - 1);
-    while assigned(aNode) and
-      (pos(s1 + ' ', aNode.Text) + pos(s1 + ':', aNode.Text) <> 1) do
-      aNode:= aNode.getNextSibling;
+    Str1 := Copy(Str, 1, Pos('[', Str) - 1);
+    while Assigned(ANode) and (Pos(Str1 + ' ', ANode.Text) + Pos(Str1 + ':',
+      ANode.Text) <> 1) do
+      ANode := ANode.getNextSibling;
 
-    s1:= '';
-    if assigned(aNode) then
+    Str1 := '';
+    if Assigned(ANode) then
       repeat
-        aNode:= aNode.getFirstChild;
-        p:= Pos('][', s);
-        if p > 0 then begin
-          s1:= s1 + copy(s, 1, p);
-          s:= copy(s, p + 1, length(s));
-        end else begin
-          s1:= s1 + s;
-          s:= '';
+        ANode := ANode.getFirstChild;
+        Posi := Pos('][', Str);
+        if Posi > 0 then
+        begin
+          Str1 := Str1 + Copy(Str, 1, Posi);
+          Str := Copy(Str, Posi + 1, Length(Str));
+        end
+        else
+        begin
+          Str1 := Str1 + Str;
+          Str := '';
         end;
-        while assigned(aNode) and (pos(s1 + ':', aNode.Text) <> 1) do
-          aNode:= aNode.getNextSibling;
-      until (s = '') or not assigned(aNode);
-    Result:= aNode;
+        while Assigned(ANode) and (Pos(Str1 + ':', ANode.Text) <> 1) do
+          ANode := ANode.getNextSibling;
+      until (Str = '') or not Assigned(ANode);
+    Result := ANode;
   end;
 
-  function getStartNode(s: string): TTreeNode;
-    var aNode: TTreeNode;
-        s1: string;
-        p: integer;
+  function getStartNode(Str: string): TTreeNode;
+  var
+    ANode: TTreeNode;
+    Str1: string;
+    Posi: Integer;
   begin
-    aNode:= AttVarAus.GetFirstNode;
+    ANode := AttVarAus.GetFirstNode;
     repeat
-      p:= Pos('.', s);
-      if p > 0 then begin
-        s1:= copy(s, 1, p-1);
-        s:= copy(s, p+1, length(s));
-      end else if Pos('[', s) > 0 then begin
-        Result:= GetStartNodeArray(aNode, s);
-        exit;
-      end else begin
-        s1:= s;
-        s:= '';
+      Posi := Pos('.', Str);
+      if Posi > 0 then
+      begin
+        Str1 := Copy(Str, 1, Posi - 1);
+        Str := Copy(Str, Posi + 1, Length(Str));
+      end
+      else if Pos('[', Str) > 0 then
+      begin
+        Result := getStartNodeArray(ANode, Str);
+        Exit;
+      end
+      else
+      begin
+        Str1 := Str;
+        Str := '';
       end;
-      while assigned(aNode) and
-        (pos(s1 + ' ', aNode.Text) + pos(s1 + ':', aNode.Text) <> 1) do
-        aNode:= aNode.getNextSibling;
-      if (s <> '') and Assigned(aNode) then aNode:= aNode.getFirstChild;
-    until (s = '') or not Assigned(aNode);
-    Result:= aNode;
+      while Assigned(ANode) and (Pos(Str1 + ' ', ANode.Text) + Pos(Str1 + ':',
+        ANode.Text) <> 1) do
+        ANode := ANode.getNextSibling;
+      if (Str <> '') and Assigned(ANode) then
+        ANode := ANode.getFirstChild;
+    until (Str = '') or not Assigned(ANode);
+    Result := ANode;
   end;
 
 begin
-  s:= Trim(Lines[0]);
-  p:= Pos(' = {', s);
-  count:= 0;
-  if p > 0 then begin
-    TotalVariableFix:= Copy(s, 1, p-1);
+  Str := Trim(Lines[0]);
+  Posi := Pos(' = {', Str);
+  Count := 0;
+  if Posi > 0 then
+  begin
+    TotalVariableFix := Copy(Str, 1, Posi - 1);
     case Section of
-      1: AttVarAus:= Attributes;
-      2: AttVarAus:= LocalVariables;
-      3: AttVarAus:= WatchedExpressions;
+      1:
+        AttVarAus := FAttributes;
+      2:
+        AttVarAus := FLocalVariables;
+      3:
+        AttVarAus := FWatchedExpressions;
     end;
     AttVarAus.BeginUpdate;
     EliminateSingleCommas;
-    CurNode:= getStartNode(TotalVariableFix);
-    if assigned(CurNode) then begin
+    CurNode := getStartNode(TotalVariableFix);
+    if Assigned(CurNode) then
+    begin
       CurNode.DeleteChildren;
-      for j:=  1 to Lines.Count - 1 do begin
-        s:= trim(Lines[j]);
-        if (s = '}') or (Pos('Internal exception', s) > 0) then
-          break;
-        if s <> '' then begin
-          if Pos('instance of ', s) = 1 then begin
-            s:= getArrayVariable(TotalVariableFix) +
-                '[' + IntToStr(count) + ']: ' + getInstanceOf(s);
-            NewNode:= AttVarAus.AddChild(CurNode, s);
-            AttVarAus.AddChild(NewNode, '_' + s);
-            inc(count);
-          end else if Pos('instance of ', s) > 1 then begin
-            NewNode:= AttVarAus.AddChild(CurNode, s);
-            AttVarAus.AddChild(NewNode, '_' + s);
-          end else
-            AttVarAus.AddChild(CurNode, s);
+      for var J := 1 to Lines.Count - 1 do
+      begin
+        Str := Trim(Lines[J]);
+        if (Str = '}') or (Pos('Internal exception', Str) > 0) then
+          Break;
+        if Str <> '' then
+        begin
+          if Pos('instance of ', Str) = 1 then
+          begin
+            Str := getArrayVariable(TotalVariableFix) + '[' + IntToStr(Count) +
+              ']: ' + getInstanceOf(Str);
+            NewNode := AttVarAus.AddChild(CurNode, Str);
+            AttVarAus.AddChild(NewNode, '_' + Str);
+            Inc(Count);
+          end
+          else if Pos('instance of ', Str) > 1 then
+          begin
+            NewNode := AttVarAus.AddChild(CurNode, Str);
+            AttVarAus.AddChild(NewNode, '_' + Str);
+          end
+          else
+            AttVarAus.AddChild(CurNode, Str);
         end;
       end;
       FMessages.SetDumpActive(True);
-      CurNode.Expand(false);
+      CurNode.Expand(False);
       FMessages.SetDumpActive(False);
     end;
     AttVarAus.EndUpdate;
   end;
 end;
 
-procedure TDebugger.ShowAttributes(Lines: TStringlist);
-   var i, p: integer; s: string;
-       Node: TTreeNode;
+procedure TDebugger.ShowAttributes(Lines: TStringList);
+var
+  Posi: Integer;
+  Str: string;
+  Node: TTreeNode;
 
-  function IsJava(const s: string): boolean;
+  function IsJava(const Str: string): Boolean;
   begin
-    Result:= (Pos('java.', s) = 1) or (Pos('javax.', s) = 1) or (Pos('javafx.', s) = 1);
+    Result := (Pos('java.', Str) = 1) or (Pos('javax.', Str) = 1) or
+      (Pos('javafx.', Str) = 1);
   end;
 
 begin
-  Attributes.Clear;
-  if (Pos('In native or static method', Lines.Text) > 0) and (Pos('this = null', Lines.Text) > 0) then
-    NewCommand(13, 'fields ' + JavaClass)
+  FAttributes.Clear;
+  if (Pos('In native or static method', Lines.Text) > 0) and
+    (Pos('this = null', Lines.Text) > 0) then
+    NewCommand(13, 'fields ' + FJavaClass)
   else
-    for i:= 0 to Lines.Count-1 do begin
-      s:= Trim(Lines[i]);
-      if (Pos('}', s) > 0) or (Pos('No current thread', s) > 0) then
-        break;
-      if (s = '') or (Pos('this =', s)  > 0) or (Pos(Thread, s) > 0) or
-         (Pos('ParseException', s) > 0) then
+    for var I := 0 to Lines.Count - 1 do
+    begin
+      Str := Trim(Lines[I]);
+      if (Pos('}', Str) > 0) or (Pos('No current thread', Str) > 0) then
+        Break;
+      if (Str = '') or (Pos('this =', Str) > 0) or (Pos(FThread, Str) > 0) or
+        (Pos('ParseException', Str) > 0) then
         Continue;
-      if not ShowDetailed and InstanceOfJava(s) or IsJava(s) then
+      if not FShowDetailed and InstanceOfJava(Str) or IsJava(Str) then
         Continue;
-      p:= Pos(': ', s);
-      if p > 0 then s:= Copy(s, 1, p-1) + ' = ' + copy(s, p+2, length(s));
-      Node:= Attributes.Add(nil, s);
-      if Pos('instance of', s) > 0 then
-        Attributes.AddChild(Node, 'dummy');
+      Posi := Pos(': ', Str);
+      if Posi > 0 then
+        Str := Copy(Str, 1, Posi - 1) + ' = ' + Copy(Str, Posi + 2,
+          Length(Str));
+      Node := FAttributes.Add(nil, Str);
+      if Pos('instance of', Str) > 0 then
+        FAttributes.AddChild(Node, 'dummy');
     end;
 end;
 
 procedure TDebugger.ShowParameterAndLocalVariables(Lines: TStringList);
-  var i: Integer; s: string;
-      Node: TTreeNode;
+var
+  Str: string;
+  Node: TTreeNode;
 begin
-  LocalVariables.Clear;
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    if (Pos(' = ', s) > 0) and (not InstanceOfJava(s) or ShowDetailed) then begin
-      Node:= LocalVariables.Add(nil, s);
-      if Pos('instance of', s) > 0 then
-        LocalVariables.AddChild(Node, 'dummy');
+  FLocalVariables.Clear;
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    if (Pos(' = ', Str) > 0) and (not InstanceOfJava(Str) or FShowDetailed) then
+    begin
+      Node := FLocalVariables.Add(nil, Str);
+      if Pos('instance of', Str) > 0 then
+        FLocalVariables.AddChild(Node, 'dummy');
     end;
   end;
 end;
 
 procedure TDebugger.ShowStack(Lines: TStringList);
 
-  function IsJavaInStack(const s: string): boolean;
+  function IsJavaInStack(const Str: string): Boolean;
   begin
-    Result:= (Pos('] java.', s) > 0) or (Pos('] javax.', s) > 0) or
-             (Pos('javafx.', s) > 0) or (Pos('] com.sun.', s) > 0);
+    Result := (Pos('] java.', Str) > 0) or (Pos('] javax.', Str) > 0) or
+      (Pos('javafx.', Str) > 0) or (Pos('] com.sun.', Str) > 0);
   end;
 
 begin
   FMessages.ClearStack;
-  for var i:= 0 to Lines.Count - 1 do begin
-    var s:= Trim(Lines[i]);
-    if (s <> '') and (Pos(Thread, s) = 0) and (s[1] = '[') and
-       (ShowDetailed or not IsJavaInStack(s)) then
-      FMessages.LBStack.Items.Add(s);
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    var
+    Str := Trim(Lines[I]);
+    if (Str <> '') and (Pos(FThread, Str) = 0) and (Str[1] = '[') and
+      (FShowDetailed or not IsJavaInStack(Str)) then
+      FMessages.LBStack.Items.Add(Str);
   end;
 end;
 
 procedure TDebugger.StepCont(Lines: TStringList);
-  var i: Integer; s, s1, s2: string;
+var
+  Str, Str1, Str2: string;
 begin
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    if Pos('line=', s) > 0 then begin
-      if PositionOn(s) then begin
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    if Pos('line=', Str) > 0 then
+    begin
+      if PositionOn(Str) then
+      begin
         Application.BringToFront;
         ShowAll;
-        if ToCursorBreakpoint <> '' then begin
-          NewCommand(2, ToCursorBreakpoint);
-          ToCursorBreakpoint:= ''
+        if FToCursorBreakpoint <> '' then
+        begin
+          NewCommand(2, FToCursorBreakpoint);
+          FToCursorBreakpoint := '';
         end;
-        BreakpointHit:= true;
-      end else
-        BreakpointHit:= false;
+        FBreakpointHit := True;
+      end
+      else
+        FBreakpointHit := False;
     end;
-    if assigned(Sequenceform) then begin
-      if Pos('Method entered', s) > 0 then begin
-        s1:= Lines[i+1];
-        if Pos('Breakpoint hit:', s1) > 0
-          then s2:= FilterLog(copy(s1, 16, length(s1)))
-        else if s = 'Method entered: '
-          then s2:= FilterLog(s1)
-          else s2:= FilterLog(s);
-        if Pos('JEClassLoader.loadClass', s2) = 0 then begin
-          Sequenceform.MethodEntered(s2);
+    if Assigned(SequenceForm) then
+    begin
+      if Pos('Method entered', Str) > 0 then
+      begin
+        Str1 := Lines[I + 1];
+        if Pos('Breakpoint hit:', Str1) > 0 then
+          Str2 := FilterLog(Copy(Str1, 16, Length(Str1)))
+        else if Str = 'Method entered: ' then
+          Str2 := FilterLog(Str1)
+        else
+          Str2 := FilterLog(Str);
+        if Pos('JEClassLoader.loadClass', Str2) = 0 then
+        begin
+          SequenceForm.MethodEntered(Str2);
           if FConfiguration.SDShowParameter then
             NewCommand(17, 'locals');
-          NewCommand(0,  'up');
+          NewCommand(0, 'up');
           NewCommand(16, 'print this');
-          NewCommand(0,  'down');
+          NewCommand(0, 'down');
           NewCommand(15, 'print this');
-        end else
+        end
+        else
           NewCommand(0, 'run'); // added via else
       end;
-      if Pos('Method exited', s) > 0 then begin
-        if Pos('JEClassLoader.loadClass', s) = 0 then begin
-          Sequenceform.MethodExited(FilterLog(s));
+      if Pos('Method exited', Str) > 0 then
+      begin
+        if Pos('JEClassLoader.loadClass', Str) = 0 then
+        begin
+          SequenceForm.MethodExited(FilterLog(Str));
           NewCommand(16, 'print this');
-          NewCommand(0,  'up');
+          NewCommand(0, 'up');
           NewCommand(15, 'print this');
-          NewCommand(0,  'down');
-          NewCommand(0,  'next');
+          NewCommand(0, 'down');
+          NewCommand(0, 'next');
           NewCommand(18, 'locals');
-          NewCommand(0,  'step');
-          if Pos('.<init>()', s) > 0 then begin
+          NewCommand(0, 'step');
+          if Pos('.<init>()', Str) > 0 then
+          begin
             NewCommand(19, 'locals');
             NewCommand(21, 'dump this');
           end;
-        end else
+        end
+        else
           NewCommand(0, 'run');
       end;
     end;
@@ -1088,190 +1279,238 @@ begin
 end;
 
 procedure TDebugger.Watch(Lines: TStringList);
-  var i, p: integer; Variable, s: string; Node: TTreeNode;
+var
+  Posi: Integer;
+  Variable, Str: string;
+  Node: TTreeNode;
 begin
-  if Watched = 0 then
-    WatchedExpressions.Clear;
-  Node:= nil;
-  for i:= 0 to Lines.Count-1 do begin
-    s:= Lines[i];
-    p:= Pos('Name unknown', s);
-    if p > 0 then begin
-      delete(s, 1, p + 13);
-      WatchedExpressions.Add(nil, s + ' = ' + _(LNGUnknown));
-      break;
+  if FWatched = 0 then
+    FWatchedExpressions.Clear;
+  Node := nil;
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos('Name unknown', Str);
+    if Posi > 0 then
+    begin
+      Delete(Str, 1, Posi + 13);
+      FWatchedExpressions.Add(nil, Str + ' = ' + _(LNGUnknown));
+      Break;
     end;
-    p:= Pos('ParseException', s);
-    if p > 0 then begin
-      WatchedExpressions.Add(nil, s);
-      break;
+    Posi := Pos('ParseException', Str);
+    if Posi > 0 then
+    begin
+      FWatchedExpressions.Add(nil, Str);
+      Break;
     end;
 
-    if (s = '') or (Pos(Thread, s) > 0) then Continue;
-    p:= Pos(' = {', s);
-    if p > 0 then begin
-      Variable:= trim(copy(s, 1, p-1));
-      Node:= WatchedExpressions.Add(nil, Variable + ' = instance of');
-      end
+    if (Str = '') or (Pos(FThread, Str) > 0) then
+      Continue;
+    Posi := Pos(' = {', Str);
+    if Posi > 0 then
+    begin
+      Variable := Trim(Copy(Str, 1, Posi - 1));
+      Node := FWatchedExpressions.Add(nil, Variable + ' = instance of');
+    end
     else if Assigned(Node) then
-      WatchedExpressions.AddChild(Node, trim(s))
+      FWatchedExpressions.AddChild(Node, Trim(Str))
     else
-      WatchedExpressions.Add(nil, trim(s));
+      FWatchedExpressions.Add(nil, Trim(Str));
   end;
-  inc(Watched);
+  Inc(FWatched);
 end;
 
 procedure TDebugger.MonitoringType(Lines: TStringList);
-  var i, k, p: integer; Variable, Typ, s: string;
+var
+  Posi: Integer;
+  Variable, Typ, Str: string;
 begin
-  for i:= 0 to Lines.Count-1 do begin
-    s:= Lines[i];
-    p:= Pos('Name unknown', s);
-    if p > 0 then break;
-    if (s = '') or (Pos(Thread, s) > 0) then Continue;
-    p:= Pos(' = "', s);
-    if p > 0 then begin
-      Variable:= trim(copy(s, 1, p-1));
-      delete(s, 1, p+3);
-      Typ:= copy(s, 1, Pos('@', s) -1);
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos('Name unknown', Str);
+    if Posi > 0 then
+      Break;
+    if (Str = '') or (Pos(FThread, Str) > 0) then
+      Continue;
+    Posi := Pos(' = "', Str);
+    if Posi > 0 then
+    begin
+      Variable := Trim(Copy(Str, 1, Posi - 1));
+      Delete(Str, 1, Posi + 3);
+      Typ := Copy(Str, 1, Pos('@', Str) - 1);
       if Typ <> '' then
-        for k:= 0 to WatchedExpressions.Count - 1 do
-          if WatchedExpressions.Item[k].Text = Variable + ' = instance of' then begin
-            WatchedExpressions.Item[k].Text:= Variable + ' = instance of ' + Typ;
-            exit;
+        for var K := 0 to FWatchedExpressions.Count - 1 do
+          if FWatchedExpressions[K].Text = Variable + ' = instance of' then
+          begin
+            FWatchedExpressions[K].Text := Variable + ' = instance of ' + Typ;
+            Exit;
           end;
     end;
 
-    p:= Pos(' = ', s);
-    if p > 0 then begin
-      Variable:= trim(copy(s, 1, p+2));
-      for k:= 0 to WatchedExpressions.Count - 1 do
-        if StartsWith(WatchedExpressions.Item[k].Text, Variable) then begin
-          WatchedExpressions.Item[k].Text:= Lines[i];
-          exit;
+    Posi := Pos(' = ', Str);
+    if Posi > 0 then
+    begin
+      Variable := Trim(Copy(Str, 1, Posi + 2));
+      for var K := 0 to FWatchedExpressions.Count - 1 do
+        if StartsWith(FWatchedExpressions[K].Text, Variable) then
+        begin
+          FWatchedExpressions[K].Text := Lines[I];
+          Exit;
         end;
     end;
   end;
 end;
 
 procedure TDebugger.EvaluateExpression(Lines: TStringList);
-  var i, p: Integer; s: string;
+var
+  Posi: Integer;
+  Str: string;
 begin
   FEvaluate.MEvaluate.Clear;
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    p:= Pos('Name unknown', s);
-    if p > 0 then begin
-      delete(s, 1, p + 13);
-      FEvaluate.MEvaluate.Lines.Add(s + ' = ' + _(LNGUnknown));
-      break;
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos('Name unknown', Str);
+    if Posi > 0 then
+    begin
+      Delete(Str, 1, Posi + 13);
+      FEvaluate.MEvaluate.Lines.Add(Str + ' = ' + _(LNGUnknown));
+      Break;
     end;
-    if (s <> '') and (s <> '> ') and (Pos(Thread, s) = 0) then
-      FEvaluate.MEvaluate.Lines.Add(s);
+    if (Str <> '') and (Str <> '> ') and (Pos(FThread, Str) = 0) then
+      FEvaluate.MEvaluate.Lines.Add(Str);
   end;
 end;
 
-procedure TDebugger.getStaticVariables(Lines: TStringList);
-  var i, p: Integer; s: string;
+procedure TDebugger.GetStaticVariables(Lines: TStringList);
+var
+   Posi: Integer;
+  Str: string;
 begin
-  for i:= 1 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    p:= Pos(' ', s);
-    if p > 0 then begin
-      delete(s, 1, p);
-      if s <> '' then
-        NewCommand(14, 'dump ' + JavaClass + '.' + s);
+  for var I := 1 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos(' ', Str);
+    if Posi > 0 then
+    begin
+      Delete(Str, 1, Posi);
+      if Str <> '' then
+        NewCommand(14, 'dump ' + FJavaClass + '.' + Str);
     end;
   end;
 end;
 
-procedure TDebugger.showStaticVariable(Lines: TStringlist);
-   var s: string; Node: TTreeNode; p: integer;
+procedure TDebugger.ShowStaticVariable(Lines: TStringList);
+var
+  Str: string;
+  Node: TTreeNode;
+  Posi: Integer;
 begin
-  p:= Pos('}', Lines.Text);
-  if p > 0 then begin
-    s:= trim(copy(Lines.Text, 1, p));
-    s:= ReplaceStr(s, #13#10, '')
-  end else
-    s:= trim(Lines[0]);
-  if (s = '') or (Pos('this =', s)  > 0) or (Pos(Thread, s) > 0) or
-     (Pos('ParseException', s) > 0) or InstanceOfJava(s)
-  then
-    exit;
-  Node:= Attributes.Add(nil, s);
-  if Pos('instance of', s) > 0 then
-    Attributes.AddChild(Node, s);
+  Posi := Pos('}', Lines.Text);
+  if Posi > 0 then
+  begin
+    Str := Trim(Copy(Lines.Text, 1, Posi));
+    Str := ReplaceStr(Str, #13#10, '');
+  end
+  else
+    Str := Trim(Lines[0]);
+  if (Str = '') or (Pos('this =', Str) > 0) or (Pos(FThread, Str) > 0) or
+    (Pos('ParseException', Str) > 0) or InstanceOfJava(Str) then
+    Exit;
+  Node := FAttributes.Add(nil, Str);
+  if Pos('instance of', Str) > 0 then
+    FAttributes.AddChild(Node, Str);
 end;
 
-procedure TDebugger.SequenceDiagramSource(Lines: TStringlist);
-   var s, participant: string; p: integer;
+procedure TDebugger.SequenceDiagramSource(Lines: TStringList);
+var
+  Str, Participant: string;
+  Posi: Integer;
 begin
-  s:= Lines.Text;
-  delete(s, 1, Pos('this = ', s)-1);
-  if Pos('this = null', s) = 1
-    then participant:= 'Actor'
-  else begin
-    p:= Pos('this = "', s);
-    if p > 0 then begin
-      delete(s, 1, p + 7);
-      p:= Pos('"', s);
-      delete(s, p, length(s));
-      participant:= s;
-    end else
-      participant:= '<error>';
+  Str := Lines.Text;
+  Delete(Str, 1, Pos('this = ', Str) - 1);
+  if Pos('this = null', Str) = 1 then
+    Participant := 'Actor'
+  else
+  begin
+    Posi := Pos('this = "', Str);
+    if Posi > 0 then
+    begin
+      Delete(Str, 1, Posi + 7);
+      Posi := Pos('"', Str);
+      Delete(Str, Posi, Length(Str));
+      Participant := Str;
+    end
+    else
+      Participant := '<Error>';
   end;
-  SequenceForm.makeFromParticipant(participant);
+  SequenceForm.MakeStartParticipant(Participant);
 end;
 
-procedure TDebugger.SequenceDiagramDestination(Lines: TStringlist);
-   var s, participant: string; p: integer;
+procedure TDebugger.SequenceDiagramDestination(Lines: TStringList);
+var
+  Str, Participant: string;
+  Posi: Integer;
 begin
-  s:= Lines.Text;
-  delete(s, 1, Pos('this = ', s)-1);
-  if Pos('this = null', s) = 1 then
-    participant:= 'Actor'
-  else begin
-    p:= Pos('this = "', s);
-    if p > 0 then begin
-      delete(s, 1, p + 7);
-      p:= Pos('"', s);
-      delete(s, p, length(s));
-      participant:= s;
-    end else
-      participant:= '<error>';
+  Str := Lines.Text;
+  Delete(Str, 1, Pos('this = ', Str) - 1);
+  if Pos('this = null', Str) = 1 then
+    Participant := 'Actor'
+  else
+  begin
+    Posi := Pos('this = "', Str);
+    if Posi > 0 then
+    begin
+      Delete(Str, 1, Posi + 7);
+      Posi := Pos('"', Str);
+      Delete(Str, Posi, Length(Str));
+      Participant := Str;
+    end
+    else
+      Participant := '<Error>';
   end;
-  SequenceForm.makeToParticipant(participant);
-  Sequenceform.makeConnection;
+  SequenceForm.MakeEndParticipant(Participant);
+  SequenceForm.MakeConnection;
 end;
 
 procedure TDebugger.SequenceDiagramParameter(Lines: TStringList);
-  var i, p: Integer; s, Parameter, Value: string;
+var
+  Posi: Integer;
+  Str, Parameter, Value: string;
 begin
-  Parameter:= '';
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    p:= Pos(' = ', s);
-    if p > 0 then begin
-      Value:= copy(s, p+3, length(s));
-      Parameter:= Parameter + Value + ', '
-    end else if s = 'Local variables:' then
-      break;
+  Parameter := '';
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos(' = ', Str);
+    if Posi > 0 then
+    begin
+      Value := Copy(Str, Posi + 3, Length(Str));
+      Parameter := Parameter + Value + ', ';
+    end
+    else if Str = 'Local variables:' then
+      Break;
   end;
-  Delete(Parameter, Length(Parameter)-1, 2);
-  SequenceForm.addParameter(Parameter);
+  Delete(Parameter, Length(Parameter) - 1, 2);
+  SequenceForm.AddParameter(Parameter);
 end;
 
 function TDebugger.SequenceDiagramLocals(Lines: TStringList): TStringList;
-  var i, p: Integer; s, Name, Value: string;
+var
+  Posi: Integer;
+  Str, Name, Value: string;
 begin
-  Result:= TStringList.Create;
-  Result.NameValueSeparator:= '#';
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    p:= Pos(' = ', s);
-    if p > 0 then begin
-      Name:= copy(s, 1, p-1);
-      Value:= copy(s, p+3, length(s));
+  Result := TStringList.Create;
+  Result.NameValueSeparator := '#';
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos(' = ', Str);
+    if Posi > 0 then
+    begin
+      Name := Copy(Str, 1, Posi - 1);
+      Value := Copy(Str, Posi + 3, Length(Str));
       if Result.IndexOfName(Value) = -1 then
         Result.Add(Value + '#' + Name);
     end;
@@ -1280,41 +1519,51 @@ end;
 
 procedure TDebugger.SequenceDiagramParameterRenaming(Lines: TStringList);
 begin
-  var Locals:= SequenceDiagramLocals(Lines);
+  var
+  Locals := SequenceDiagramLocals(Lines);
   if Locals.Count > 0 then
-    SequenceForm.changeParameter(Locals);
+    SequenceForm.ChangeParameter(Locals);
   FreeAndNil(Locals);
 end;
 
 procedure TDebugger.SequenceDiagramPrintName(Lines: TStringList);
-  var i, p: Integer; s, Name, Value: string;
+var
+  Posi: Integer;
+  Str, Name, Value: string;
 begin
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    p:= Pos(' = ', s);
-    if p > 0 then begin
-      Value:= copy(s, p+3, length(s));
-      Value:= ReplaceStr(Value, '"', '');
-      Name:= copy(s, 1, p-1);
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos(' = ', Str);
+    if Posi > 0 then
+    begin
+      Value := Copy(Str, Posi + 3, Length(Str));
+      Value := ReplaceStr(Value, '"', '');
+      Name := Copy(Str, 1, Posi - 1);
       if Pos('@', Value) > 0 then
-        Sequenceform.changeLifeLineName(Value, Name);
+        SequenceForm.ChangeLifeLineName(Value, Name);
     end;
   end;
 end;
 
 procedure TDebugger.SequenceDiagramChangeLifeLine(Lines: TStringList);
-  var i, p: Integer; s, Name, Value: string;
+var
+  Posi: Integer;
+  Str, Name, Value: string;
 begin
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    p:= Pos(' = ', s);
-    if p > 0 then begin
-      Value:= copy(s, p+3, length(s));
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos(' = ', Str);
+    if Posi > 0 then
+    begin
+      Value := Copy(Str, Posi + 3, Length(Str));
       if Pos('instance of', Value) <> 1 then
-        continue;
-      Name:= copy(s, 1, p-1);
-      if InstanceOf2Participants.IndexOfName(Value) = -1 then begin
-        InstanceOf2Participants.Add(Value + '#' + Name);
+        Continue;
+      Name := Copy(Str, 1, Posi - 1);
+      if FInstanceOf2Participants.IndexOfName(Value) = -1 then
+      begin
+        FInstanceOf2Participants.Add(Value + '#' + Name);
         NewCommand(20, 'print ' + Name);
       end;
     end;
@@ -1322,18 +1571,23 @@ begin
 end;
 
 procedure TDebugger.SequenceDiagramChangeLifeLineAttributes(Lines: TStringList);
-  var i, p: Integer; s, Name, Value: string;
+var
+  Posi: Integer;
+  Str, Name, Value: string;
 begin
-  for i:= 0 to Lines.Count - 1 do begin
-    s:= Lines[i];
-    p:= Pos(': instance of ', s);
-    if p > 0 then begin
-      Value:= copy(s, p+2, length(s));
+  for var I := 0 to Lines.Count - 1 do
+  begin
+    Str := Lines[I];
+    Posi := Pos(': instance of ', Str);
+    if Posi > 0 then
+    begin
+      Value := Copy(Str, Posi + 2, Length(Str));
       if Pos('instance of', Value) <> 1 then
-        continue;
-      Name:= trim(copy(s, 1, p-1));
-      if InstanceOf2Participants.IndexOfName(Value) = -1 then begin
-        InstanceOf2Participants.Add(Value + '#' + Name);
+        Continue;
+      Name := Trim(Copy(Str, 1, Posi - 1));
+      if FInstanceOf2Participants.IndexOfName(Value) = -1 then
+      begin
+        FInstanceOf2Participants.Add(Value + '#' + Name);
         NewCommand(20, 'print ' + Name);
       end;
     end;
@@ -1341,23 +1595,25 @@ begin
 end;
 
 function TDebugger.NextCommand: string;
-  var StatusI: integer;
-      Command: string;
+var
+  StatusI: Integer;
+  Command: string;
 begin
-  StatusI:= Commands.Front.Status;
-  Command:= Commands.Front.Command;
+  StatusI := FCommands.Front.Status;
+  Command := FCommands.Front.Command;
   ToDebugger(StatusI, Command);
-  Commands.Remove;
+  FCommands.Remove;
 
   if (Command = 'cont') or (Command = 'run') or (Command = 'step') then
-    BreakpointHit:= false;
-  if BreakpointHit
-    then FMessages.StatusMessage(_('Breakpoint hit'))
-    else FMessages.StatusMessage(_('Use program to hit a breakpoint.'));
+    FBreakpointHit := False;
+  if FBreakpointHit then
+    FMessages.StatusMessage(_('Breakpoint hit'))
+  else
+    FMessages.StatusMessage(_('Use program to hit a breakpoint.'));
 
   if (Command = 'cont') or (Command = 'run') then
     FMessages.DeleteDebuggingTreeViews;
-  Result:= Command;
+  Result := Command;
 end;
 
 procedure TDebugger.StartSetBreakpoints;
@@ -1367,19 +1623,21 @@ begin
     begin
       FJava.SetBreakpoints;
     end);
-  if BreakPointAtMain then
-    if FJava.IsJavaApplet(EditForm)
-      then NewCommand(1, 'stop in ' + JavaClass + '.init')
-      else NewCommand(1, 'stop in ' + JavaClass + '.main');
+  if BreakpointAtMain then
+    if FJava.IsJavaApplet(FEditForm) then
+      NewCommand(1, 'stop in ' + FJavaClass + '.init')
+    else
+      NewCommand(1, 'stop in ' + FJavaClass + '.main');
 end;
 
-function TDebugger.InstanceOfJava(const s: string): boolean;
+function TDebugger.InstanceOfJava(const Str: string): Boolean;
 begin
-  Result:= (Pos('instance of java.', s) > 0) and (Pos('instance of java.util.', s) = 0) or
-           (Pos('instance of javax.', s) > 0) or
-           (Pos('instance of javafx.', s) > 0) or
-           (Pos('instance of je.JNumberField', s) > 0) or
-           (Pos('instance of je.NumberField', s) > 0);
+  Result := (Pos('instance of java.', Str) > 0) and
+    (Pos('instance of java.util.', Str) = 0) or
+    (Pos('instance of javax.', Str) > 0) or
+    (Pos('instance of javafx.', Str) > 0) or
+    (Pos('instance of je.JNumberField', Str) > 0) or
+    (Pos('instance of je.NumberField', Str) > 0);
 end;
 
 procedure TDebugger.ProcessDebuggerOutput(Lines: TStringList);
@@ -1387,81 +1645,113 @@ begin
   TThread.Synchronize(nil,
     procedure
     begin
-      case Status of
-        0: DebuggerStart(Lines);
-        1: CheckValidBreakpoints(Lines);
-        2: Lines.Clear; // DeleteBreakpoints
-        3: ; // cont
-        4: ShowStack(Lines);
-        5: ShowParameterAndLocalVariables(Lines);
-        6: ShowAttributes(Lines);
-        7: ShowDetailedVariables(1, Lines);
-        8: ShowDetailedVariables(2, Lines);
-        9: ShowDetailedVariables(3, Lines);
-       10: Watch(Lines);
-       11: MonitoringType(Lines);
-       12: EvaluateExpression(Lines);
-       13: getStaticVariables(Lines);
-       14: showStaticVariable(Lines);
-       15: SequenceDiagramDestination(Lines);
-       16: SequenceDiagramSource(Lines);
-       17: SequenceDiagramParameter(Lines);
-       18: SequenceDiagramParameterRenaming(Lines);
-       19: SequenceDiagramChangeLifeLine(Lines);
-       20: SequenceDiagramPrintName(Lines);
-       21: SequenceDiagramChangeLifeLineAttributes(Lines);
+      case FStatus of
+        0:
+          DebuggerStart(Lines);
+        1:
+          CheckValidBreakpoints(Lines);
+        2:
+          Lines.Clear; // DeleteBreakpoints
+        3:
+          ; // cont
+        4:
+          ShowStack(Lines);
+        5:
+          ShowParameterAndLocalVariables(Lines);
+        6:
+          ShowAttributes(Lines);
+        7:
+          ShowDetailedVariables(1, Lines);
+        8:
+          ShowDetailedVariables(2, Lines);
+        9:
+          ShowDetailedVariables(3, Lines);
+        10:
+          Watch(Lines);
+        11:
+          MonitoringType(Lines);
+        12:
+          EvaluateExpression(Lines);
+        13:
+          GetStaticVariables(Lines);
+        14:
+          ShowStaticVariable(Lines);
+        15:
+          SequenceDiagramDestination(Lines);
+        16:
+          SequenceDiagramSource(Lines);
+        17:
+          SequenceDiagramParameter(Lines);
+        18:
+          SequenceDiagramParameterRenaming(Lines);
+        19:
+          SequenceDiagramChangeLifeLine(Lines);
+        20:
+          SequenceDiagramPrintName(Lines);
+        21:
+          SequenceDiagramChangeLifeLineAttributes(Lines);
       end;
       StepCont(Lines);
-      Status:= 0;
+      FStatus := 0;
       Lines.Clear;
     end);
 end;
 
-procedure TDebugger.NewCommand(aStatus: integer; const s: string);
+procedure TDebugger.NewCommand(Status: Integer; const Str: string);
 begin
-  if Commands.Empty and jdbReady and (aStatus in [1, 2]) // set/unset breakpoint
-    then ToDebugger(aStatus, s)
-    else Commands.Enter(aStatus, s);
+  if FCommands.Empty and FJdbReady and (Status in [1, 2])
+  // set/unset breakpoint
+  then
+    ToDebugger(Status, Str)
+  else
+    FCommands.Enter(Status, Str);
 end;
 
 procedure TDebugger.Watch;
 begin
   FMessages.ShowWatchedExpressions;
-  if Running then begin
-    Watched:= 0;
-    for var i:= 0 to FWatches.LBWatches.Count - 1 do begin
-      NewCommand(10, 'dump ' + FWatches.LBWatches.Items[i]);
-      NewCommand(11, 'print ' + FWatches.LBWatches.Items[i]);
+  if FRunning then
+  begin
+    FWatched := 0;
+    for var I := 0 to FWatches.LBWatches.Count - 1 do
+    begin
+      NewCommand(10, 'dump ' + FWatches.LBWatches.Items[I]);
+      NewCommand(11, 'print ' + FWatches.LBWatches.Items[I]);
     end;
   end;
 end;
 
 procedure TDebugger.ShowAll;
-  var i: Integer;
-      DumpList: TStrings;
+var
+  DumpList: TStrings;
 
-  function WithoutBrackets(s: string): string;
+  function WithoutBrackets(Str: string): string;
   begin
-    var p:= Pos('{', s);
-    if p > 0 then begin
-      delete(s, p, 1);
-      p:= Pos('}', s);
-      delete(s, p, 1);
+    var
+    Posi := Pos('{', Str);
+    if Posi > 0 then
+    begin
+      Delete(Str, Posi, 1);
+      Posi := Pos('}', Str);
+      Delete(Str, Posi, 1);
     end;
-    Result:= s;
-  end;  
+    Result := Str;
+  end;
 
-  procedure Dumping(AttVarAus: integer);
-    var i, p: integer; s: string;
+  procedure Dumping(AttVarAus: Integer);
+  var
+    Posi: Integer;
+    Str: string;
   begin
-    DumpList:= FMessages.Expanded[AttVarAus - 6];
-    for i:= 0 to DumpList.Count - 1 do begin
-      s:= DumpList.Strings[i];
-      p:= Pos(' | ', s);
-      if p > 0 then
-        s:= copy(s, p+3, length(s));
-      s:= WithoutBrackets(s);
-      NewCommand(AttVarAus, 'dump ' + s);
+    DumpList := FMessages.Expanded[AttVarAus - 6];
+    for var I := 0 to DumpList.Count - 1 do
+    begin
+      Str := DumpList[I];
+      Posi := Pos(' | ', Str);
+      if Posi > 0 then
+        Str := Copy(Str, Posi + 3, Length(Str));
+      Str := WithoutBrackets(Str);
+      NewCommand(AttVarAus, 'dump ' + Str);
     end;
   end;
 
@@ -1471,10 +1761,11 @@ begin
   Dumping(7);
   NewCommand(5, 'locals');
   Dumping(8);
-  Watched:= 0;
-  for i:= 0 to FWatches.LBWatches.Items.Count - 1 do begin
-    NewCommand(10, 'dump ' + FWatches.LBWatches.Items[i]);
-    NewCommand(11, 'print ' + FWatches.LBWatches.Items[i]);
+  FWatched := 0;
+  for var I := 0 to FWatches.LBWatches.Items.Count - 1 do
+  begin
+    NewCommand(10, 'dump ' + FWatches.LBWatches.Items[I]);
+    NewCommand(11, 'print ' + FWatches.LBWatches.Items[I]);
   end;
   Dumping(9);
   FMessages.ShowTab(K_Debugger);
@@ -1482,58 +1773,59 @@ end;
 
 procedure TDebugger.SwitchDetails;
 begin
-  ShowDetailed:= not ShowDetailed;
-  if Running then
+  FShowDetailed := not FShowDetailed;
+  if FRunning then
     ShowAll;
 end;
 
-function TDebugger.hasBreakpoints: boolean;
+function TDebugger.HasBreakpoints: Boolean;
 begin
-  Result:= BreakpointAtMain or (ToCursorBreakpoint <> '');
+  Result := BreakpointAtMain or (FToCursorBreakpoint <> '');
 end;
 
-procedure TDebugger.RunToCursorBreakpoint(const s: string);
+procedure TDebugger.RunToCursorBreakpoint(const Str: string);
 begin
-  NewCommand(1, s);
-  ToCursorBreakpoint:= 'clear ' + copy(s, 9, length(s));
+  NewCommand(1, Str);
+  FToCursorBreakpoint := 'clear ' + Copy(Str, 9, Length(Str));
 end;
 
-procedure TDebugger.log(const s: string);
+procedure TDebugger.Log(const Str: string);
 begin
-  if assigned(LogFile) then
-    Streamwriteln(LogFile, s);
+  if Assigned(FLogFile) then
+    StreamWriteln(FLogFile, Str);
 end;
 
-function TDebugger.FilterLog(s: string): string;
-  var p, q: integer;
+function TDebugger.FilterLog(Str: string): string;
+var
+  Posi, Posi2: Integer;
 begin
-  p:= Pos('Method entered: ', s);
-  if p = 1 then
-    Delete(s, 1, 16);
-  p:= Pos('Method exited: ', s);
-  if p = 1 then
-    Delete(s, 1, 15);
-  p:= Pos('return value = ', s);
-  if p > 0 then
-    delete(s, p, length('return value = '));
-  p:= Pos('"thread=main"', s);
-  if p > 0 then
-    delete(s, p, length('"thread=main", '));
-  p:= Pos('"thread=Thread-0"', s);
-  if p > 0 then
-    delete(s, p, length('"thread=Thread-0", '));
-  q:= Pos(', JEClassLoader', s);
-  if q > 0 then
-    delete(s, p, q-p+2);
-  p:= Pos(', line=', s);
-  if p > 0 then
-    delete(s, p, length(s));
-  Result:= s;
+  Posi := Pos('Method entered: ', Str);
+  if Posi = 1 then
+    Delete(Str, 1, 16);
+  Posi := Pos('Method exited: ', Str);
+  if Posi = 1 then
+    Delete(Str, 1, 15);
+  Posi := Pos('return value = ', Str);
+  if Posi > 0 then
+    Delete(Str, Posi, Length('return value = '));
+  Posi := Pos('"thread=main"', Str);
+  if Posi > 0 then
+    Delete(Str, Posi, Length('"thread=main", '));
+  Posi := Pos('"thread=Thread-0"', Str);
+  if Posi > 0 then
+    Delete(Str, Posi, Length('"thread=Thread-0", '));
+  Posi2 := Pos(', JEClassLoader', Str);
+  if Posi2 > 0 then
+    Delete(Str, Posi, Posi2 - Posi + 2);
+  Posi := Pos(', line=', Str);
+  if Posi > 0 then
+    Delete(Str, Posi, Length(Str));
+  Result := Str;
 end;
 
 procedure TDebugger.CloseNotify(Sender: TObject);
 begin
-  SequenceForm:= nil;
+  FSequenceForm := nil;
 end;
 
 end.

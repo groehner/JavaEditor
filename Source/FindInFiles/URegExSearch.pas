@@ -2,201 +2,264 @@
 
 interface
 
-uses RegularExpressions, SynEdit;
+uses
+  RegularExpressions,
+  SynEdit;
 
 type
   TRegExSearch = class
+  private
+    FAEditor: TSynEdit;
+    FCurrentLine: Integer;
+    FEndLine: Integer;
+    FInputString: string;
+    FMyRegExOptions: TRegExOptions;
+    FMyRegExpr: TRegEx;
+    FPosLine: Integer;
+    FReplaceText: string;
+    FStartLine: Integer;
+    FWholeWords: Boolean;
   public
-    myRegExpr: TRegEx;
-    myRegExOptions: TRegExOptions;
-    InputString: string;
-    StartLine: integer;
-    CurrentLine: integer;
-    EndLine: integer;
-    PosLine: integer;
-    AEditor: TSynEdit;
-    WholeWords: boolean;
-    ReplaceText: string;
     procedure PrepareRegSearch(Editor: TSynEdit);
     procedure PrepareGrepRegSearch(Editor: TSynEdit);
-    procedure DoRegSearchReplace(Replace: boolean);
+    procedure DoRegSearchReplace(Replace: Boolean);
     procedure DoGrepRegSearchReplace(Editor: TSynEdit);
+    property AEditor: TSynEdit read FAEditor;
+    property CurrentLine: Integer read FCurrentLine;
+    property EndLine: Integer read FEndLine;
+    property InputString: string read FInputString;
+    property MyRegExOptions: TRegExOptions read FMyRegExOptions;
+    property MyRegExpr: TRegEx read FMyRegExpr;
+    property PosLine: Integer read FPosLine;
+    property ReplaceText: string read FReplaceText;
+    property StartLine: Integer read FStartLine;
+    property WholeWords: Boolean read FWholeWords;
   end;
 
-var myRegExSearch: TRegExSearch = nil;
+var
+  MyRegExSearch: TRegExSearch = nil;
 
 implementation
 
-uses Windows, Controls, SynEditTypes,
-     UJava, UDlgConfirmReplace, USearchOptions, UGrepResults;
+uses
+  Windows,
+  Controls,
+  SynEditTypes,
+  UJava,
+  UDlgConfirmReplace,
+  USearchOptions,
+  UGrepResults;
 
-function PointToDisplay(P: TPoint): TDisplayCoord;
+function PointToDisplay(Posi: TPoint): TDisplayCoord;
 begin
-  Result.Column:= P.x;
-  Result.Row:= P.Y;
+  Result.Column := Posi.X;
+  Result.Row := Posi.Y;
 end;
 
 procedure TRegExSearch.PrepareRegSearch(Editor: TSynEdit);
 begin
-  AEditor:= Editor;
-  myRegExOptions:= [roNotEmpty, roCompiled, roIgnoreCase];
-  if mySearchOptions.CaseSensitive then
-    exclude(myRegExOptions, roIgnoreCase);
-  myRegExpr:= TRegEx.Create(MySearchOptions.SearchText, myRegExOptions);
+  FAEditor := Editor;
+  FMyRegExOptions := [roNotEmpty, roCompiled, roIgnoreCase];
+  if MySearchOptions.CaseSensitive then
+    Exclude(FMyRegExOptions, roIgnoreCase);
+  FMyRegExpr := TRegEx.Create(MySearchOptions.SearchText, FMyRegExOptions);
 
-  PosLine:= 1;
-  if MySearchOptions.Backwards then begin
-    StartLine:= Editor.Lines.Count;
-    EndLine  := 0;
+  FPosLine := 1;
+  if MySearchOptions.Backwards then
+  begin
+    FStartLine := Editor.Lines.Count;
+    FEndLine := 0;
     if MySearchOptions.FromCursor then
-      StartLine:= Editor.CaretY;
-    if MySearchOptions.SelectionOnly then begin
-      StartLine:= Editor.BlockEnd.Line;
-      if Editor.SelText = ''
-        then EndLine:= StartLine
-        else EndLine:= Editor.BlockBegin.Line - 1;
-      end;
-    end
-  else begin
-    StartLine:= 1;
-    EndLine  := Editor.Lines.Count+1;
-    if MySearchOptions.FromCursor then begin
-      StartLine:= Editor.CaretY;
-      PosLine  := Editor.CaretX;
+      FStartLine := Editor.CaretY;
+    if MySearchOptions.SelectionOnly then
+    begin
+      FStartLine := Editor.BlockEnd.Line;
+      if Editor.SelText = '' then
+        FEndLine := FStartLine
+      else
+        FEndLine := Editor.BlockBegin.Line - 1;
     end;
-    if MySearchOptions.SelectionOnly then begin
-      StartLine:=  Editor.BlockBegin.Line;
-      PosLine  := Editor.BlockBegin.Char;
-      if Editor.SelText = ''
-        then EndLine:= StartLine
-        else EndLine:= Editor.BlockEnd.Line + 1;
+  end
+  else
+  begin
+    FStartLine := 1;
+    FEndLine := Editor.Lines.Count + 1;
+    if MySearchOptions.FromCursor then
+    begin
+      FStartLine := Editor.CaretY;
+      FPosLine := Editor.CaretX;
+    end;
+    if MySearchOptions.SelectionOnly then
+    begin
+      FStartLine := Editor.BlockBegin.Line;
+      FPosLine := Editor.BlockBegin.Char;
+      if Editor.SelText = '' then
+        FEndLine := FStartLine
+      else
+        FEndLine := Editor.BlockEnd.Line + 1;
     end;
   end;
-  InputString:= AEditor.Lines[StartLine-1];
-  CurrentLine:= StartLine;
+  FInputString := FAEditor.Lines[FStartLine - 1];
+  FCurrentLine := FStartLine;
 end;
 
 procedure TRegExSearch.PrepareGrepRegSearch(Editor: TSynEdit);
 begin
-  myRegExOptions:= [roNotEmpty, roCompiled, roIgnoreCase];
+  FMyRegExOptions := [roNotEmpty, roCompiled, roIgnoreCase];
   if MySearchOptions.CaseSensitive then
-    exclude(myRegExOptions, roIgnoreCase);
-  myRegExpr:= TRegEx.Create(MySearchOptions.SearchText, myRegExOptions);
+    Exclude(FMyRegExOptions, roIgnoreCase);
+  FMyRegExpr := TRegEx.Create(MySearchOptions.SearchText, FMyRegExOptions);
 
-  InputString:= Editor.Lines[0];
-  AEditor:= Editor;
-  ReplaceText:= MySearchOptions.ReplaceText;
-  WholeWords:= MySearchOptions.WholeWords;
-  PosLine  := 1;
-  StartLine:= 1;
-  EndLine  := Editor.Lines.Count + 1;
-  CurrentLine:= StartLine;
+  FInputString := Editor.Lines[0];
+  FAEditor := Editor;
+  FReplaceText := MySearchOptions.ReplaceText;
+  FWholeWords := MySearchOptions.WholeWords;
+  FPosLine := 1;
+  FStartLine := 1;
+  FEndLine := Editor.Lines.Count + 1;
+  FCurrentLine := FStartLine;
 end;
 
-procedure TRegExSearch.DoRegSearchReplace(Replace: boolean);
-  var EditRect: TRect;
-      aMatch: TMatch;
-      SearchText, aReplaceText: string; s1, s2: string;
-      aAction: TSynReplaceAction;
-      from, _to: TBufferCoord;
-      APos: TDisplayCoord;
+procedure TRegExSearch.DoRegSearchReplace(Replace: Boolean);
+var
+  EditRect: TRect;
+  Match: TMatch;
+  SearchText, ReplaceText: string;
+  Str1, Str2: string;
+  AAction: TSynReplaceAction;
+  From, To_: TBufferCoord;
+  APos: TDisplayCoord;
 begin
-  if MySearchOptions.SearchText = '' then exit;
-  aAction:= raReplace;
-  while CurrentLine <> EndLine do begin
-    while (InputString <> '') and (PosLine <= Length(InputString)) and myRegExpr.IsMatch(InputString, PosLine) do begin
-      aMatch:= myRegExpr.Match(InputString, PosLine);
-      PosLine:= aMatch.Index + aMatch.Length;
-      if MySearchOptions.WholeWords then begin
-        s1:= AEditor.Lines[CurrentLine-1];
-        from:= AEditor.WordStartEx(BufferCoord(aMatch.Index, CurrentLine));
-        _to:= AEditor.WordEndEx(BufferCoord(aMatch.Index, CurrentLine));
-        s2:= copy(s1, from.Char, _to.Char - from.Char);
-        s1:= copy(s1, aMatch.Index, aMatch.Length);
-        if s1 <> s2 then continue;  // continue with inner while-loop
+  if MySearchOptions.SearchText = '' then
+    Exit;
+  AAction := raReplace;
+  while FCurrentLine <> FEndLine do
+  begin
+    while (FInputString <> '') and (FPosLine <= Length(FInputString)) and
+      FMyRegExpr.IsMatch(FInputString, FPosLine) do
+    begin
+      Match := FMyRegExpr.Match(FInputString, FPosLine);
+      FPosLine := Match.Index + Match.Length;
+      if MySearchOptions.WholeWords then
+      begin
+        Str1 := FAEditor.Lines[FCurrentLine - 1];
+        From := FAEditor.WordStartEx(BufferCoord(Match.Index, FCurrentLine));
+        To_ := FAEditor.WordEndEx(BufferCoord(Match.Index, FCurrentLine));
+        Str2 := Copy(Str1, From.Char, To_.Char - From.Char);
+        Str1 := Copy(Str1, Match.Index, Match.Length);
+        if Str1 <> Str2 then
+          Continue; // continue with inner while-loop
       end;
-      with AEditor do begin
-        SelStart:= RowColToCharIndex(BufferCoord(aMatch.Index, CurrentLine));
-        SelLength:= aMatch.Length;
+      with FAEditor do
+      begin
+        SelStart := RowColToCharIndex(BufferCoord(Match.Index, FCurrentLine));
+        SelLength := Match.Length;
       end;
-      if not Replace then exit;
-      SearchText:= AEditor.SelText;
-      aReplaceText:= myRegExpr.Replace(MySearchOptions.SearchText, MySearchOptions.ReplaceText);
-      if aAction = raReplace then begin
-        APos:= DisplayCoord(aMatch.Index, CurrentLine);
-        APos:= PointToDisplay(AEditor.ClientToScreen(AEditor.RowColumnToPixels(APos)));
-        EditRect:= FJava.ClientRect;
-        EditRect.TopLeft:= FJava.ClientToScreen(EditRect.TopLeft);
-        EditRect.BottomRight:= FJava.ClientToScreen(EditRect.BottomRight);
-        with TFConfirmReplace.Create(FJava) do begin
-          PrepareShow(EditRect, APos.Column, APos.Row, APos.Row + AEditor.LineHeight, SearchText);
+      if not Replace then
+        Exit;
+      SearchText := FAEditor.SelText;
+      ReplaceText := FMyRegExpr.Replace(MySearchOptions.SearchText,
+        MySearchOptions.ReplaceText);
+      if AAction = raReplace then
+      begin
+        APos := DisplayCoord(Match.Index, FCurrentLine);
+        APos := PointToDisplay
+          (FAEditor.ClientToScreen(FAEditor.RowColumnToPixels(APos)));
+        EditRect := FJava.ClientRect;
+        EditRect.TopLeft := FJava.ClientToScreen(EditRect.TopLeft);
+        EditRect.BottomRight := FJava.ClientToScreen(EditRect.BottomRight);
+        with TFConfirmReplace.Create(FJava) do
+        begin
+          PrepareShow(EditRect, APos.Column, APos.Row,
+            APos.Row + FAEditor.LineHeight, SearchText);
           case ShowModal of
-            mrYes:      aAction:= raReplace;
-            mrYesToAll: aAction:= raReplaceAll;
-            mrNo:       aAction:= raSkip;
-            else        aAction:= raCancel;
+            mrYes:
+              AAction := raReplace;
+            mrYesToAll:
+              AAction := raReplaceAll;
+            mrNo:
+              AAction := raSkip;
+          else
+            AAction := raCancel;
           end;
           Free;
         end;
       end;
-      case aAction of
-        raReplace:    AEditor.SelText:= aReplaceText;
-        raReplaceAll: AEditor.SelText:= aReplaceText;
-        raSkip:       aAction:= raReplace;
-        raCancel:     begin AEditor.SelEnd:= AEditor.SelStart; exit end;
+      case AAction of
+        raReplace:
+          FAEditor.SelText := ReplaceText;
+        raReplaceAll:
+          FAEditor.SelText := ReplaceText;
+        raSkip:
+          AAction := raReplace;
+        raCancel:
+          begin
+            FAEditor.SelEnd := FAEditor.SelStart;
+            Exit;
+          end;
       end;
-      if Pos(#13#10, aReplaceText) > 0 then begin
-        inc(EndLine);
-        break;
+      if Pos(#13#10, ReplaceText) > 0 then
+      begin
+        Inc(FEndLine);
+        Break;
       end;
-      
     end;
-    PosLine:= 1;
-    if MySearchOptions.Backwards
-      then dec(CurrentLine)
-      else inc(CurrentLine);
-    if CurrentLine <> EndLine then
-      InputString:= AEditor.Lines[CurrentLine-1];
+    FPosLine := 1;
+    if MySearchOptions.Backwards then
+      Dec(FCurrentLine)
+    else
+      Inc(FCurrentLine);
+    if FCurrentLine <> FEndLine then
+      FInputString := FAEditor.Lines[FCurrentLine - 1];
   end;
-  AEditor.SelEnd:= AEditor.SelStart;
-  if aAction = raReplace then
-    FJava.NotFound(AEditor, MySearchOptions.Backwards);
+  FAEditor.SelEnd := FAEditor.SelStart;
+  if AAction = raReplace then
+    FJava.NotFound(FAEditor, MySearchOptions.Backwards);
 end;
 
 procedure TRegExSearch.DoGrepRegSearchReplace(Editor: TSynEdit);
-  var s: string;
-      Action: TSynReplaceAction;
-      aMatch: TMatch;
+var
+  Str: string;
+  Action: TSynReplaceAction;
+  Match: TMatch;
 begin
   PrepareGrepRegSearch(Editor);
-  while CurrentLine <> EndLine do begin
-    while (InputString <> '') and (PosLine <= Length(InputString)) and myRegExpr.IsMatch(InputString, PosLine) do begin
-      aMatch:= myRegExpr.Match(InputString, PosLine);
-      PosLine:= aMatch.Index + aMatch.Length;
-      with AEditor do begin
-        SelStart:= RowColToCharIndex(BufferCoord(aMatch.Index, CurrentLine));
-        SelLength:= aMatch.Index;
+  while FCurrentLine <> FEndLine do
+  begin
+    while (FInputString <> '') and (FPosLine <= Length(FInputString)) and
+      FMyRegExpr.IsMatch(FInputString, FPosLine) do
+    begin
+      Match := FMyRegExpr.Match(FInputString, FPosLine);
+      FPosLine := Match.Index + Match.Length;
+      with FAEditor do
+      begin
+        SelStart := RowColToCharIndex(BufferCoord(Match.Index, FCurrentLine));
+        SelLength := Match.Index;
       end;
-      if WholeWords then begin
-        s:= AEditor.Lines[CurrentLine-1];
-        s:= copy(s, aMatch.Index, aMatch.Length);
-        if s <> AEditor.WordAtCursor then continue;  // continue with inner while-loop
+      if FWholeWords then
+      begin
+        Str := FAEditor.Lines[FCurrentLine - 1];
+        Str := Copy(Str, Match.Index, Match.Length);
+        if Str <> FAEditor.WordAtCursor then
+          Continue; // continue with inner while-loop
       end;
-      if MySearchOptions.Replace then begin
-        s:= myRegExpr.Replace(InputString, ReplaceText);
-        myGrepResults.FoundIt(Self, AEditor.SelText, s, CurrentLine, aMatch.Index, Action);
-        AEditor.SelText:= s;
-        end
+      if MySearchOptions.Replace then
+      begin
+        Str := FMyRegExpr.Replace(FInputString, ReplaceText);
+        MyGrepResults.FoundIt(Self, FAEditor.SelText, Str, FCurrentLine,
+          Match.Index, Action);
+        FAEditor.SelText := Str;
+      end
       else
-        myGrepResults.FoundIt(Self, AEditor.SelText, '', CurrentLine, aMatch.Index, Action);
+        MyGrepResults.FoundIt(Self, FAEditor.SelText, '', FCurrentLine,
+          Match.Index, Action);
     end;
-    PosLine:= 1;
-    inc(CurrentLine);
-    if CurrentLine <> EndLine then
-      InputString:= AEditor.Lines[CurrentLine-1];
+    FPosLine := 1;
+    Inc(FCurrentLine);
+    if FCurrentLine <> FEndLine then
+      FInputString := FAEditor.Lines[FCurrentLine - 1];
   end;
-  AEditor.SelEnd:= AEditor.SelStart;
+  FAEditor.SelEnd := FAEditor.SelStart;
 end;
 
 end.
-

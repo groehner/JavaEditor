@@ -1,35 +1,56 @@
 ﻿unit UEditorForm;
 
-{$WARN SYMBOL_PLATFORM OFF}
-
 interface
 
 uses
-  Windows, Messages, SynEditPrint, SysUtils, Classes, Graphics, Forms, Controls,
-  StdCtrls, Menus, ComCtrls, ExtCtrls,
-  SynEdit, USynEditEx, SynEditExport, SynEditHighlighter,
-  UModel, UBaseForm, UJavaParser, UParseThread, Vcl.ToolWin,
-  System.ImageList, Vcl.ImgList, Vcl.BaseImageCollection, SVGIconImageCollection,
-  Vcl.VirtualImageList, TB2Item, SpTBXItem, SpTBXTabs, Vcl.WinXCtrls;
+  Windows,
+  Messages,
+  SynEditPrint,
+  SysUtils,
+  Classes,
+  Graphics,
+  Forms,
+  Controls,
+  StdCtrls,
+  Menus,
+  ComCtrls,
+  ExtCtrls,
+  System.ImageList,
+  Vcl.ToolWin,
+  Vcl.ImgList,
+  Vcl.BaseImageCollection,
+  Vcl.VirtualImageList,
+  Vcl.WinXCtrls,
+  SVGIconImageCollection,
+  TB2Item,
+  SpTBXItem,
+  SynEdit,
+  SynEditExport,
+  SynEditHighlighter,
+  USynEditEx,
+  UModel,
+  UBaseForm,
+  UJavaParser,
+  UParseThread;
 
-  //  Application FrameType:= 8
-  //  JApplet     FrameType:= 7
-  //  JDialog     FrameType:= 6
-  //  JFrame      FrameType:= 5
-  //  Applet      FrameType:= 4
-  //  Dialog      FrameType:= 3
-  //  Frame       FrameType:= 2
-  //  Console     FrameType:= 1
+// Application FFrameType:= 8
+// JApplet     FFrameType:= 7
+// JDialog     FFrameType:= 6
+// JFrame      FFrameType:= 5
+// Applet      FFrameType:= 4
+// Dialog      FFrameType:= 3
+// Frame       FFrameType:= 2
+// Console     FFrameType:= 1
 
 const
-  cInsertBlink = 500;
-  cOverBlink   = 200;
+  CInsertBlink = 500;
 
-  ecWordLeft        = 5;    // Move cursor left one word
-  ecWordRight       = 6;    // Move cursor right one word
+  EcWordLeft = 5; // Move cursor left one word
+  EcWordRight = 6; // Move cursor right one word
 
 type
-  TLineInfo = (dlCurrentDebuggerLine, dlBreakpointLine, dlExecutableLine, dlSearchLine);
+  TLineInfo = (dlCurrentDebuggerLine, dlBreakpointLine, dlExecutableLine,
+    dlSearchLine);
   TLineInfos = set of TLineInfo;
 
   { TFEditForm }
@@ -83,25 +104,25 @@ type
     MIClassOpen: TSpTBXItem;
     MIClassEditor: TSpTBXItem;
     MICreateStructogram: TSpTBXItem;
-    N1: TSpTBXSeparatorItem;
+    MILine0: TSpTBXSeparatorItem;
     MIExecute: TSpTBXItem;
     MIExecuteWithoutConsole: TSpTBXItem;
     MIExecuteWithConsole: TSpTBXItem;
-    N2: TSpTBXSeparatorItem;
+    MILine5: TSpTBXSeparatorItem;
     MIGit: TSpTBXSubmenuItem;
     MIGitStatus: TSpTBXItem;
     MIGitAdd: TSpTBXItem;
     MICommit: TSpTBXItem;
     MIGitLog: TSpTBXItem;
-    N3: TSpTBXSeparatorItem;
+    MIGItLin1: TSpTBXSeparatorItem;
     MGitReset: TSpTBXItem;
     MIGitCheckout: TSpTBXItem;
     MIGitRemove: TSpTBXItem;
-    N4: TSpTBXSeparatorItem;
+    MIGitLine2: TSpTBXSeparatorItem;
     MIGitRemote: TSpTBXItem;
     MIGitFetch: TSpTBXItem;
     MIGitPush: TSpTBXItem;
-    N5: TSpTBXSeparatorItem;
+    MIGitLine3: TSpTBXSeparatorItem;
     MIGitGui: TSpTBXItem;
     MIGitViewer: TSpTBXItem;
     MIGitConsole: TSpTBXItem;
@@ -134,12 +155,12 @@ type
     ActivityIndicator: TActivityIndicator;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction); override;
+    procedure FormClose(Sender: TObject; var AAction: TCloseAction); override;
     procedure EditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure Enter(Sender: TObject); override;
     procedure UpdateState; override;
     procedure EditorGutterClick(Sender: TObject; Button: TMouseButton;
-              X, Y, Line: Integer; mark: TSynEditMark);
+      X, Y, Line: Integer; Mark: TSynEditMark);
     procedure MICutClick(Sender: TObject);
     procedure MICopyClick(Sender: TObject);
     procedure MIInsertClick(Sender: TObject);
@@ -151,7 +172,7 @@ type
     procedure EditorKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MICloseClick(Sender: TObject);
     procedure MIAPIHelpClick(Sender: TObject);
-    procedure EditorPaintTransient(Sender: TObject; aCanvas: TCanvas;
+    procedure EditorPaintTransient(Sender: TObject; ACanvas: TCanvas;
       TransientType: TTransientType);
     procedure SBParagraphClick(Sender: TObject);
     procedure SBNumbersClick(Sender: TObject);
@@ -177,7 +198,7 @@ type
     procedure SBZoomOutClick(Sender: TObject);
     procedure SBZoomInClick(Sender: TObject);
     procedure MIFontClick(Sender: TObject);
-    procedure WMNCButtonDBLClick(var msg: TMessage); message WM_NCLBUTTONDBLCLK;
+    procedure WMNCButtonDBLClick(var Msg: TMessage); message WM_NCLBUTTONDBLCLK;
     procedure MIExecuteClick(Sender: TObject);
     procedure PopUpEditorPopup(Sender: TObject);
     procedure MIExecuteWithoutConsoleClick(Sender: TObject);
@@ -185,8 +206,11 @@ type
     procedure MIRenewImportsClick(Sender: TObject);
     procedure MICreateStructogramClick(Sender: TObject);
     procedure MICopyPathClick(Sender: TObject);
-    procedure DoOnMouseOverToken(Sender: TObject; const Token: string; TokenType: Integer; Caret, P: TPoint; Attri: TSynHighlighterAttributes; var Highlight: Boolean);
-    procedure DoOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure DoOnMouseOverToken(Sender: TObject; const Token: string;
+      TokenType: Integer; Caret, Posi: TPoint; Attri: TSynHighlighterAttributes;
+      var Highlight: Boolean);
+    procedure DoOnMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure DoOnBuildStructure(Sender: TObject);
     procedure TVFileStructureChange(Sender: TObject; Node: TTreeNode);
     procedure MIClassOpenClick(Sender: TObject);
@@ -214,59 +238,61 @@ type
     procedure mnAssistantOptimizeClick(Sender: TObject);
     procedure mnAssistantCancelClick(Sender: TObject);
   private
-    Bookmark: Integer;
-    BreakPointCount: integer;
-    MouseIsInBorderOfStructure: boolean;
-    MouseBorderOfStructure: integer;
-    MousePosition: TBufferCoord;
-    ModifiedStrs: array[boolean] of string;
-    InsertModeStrs: array[boolean] of string;
-    ToolButtons: array[0..29] of TToolButton;
+    FBookmark: Integer;
+    FBreakPointCount: Integer;
+    FMouseIsInBorderOfStructure: Boolean;
+    FMouseBorderOfStructure: Integer;
+    FMousePosition: TBufferCoord;
+    FModifiedStrs: array [Boolean] of string;
+    FInsertModeStrs: array [Boolean] of string;
+    FToolButtons: array [0 .. 29] of TToolButton;
     FFrameType: Integer; // 1..8, look in UEditorForm
 
+    FCheckAgeEnabled: Boolean;
+    FDebuglineMark: TSynEditMark;
+    FEditor: TSynEditEx;
+    FEditorAge: TDateTime;
+    FEncoding: string;
+    FFileExtension: string;
+    FNeedsParsing: Boolean;
+    FNeedToSyncFileStructure: Boolean;
+    FIsJUnitTestClass: Boolean;
+    FLastToken: string;
+    FLineBreak: string;
+    FModel: TObjectModel;
+    FParameter: string;
+    FParser: TJavaParser;
+    FParseThread: TParseThread;
+    FStartOption: Integer;
+    FSynEditPrint: TSynEditPrint;
+    FHidden: Boolean;
+
     procedure Translate;
-    procedure Statusline(i: Integer; const s: string);
+    procedure Statusline(Num: Integer; const Str: string);
     procedure CalculateStatusline;
-    procedure setNeedsParsing(value: boolean);
-    procedure setFileExtension(value: string);
-    function getJavaCodeAt(Caret: TPoint): string;
-    procedure CreateTooltip(Caret, P: TPoint; const Token: string);
+    procedure SetNeedsParsing(Value: Boolean);
+    function GetJavaCodeAt(Caret: TPoint): string;
+    procedure CreateTooltip(Caret, Posi: TPoint; const Token: string);
     function GetFrameType: Integer;
   public
-    Editor: TSynEditEx;
-    SynEditPrint: TSynEditPrint;
-    DebuglineMark: TSynEditMark;
-    Model: TObjectModel;
-    Encoding: string;   // ANSI, UTF-8, UTF-16
-    LineBreak: string;  // Windows, Unix, Mac
-    Parameter: string;
-    fFileExtension: string;
-    StartOption: integer;
-    EditorAge: TDateTime;
-    CheckAgeEnabled: boolean;
-    fNeedsParsing: boolean;
-    fNeedToSyncFileStructure: boolean;
-    ParseThread: TParseThread;
-    Parser: TJavaParser;
-    LastToken: string;
-    isJUnitTestClass: boolean;
     constructor Create(AOwner: TComponent); override;
-    procedure New(const Filename: string);
-    procedure Open(const FileName: string; Zustand: string);
-    procedure Save(withBackup: boolean); override;
+    procedure New(const FileName: string);
+    procedure Open(const FileName: string; State: string;
+      Hidden: Boolean = false);
+    procedure Save(WithBackup: Boolean); override;
     procedure SaveIn(const Dir: string); override;
-    procedure SaveAs(const Filename: string);
+    procedure SaveAs(const FileName: string);
     function GetSaveAsName: string; override;
     procedure SetHighlighter;
     procedure SetToolButtons;
     procedure PreparePrint;
     procedure Print; override;
-    procedure PrintAll(AllPages: boolean);
+    procedure PrintAll(AllPages: Boolean);
     procedure Show;
     procedure Hide;
-    procedure SetFont(aFont: TFont); override;
-    function  GetFont: TFont; override;
-    procedure SetFontSize(Delta: integer); override;
+    procedure SetFont(AFont: TFont); override;
+    function GetFont: TFont; override;
+    procedure SetFontSize(Delta: Integer); override;
     procedure SetOptions; override;
     procedure SetDeleteBookmark(Xpos, YPos: Integer);
     procedure Unindent;
@@ -276,123 +302,137 @@ type
     procedure Replace; override;
     procedure SystemOutPrintln;
     procedure Matchbracket;
-    function  getIndent: string;
-    procedure PutText(s: string; withCursor: boolean = true);
+    function GetIndent: string;
+    procedure PutText(Str: string; WithCursor: Boolean = True);
 
-    function  CBSearchClassOrMethod(Stop: Boolean; line: Integer): string;
-    function  SourceContainsClass(const aClassname: string): boolean;
-    procedure GotoLine(i: integer);
+    function CBSearchClassOrMethod(Stop: Boolean; Line: Integer): string;
+    function SourceContainsClass(const AClassname: string): Boolean;
+    procedure GotoLine(Line: Integer);
     procedure CutToClipboard; override;
     procedure CopyToClipboard; override;
     procedure PasteFromClipboard; override;
     procedure Undo; override;
     procedure Redo; override;
-    procedure SetModified(aModified: boolean); override;
-    function GetModified: boolean; override;
+    procedure SetModified(AModified: Boolean); override;
+    function GetModified: Boolean; override;
     procedure DoExport; override;
 
     // Test-Menü
     procedure ClearBreakpoints;
     procedure SetBreakpoints;
     function HasBreakpoints: Boolean;
-    function HasBreakpoint(ALine: integer; var Mark: TSynEditMark): Boolean;
-    function IsExecutableLine(ALine: Integer): Boolean;
+    function HasBreakpoint(Line: Integer; var Mark: TSynEditMark): Boolean;
+    function IsExecutableLine(Line: Integer): Boolean;
     procedure SetDebuglineMark(Line: Integer);
     procedure DeleteDebuglineMark;
-    procedure DeleteBreakpoint(s: string);
+    procedure DeleteBreakpoint(Str: string);
     procedure ResetGutterOffset;
 
-    procedure HTMLforApplet(const aWidth, aHeight, CharSet, Path, aClass: string; withJEApplets, Debug: boolean);
+    procedure HTMLforApplet(const AWidth, AHeight, CharSet, Path,
+      AClass: string; WithJEApplets, Debug: Boolean);
     function CurrentCol: Integer;
     function CurrentRow: Integer;
-    procedure ExportToFile(const Filename: string; Exporter: TSynCustomExporter);
-    procedure ExportToClipboard(asHtml: boolean; asText: boolean);
+    procedure ExportToFile(const FileName: string;
+      Exporter: TSynCustomExporter);
+    procedure ExportToClipboard(AsHtml: Boolean; AsText: Boolean);
     procedure ExportWithNumbers;
     procedure ExportRTFNumbered;
     procedure SynEditorReplaceText(Sender: TObject;
       const ASearch, AReplace: string; Line, Column: Integer;
-      var aAction: TSynReplaceAction);
-    procedure SynEditorSpecialLineColors(Sender: TObject;
-                Line: Integer; var Special: Boolean; var FG, BG: TColor);
-    function GetLineInfos(ALine: integer): TLineInfos;
-    function getMarksBreakpoints: string;
+      var AAction: TSynReplaceAction);
+    procedure SynEditorSpecialLineColors(Sender: TObject; Line: Integer;
+      var Special: Boolean; var ForeGround, BackGround: TColor);
+    function GetLineInfos(ALine: Integer): TLineInfos;
+    function GetMarksBreakpoints: string;
     procedure SetMarksBreakpoints(MarkBreakpoint: string);
-    procedure InsertBreakpointMark(line: Integer);
+    procedure InsertBreakpointMark(Line: Integer);
     procedure DeleteBreakpointMark(Mark: TSynEditMark);
     procedure InsertGotoCursorBreakpoint;
     procedure InsertBreakpoint;
-    procedure ParseSourcecodeWithThread(hasChanged: boolean);
-    procedure ParseSourceCode(hasChanged: boolean);
+    procedure ParseSourcecodeWithThread(HasChanged: Boolean);
+    procedure ParseSourceCode(HasChanged: Boolean);
     procedure CreateTVFileStructure;
     procedure RunTests;
 
-    function getWidthAndHeight: TPoint;
-    procedure ChangeWidthAndHeight(w, h: integer);
-    procedure ReplaceWidthHeight(w, h: integer);
+    function GetWidthAndHeight: TPoint;
+    procedure ChangeWidthAndHeight(Width, Height: Integer);
+    procedure ReplaceWidthHeight(Width, Height: Integer);
 
-    function getLNGStartAttributes: integer;
-    function getLNGEndAttributes: integer;
-    function getLNGStartComponents: integer;
-    function getLNGEndComponents: integer;
-    function getLNGStartEventMethods: integer;
-    function getLNGEndEventMethods: integer;
-    function getLNG(Nr, ClassNumber: integer): string;
-    procedure EnsureStartEnd(CorI: integer = 1);
+    function GetLNGStartAttributes: Integer;
+    function GetLNGEndAttributes: Integer;
+    function GetLNGStartComponents: Integer;
+    function GetLNGEndComponents: Integer;
+    function GetLNGStartEventMethods: Integer;
+    function GetLNGEndEventMethods: Integer;
+    function GetLNG(Num, ClassNumber: Integer): string;
+    procedure EnsureStartEnd(CorI: Integer = 1);
     procedure InsertStartEnd;
-    function hasStartAndEnd(CorI: integer): boolean;
+    function HasStartAndEnd(CorI: Integer): Boolean;
 
-    function getLineNumberWith(const s: string): integer;
-    function getLineNumberWithFrom(From: integer; const s: string): integer;
-    function getLineNumberWithFromTill(From, till: integer; const s: string): integer;
-    function getLineNumberWithWord(const s: string): integer;
-    function getLineNumberWithWordFrom(From: integer; const s: string): integer;
-    function getLineNumberWithStartsWordFrom(From: integer; const s: string): integer;
-    function getSource(LineS, LineE: integer): string;
-    function getLine(Line: integer): string;
-    function containsWord(const key: string; line: integer): boolean;
+    function GetLineNumberWith(const Str: string): Integer;
+    function GetLineNumberWithFrom(From: Integer; const Str: string): Integer;
+    function GetLineNumberWithFromTill(From, Till: Integer;
+      const Str: string): Integer;
+    function GetLineNumberWithWord(const Str: string): Integer;
+    function GetLineNumberWithWordFrom(From: Integer;
+      const Str: string): Integer;
+    function GetLineNumberWithStartsWordFrom(From: Integer;
+      const Str: string): Integer;
+    function GetSource(Lines, LineE: Integer): string;
+    function GetLine(Line: Integer): string;
+    function ContainsWord(const Key: string; Line: Integer): Boolean;
 
-    procedure ReplaceLine(const s1, s2: string);
-    procedure ReplaceLineWith(line: integer; const s: string);
-    procedure ReplaceLineInLine(line: integer; const old, aNew: string);
-    procedure ReplaceText(const s1, s2: string; all: boolean);
-    procedure ReplaceTextWithRegex(const reg, s: string; all: boolean;
-                                   from: integer = -1; till: integer = -1);
-    procedure ReplaceWord(const s1, s2: string; all: boolean);
-    procedure ReplaceComponentname(const s1, s2: string; Events: string);
-    procedure ReplaceAttributAt(const At, key, s: string);
-    procedure ReplaceAttribute(const key, s: string);
+    procedure ReplaceLine(const Str1, Str2: string);
+    procedure ReplaceLineWith(Line: Integer; const Str: string);
+    procedure ReplaceLineInLine(Line: Integer; const Old, ANew: string);
+    procedure ReplaceText(const Str1, Str2: string; All: Boolean);
+    procedure ReplaceTextWithRegex(const Reg, Str: string; All: Boolean;
+      From: Integer = -1; Till: Integer = -1);
+    procedure ReplaceWord(const Str1, Str2: string; All: Boolean);
+    procedure ReplaceComponentname(const Str1, Str2: string; Events: string);
+    procedure ReplaceAttributAt(const AtLine, Key, Str: string);
+    procedure ReplaceAttribute(const Key, Str: string);
     procedure ReplaceMethod(var Method: TOperation; const New: string);
-    procedure setAttributValue(const Container, key, s: string; after: integer);
-    procedure ChangeAttributValue(const key, s: string); overload;  // Swing
-    procedure ChangeAttributValue(const container, key, s: string); overload;  // FX
+    procedure SetAttributValue(const Container, Key, Str: string;
+      After: Integer);
+    procedure ChangeAttributValue(const Key, Str: string); overload; // Swing
+    procedure ChangeAttributValue(const Container, Key, Str: string); overload;
+    // IsFX
 
-    function hasComponent(const key: string; line: integer): boolean;
-    procedure InsertAttributValue(const destination, s: string; after: integer);
-    procedure InsertLinesAt(line: integer; s: string); overload;
-    procedure InsertLinesAt(const At, s: string); overload;
-    procedure InsertAttributAfter(const At, Attribute: string);
-    procedure InsertAttribute(ClassNumber: integer; const s: string); overload;
-    procedure InsertAttribute(const Container, aIndent, Variable: string; fx: boolean); overload;
-    procedure InsertAttribute(const Container, Variable: string; fx: boolean); overload;
+    function HasComponent(const Key: string; Line: Integer): Boolean;
+    procedure InsertAttributValue(const Destination, Str: string;
+      After: Integer);
+    procedure InsertLinesAt(Line: Integer; Str: string); overload;
+    procedure InsertLinesAt(const AtLine, Str: string); overload;
+    procedure InsertAttributAfter(const AtLine, Attribute: string);
+    procedure InsertAttribute(ClassNumber: Integer; const Str: string);
+      overload;
+    procedure InsertAttribute(const Container, AIndent, Variable: string;
+      IsFX: Boolean); overload;
+    procedure InsertAttribute(const Container, Variable: string;
+      IsFX: Boolean); overload;
 
-    procedure InsertComponent(const s: string);
-    procedure InsertProcedure(const aProcedure: string); overload;
-    procedure InsertProcedure(ClassNumber: integer; const aProcedure: string); overload;
+    procedure InsertComponent(const Str: string);
+    procedure InsertProcedure(const AProcedure: string); overload;
+    procedure InsertProcedure(ClassNumber: Integer;
+      const AProcedure: string); overload;
     procedure InsertListener(const Component, Listener: string);
-    procedure InsertConstructor(ClassNumber: integer; const aProcedure: string);
+    procedure InsertConstructor(ClassNumber: Integer; const AProcedure: string);
     procedure InsertImport(const Package: string);
 
-    procedure DeleteAttribute(const s: string);
-    function DeleteAttributeValue(const s: string): boolean;
-    procedure DeleteComponentValue(s: string);
-    procedure DeleteAttributeValues(const s: string);
-    procedure DeleteEmptyLines(line: integer);
-    procedure DeleteLine(line: integer);
-    procedure DeleteBlock(StartLine, EndLine: integer);
+    procedure DeleteAttribute(const Str: string);
+    function DeleteAttributeValue(const Str: string): Boolean;
+    procedure DeleteComponentValue(Str: string);
+    procedure DeleteAttributeValues(const Str: string);
+    procedure DeleteEmptyLines(Line: Integer);
+    procedure DeleteLine(Line: Integer);
+    procedure DeleteBlock(StartLine, EndLine: Integer);
     procedure DeleteComponent(const Component: string);
     procedure DeleteComponentDefault(Control: TControl);
-    procedure DeleteComponentTotal(ClassNumber: integer; const Component, Typ: string);
-    procedure DeleteMethod(const Method: string; SourcecodeCheck: boolean = true); overload;
+    procedure DeleteComponentTotal(ClassNumber: Integer;
+      const Component, Typ: string);
+    procedure DeleteMethod(const Method: string;
+      SourcecodeCheck: Boolean = True); overload;
     procedure DeleteMethod(Method: TOperation); overload;
     procedure DeleteEventMethod(Method: string);
     procedure DeleteListener(Listener: string);
@@ -400,117 +440,151 @@ type
     procedure DeleteLambdaListener(Listener: string);
     procedure DeleteOldAddNewMethods(OldMethods, NewMethods: TStringList);
     procedure DeleteFXOldAddNewMethods(OldMethods, NewMethods: TStringList);
-    procedure DeleteTryCatch(const key: string);
+    procedure DeleteTryCatch(const Key: string);
 
-    procedure MoveBlock(from, till, dest, desttill: integer; const blanklines: string);
-    function getBlock(from, lines: integer): string;
-    procedure toForeground(Control: TControl);
-    procedure toBackground(Control: TControl);
+    procedure MoveBlock(From, Till, Dest, DestTill: Integer;
+      const Blanklines: string);
+    function GetBlock(From, Lines: Integer): string;
+    procedure ToForeground(Control: TControl);
+    procedure ToBackground(Control: TControl);
 
-    procedure Go_To(const s: string);
-    function getClassAttribut(const aClass, aAttribute: string): string;
+    procedure Go_To(const Str: string);
+    function GetClassAttribut(const AClass, AAttribute: string): string;
 
-    function hasText(const s: string): boolean;
-    function hasWord(const s: string): boolean;
-    function hasEventProcedureInModel(const aMethodname: string): boolean;
-    function hasMainInModel: boolean;
+    function HasText(const Str: string): Boolean;
+    function HasWord(const Str: string): Boolean;
+    function HasEventProcedureInModel(const AMethodname: string): Boolean;
+    function HasMainInModel: Boolean;
 
-    function isJava: boolean;
-    function isPascal: boolean;
-    function isHTML: boolean;
-    function isCSS: boolean;
+    function IsJava: Boolean;
+    function IsPascal: Boolean;
+    function IsHTML: Boolean;
+    function IsCSS: Boolean;
     function IsHTMLApplet: Boolean;
 
     function GetFormType: string; override;
     function GetState: string; override;
-    procedure SetState(var s: string); override;
-    function EncodingAsString(const aEncoding: string): string;
+    procedure SetState(var Str: string); override;
+    function EncodingAsString(const AEncoding: string): string;
     function LinebreakAsString: string;
-    function LinebreakAsCtrls(const s: string): string;
-    function getEncodingAsType: TEncoding;
-    procedure SetEncoding(aEncoding: string);
+    function LinebreakAsCtrls(const Str: string): string;
+    function GetEncodingAsType: TEncoding;
+    procedure SetEncoding(AEncoding: string);
     procedure AutomatedCompleteImports;
     procedure SetNewActionEventFormat;
     procedure CollectClasses(StringList: TStringList); override;
-    function getPackage: string;
+    function GetPackage: string;
     procedure CheckAge;
     procedure AddShortcutsToHints;
     function GetAllPathnames: TStringList; override;
     function GetAllClassnames: TStringList; override;
-    function ClassnameDifferentFromAncestors(const aClassname: string): boolean;
+    function ClassnameDifferentFromAncestors(const AClassname: string): Boolean;
     procedure InitShowCompileErrors;
-    procedure setErrorMark(line, column: integer; const error: string);
+    procedure SetErrorMark(Line, Column: Integer; const Error: string);
     procedure ShowCompileErrors;
     procedure ClearCompilerErrorMarks;
     procedure ClearMarks;
     procedure TerminateThread(Sender: TObject);
     procedure ChangeStyle; override;
-    procedure RemoveShortCutFromEditor(ShortCut: integer);
-    procedure ReplaceShortCutFromEditor(ShortCut, ShortCut2: integer);
+    procedure RemoveShortCutFromEditor(ShortCut: Integer);
+    procedure ReplaceShortCutFromEditor(ShortCut, ShortCut2: Integer);
     procedure EditShortCuts;
     procedure CollapseGUICreation;
     procedure DoOnIdle;
     procedure SyncFileStructure;
     function MakeUpperEvents(Events: string): string;
-    procedure SetFXBackgroundAsString(const Container, aName, aColor: string);
+    procedure SetFXBackgroundAsString(const Container, AName, AColor: string);
     procedure DPIChanged; override;
-    function CountClassOrInterface: integer;
-    procedure SetActivityIndicator(TurnOn: Boolean; Hint: string = ''; OnClick: TNotifyEvent = nil);
+    function CountClassOrInterface: Integer;
+    procedure SetActivityIndicator(TurnOn: Boolean; Hint: string = '';
+      OnClick: TNotifyEvent = nil);
     procedure ShowAssistantError(Msg: string);
     function IsApplet: Boolean;
     function IsAWT: Boolean;
     function FrameTypToString: string;
 
-    property NeedsParsing: boolean read FNeedsParsing write setNeedsParsing;
-    property FileExtension: string read fFileExtension write setFileExtension;
-    property FrameType: integer read GetFrameType write FFrameType;
+    property CheckAgeEnabled: Boolean read FCheckAgeEnabled
+      write FCheckAgeEnabled;
+    property DebuglineMark: TSynEditMark read FDebuglineMark;
+    property Editor: TSynEditEx read FEditor;
+    property EditorAge: TDateTime read FEditorAge write FEditorAge;
+    property Encoding: string read FEncoding;
+    property FileExtension: string read FFileExtension;
+    property IsJUnitTestClass: Boolean read FIsJUnitTestClass;
+    property NeedsParsing: Boolean read FNeedsParsing write SetNeedsParsing;
+    property FrameType: Integer read GetFrameType write FFrameType;
+    property LastToken: string read FLastToken write FLastToken;
+    property LineBreak: string read FLineBreak;
+    property Model: TObjectModel read FModel;
+    property Parameter: string read FParameter write FParameter;
+    property Parser: TJavaParser read FParser write FParser;
+    property ParseThread: TParseThread read FParseThread;
+    property SynEditPrint: TSynEditPrint read FSynEditPrint;
   end;
-
-  TInteger = class
-  public
-    i: integer;
-    constructor create(aI: Integer);
-  end;
-
 
 implementation
 
 {$R *.dfm}
 
 uses
-  Contnrs, Printers, Dialogs, IOUtils, SynHighlighterJava,
-  Types, UITypes, Clipbrd, Math, StrUtils, DateUtils, RichEdit, ShellAPI,
-  RegularExpressions, SynExportRTF, SynExportHTML,
-  SynEditPrintTypes, UGUIDesigner, SynEditCodeFolding,
-  SynEditTypes, SynEditMiscClasses,
-  UJava, UJavaCommands, UUtils, UConfiguration, UTree,
-  UModelEntity, UFileProvider, UMessages, UGUIForm, UCodeCompletion,
-  UDlgConfirmReplace, UUMLForm, UUMLModule, JvGnugettext, UStringRessources,
-  UDebugger, UFileStructure, UFXComponents, UGit, UJUnitTest,
-  USequenceForm, UJavaScanner, UTooltip, UObjectInspector, UJEComponents,
-  UTemplates, ULLMSupport;
+  Contnrs,
+  Printers,
+  Dialogs,
+  IOUtils,
+  Types,
+  UITypes,
+  Clipbrd,
+  Math,
+  StrUtils,
+  RegularExpressions,
+  JvGnugettext,
+  SynExportRTF,
+  SynExportHTML,
+  SynEditPrintTypes,
+  SynEditTypes,
+  SynHighlighterJava,
+  UJava,
+  UGUIDesigner,
+  UJavaCommands,
+  UUtils,
+  UConfiguration,
+  UTree,
+  UModelEntity,
+  UFileProvider,
+  UMessages,
+  UGUIForm,
+  UCodeCompletion,
+  UDlgConfirmReplace,
+  UUMLForm,
+  UStringRessources,
+  UDebugger,
+  UFileStructure,
+  UFXComponents,
+  UGit,
+  UJUnitTest,
+  USequenceForm,
+  UJavaScanner,
+  UTooltip,
+  UObjectInspector,
+  UJEComponents,
+  UTemplates,
+  ULLMSupport;
 
 const
-  ecMatchBracket    = 250;  // Go to matching bracket
-  ecBlockIndent     = 610;  // Indent selection
-  ecBlockUnindent   = 611;  // Unindent selection
+  EcMatchBracket = 250; // Go to matching bracket
+  EcBlockIndent = 610; // Indent selection
+  EcBlockUnindent = 611; // Unindent selection
   NoBreakpointImageIndex = 14;
   BreakpointImageIndex = 13;
   ErrorMarkIndex = 10;
   StopInAt = True;
 
 var
-  LNGs: array[1..6] of string;
+  LNGs: array [1 .. 6] of string;
 
-constructor TInteger.create(ai: Integer);
-begin
-  inherited create;
-  self.i:= aI;
-end;
+  { --- TFEditForm --------------------------------------------------------------- }
 
-{--- TFEditForm ---------------------------------------------------------------}
-
-{ Gutterparts
+  { Gutterparts
     MarksPart
     LineNumberPart
     ChangesPart
@@ -519,229 +593,249 @@ end;
     LineOverviewPart
 
     Gutter.LeftOffset
-}
+  }
 
 constructor TFEditForm.Create(AOwner: TComponent);
 begin
   inherited;
-  FormTag:= 1;
+  FormTag := 1;
 end;
 
 procedure TFEditForm.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
-  Editor:= TSynEditEx.Create(Self);
-  with Editor do begin
-    MaxUndo:= 300;
-    TabWidth:= 2;
-    WantTabs:= True;
-    PopupMenu:= PopUpEditor;
-    BookMarkOptions.BookmarkImages:= vilBookmarksLight;
+  FEditor := TSynEditEx.Create(Self);
+  with FEditor do
+  begin
+    MaxUndo := 300;
+    TabWidth := 2;
+    WantTabs := True;
+    PopupMenu := PopUpEditor;
+    BookMarkOptions.BookmarkImages := vilBookmarksLight;
     Font.Assign(FConfiguration.EditFont);
-    Options:= [eoAutoIndent, eoDragDropEditing, eoScrollPastEol, eoShowScrollHint,
-               eoSmartTabs, eoTabIndent, eoTabsToSpaces, {eoTrimTrailingSpaces,}
-               eoSmartTabDelete, eoGroupUndo, eoKeepCaretX, eoEnhanceHomeKey];
-    Gutter.DigitCount:= 1;
-    Gutter.LeftOffset:= 15;
-    Gutter.Gradient:= true;
-    Gutter.AutoSize:= true;
-    UseCodeFolding:= true;
-    Codefolding.IndentGuides:= true;
-    SearchEngine:= FJava.SynEditSearch;
-    Indent:= FConfiguration.Indent;
-    StructureColorIntensity:= FConfiguration.StructureColorIntensity;
-    OnBuildStructure:= DoOnBuildStructure;
-    SetCaretBlinkTime(cInsertBlink);
+    Options := [eoAutoIndent, eoDragDropEditing, eoScrollPastEol,
+      eoShowScrollHint, eoSmartTabs, eoTabIndent, eoTabsToSpaces,
+    { eoTrimTrailingSpaces, }
+    eoSmartTabDelete, eoGroupUndo, eoKeepCaretX, eoEnhanceHomeKey];
+    Gutter.DigitCount := 1;
+    Gutter.LeftOffset := 15;
+    Gutter.Gradient := True;
+    Gutter.AutoSize := True;
+    UseCodeFolding := True;
+    CodeFolding.IndentGuides := True;
+    SearchEngine := FJava.SynEditSearch;
+    Indent := FConfiguration.Indent;
+    StructureColorIntensity := FConfiguration.StructureColorIntensity;
+    OnBuildStructure := DoOnBuildStructure;
+    SetCaretBlinkTime(CInsertBlink);
     Gutter.Font.Assign(FConfiguration.Font);
-    Gutter.Font.Height:= Editor.Font.Height + 2;
-    Gutter.ShowLineNumbers:= FConfiguration.LineNumbering;
-    OnGutterClick:= EditorGutterClick;
-    OnSpecialLineColors:= SynEditorSpecialLineColors;
-    OnKeyUp:= EditorKeyUp;
-    OnKeyPress:= EditorKeyPress;
-    OnStatusChange:= EditorStatusChange;
-    OnReplaceText:= SynEditorReplaceText;
-    OnMouseOverToken:= DoOnMouseOverToken;
-    OnMouseDown:= DoOnMouseDown;
-    if FConfiguration.EightyColumnLine
-      then RightEdge:= 80
-      else RightEdge:= 0;
+    Gutter.Font.Height := FEditor.Font.Height + 2;
+    Gutter.ShowLineNumbers := FConfiguration.LineNumbering;
+    OnGutterClick := EditorGutterClick;
+    OnSpecialLineColors := SynEditorSpecialLineColors;
+    OnKeyUp := EditorKeyUp;
+    OnKeyPress := EditorKeyPress;
+    OnStatusChange := EditorStatusChange;
+    OnReplaceText := SynEditorReplaceText;
+    OnMouseOverToken := DoOnMouseOverToken;
+    OnMouseDown := DoOnMouseDown;
+    if FConfiguration.EightyColumnLine then
+      RightEdge := 80
+    else
+      RightEdge := 0;
   end;
 
-  Editor.Parent:= PMain;
-  Editor.Align:= alClient;
-  ActivityIndicator.Parent:= Editor;
+  FEditor.Parent := PMain;
+  FEditor.Align := alClient;
+  ActivityIndicator.Parent := FEditor;
 
-  EditformToolbar.Visible:= FConfiguration.vistoolbars[2];
-  Encoding:= FConfiguration.getEncoding;
-  CheckAgeEnabled:= FConfiguration.CheckAge;
-  NeedsParsing:= false;
-  Bookmark:= 0;
-  BreakPointCount:= 0;
-  EditorAge:= 0;
-  Model:= TObjectModel.Create;
-  Partner:= nil;
-  Parser:= nil;
-  Linebreak:= #13#10;
-  FrameType:= 0;
+  EditformToolbar.Visible := FConfiguration.VisToolbars[2];
+  FEncoding := FConfiguration.GetEncoding;
+  FCheckAgeEnabled := FConfiguration.CheckAge;
+  FNeedsParsing := false;
+  FBookmark := 0;
+  FBreakPointCount := 0;
+  FEditorAge := 0;
+  FModel := TObjectModel.Create;
+  Partner := nil;
+  FParser := nil;
+  FLineBreak := #13#10;
+  FFrameType := 0;
+  FHidden := False;
   CalculateStatusline;
   EditorStatusChange(Sender, [scAll]);
-  OnMouseActivate:= FormMouseActivate;
+  OnMouseActivate := FormMouseActivate;
   SetOptions;
   ToMainPanel;
-  ToolButtons[ 0]:= TBClose;
-  ToolButtons[ 1]:= TBExplorer;
-  ToolButtons[ 2]:= TBBrowser;
-  ToolButtons[ 3]:= TBDesignform;
-  ToolButtons[ 4]:= TBStructure;
-  ToolButtons[ 5]:= TBClassOpen;
-  ToolButtons[ 6]:= TBMatchBracket;
-  ToolButtons[ 7]:= TBSystemOutPrintln;
-  ToolButtons[ 8]:= TBStructureIndent;
-  ToolButtons[ 9]:= TBIfStatement;
-  ToolButtons[10]:= TBIfElseStatement;
-  ToolButtons[11]:= TBWhileStatement;
-  ToolButtons[12]:= TBForStatement;
-  ToolButtons[13]:= TBDoWhileStatement;
-  ToolButtons[14]:= TBSwitchStatement;
-  ToolButtons[15]:= TBTryStatement;
-  ToolButtons[16]:= TBBlockStatement;
+  FToolButtons[0] := TBClose;
+  FToolButtons[1] := TBExplorer;
+  FToolButtons[2] := TBBrowser;
+  FToolButtons[3] := TBDesignform;
+  FToolButtons[4] := TBStructure;
+  FToolButtons[5] := TBClassOpen;
+  FToolButtons[6] := TBMatchBracket;
+  FToolButtons[7] := TBSystemOutPrintln;
+  FToolButtons[8] := TBStructureIndent;
+  FToolButtons[9] := TBIfStatement;
+  FToolButtons[10] := TBIfElseStatement;
+  FToolButtons[11] := TBWhileStatement;
+  FToolButtons[12] := TBForStatement;
+  FToolButtons[13] := TBDoWhileStatement;
+  FToolButtons[14] := TBSwitchStatement;
+  FToolButtons[15] := TBTryStatement;
+  FToolButtons[16] := TBBlockStatement;
 
-  ToolButtons[17]:= TBComment;
-  ToolButtons[18]:= TBIndent;
-  ToolButtons[19]:= TBUnindent;
-  ToolButtons[20]:= TBWordWrap;
-  ToolButtons[21]:= TBBreakpoint;
-  ToolButtons[22]:= TBBreakpointsClear;
-  ToolButtons[23]:= TBBookmark;
-  ToolButtons[24]:= TBGotoBookmark;
-  ToolButtons[25]:= TBParagraph;
-  ToolButtons[26]:= TBNumbers;
-  ToolButtons[27]:= TBZoomOut;
-  ToolButtons[28]:= TBZoomIn;
-  ToolButtons[29]:= TBValidate;
+  FToolButtons[17] := TBComment;
+  FToolButtons[18] := TBIndent;
+  FToolButtons[19] := TBUnindent;
+  FToolButtons[20] := TBWordWrap;
+  FToolButtons[21] := TBBreakpoint;
+  FToolButtons[22] := TBBreakpointsClear;
+  FToolButtons[23] := TBBookmark;
+  FToolButtons[24] := TBGotoBookmark;
+  FToolButtons[25] := TBParagraph;
+  FToolButtons[26] := TBNumbers;
+  FToolButtons[27] := TBZoomOut;
+  FToolButtons[28] := TBZoomIn;
+  FToolButtons[29] := TBValidate;
   Translate;
 end;
 
 procedure TFEditForm.AddShortcutsToHints;
 begin
-  var s:= ShortCutToText(FJava.MIIndent.ShortCut);
-  if Pos(s, TBIndent.Hint) = 0 then
-    TBIndent.Hint:= TBIndent.Hint + ' - ' + s;
-  s:= ShortCutToText(FJava.MIUnIndent.ShortCut);
-  if Pos(s, TBUnIndent.Hint) = 0 then
-    TBUnIndent.Hint:= TBUnIndent.Hint + ' - ' + s;
-  s:= ShortCutToText(FJava.MIStructuredIndent.ShortCut);
-  if Pos(s, TBStructureIndent.Hint) = 0 then
-    TBStructureIndent.Hint:= TBStructureIndent.Hint + ' - ' + s;
-  s:= ShortCutToText(FJava.MICommentOnOff.ShortCut);
-  if Pos(s, TBComment.Hint) = 0 then
-    TBComment.Hint:= TBComment.Hint + ' - ' + s;
-  s:= ShortCutTotext(FJava.MISystemOutPrintln.ShortCut);
-  if Pos(s, TBSystemOutPrintln.Hint) = 0 then
-    TBSystemOutPrintln.Hint:= TBSystemOutPrintln.Hint + ' - ' + s;
-  //s:=  _SmkcShift + _SmkcCtrl + '<i>';
-  if Pos(s, TBBookmark.Hint) = 0 then
-    TBBookmark.Hint:= TBBookmark.Hint + ' - ' + s;
-  //s:= _SmkcCtrl + '<i>';
-  if Pos(s, TBGotoBookmark.Hint) = 0 then
-    TBGotoBookmark.Hint:= TBGotoBookmark.Hint + ' - ' + s;
+  var
+  Str := ShortCutToText(FJava.MIIndent.ShortCut);
+  if Pos(Str, TBIndent.Hint) = 0 then
+    TBIndent.Hint := TBIndent.Hint + ' - ' + Str;
+  Str := ShortCutToText(FJava.MIUnindent.ShortCut);
+  if Pos(Str, TBUnindent.Hint) = 0 then
+    TBUnindent.Hint := TBUnindent.Hint + ' - ' + Str;
+  Str := ShortCutToText(FJava.MIStructuredIndent.ShortCut);
+  if Pos(Str, TBStructureIndent.Hint) = 0 then
+    TBStructureIndent.Hint := TBStructureIndent.Hint + ' - ' + Str;
+  Str := ShortCutToText(FJava.MICommentOnOff.ShortCut);
+  if Pos(Str, TBComment.Hint) = 0 then
+    TBComment.Hint := TBComment.Hint + ' - ' + Str;
+  Str := ShortCutToText(FJava.MISystemOutPrintln.ShortCut);
+  if Pos(Str, TBSystemOutPrintln.Hint) = 0 then
+    TBSystemOutPrintln.Hint := TBSystemOutPrintln.Hint + ' - ' + Str;
+  if Pos(Str, TBBookmark.Hint) = 0 then
+    TBBookmark.Hint := TBBookmark.Hint + ' - ' + Str;
+  if Pos(Str, TBGotoBookmark.Hint) = 0 then
+    TBGotoBookmark.Hint := TBGotoBookmark.Hint + ' - ' + Str;
 end;
 
 procedure TFEditForm.Translate;
 begin
-  TBIfStatement.Hint:= 'if ' + _(LNGStatement);
-  TBIfElseStatement.Hint:= 'if-else ' + _(LNGStatement);
-  TBWhileStatement.Hint:= 'while ' + _(LNGStatement);
-  TBForStatement.Hint:= 'for ' + _(LNGStatement);
-  TBDoWhileStatement.Hint:= 'do-while ' + _(LNGStatement);
-  TBSwitchStatement.Hint:= 'switch ' + _(LNGStatement);
-  TBTryStatement.Hint:= 'try ' + _(LNGStatement);
-  TBBlockStatement.Hint:= 'block ' + _(LNGStatement);
-  LNGs[1]:= _(LNGStartGUIVariables);
-  LNGs[2]:= _(LNGEndGUIVariables);
-  LNGs[3]:= _(LNGStartComponents);
-  LNGs[4]:= _(LNGEndComponents);
-  LNGs[5]:= _(LNGStartEventMethods);
-  LNGs[6]:= _(LNGEndEventMethods);
+  TBIfStatement.Hint := 'if ' + _(LNGStatement);
+  TBIfElseStatement.Hint := 'if-else ' + _(LNGStatement);
+  TBWhileStatement.Hint := 'while ' + _(LNGStatement);
+  TBForStatement.Hint := 'for ' + _(LNGStatement);
+  TBDoWhileStatement.Hint := 'do-while ' + _(LNGStatement);
+  TBSwitchStatement.Hint := 'switch ' + _(LNGStatement);
+  TBTryStatement.Hint := 'try ' + _(LNGStatement);
+  TBBlockStatement.Hint := 'block ' + _(LNGStatement);
+  LNGs[1] := _(LNGStartGUIVariables);
+  LNGs[2] := _(LNGEndGUIVariables);
+  LNGs[3] := _(LNGStartComponents);
+  LNGs[4] := _(LNGEndComponents);
+  LNGs[5] := _(LNGStartEventMethods);
+  LNGs[6] := _(LNGEndEventMethods);
 
-  ModifiedStrs[false]:= '';
-  ModifiedStrs[true]:= _(LNGModified);
-  InsertModeStrs[false]:= _(LNGModusOverwrite);
-  InsertModeStrs[true]:= _(LNGModusInsert);
+  FModifiedStrs[false] := '';
+  FModifiedStrs[True] := _(LNGModified);
+  FInsertModeStrs[false] := _(LNGModusOverwrite);
+  FInsertModeStrs[True] := _(LNGModusInsert);
   CalculateStatusline;
-  if UUtils.Left(MIExecuteWithoutConsole.Caption, 4) <> '  ' then begin
-    MIExecuteWithoutConsole.Caption:= '  ' + MIExecuteWithoutConsole.Caption;
-    MIExecuteWithConsole.Caption:= '  ' +  MIExecuteWithConsole.Caption;
+  if UUtils.Left(MIExecuteWithoutConsole.Caption, 4) <> '  ' then
+  begin
+    MIExecuteWithoutConsole.Caption := '  ' + MIExecuteWithoutConsole.Caption;
+    MIExecuteWithConsole.Caption := '  ' + MIExecuteWithConsole.Caption;
   end;
 end;
 
-procedure TFEditForm.New(const Filename: string);
+procedure TFEditForm.New(const FileName: string);
 begin
-  Caption:= Filename;
-  Pathname:= Filename;
-  FileExtension:= LowerCase(ExtractFileExt(Filename));
-  DesignButton.Visible:= FileExists(ChangeFileExt(Filename, '.jfm'));
+  Caption := FileName;
+  Pathname := FileName;
+  FFileExtension := LowerCase(ExtractFileExt(FileName));
+  DesignButton.Visible := FileExists(ChangeFileExt(FileName, '.jfm'));
   SetHighlighter;
   SetToolButtons;
-  FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
-  FJava.TabModified(Number, Modified);
-  Enter(Self); // must stay!
-  if Visible and Editor.CanFocus then Editor.SetFocus;
+  if not FHidden then begin
+    FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
+    FJava.TabModified(Number, Modified);
+    Enter(Self); // must stay!
+    if Visible and FEditor.CanFocus then
+      FEditor.SetFocus;
+  end;
 end;
 
-procedure TFEditForm.Open(const FileName: string; Zustand: string);
+procedure TFEditForm.Open(const FileName: string; State: string;
+  Hidden: Boolean = false);
 begin
+  FHidden:= Hidden;
+  SetModified(false);
   try
-    SetModified(false);
-    Editor.Lines.LoadFromFile(Filename);
-    // set UTF8 as default encoding
-    if Editor.Lines.Encoding <> TEncoding.UTF8 then begin
-      var TD:= TFile.GetLastWriteTime(FileName);
-      Editor.Lines.SaveToFile(Filename, TEncoding.UTF8);
-      TFile.SetLastWriteTime(Filename, TD);
-      Editor.Lines.LoadFromFile(Filename, TEncoding.UTF8);
+    FEditor.Lines.LoadFromFile(FileName);
+    // set UTF8 as default FEncoding
+    if FEditor.Lines.Encoding <> TEncoding.UTF8 then
+    begin
+      var
+      WriteTime := TFile.GetLastWriteTime(FileName);
+      FEditor.Lines.SaveToFile(FileName, TEncoding.UTF8);
+      TFile.SetLastWriteTime(FileName, WriteTime);
+      FEditor.Lines.LoadFromFile(FileName, TEncoding.UTF8);
     end;
-    Encoding:= EncodingAsString(Editor.Lines.Encoding.EncodingName);
-    Linebreak:= Editor.Lines.LineBreak;
-    Editor.ReplaceTabs(FConfiguration.TabWidth);
-    if Editor.NeedsWordWrap then
-      SBWordWrapClick(self);
-    FileAge(Filename, EditorAge);
-    New(Filename);
-    Editor.ReadOnly:= (Pos(FConfiguration.JavaCache, Filename) = 1) or IsWriteProtected(FileName);
-    if Editor.ReadOnly then
-      Caption:= Caption + ' (' + _(LNGWriteProtected) + ')';
+    FEncoding := EncodingAsString(FEditor.Lines.Encoding.EncodingName);
+    FLineBreak := FEditor.Lines.LineBreak;
+    FEditor.ReplaceTabs(FConfiguration.TabWidth);
+    if FEditor.NeedsWordWrap then
+      SBWordWrapClick(Self);
+    FileAge(FileName, FEditorAge);
+    New(FileName);
+    FEditor.ReadOnly := (Pos(FConfiguration.JavaCache, FileName) = 1) or
+      IsWriteProtected(FileName);
+    if FEditor.ReadOnly then
+      Caption := Caption + ' (' + _(LNGWriteProtected) + ')';
     CalculateStatusline;
     CollapseGUICreation;
     if IsJava then
-      ParseSourcecode(true);
-    SetState(Zustand);
+      ParseSourceCode(True);
+    SetState(State);
     // ensure vertical scrollbar is visible
-    Editor.ScrollBars:= ssNone;
-    Editor.ScrollBars:= ssBoth;
+    FEditor.ScrollBars := ssNone;
+    FEditor.ScrollBars := ssBoth;
   except
-    on e: Exception do begin
+    on e: Exception do
+    begin
       ErrorMsg(e.Message);
-      FConfiguration.Log('TFEditForm.Open: ' + Filename, e);
+      FConfiguration.Log('TFEditForm.Open: ' + FileName, e);
     end;
   end;
 end;
 
 procedure TFEditForm.CollapseGUICreation;
-  var i, Line: integer; s, Name: string;
+var
+  Line: Integer;
+  Str, Name: string;
 begin
-  if FConfiguration.GUICodeFolding and (FrameType > 1) then begin
-    Name:= ChangeFileExt(ExtractFilename(Pathname), '');
-    case FrameType of
-      8: s:= 'public void start(Stage';
-      7, 4: s:= 'public void init()';
-      6, 5, 3, 2: s:= 'public ' + Name + '(';
+  if FConfiguration.GUICodeFolding and (GetFrameType > 1) then
+  begin
+    Name := ChangeFileExt(ExtractFileName(Pathname), '');
+    case FFrameType of
+      8:
+        Str := 'public void start(Stage';
+      7, 4:
+        Str := 'public void init()';
+      6, 5, 3, 2:
+        Str := 'public ' + Name + '(';
     end;
-    for i:= 0 to min(Editor.AllFoldRanges.Count - 1, 2) do begin
-      Line:= Editor.AllFoldRanges[i].FromLine;
-      if Pos(s, Editor.Lines[Line-1]) > 0 then
-        Editor.Collapse(i)
+    for var I := 0 to Min(FEditor.AllFoldRanges.Count - 1, 2) do
+    begin
+      Line := FEditor.AllFoldRanges[I].FromLine;
+      if Pos(Str, FEditor.Lines[Line - 1]) > 0 then
+        FEditor.Collapse(I);
     end;
   end;
 end;
@@ -754,47 +848,57 @@ end;
 
 procedure TFEditForm.SyncFileStructure;
 begin
-  if fNeedToSyncFileStructure and IsJava then begin
+  if FNeedToSyncFileStructure and IsJava then
+  begin
     FFileStructure.ShowEditorCodeElement;
-    fNeedToSyncFileStructure := False;
+    FNeedToSyncFileStructure := false;
   end;
 end;
 
-procedure TFEditForm.EnsureStartEnd(CorI: integer = 1);
+procedure TFEditForm.EnsureStartEnd(CorI: Integer = 1);
 begin
- if assigned(Editor) and not Editor.ReadOnly and not hasStartAndEnd(CorI) then
-   InsertStartEnd;
+  if Assigned(FEditor) and not FEditor.ReadOnly and not HasStartAndEnd(CorI)
+  then
+    InsertStartEnd;
 end;
 
-function PointToDisplay(P: TPoint): TDisplayCoord;
+function PointToDisplay(Posi: TPoint): TDisplayCoord;
 begin
-  Result.Column:= P.x;
-  Result.Row:= P.Y;
+  Result.Column := Posi.X;
+  Result.Row := Posi.Y;
 end;
 
 procedure TFEditForm.SynEditorReplaceText(Sender: TObject;
   const ASearch, AReplace: string; Line, Column: Integer;
-  var aAction: TSynReplaceAction);
+  var AAction: TSynReplaceAction);
 var
   APos: TDisplayCoord;
   EditRect: TRect;
 begin
   if ASearch = AReplace then
-    aAction := raSkip
-  else begin
+    AAction := raSkip
+  else
+  begin
     APos := DisplayCoord(Column, Line);
-    APos := PointToDisplay(Editor.ClientToScreen(Editor.RowColumnToPixels(APos)));
+    APos := PointToDisplay
+      (FEditor.ClientToScreen(FEditor.RowColumnToPixels(APos)));
     EditRect := ClientRect;
     EditRect.TopLeft := ClientToScreen(EditRect.TopLeft);
     EditRect.BottomRight := ClientToScreen(EditRect.BottomRight);
 
-    with TFConfirmReplace.Create(FJava) do begin
-      PrepareShow(EditRect, APos.Column, APos.Row, APos.Row + Editor.LineHeight, ASearch);
+    with TFConfirmReplace.Create(FJava) do
+    begin
+      PrepareShow(EditRect, APos.Column, APos.Row,
+        APos.Row + FEditor.LineHeight, ASearch);
       case ShowModal of
-        mrYes:      aAction:= raReplace;
-        mrYesToAll: aAction:= raReplaceAll;
-        mrNo:       aAction:= raSkip;
-        else        aAction:= raCancel;
+        mrYes:
+          AAction := raReplace;
+        mrYesToAll:
+          AAction := raReplaceAll;
+        mrNo:
+          AAction := raSkip;
+      else
+        AAction := raCancel;
       end;
       Free;
     end;
@@ -803,287 +907,340 @@ end;
 
 procedure TFEditForm.SetHighlighter;
 begin
-  if FConfiguration.NoSyntaxHighlighting
-    then Editor.Highlighter:= nil
-    else Editor.Highlighter:= FConfiguration.GetHighlighter(FileExtension);
+  if FConfiguration.NoSyntaxHighlighting then
+    FEditor.Highlighter := nil
+  else
+    FEditor.Highlighter := FConfiguration.GetHighlighter(FFileExtension);
 
-  if Editor.Highlighter = nil then
-    Editor.StructureColoring:= false
-  else begin
-    Editor.StructureColoring:= FConfiguration.StructureColoring;
-    Editor.UseCodeFolding:= true;
+  if FEditor.Highlighter = nil then
+    FEditor.StructureColoring := false
+  else
+  begin
+    FEditor.StructureColoring := FConfiguration.StructureColoring;
+    FEditor.UseCodeFolding := True;
   end;
-  if Editor.StructureColoring and IsJava then
-    NeedsParsing:= true;
+  if FEditor.StructureColoring and IsJava then
+    FNeedsParsing := True;
 end;
 
 procedure TFEditForm.SetToolButtons;
 begin
-  for var i:= 0 to 29 do
-    ToolButtons[i].Visible:= true;
-  if not isJava then begin
-    TBDesignform.Visible:= false;
-    TBStructure.Visible:= false;
-    TBClassOpen.Visible:= false;
-    TBSystemOutPrintln.visible:= false;
-    TBBreakpoint.Visible:= false;
-    TBBreakpointsClear.Visible:= false;
-    TBStructureIndent.Visible:= Pos('{', Editor.Text) > 0;
-    TBIfStatement.Visible:= false;
-    TBIfElseStatement.Visible:= false;
-    TBWhileStatement.Visible:= false;
-    TBForStatement.Visible:= false;
-    TBDoWhileStatement.Visible:= false;
-    TBSwitchStatement.Visible:= false;
-    TBTryStatement.Visible:= false;
-    TBBlockStatement.Visible:= false;
+  for var I := 0 to 29 do
+    FToolButtons[I].Visible := True;
+  if not IsJava then
+  begin
+    TBDesignform.Visible := false;
+    TBStructure.Visible := false;
+    TBClassOpen.Visible := false;
+    TBSystemOutPrintln.Visible := false;
+    TBBreakpoint.Visible := false;
+    TBBreakpointsClear.Visible := false;
+    TBStructureIndent.Visible := Pos('{', FEditor.Text) > 0;
+    TBIfStatement.Visible := false;
+    TBIfElseStatement.Visible := false;
+    TBWhileStatement.Visible := false;
+    TBForStatement.Visible := false;
+    TBDoWhileStatement.Visible := false;
+    TBSwitchStatement.Visible := false;
+    TBTryStatement.Visible := false;
+    TBBlockStatement.Visible := false;
   end;
-  if isPascal then begin
-    TBClassOpen.Visible:= true;
-    TBStructureIndent.Visible:= false;
+  if IsPascal then
+  begin
+    TBClassOpen.Visible := True;
+    TBStructureIndent.Visible := false;
   end;
-  TBBrowser.Visible:= isHTML;
-  TBValidate.Visible:= isHTML or isCSS;
+  TBBrowser.Visible := IsHTML;
+  TBValidate.Visible := IsHTML or IsCSS;
 end;
 
 procedure TFEditForm.Print;
 begin
-  if hasDefaultPrinter
-    then PrintAll(false)
-    else ErrorMsg(_(LNGNoDefaultPrinter));
+  if hasDefaultPrinter then
+    PrintAll(false)
+  else
+    ErrorMsg(_(LNGNoDefaultPrinter));
 end;
 
-procedure TFEditForm.PrintAll(AllPages: boolean);
+procedure TFEditForm.PrintAll(AllPages: Boolean);
 begin
-  if hasDefaultPrinter then begin
-    if Editor.Font.Size >= 13 then
-      if MessageDlg(Format(_('Font size is %3d pt. Print anyhow?'), [Editor.Font.Size]), mtConfirmation,[mbYes, mbNo], 0) = mrNo
-        then exit;
+  if hasDefaultPrinter then
+  begin
+    if FEditor.Font.Size >= 13 then
+      if MessageDlg(Format(_('Font size is %3d pt. Print anyhow?'),
+        [FEditor.Font.Size]), mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+        Exit;
     try
       PreparePrint;
-      FJava.PrintDialog.MaxPage:= SynEditPrint.PageCount;   // invalid Printer exception
-      FJava.PrintDialog.ToPage := SynEditPrint.PageCount;
-      var Options:= FJava.PrintDialog.Options;
-      if Editor.SelAvail
-        then include(Options, poSelection)
-        else exclude(Options, poSelection);
-      FJava.PrintDialog.Options:= Options;
+      FJava.PrintDialog.MaxPage := FSynEditPrint.PageCount;
+      // invalid Printer exception
+      FJava.PrintDialog.ToPage := FSynEditPrint.PageCount;
+      var
+      Options := FJava.PrintDialog.Options;
+      if FEditor.SelAvail then
+        Include(Options, poSelection)
+      else
+        Exclude(Options, poSelection);
+      FJava.PrintDialog.Options := Options;
       if AllPages then
-        SynEditPrint.Print
-      else if FJava.PrintDialog.Execute then begin
-        SynEditPrint.Colors:= FConfiguration.PrintColored;
+        FSynEditPrint.Print
+      else if FJava.PrintDialog.Execute then
+      begin
+        FSynEditPrint.Colors := FConfiguration.PrintColored;
         case FJava.PrintDialog.PrintRange of
-          prAllPages : SynEditPrint.Print;
-          prPageNums : SynEditPrint.PrintRange(FJava.PrintDialog.FromPage,
-                                               FJava.PrintDialog.ToPage);
-          prSelection: begin SynEditPrint.SelectedOnly:= true; SynEditPrint.Print; end;
+          prAllPages:
+            FSynEditPrint.Print;
+          prPageNums:
+            FSynEditPrint.PrintRange(FJava.PrintDialog.FromPage,
+              FJava.PrintDialog.ToPage);
+          prSelection:
+            begin
+              FSynEditPrint.SelectedOnly := True;
+              FSynEditPrint.Print;
+            end;
         end;
         SetPrinterIndex(Printer.PrinterIndex);
-        FConfiguration.WriteStringU('Printer', 'Printer', Printer.Printers[Printer.PrinterIndex]);
+        FConfiguration.WriteStringU('Printer', 'Printer',
+          Printer.Printers[Printer.PrinterIndex]);
       end;
     except
       on e: Exception do
         ErrorMsg(e.Message);
     end;
-  end else
+  end
+  else
     ErrorMsg(_(LNGNoDefaultPrinter));
 end;
 
 procedure TFEditForm.PreparePrint;
 var
-  s, s1: string;
-  p: Integer;
+  Str, Str1: string;
+  Posi: Integer;
   AFont: TFont;
 
-  procedure EditMacro(var s: string);
-    var p: Integer; Macro: string;
+  procedure EditMacro(var Str: string);
+  var
+    Posi: Integer;
+    Macro: string;
   begin
-    Macro:= '%FILE%';
-    p:= Pos(Macro, Uppercase(s));
-    if p > 0 then begin
-      Delete(s, p, Length(Macro));
-      Insert(ExtractFilename(Pathname), s, p);
+    Macro := '%FILE%';
+    Posi := Pos(Macro, UpperCase(Str));
+    if Posi > 0 then
+    begin
+      Delete(Str, Posi, Length(Macro));
+      Insert(ExtractFileName(Pathname), Str, Posi);
     end;
-    Macro:= '%PATH%';
-    p:= Pos(Macro, UpperCase(s));
-    if p > 0 then begin
-      Delete(s, p, Length(Macro));
-      Insert(Pathname, s, p);
+    Macro := '%PATH%';
+    Posi := Pos(Macro, UpperCase(Str));
+    if Posi > 0 then
+    begin
+      Delete(Str, Posi, Length(Macro));
+      Insert(Pathname, Str, Posi);
     end;
-    Macro:= '%DATE%';
-    p:= pos(Macro, Uppercase(s));
-    if p > 0 then begin
-      Delete(s, p, Length(Macro));
-      Insert('$DATE$', s, p);
+    Macro := '%DATE%';
+    Posi := Pos(Macro, UpperCase(Str));
+    if Posi > 0 then
+    begin
+      Delete(Str, Posi, Length(Macro));
+      Insert('$DATE$', Str, Posi);
     end;
-    Macro:= '%TIME%';
-    p:= pos(Macro, Uppercase(s));
-    if p > 0 then begin
-      Delete(s, p, Length(Macro));
-      Insert('$TIME$', s, p);
+    Macro := '%TIME%';
+    Posi := Pos(Macro, UpperCase(Str));
+    if Posi > 0 then
+    begin
+      Delete(Str, Posi, Length(Macro));
+      Insert('$TIME$', Str, Posi);
     end;
-    Macro:= '%PAGENUM%';
-    p:= pos(Macro, Uppercase(s));
-    if p > 0 then begin
-      Delete(s, p, Length(Macro));
-      Insert('$PAGENUM$', s, p);
+    Macro := '%PAGENUM%';
+    Posi := Pos(Macro, UpperCase(Str));
+    if Posi > 0 then
+    begin
+      Delete(Str, Posi, Length(Macro));
+      Insert('$PAGENUM$', Str, Posi);
     end;
-    Macro:= '%PAGECOUNT%';
-    p:= Pos(Macro, Uppercase(s));
-    if p > 0 then begin
-      Delete(s, p, Length(Macro));
-      Insert('$PAGECOUNT$', s, p);
+    Macro := '%PAGECOUNT%';
+    Posi := Pos(Macro, UpperCase(Str));
+    if Posi > 0 then
+    begin
+      Delete(Str, Posi, Length(Macro));
+      Insert('$PAGECOUNT$', Str, Posi);
     end;
   end;
 
 begin
   AFont := TFont.Create;
-  if not assigned(SynEditPrint) then SynEditPrint:= TSynEditPrint.Create(Self);
-  with SynEditPrint do begin
+  if not Assigned(FSynEditPrint) then
+    FSynEditPrint := TSynEditPrint.Create(Self);
+  with FSynEditPrint do
+  begin
     AFont.Assign(Header.DefaultFont);
-    AFont.Size:= Header.DefaultFont.Size-2;
+    AFont.Size := Header.DefaultFont.Size - 2;
 
-    DocTitle    := _('File from Java-Editor');
-    SelectedOnly:= (FJava.PrintDialog.PrintRange = prSelection);
-    Highlight   := assigned(Editor.HighLighter);
-    HighLighter := Editor.Highlighter;
-    Colors      := False;
+    DocTitle := _('File from Java-FEditor');
+    SelectedOnly := (FJava.PrintDialog.PrintRange = prSelection);
+    Highlight := Assigned(FEditor.Highlighter);
+    Highlighter := FEditor.Highlighter;
+    Colors := false;
     LineNumbers := FConfiguration.WithLinenumbers;
-    LineNumbersInMargin:= FConfiguration.LinenumbersInMargin;
+    LineNumbersInMargin := FConfiguration.LineNumbersInMargin;
 
-    Margins.UnitSystem:= usMM;
-    Margins.Left  := FConfiguration.BorderLeft;
-    Margins.Top   := FConfiguration.BorderTop;
+    Margins.UnitSystem := usMM;
+    Margins.Left := FConfiguration.BorderLeft;
+    Margins.Top := FConfiguration.BorderTop;
     Margins.Right := FConfiguration.BorderRight;
-    Margins.Bottom:= FConfiguration.BorderBottom;
+    Margins.Bottom := FConfiguration.BorderBottom;
 
     Header.Clear;
-    s:= FConfiguration.Header;
-    EditMacro(s);
-    p:= Pos('#', s);
-    s1:= Copy(s, 1, p-1);
-    if s1 <> '' then Header.Add(s1, AFont, taLeftJustify, 1);
-    if p > 0 then delete(s, 1, p);
-    p:= Pos('#', s);
-    s1:= Copy(s, 1, p-1);
-    if s1 <> '' then Header.Add(s1, AFont, taCenter, 1);
-    if p > 0 then delete(s, 1, p);
-    if s <> '' then Header.Add(s, AFont, taRightJustify, 1);
+    Str := FConfiguration.Header;
+    EditMacro(Str);
+    Posi := Pos('#', Str);
+    Str1 := Copy(Str, 1, Posi - 1);
+    if Str1 <> '' then
+      Header.Add(Str1, AFont, taLeftJustify, 1);
+    if Posi > 0 then
+      Delete(Str, 1, Posi);
+    Posi := Pos('#', Str);
+    Str1 := Copy(Str, 1, Posi - 1);
+    if Str1 <> '' then
+      Header.Add(Str1, AFont, taCenter, 1);
+    if Posi > 0 then
+      Delete(Str, 1, Posi);
+    if Str <> '' then
+      Header.Add(Str, AFont, taRightJustify, 1);
 
     Footer.Clear;
-    s:= FConfiguration.Footer;
-    EditMacro(s);
-    p:= Pos('#', s);
-    s1:= Copy(s, 1, p-1);
-    if s1 <> '' then Footer.Add(s1, AFont, taLeftJustify, 1);
-    if p > 0 then delete(s, 1, p);
-    p:= Pos('#', s);
-    s1:= Copy(s, 1, p-1);
-    if s1 <> '' then Footer.Add(s1, AFont, taCenter, 1);
-    if p > 0 then delete(s, 1, p);
-    if s <> '' then Footer.Add(s, AFont, taRightJustify, 1);
+    Str := FConfiguration.Footer;
+    EditMacro(Str);
+    Posi := Pos('#', Str);
+    Str1 := Copy(Str, 1, Posi - 1);
+    if Str1 <> '' then
+      Footer.Add(Str1, AFont, taLeftJustify, 1);
+    if Posi > 0 then
+      Delete(Str, 1, Posi);
+    Posi := Pos('#', Str);
+    Str1 := Copy(Str, 1, Posi - 1);
+    if Str1 <> '' then
+      Footer.Add(Str1, AFont, taCenter, 1);
+    if Posi > 0 then
+      Delete(Str, 1, Posi);
+    if Str <> '' then
+      Footer.Add(Str, AFont, taRightJustify, 1);
 
-    SynEditPrint.SynEdit:= Editor;
+    FSynEditPrint.SynEdit := FEditor;
   end;
   FreeAndNil(AFont);
 end;
 
-procedure TFEditForm.SetFont(aFont: TFont);
+procedure TFEditForm.SetFont(AFont: TFont);
 begin
-  Editor.Font.Assign(aFont);
-  Editor.Gutter.Font.Assign(aFont);
-  Editor.Gutter.Font.Height:= aFont.Height + 2;
-  FConfiguration.EditFont.Assign(aFont);
+  FEditor.Font.Assign(AFont);
+  FEditor.Gutter.Font.Assign(AFont);
+  FEditor.Gutter.Font.Height := AFont.Height + 2;
+  FConfiguration.EditFont.Assign(AFont);
 end;
 
 function TFEditForm.GetFont: TFont;
 begin
-  Result:= Editor.Font;
+  Result := FEditor.Font;
 end;
 
-procedure TFEditForm.SetFontSize(Delta: integer);
+procedure TFEditForm.SetFontSize(Delta: Integer);
 begin
-  Editor.Font.Size:= Editor.Font.Size + Delta;
-  if Editor.Font.Size < 6 then Editor.Font.Size:= 6;
-  Editor.Gutter.Font.Size:= Editor.Font.Size;
-  FConfiguration.EditFont.Assign(Editor.Font);
-  FConfiguration.EditFont.Size:= PPIUnscale(FConfiguration.EditFont.Size);
+  FEditor.Font.Size := FEditor.Font.Size + Delta;
+  if FEditor.Font.Size < 6 then
+    FEditor.Font.Size := 6;
+  FEditor.Gutter.Font.Size := FEditor.Font.Size;
+  FConfiguration.EditFont.Assign(FEditor.Font);
+  FConfiguration.EditFont.Size := PPIUnScale(FConfiguration.EditFont.Size);
 end;
 
 procedure TFEditForm.SetOptions;
 begin
-  Editor.TabWidth:= FConfiguration.TabWidth;
-  Editor.Indent:= FConfiguration.Indent;
-  var Options:= Editor.Options;
-  if FConfiguration.AutomaticIndent
-    then Include(Options, eoAutoIndent)
-    else Exclude(Options, eoAutoIndent);
-  if FConfiguration.IndentHelp
-    then Include(Options, eoSmartTabs)
-    else Exclude(Options, eoSmartTabs);
-  if FConfiguration.CursorBehindLine
-    then Include(Options, eoScrollPastEol)
-    else Exclude(Options, eoScrollPastEol);
+  FEditor.TabWidth := FConfiguration.TabWidth;
+  FEditor.Indent := FConfiguration.Indent;
+  var
+  Options := FEditor.Options;
+  if FConfiguration.AutomaticIndent then
+    Include(Options, eoAutoIndent)
+  else
+    Exclude(Options, eoAutoIndent);
+  if FConfiguration.IndentHelp then
+    Include(Options, eoSmartTabs)
+  else
+    Exclude(Options, eoSmartTabs);
+  if FConfiguration.CursorBehindLine then
+    Include(Options, eoScrollPastEol)
+  else
+    Exclude(Options, eoScrollPastEol);
   Include(Options, eoAltSetsColumnMode);
-  if FConfiguration.ShowBracketPair
-    then Editor.OnPaintTransient:= EditorPaintTransient
-    else Editor.OnPaintTransient:= nil;
-  if FConfiguration.EightyColumnLine
-    then Editor.RightEdge:= 80
-    else Editor.RightEdge:= 0;
+  if FConfiguration.ShowBracketPair then
+    FEditor.OnPaintTransient := EditorPaintTransient
+  else
+    FEditor.OnPaintTransient := nil;
+  if FConfiguration.EightyColumnLine then
+    FEditor.RightEdge := 80
+  else
+    FEditor.RightEdge := 0;
 
-  Editor.ActiveLineColor:= FConfiguration.ActiveLineColor;
-  Editor.StructureColorIntensity:= FConfiguration.StructureColorIntensity;
-  Editor.PaintStructurePlane:= FConfiguration.StructureColoringPlane;
-  Editor.Options:= Options;
-  EditFormToolbar.Visible:= FConfiguration.vistoolbars[2];
-  Editor.Gutter.ShowLineNumbers:= FConfiguration.LineNumbering;
-  Editor.Gutter.Font.Assign(FConfiguration.Font);
-  Editor.Gutter.Font.Height:= Editor.Font.Height + 2;
-  CheckAgeEnabled:= FConfiguration.CheckAge;
+  FEditor.ActiveLineColor := FConfiguration.ActiveLineColor;
+  FEditor.StructureColorIntensity := FConfiguration.StructureColorIntensity;
+  FEditor.PaintStructurePlane := FConfiguration.StructureColoringPlane;
+  FEditor.Options := Options;
+  EditformToolbar.Visible := FConfiguration.VisToolbars[2];
+  FEditor.Gutter.ShowLineNumbers := FConfiguration.LineNumbering;
+  FEditor.Gutter.Font.Assign(FConfiguration.Font);
+  FEditor.Gutter.Font.Height := FEditor.Font.Height + 2;
+  FCheckAgeEnabled := FConfiguration.CheckAge;
   SetHighlighter;
-  MICreateStructogram.Visible:= not FConfiguration.LockedStructogram;
+  MICreateStructogram.Visible := not FConfiguration.LockedStructogram;
   EditShortCuts;
-  FConfiguration.RemoveShortcutsFrom(PopupEditor);
+  FConfiguration.RemoveShortcutsFrom(PopUpEditor);
 end;
 
-procedure TFEditForm.Save(withBackup: boolean);
-  var BackupName, Ext: string; aEncoding: TEncoding;
-      Form: TFForm;
+procedure TFEditForm.Save(WithBackup: Boolean);
+var
+  BackupName, Ext: string;
+  AEncoding: TEncoding;
+  Form: TFForm;
 begin
-  if Editor.ReadOnly then exit;
-  if ExtractFilePath(Pathname) = ''
-    then Pathname:= FConfiguration.Sourcepath + Pathname;
-  if Uppercase(ExtractFileExt(Pathname)) = '.XML' then  // due to Android Mode
-    withBackup:= false;
-  if withBackup then begin
-    BackupName:= Pathname;
-    Ext:= ExtractFileExt(Pathname);
-    if length(ext) >= 2
-      then Ext[2]:= '~'
-      else Ext:= '.~';
-    BackupName:= ChangeFileExt(BackupName, Ext);
+  if FEditor.ReadOnly then
+    Exit;
+  if ExtractFilePath(Pathname) = '' then
+    Pathname := FConfiguration.Sourcepath + Pathname;
+  if UpperCase(ExtractFileExt(Pathname)) = '.XML' then // due to Android Mode
+    WithBackup := false;
+  if WithBackup then
+  begin
+    BackupName := Pathname;
+    Ext := ExtractFileExt(Pathname);
+    if Length(Ext) >= 2 then
+      Ext[2] := '~'
+    else
+      Ext := '.~';
+    BackupName := ChangeFileExt(BackupName, Ext);
     if FileExists(BackupName) then
       DeleteFile(PChar(BackupName));
     if FileExists(Pathname) then
       RenameFile(Pathname, BackupName);
   end;
   try
-    Editor.Lines.LineBreak:= Linebreak;
-    aEncoding:= getEncodingAsType;
-    if aEncoding = TEncoding.UTF8 then
-      Editor.Lines.WriteBOM:= false
-    else if aEncoding = TEncoding.Unicode then
-      Editor.Lines.WriteBOM:= true;
-    Editor.Lines.SaveToFile(Pathname, aEncoding);
+    FEditor.Lines.LineBreak := FLineBreak;
+    AEncoding := GetEncodingAsType;
+    if AEncoding = TEncoding.UTF8 then
+      FEditor.Lines.WriteBOM := false
+    else if AEncoding = TEncoding.Unicode then
+      FEditor.Lines.WriteBOM := True;
+    FEditor.Lines.SaveToFile(Pathname, AEncoding);
 
-    FileAge(Pathname, EditorAge);
+    FileAge(Pathname, FEditorAge);
     if Assigned(Partner) then
-      Partner.Save(withBackup);
-    Form:= FJava.getTDIWindowType(Pathname, '%Q%');
-    if assigned(Form) then (Form as TFSequenceForm).RefreshFromEditor;
+      Partner.Save(WithBackup);
+    Form := FJava.GetTDIWindowType(Pathname, '%Q%');
+    if Assigned(Form) then
+      (Form as TFSequenceForm).RefreshFromFile;
   except
-    on E: Exception do ShowMessage(E.Message);
+    on e: Exception do
+      ShowMessage(e.Message);
   end;
   SetModified(false);
   Statusline(1, '');
@@ -1091,72 +1248,86 @@ begin
   EditorStatusChange(Self, []);
 end;
 
-procedure TFEditForm.SetModified(aModified: boolean);
+procedure TFEditForm.SetModified(AModified: Boolean);
 begin
-  Editor.Modified:= aModified;
-  inherited SetModified(aModified);
+  FEditor.Modified := AModified;
+  inherited SetModified(AModified);
 end;
 
-function TFEditForm.GetModified: boolean;
+function TFEditForm.GetModified: Boolean;
 begin
-  Result:= inherited GetModified or assigned(Editor) and Editor.Modified;
+  Result := inherited GetModified or Assigned(FEditor) and FEditor.Modified;
 end;
 
 procedure TFEditForm.SaveIn(const Dir: string);
 begin
-  SaveAs(Dir + ExtractFilename(Pathname));
+  SaveAs(Dir + ExtractFileName(Pathname));
 end;
 
-procedure TFEditForm.SaveAs(const Filename: string);
+procedure TFEditForm.SaveAs(const FileName: string);
 begin
-  if (Pos(FConfiguration.JavaCache, Filename) = 1) and Editor.ReadOnly
-    then exit;
-  var OldName:= ChangeFileExt(ExtractFileName(Pathname), '');
-  var NewName:= ChangeFileExt(ExtractFileName(Filename), '');
+  if (Pos(FConfiguration.JavaCache, FileName) = 1) and FEditor.ReadOnly then
+    Exit;
+  var
+  OldName := ChangeFileExt(ExtractFileName(Pathname), '');
+  var
+  NewName := ChangeFileExt(ExtractFileName(FileName), '');
   if FConfiguration.RenameWhenSave and IsJava then
-    with Editor do begin
+    with FEditor do
+    begin
       ReplaceWord('public class ' + OldName, 'public class ' + NewName, false);
-      ReplaceWord('public interface ' + OldName, 'public interface ' + NewName, false);
-      ReplaceWord('public ' + OldName, 'public ' + NewName, true);
-      ReplaceText('new ' + OldName + '();', 'new ' + NewName + '();', true);
-      ReplaceText('new ' + OldName + '("' + OldName + '");', 'new ' + NewName + '("' + NewName + '");', true);  // old files
-      if FrameType = 8 then
+      ReplaceWord('public interface ' + OldName, 'public interface ' +
+        NewName, false);
+      ReplaceWord('public ' + OldName, 'public ' + NewName, True);
+      ReplaceText('new ' + OldName + '();', 'new ' + NewName + '();', True);
+      ReplaceText('new ' + OldName + '("' + OldName + '");',
+        'new ' + NewName + '("' + NewName + '");', True); // Old files
+      if FFrameType = 8 then
         ReplaceText('primaryStage.setTitle("' + OldName + '");',
-                    'primaryStage.setTitle("' + NewName + '");', false)
+          'primaryStage.setTitle("' + NewName + '");', false)
       else
-        ReplaceText('setTitle("' + OldName + '");',
-                    'setTitle("' + NewName + '");', false);
-      ReplaceWord('// end of class ' + OldName, '// end of class ' + NewName, false);
+        ReplaceText('setTitle("' + OldName + '");', 'setTitle("' + NewName +
+          '");', false);
+      ReplaceWord('// end of class ' + OldName, '// end of class ' +
+        NewName, false);
     end;
-  if OldName <> '' then  // new file?
-    FJava.RenameTabAndWindow(Number, Filename);
-  if FileExists(Filename) then DeleteFile(PChar(Filename));
-  Pathname:= Filename;
-  Editor.ReadOnly:= false;
+  if OldName <> '' then // new file?
+    FJava.RenameTabAndWindow(Number, FileName);
+  if FileExists(FileName) then
+    DeleteFile(PChar(FileName));
+  Pathname := FileName;
+  FEditor.ReadOnly := false;
   Save(WithoutBackup);
-  Editor.Lines.LoadFromFile(Filename);  // due to possible change of encoding or linebreak
+  FEditor.Lines.LoadFromFile(FileName);
+  // due to possible change of FEncoding or FLineBreak
   try
-    Caption:= Filename;
-  except on e: Exception do
-    FConfiguration.Log('TFEditForm.Caption: ' + Filename, e);
+    Caption := FileName;
+  except
+    on e: Exception do
+      FConfiguration.Log('TFEditForm.Caption: ' + FileName, e);
   end;
-  FileExtension:= LowerCase(ExtractFileExt(Filename));
+  FFileExtension := LowerCase(ExtractFileExt(FileName));
   SetHighlighter;
   SetToolButtons;
 end;
 
-procedure TFEditForm.EditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
+procedure TFEditForm.EditorStatusChange(Sender: TObject;
+  Changes: TSynStatusChanges);
 begin
-  var s:= _('Line') + ': %4d  ' + _('Column') + ': %3d';
-  Statusline(0, Format(s, [Editor.CaretY, Editor.CaretX]));
-  if Editor.ReadOnly
-    then Statusline(1, ' ' + _(LNGWriteProtected) + ' ')
-    else Statusline(1, ModifiedStrs[Modified]);
-  Statusline(2, InsertModeStrs[Editor.InsertMode]);
-  Statusline(3, ' ' + EncodingAsString(Encoding) + '/' + LinebreakAsString + ' ');
+  var
+  Str := _('Line') + ': %4d  ' + _('Column') + ': %3d';
+  Statusline(0, Format(Str, [FEditor.CaretY, FEditor.CaretX]));
+  if FEditor.ReadOnly then
+    Statusline(1, ' ' + _(LNGWriteProtected) + ' ')
+  else
+    Statusline(1, FModifiedStrs[Modified]);
+  Statusline(2, FInsertModeStrs[FEditor.InsertMode]);
+  Statusline(3, ' ' + EncodingAsString(FEncoding) + '/' +
+    LinebreakAsString + ' ');
 
-  if (Changes * [scModified] <> []) then begin
-    NeedsParsing:= isJava;
+  if (Changes * [scModified] <> []) then
+  begin
+    FNeedsParsing := IsJava;
     FJava.TabModified(Number, Modified);
   end;
 
@@ -1164,53 +1335,65 @@ begin
     UpdateState;
 
   if scCaretY in Changes then
-    fNeedToSyncFileStructure:= true;
+    FNeedToSyncFileStructure := True;
 
-  if assigned(Editor) and assigned(Editor.Lines) then begin
-    var Digits:= Length(IntToStr(Editor.Lines.Count));
-    if Digits <> Editor.Gutter.DigitCount then
-      Editor.Gutter.DigitCount:= Digits;
+  if Assigned(FEditor) and Assigned(FEditor.Lines) then
+  begin
+    var
+    Digits := Length(IntToStr(FEditor.Lines.Count));
+    if Digits <> FEditor.Gutter.DigitCount then
+      FEditor.Gutter.DigitCount := Digits;
   end;
 
-  if assigned(FFileStructure) then
+  if Assigned(FFileStructure) then
     FFileStructure.ShowSelected;
 end;
 
-procedure TFEditForm.PutText(s: string; withCursor: boolean = true);
-  var p, OffX, OffY, x, y: Integer; s1: string;
+procedure TFEditForm.PutText(Str: string; WithCursor: Boolean = True);
+var
+  Posi, OffX, OffY, X, Y: Integer;
+  Str1: string;
 begin
-  p:= Pos('|', s);
-  if p = 0 then
-    withCursor:= false;
-  if withCursor then begin
-    OffY:= 0;
-    s1:= copy(s, 1, p-1);
-    delete(s, p, 1);
-    p:= Pos(#13#10, s1);
-    while p > 0 do begin
-      inc(OffY);
-      delete(s1, 1, p+1);
-      p:= Pos(#13#10, s1);
+  Posi := Pos('|', Str);
+  if Posi = 0 then
+    WithCursor := false;
+  if WithCursor then
+  begin
+    OffY := 0;
+    Str1 := Copy(Str, 1, Posi - 1);
+    Delete(Str, Posi, 1);
+    Posi := Pos(#13#10, Str1);
+    while Posi > 0 do
+    begin
+      Inc(OffY);
+      Delete(Str1, 1, Posi + 1);
+      Posi := Pos(#13#10, Str1);
     end;
-    OffX:= Length(s1) + 1;
-    with Editor do begin
-      if SelText = '' then begin
-        x:= CaretX;
-        y:= CaretY;
-      end else begin
-        x:= BlockBegin.Char;
-        y:= BlockBegin.Line;
+    OffX := Length(Str1) + 1;
+    with FEditor do
+    begin
+      if SelText = '' then
+      begin
+        X := CaretX;
+        Y := CaretY;
+      end
+      else
+      begin
+        X := BlockBegin.Char;
+        Y := BlockBegin.Line;
       end;
-      SelText:= s;
-      CaretY:= y + OffY;
-      if OffY = 0
-        then CaretX:= x + OffX - 1
-        else CaretX:= OffX;
-    end
-  end else
-    Editor.SelText:= s;
-  Editor.EnsureCursorPosVisible;
-  NeedsParsing:= true;
+      SelText := Str;
+      CaretY := Y + OffY;
+      if OffY = 0 then
+        CaretX := X + OffX - 1
+      else
+        CaretX := OffX;
+    end;
+  end
+  else
+    FEditor.SelText := Str;
+  FEditor.EnsureCursorPosVisible;
+  FNeedsParsing := True;
 end;
 
 procedure TFEditForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -1218,113 +1401,132 @@ begin
   if IsJava then
     FFileStructure.Clear;
   ClearCompilerErrorMarks;
-  if not AlreadySavedAs and Modified then begin
-    FJava.DoSave(Self, true);
-    AlreadySavedAs:= true;
+  if not AlreadySavedAs and Modified then
+  begin
+    FJava.DoSave(Self, True);
+    AlreadySavedAs := True;
   end;
-  CanClose:= True;
+  CanClose := True;
 end;
 
-procedure TFEditForm.FormClose(Sender: TObject; var aAction: TCloseAction);
+procedure TFEditForm.FormClose(Sender: TObject; var AAction: TCloseAction);
 begin
   try
-    LockEnter:= true;
-    if Assigned(Partner) then begin
+    LockEnter := True;
+    if Assigned(Partner) then
+    begin
       Partner.Close;
-      Partner:= nil;
+      Partner := nil;
       FObjectInspector.SetSelectedObject(nil);
     end;
-    if assigned(FJava.Editorform) and (FJava.Editorform.pathname = pathname) then
-      FJava.EditorForm:= nil;
+    if Assigned(FJava.EditorForm) and (FJava.EditorForm.Pathname = Pathname)
+    then
+      FJava.EditorForm := nil;
     ClearMarks;
-    for var i:= TVFileStructure.Items.Count - 1 downto 0 do begin
-      var aInteger:= TInteger(TVFileStructure.Items[i].Data);
-      FreeAndNil(aInteger);
+    for var I := TVFileStructure.Items.Count - 1 downto 0 do
+    begin
+      var
+      AInteger := TInteger(TVFileStructure.Items[I].Data);
+      FreeAndNil(AInteger);
     end;
     FJava.ShowAWTSwingOrFX(0);
   finally
     inherited;
     if FJava.TDIFormsList.Count = 0 then
-      TThread.ForceQueue(nil, procedure
-      begin
-        FJava.UpdateMenuItems(Self);
-      end);
+      TThread.ForceQueue(nil,
+        procedure
+        begin
+          FJava.UpdateMenuItems(Self);
+        end);
   end;
 end;
 
 procedure TFEditForm.FormDestroy(Sender: TObject);
 begin
-  if assigned(ParseThread) then begin
-    if (0 < ParseThread.State) and (ParseThread.State < 3) then begin
-      ParseThread.abort:= true;
-      ParseThread.WaitFor;
+  if Assigned(FParseThread) then
+  begin
+    if (0 < FParseThread.State) and (FParseThread.State < 3) then
+    begin
+      FParseThread.Abort := True;
+      FParseThread.WaitFor;
     end;
-    FreeAndNil(ParseThread);
+    FreeAndNil(FParseThread);
   end;
-  FreeAndNil(Parser);
+  FreeAndNil(FParser);
   FreeAndNil(TVFileStructure);
-  FreeAndNil(Model);
-  FreeAndNil(Editor);
+  FreeAndNil(FModel);
+  FreeAndNil(FEditor);
 end;
 
 procedure TFEditForm.ClearBreakpoints;
-  var i: Integer; s: string;
-      Mark: TSynEditMark;
+var
+  Str: string;
+  Mark: TSynEditMark;
 begin
-  with Editor do
-    for i:= Marks.Count-1 downto 0 do begin
-      Mark:= Marks.Items[i];
-      if (Mark.ImageIndex = BreakpointImageIndex) or
-         (Mark.ImageIndex = NoBreakpointImageIndex)
-        then begin
-          if myDebugger.Running then begin
-            s:= CBSearchClassOrMethod(not StopInAt, Mark.Line);
-            if s <> '' then
-              myDebugger.NewCommand(2, s);
-          end;
-          InvalidateLine(Mark.Line);
-          Marks.Remove(Mark);
-        end;
+  for var I := Editor.Marks.Count - 1 downto 0 do
+  begin
+    Mark := TSynEditMark(FEditor.Marks.Items[I]);
+    if (Mark.ImageIndex = BreakpointImageIndex) or
+      (Mark.ImageIndex = NoBreakpointImageIndex) then
+    begin
+      if myDebugger.Running then
+      begin
+        Str := CBSearchClassOrMethod(not StopInAt, Mark.Line);
+        if Str <> '' then
+          myDebugger.NewCommand(2, Str);
+      end;
+      FEditor.InvalidateLine(Mark.Line);
+      FEditor.Marks.Remove(Mark);
     end;
-  BreakPointCount:= 0;
+  end;
+  FBreakPointCount := 0;
   ResetGutterOffset;
 end;
 
 procedure TFEditForm.ClearCompilerErrorMarks;
 begin
-  with Editor do
-    for var i:= Marks.Count-1 downto 0 do begin
-      var Mark:= TSynEditMark(Marks[i]);
-      if Mark.ImageIndex = ErrorMarkIndex then begin
-        InvalidateLine(Mark.Line);
-        Marks.Remove(Mark);
-      end;
+  for var I := FEditor.Marks.Count - 1 downto 0 do
+  begin
+    var
+    Mark := TSynEditMark(FEditor.Marks[I]);
+    if Mark.ImageIndex = ErrorMarkIndex then
+    begin
+      FEditor.InvalidateLine(Mark.Line);
+      FEditor.Marks.Remove(Mark);
     end;
+  end;
   ResetGutterOffset;
 end;
 
 procedure TFEditForm.ClearMarks;
 begin
-  with Editor do
-    for var i:= Marks.Count-1 downto 0 do begin
-      var Mark:= TSynEditMark(Marks[i]);
-      InvalidateLine(Mark.Line);
-      Marks.Remove(Mark);
-    end;
+  for var I := FEditor.Marks.Count - 1 downto 0 do
+  begin
+    var
+    Mark := TSynEditMark(FEditor.Marks[I]);
+    FEditor.InvalidateLine(Mark.Line);
+    FEditor.Marks.Remove(Mark);
+  end;
   ResetGutterOffset;
 end;
 
 procedure TFEditForm.SetBreakpoints;
 begin
-  with Editor do begin
-    for var i:= 0 to Marks.Count-1 do begin
-      var Mark:= TSynEditMark(Marks[i]);
-      if Mark.ImageIndex = BreakpointImageIndex then begin
-        ParseSourcecode(false);
-        var s:= CBSearchClassOrMethod(StopInAt, Mark.Line);
-        if s = ''
-          then Mark.ImageIndex:= NoBreakpointImageIndex
-          else myDebugger.NewCommand(1, s);
+  with FEditor do
+  begin
+    for var I := 0 to Marks.Count - 1 do
+    begin
+      var
+      Mark := TSynEditMark(Marks[I]);
+      if Mark.ImageIndex = BreakpointImageIndex then
+      begin
+        ParseSourceCode(false);
+        var
+        Str := CBSearchClassOrMethod(StopInAt, Mark.Line);
+        if Str = '' then
+          Mark.ImageIndex := NoBreakpointImageIndex
+        else
+          myDebugger.NewCommand(1, Str);
       end;
     end;
   end;
@@ -1332,311 +1534,361 @@ end;
 
 function TFEditForm.HasBreakpoints: Boolean;
 begin
-  Result:= false;
-  if assigned(Editor) and assigned(Editor.Marks) then
-    for var i:= 0 to Editor.Marks.Count - 1 do begin
-      var Mark:= TSynEditMark(Editor.Marks[i]);
+  Result := false;
+  if Assigned(FEditor) and Assigned(FEditor.Marks) then
+    for var I := 0 to FEditor.Marks.Count - 1 do
+    begin
+      var
+      Mark := TSynEditMark(FEditor.Marks[I]);
       if Mark.ImageIndex = BreakpointImageIndex then
-        Exit(true);
+        Exit(True);
     end;
 end;
 
 procedure TFEditForm.SetDebuglineMark(Line: Integer);
-  const DebugImageIndex = 12;
-  var i: Integer;
-      LineMarks: TSynEditMarks;
+const
+  DebugImageIndex = 12;
+var
+  LineMarks: TSynEditMarks;
 begin
   DeleteDebuglineMark;
-  DebugLineMark:= TSynEditMark.Create(Editor);
-  Editor.Marks.GetMarksForLine(Line, LineMarks);
-  for i:= 1 to MAX_MARKS do
-    if not assigned(LineMarks[i]) then break;
-  DebugLineMark.Line:= Line;
-  with DebuglineMark do begin
-    ImageIndex:= DebugImageIndex;
-    Visible := true;
+  FDebuglineMark := TSynEditMark.Create(FEditor);
+  FEditor.Marks.GetMarksForLine(Line, LineMarks);
+  for var I := 1 to MAX_MARKS do
+    if not Assigned(LineMarks[I]) then
+      Break;
+  FDebuglineMark.Line := Line;
+  with FDebuglineMark do
+  begin
+    ImageIndex := DebugImageIndex;
+    Visible := True;
   end;
-  Editor.Marks.Add(DebuglineMark);
-  Editor.InvalidateLine(Line);
-  Editor.CaretY:= Line;
-  Editor.EnsureCursorPosVisibleEx(true);
-  Editor.Gutter.LeftOffset:= 30;
+  FEditor.Marks.Add(FDebuglineMark);
+  FEditor.InvalidateLine(Line);
+  FEditor.CaretY := Line;
+  FEditor.EnsureCursorPosVisibleEx(True);
+  FEditor.Gutter.LeftOffset := 30;
 end;
 
 procedure TFEditForm.DeleteDebuglineMark;
-  var i, Line: Integer;
-      LineMarks: TSynEditMarks;
+var
+  Line: Integer;
+  LineMarks: TSynEditMarks;
 begin
-  if DebugLineMark = nil then exit;
-  if assigned(Editor) and assigned(Editor.Marks) then begin
-    Line:= DebugLineMark.Line;
-    Editor.Marks.Remove(DebuglineMark);
-    DebuglineMark:= nil;
-    Editor.Marks.GetMarksForLine(Line, LineMarks);
-    for i:= 1 to MAX_MARKS do
-      if not assigned(LineMarks[i])
-        then break
-        else LineMarks[i].Visible:= true;
-    Editor.InvalidateLine(Line);
+  if not Assigned(FDebuglineMark) then
+    Exit;
+  if Assigned(FEditor) and Assigned(FEditor.Marks) then
+  begin
+    Line := FDebuglineMark.Line;
+    FEditor.Marks.Remove(FDebuglineMark);
+    FDebuglineMark := nil;
+    FEditor.Marks.GetMarksForLine(Line, LineMarks);
+    for var I := 1 to MAX_MARKS do
+      if not Assigned(LineMarks[I]) then
+        Break
+      else
+        LineMarks[I].Visible := True;
+    FEditor.InvalidateLine(Line);
     ResetGutterOffset;
   end;
 end;
 
-procedure TFEditForm.DeleteBreakpoint(s: string);
-  var Mark: TSynEditMark;
-      i, p: Integer;
+procedure TFEditForm.DeleteBreakpoint(Str: string);
+var
+  Mark: TSynEditMark;
+  Posi: Integer;
 begin
   // Format:
-  // Unable to set breakpoint BinBaum:23 : No code at line 23 in BinBaum
-  // Unable to set deferred breakpoint BinBaum:23 : No code at line 23 in BinBaum
-  p:= Pos(':', s);
-  delete(s, 1, p);
-  p:= Pos(' :', s);
-  delete(s, p, length(s));
-  if TryStrToInt(s, p) then
-    for i:= 0 to Editor.Marks.Count-1 do begin
-      Mark:= Editor.Marks[i];
-      if (Mark.ImageIndex = BreakpointImageIndex) and (Mark.Line = p)
-        then Editor.Marks[i].ImageIndex:= NoBreakpointImageIndex;
+  // Unable to set breakpoint BinBaum:23 : No code at Line 23 in BinBaum
+  // Unable to set deferred breakpoint BinBaum:23 : No code at Line 23 in BinBaum
+  Posi := Pos(':', Str);
+  Delete(Str, 1, Posi);
+  Posi := Pos(' :', Str);
+  Delete(Str, Posi, Length(Str));
+  if TryStrToInt(Str, Posi) then
+    for var I := 0 to FEditor.Marks.Count - 1 do
+    begin
+      Mark := TSynEditMark(FEditor.Marks[I]);
+      if (Mark.ImageIndex = BreakpointImageIndex) and (Mark.Line = Posi) then
+        TSynEditMark(FEditor.Marks[I]).ImageIndex := NoBreakpointImageIndex;
     end;
 end;
 
 procedure TFEditForm.ResetGutterOffset;
 begin
-  if (BreakPointCount = 0) and assigned(Editor.Gutter) and
-     assigned(MyDebugger) and not myDebugger.Running then
-    if Editor.Gutter.ShowLineNumbers then
-      Editor.Gutter.LeftOffset:= 15;
+  if (FBreakPointCount = 0) and Assigned(FEditor.Gutter) and
+    Assigned(myDebugger) and not myDebugger.Running then
+    if FEditor.Gutter.ShowLineNumbers then
+      FEditor.Gutter.LeftOffset := 15;
 end;
 
-procedure TFEditForm.HTMLforApplet(const aWidth, aHeight, CharSet, Path, aClass: string; withJEApplets, Debug: boolean);
+procedure TFEditForm.HTMLforApplet(const AWidth, AHeight, CharSet, Path,
+  AClass: string; WithJEApplets, Debug: Boolean);
 begin
-  var archive:= FConfiguration.getAppletArchiv;
+  var
+  Archive := FConfiguration.GetAppletArchiv;
   // http://java.sun.com/docs/books/tutorial/deployment/applet/deployindex.html
-  with Editor.Lines do begin
+  with FEditor.Lines do
+  begin
     Add('<!DOCTYPE html>');
     Add('<html>');
     Add('<head>');
-    Add('<title>' + aClass + '-Applet</title>');
-    Add('<meta http-equiv="Content-Type" content="text/html;charset=' + CharSet + '">');
+    Add('<title>' + AClass + '-Applet</title>');
+    Add('<meta http-equiv="Content-Type" content="text/html;charset=' +
+      CharSet + '">');
     Add('</head>');
     Add('<body>');
-    Add('<h1>' + aClass + '-Applet</h1>');
+    Add('<h1>' + AClass + '-Applet</h1>');
     Add('<hr>');
-    Add('<applet code="' + ReplaceStr(aClass, '.', '/') + '.class" ' + archive + ' width="' + aWidth + '" height="' + aHeight + '">');
+    Add('<applet code="' + ReplaceStr(AClass, '.', '/') + '.class" ' + Archive +
+      ' width="' + AWidth + '" height="' + AHeight + '">');
     Add('</applet>');
     Add('<hr>');
     Add('</body>');
     Add('</html>');
   end;
-  Modified:= True;
+  Modified := True;
 end;
 
 function TFEditForm.IsHTMLApplet: Boolean;
 begin
-  Result:= isHTML and (hasWord('Applet') or hasWord('JApplet'));
+  Result := IsHTML and (HasWord('Applet') or HasWord('JApplet'));
 end;
 
 function TFEditForm.GetSaveAsName: string;
 begin
-  Result:= Pathname;
-  if IsJava then begin
-    ParseSourcecode(false);
-    var Ci:= Model.ModelRoot.GetAllClassifiers;
-    while Ci.HasNext do begin
-      var cent:= TClassifier(Ci.Next);
-      if ((cent is TClass) or (cent is TInterface)) and (cent.Visibility = viPublic) and (cent.Pathname = Pathname) then
-        exit(ExtractFilepath(Pathname) + WithoutGeneric(cent.ShortName) + '.java');
+  Result := Pathname;
+  if IsJava then
+  begin
+    ParseSourceCode(false);
+    var
+    ClassIt := FModel.ModelRoot.GetAllClassifiers;
+    while ClassIt.HasNext do
+    begin
+      var
+      Cent := TClassifier(ClassIt.Next);
+      if ((Cent is TClass) or (Cent is TInterface)) and
+        (Cent.Visibility = viPublic) and (Cent.Pathname = Pathname) then
+        Exit(ExtractFilePath(Pathname) + WithoutGeneric(Cent.ShortName)
+          + '.java');
     end;
   end;
 end;
 
 procedure TFEditForm.Enter(Sender: TObject);
 begin
-  if LockEnter then exit;
+  if LockEnter then
+    Exit;
   FJava.scpSetEditForm(Self);
-  FJava.EditorForm:= Self; // must stay in before inherited!
+  FJava.EditorForm := Self; // must stay in before inherited!
   inherited;
   EditorStatusChange(Sender, []);
   if Assigned(Partner) then
     FGUIDesigner.ChangeTo(TFGUIForm(Partner));
-  if assigned(TVFileStructure) and (FFileStructure.myForm <> self) and
-    assigned(TVFileStructure.Items) then
-    FFileStructure.init(TVFileStructure.Items, Self);
-  FJava.ShowAwtSwingOrFX(Frametype);
+  if Assigned(TVFileStructure) and (FFileStructure.myForm <> Self) and
+    Assigned(TVFileStructure.Items) then
+    FFileStructure.InitWithItems(TVFileStructure.Items, Self);
+  FJava.ShowAWTSwingOrFX(FFrameType);
 end;
 
-procedure TFEditForm.Statusline(i: Integer; const s: string);
+procedure TFEditForm.Statusline(Num: Integer; const Str: string);
 begin
-  StatusBar.Panels[i].Text:= s;
+  StatusBar.Panels[Num].Text := Str;
 end;
 
 procedure TFEditForm.CalculateStatusline;
-  var s: string;
+var
+  Str: string;
 begin
-  StatusBar.Constraints.MinHeight:= Canvas.TextHeight('Ag') + 4;
-  var aWidth:= StatusBar.Canvas.TextWidth('_' + _('Line') + ':_9999_' + _('Column') + ':_999_');
-  StatusBar.Panels[0].Width:= max(aWidth + 10, StatusBar.Panels[1].Width);
-  if Editor.ReadOnly
-    then aWidth:= StatusBar.Canvas.TextWidth('_' + _(LNGWriteProtected) + '_')
-    else aWidth:= StatusBar.Canvas.TextWidth('_' + _(LNGModified) + '_');
-  StatusBar.Panels[1].Width:= max(aWidth + 10, StatusBar.Panels[1].Width);
-  if Length(_(LNGModusOverwrite)) > Length(_(LNGModusInsert))
-    then s:= _(LNGModusOverwrite)
-    else s:= _(LNGModusInsert);
-  aWidth:= StatusBar.Canvas.TextWidth('_' + s + '_');
-  StatusBar.Panels[2].Width:= max(aWidth + 10, StatusBar.Panels[2].Width );
-  StatusBar.Panels[3].Width:= ClientWidth;
+  StatusBar.Constraints.MinHeight := Canvas.TextHeight('Ag') + 4;
+  var
+  AWidth := StatusBar.Canvas.TextWidth('_' + _('Line') + ':_9999_' + _('Column')
+    + ':_999_');
+  StatusBar.Panels[0].Width := Max(AWidth + 10, StatusBar.Panels[1].Width);
+  if FEditor.ReadOnly then
+    AWidth := StatusBar.Canvas.TextWidth('_' + _(LNGWriteProtected) + '_')
+  else
+    AWidth := StatusBar.Canvas.TextWidth('_' + _(LNGModified) + '_');
+  StatusBar.Panels[1].Width := Max(AWidth + 10, StatusBar.Panels[1].Width);
+  if Length(_(LNGModusOverwrite)) > Length(_(LNGModusInsert)) then
+    Str := _(LNGModusOverwrite)
+  else
+    Str := _(LNGModusInsert);
+  AWidth := StatusBar.Canvas.TextWidth('_' + Str + '_');
+  StatusBar.Panels[2].Width := Max(AWidth + 10, StatusBar.Panels[2].Width);
+  StatusBar.Panels[3].Width := ClientWidth;
 end;
 
 procedure TFEditForm.UpdateState;
 begin
-  var sa:= Editor.SelAvail;
-  var sb:= MouseIsInBorderOfStructure;
-  with FJava do begin
-    SetEnabledMI(MIUndo, Editor.CanUndo);
+  var
+  SelAvail := FEditor.SelAvail;
+  var
+  MouseInBorder := FMouseIsInBorderOfStructure;
+  with FJava do
+  begin
+    SetEnabledMI(MIUndo, FEditor.CanUndo);
     SetEnabledTB(TBUndo, MIUndo.Enabled);
-    SetEnabledMI(MIRedo, Editor.CanRedo);
+    SetEnabledMI(MIRedo, FEditor.CanRedo);
     SetEnabledTB(TBRedo, MIRedo.Enabled);
 
-    SetEnabledMI(MICut, sa or sb);
-    SetEnabledMI(MICopy, sa or sb);
-    SetEnabledMI(MICopyNormal, sa);
-    SetEnabledMI(MICopyRTF, sa);
-    SetEnabledMI(MICopyHTML, sa);
-    SetEnabledMI(MICopyHTMLAsText, sa);
-    SetEnabledMI(MICopyNumbered, sa);
-    SetEnabledMI(MICopyRtfNumbered, sa);
-    SetEnabledMI(MIPaste, Editor.CanPaste);
+    SetEnabledMI(MICut, SelAvail or MouseInBorder);
+    SetEnabledMI(MICopy, SelAvail or MouseInBorder);
+    SetEnabledMI(MICopyNormal, SelAvail);
+    SetEnabledMI(MICopyRTF, SelAvail);
+    SetEnabledMI(MICopyHTML, SelAvail);
+    SetEnabledMI(MICopyHTMLAsText, SelAvail);
+    SetEnabledMI(MICopyNumbered, SelAvail);
+    SetEnabledMI(MICopyRtfNumbered, SelAvail);
+    SetEnabledMI(MIPaste, FEditor.CanPaste);
   end;
-  SetEnabledMI(MIUndo, Editor.CanUndo);
-  SetEnabledMI(MIRedo, Editor.CanRedo);
-  SetEnabledMI(MICut, sa or sb);
-  SetEnabledMI(MICopy, sa or sb);
-  SetEnabledMI(MIInsert, Editor.CanPaste);
+  SetEnabledMI(MIUndo, FEditor.CanUndo);
+  SetEnabledMI(MIRedo, FEditor.CanRedo);
+  SetEnabledMI(MICut, SelAvail or MouseInBorder);
+  SetEnabledMI(MICopy, SelAvail or MouseInBorder);
+  SetEnabledMI(MIInsert, FEditor.CanPaste);
 end;
 
 function TFEditForm.CurrentCol: Integer;
 begin
-  Result:= Editor.CaretX;
+  Result := FEditor.CaretX;
 end;
 
 function TFEditForm.CurrentRow: Integer;
 begin
-  Result:= Editor.CaretY;
+  Result := FEditor.CaretY;
 end;
 
-function TFEditForm.HasBreakpoint(ALine: integer; var Mark: TSynEditMark): Boolean;
+function TFEditForm.HasBreakpoint(Line: Integer;
+var Mark: TSynEditMark): Boolean;
 begin
-  Result:= False;
-  for var i:= 0 to Editor.Marks.Count-1 do begin
-    Mark:= TSynEditMark(Editor.Marks[i]);
-    if ((Mark.ImageIndex = BreakpointImageIndex) or (Mark.ImageIndex = NoBreakpointImageIndex))
-        and (Mark.Line = ALine) then
-      exit(True);
+  Result := false;
+  for var I := 0 to FEditor.Marks.Count - 1 do
+  begin
+    Mark := TSynEditMark(FEditor.Marks[I]);
+    if ((Mark.ImageIndex = BreakpointImageIndex) or
+      (Mark.ImageIndex = NoBreakpointImageIndex)) and (Mark.Line = Line) then
+      Exit(True);
   end;
 end;
 
-function TFEditForm.IsExecutableLine(ALine: Integer): Boolean;
+function TFEditForm.IsExecutableLine(Line: Integer): Boolean;
 begin
-  Result:= true;
-  for var i:= 0 to Editor.Marks.Count-1 do begin
-    var Mark:= TSynEditMark(Editor.Marks[i]);
-    if (Mark.ImageIndex = NoBreakpointImageIndex) and (Mark.Line = ALine) then
-      exit(false);
+  Result := True;
+  for var I := 0 to FEditor.Marks.Count - 1 do
+  begin
+    var
+    Mark := TSynEditMark(FEditor.Marks[I]);
+    if (Mark.ImageIndex = NoBreakpointImageIndex) and (Mark.Line = Line) then
+      Exit(false);
   end;
 end;
 
-procedure TFEditForm.InsertBreakpointMark(line: Integer);
-  var s: string; i: integer;
-      Mark: TSynEditMark;
-      Marks: TSynEditMarks;
+procedure TFEditForm.InsertBreakpointMark(Line: Integer);
+var
+  Str: string;
+  Int: Integer;
+  Mark: TSynEditMark;
+  Marks: TSynEditMarks;
 begin
-  Editor.Marks.GetMarksForLine(line, Marks);
-  i:= 1;
-  while assigned(Marks[i]) and (i <= Max_Marks) do
-    if (Marks[i].ImageIndex in [BreakPointImageIndex, NoBreakPointImageIndex])
-      then exit
-      else inc(i);
+  FEditor.Marks.GetMarksForLine(Line, Marks);
+  Int := 1;
+  while Assigned(Marks[Int]) and (Int <= MAX_MARKS) do
+    if (Marks[Int].ImageIndex in [BreakpointImageIndex, NoBreakpointImageIndex])
+    then
+      Exit
+    else
+      Inc(Int);
 
-  Mark:= TSynEditMark.Create(Editor);
-  Mark.Line := line;
+  Mark := TSynEditMark.Create(FEditor);
+  Mark.Line := Line;
   Mark.Char := 1;
-  Mark.ImageIndex:= BreakPointImageIndex;
+  Mark.ImageIndex := BreakpointImageIndex;
   Mark.Visible := True;
-  Mark.InternalImage:= false;
+  Mark.InternalImage := false;
 
-  ParseSourcecode(false);
-  s:= CBSearchClassOrMethod(StopInAt, line);
-  if s = '' then
-    Mark.ImageIndex:= NoBreakpointImageIndex
+  ParseSourceCode(false);
+  Str := CBSearchClassOrMethod(StopInAt, Line);
+  if Str = '' then
+    Mark.ImageIndex := NoBreakpointImageIndex
   else if myDebugger.Running then
-    myDebugger.NewCommand(1, s);
-  Editor.Marks.Add(Mark);
-  inc(BreakPointCount);
-  Editor.Gutter.LeftOffset:= 24;
-  Editor.InvalidateLine(line);
+    myDebugger.NewCommand(1, Str);
+  FEditor.Marks.Add(Mark);
+  Inc(FBreakPointCount);
+  FEditor.Gutter.LeftOffset := 24;
+  FEditor.InvalidateLine(Line);
 end;
 
 procedure TFEditForm.DeleteBreakpointMark(Mark: TSynEditMark);
 begin
-  var s:= CBSearchClassOrMethod(not StopInAt, Mark.Line);
-  if myDebugger.Running and (s <> '') then
-    myDebugger.NewCommand(2, s);
-  Editor.InvalidateLine(Mark.Line);
-  Editor.Marks.Remove(Mark);
-  Dec(BreakPointCount);
+  var
+  Str := CBSearchClassOrMethod(not StopInAt, Mark.Line);
+  if myDebugger.Running and (Str <> '') then
+    myDebugger.NewCommand(2, Str);
+  FEditor.InvalidateLine(Mark.Line);
+  FEditor.Marks.Remove(Mark);
+  Dec(FBreakPointCount);
   ResetGutterOffset;
 end;
 
 procedure TFEditForm.InsertGotoCursorBreakpoint;
-  var s: string; line: integer;
-      Mark: TSynEditMark;
+var
+  Str: string;
+  Line: Integer;
+  Mark: TSynEditMark;
 begin
-  line:= Editor.CaretY;
-  if not HasBreakpoint(line, Mark) then begin
-    s:= CBSearchClassOrMethod(StopInAt, line);
-    myDebugger.RunToCursorBreakpoint(s);
+  Line := FEditor.CaretY;
+  if not HasBreakpoint(Line, Mark) then
+  begin
+    Str := CBSearchClassOrMethod(StopInAt, Line);
+    myDebugger.RunToCursorBreakpoint(Str);
   end;
 end;
 
 procedure TFEditForm.InsertBreakpoint;
 begin
-  EditorGutterClick(Self, mbLeft, Editor.BookMarkOptions.XOffset, 0, Editor.CaretY, nil);
+  EditorGutterClick(Self, mbLeft, FEditor.BookMarkOptions.Xoffset, 0,
+    FEditor.CaretY, nil);
 end;
 
 procedure TFEditForm.EditorGutterClick(Sender: TObject; Button: TMouseButton;
-            X, Y, Line: Integer; Mark: TSynEditMark);
+X, Y, Line: Integer; Mark: TSynEditMark);
 begin
-  if Line > Editor.Lines.Count then Exit;
-  if x > Editor.Gutter.RealGutterWidth(Editor.Gutter.Font.Size) - Editor.CodeFolding.GutterShapeSize - 2 * Editor.Gutter.RightMargin then exit;
-  if X < Editor.BookMarkOptions.XOffset then  // Bookmark
+  if Line > FEditor.Lines.Count then
+    Exit;
+  if X > FEditor.Gutter.RealGutterWidth(FEditor.Gutter.Font.Size) -
+    FEditor.CodeFolding.GutterShapeSize - 2 * FEditor.Gutter.RightMargin then
+    Exit;
+  if X < FEditor.BookMarkOptions.Xoffset then // Bookmark
     SetDeleteBookmark(1, Line)
-  else begin
-    if not FJava.MIBreakpoint.Enabled or Editor.SelAvail then Exit;
-    with Editor do
-      if HasBreakPoint(Line, Mark) then
+  else
+  begin
+    if not FJava.MIBreakpoint.Enabled or FEditor.SelAvail then
+      Exit;
+    with FEditor do
+      if HasBreakpoint(Line, Mark) then
         DeleteBreakpointMark(Mark)
-      else begin
-        Editor.CaretY:= Line;
+      else
+      begin
+        FEditor.CaretY := Line;
         InsertBreakpointMark(Line);
       end;
   end;
 end;
 
-function TFEditForm.GetLineInfos(ALine: integer): TLineInfos;
-  var Mark: TSynEditMark;
+function TFEditForm.GetLineInfos(ALine: Integer): TLineInfos;
+var
+  Mark: TSynEditMark;
 begin
-  Result:= [];
-  if ALine > 0 then begin
-    if assigned(myJavaCommands) and myDebugger.Running and
-       assigned(DebugLineMark) and (ALine = DebugLineMark.Line)
-    then
+  Result := [];
+  if ALine > 0 then
+  begin
+    if Assigned(MyJavaCommands) and myDebugger.Running and
+      Assigned(FDebuglineMark) and (ALine = FDebuglineMark.Line) then
       Include(Result, dlCurrentDebuggerLine);
-    if assigned(myJavaCommands) and myDebugger.Running and
-       assigned(FMessages) and (ALine = FMessages.SearchGoalLine) and
-      (FMessages.SearchGoalPath = Pathname)
-    then
+    if Assigned(MyJavaCommands) and myDebugger.Running and Assigned(FMessages)
+      and (ALine = FMessages.SearchGoalLine) and
+      (FMessages.SearchGoalPath = Pathname) then
       Include(Result, dlSearchLine);
     if IsExecutableLine(ALine) then
       Include(Result, dlExecutableLine);
@@ -1645,48 +1897,59 @@ begin
   end;
 end;
 
-procedure TFEditForm.SynEditorSpecialLineColors(Sender: TObject;
-  Line: Integer; var Special: Boolean; var FG, BG: TColor);
+procedure TFEditForm.SynEditorSpecialLineColors(Sender: TObject; Line: Integer;
+var Special: Boolean; var ForeGround, BackGround: TColor);
 begin
-  Special:= true;
-  var LI := GetLineInfos(Line);
-  if dlCurrentDebuggerLine in LI then begin
-    FG := clWhite;
-    BG := clBlue;
-    exit;
+  Special := True;
+  var
+  LineInfos := GetLineInfos(Line);
+  if dlCurrentDebuggerLine in LineInfos then
+  begin
+    ForeGround := clWhite;
+    BackGround := clBlue;
+    Exit;
   end;
-  if dlSearchLine in LI then begin
-    FG:= clWhite;
-    BG:= clMaroon;
-    exit;
+  if dlSearchLine in LineInfos then
+  begin
+    ForeGround := clWhite;
+    BackGround := clMaroon;
+    Exit;
   end;
-  if dlBreakpointLine in LI then begin
-    FG := clWhite;
-    if dlExecutableLine in LI
-      then BG := clRed
-      else BG := clGray;
-    exit;
+  if dlBreakpointLine in LineInfos then
+  begin
+    ForeGround := clWhite;
+    if dlExecutableLine in LineInfos then
+      BackGround := clRed
+    else
+      BackGround := clGray;
+    Exit;
   end;
-  Special:= false;
+  Special := false;
 end;
 
-procedure TFEditForm.SetDeleteBookmark(XPos, YPos: Integer);
-  var i, x, y: Integer;
+procedure TFEditForm.SetDeleteBookmark(Xpos, YPos: Integer);
+var
+  Int, X, Y: Integer;
 begin
-  with Editor do begin
-    i:= 0;
-    while (i < 10) do begin
-      if GetBookmark(i, x, y) and (y = YPos) then begin
-        ClearBookmark(i);
+  with FEditor do
+  begin
+    Int := 0;
+    while (Int < 10) do
+    begin
+      if GetBookMark(Int, X, Y) and (Y = YPos) then
+      begin
+        ClearBookMark(Int);
         Exit;
       end;
-      inc(i);
+      Inc(Int);
     end;
-    i:= 0;
-    while (i < 10) and IsBookMark(i) do inc(i);
-    if i < 10 then begin
-      SetBookMark(i, XPos, YPos);
-      end
+    Int := 0;
+    while (Int < 10) and IsBookmark(Int) do
+      Inc(Int);
+    if Int < 10 then
+    begin
+      SetBookMark(Int, Xpos, YPos);
+    end
     else
       Windows.Beep(600, 200);
   end;
@@ -1694,39 +1957,47 @@ end;
 
 procedure TFEditForm.Unindent;
 begin
-  with Editor do begin
-    TabWidth:= FConfiguration.Indent;
-    if SelAvail
-      then CommandProcessor(ecBlockUnindent, #0, nil)
-    else begin
-      var x:= CaretX;
-      if MouseIsInBorderOfStructure
-        then SelStructure(MouseBorderOfStructure)
-        else SelEnd:= SelStart + 1;
-      CommandProcessor(ecBlockUnindent, #0, nil);
-      SelEnd:= SelStart;
-      CaretX:= x - TabWidth;
+  with FEditor do
+  begin
+    TabWidth := FConfiguration.Indent;
+    if SelAvail then
+      CommandProcessor(EcBlockUnindent, #0, nil)
+    else
+    begin
+      var
+      X := CaretX;
+      if FMouseIsInBorderOfStructure then
+        SelStructure(FMouseBorderOfStructure)
+      else
+        SelEnd := SelStart + 1;
+      CommandProcessor(EcBlockUnindent, #0, nil);
+      SelEnd := SelStart;
+      CaretX := X - TabWidth;
     end;
-    TabWidth:= FConfiguration.TabWidth;
+    TabWidth := FConfiguration.TabWidth;
   end;
 end;
 
 procedure TFEditForm.Indent;
 begin
-  with Editor do begin
-    TabWidth:= FConfiguration.Indent;
-    if SelAvail
-      then CommandProcessor(ecBlockIndent, #0, nil)
-    else begin
-      var x:= CaretX;
-      if MouseIsInBorderOfStructure
-        then SelStructure(MouseBorderOfStructure)
-        else SelEnd:= SelStart + 1;
-      CommandProcessor(ecBlockIndent, #0, nil);
-      SelEnd:= SelStart;
-      CaretX:= x + TabWidth;
+  with FEditor do
+  begin
+    TabWidth := FConfiguration.Indent;
+    if SelAvail then
+      CommandProcessor(EcBlockIndent, #0, nil)
+    else
+    begin
+      var
+      X := CaretX;
+      if FMouseIsInBorderOfStructure then
+        SelStructure(FMouseBorderOfStructure)
+      else
+        SelEnd := SelStart + 1;
+      CommandProcessor(EcBlockIndent, #0, nil);
+      SelEnd := SelStart;
+      CaretX := X + TabWidth;
     end;
-    TabWidth:= FConfiguration.TabWidth;
+    TabWidth := FConfiguration.TabWidth;
   end;
 end;
 
@@ -1737,43 +2008,49 @@ end;
 
 procedure TFEditForm.TVFileStructureChange(Sender: TObject; Node: TTreeNode);
 begin
-  var line:= TInteger(Node.Data).i;
-  with Editor do begin
-    CaretY:= line;
-    CaretX:= Length(Lines[line-1]) + 1;
+  var
+  Line := TInteger(Node.Data).Int;
+  with FEditor do
+  begin
+    CaretY := Line;
+    CaretX := Length(Lines[Line - 1]) + 1;
     EnsureCursorPosVisible;
-    //Topline:= line;
-    if CanFocus then SetFocus;
+    if CanFocus then
+      SetFocus;
   end;
 end;
 
 procedure TFEditForm.Matchbracket;
 begin
-  Editor.CommandProcessor(ecMatchBracket, #0, nil);
+  FEditor.CommandProcessor(EcMatchBracket, #0, nil);
 end;
 
-function TFEditForm.getIndent: string;
-  var Ind: integer;
+function TFEditForm.GetIndent: string;
+var
+  Ind: Integer;
 begin
-  if Editor.SelText = ''
-    then Ind:= Editor.CaretX - 1
-    else Ind:= Editor.BlockBegin.Char;
-  Result:= StringOfChar(' ', Ind);
+  if FEditor.SelText = '' then
+    Ind := FEditor.CaretX - 1
+  else
+    Ind := FEditor.BlockBegin.Char;
+  Result := StringOfChar(' ', Ind);
 end;
 
-procedure TFEditForm.GotoLine(i: Integer);
+procedure TFEditForm.GotoLine(Line: Integer);
 begin
-  if i = 0 then exit;
-  Editor.Topline:= i;
-  Editor.CaretX := 1;
-  Editor.CaretY := i;
-  Editor.EnsureCursorPosVisible;
+  if Line = 0 then
+    Exit;
+  FEditor.TopLine := Line;
+  FEditor.CaretX := 1;
+  FEditor.CaretY := Line;
+  FEditor.EnsureCursorPosVisible;
 end;
 
 procedure TFEditForm.Undo;
 begin
-  Editor.Undo;
-  if Editor.CanFocus then Editor.SetFocus;
+  FEditor.Undo;
+  if FEditor.CanFocus then
+    FEditor.SetFocus;
 end;
 
 procedure TFEditForm.MIUndoClick(Sender: TObject);
@@ -1783,8 +2060,9 @@ end;
 
 procedure TFEditForm.Redo;
 begin
-  Editor.Redo;
-  if Editor.CanFocus then Editor.SetFocus;
+  FEditor.Redo;
+  if FEditor.CanFocus then
+    FEditor.SetFocus;
 end;
 
 procedure TFEditForm.MIRedoClick(Sender: TObject);
@@ -1799,26 +2077,28 @@ end;
 
 procedure TFEditForm.CutToClipboard;
 begin
-  if (FJava.ActiveTool = 17) and assigned(Partner)
-    then Partner.CutToClipboard
-  else begin
-    with Editor do
-      if not SelAvail and MouseIsInBorderOfStructure then
-        SelStructure(MouseBorderOfStructure);
-    Editor.CutToClipboard;
+  if (FJava.ActiveTool = 17) and Assigned(Partner) then
+    Partner.CutToClipboard
+  else
+  begin
+    with FEditor do
+      if not SelAvail and FMouseIsInBorderOfStructure then
+        SelStructure(FMouseBorderOfStructure);
+    FEditor.CutToClipboard;
   end;
 end;
 
 procedure TFEditForm.MICommitClick(Sender: TObject);
-  var m: string;
+var
+  AMessage: string;
 begin
-  if InputQuery('Commit', 'Message', m) then
-    FGit.GitCall('commit -m "' + m + '"', ExtractFilePath(Pathname));
+  if InputQuery('Commit', 'Message', AMessage) then
+    FGit.GitCall('commit -m "' + AMessage + '"', ExtractFilePath(Pathname));
 end;
 
 procedure TFEditForm.MIConfigurationClick(Sender: TObject);
 begin
-  FConfiguration.OpenAndShowPage('Editor');
+  FConfiguration.OpenAndShowPage('FEditor');
 end;
 
 procedure TFEditForm.MICopyClick(Sender: TObject);
@@ -1828,51 +2108,50 @@ end;
 
 procedure TFEditForm.MICopyPathClick(Sender: TObject);
 begin
-  Clipboard.AsText:= Pathname;
+  Clipboard.AsText := Pathname;
 end;
 
 procedure TFEditForm.MICreateStructogramClick(Sender: TObject);
-  var s, aText, Filename: string; Scanner: TJavaScanner;
+var
+  SelText, FileName: string;
+  Scanner: TJavaScanner;
 begin
-  try
-    if Editor.SelAvail then
-      aText:= Editor.SelText
-    else if MouseIsInBorderOfStructure then begin
-      s:= Clipboard.AsText;
-      Editor.SelStructure(MouseBorderOfStructure);
-      Editor.CopyToClipboard;
-      aText:= Clipboard.AsText;
-      Clipboard.AsText:= s;
-      Editor.SelEnd:= Editor.SelStart;
-    end;
-    if aText <> '' then begin
-      Scanner:= TJavaScanner.create;
-      Scanner.Init(aText);
-      Filename:= Scanner.getFilename;
-      FreeAndNil(Scanner);
-      if Filename <> ''
-        then Filename:= extractFilePath(Pathname) + Filename + '.jsg'
-        else Filename:= ChangeFileExt(Pathname, '.jsg');
-      FJava.StructogramFromText(aText, Filename);
-    end;
-  except on e: exception do begin
-    FConfiguration.Log('TFEditForm.MICreateStructogramClick', e);
-    ErrorMsg(e.Message);
-    end;
+  if FEditor.SelAvail then
+    SelText := FEditor.SelText
+  else if FMouseIsInBorderOfStructure then
+  begin
+    FEditor.SelStructure(FMouseBorderOfStructure);
+    SelText := FEditor.SelText;
+    FEditor.SelEnd := FEditor.SelStart;
+  end;
+  if SelText <> '' then
+  begin
+    Scanner := TJavaScanner.Create;
+    Scanner.Init(SelText);
+    FileName := Scanner.GetFilename;
+    FreeAndNil(Scanner);
+    if FileName <> '' then
+      FileName := ExtractFilePath(Pathname) + FileName + '.jsg'
+    else
+      FileName := ChangeFileExt(Pathname, '.jsg');
+    FJava.StructogramFromText(SelText, FileName);
   end;
 end;
 
 procedure TFEditForm.CopyToClipboard;
 begin
-  if (FJava.ActiveTool = 17) and assigned(Partner) then
+  if (FJava.ActiveTool = 17) and Assigned(Partner) then
     Partner.CopyToClipboard
-  else begin
-    with Editor do
-      if not SelAvail and MouseIsInBorderOfStructure then
-        SelStructure(MouseBorderOfStructure);
+  else
+  begin
+    with FEditor do
+      if not SelAvail and FMouseIsInBorderOfStructure then
+        SelStructure(FMouseBorderOfStructure);
     try
-      Editor.CopyToClipboard;
+      FEditor.CopyToClipboard;
     except
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
   end;
 end;
@@ -1884,44 +2163,53 @@ end;
 
 procedure TFEditForm.PasteFromClipboard;
 begin
-  if (FJava.ActiveTool = 17) and assigned(Partner) then
+  if (FJava.ActiveTool = 17) and Assigned(Partner) then
     Partner.PasteFromClipboard
-  else begin
+  else
+  begin
     try
-      Editor.PasteFromClipboard;
-      Modified:= true;
-    except on e: Exception do
-      //ErrorMsg(e.Message);
+      FEditor.PasteFromClipboard;
+      Modified := True;
+    except
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
-    ParseSourcecode(true);
+    ParseSourceCode(True);
   end;
 end;
 
 procedure TFEditForm.PopUpEditorPopup(Sender: TObject);
 begin
-  MouseBorderOfStructure:= 0;
-  MouseIsInBorderOfStructure:= Editor.MouseInBorderOfStructure(MouseBorderOfStructure);
-  if not Editor.getPositionOfMouse(MousePosition) then
-    MousePosition.Char:= -1;
+  FMouseBorderOfStructure := 0;
+  FMouseIsInBorderOfStructure := FEditor.MouseInBorderOfStructure
+    (FMouseBorderOfStructure);
+  if not FEditor.GetPositionOfMouse(FMousePosition) then
+    FMousePosition.Char := -1;
   UpdateState;
-  MISearchDeclaration.Visible:= isJava;
-  MIAPIHelp.Visible:= isJava;
-  MIClassOpen.Visible:= isJava;
-  MIClassEditor.Visible:= isJava;
-  MICreateStructogram.Visible:= isJava;
-  MIExecute.Visible:= isJava;
-  MIExecuteWithoutConsole.Visible:= isJava;
-  MIExecuteWithConsole.Visible:= isJava;
-  MIRenewImports.Visible:= isJava;
-  MIGit.Visible:= FConfiguration.GitOK;
+  MISearchDeclaration.Visible := IsJava;
+  MIAPIHelp.Visible := IsJava;
+  MIClassOpen.Visible := IsJava;
+  MIClassEditor.Visible := IsJava;
+  MICreateStructogram.Visible := IsJava;
+  MIExecute.Visible := IsJava;
+  MIExecuteWithoutConsole.Visible := IsJava;
+  MIExecuteWithConsole.Visible := IsJava;
+  MIRenewImports.Visible := IsJava;
+  MIGit.Visible := FConfiguration.GitOK;
 
   // Assistant actions
-  var EditForm:= FJava.getActiveEditor;
-  var HasJavaFile := Assigned(EditForm) and EditForm.IsJava;
-  mnAssistanSuggest.Enabled := HasJavaFile and not Editor.SelAvail and not LLMAssistant.IsBusy;
-  mnAssistantOptimize.Enabled := HasJavaFile and Editor.SelAvail and not LLMAssistant.IsBusy;
-  mnAssistantFixBugs.Enabled := HasJavaFile and Editor.SelAvail and not LLMAssistant.IsBusy;
-  mnAssistantExplain.Enabled := HasJavaFile and Editor.SelAvail and not LLMAssistant.IsBusy;
+  var
+  EditForm := FJava.GetActiveEditor;
+  var
+  HasJavaFile := Assigned(EditForm) and EditForm.IsJava;
+  mnAssistanSuggest.Enabled := HasJavaFile and not FEditor.SelAvail and
+    not LLMAssistant.IsBusy;
+  mnAssistantOptimize.Enabled := HasJavaFile and FEditor.SelAvail and
+    not LLMAssistant.IsBusy;
+  mnAssistantFixBugs.Enabled := HasJavaFile and FEditor.SelAvail and
+    not LLMAssistant.IsBusy;
+  mnAssistantExplain.Enabled := HasJavaFile and FEditor.SelAvail and
+    not LLMAssistant.IsBusy;
   mnAssistantCancel.Enabled := LLMAssistant.IsBusy;
 end;
 
@@ -1932,7 +2220,8 @@ end;
 
 procedure TFEditForm.mnAssistanSuggestClick(Sender: TObject);
 begin
-  var EditForm:= FJava.getActiveEditor;
+  var
+  EditForm := FJava.GetActiveEditor;
   if Assigned(EditForm) then
   begin
     FJava.scpJava.CancelCompletion;
@@ -1969,547 +2258,666 @@ end;
 
 procedure TFEditForm.MIExecuteClick(Sender: TObject);
 begin
-  var s:= Editor.SelText;
-  if (s = '') or not IsJava
-    then FJava.TBRunClick(Self)
-    else FMessages.Execute(s);
+  var
+  Str := FEditor.SelText;
+  if (Str = '') or not IsJava then
+    FJava.TBRunClick(Self)
+  else
+    FMessages.Execute(Str);
 end;
 
 procedure TFEditForm.MIExecuteWithoutConsoleClick(Sender: TObject);
 begin
-  myJavaCommands.ConsoleMode:= 1;
-  FJava.TBRunClick(self);
+  MyJavaCommands.ConsoleMode := 1;
+  FJava.TBRunClick(Self);
 end;
 
 procedure TFEditForm.MIExecuteWithConsoleClick(Sender: TObject);
 begin
-  myJavaCommands.ConsoleMode:= 2;
-  FJava.TBRunClick(self);
+  MyJavaCommands.ConsoleMode := 2;
+  FJava.TBRunClick(Self);
 end;
 
 procedure TFEditForm.EditorKeyPress(Sender: TObject; var Key: Char);
-  var s: string; i: integer; empty: boolean;
+var
+  Str: string;
+  Int: Integer;
+  Empty: Boolean;
 begin
-  if Key = '{' then begin
-    s:= Editor.LineText;
-    empty:= (trim(s) = '');
-    i:= 0;
-    while (i < Length(s)) and (s[i+1] = ' ') do
-      inc(i);
-    if FConfiguration.IndentAfterBracket and not FConfiguration.AddClosingbracket then
-      s:= '{' + #13#10 + StringOfChar(' ', i + FConfiguration.Indent) + '|'
-    else if FConfiguration.AddClosingBracket then begin
-      s:= '{' + #13#10 + StringOfChar(' ', i + FConfiguration.Indent) + '|'#13#10 + StringOfChar(' ', i) + '}';
-      if not empty then s:= s + #13#10;
-      end
-    else s:= '{|';
-    PutText(s);
-    Key:= #0;
+  if Key = '{' then
+  begin
+    Str := FEditor.LineText;
+    Empty := (Trim(Str) = '');
+    Int := 0;
+    while (Int < Length(Str)) and (Str[Int + 1] = ' ') do
+      Inc(Int);
+    if FConfiguration.IndentAfterBracket and not FConfiguration.AddClosingBracket
+    then
+      Str := '{' + #13#10 + StringOfChar(' ', Int + FConfiguration.Indent) + '|'
+    else if FConfiguration.AddClosingBracket then
+    begin
+      Str := '{' + #13#10 + StringOfChar(' ', Int + FConfiguration.Indent) +
+        '|'#13#10 + StringOfChar(' ', Int) + '}';
+      if not Empty then
+        Str := Str + #13#10;
+    end
+    else
+      Str := '{|';
+    PutText(Str);
+    Key := #0;
   end;
-  if Key = #27 then begin
+  if Key = #27 then
+  begin
     FTooltip.Hide;
     FJava.scpJava.Form.Hide;
     FJava.scpParams.Form.Hide;
   end;
-  if assigned(ParseThread) and (ParseThread.State > 0) and (ParseThread.State < 3) then
-    ParseThread.Abort:= true;
-  // debugging: FJava.Memo1.lines.Add('EditorKeypress');
+  if Assigned(FParseThread) and (FParseThread.State > 0) and
+    (FParseThread.State < 3) then
+    FParseThread.Abort := True;
+  // debugging: FJava.Memo1.Lines.Add('EditorKeypress');
 end;
 
-function BufferToPoint(B: TBufferCoord): TPoint;
+function BufferToPoint(Buff: TBufferCoord): TPoint;
 begin
-  Result.X:= B.Char;
-  Result.Y:= B.Line;
+  Result.X := Buff.Char;
+  Result.Y := Buff.Line;
 end;
 
-function PointToBuffer(P: TPoint): TBufferCoord;
+function PointToBuffer(Posi: TPoint): TBufferCoord;
 begin
-  Result.Char:= P.X;
-  Result.Line:= P.Y;
+  Result.Char := Posi.X;
+  Result.Line := Posi.Y;
 end;
 
-procedure TFEditForm.EditorKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-  const
-    controlstruc : array[1..8] of string = ('if', 'while', 'for', 'do', 'switch',
-                                            'try', 'else', '} else');
-  var Kuerzel: TNode;
-      s, s1, hex: string;
-      p, q, hexint, i, Tokentyp, Start: integer;
-      P2: TPoint;
-      Attri: TSynHighlighterAttributes;
+procedure TFEditForm.EditorKeyUp(Sender: TObject; var Key: Word;
+Shift: TShiftState);
+const
+  ControlStruc: array [1 .. 8] of string = ('if', 'while', 'for', 'do',
+    'switch', 'try', 'else', '} else');
+var
+  Kuerzel: TNode;
+  Str, Str1, Hex: string;
+  Posi, Posi1, HexInt, Int, Tokentyp, Start: Integer;
+  Posi2: TPoint;
+  Attri: TSynHighlighterAttributes;
 begin
   if ((ssCtrl in Shift) and (Key = Ord('V'))) or
-     ((ssShift in Shift) and (Key = VK_Insert)) then
-    Editor.ReplaceTabs(FConfiguration.TabWidth);
+    ((ssShift in Shift) and (Key = VK_INSERT)) then
+    FEditor.ReplaceTabs(FConfiguration.TabWidth);
 
   // Shortcuts
-  if ((VK_F1 <= Key) and (Key <= VK_F12)) or
-     (ssCtrl in Shift) or (ssShift in Shift) or (ssAlt in Shift) then begin
-    Kuerzel:= FConfiguration.KeyboardShortcutsTree.getNode(ShortCut(Key, Shift));
+  if ((VK_F1 <= Key) and (Key <= VK_F12)) or (ssCtrl in Shift) or
+    (ssShift in Shift) or (ssAlt in Shift) then
+  begin
+    Kuerzel := FConfiguration.KeyboardShortcutsTree.getNode
+      (ShortCut(Key, Shift));
     if Assigned(Kuerzel) then
       PutText(Kuerzel.Data);
   end;
 
   // show tooltip
-  if (Key = VK_F2) and FConfiguration.TooltipWithKey and isJava then begin
-    Editor.GetHighlighterAttriAtRowColEx(Editor.CaretXY, S, TokenTyp, Start, Attri);
-    if Tokentyp = Ord(SynHighlighterJava.tkIdentifier) then begin
-      P2:= Editor.RowColumnToPixels(DisplayCoord(Start, Editor.LineToRow(Editor.CaretY +1)));
-      CreateTooltip(BufferToPoint(Editor.CaretXY), Editor.ClientToScreen(P2), '# VK_F2 #');
+  if (Key = VK_F2) and FConfiguration.TooltipWithKey and IsJava then
+  begin
+    FEditor.GetHighlighterAttriAtRowColEx(FEditor.CaretXY, Str, Tokentyp,
+      Start, Attri);
+    if Tokentyp = Ord(SynHighlighterJava.tkIdentifier) then
+    begin
+      Posi2 := FEditor.RowColumnToPixels
+        (DisplayCoord(Start, FEditor.LineToRow(FEditor.CaretY + 1)));
+      CreateTooltip(BufferToPoint(FEditor.CaretXY),
+        FEditor.ClientToScreen(Posi2), '# VK_F2 #');
     end;
   end;
 
-   // Unicode
-  if ((ssCtrl in Shift) and (ssAlt in Shift) and (Key = Ord('U'))) then begin
-    s:= Editor.LineText;
-    p:= Editor.CaretX;
-    if p < 5
-      then hex:= copy(s, 1, p-1)
-      else hex:= copy(s, p-4, 4);
-    q:= Pos(' ', hex);
-    while (0 < q) and (q < length(hex)) do begin
-      delete(hex, 1, q);
-      q:= Pos(' ', hex);
+  // Unicode
+  if ((ssCtrl in Shift) and (ssAlt in Shift) and (Key = Ord('U'))) then
+  begin
+    Str := FEditor.LineText;
+    Posi := FEditor.CaretX;
+    if Posi < 5 then
+      Hex := Copy(Str, 1, Posi - 1)
+    else
+      Hex := Copy(Str, Posi - 4, 4);
+    Posi1 := Pos(' ', Hex);
+    while (0 < Posi1) and (Posi1 < Length(Hex)) do
+    begin
+      Delete(Hex, 1, Posi1);
+      Posi1 := Pos(' ', Hex);
     end;
-    q:= length(hex);
+    Posi1 := Length(Hex);
     try
-      hexint:= StrToInt('$' + hex);
-      insert(Char(hexint), s, p);
-      delete(s, p-q, q);
-      Editor.LineText:= s;
-      Editor.CaretX:= Editor.CaretX - q + 1;
+      HexInt := StrToInt('$' + Hex);
+      Insert(Char(HexInt), Str, Posi);
+      Delete(Str, Posi - Posi1, Posi1);
+      FEditor.LineText := Str;
+      FEditor.CaretX := FEditor.CaretX - Posi1 + 1;
     except
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
-    Key:= 0;
+    Key := 0;
   end;
 
   // control structures
   if FConfiguration.InsertControlStructures and IsJava and
-    ((Key = Ord(' ')) or ((ssShift in Shift) and (Key = Ord('8'))))
-  then begin
-    s:= Trim(Editor.LineText);
+    ((Key = Ord(' ')) or ((ssShift in Shift) and (Key = Ord('8')))) then
+  begin
+    Str := Trim(FEditor.LineText);
     case Key of
-      Ord(' '): s1:= '';
-      Ord('8'): s1:= '(';
+      Ord(' '):
+        Str1 := '';
+      Ord('8'):
+        Str1 := '(';
     end;
-    for i:= 1 to 8 do
-      if s = controlstruc[i] + s1 then begin
-        p:= Pos(s, Editor.LineText);
-        if i > 1 then begin
-          Editor.LineText:= '';
-          Editor.CaretX:= p;
+    for var I := 1 to 8 do
+      if Str = ControlStruc[I] + Str1 then
+      begin
+        Posi := Pos(Str, FEditor.LineText);
+        if I > 1 then
+        begin
+          FEditor.LineText := '';
+          FEditor.CaretX := Posi;
         end;
-        FTemplates.SBControlStructures(Self, i, true);
-        Key:= 0;
-        break;
+        FTemplates.SBControlStructures(Self, I, True);
+        Key := 0;
+        Break;
       end;
   end;
 
   // semicolons
-  if FConfiguration.InsertSemicolons and IsJava and (Key = VK_Return) then begin
-    i:= Editor.CaretY - 2;
-    s:= Editor.Lines[i];
-    if (s <> '') and (Pos(';', s) = 0) and FMessages.NeedsSemicolon(s) then
-      Editor.Lines[i]:= s + ';';
+  if FConfiguration.InsertSemicolons and IsJava and (Key = VK_RETURN) then
+  begin
+    Int := FEditor.CaretY - 2;
+    Str := FEditor.Lines[Int];
+    if (Str <> '') and (Pos(';', Str) = 0) and FMessages.NeedsSemicolon(Str)
+    then
+      FEditor.Lines[Int] := Str + ';';
   end;
 
 end;
 
 // compare to procedure TFUMLForm.CreateTVFileStructure;
 procedure TFEditForm.CreateTVFileStructure;
-  var
-    Ci, it: IModelIterator;
-    cent: TClassifier;
-    Attribute: TAttribute;
-    Method: TOperation;
-    ImageNr, i, indented, indentedOld: Integer;
-    CName: string;
-    Node: TTreeNode;
-    ClassNode: TTreeNode;
-    aInteger: TInteger;
+var
+  ClassIt, Ite: IModelIterator;
+  Cent: TClassifier;
+  Attribute: TAttribute;
+  Method: TOperation;
+  ImageNr, Indented, IndentedOld: Integer;
+  CName: string;
+  Node: TTreeNode;
+  ClassNode: TTreeNode;
+  AInteger: TInteger;
 
-  function CalculateIndented(const aClassname: string): integer;
-    var i: integer;
+  function CalculateIndented(const AClassname: string): Integer;
   begin
-    Result:= 0;
-    for i:= 1 to length(aClassname) do
-      if CharInSet(aClassname[i], ['$', '.']) then inc(Result);
+    Result := 0;
+    for var I := 1 to Length(AClassname) do
+      if CharInSet(AClassname[I], ['$', '.']) then
+        Inc(Result);
   end;
 
 begin
-  indented:= 0;
-  Classnode:= nil;
-  if not isJava then exit;
+  Indented := 0;
+  ClassNode := nil;
+  if not IsJava then
+    Exit;
   TVFileStructure.Items.BeginUpdate;
   try
-    for i:= TVFileStructure.Items.Count - 1 downto 0 do begin
-      aInteger:= TInteger(TVFileStructure.Items[i].Data);
-      FreeAndNil(aInteger);
+    for var I := TVFileStructure.Items.Count - 1 downto 0 do
+    begin
+      AInteger := TInteger(TVFileStructure.Items[I].Data);
+      FreeAndNil(AInteger);
     end;
-    TVFilestructure.Items.Clear;
-    Ci:= Model.ModelRoot.GetAllClassifiers;
-    while Ci.HasNext do begin
-      cent := TClassifier(Ci.Next);
-      if Cent.Pathname <> Pathname then continue;
-      if endsWith(Cent.Name, '[]') then continue;
+    TVFileStructure.Items.Clear;
+    ClassIt := FModel.ModelRoot.GetAllClassifiers;
+    while ClassIt.HasNext do
+    begin
+      Cent := TClassifier(ClassIt.Next);
+      if Cent.Pathname <> Pathname then
+        Continue;
+      if EndsWith(Cent.Name, '[]') then
+        Continue;
 
-      if (Cent is TClass)
-        then isJUnitTestClass:= (Cent as TClass).isJUnitTestclass
-        else isJunitTestClass:= false;
+      if (Cent is TClass) then
+        FIsJUnitTestClass := (Cent as TClass).IsJUnitTestClass
+      else
+        FIsJUnitTestClass := false;
 
-      CName:= cent.ShortName;
-      indentedOld:= indented;
-      indented:= CalculateIndented(CName);
-      while Pos('$', CName) + Pos('.', CName) > 0 do begin
-        delete(CName, 1, Pos('$', CName));
-        delete(CName, 1, Pos('.', CName));
+      CName := Cent.ShortName;
+      IndentedOld := Indented;
+      Indented := CalculateIndented(CName);
+      while Pos('$', CName) + Pos('.', CName) > 0 do
+      begin
+        Delete(CName, 1, Pos('$', CName));
+        Delete(CName, 1, Pos('.', CName));
       end;
 
-      if (cent is TClass)
-        then ImageNr:= 1
-        else ImageNr:= 11;
+      if (Cent is TClass) then
+        ImageNr := 1
+      else
+        ImageNr := 11;
 
-      if indented = 0 then
-        ClassNode:= TVFileStructure.Items.AddObject(nil, CName, TInteger.create(cent.LineS))
-      else if indented > indentedOld then
-        ClassNode:= TVFileStructure.Items.AddChildObject(ClassNode, CName, TInteger.create(cent.LineS))
-      else begin
-        while indented <= indentedOld do begin
-          dec(indentedOld);
-          ClassNode:= ClassNode.Parent;
+      if Indented = 0 then
+        ClassNode := TVFileStructure.Items.AddObject(nil, CName,
+          TInteger.Create(Cent.Lines))
+      else if Indented > IndentedOld then
+        ClassNode := TVFileStructure.Items.AddChildObject(ClassNode, CName,
+          TInteger.Create(Cent.Lines))
+      else
+      begin
+        while Indented <= IndentedOld do
+        begin
+          Dec(IndentedOld);
+          ClassNode := ClassNode.Parent;
         end;
-        ClassNode:= TVFileStructure.Items.AddChildObject(ClassNode, CName, TInteger.create(cent.LineS));
+        ClassNode := TVFileStructure.Items.AddChildObject(ClassNode, CName,
+          TInteger.Create(Cent.Lines));
       end;
 
-      ClassNode.ImageIndex:= ImageNr;
-      ClassNode.SelectedIndex:= ImageNr;
-      ClassNode.HasChildren:= true;
+      ClassNode.ImageIndex := ImageNr;
+      ClassNode.SelectedIndex := ImageNr;
+      ClassNode.HasChildren := True;
 
-      it:= cent.GetAttributes;
-      while It.HasNext do begin
-        Attribute:= It.Next as TAttribute;
-        ImageNr:= Integer(Attribute.Visibility) + 2;
-        Node:= TVFileStructure.Items.AddChildObject(ClassNode,
-          Attribute.toTypeName, TInteger.create(Attribute.LineS));
-        Node.ImageIndex:= ImageNr;
-        Node.SelectedIndex:= ImageNr;
-        Node.HasChildren:= false;
+      Ite := Cent.GetAttributes;
+      while Ite.HasNext do
+      begin
+        Attribute := Ite.Next as TAttribute;
+        ImageNr := Integer(Attribute.Visibility) + 2;
+        Node := TVFileStructure.Items.AddChildObject(ClassNode,
+          Attribute.ToTypeName, TInteger.Create(Attribute.Lines));
+        Node.ImageIndex := ImageNr;
+        Node.SelectedIndex := ImageNr;
+        Node.HasChildren := false;
       end;
-      It:= cent.GetOperations;
-      while It.HasNext do begin
-        Method:= It.Next as TOperation;
-        if Method.OperationType = otConstructor
-          then ImageNr:= 6
-          else ImageNr:= Integer(Method.Visibility) + 7;
-        Node:= TVFileStructure.Items.AddChildObject(ClassNode,
-          Method.toTypeName, TInteger.create(Method.LineS));
-        Node.ImageIndex:= ImageNr;
-        Node.SelectedIndex:= ImageNr;
-        Node.HasChildren:= false;
+      Ite := Cent.GetOperations;
+      while Ite.HasNext do
+      begin
+        Method := Ite.Next as TOperation;
+        if Method.OperationType = otConstructor then
+          ImageNr := 6
+        else
+          ImageNr := Integer(Method.Visibility) + 7;
+        Node := TVFileStructure.Items.AddChildObject(ClassNode,
+          Method.ToTypeName, TInteger.Create(Method.Lines));
+        Node.ImageIndex := ImageNr;
+        Node.SelectedIndex := ImageNr;
+        Node.HasChildren := false;
       end;
     end;
   finally
     TVFileStructure.Items.EndUpdate;
-    FFileStructure.init(TVFileStructure.Items, Self);
+    FFileStructure.InitWithItems(TVFileStructure.Items, Self);
   end;
-  //FJava.Memo1.lines.AddStrings(Model.ModelRoot.Debug);
 end;
 
 procedure TFEditForm.RunTests;
 begin
   if not Assigned(FJUnitTests) then
-    FJUnitTests:= TFJUnitTests.Create(FJava);
-  FJunitTests.Pathname:= Pathname;
-  var Ci:= Model.ModelRoot.GetAllClassifiers;
-  if Ci.HasNext then begin
-    var cent := TClassifier(Ci.Next);
-    if (Cent is TClass) and (Cent as TClass).isJUnitTestclass then
-      myJavaCommands.RunTests(Cent as TClass, 'Class');
+    FJUnitTests := TFJUnitTests.Create(FJava);
+  FJUnitTests.Pathname := Pathname;
+  var
+  ClassIt := FModel.ModelRoot.GetAllClassifiers;
+  if ClassIt.HasNext then
+  begin
+    var
+    Cent := TClassifier(ClassIt.Next);
+    if (Cent is TClass) and (Cent as TClass).IsJUnitTestClass then
+      MyJavaCommands.RunTests(Cent as TClass, 'Class');
   end;
 end;
 
-function TFEditForm.GetLNG(Nr, ClassNumber: integer): string;
+function TFEditForm.GetLNG(Num, ClassNumber: Integer): string;
 begin
-  if ClassNumber = 0
-    then Result:= LNGs[Nr]
-    else Result:= LNGs[Nr] + IntToStr(ClassNumber);
+  if ClassNumber = 0 then
+    Result := LNGs[Num]
+  else
+    Result := LNGs[Num] + IntToStr(ClassNumber);
 end;
 
 procedure TFEditForm.InsertStartEnd;
-  var
-    Ci, it: IModelIterator;
-    cent: TClassifier;
-    Attribute: TAttribute;
-    Method: TOperation;
-    Lines: array[1..6] of integer;
-    LNG: array[1..6] of string;
-    XY: TBufferCoord;
-    Ind, s1, s2: string;
-    ClassNumber, i, ce, cs, line: integer;
-    SL: TStringList;
+var
+  ClassIt, Ite: IModelIterator;
+  Cent: TClassifier;
+  Attribute: TAttribute;
+  Method: TOperation;
+  Lines: array [1 .. 6] of Integer;
+  LNG: array [1 .. 6] of string;
+  CaretXY: TBufferCoord;
+  Ind, Str1, Str2: string;
+  ClassNumber, CentLineE, CentLineS, Line: Integer;
+  StringList: TStringList;
 
   procedure CheckConstructorAndComponentsPosition;
-    var Line: integer;
+  var
+    Line: Integer;
   begin
     if (Method.OperationType = otConstructor) or
-       (isApplet and (Method.Name = 'init')) or
-       ((FrameType = 8) and (Method.Name = 'start'))
-    then begin
-      Lines[3]:= Method.LineE;
-      Lines[4]:= Method.LineE;
-      case FrameType of
-      8: begin
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'new Scene');
-        if (-1 < Line) and (Line < Method.LineE) then begin
-          Lines[3]:= Line + 1;
-          Lines[4]:= Line + 1;
-        end;
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'primaryStage.setOnCloseRequest');
-        if (-1 < Line) and (Line < Method.LineE) then
-          Lines[4]:= Line;
+      (IsApplet and (Method.Name = 'init')) or
+      ((FFrameType = 8) and (Method.Name = 'start')) then
+    begin
+      Lines[3] := Method.LineE;
+      Lines[4] := Method.LineE;
+      case FFrameType of
+        8:
+          begin
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'new Scene');
+            if (-1 < Line) and (Line < Method.LineE) then
+            begin
+              Lines[3] := Line + 1;
+              Lines[4] := Line + 1;
+            end;
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'primaryStage.setOnCloseRequest');
+            if (-1 < Line) and (Line < Method.LineE) then
+              Lines[4] := Line;
+          end;
+        7:
+          begin
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'cp.setBounds');
+            if (-1 < Line) and (Line < Method.LineE) then
+              Lines[3] := Line + 1;
+            Lines[4] := Method.LineE - 1;
+          end;
+        6:
+          begin
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'cp.setLayout(null)');
+            if (-1 < Line) and (Line < Method.LineE) then
+            begin
+              Lines[3] := Line + 1;
+              Lines[4] := Line + 1;
+            end;
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'setResizable(false)');
+            if (-1 < Line) and (Line < Method.LineE) then
+              Lines[4] := Line;
+          end;
+        5:
+          begin
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'cp.setLayout(null)');
+            if (-1 < Line) and (Line < Method.LineE) then
+            begin
+              Lines[3] := Line + 1;
+              Lines[4] := Line + 1;
+            end;
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'setVisible(true)');
+            if (-1 < Line) and (Line < Method.LineE) then
+              Lines[4] := Line;
+          end;
+        4:
+          begin
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'add(cp)');
+            if (-1 < Line) and (Line < Method.LineE) then
+              Lines[3] := Line + 1;
+            Lines[4] := Method.LineE - 1;
+          end;
+        3:
+          begin
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'add(cp)');
+            if (-1 < Line) and (Line < Method.LineE) then
+            begin
+              Lines[3] := Line + 1;
+              Lines[4] := Line + 1;
+            end;
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'setResizable(false)');
+            if (-1 < Line) and (Line < Method.LineE) then
+              Lines[4] := Line;
+          end;
+        2:
+          begin
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'add(cp)');
+            if (-1 < Line) and (Line < Method.LineE) then
+            begin
+              Lines[3] := Line + 1;
+              Lines[4] := Line + 1;
+            end;
+            Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
+              'setVisible(true)');
+            if (-1 < Line) and (Line < Method.LineE) then
+              Lines[4] := Line;
+          end;
       end;
-      7: begin
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'cp.setBounds');
-        if (-1 < Line) and (Line < Method.LineE) then
-          Lines[3]:= Line + 1;
-        Lines[4]:= Method.LineE - 1;
-      end;
-      6: begin
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'cp.setLayout(null)');
-        if (-1 < Line) and (Line < Method.LineE) then begin
-          Lines[3]:= Line + 1;
-          Lines[4]:= Line + 1;
-        end;
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'setResizable(false)');
-        if (-1 < Line) and (Line < Method.LineE) then
-          Lines[4]:= Line;
-      end;
-      5: begin
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'cp.setLayout(null)');
-        if (-1 < Line) and (Line < Method.LineE) then begin
-          Lines[3]:= Line + 1;
-          Lines[4]:= Line + 1;
-        end;
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'setVisible(true)');
-        if (-1 < Line) and (Line < Method.LineE) then
-          Lines[4]:= Line;
-      end;
-      4: begin
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'add(cp)');
-        if (-1 < Line) and (Line < Method.LineE) then
-          Lines[3]:= Line + 1;
-        Lines[4]:= Method.LineE - 1;
-      end;
-      3: begin
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'add(cp)');
-        if (-1 < Line) and (Line < Method.LineE) then begin
-          Lines[3]:= Line + 1;
-          Lines[4]:= Line + 1;
-        end;
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'setResizable(false)');
-        if (-1 < Line) and (Line < Method.LineE) then
-          Lines[4]:= Line;
-      end;
-      2: begin
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'add(cp)');
-        if (-1 < Line) and (Line < Method.LineE) then begin
-          Lines[3]:= Line + 1;
-          Lines[4]:= Line + 1;
-        end;
-        Line:= getLineNumberWithFromTill(Method.LineS, Method.LineE, 'setVisible(true)');
-        if (-1 < Line) and (Line < Method.LineE) then
-          Lines[4]:= Line;
-      end;
-     end;
-    end else
-      Lines[5]:= min(Lines[5], Method.LineS - 1);
+    end
+    else
+      Lines[5] := Min(Lines[5], Method.Lines - 1);
   end;
 
-  procedure Add(c: char; Line: integer; const s: string);
+  procedure Add(Cha: Char; Line: Integer; const Str: string);
   begin
-    SL.Add(RightStr('000000' + IntToStr(Line), 6) + c + s);
+    StringList.Add(RightStr('000000' + IntToStr(Line), 6) + Cha + Str);
   end;
 
 begin
-  if not IsJava then exit;
-  Editor.LockUndo;
-  Editor.BeginUpdate;
-  for i:= 1 to 6 do begin
-    line:= getLineNumberWith(GetLNG(i, 0));
-    if line > -1 then DeleteLine(line);
+  if not IsJava then
+    Exit;
+  FEditor.LockUndo;
+  FEditor.BeginUpdate;
+  for var I := 1 to 6 do
+  begin
+    Line := GetLineNumberWith(GetLNG(I, 0));
+    if Line > -1 then
+      DeleteLine(Line);
   end;
 
-  ParseSourcecode(false);
-  Ci:= Model.ModelRoot.GetAllClassifiers;
-  XY:= Editor.CaretXY;
-  ClassNumber:= -1;
-  SL:= TStringList.Create;
-  SL.Sorted:= true;
-  while Ci.HasNext do begin
-    cent:= TClassifier(Ci.Next);
-    if (cent.Pathname <> Pathname) or cent.Anonym then continue;
-    inc(ClassNumber);
-    cs:= cent.LineS;
-    ce:= max(cs, cent.LineE-1);
-    Ind:= StringTimesN(FConfiguration.Indent1, cent.ScopeDepth);
-    Lines[1]:= cs; LNG[1]:= GetLNG(1, ClassNumber);
-    Lines[2]:= cs; LNG[2]:= GetLNG(2, ClassNumber);
-    Lines[3]:= ce; LNG[3]:= GetLNG(3, ClassNumber);
-    Lines[4]:= ce; LNG[4]:= GetLNG(4, ClassNumber);
-    Lines[5]:= ce; LNG[5]:= GetLNG(5, ClassNumber);
-    Lines[6]:= ce; LNG[6]:= GetLNG(6, ClassNumber);
+  ParseSourceCode(false);
+  ClassIt := FModel.ModelRoot.GetAllClassifiers;
+  CaretXY := FEditor.CaretXY;
+  ClassNumber := -1;
+  StringList := TStringList.Create;
+  StringList.Sorted := True;
+  while ClassIt.HasNext do
+  begin
+    Cent := TClassifier(ClassIt.Next);
+    if (Cent.Pathname <> Pathname) or Cent.Anonym then
+      Continue;
+    Inc(ClassNumber);
+    CentLineS := Cent.Lines;
+    CentLineE := Max(CentLineS, Cent.LineE - 1);
+    Ind := StringTimesN(FConfiguration.Indent1, Cent.ScopeDepth);
+    Lines[1] := CentLineS;
+    LNG[1] := GetLNG(1, ClassNumber);
+    Lines[2] := CentLineS;
+    LNG[2] := GetLNG(2, ClassNumber);
+    Lines[3] := CentLineE;
+    LNG[3] := GetLNG(3, ClassNumber);
+    Lines[4] := CentLineE;
+    LNG[4] := GetLNG(4, ClassNumber);
+    Lines[5] := CentLineE;
+    LNG[5] := GetLNG(5, ClassNumber);
+    Lines[6] := CentLineE;
+    LNG[6] := GetLNG(6, ClassNumber);
 
-    it:= (cent as TClassifier).GetOperations;
-    if it.HasNext then begin
-      Method:= It.Next as TOperation;
+    Ite := Cent.GetOperations;
+    if Ite.HasNext then
+    begin
+      Method := Ite.Next as TOperation;
       CheckConstructorAndComponentsPosition;
-      while it.HasNext do begin
-        Method:= It.Next as TOperation;
+      while Ite.HasNext do
+      begin
+        Method := Ite.Next as TOperation;
         CheckConstructorAndComponentsPosition;
       end;
     end;
 
-    it:= (cent as TClassifier).GetAttributes;
-    if it.HasNext then begin
-      Attribute:= It.Next as TAttribute;
-      Lines[1]:= Attribute.LineS - 1;
-      Lines[2]:= Attribute.LineE;
-      while it.HasNext do begin
-        Attribute:= It.Next as TAttribute;
-        Lines[2]:= Attribute.LineE;
+    Ite := Cent.GetAttributes;
+    if Ite.HasNext then
+    begin
+      Attribute := Ite.Next as TAttribute;
+      Lines[1] := Attribute.Lines - 1;
+      Lines[2] := Attribute.LineE;
+      while Ite.HasNext do
+      begin
+        Attribute := Ite.Next as TAttribute;
+        Lines[2] := Attribute.LineE;
       end;
     end;
 
-    if Lines[2] <= Lines[1] then Lines[2]:= Lines[1];
-    if Lines[4] <= Lines[3] then Lines[4]:= Lines[3];
-    if Lines[6] <= Lines[5] then Lines[6]:= Lines[5];
+    if Lines[2] <= Lines[1] then
+      Lines[2] := Lines[1];
+    if Lines[4] <= Lines[3] then
+      Lines[4] := Lines[3];
+    if Lines[6] <= Lines[5] then
+      Lines[6] := Lines[5];
 
-    if getLineNumberWithWord(LNG[6]) = -1 then
+    if GetLineNumberWithWord(LNG[6]) = -1 then
       Add('F', Lines[6], Ind + LNG[6] + CrLf);
-    if getLineNumberWithWord(LNG[5]) = -1 then
+    if GetLineNumberWithWord(LNG[5]) = -1 then
       Add('E', Lines[5], Ind + LNG[5] + CrLf);
-    if FrameType > 1 then begin
-      if getLineNumberWithWord(LNG[4]) = -1 then
+    if FFrameType > 1 then
+    begin
+      if GetLineNumberWithWord(LNG[4]) = -1 then
         Add('D', Lines[4], Ind + Ind + LNG[4] + CrLf);
-      if getLineNumberWithword(LNG[3]) = -1 then
+      if GetLineNumberWithWord(LNG[3]) = -1 then
         Add('C', Lines[3], Ind + Ind + LNG[3] + CrLf);
     end;
-    if getLineNumberWithWord(LNG[2]) = -1 then
+    if GetLineNumberWithWord(LNG[2]) = -1 then
       Add('B', Lines[2], Ind + LNG[2] + CrLf);
-    if getLineNumberWithWord(LNG[1]) = -1 then
+    if GetLineNumberWithWord(LNG[1]) = -1 then
       Add('A', Lines[1], Ind + LNG[1] + CrLf);
   end;
 
-  for i:= SL.Count - 1 downto 0 do begin
-    s2:= SL.Strings[i];
-    s1:= copy(SL.Strings[i], 1, 6);
-    delete(s2, 1, 7);
-    InsertLinesAt(StrToInt(s1), s2);
+  for var I := StringList.Count - 1 downto 0 do
+  begin
+    Str2 := StringList[I];
+    Str1 := Copy(StringList[I], 1, 6);
+    Delete(Str2, 1, 7);
+    InsertLinesAt(StrToInt(Str1), Str2);
   end;
-  SL.Clear;
-  FreeAndNil(SL);
-  Editor.CaretXY:= XY;
-  Editor.UnlockUndo;
-  Editor.EndUpdate;
+  StringList.Clear;
+  FreeAndNil(StringList);
+  FEditor.CaretXY := CaretXY;
+  FEditor.UnlockUndo;
+  FEditor.EndUpdate;
 end;
 
-function TFEditForm.hasMainInModel: boolean;
-  var Ci, it: IModelIterator;
-      cent: TModelEntity;
+function TFEditForm.HasMainInModel: Boolean;
+var
+  ClassIt, Ite: IModelIterator;
+  Cent: TModelEntity;
 begin
-  Result:= true;
-  if IsJava then begin
-    if isApplet then  // Applets have "public void init()"
-      exit;
+  Result := True;
+  if IsJava then
+  begin
+    if IsApplet then // Applets have "public void init()"
+      Exit;
     ParseSourceCode(false);
-    Ci:= Model.ModelRoot.GetAllClassifiers;
-    while Ci.HasNext do begin
-      cent:= Ci.Next;
-      if (cent is TClass) then begin
-        It:= (cent as TClass).GetOperations;
-        while It.HasNext do
-          if (It.Next as TOperation).hasMain then exit;
+    ClassIt := FModel.ModelRoot.GetAllClassifiers;
+    while ClassIt.HasNext do
+    begin
+      Cent := ClassIt.Next;
+      if (Cent is TClass) then
+      begin
+        Ite := (Cent as TClass).GetOperations;
+        while Ite.HasNext do
+          if (Ite.Next as TOperation).HasMain then
+            Exit;
       end;
     end;
   end;
-  Result:= false;
+  Result := false;
 end;
 
 procedure TFEditForm.CollectClasses(StringList: TStringList);
 begin
-  if IsJava then begin
-    ParseSourcecode(false);
-    var Ci:= Model.ModelRoot.GetAllClassifiers;
-    while Ci.HasNext do begin
-      var cent:= Ci.Next;
-      if (cent is TClass) or (cent is TInterface) then
-        StringList.Add(WithoutArray(cent.Name));
+  if IsJava then
+  begin
+    ParseSourceCode(false);
+    var
+    ClassIt := FModel.ModelRoot.GetAllClassifiers;
+    while ClassIt.HasNext do
+    begin
+      var
+      Cent := ClassIt.Next;
+      if (Cent is TClass) or (Cent is TInterface) then
+        StringList.Add(WithoutArray(Cent.Name));
     end;
   end;
 end;
 
-function TFEditForm.CBSearchClassOrMethod(Stop: Boolean; line: Integer): string;
-  var aClassname, aMethodname: string;
-      Ci, it: IModelIterator;
-      cent: TClassifier;
-      Method: TOperation;
-      found: boolean;
-      ClassInLine: Integer;
+function TFEditForm.CBSearchClassOrMethod(Stop: Boolean; Line: Integer): string;
+var
+  AClassname, AMethodname: string;
+  ClassIt, Ite: IModelIterator;
+  Cent: TClassifier;
+  Method: TOperation;
+  Found: Boolean;
+  ClassInLine: Integer;
 begin
   // ParseSourcecode;  to be done by caller
-  Result:= '';
-  if trim(Editor.Lines[line-1]) = '' then exit('');
+  Result := '';
+  if Trim(FEditor.Lines[Line - 1]) = '' then
+    Exit('');
 
-  found:= false;
-  ClassInLine:= -1;
-  Ci:= Model.ModelRoot.GetAllClassifiers;
-  while Ci.HasNext and not found do begin
-    cent:= TClassifier(Ci.Next);
-    if cent.Pathname = Pathname then begin
-      if cent.LineS > line then break;
-      if (cent.LineS <= Line) and (Line <= cent.LineE) then begin
-        aClassname:= cent.Name;
-        ClassInLine:= cent.LineS;
-        aMethodname:= '';
-        It:= cent.GetOperations;
-        while It.HasNext and not found do begin
-          Method:= It.Next as TOperation;
-          if Method.LineS = line then begin
-            aMethodname:= Method.Name;
-            found:= true;
+  Found := false;
+  ClassInLine := -1;
+  ClassIt := FModel.ModelRoot.GetAllClassifiers;
+  while ClassIt.HasNext and not Found do
+  begin
+    Cent := TClassifier(ClassIt.Next);
+    if Cent.Pathname = Pathname then
+    begin
+      if Cent.Lines > Line then
+        Break;
+      if (Cent.Lines <= Line) and (Line <= Cent.LineE) then
+      begin
+        AClassname := Cent.Name;
+        ClassInLine := Cent.Lines;
+        AMethodname := '';
+        Ite := Cent.GetOperations;
+        while Ite.HasNext and not Found do
+        begin
+          Method := Ite.Next as TOperation;
+          if Method.Lines = Line then
+          begin
+            AMethodname := Method.Name;
+            Found := True;
           end;
         end;
       end;
     end;
   end;
-  if aClassname = '' then exit;
+  if AClassname = '' then
+    Exit;
 
-  if Stop then begin
-    if found
-      then Result:= 'stop in ' + aClassname + '.' + aMethodname
-      else if line > ClassInLine then
-        Result:= 'stop at ' + aClassname + ':' + IntToStr(line)
-    end
+  if Stop then
+  begin
+    if Found then
+      Result := 'stop in ' + AClassname + '.' + AMethodname
+    else if Line > ClassInLine then
+      Result := 'stop at ' + AClassname + ':' + IntToStr(Line);
+  end
   else // clear
-    if found
-      then Result:= 'clear ' + aClassname + '.' + aMethodname
-      else if line > ClassInLine then
-         Result:= 'clear ' + aClassname + ':' + IntToStr(line)
+    if Found then
+      Result := 'clear ' + AClassname + '.' + AMethodname
+    else if Line > ClassInLine then
+      Result := 'clear ' + AClassname + ':' + IntToStr(Line);
 end;
 
-function TFEditForm.SourceContainsClass(const aClassname: string): boolean;
+function TFEditForm.SourceContainsClass(const AClassname: string): Boolean;
 begin
-  Result:= false;
-  if Model = nil then
-    ParseSourcecode(true);
+  Result := false;
+  if not Assigned(FModel) then
+    ParseSourceCode(True);
 
-  var Ci:= Model.ModelRoot.GetAllClassifiers;
-  while Ci.HasNext and not Result do begin
-    var cent:= TClassifier(Ci.Next);
-    if (cent is TClass) and
-       ((cent.ShortName = aClassname) or (cent.Name = aClassname)) and
-       (cent.Pathname = Pathname) then
-      Result:= true;
+  var
+  ClassIt := FModel.ModelRoot.GetAllClassifiers;
+  while ClassIt.HasNext and not Result do
+  begin
+    var
+    Cent := TClassifier(ClassIt.Next);
+    if (Cent is TClass) and ((Cent.ShortName = AClassname) or
+      (Cent.Name = AClassname)) and (Cent.Pathname = Pathname) then
+      Result := True;
   end;
 end;
 
@@ -2533,65 +2941,79 @@ begin
   FJava.SearchInIndex;
 end;
 
-procedure TFEditForm.ExportToFile(const Filename: string; Exporter: TSynCustomExporter);
+procedure TFEditForm.ExportToFile(const FileName: string;
+Exporter: TSynCustomExporter);
 begin
-  with Exporter do begin
-    Highlighter := Editor.Highlighter;
-    ExportAsText := true;
-    ExportAll(Editor.Lines);
+  with Exporter do
+  begin
+    Highlighter := FEditor.Highlighter;
+    ExportAsText := True;
+    ExportAll(FEditor.Lines);
     try
-      SaveToFile(Filename);
+      SaveToFile(FileName);
     except
-      on E: Exception do
-        ErrorMsg(E.Message);
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
   end;
 end;
 
-procedure TFEditForm.ExportToClipboard(asHtml: boolean; asText: boolean);
-  var Exporter: TSynCustomExporter;
+procedure TFEditForm.ExportToClipboard(AsHtml: Boolean; AsText: Boolean);
+var
+  Exporter: TSynCustomExporter;
 begin
-  if asHtml then begin
-    Exporter:= TSynExporterHTML.Create(Self);
-    if not asText then
-      TSynExporterHTML(Exporter).CreateHTMLFragment:= true;
-  end else
-    Exporter:= TSynExporterRTF.Create(Self);
-  var Lines:= TStringList.Create;
-  Lines.Text:= Editor.SelText;
-  with Exporter do begin
-    Highlighter:= Editor.Highlighter;
-    ExportAsText:= asText;
+  if AsHtml then
+  begin
+    Exporter := TSynExporterHTML.Create(Self);
+    if not AsText then
+      TSynExporterHTML(Exporter).CreateHTMLFragment := True;
+  end
+  else
+    Exporter := TSynExporterRTF.Create(Self);
+  var
+  Lines := TStringList.Create;
+  Lines.Text := FEditor.SelText;
+  with Exporter do
+  begin
+    Highlighter := FEditor.Highlighter;
+    ExportAsText := AsText;
     ExportAll(Lines);
     Exporter.CopyToClipboard;
   end;
   FreeAndNil(Lines);
-  FreeandNil(Exporter);
+  FreeAndNil(Exporter);
 end;
 
-  function getFormatted(i, arity: integer): string;
-  begin
-    var s:= intToStr(i);
-    while length(s) < arity do
-      s:= '0' + s;
-    result:= s + ' ';
-  end;
+function getFormatted(Num, Arity: Integer): string;
+begin
+  var
+  Str := IntToStr(Num);
+  while Length(Str) < Arity do
+    Str := '0' + Str;
+  Result := Str + ' ';
+end;
 
 procedure TFEditForm.ExportRTFNumbered;
 begin
-  var Exporter:= TSynExporterRTF.Create(Self);
-  var Lines:= TStringList.Create;
-  Lines.Text:= Editor.SelText;
+  var
+  Exporter := TSynExporterRTF.Create(Self);
+  var
+  Lines := TStringList.Create;
+  Lines.Text := FEditor.SelText;
 
-  var arity:= 3;
-  if Lines.Count < 100 then arity:= 2;
-  if Lines.Count < 10  then arity:= 1;
-  for var i:= 0 to Lines.Count-1 do
-    Lines[i]:= getFormatted(i+1, arity) + Lines[i];
-  with Exporter do begin
-    Highlighter:= Editor.Highlighter;
-    Font.Assign(Editor.Font);
-    ExportAsText:= false;
+  var
+  Arity := 3;
+  if Lines.Count < 100 then
+    Arity := 2;
+  if Lines.Count < 10 then
+    Arity := 1;
+  for var I := 0 to Lines.Count - 1 do
+    Lines[I] := getFormatted(I + 1, Arity) + Lines[I];
+  with Exporter do
+  begin
+    Highlighter := FEditor.Highlighter;
+    Font.Assign(FEditor.Font);
+    ExportAsText := false;
     ExportAll(Lines);
     Exporter.CopyToClipboard;
   end;
@@ -2601,140 +3023,169 @@ end;
 
 procedure TFEditForm.ExportWithNumbers;
 begin
-  var Lines:= TStringList.Create;
-  Lines.Text:= Editor.SelText;
-  var arity:= 3;
-  if Lines.Count < 100 then arity:= 2;
-  if Lines.Count < 10  then arity:= 1;
-  for var i:= 0 to Lines.Count-1 do
-    Lines[i]:= getFormatted(i+1, arity) + Lines[i];
-  Clipboard.AsText:= Lines.Text;
+  var
+  Lines := TStringList.Create;
+  Lines.Text := FEditor.SelText;
+  var
+  Arity := 3;
+  if Lines.Count < 100 then
+    Arity := 2;
+  if Lines.Count < 10 then
+    Arity := 1;
+  for var I := 0 to Lines.Count - 1 do
+    Lines[I] := getFormatted(I + 1, Arity) + Lines[I];
+  Clipboard.AsText := Lines.Text;
   FreeAndNil(Lines);
 end;
 
 procedure TFEditForm.DoExport;
-  var folder: string;
-      Exporter: TSynCustomExporter;
+var
+  Folder: string;
+  Exporter: TSynCustomExporter;
 begin
-  with FJava.SDSaveAs do begin
-    Title:= _(LNGExportTo);
-    Filter:= 'RTF (*.rtf)|*.rtf|HTML (*.html)|*.html;*.htm';
-    Filename:= GetSaveAsName;
-    folder:= ExtractFilePath(Filename);
-    Filename:= ChangeFileExt(Filename, '');
-    if folder <> ''
-      then InitialDir:= folder
-      else InitialDir:= FConfiguration.Sourcepath;
-    if Execute then begin
-      if ExtractFileExt(Filename) = '' then
+  with FJava.SDSaveAs do
+  begin
+    Title := _(LNGExportTo);
+    Filter := 'RTF (*.rtf)|*.rtf|HTML (*.html)|*.html;*.htm';
+    FileName := GetSaveAsName;
+    Folder := ExtractFilePath(FileName);
+    FileName := ChangeFileExt(FileName, '');
+    if Folder <> '' then
+      InitialDir := Folder
+    else
+      InitialDir := FConfiguration.Sourcepath;
+    if Execute then
+    begin
+      if ExtractFileExt(FileName) = '' then
         case FilterIndex of
-          1: Filename:= Filename + '.rtf';
-          2: Filename:= Filename + '.html';
+          1:
+            FileName := FileName + '.rtf';
+          2:
+            FileName := FileName + '.html';
         end;
-      if not FileExists(Filename) or
-         FileExists(Filename) and
-         (MessageDlg(Format(_(LNGFileAlreadyExists), [Filename]),
-                       mtConfirmation, mbYesNoCancel,0) = mrYes)
-      then begin
-        if LowerCase(ExtractFileExt(Filename)) = '.rtf'
-          then Exporter:= TSynExporterRTF.Create(Self)
-          else Exporter:= TSynExporterHTML.Create(Self);
-        Exporter.Font.assign(Editor.Font);
+      if not FileExists(FileName) or FileExists(FileName) and
+        (MessageDlg(Format(_(LNGFileAlreadyExists), [FileName]), mtConfirmation,
+        mbYesNoCancel, 0) = mrYes) then
+      begin
+        if LowerCase(ExtractFileExt(FileName)) = '.rtf' then
+          Exporter := TSynExporterRTF.Create(Self)
+        else
+          Exporter := TSynExporterHTML.Create(Self);
+        Exporter.Font.Assign(FEditor.Font);
         ExportToFile(FileName, Exporter);
         FreeAndNil(Exporter);
-        if CanFocus then SetFocus;
-        FConfiguration.Sourcepath:= ExtractFilePath(Filename);
-      end
+        if CanFocus then
+          SetFocus;
+        FConfiguration.Sourcepath := ExtractFilePath(FileName);
+      end;
     end;
   end;
 end;
 
-procedure TFEditForm.EditorPaintTransient(Sender: TObject; aCanvas: TCanvas;
-  TransientType: TTransientType);
+procedure TFEditForm.EditorPaintTransient(Sender: TObject; ACanvas: TCanvas;
+TransientType: TTransientType);
 const
   BracketSet = ['{', '[', '(', '}', ']', ')'];
-  OpenChars : array[0..2] of Char = ('{', '[', '(');
-  CloseChars: array[0..2] of Char = ('}', ']', ')');
+  OpenChars: array [0 .. 2] of Char = ('{', '[', '(');
+  CloseChars: array [0 .. 2] of Char = ('}', ']', ')');
 
-var P, P1, P2, Pix: TBufferCoord;
-    S: string; I, vStructure: Integer;
-    Attri: TSynHighlighterAttributes;
+var
+  Posi, Posi1, Posi2, Pix: TBufferCoord;
+  Str: string;
+  VStructure: Integer;
+  Attri: TSynHighlighterAttributes;
 
-  function CharToPixels(P: TBufferCoord): TBufferCoord;
+  function CharToPixels(Posi: TBufferCoord): TBufferCoord;
   begin
-    Result:= PointToBuffer(Editor.RowColumnToPixels(DisplayCoord(P.Char, P.Line)));
-    Result.Line:= Result.Line-1; // Editor.RowToLine(Result.Line-1);
+    Result := PointToBuffer(FEditor.RowColumnToPixels(DisplayCoord(Posi.Char,
+      Posi.Line)));
+    Result.Line := Result.Line - 1;
   end;
 
 begin
-  if (Editor = nil) or (Editor.Highlighter = nil) then exit;
-  P:= Editor.CaretXY;
-  Editor.GetHighlighterAttriAtRowCol(P, S, Attri);
+  if not Assigned(FEditor) or not Assigned(FEditor.Highlighter) then
+    Exit;
+  Posi := FEditor.CaretXY;
+  FEditor.GetHighlighterAttriAtRowCol(Posi, Str, Attri);
 
-  //If you want to be able to highlight on either side of the bracket, uncomment this block of text
-  //Check to see if we need to go back a char;
-  if (s = '') or ((length(s) > 0) and not CharInSet(S[1], BracketSet)) then begin
-    P.Char:= P.Char - 1;
-    if P.Char <= 0 then exit;
-    Editor.GetHighlighterAttriAtRowCol(P, S, Attri);
+  // If you want to be able to highlight on either side of the bracket, uncomment this block of text
+  // Check to see if we need to go back a char;
+  if (Str = '') or ((Length(Str) > 0) and not CharInSet(Str[1], BracketSet))
+  then
+  begin
+    Posi.Char := Posi.Char - 1;
+    if Posi.Char <= 0 then
+      Exit;
+    FEditor.GetHighlighterAttriAtRowCol(Posi, Str, Attri);
   end;
 
-  if (Editor.CaretX <= length(Editor.LineText) + 1) and
-     (Editor.Highlighter.SymbolAttribute = Attri) then
+  if (FEditor.CaretX <= Length(FEditor.LineText) + 1) and
+    (FEditor.Highlighter.SymbolAttribute = Attri) then
   begin
-    for i := 0 to 2 do
-      if (S = OpenChars[i]) or (S = CloseChars[i]) then begin
-        P2:= P;
-        P2.Line:= Editor.LineToRow(P.Line);   // regard wordwrap
-        P1:= Editor.GetMatchingBracketEx(P);
-        P1.Line:= Editor.LineToRow(P1.Line);
-        Pix := CharToPixels(P2);
-        Editor.Canvas.Brush.Style := bsClear;
-        Editor.Canvas.Font.Assign(Editor.Font);
+    for var I := 0 to 2 do
+      if (Str = OpenChars[I]) or (Str = CloseChars[I]) then
+      begin
+        Posi2 := Posi;
+        Posi2.Line := FEditor.LineToRow(Posi.Line); // regard wordwrap
+        Posi1 := FEditor.GetMatchingBracketEx(Posi);
+        Posi1.Line := FEditor.LineToRow(Posi1.Line);
+        Pix := CharToPixels(Posi2);
+        FEditor.Canvas.Brush.Style := bsClear;
+        FEditor.Canvas.Font.Assign(FEditor.Font);
 
-        if (TransientType = ttAfter) then begin
-          Editor.Canvas.Font.Color:= FConfiguration.AttrBrackets.Foreground;; // Editor.Font.Color;
-          Editor.Canvas.Font.Style := FConfiguration.AttrBrackets.Style;
-          Editor.Canvas.Brush.Color:= FConfiguration.AttrBrackets.Background; // Editor.Color;
-        end else begin
-          if Attri.Foreground <> clNone
-            then Editor.Canvas.Font.Color:= Attri.Foreground
-            else Editor.Canvas.Font.Color:= Editor.Font.Color;
-          vStructure:= Editor.GetStructureIndex(Editor.CaretY);
-          if vStructure = -1 then
-            if Attri.Background <> clNone
-              then Editor.Canvas.Brush.Color:= Attri.Background
-              else Editor.Canvas.Brush.Color:= Editor.Color
+        if (TransientType = ttAfter) then
+        begin
+          FEditor.Canvas.Font.Color := FConfiguration.AttrBrackets.ForeGround;
+          FEditor.Canvas.Font.Style := FConfiguration.AttrBrackets.Style;
+          FEditor.Canvas.Brush.Color := FConfiguration.AttrBrackets.BackGround;
+        end
+        else
+        begin
+          if Attri.ForeGround <> clNone then
+            FEditor.Canvas.Font.Color := Attri.ForeGround
           else
-            Editor.Canvas.Brush.Color:= Editor.GetStructureLineColor(P.Line, vStructure);
+            FEditor.Canvas.Font.Color := FEditor.Font.Color;
+          VStructure := FEditor.GetStructureIndex(FEditor.CaretY);
+          if VStructure = -1 then
+            if Attri.BackGround <> clNone then
+              FEditor.Canvas.Brush.Color := Attri.BackGround
+            else
+              FEditor.Canvas.Brush.Color := FEditor.Color
+          else
+            FEditor.Canvas.Brush.Color := FEditor.GetStructureLineColor
+              (Posi.Line, VStructure);
         end;
 
-        Editor.Canvas.TextOut(Pix.Char, Pix.Line + 1, S);
-        if (P1.Char > 0) and (P1.Line > 0) then begin
-          Pix := CharToPixels(P1);
-          if S = OpenChars[i]
-            then Editor.Canvas.TextOut(Pix.Char, Pix.Line+1, CloseChars[i])
-            else Editor.Canvas.TextOut(Pix.Char, Pix.Line+1, OpenChars[i]);
+        FEditor.Canvas.TextOut(Pix.Char, Pix.Line + 1, Str);
+        if (Posi1.Char > 0) and (Posi1.Line > 0) then
+        begin
+          Pix := CharToPixels(Posi1);
+          if Str = OpenChars[I] then
+            FEditor.Canvas.TextOut(Pix.Char, Pix.Line + 1, CloseChars[I])
+          else
+            FEditor.Canvas.TextOut(Pix.Char, Pix.Line + 1, OpenChars[I]);
         end;
       end;
-    Editor.Canvas.Brush.Style := bsSolid;
+    FEditor.Canvas.Brush.Style := bsSolid;
   end;
 end;
 
 procedure TFEditForm.SBParagraphClick(Sender: TObject);
-  // only works in comments in Lazarus
+// only works in comments in Lazarus
 begin
-  var Options:= Editor.Options;
-  if eoShowSpecialChars in Options
-    then Exclude(Options, eoShowSpecialChars)
-    else Include(Options, eoShowSpecialChars);
-  Editor.Options:= Options;
-  TBParagraph.Down:= (eoShowSpecialChars in Options);
+  var
+  Options := FEditor.Options;
+  if eoShowSpecialChars in Options then
+    Exclude(Options, eoShowSpecialChars)
+  else
+    Include(Options, eoShowSpecialChars);
+  FEditor.Options := Options;
+  TBParagraph.Down := (eoShowSpecialChars in Options);
 end;
 
 procedure TFEditForm.SBNumbersClick(Sender: TObject);
 begin
-  Editor.Gutter.ShowLineNumbers:= not Editor.Gutter.ShowLineNumbers;
+  FEditor.Gutter.ShowLineNumbers := not FEditor.Gutter.ShowLineNumbers;
 end;
 
 procedure TFEditForm.SBSystemOutPrintlnClick(Sender: TObject);
@@ -2744,26 +3195,28 @@ end;
 
 procedure TFEditForm.SBMatchBracketClick(Sender: TObject);
 begin
-  MatchBracket;
+  Matchbracket;
 end;
 
 procedure TFEditForm.SBBookmarkClick(Sender: TObject);
 begin
-  with Editor do
+  with FEditor do
     SetDeleteBookmark(CaretX, CaretY);
 end;
 
 procedure TFEditForm.SBGotoBookmarkClick(Sender: TObject);
 begin
-  var OldNumber:= Bookmark;
+  var
+  OldNumber := FBookmark;
   repeat
-    if Editor.IsBookmark(Bookmark) then begin
-      Editor.GotoBookmark(Bookmark);
-      Bookmark:= (Bookmark+1) mod 10;
+    if FEditor.IsBookmark(FBookmark) then
+    begin
+      FEditor.GotoBookMark(FBookmark);
+      FBookmark := (FBookmark + 1) mod 10;
       Exit;
     end;
-    Bookmark:= (Bookmark+1) mod 10;
-  until OldNumber = Bookmark;
+    FBookmark := (FBookmark + 1) mod 10;
+  until OldNumber = FBookmark;
 end;
 
 procedure TFEditForm.SBStatementClick(Sender: TObject);
@@ -2783,29 +3236,32 @@ end;
 
 procedure TFEditForm.SBWordWrapClick(Sender: TObject);
 begin
-  if Editor.WordWrap then begin
-    Editor.WordWrap:= false;
-    Editor.UseCodeFolding:= true;
-  end else begin
-    Editor.UseCodeFolding:= false;
-    Editor.WordWrap:= true;
+  if FEditor.WordWrap then
+  begin
+    FEditor.WordWrap := false;
+    FEditor.UseCodeFolding := True;
+  end
+  else
+  begin
+    FEditor.UseCodeFolding := false;
+    FEditor.WordWrap := True;
   end;
-  TBParagraph.Down:= Editor.WordWrap;
+  TBParagraph.Down := FEditor.WordWrap;
 end;
 
 procedure TFEditForm.SBZoomInClick(Sender: TObject);
 begin
-  SetFontSize(+1)
+  SetFontSize(+1);
 end;
 
 procedure TFEditForm.SBZoomOutClick(Sender: TObject);
 begin
-  SetFontSize(-1)
+  SetFontSize(-1);
 end;
 
 procedure TFEditForm.SBBreakpointClick(Sender: TObject);
 begin
-  if isJava then
+  if IsJava then
     InsertBreakpoint;
 end;
 
@@ -2816,657 +3272,799 @@ begin
 end;
 
 procedure TFEditForm.SBCommentClick(Sender: TObject);
-  var i, p, from, _to: Integer; s: string;
-      p1, p2: TBufferCoord;
+var
+  Posi, From, Till: Integer;
+  Str: string;
+  Posi1, Posi2: TBufferCoord;
 begin
-  with Editor do begin
+  with FEditor do
+  begin
     BeginUpdate;
-    if SelAvail then begin
-      from:= BlockBegin.Line;
-      _to:= BlockEnd.Line;
-      p1:= BlockBegin;
-      p2:= BlockEnd;
-      end
-    else begin
-      from:= CaretY; p1.Char:= CaretX; p1.Line:= CaretY;
-      _to:= CaretY; p2.Char:= 0;
+    if SelAvail then
+    begin
+      From := BlockBegin.Line;
+      Till := BlockEnd.Line;
+      Posi1 := BlockBegin;
+      Posi2 := BlockEnd;
+    end
+    else
+    begin
+      From := CaretY;
+      Posi1.Char := CaretX;
+      Posi1.Line := CaretY;
+      Till := CaretY;
+      Posi2.Char := 0;
     end;
-    for i:= from to _to do begin
-      s:= Lines[i-1];
-      p:= Pos('//', s);
-      if p = 1
-        then delete(s, p, 2)
-        else s:= '//' + s;
-      Lines[i-1]:= s;
+    for var I := From to Till do
+    begin
+      Str := Lines[I - 1];
+      Posi := Pos('//', Str);
+      if Posi = 1 then
+        Delete(Str, Posi, 2)
+      else
+        Str := '//' + Str;
+      Lines[I - 1] := Str;
     end;
-    if p2.Char <> 0 then begin
-      BlockBegin:= p1;
-      BlockEnd:= p2;
+    if Posi2.Char <> 0 then
+    begin
+      BlockBegin := Posi1;
+      BlockEnd := Posi2;
     end;
     EndUpdate;
   end;
-  Modified:= true;
-  Editor.InvalidateLines(from, _to);
+  Modified := True;
+  FEditor.InvalidateLines(From, Till);
 end;
 
 procedure TFEditForm.SBStructureIndentClick(Sender: TObject);
-  var Ci, it: IModelIterator;
-      cent: TClassifier;
-      Method: TOperation;
-      Attribute: TAttribute;
-      i: integer; aChanged: boolean;
+var
+  ClassIt, Ite: IModelIterator;
+  Cent: TClassifier;
+  Method: TOperation;
+  Attribute: TAttribute;
+  AChanged: Boolean;
 
-  procedure IndentLine(j: integer);
-    var i, l, p: integer; s: string;
+  procedure IndentLine(Num: Integer);
+  var
+    Int, Len, Posi: Integer;
+    Str: string;
   begin
-    if (j <= 0) or (j > Editor.Lines.Count) then exit;
-    i:= Editor.GetStructureIndent(j);
-    if i >= 0 then begin
-      p:= 1;
-      s:= Editor.Lines[j-1];
-      l:= Length(s);
-      while (p <= l) and (s[p] <= ' ') do
-        inc(p);
-      dec(p);
-      if p < i then begin
-        Editor.Lines[j-1]:= StringOfChar(' ', i-p) + s;
-        aChanged:= true;
-      end else if p > i then begin
-        Editor.Lines[j-1]:= copy(s, p-i+1, l);
-        aChanged:= true;
+    if (Num <= 0) or (Num > FEditor.Lines.Count) then
+      Exit;
+    Int := FEditor.GetStructureIndent(Num);
+    if Int >= 0 then
+    begin
+      Posi := 1;
+      Str := FEditor.Lines[Num - 1];
+      Len := Length(Str);
+      while (Posi <= Len) and (Str[Posi] <= ' ') do
+        Inc(Posi);
+      Dec(Posi);
+      if Posi < Int then
+      begin
+        FEditor.Lines[Num - 1] := StringOfChar(' ', Int - Posi) + Str;
+        AChanged := True;
+      end
+      else if Posi > Int then
+      begin
+        FEditor.Lines[Num - 1] := Copy(Str, Posi - Int + 1, Len);
+        AChanged := True;
       end;
     end;
   end;
 
 begin
-  Screen.Cursor:= crHourglass;
-  aChanged:= false;
-  with Editor do begin
+  Screen.Cursor := crHourGlass;
+  AChanged := false;
+  with FEditor do
+  begin
     BeginUpdate;
-    LockBuildStructure:= true;
-    Ci:= Model.ModelRoot.GetAllClassifiers;
-    while Ci.HasNext do begin
-      cent:= TClassifier(Ci.Next);
-      for i:= Cent.LineS to Cent.LineSE do
-        IndentLine(i);
+    LockBuildStructure := True;
+    ClassIt := FModel.ModelRoot.GetAllClassifiers;
+    while ClassIt.HasNext do
+    begin
+      Cent := TClassifier(ClassIt.Next);
+      for var I := Cent.Lines to Cent.LineSE do
+        IndentLine(I);
       IndentLine(Cent.LineE);
-      it:= (Cent as TClassifier).GetAttributes;
-      while it.HasNext do begin
-        Attribute:= it.Next as TAttribute;
-        IndentLine(Attribute.LineS);
+      Ite := Cent.GetAttributes;
+      while Ite.HasNext do
+      begin
+        Attribute := Ite.Next as TAttribute;
+        IndentLine(Attribute.Lines);
       end;
-      it:= (cent as TClassifier).GetOperations;
-      while it.HasNext do begin
-        Method:= it.Next as TOperation;
-        for i:= Method.LineS to Method.LineE do
-          IndentLine(i);
+      Ite := Cent.GetOperations;
+      while Ite.HasNext do
+      begin
+        Method := Ite.Next as TOperation;
+        for var I := Method.Lines to Method.LineE do
+          IndentLine(I);
       end;
     end;
-    LockBuildStructure:= false;
+    LockBuildStructure := false;
     EndUpdate;
     Invalidate;
   end;
-  Modified:= Modified or aChanged;
-  Screen.Cursor:= crDefault;
+  Modified := Modified or AChanged;
+  Screen.Cursor := crDefault;
 end;
 
-function TFEditForm.getMarksBreakpoints: string;
+function TFEditForm.GetMarksBreakpoints: string;
 begin
-  var s:= '';
-  with Editor do
-    for var i:= 0 to Marks.Count-1 do begin
-      var Mark:= TSynEditMark(Marks[i]);
+  var
+  Str := '';
+  with FEditor do
+    for var I := 0 to Marks.Count - 1 do
+    begin
+      var
+      Mark := TSynEditMark(Marks[I]);
       if Mark.Visible then
         if Mark.IsBookmark then
-          s:= s + 'M' + IntToStr(Mark.Line)
-        else if Mark.ImageIndex = BreakPointImageIndex then
-          s:= s + 'B' + IntToStr(Mark.Line);
+          Str := Str + 'M' + IntToStr(Mark.Line)
+        else if Mark.ImageIndex = BreakpointImageIndex then
+          Str := Str + 'B' + IntToStr(Mark.Line);
     end;
-  Result:= s;
+  Result := Str;
 end;
 
 procedure TFEditForm.SetMarksBreakpoints(MarkBreakpoint: string);
-  var line, p:integer;
-      IstBookmark: boolean;
+var
+  Line, Posi: Integer;
+  IstBookmark: Boolean;
 begin
-  if MarkBreakpoint = '' then exit;
-  while MarkBreakpoint <> ')' do begin
-    IstBookmark:= MarkBreakpoint[1] = 'M';
-    p:= 2;
-    while ('0' <= MarkBreakpoint[p]) and (MarkBreakpoint[p] <= '9') do
-      inc(p);
-    line:= StrToInt(Copy(MarkBreakpoint, 2, p-2));
-    Delete(MarkBreakpoint, 1, p-1);
-    if IstBookmark
-      then SetDeleteBookmark(1, line)
-      else InsertBreakpointMark(line);
+  if MarkBreakpoint = '' then
+    Exit;
+  while MarkBreakpoint <> ')' do
+  begin
+    IstBookmark := MarkBreakpoint[1] = 'M';
+    Posi := 2;
+    while ('0' <= MarkBreakpoint[Posi]) and (MarkBreakpoint[Posi] <= '9') do
+      Inc(Posi);
+    Line := StrToInt(Copy(MarkBreakpoint, 2, Posi - 2));
+    Delete(MarkBreakpoint, 1, Posi - 1);
+    if IstBookmark then
+      SetDeleteBookmark(1, Line)
+    else
+      InsertBreakpointMark(Line);
   end;
 end;
 
 function TFEditForm.GetFormType: string;
 begin
-  Result:= '%E%';
+  Result := '%E%';
 end;
 
 function TFEditForm.GetState: string;
 begin
-  var s:= inherited GetState;
-  s:= s + 'P' + trim(Parameter) + '%P%' +
-          'O' + IntToStr(StartOption) +
-          'T' + IntToStr(Editor.TopLine) + ')' +
-          'X' + IntToStr(Editor.CaretX)  + ')' +
-          'Y' + IntToStr(Editor.CaretY)  + ')' +
-          //'W' + IntToStr(PLeft.Width)    + ')'+
-                 getMarksBreakpoints     + ')';
-  if eoShowSpecialChars in Editor.Options then
-    s:= s + 'P';
-  if Editor.Gutter.ShowLineNumbers then
-    s:= s + '#';
-  if assigned(Partner) then
-    s:= s + 'G';
-  Result:= s + ')';
+  var
+  Str := inherited GetState;
+  Str := Str + 'P' + Trim(FParameter) + '%P%' + 'O' + IntToStr(FStartOption) +
+    'T' + IntToStr(FEditor.TopLine) + ')' + 'X' + IntToStr(FEditor.CaretX) + ')'
+    + 'Y' + IntToStr(FEditor.CaretY) + ')' + GetMarksBreakpoints + ')';
+  if eoShowSpecialChars in FEditor.Options then
+    Str := Str + 'P';
+  if FEditor.Gutter.ShowLineNumbers then
+    Str := Str + '#';
+  if Assigned(Partner) then
+    Str := Str + 'G';
+  Result := Str + ')';
 end;
 
-procedure TFEditForm.SetState(var s: string);
-  var p: integer;
+procedure TFEditForm.SetState(var Str: string);
+var
+  Posi: Integer;
 begin
-  Editor.BeginUpdate;
-  inherited SetState(s);
-  if copy(s, 1, 1) = 'P' then begin
-    p:= Pos('%P%', s);
-    Parameter:= Copy(s, 2, p-2);
-    delete(s, 1, p+2);
+  FEditor.BeginUpdate;
+  inherited SetState(Str);
+  if Copy(Str, 1, 1) = 'P' then
+  begin
+    Posi := Pos('%P%', Str);
+    FParameter := Copy(Str, 2, Posi - 2);
+    Delete(Str, 1, Posi + 2);
   end;
-  if copy(s, 1, 1) = 'O' then begin
-    StartOption:= StrToInt(Copy(s, 2, 1));
-    delete(s, 1, 2);
-  end else
-    StartOption:= 0;
-  if copy(s, 1, 1) = 'T' then begin
-    p:= Pos(')', s);
-    Editor.TopLine:= StrToInt(Copy(s, 2, p-2));
-    Delete(s, 1, p);
+  if Copy(Str, 1, 1) = 'O' then
+  begin
+    FStartOption := StrToInt(Copy(Str, 2, 1));
+    Delete(Str, 1, 2);
+  end
+  else
+    FStartOption := 0;
+  if Copy(Str, 1, 1) = 'T' then
+  begin
+    Posi := Pos(')', Str);
+    FEditor.TopLine := StrToInt(Copy(Str, 2, Posi - 2));
+    Delete(Str, 1, Posi);
 
-    p:= Pos(')', s);
-    Editor.CaretX:= StrToInt(Copy(s, 2, p-2));
-    Delete(s, 1, p);
+    Posi := Pos(')', Str);
+    FEditor.CaretX := StrToInt(Copy(Str, 2, Posi - 2));
+    Delete(Str, 1, Posi);
 
-    p:= Pos(')', s);
-    Editor.CaretY:= StrToInt(Copy(s, 2, p-2));
-    Delete(s, 1, p);
+    Posi := Pos(')', Str);
+    FEditor.CaretY := StrToInt(Copy(Str, 2, Posi - 2));
+    Delete(Str, 1, Posi);
 
-    if (length(s) > 0) and (s[1] = 'W') then begin
-      p:= Pos(')', s);
-      Delete(s, 1, p);
+    if (Length(Str) > 0) and (Str[1] = 'W') then
+    begin
+      Posi := Pos(')', Str);
+      Delete(Str, 1, Posi);
     end;
   end;
 
-  if (copy(s, 1, 1) = 'M') or (copy(s, 1, 1) = 'B') then begin
-    p:= Pos(')', s);
-    SetMarksBreakpoints(Copy(s, 1, p));
-    Delete(s, 1, p);
-  end else
-    Delete(s, 1, 1);
+  if (Copy(Str, 1, 1) = 'M') or (Copy(Str, 1, 1) = 'B') then
+  begin
+    Posi := Pos(')', Str);
+    SetMarksBreakpoints(Copy(Str, 1, Posi));
+    Delete(Str, 1, Posi);
+  end
+  else
+    Delete(Str, 1, 1);
 
-  if copy(s, 1, 1) = 'P' then begin
+  if Copy(Str, 1, 1) = 'P' then
+  begin
     SBParagraphClick(Self);
-    Delete(s, 1, 1);
+    Delete(Str, 1, 1);
   end;
 
-  if copy(s, 1, 1) = '#' then begin
-    Editor.Gutter.ShowLineNumbers:= true;
-    Delete(s, 1, 1);
+  if Copy(Str, 1, 1) = '#' then
+  begin
+    FEditor.Gutter.ShowLineNumbers := True;
+    Delete(Str, 1, 1);
   end;
 
-  if copy(s, 1, 1) = 'G' then // GUI
+  if Copy(Str, 1, 1) = 'G' then // GUI
     SBDesignformClick(Self);
 
-  Editor.EnsureCursorPosVisible;
-  Editor.EndUpdate;
+  FEditor.EnsureCursorPosVisible;
+  FEditor.EndUpdate;
 end;
 
-function TFEditForm.getWidthAndHeight: TPoint;
-  var p, line: integer; s: string;
+function TFEditForm.GetWidthAndHeight: TPoint;
+var
+  Posi, Line: Integer;
+  Str: string;
 begin
-  Result.X:= 300;
-  Result.Y:= 300;
-  if isApplet then begin
-    line:= getLineNumberWith('cp.setBounds(');
-    if line >= 0 then begin
-      s:= Editor.Lines[line];
-      p:= Pos('cp.setBounds(0, 0, ', s);
-      if p > 0 then begin
-        delete(s, 1, p + length('cp.setBounds(0, 0, ')-1);
-        p:= Pos(',', s);
-        TryStrToInt(copy(s, 1, p-1), Result.X);
-        delete(s, 1, p);
-        p:= Pos(')', s);
-        TryStrToInt(copy(s, 1, p-1), Result.Y);
+  Result.X := 300;
+  Result.Y := 300;
+  if IsApplet then
+  begin
+    Line := GetLineNumberWith('cp.setBounds(');
+    if Line >= 0 then
+    begin
+      Str := FEditor.Lines[Line];
+      Posi := Pos('cp.setBounds(0, 0, ', Str);
+      if Posi > 0 then
+      begin
+        Delete(Str, 1, Posi + Length('cp.setBounds(0, 0, ') - 1);
+        Posi := Pos(',', Str);
+        TryStrToInt(Copy(Str, 1, Posi - 1), Result.X);
+        Delete(Str, 1, Posi);
+        Posi := Pos(')', Str);
+        TryStrToInt(Copy(Str, 1, Posi - 1), Result.Y);
       end;
     end;
   end
-  else if FrameType = 8 then begin
-    line:= getLineNumberWith('new Scene(root');
-    if line >= 0 then begin
-      s:= Editor.Lines[line];
-      p:= Pos('new Scene(root, ', s);
-      delete(s, 1, p + 15);
-      p:= Pos(',', s);
-      TryStrToInt(trim(copy(s, 1, p-1)), Result.X);
-      delete(s, 1, p);
-      p:= Pos(')', s);
-      TryStrToInt(trim(copy(s, 1, p-1)), Result.Y);
-    end
-  end else begin
-    line:= getLineNumberWith('frameWidth');
-    if line >= 0 then begin
-      s:= Editor.Lines[line];
-      p:= Pos('=', s); delete(s, 1, p);
-      p:= Pos(';', s); delete(s, p, 255);
-      TryStrToInt(Trim(s), Result.X);
+  else if FFrameType = 8 then
+  begin
+    Line := GetLineNumberWith('new Scene(root');
+    if Line >= 0 then
+    begin
+      Str := FEditor.Lines[Line];
+      Posi := Pos('new Scene(root, ', Str);
+      Delete(Str, 1, Posi + 15);
+      Posi := Pos(',', Str);
+      TryStrToInt(Trim(Copy(Str, 1, Posi - 1)), Result.X);
+      Delete(Str, 1, Posi);
+      Posi := Pos(')', Str);
+      TryStrToInt(Trim(Copy(Str, 1, Posi - 1)), Result.Y);
     end;
-    line:= getLineNumberWith('frameHeight');
-    if line >= 0 then begin
-      s:= Editor.Lines[line];
-      p:= Pos('=', s); delete(s, 1, p);
-      p:= Pos(';', s); delete(s, p, 255);
-      TryStrToInt(Trim(s), Result.Y);
+  end
+  else
+  begin
+    Line := GetLineNumberWith('frameWidth');
+    if Line >= 0 then
+    begin
+      Str := FEditor.Lines[Line];
+      Posi := Pos('=', Str);
+      Delete(Str, 1, Posi);
+      Posi := Pos(';', Str);
+      Delete(Str, Posi, 255);
+      TryStrToInt(Trim(Str), Result.X);
+    end;
+    Line := GetLineNumberWith('frameHeight');
+    if Line >= 0 then
+    begin
+      Str := FEditor.Lines[Line];
+      Posi := Pos('=', Str);
+      Delete(Str, 1, Posi);
+      Posi := Pos(';', Str);
+      Delete(Str, Posi, 255);
+      TryStrToInt(Trim(Str), Result.Y);
     end;
   end;
 end;
 
-procedure TFEditForm.ChangeWidthAndHeight(w, h: integer);
+procedure TFEditForm.ChangeWidthAndHeight(Width, Height: Integer);
 begin
-  ReplaceLine('int frameWidth', FConfiguration.Indent2 + 'int frameWidth = ' + IntToStr(w) + ';');
-  ReplaceLine('int frameHeight', FConfiguration.Indent2 + 'int frameHeight = ' + IntToStr(h) + ';');
+  ReplaceLine('int frameWidth', FConfiguration.Indent2 + 'int frameWidth = ' +
+    IntToStr(Width) + ';');
+  ReplaceLine('int frameHeight', FConfiguration.Indent2 + 'int frameHeight = ' +
+    IntToStr(Height) + ';');
 end;
 
-procedure TFEditForm.ReplaceLine(const s1, s2: string);
+procedure TFEditForm.ReplaceLine(const Str1, Str2: string);
 begin
-  var line:= getLineNumberWith(s1);
-  if (0 <= line) and (line < Editor.Lines.Count) then begin
-    Editor.Lines[line]:= s2;
-    Modified:= true;
+  var
+  Line := GetLineNumberWith(Str1);
+  if (0 <= Line) and (Line < FEditor.Lines.Count) then
+  begin
+    FEditor.Lines[Line] := Str2;
+    Modified := True;
   end;
 end;
 
-procedure TFEditForm.ReplaceLineWith(line: integer; const s: string);
+procedure TFEditForm.ReplaceLineWith(Line: Integer; const Str: string);
 begin
-  if (0 <= line) and (line < Editor.Lines.Count) then begin
-    Editor.Lines[line]:= s;
-    Modified:= true;
+  if (0 <= Line) and (Line < FEditor.Lines.Count) then
+  begin
+    FEditor.Lines[Line] := Str;
+    Modified := True;
   end;
 end;
 
-procedure TFEditForm.ReplaceLineInLine(line: integer; const old, aNew: string);
+procedure TFEditForm.ReplaceLineInLine(Line: Integer; const Old, ANew: string);
 begin
-  if (0 <= line) and (line < Editor.Lines.Count) then begin
-    var s:= Editor.Lines[line];
-    var p:= pos(old, s);
-    if p = 0
-      then s:= ''
-      else s:= copy(s, p + length(old), length(s)); // preserve comments
-    Editor.Lines[line]:= aNew + s;
-    Modified:= true;
+  if (0 <= Line) and (Line < FEditor.Lines.Count) then
+  begin
+    var
+    Str := FEditor.Lines[Line];
+    var
+    Posi := Pos(Old, Str);
+    if Posi = 0 then
+      Str := ''
+    else
+      Str := Copy(Str, Posi + Length(Old), Length(Str)); // preserve comments
+    FEditor.Lines[Line] := ANew + Str;
+    Modified := True;
   end;
 end;
 
-procedure TFEditForm.ReplaceText(const s1, s2: string; all: boolean);
-  var line, i: integer;
+procedure TFEditForm.ReplaceText(const Str1, Str2: string; All: Boolean);
+var
+  Line: Integer;
 begin
-  if s1 = s2 then exit;
-  Editor.BeginUpdate;
-  line:= getLineNumberWith(s1);
-  if line >= 0 then begin
-    Editor.Lines[line]:= ReplaceStr(Editor.Lines[line], s1, s2);
-    if all then
-      for i:= line + 1 to Editor.Lines.Count - 1 do
-        if Pos(s1, Editor.Lines[i]) > 0 then
-          Editor.Lines[i]:= ReplaceStr(Editor.Lines[i], s1, s2);
-    Modified:= true;
+  if Str1 = Str2 then
+    Exit;
+  FEditor.BeginUpdate;
+  Line := GetLineNumberWith(Str1);
+  if Line >= 0 then
+  begin
+    FEditor.Lines[Line] := ReplaceStr(FEditor.Lines[Line], Str1, Str2);
+    if All then
+      for var I := Line + 1 to FEditor.Lines.Count - 1 do
+        if Pos(Str1, FEditor.Lines[I]) > 0 then
+          FEditor.Lines[I] := ReplaceStr(FEditor.Lines[I], Str1, Str2);
+    Modified := True;
   end;
-  Editor.EndUpdate;
+  FEditor.EndUpdate;
 end;
 
-procedure TFEditForm.ReplaceTextWithRegex(const reg, s: string; all: boolean;
-                                          from: integer = -1; till: integer = -1);
-  var line, ends: integer; ws1: string;
-      RegEx: TRegEx;
+procedure TFEditForm.ReplaceTextWithRegex(const Reg, Str: string; All: Boolean;
+From: Integer = -1; Till: Integer = -1);
+var
+  Line, Ends: Integer;
+  WS1: string;
+  RegEx: TRegEx;
 begin
-  Editor.BeginUpdate;
-  RegEx := CompiledRegEx(reg);
-  if from = -1
-    then line:= getLNGStartAttributes
-    else line:= from;
-  if till = -1
-    then ends:= getLineNumberWith(_(LNGEndEventMethods))
-    else ends:= till;
-  while line <= ends do begin
-    ws1:= Editor.Lines[line];
-    if RegEx.Matches(ws1).Count > 0 then begin
-      Editor.Lines[line]:= RegEx.Replace(ws1, reg, s);
-      Modified:= true;
+  FEditor.BeginUpdate;
+  RegEx := CompiledRegEx(Reg);
+  if From = -1 then
+    Line := GetLNGStartAttributes
+  else
+    Line := From;
+  if Till = -1 then
+    Ends := GetLineNumberWith(_(LNGEndEventMethods))
+  else
+    Ends := Till;
+  while Line <= Ends do
+  begin
+    WS1 := FEditor.Lines[Line];
+    if RegEx.Matches(WS1).Count > 0 then
+    begin
+      FEditor.Lines[Line] := RegEx.Replace(WS1, Reg, Str);
+      Modified := True;
     end;
-    if not all then
-      break;
-    inc(line);
+    if not All then
+      Break;
+    Inc(Line);
   end;
-  Editor.EndUpdate;
+  FEditor.EndUpdate;
 end;
 
-procedure TFEditForm.ReplaceWord(const s1, s2: string; all: boolean);
-  var line: integer; ws1, RegExExpr: string;
-      RegEx: TRegEx; Matches: TMatchCollection; Group: TGroup;
+procedure TFEditForm.ReplaceWord(const Str1, Str2: string; All: Boolean);
+var
+  Line: Integer;
+  WS1, RegExExpr: string;
+  RegEx: TRegEx;
+  Matches: TMatchCollection;
+  Group: TGroup;
 begin
-  if (s1 = s2) or (s1 = '') then exit;
-  Editor.BeginUpdate;
+  if (Str1 = Str2) or (Str1 = '') then
+    Exit;
+  FEditor.BeginUpdate;
   // '(' + s1 + ')' is Groups[1]
-  RegExExpr:= '\b(' + TRegEx.Escape(s1) +
-                ')(BG|TG|TB|Title|Polyline|RB\d+|Tab\d+)?';
-  if not isWordBreakChar(s1[length(s1)]) then
-    RegExExpr:= RegExExpr + '\b';
+  RegExExpr := '\b(' + TRegEx.Escape(Str1) +
+    ')(BG|TG|TB|Title|Polyline|RB\d+|Tab\d+)?';
+  if not IsWordBreakChar(Str1[Length(Str1)]) then
+    RegExExpr := RegExExpr + '\b';
   RegEx := CompiledRegEx(RegExExpr);
-  line:= getLineNumberWithFrom(0, s1);
-  while line >= 0 do begin // for every line
-    ws1:= Editor.Lines[line];
-    Matches:= RegEx.Matches(ws1);
-    for var i:= Matches.count - 1 downto 0 do begin
-      Group:= Matches.Item[i].Groups[1];
-      delete(ws1, Group.Index, Group.Length);
-      insert(s2, ws1, Group.Index);
+  Line := GetLineNumberWithFrom(0, Str1);
+  while Line >= 0 do
+  begin // for every Line
+    WS1 := FEditor.Lines[Line];
+    Matches := RegEx.Matches(WS1);
+    for var I := Matches.Count - 1 downto 0 do
+    begin
+      Group := Matches[I].Groups[1];
+      Delete(WS1, Group.Index, Group.Length);
+      Insert(Str2, WS1, Group.Index);
     end;
-    Editor.Lines[line]:= ws1;
-    line:= getLineNumberWithFrom(line+1, s1);
-    Modified:= true;
-    if not all then
-      break;
+    FEditor.Lines[Line] := WS1;
+    Line := GetLineNumberWithFrom(Line + 1, Str1);
+    Modified := True;
+    if not All then
+      Break;
   end;
-  Editor.EndUpdate;
+  FEditor.EndUpdate;
 end;
 
-procedure TFEditForm.ReplaceComponentname(const s1, s2: string; Events: string);
-  var line: integer; ws1, RegExExpr: string;
-      RegEx: TRegEx; Matches: TMatchCollection; Group: TGroup;
+procedure TFEditForm.ReplaceComponentname(const Str1, Str2: string;
+Events: string);
+var
+  Line: Integer;
+  WS1, RegExExpr: string;
+  RegEx: TRegEx;
+  Matches: TMatchCollection;
+  Group: TGroup;
 begin
-  if s1 = s2 then exit;
-  Editor.BeginUpdate;
-  ReplaceWord(s1, s2, true);
-  while Pos('|', events) = 1 do
-    delete(events, 1, 1);
-  while (length(events) > 0) and (events[length(events)] = '|') do
-    delete(events, length(events), 1);
-  events:= events + '|Action';   // dubious todo
-  events:= MakeUpperEvents(events);
+  if Str1 = Str2 then
+    Exit;
+  FEditor.BeginUpdate;
+  ReplaceWord(Str1, Str2, True);
+  while Pos('|', Events) = 1 do
+    Delete(Events, 1, 1);
+  while (Length(Events) > 0) and (Events[Length(Events)] = '|') do
+    Delete(Events, Length(Events), 1);
+  Events := Events + '|Action'; // dubious todo
+  Events := MakeUpperEvents(Events);
 
   // '(' + s1 + ')' is Groups[1]
-  RegExExpr:= '\b(' + TRegEx.Escape(s1) + ')_(' + events + ')\b';
+  RegExExpr := '\b(' + TRegEx.Escape(Str1) + ')_(' + Events + ')\b';
   RegEx := CompiledRegEx(RegExExpr);
-  line:= getLineNumberWithFrom(0, s1);
-  while line >= 0 do begin // for every line
-    ws1:= Editor.Lines[line];
-    Matches:= RegEx.Matches(ws1);
-    for var i:= Matches.count - 1 downto 0 do begin
-      Group:= Matches.Item[i].Groups[1];
-      delete(ws1, Group.Index, Group.Length);
-      insert(s2, ws1, Group.Index);
+  Line := GetLineNumberWithFrom(0, Str1);
+  while Line >= 0 do
+  begin // for every Line
+    WS1 := FEditor.Lines[Line];
+    Matches := RegEx.Matches(WS1);
+    for var I := Matches.Count - 1 downto 0 do
+    begin
+      Group := Matches[I].Groups[1];
+      Delete(WS1, Group.Index, Group.Length);
+      Insert(Str2, WS1, Group.Index);
     end;
-    Editor.Lines[line]:= ws1;
-    line:= getLineNumberWithFrom(line+1, s1);
-    Modified:= true;
+    FEditor.Lines[Line] := WS1;
+    Line := GetLineNumberWithFrom(Line + 1, Str1);
+    Modified := True;
   end;
-  Editor.EndUpdate;
+  FEditor.EndUpdate;
 end;
 
-procedure TFEditForm.ReplaceAttributAt(const At, key, s: string);
+procedure TFEditForm.ReplaceAttributAt(const AtLine, Key, Str: string);
 begin
-  with Editor do begin
+  with FEditor do
+  begin
     BeginUpdate;
-    var line:= getLineNumberWith(key);
-    if line >= 0 then
-      DeleteLine(line);
-    InsertAttributAfter(At, s);
+    var
+    Line := GetLineNumberWith(Key);
+    if Line >= 0 then
+      DeleteLine(Line);
+    InsertAttributAfter(AtLine, Str);
     EndUpdate;
   end;
 end;
 
-procedure TFEditForm.ReplaceAttribute(const key, s: string);
+procedure TFEditForm.ReplaceAttribute(const Key, Str: string);
 begin
-  var line:= getLineNumberWith(key);
-  if line >= 0 then begin
-    Editor.Lines[line]:= s;
-    Modified:= true;
-  end else
-    InsertAttribute(0, s);
+  var
+  Line := GetLineNumberWith(Key);
+  if Line >= 0 then
+  begin
+    FEditor.Lines[Line] := Str;
+    Modified := True;
+  end
+  else
+    InsertAttribute(0, Str);
 end;
 
 procedure TFEditForm.ReplaceMethod(var Method: TOperation; const New: string);
 begin
-  Editor.BeginUpdate;
-  DeleteBlock(Method.LineS-1, Method.LineE-1);
-  DeleteEmptyLines(Method.LineS-1);
-  InsertLinesAt(Method.LineS-1, New);
-  Editor.EndUpdate;
+  FEditor.BeginUpdate;
+  DeleteBlock(Method.Lines - 1, Method.LineE - 1);
+  DeleteEmptyLines(Method.Lines - 1);
+  InsertLinesAt(Method.Lines - 1, New);
+  FEditor.EndUpdate;
 end;
 
-procedure TFEditForm.setAttributValue(const Container, key, s: string; after: integer);
-  var line, till: integer;
+procedure TFEditForm.SetAttributValue(const Container, Key, Str: string;
+After: Integer);
+var
+  Line, Till: Integer;
 begin
-  line:= getLineNumberWith(' ' + key);
-  if FrameType = 8
-    then till:= getLineNumberWith('primaryStage.show()')
-    else till:= getLineNumberWith(_(LNGEndComponents));
-  if (line >= 0) and (line < till) then begin
-    if trim(s) = ''
-      then DeleteLine(line)
-      else Editor.Lines[line]:= s;
-    Modified:= true;
-  end else begin
-    line:= getLineNumberWith(Container);
-    if line = -1 then
-      line:= getLineNumberWith(_(LNGEndComponents))
-    else if after = 1 then
-      inc(line);
-    if line >= 0 then begin
-      InsertLinesAt(line, s);
-      Modified:= true;
+  Line := GetLineNumberWith(' ' + Key);
+  if FFrameType = 8 then
+    Till := GetLineNumberWith('primaryStage.show()')
+  else
+    Till := GetLineNumberWith(_(LNGEndComponents));
+  if (Line >= 0) and (Line < Till) then
+  begin
+    if Trim(Str) = '' then
+      DeleteLine(Line)
+    else
+      FEditor.Lines[Line] := Str;
+    Modified := True;
+  end
+  else
+  begin
+    Line := GetLineNumberWith(Container);
+    if Line = -1 then
+      Line := GetLineNumberWith(_(LNGEndComponents))
+    else if After = 1 then
+      Inc(Line);
+    if Line >= 0 then
+    begin
+      InsertLinesAt(Line, Str);
+      Modified := True;
     end;
   end;
 end;
 
-procedure TFEditForm.insertAttributValue(const destination, s: string; after: integer);
+procedure TFEditForm.InsertAttributValue(const Destination, Str: string;
+After: Integer);
 begin
-  var till:= getLNGEndComponents;
-  var line:= getLineNumberWithWordFrom(getLNGStartComponents, destination);
-  if (line = -1) or (line >= till) then
-    line:= till
-  else if after = 1 then begin
-    inc(line);
-    while (line < till) and hasComponent(destination, line) do
-      inc(line);
+  var
+  Till := GetLNGEndComponents;
+  var
+  Line := GetLineNumberWithWordFrom(GetLNGStartComponents, Destination);
+  if (Line = -1) or (Line >= Till) then
+    Line := Till
+  else if After = 1 then
+  begin
+    Inc(Line);
+    while (Line < Till) and HasComponent(Destination, Line) do
+      Inc(Line);
   end;
-  if line >= 0 then begin
-    InsertLinesAt(line, s);
-    Modified:= true;
-  end;
-end;
-
-function TFEditForm.hasComponent(const key: string; line: integer): boolean;
-  var RegEx: string;
-begin
-  if Pos(FConfiguration.Indent2, key) = 1
-    then RegEx := '^' + key + '\b'
-    else RegEx := '^[ \t]*' + key + '\b';
-  Result:= TRegEx.IsMatch(Editor.Lines[line], RegEx);
-end;
-
-function TFEditForm.containsWord(const key: string; line: integer): boolean;
-begin
-  Result:= TRegEx.IsMatch(Editor.Lines[line], '\b' + key + '\b');
-end;
-
-procedure TFEditForm.ChangeAttributValue(const key, s: string);
-begin
-  var line:= getLineNumberWith(' ' + key);
-  if line >= 0 then begin
-    Editor.Lines[line]:= s;
-    Modified:= true;
-  end else
-    setAttributValue('', key, s,0);
-end;
-
-procedure TFEditForm.ChangeAttributValue(const container, key, s: string);
-begin
-  var line:= getLineNumberWith(' ' + key);
-  if line >= 0 then begin
-    Editor.Lines[line]:= s;
-    Modified:= true;
-  end else
-    setAttributValue(container, key, s, 0);
-end;
-
-procedure TFEditForm.InsertAttributAfter(const At, Attribute: string);
-begin
-  var line:= getLineNumberWith(At);
-  if line >= 0 then begin
-    InsertLinesAt(line + 1, Attribute);
-    Modified:= true;
+  if Line >= 0 then
+  begin
+    InsertLinesAt(Line, Str);
+    Modified := True;
   end;
 end;
 
-procedure TFEditForm.InsertLinesAt(line: integer; s: string);
-  var cx, cy, tl, cl: integer; collapsed: boolean;
+function TFEditForm.HasComponent(const Key: string; Line: Integer): Boolean;
+var
+  RegEx: string;
 begin
-  if not endsWith(s, CrLf) then
-    s:= s + CrLf;
-  with Editor do begin
+  if Pos(FConfiguration.Indent2, Key) = 1 then
+    RegEx := '^' + Key + '\b'
+  else
+    RegEx := '^[ \t]*' + Key + '\b';
+  Result := TRegEx.IsMatch(FEditor.Lines[Line], RegEx);
+end;
+
+function TFEditForm.ContainsWord(const Key: string; Line: Integer): Boolean;
+begin
+  Result := TRegEx.IsMatch(FEditor.Lines[Line], '\b' + Key + '\b');
+end;
+
+procedure TFEditForm.ChangeAttributValue(const Key, Str: string);
+begin
+  var
+  Line := GetLineNumberWith(' ' + Key);
+  if Line >= 0 then
+  begin
+    FEditor.Lines[Line] := Str;
+    Modified := True;
+  end
+  else
+    SetAttributValue('', Key, Str, 0);
+end;
+
+procedure TFEditForm.ChangeAttributValue(const Container, Key, Str: string);
+begin
+  var
+  Line := GetLineNumberWith(' ' + Key);
+  if Line >= 0 then
+  begin
+    FEditor.Lines[Line] := Str;
+    Modified := True;
+  end
+  else
+    SetAttributValue(Container, Key, Str, 0);
+end;
+
+procedure TFEditForm.InsertAttributAfter(const AtLine, Attribute: string);
+begin
+  var
+  Line := GetLineNumberWith(AtLine);
+  if Line >= 0 then
+  begin
+    InsertLinesAt(Line + 1, Attribute);
+    Modified := True;
+  end;
+end;
+
+procedure TFEditForm.InsertLinesAt(Line: Integer; Str: string);
+var
+  CarX, CarY, TopL, Num: Integer;
+  Collapsed: Boolean;
+begin
+  if not EndsWith(Str, CrLf) then
+    Str := Str + CrLf;
+  with FEditor do
+  begin
     BeginUpdate;
-    collapsed:= (AllFoldRanges.Count > 1) and AllFoldRanges.Ranges[1].Collapsed;
-    cx:= CaretX;
-    cy:= CaretY;
-    tl:= TopLine;
-    CaretY:= line+1;
-    CaretX:= 1;
-    PutText(s, false);
-    if cy > line + 1 then begin
-      cl:= CountChar(#13, s);
-      if cl = 0 then cl:= 1;
-      cy:= cy + cl;
-      tl:= tl + cl;
+    Collapsed := (AllFoldRanges.Count > 1) and AllFoldRanges.Ranges[1]
+      .Collapsed;
+    CarX := CaretX;
+    CarY := CaretY;
+    TopL := TopLine;
+    CaretY := Line + 1;
+    CaretX := 1;
+    PutText(Str, false);
+    if CarY > Line + 1 then
+    begin
+      Num := CountChar(#13, Str);
+      if Num = 0 then
+        Num := 1;
+      CarY := CarY + Num;
+      TopL := TopL + Num;
     end;
-    TopLine:= tl;
-    CaretX:= cx;
-    CaretY:= cy;
+    TopLine := TopL;
+    CaretX := CarX;
+    CaretY := CarY;
     EnsureCursorPosVisible;
-    if collapsed then Collapse(1);
-    Modified:= true;
+    if Collapsed then
+      Collapse(1);
+    Modified := True;
     EndUpdate;
   end;
-  Modified:= true;
+  Modified := True;
 end;
 
-procedure TFEditForm.InsertLinesAt(const At, s: string);
+procedure TFEditForm.InsertLinesAt(const AtLine, Str: string);
 begin
-  with Editor do begin
-    var line:= getLineNumberWithWord(At);
-    if line = -1 then begin
+  with FEditor do
+  begin
+    var
+    Line := GetLineNumberWithWord(AtLine);
+    if Line = -1 then
+    begin
       EnsureStartEnd;
-      line:= getLineNumberWithWord(At);
+      Line := GetLineNumberWithWord(AtLine);
     end;
-    if line = -1 then
-      ErrorMsg(_(LNGStartGUIVariables) + CrLf +
-               _(LNGStartComponents) + CrLf +
-               _(LNGStartEventMethods) + CrLf +
-               _(LNGNotFound))
+    if Line = -1 then
+      ErrorMsg(_(LNGStartGUIVariables) + CrLf + _(LNGStartComponents) + CrLf +
+        _(LNGStartEventMethods) + CrLf + _(LNGNotFound))
     else
-      InsertLinesAt(line, s);
+      InsertLinesAt(Line, Str);
   end;
 end;
 
-procedure TFEditForm.InsertAttribute(ClassNumber: integer; const s: string);
+procedure TFEditForm.InsertAttribute(ClassNumber: Integer; const Str: string);
 begin
-  InsertLinesAt(GetLNG(2, ClassNumber), s);
+  InsertLinesAt(GetLNG(2, ClassNumber), Str);
 end;
 
-procedure TFEditForm.InsertAttribute(const Container, aIndent, Variable: string; fx: boolean);
-  var s, aIn: string; line: integer;
+procedure TFEditForm.InsertAttribute(const Container, AIndent, Variable: string;
+IsFX: Boolean);
+var
+  Str, AIn: string;
+  Line: Integer;
 begin
-  if fx and (Container = 'root') or not fx and (Container = 'cp') then
-    InsertAttribute(0, aIndent + Variable)
-  else with Editor do begin
-    aIn:= aIndent;
-    line:= getLineNumberWith(' ' + Container + ' ');
-    if line >= 0 then begin
-      inc(line);
-      s:= Lines[line];
-      while Copy(s, 1, length(aIn)) = aIn do begin
-        inc(line);
-        s:= Lines[line];
+  if IsFX and (Container = 'root') or not IsFX and (Container = 'cp') then
+    InsertAttribute(0, AIndent + Variable)
+  else
+    with FEditor do
+    begin
+      AIn := AIndent;
+      Line := GetLineNumberWith(' ' + Container + ' ');
+      if Line >= 0 then
+      begin
+        Inc(Line);
+        Str := Lines[Line];
+        while Copy(Str, 1, Length(AIn)) = AIn do
+        begin
+          Inc(Line);
+          Str := Lines[Line];
+        end;
+        InsertLinesAt(Line, AIndent + Variable);
+        Modified := True;
       end;
-      InsertLinesAt(line, aIndent + Variable);
-      Modified:= true;
     end;
-  end;
 end;
 
-procedure TFEditForm.InsertAttribute(const Container, Variable: string; fx: boolean);
-  var s: string; aIn, line, till: integer;
+procedure TFEditForm.InsertAttribute(const Container, Variable: string;
+IsFX: Boolean);
+var
+  Str: string;
+  AIn, Line, Till: Integer;
 begin
-  if fx and (Container = 'root') or not fx and (Container = 'cp') then
+  if IsFX and (Container = 'root') or not IsFX and (Container = 'cp') then
     InsertAttribute(0, Variable)
-  else with Editor do begin
-    till:= getLNGEndAttributes;
-    line:= getLineNumberWith(' ' + Container + ' ');
-    if line >= 0 then begin
-      aIn:= UUtils.getIndent(Editor.Lines[line]);
-      inc(line);
-      s:= Lines[line];
-      while (UUtils.getIndent(s) >= aIn) and (line < till) do begin
-        inc(line);
-        s:= Lines[line];
+  else
+    with FEditor do
+    begin
+      Till := GetLNGEndAttributes;
+      Line := GetLineNumberWith(' ' + Container + ' ');
+      if Line >= 0 then
+      begin
+        AIn := UUtils.GetIndent(FEditor.Lines[Line]);
+        Inc(Line);
+        Str := Lines[Line];
+        while (UUtils.GetIndent(Str) >= AIn) and (Line < Till) do
+        begin
+          Inc(Line);
+          Str := Lines[Line];
+        end;
+        InsertLinesAt(Line, Variable);
+        Modified := True;
       end;
-      InsertLinesAt(line, Variable);
-      Modified:= true;
     end;
-  end;
 end;
 
-procedure TFEditForm.InsertProcedure(const aProcedure: string);
+procedure TFEditForm.InsertProcedure(const AProcedure: string);
 begin
-  InsertProcedure(0, aProcedure);
+  InsertProcedure(0, AProcedure);
 end;
 
-procedure TFEditForm.InsertProcedure(ClassNumber: integer; const aProcedure: string);
+procedure TFEditForm.InsertProcedure(ClassNumber: Integer;
+const AProcedure: string);
 begin
-  InsertLinesAt(GetLNG(6, ClassNumber), aProcedure);
+  InsertLinesAt(GetLNG(6, ClassNumber), AProcedure);
 end;
 
-procedure TFEditForm.InsertConstructor(ClassNumber: integer; const aProcedure: string);
+procedure TFEditForm.InsertConstructor(ClassNumber: Integer;
+const AProcedure: string);
 begin
-  InsertLinesAt(GetLNG(5, ClassNumber), aProcedure);
+  InsertLinesAt(GetLNG(5, ClassNumber), AProcedure);
 end;
 
-procedure TFEditForm.InsertComponent(const s: string);
+procedure TFEditForm.InsertComponent(const Str: string);
 begin
-  InsertLinesAt(_(LNGEndComponents), s);
+  InsertLinesAt(_(LNGEndComponents), Str);
 end;
 
 procedure TFEditForm.InsertListener(const Component, Listener: string);
 begin
-  if hasText(Listener) then exit;
-  with Editor do begin
+  if HasText(Listener) then
+    Exit;
+  with FEditor do
+  begin
     BeginUpdate;
-    var line:= getLineNumberWith(Component);
-    if line = -1 then begin
-      line:= getLineNumberWith(_(LNGEndComponents));
-      if line = -1 then begin
+    var
+    Line := GetLineNumberWith(Component);
+    if Line = -1 then
+    begin
+      Line := GetLineNumberWith(_(LNGEndComponents));
+      if Line = -1 then
+      begin
         EnsureStartEnd;
-        line:= getLineNumberWith(_(LNGEndComponents));
+        Line := GetLineNumberWith(_(LNGEndComponents));
       end;
     end;
-    if line = -1 then
+    if Line = -1 then
       ErrorMsg(_(LNGEndComponents) + ' ' + _(LNGNotFound))
     else
-      InsertLinesAt(line, Listener);
+      InsertLinesAt(Line, Listener);
     EndUpdate;
   end;
 end;
@@ -3474,692 +4072,837 @@ end;
 procedure TFEditForm.InsertImport(const Package: string);
 begin
   if StartsWith(Package, 'java.lang') or StartsWith(Package, 'InOut') or
-    (getPackage = Package) then exit;
-  with Editor do begin
-    var line:= getLineNumberWithWord('import');
-    if line = -1 then begin
-      line:= getLineNumberWithWord('package');
-      if line > -1
-        then inc(line)
-        else line:= -1;
-    end else begin
-      while (line < Lines.Count) and (Pos('import', Lines[line]) > 0) do begin
-        if Pos(Package, Lines[line]) > 0 then exit;
-        inc(line);
-      end;
-      dec(line);
-    end;
-    InsertLinesAt(line + 1, 'import ' + Package + ';' + CrLf);
-    ParseSourceCode(true);
-  end;
-end;
-
-procedure TFEditForm.DeleteAttribute(const s: string);
-  var from, till, line: integer;
-begin
-  from:= getLNGStartAttributes;
-  till:= getLNGEndAttributes;
-  line:= getLineNumberWithWordFrom(from, s);
-  if (0 <= line) and (line < till) then begin
-    DeleteLine(line);
-    Modified:= true;
-  end;
-end;
-
-procedure TFEditForm.DeleteAttributeValues(const s: string);
-  var stop, line: integer;
-begin
-  Editor.BeginUpdate;
-  line:= GetLNGStartComponents + 1;
-  stop:= GetLNGEndComponents;
-  while line < stop do begin
-    if Pos(s, Editor.Lines[line]) > 0 then begin
-      DeleteLine(line);
-      Modified:= true;
-      dec(stop);
-    end else
-      inc(line);
-  end;
-  Editor.EndUpdate;
-end;
-
-function TFEditForm.DeleteAttributeValue(const s: string): boolean;
-begin
-  Result:= false;
-  var aEnd:= GetLNGEndComponents;
-  var Search:= getLineNumberWith(s);
-  if (0 <= Search) and (Search < aEnd) then begin
-    DeleteLine(Search);
-    Result:= true;
-    Modified:= true;
-  end;
-end;
-
-procedure TFEditForm.DeleteComponentValue(s: string);
-  var from, till, line: integer;
-begin
-  from:= getLNGStartComponents;
-  till:= getLineNumberWithFrom(from, _(LNGEndComponents));
-  line:= getLineNumberWithFromTill(from, till, s);
-  if line > -1 then begin
-    DeleteLine(line);
-    Modified:= true;
-  end;
-end;
-
-procedure TFEditForm.DeleteEmptyLines(line: integer);
-begin
-  Editor.BeginUpdate;
-  while (line < Editor.Lines.Count) and (trim(Editor.Lines[line]) = '') do begin
-    deleteLine(line);
-    Modified:= true;
-  end;
-  Editor.EndUpdate;
-end;
-
-function TFEditForm.getLNGStartAttributes: integer;
-begin
-  Result:= getLineNumberWith(_(LNGStartGUIVariables));
-end;
-
-function TFEditForm.getLNGEndAttributes: integer;
-begin
-  Result:= getLineNumberWith(_(LNGEndGUIVariables));
-end;
-
-function TFEditForm.getLNGStartComponents: integer;
-begin
-  Result:= getLineNumberWith(_(LNGStartComponents));
-end;
-
-function TFEditForm.getLNGEndComponents: integer;
-begin
-  Result:= getLineNumberWith(_(LNGEndComponents));
-end;
-
-function TFEditForm.getLNGStartEventMethods: integer;
-begin
-  Result:= getLineNumberWith(_(LNGStartEventMethods));
-end;
-
-function TFEditForm.getLNGEndeventMethods: integer;
-begin
-  Result:= getLineNumberWith(_(LNGEndEventMethods));
-end;
-
-function TFEditForm.getLineNumberWith(const s: string): integer;
-begin
-  Result:= getLineNumberWithFrom(0, s);
-end;
-
-function TFEditForm.getLineNumberWithFrom(From: integer; const s: string): integer;
-begin
-  Result:= -1;
-  var i:= From;
-  repeat
-    if (i < Editor.Lines.Count) and (Pos(s, Editor.Lines[i]) > 0) then begin
-      Result:= i;
-      break;
-    end;
-    inc(i);
-  until i >= Editor.Lines.Count;
-end;
-
-function TFEditForm.getLineNumberWithFromTill(From, till: integer; const s: string): integer;
-begin
-  Result:= -1;
-  var i:= From;
-  repeat
-    if (i <= till) and (Pos(s, Editor.Lines[i]) > 0) then begin
-      Result:= i;
-      break;
-    end;
-    inc(i);
-  until i > till;
-end;
-
-function TFEditForm.getLineNumberWithWord(const s: string): integer;
-begin
-  Result:= getLineNumberWithWordFrom(0, s);
-end;
-
-function TFEditForm.getLineNumberWithWordFrom(From: integer; const s: string): integer;
-  var i, p: integer; ok: boolean; ws: string;
-begin
-  Result:= -1;
-  i:= From;
-  repeat
-    i:= getLineNumberWithFrom(i, s);
-    if i >= 0 then begin
-      ws:= Editor.Lines[i];
-      p:= Pos(s, ws);
-      ok:= true;
-      if p > 1 then ok:= IsWordBreakChar(ws[p-1]);
-      p:= p + length(s);
-      if p <= length(ws) then
-        ok:= ok and IsWordBreakChar(ws[p]);
-      if ok then begin
-        Result:= i; exit;
-      end;
-    end else
-      exit;
-    inc(i);
-  until i >= Editor.Lines.Count;
-end;
-
-function TFEditForm.getLineNumberWithStartsWordFrom(From: integer; const s: string): integer;
-  var i, p: integer; ok: boolean; ws: string;
-begin
-  Result:= -1;
-  i:= From;
-  repeat
-    i:= getLineNumberWithFrom(i, s);
-    if i >= 0 then begin
-      ws:= Editor.Lines[i];
-      p:= Pos(s, ws);
-      ok:= true;
-      if p > 1 then ok:= IsWordBreakChar(ws[p-1]);
-      if ok then begin
-        Result:= i;
-        exit;
-      end;
-    end else
-      exit;
-    inc(i);
-  until i >= Editor.Lines.Count;
-end;
-
-function TFEditForm.getSource(LineS, LineE: integer): string;
-begin
-  Result:= '';
-  for var i:= LineS to LineE do
-    Result:= Result + Editor.Lines[i] + #13#10;
-end;
-
-function TFEditForm.getLine(Line: integer): string;
-begin
-  Result:= Editor.Lines[Line];
-end;
-
-procedure TFEditForm.DeleteBlock(StartLine, EndLine: integer);
-begin
-  Editor.BeginUpdate;
-  for var i:= EndLine downto StartLine do
-    if i < Editor.Lines.Count then
-      DeleteLine(i);
-  Modified:= true;
-  NeedsParsing:= true;
-  Editor.EndUpdate;
-end;
-
-procedure TFEditForm.DeleteLine(line: Integer);
-begin
-  var i:= 0;
-  while i < Editor.Marks.Count do begin
-    if Editor.Marks[i].line = line then
-      DeleteBreakpointMark(Editor.Marks[i]);
-    inc(i);
-  end;
-  var collapsed:= (Editor.AllFoldRanges.Count > 1) and Editor.AllFoldRanges.Ranges[1].Collapsed;
-  Editor.CaretY:= Line+1;
-  Editor.CommandProcessor(ecDeleteLine, #0, nil);
-  if collapsed then Editor.Collapse(1);
-end;
-
-procedure TFEditForm.MoveBlock(from, till, dest, desttill: integer; const blanklines: string);
-  var i: integer;
-
-  procedure DeleteBlanklines(i: integer);
-    var s: string;
+    (GetPackage = Package) then
+    Exit;
+  with FEditor do
   begin
-    if i > 0 then begin
-      s:= trim(Editor.Lines[i-1]) + trim(Editor.Lines[i]);
-      if s = '' then DeleteLine(i);
-      s:= trim(Editor.Lines[i-1]) + trim(Editor.Lines[i]);
-      if s = '' then DeleteLine(i);
-    end else if (i < Editor.Lines.Count-1) then begin
-      s:= trim(Editor.Lines[i]) + trim(Editor.Lines[i+1]);
-      if s = '' then DeleteLine(i);
+    var
+    Line := GetLineNumberWithWord('import');
+    if Line = -1 then
+    begin
+      Line := GetLineNumberWithWord('Package');
+      if Line > -1 then
+        Inc(Line)
+      else
+        Line := -1;
+    end
+    else
+    begin
+      while (Line < Lines.Count) and (Pos('import', Lines[Line]) > 0) do
+      begin
+        if Pos(Package, Lines[Line]) > 0 then
+          Exit;
+        Inc(Line);
+      end;
+      Dec(Line);
+    end;
+    InsertLinesAt(Line + 1, 'import ' + Package + ';' + CrLf);
+    ParseSourceCode(True);
+  end;
+end;
+
+procedure TFEditForm.DeleteAttribute(const Str: string);
+var
+  From, Till, Line: Integer;
+begin
+  From := GetLNGStartAttributes;
+  Till := GetLNGEndAttributes;
+  Line := GetLineNumberWithWordFrom(From, Str);
+  if (0 <= Line) and (Line < Till) then
+  begin
+    DeleteLine(Line);
+    Modified := True;
+  end;
+end;
+
+procedure TFEditForm.DeleteAttributeValues(const Str: string);
+var
+  Stop, Line: Integer;
+begin
+  FEditor.BeginUpdate;
+  Line := GetLNGStartComponents + 1;
+  Stop := GetLNGEndComponents;
+  while Line < Stop do
+  begin
+    if Pos(Str, FEditor.Lines[Line]) > 0 then
+    begin
+      DeleteLine(Line);
+      Modified := True;
+      Dec(Stop);
+    end
+    else
+      Inc(Line);
+  end;
+  FEditor.EndUpdate;
+end;
+
+function TFEditForm.DeleteAttributeValue(const Str: string): Boolean;
+begin
+  Result := false;
+  var
+  AEnd := GetLNGEndComponents;
+  var
+  Search := GetLineNumberWith(Str);
+  if (0 <= Search) and (Search < AEnd) then
+  begin
+    DeleteLine(Search);
+    Result := True;
+    Modified := True;
+  end;
+end;
+
+procedure TFEditForm.DeleteComponentValue(Str: string);
+var
+  From, Till, Line: Integer;
+begin
+  From := GetLNGStartComponents;
+  Till := GetLineNumberWithFrom(From, _(LNGEndComponents));
+  Line := GetLineNumberWithFromTill(From, Till, Str);
+  if Line > -1 then
+  begin
+    DeleteLine(Line);
+    Modified := True;
+  end;
+end;
+
+procedure TFEditForm.DeleteEmptyLines(Line: Integer);
+begin
+  FEditor.BeginUpdate;
+  while (Line < FEditor.Lines.Count) and (Trim(FEditor.Lines[Line]) = '') do
+  begin
+    DeleteLine(Line);
+    Modified := True;
+  end;
+  FEditor.EndUpdate;
+end;
+
+function TFEditForm.GetLNGStartAttributes: Integer;
+begin
+  Result := GetLineNumberWith(_(LNGStartGUIVariables));
+end;
+
+function TFEditForm.GetLNGEndAttributes: Integer;
+begin
+  Result := GetLineNumberWith(_(LNGEndGUIVariables));
+end;
+
+function TFEditForm.GetLNGStartComponents: Integer;
+begin
+  Result := GetLineNumberWith(_(LNGStartComponents));
+end;
+
+function TFEditForm.GetLNGEndComponents: Integer;
+begin
+  Result := GetLineNumberWith(_(LNGEndComponents));
+end;
+
+function TFEditForm.GetLNGStartEventMethods: Integer;
+begin
+  Result := GetLineNumberWith(_(LNGStartEventMethods));
+end;
+
+function TFEditForm.GetLNGEndEventMethods: Integer;
+begin
+  Result := GetLineNumberWith(_(LNGEndEventMethods));
+end;
+
+function TFEditForm.GetLineNumberWith(const Str: string): Integer;
+begin
+  Result := GetLineNumberWithFrom(0, Str);
+end;
+
+function TFEditForm.GetLineNumberWithFrom(From: Integer;
+const Str: string): Integer;
+begin
+  Result := -1;
+  var
+  Int := From;
+  repeat
+    if (Int < FEditor.Lines.Count) and (Pos(Str, FEditor.Lines[Int]) > 0) then
+    begin
+      Result := Int;
+      Break;
+    end;
+    Inc(Int);
+  until Int >= FEditor.Lines.Count;
+end;
+
+function TFEditForm.GetLineNumberWithFromTill(From, Till: Integer;
+const Str: string): Integer;
+begin
+  Result := -1;
+  var
+  Int := From;
+  repeat
+    if (Int <= Till) and (Pos(Str, FEditor.Lines[Int]) > 0) then
+    begin
+      Result := Int;
+      Break;
+    end;
+    Inc(Int);
+  until Int > Till;
+end;
+
+function TFEditForm.GetLineNumberWithWord(const Str: string): Integer;
+begin
+  Result := GetLineNumberWithWordFrom(0, Str);
+end;
+
+function TFEditForm.GetLineNumberWithWordFrom(From: Integer;
+const Str: string): Integer;
+var
+  Int, Posi: Integer;
+  IsOk: Boolean;
+  Line: string;
+begin
+  Result := -1;
+  Int := From;
+  repeat
+    Int := GetLineNumberWithFrom(Int, Str);
+    if Int >= 0 then
+    begin
+      Line := FEditor.Lines[Int];
+      Posi := Pos(Str, Line);
+      IsOk := True;
+      if Posi > 1 then
+        IsOk := IsWordBreakChar(Line[Posi - 1]);
+      Posi := Posi + Length(Str);
+      if Posi <= Length(Line) then
+        IsOk := IsOk and IsWordBreakChar(Line[Posi]);
+      if IsOk then
+      begin
+        Result := Int;
+        Exit;
+      end;
+    end
+    else
+      Exit;
+    Inc(Int);
+  until Int >= FEditor.Lines.Count;
+end;
+
+function TFEditForm.GetLineNumberWithStartsWordFrom(From: Integer;
+const Str: string): Integer;
+var
+  Int, Posi: Integer;
+  IsOk: Boolean;
+  Line: string;
+begin
+  Result := -1;
+  Int := From;
+  repeat
+    Int := GetLineNumberWithFrom(Int, Str);
+    if Int >= 0 then
+    begin
+      Line := FEditor.Lines[Int];
+      Posi := Pos(Str, Line);
+      IsOk := True;
+      if Posi > 1 then
+        IsOk := IsWordBreakChar(Line[Posi - 1]);
+      if IsOk then
+      begin
+        Result := Int;
+        Exit;
+      end;
+    end
+    else
+      Exit;
+    Inc(Int);
+  until Int >= FEditor.Lines.Count;
+end;
+
+function TFEditForm.GetSource(Lines, LineE: Integer): string;
+begin
+  Result := '';
+  for var I := Lines to LineE do
+    Result := Result + FEditor.Lines[I] + #13#10;
+end;
+
+function TFEditForm.GetLine(Line: Integer): string;
+begin
+  Result := FEditor.Lines[Line];
+end;
+
+procedure TFEditForm.DeleteBlock(StartLine, EndLine: Integer);
+begin
+  FEditor.BeginUpdate;
+  for var I := EndLine downto StartLine do
+    if I < FEditor.Lines.Count then
+      DeleteLine(I);
+  Modified := True;
+  FNeedsParsing := True;
+  FEditor.EndUpdate;
+end;
+
+procedure TFEditForm.DeleteLine(Line: Integer);
+begin
+  var
+  Int := 0;
+  while Int < FEditor.Marks.Count do
+  begin
+    if FEditor.Marks[Int].Line = Line then
+      DeleteBreakpointMark(FEditor.Marks[Int]);
+    Inc(Int);
+  end;
+  var
+  Collapsed := (FEditor.AllFoldRanges.Count > 1) and
+    FEditor.AllFoldRanges.Ranges[1].Collapsed;
+  FEditor.CaretY := Line + 1;
+  FEditor.CommandProcessor(CecDeleteLine, #0, nil);
+  if Collapsed then
+    FEditor.Collapse(1);
+end;
+
+procedure TFEditForm.MoveBlock(From, Till, Dest, DestTill: Integer;
+const Blanklines: string);
+
+  procedure DeleteBlanklines(Int: Integer);
+  var
+    Str: string;
+  begin
+    if Int > 0 then
+    begin
+      Str := Trim(FEditor.Lines[Int - 1]) + Trim(FEditor.Lines[Int]);
+      if Str = '' then
+        DeleteLine(Int);
+      Str := Trim(FEditor.Lines[Int - 1]) + Trim(FEditor.Lines[Int]);
+      if Str = '' then
+        DeleteLine(Int);
+    end
+    else if (Int < FEditor.Lines.Count - 1) then
+    begin
+      Str := Trim(FEditor.Lines[Int]) + Trim(FEditor.Lines[Int + 1]);
+      if Str = '' then
+        DeleteLine(Int);
     end;
   end;
 
 begin
-  Editor.BeginUpdate;
-  var s:= '';
-  for i:= from to till do
-    s:= s + Editor.Lines[i] + #13#10;
-  s:= s + blanklines;
-  if dest < from then begin
-    for i:= from to till do
-      DeleteLine(from);
-    DeleteBlanklines(from);
-    insertLinesAt(dest, s);
-  end else begin // dest > from
-    if desttill > 0
-      then insertLinesAt(desttill + 1, s)
-      else insertLinesAt(dest, s);
-    for i:= from to till do
-      DeleteLine(from);
-    DeleteBlanklines(from);
+  FEditor.BeginUpdate;
+  var
+  Str := '';
+  for var I := From to Till do
+    Str := Str + FEditor.Lines[I] + #13#10;
+  Str := Str + Blanklines;
+  if Dest < From then
+  begin
+    for var I := From to Till do
+      DeleteLine(From);
+    DeleteBlanklines(From);
+    InsertLinesAt(Dest, Str);
+  end
+  else
+  begin // Dest > from
+    if DestTill > 0 then
+      InsertLinesAt(DestTill + 1, Str)
+    else
+      InsertLinesAt(Dest, Str);
+    for var I := From to Till do
+      DeleteLine(From);
+    DeleteBlanklines(From);
   end;
-  Editor.EndUpdate;
+  FEditor.EndUpdate;
 end;
 
-function TFEditForm.getBlock(from, lines: integer): string;
+function TFEditForm.GetBlock(From, Lines: Integer): string;
 begin
-  var s:= '';
-  for var i:= from to from + lines - 1 do
-    s:= s + Editor.Lines[i] + #13#10;
-  Result:= s;
+  var
+  Str := '';
+  for var I := From to From + Lines - 1 do
+    Str := Str + FEditor.Lines[I] + #13#10;
+  Result := Str;
 end;
 
-procedure TFEditForm.toBackground(Control: TControl);
-  var start, from, till: integer;
-      Container: string;
+procedure TFEditForm.ToBackground(Control: TControl);
+var
+  Start, From, Till: Integer;
+  Container: string;
 begin
-  Container:= (Control as TJEComponent).getContainerAdd;
-  start:= getLNGStartComponents;
-  from:= getLineNumberWithStartsWordFrom(start, Control.Name);
-  till:= getLineNumberWithFrom(start, Container);
-  if till > -1 then
-    if Control is TFXNode
-      then MoveBlock(from, till, start + 1, 0, '')
-      else MoveBlock(from, till, getLNGEndComponents, 0, '');
+  Container := (Control as TJEComponent).GetContainerAdd;
+  Start := GetLNGStartComponents;
+  From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
+  Till := GetLineNumberWithFrom(Start, Container);
+  if Till > -1 then
+    if Control is TFXNode then
+      MoveBlock(From, Till, Start + 1, 0, '')
+    else
+      MoveBlock(From, Till, GetLNGEndComponents, 0, '');
 end;
 
-procedure TFEditForm.toForeground(Control: TControl);
-  var start, from, till: integer;
-      Container: string;
+procedure TFEditForm.ToForeground(Control: TControl);
+var
+  Start, From, Till: Integer;
+  Container: string;
 begin
-  Container:= (Control as TJEComponent).getContainerAdd;
-  start:= getLineNumberWith(_(LNGStartComponents));
-  from:= getLineNumberWithStartsWordFrom(start, Control.Name);
-  till:= getLineNumberWithFrom(start, Container);
-  if till > -1 then
-    if Control is TFXNode
-      then MoveBlock(from, till, getLNGEndComponents, 0, '')
-      else MoveBlock(from, till, start + 1, 0, '');
+  Container := (Control as TJEComponent).GetContainerAdd;
+  Start := GetLineNumberWith(_(LNGStartComponents));
+  From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
+  Till := GetLineNumberWithFrom(Start, Container);
+  if Till > -1 then
+    if Control is TFXNode then
+      MoveBlock(From, Till, GetLNGEndComponents, 0, '')
+    else
+      MoveBlock(From, Till, Start + 1, 0, '');
 end;
 
-procedure TFEditForm.Go_To(const s: string);
-  var p: integer; line: integer;
+procedure TFEditForm.Go_To(const Str: string);
+var
+  Posi: Integer;
+  Line: Integer;
 begin
-  with Editor do begin
-    line:= getLineNumberWithWord(s);
-    if (0 <= line) and (line <= Lines.Count - 1) then
-      if Pos('public void ', Lines[line]) > 0 then begin
-        CaretY:= line + 2;
-        if line + 1 < Lines.Count
-          then p:= Pos('}', Lines[line+1])
-          else p:= 0;
-        if (0 < p) and (p < 5)
-          then CaretX:= p
-          else CaretX:= 5;
-      end else begin
-        CaretX:= Pos(s, Lines[line]);
-        CaretY:= line + 1;
+  with FEditor do
+  begin
+    Line := GetLineNumberWithWord(Str);
+    if (0 <= Line) and (Line <= Lines.Count - 1) then
+      if Pos('public void ', Lines[Line]) > 0 then
+      begin
+        CaretY := Line + 2;
+        if Line + 1 < Lines.Count then
+          Posi := Pos('}', Lines[Line + 1])
+        else
+          Posi := 0;
+        if (0 < Posi) and (Posi < 5) then
+          CaretX := Posi
+        else
+          CaretX := 5;
+      end
+      else
+      begin
+        CaretX := Pos(Str, Lines[Line]);
+        CaretY := Line + 1;
       end;
   end;
 end;
 
-function TFEditForm.getClassAttribut(const aClass, aAttribute: string): string;
+function TFEditForm.GetClassAttribut(const AClass, AAttribute: string): string;
 begin
-  Result:= '';
-  with Editor do begin
-    var line:= getLineNumberWith(aClass);
-    if line >= 0 then begin
+  Result := '';
+  with FEditor do
+  begin
+    var
+    Line := GetLineNumberWith(AClass);
+    if Line >= 0 then
+    begin
       repeat
-        if Pos(aAttribute, Lines[line]) > 0 then begin
-          Result:= Lines[line];
-          break;
+        if Pos(AAttribute, Lines[Line]) > 0 then
+        begin
+          Result := Lines[Line];
+          Break;
         end;
-        inc(line)
-      until line >= Lines.Count;
+        Inc(Line);
+      until Line >= Lines.Count;
     end;
   end;
 end;
 
-function TFEditForm.hasText(const s: string): boolean;
+function TFEditForm.HasText(const Str: string): Boolean;
 begin
-  Result:= (Pos(s, Editor.Text) > 0);
+  Result := (Pos(Str, FEditor.Text) > 0);
 end;
 
-function TFEditForm.hasWord(const s: string): boolean;
-  var stext: string; line, p: integer;
+function TFEditForm.HasWord(const Str: string): Boolean;
+var
+  SText: string;
+  Line, Posi: Integer;
 begin
-  Result:= false;
-  with Editor do begin
-    line:= 0;
+  Result := false;
+  with FEditor do
+  begin
+    Line := 0;
     repeat
-      line:= getLineNumberWithFrom(line, s);
-      if line >= 0 then begin
-        stext:= Lines[line];
-        p:= Pos(s, stext);
-        Result:= true;
-        if p > 1 then Result:= IsWordBreakChar(stext[p-1]);
-        if p + length(s) <= length(stext) then Result:= Result and IsWordBreakChar(stext[p+length(s)]);
-        if Result then exit;
+      Line := GetLineNumberWithFrom(Line, Str);
+      if Line >= 0 then
+      begin
+        SText := Lines[Line];
+        Posi := Pos(Str, SText);
+        Result := True;
+        if Posi > 1 then
+          Result := IsWordBreakChar(SText[Posi - 1]);
+        if Posi + Length(Str) <= Length(SText) then
+          Result := Result and IsWordBreakChar(SText[Posi + Length(Str)]);
+        if Result then
+          Exit;
       end;
-      inc(line);
-    until line = 0;
+      Inc(Line);
+    until Line = 0;
   end;
 end;
 
 procedure TFEditForm.SBDesignformClick(Sender: TObject);
 begin
-  if IsJava and (Partner = nil) then begin
-    var s:= ChangeFileExt(Pathname, '.jfm');
-    if FJava.Open(s) then
-      FJava.RearrangeFileHistory(s);
+  if IsJava and (Partner = nil) then
+  begin
+    var
+    Str := ChangeFileExt(Pathname, '.jfm');
+    if FJava.Open(Str) then
+      FJava.RearrangeFileHistory(Str);
   end;
 end;
 
 function TFEditForm.GetFrameType: Integer;
 begin
-  if (FFrameType = 0) and ((FileExtension = '.java') or (FileExtension = '.~ava')) then begin
-    var JavaScanner:= TJavaScanner.create;
-    JavaScanner.Init(Editor.Text);
-    FrameType:= JavaScanner.GetFrameType;
+  if (FFrameType = 0) and ((FFileExtension = '.java') or
+    (FFileExtension = '.~ava')) then
+  begin
+    var
+    JavaScanner := TJavaScanner.Create;
+    JavaScanner.Init(FEditor.Text);
+    FFrameType := JavaScanner.GetFrameType;
     JavaScanner.Destroy;
   end;
-  Result:= FFrameType;
+  Result := FFrameType;
 end;
 
-procedure TFEditForm.DeleteTryCatch(const key: string);
+procedure TFEditForm.DeleteTryCatch(const Key: string);
 begin
-  var i:= getLineNumberWith(key);
-  if (i > -1) and (Pos('try {', Editor.Lines[i-1]) > 0) then
-    DeleteBlock(i-1, i+3);
+  var
+  Int := GetLineNumberWith(Key);
+  if (Int > -1) and (Pos('try {', FEditor.Lines[Int - 1]) > 0) then
+    DeleteBlock(Int - 1, Int + 3);
 end;
 
 procedure TFEditForm.DesignButtonClick(Sender: TObject);
 begin
-  var s:= ChangeFileExt(Pathname, '.jfm');
-  if Partner = nil then begin
-    if FJava.Open(s) then
-      FJava.RearrangeFileHistory(s);
-  end else
+  var
+  Str := ChangeFileExt(Pathname, '.jfm');
+  if Partner = nil then
+  begin
+    if FJava.Open(Str) then
+      FJava.RearrangeFileHistory(Str);
+  end
+  else
     Partner.Close;
 end;
 
 procedure TFEditForm.DeleteComponent(const Component: string);
-  var line, stop, i: integer;
+var
+  Line, Stop: Integer;
 begin
-  Editor.BeginUpdate;
-  line:= getLineNumberWith(getLNG(3, 0));
-  if line >= 0 then begin
-    stop:= getLineNumberWith(getLNG(4, 0));
-    if stop = -1 then stop:= Editor.Lines.Count - 1;
-    for i:= stop downto line + 1 do
-      if Pos(Component, Editor.Lines[i]) > 0
-        then DeleteLine(i);
+  FEditor.BeginUpdate;
+  Line := GetLineNumberWith(GetLNG(3, 0));
+  if Line >= 0 then
+  begin
+    Stop := GetLineNumberWith(GetLNG(4, 0));
+    if Stop = -1 then
+      Stop := FEditor.Lines.Count - 1;
+    for var I := Stop downto Line + 1 do
+      if Pos(Component, FEditor.Lines[I]) > 0 then
+        DeleteLine(I);
   end;
-  Modified:= true;
-  Editor.EndUpdate;
+  Modified := True;
+  FEditor.EndUpdate;
 end;
 
 procedure TFEditForm.DeleteComponentDefault(Control: TControl);
-  var line, stop, i: integer; Typ: string;
+var
+  Line, Stop: Integer;
+  Typ: string;
 begin
-  Editor.BeginUpdate;
-  Typ:= (Control as TJEComponent).JavaType;
+  FEditor.BeginUpdate;
+  Typ := (Control as TJEComponent).JavaType;
   DeleteAttribute('private ' + Typ + ' ' + Control.Name);
 
-  stop:= getLNGEndComponents;
-  if stop = -1 then
-    stop:= Editor.Lines.Count - 1;
-  line:= getLNGStartComponents;
-  if line >= 0 then
-    for i:= stop downto line + 1 do
-      if containsWord(Control.Name, i) then
-        DeleteLine(i);
-  Modified:= true;
-  Editor.EndUpdate;
+  Stop := GetLNGEndComponents;
+  if Stop = -1 then
+    Stop := FEditor.Lines.Count - 1;
+  Line := GetLNGStartComponents;
+  if Line >= 0 then
+    for var I := Stop downto Line + 1 do
+      if ContainsWord(Control.Name, I) then
+        DeleteLine(I);
+  Modified := True;
+  FEditor.EndUpdate;
 end;
 
-procedure TFEditForm.DeleteComponentTotal(ClassNumber: integer; const Component, Typ: string);
-  var line, stop, i: integer; s: string;
+procedure TFEditForm.DeleteComponentTotal(ClassNumber: Integer;
+const Component, Typ: string);
+var
+  Line, Stop: Integer;
+  Str: string;
 begin
-  Editor.BeginUpdate;
-  line:= getLineNumberWith(GetLNG(1, ClassNumber));
-  if line >= 0 then begin
-    stop:= getLineNumberWith(GetLNG(2, ClassNumber));
-    if stop = -1 then stop:= Editor.Lines.Count - 1;
-    for i:= stop downto line + 1 do begin
-      s:= Editor.Lines[i];
-      if ((Pos(' ' + Component + ' ', s) + Pos(' ' + Component + ';', s) > 0)
-          and (Pos(Typ, s) > 0))
-      then DeleteLine(i);
+  FEditor.BeginUpdate;
+  Line := GetLineNumberWith(GetLNG(1, ClassNumber));
+  if Line >= 0 then
+  begin
+    Stop := GetLineNumberWith(GetLNG(2, ClassNumber));
+    if Stop = -1 then
+      Stop := FEditor.Lines.Count - 1;
+    for var I := Stop downto Line + 1 do
+    begin
+      Str := FEditor.Lines[I];
+      if ((Pos(' ' + Component + ' ', Str) + Pos(' ' + Component + ';', Str) >
+        0) and (Pos(Typ, Str) > 0)) then
+        DeleteLine(I);
     end;
   end;
-  line:= getLineNumberWith(GetLNG(3, ClassNumber));
-  if line >= 0 then begin
-    stop:= getLineNumberWith(GetLNG(4, ClassNumber));
-    if stop = -1 then stop:= Editor.Lines.Count - 1;
-    for i:= stop downto line + 1 do begin
-      s:= Editor.Lines[i];
-      if (Pos(Component + '.', s) > 0) or (Pos(Component + ')', s) > 0)
-      then
-        DeleteLine(i);
+  Line := GetLineNumberWith(GetLNG(3, ClassNumber));
+  if Line >= 0 then
+  begin
+    Stop := GetLineNumberWith(GetLNG(4, ClassNumber));
+    if Stop = -1 then
+      Stop := FEditor.Lines.Count - 1;
+    for var I := Stop downto Line + 1 do
+    begin
+      Str := FEditor.Lines[I];
+      if (Pos(Component + '.', Str) > 0) or (Pos(Component + ')', Str) > 0) then
+        DeleteLine(I);
     end;
   end;
-  Modified:= true;
-  Editor.EndUpdate;
+  Modified := True;
+  FEditor.EndUpdate;
 end;
 
-{$WARNINGS OFF}
-
-function TFEditForm.hasEventProcedureInModel(const aMethodname: string): boolean;
-  var Ci, it: IModelIterator;
-      cent: TModelEntity;
-      Method: TOperation;
+function TFEditForm.HasEventProcedureInModel(const AMethodname: string)
+  : Boolean;
+var
+  ClassIt, Ite: IModelIterator;
+  Cent: TModelEntity;
+  Method: TOperation;
 begin
-  Result:= false;
+  Result := false;
   // ParseSourcecode; caller has to do
-  Ci:= Model.ModelRoot.GetAllClassifiers;
-  while Ci.HasNext and not Result do begin
-    cent:= Ci.Next;
-    if (cent is TClass) then begin
-      It:= (cent as TClass).GetOperations;
-      while It.HasNext and not Result do begin
-        Method:= It.Next as TOperation;
-        if Method.Name = aMethodname then
-          Result:= true;
+  ClassIt := FModel.ModelRoot.GetAllClassifiers;
+  while ClassIt.HasNext and not Result do
+  begin
+    Cent := ClassIt.Next;
+    if (Cent is TClass) then
+    begin
+      Ite := (Cent as TClass).GetOperations;
+      while Ite.HasNext and not Result do
+      begin
+        Method := Ite.Next as TOperation;
+        if Method.Name = AMethodname then
+          Result := True;
       end;
     end;
   end;
 end;
 
 procedure TFEditForm.SetNewActionEventFormat;
-  var i, p, aEnd: Integer;
-      s: string;
+var
+  Int, Posi, AEnd: Integer;
+  Str: string;
 begin
-  with Editor do begin
+  with FEditor do
+  begin
     BeginUpdate;
-    i:= 1;
-    aEnd:= getLNGEndComponents;
-    if aEnd > -1 then begin
+    Int := 1;
+    AEnd := GetLNGEndComponents;
+    if AEnd > -1 then
+    begin
       repeat
-        s:= Lines[i];
-        p:= Pos('ActionPerformed(evt);', s);
-        if (p > 1) and (s[p-1] <> '_') then begin
-          insert('_', s, p);
-          Lines[i]:= s;
+        Str := Lines[Int];
+        Posi := Pos('ActionPerformed(evt);', Str);
+        if (Posi > 1) and (Str[Posi - 1] <> '_') then
+        begin
+          Insert('_', Str, Posi);
+          Lines[Int] := Str;
         end;
-        inc(i);
-      until i = aEnd;
+        Inc(Int);
+      until Int = AEnd;
       repeat
-        s:= Lines[i];
-        p:= Pos('ActionPerformed(ActionEvent evt)', s);
-        if (p > 1) and (s[p-1] <> '_') then begin
-          insert('_', s, p);
-          Lines[i]:= s;
+        Str := Lines[Int];
+        Posi := Pos('ActionPerformed(ActionEvent evt)', Str);
+        if (Posi > 1) and (Str[Posi - 1] <> '_') then
+        begin
+          Insert('_', Str, Posi);
+          Lines[Int] := Str;
         end;
-        inc(i);
-      until i = Lines.Count -1;
+        Inc(Int);
+      until Int = Lines.Count - 1;
       EndUpdate;
     end;
   end;
 end;
 
-{$WARNINGS ON}
-
-procedure TFEditForm.DeleteMethod(const Method: string; SourcecodeCheck: boolean = true);
-  var from, _to: integer;
-      found: boolean;
-      Ci, it: IModelIterator;
-      cent: TModelEntity;
-      Operation: TOperation;
+procedure TFEditForm.DeleteMethod(const Method: string;
+SourcecodeCheck: Boolean = True);
+var
+  From, Till: Integer;
+  Found: Boolean;
+  ClassIt, Ite: IModelIterator;
+  Cent: TModelEntity;
+  Operation: TOperation;
 begin
-  from:= 0;
-  _to:= 0;
-  Found:= false;
-  Operation:= nil;
-  ParseSourcecode(true);
-  Ci:= Model.ModelRoot.GetAllClassifiers;
-  while Ci.HasNext and not found do begin
-    cent:= Ci.Next;
-    if cent is TClass then begin
-      It:= (cent as TClass).GetOperations;
-      while It.HasNext and not Found do begin
-        Operation:= It.Next as TOperation;
-        if Operation.Name = Method then begin
-          from:= Operation.LineS - 1;
-          _to:= Operation.LineE - 1;
-          Found:= true;
+  From := 0;
+  Till := 0;
+  Found := false;
+  Operation := nil;
+  ParseSourceCode(True);
+  ClassIt := FModel.ModelRoot.GetAllClassifiers;
+  while ClassIt.HasNext and not Found do
+  begin
+    Cent := ClassIt.Next;
+    if Cent is TClass then
+    begin
+      Ite := (Cent as TClass).GetOperations;
+      while Ite.HasNext and not Found do
+      begin
+        Operation := Ite.Next as TOperation;
+        if Operation.Name = Method then
+        begin
+          From := Operation.Lines - 1;
+          Till := Operation.LineE - 1;
+          Found := True;
         end;
       end;
     end;
   end;
 
-  if Found and (SourcecodeCheck and not Operation.hasSourceCode or not SourcecodeCheck) then begin
-    DeleteBlock(from, _to);
-    while (from < Editor.Lines.Count) and (trim(Editor.Lines[from]) = '') and (Editor.CaretY < Editor.Lines.Count) do
-      DeleteLine(from);
-    NeedsParsing:= true;
+  if Found and (SourcecodeCheck and not Operation.HasSourceCode or
+    not SourcecodeCheck) then
+  begin
+    DeleteBlock(From, Till);
+    while (From < FEditor.Lines.Count) and (Trim(FEditor.Lines[From]) = '') and
+      (FEditor.CaretY < FEditor.Lines.Count) do
+      DeleteLine(From);
+    FNeedsParsing := True;
   end;
 end;
 
 procedure TFEditForm.DeleteMethod(Method: TOperation);
 begin
-  Editor.BeginUpdate;
-  DeleteBlock(Method.LineS-1, Method.LineE-1);
-  var i:= Method.LineS - 1;
-  if Method.hasComment then begin
-    DeleteBlock(Method.Documentation.LineS-1, Method.Documentation.LineE-1);
-    i:= Method.Documentation.LineS - 1;
+  FEditor.BeginUpdate;
+  DeleteBlock(Method.Lines - 1, Method.LineE - 1);
+  var
+  Int := Method.Lines - 1;
+  if Method.HasComment then
+  begin
+    DeleteBlock(Method.Documentation.Lines - 1, Method.Documentation.LineE - 1);
+    Int := Method.Documentation.Lines - 1;
   end;
-  DeleteEmptyLines(i-1);
-  Editor.EndUpdate;
+  DeleteEmptyLines(Int - 1);
+  FEditor.EndUpdate;
 end;
 
 procedure TFEditForm.DeleteEventMethod(Method: string);
-  var from, till, line: integer; SL: TStringList;
+var
+  From, Till, Line: Integer;
+  StringList: TStringList;
 
-  function WithoutEndComment(s: string): string;
+  function WithoutEndComment(Str: string): string;
   begin
-    var SL:= TStringList.Create;
-    SL.Text:= s;
-    var cpos:= SL.Count - 2;
-    var p:= Pos('// end of', SL[cpos]);
-    if p > 0 then
-      SL[cpos]:= copy(SL[cpos], 1, p-1);
-    s:= SL.Text;
-    FreeAndNil(SL);
-    Result:= s;
+    var
+    StringList := TStringList.Create;
+    StringList.Text := Str;
+    var
+    CPos := StringList.Count - 2;
+    var
+    Posi := Pos('// end of', StringList[CPos]);
+    if Posi > 0 then
+      StringList[CPos] := Copy(StringList[CPos], 1, Posi - 1);
+    Str := StringList.Text;
+    FreeAndNil(StringList);
+    Result := Str;
   end;
 
 begin
-  Method:= WithoutEndComment(Method);
-  SL:= TStringList.Create;
-  SL.Text:= Method;
-  from:= getLineNumberWith(_(LNGStartEventMethods));
-  till:= getLineNumberWithFrom(from, _(LNGEndEventMethods));
-  line:= getLineNumberWithFromTill(from, till, SL[0]);
-  while (line >= 0) and (line < till) do begin
-    if Method = WithoutEndComment(getBlock(line, SL.Count)) then begin
-      deleteBlock(line, line + SL.Count - 1);
-      if trim(Editor.Lines[line]) = '' then
-        DeleteLine(line);
-      line:= -1;
-    end else
-     line:= getLineNumberWithFromTill(line + 1, till, SL[0]);
+  Method := WithoutEndComment(Method);
+  StringList := TStringList.Create;
+  StringList.Text := Method;
+  From := GetLineNumberWith(_(LNGStartEventMethods));
+  Till := GetLineNumberWithFrom(From, _(LNGEndEventMethods));
+  Line := GetLineNumberWithFromTill(From, Till, StringList[0]);
+  while (Line >= 0) and (Line < Till) do
+  begin
+    if Method = WithoutEndComment(GetBlock(Line, StringList.Count)) then
+    begin
+      DeleteBlock(Line, Line + StringList.Count - 1);
+      if Trim(FEditor.Lines[Line]) = '' then
+        DeleteLine(Line);
+      Line := -1;
+    end
+    else
+      Line := GetLineNumberWithFromTill(Line + 1, Till, StringList[0]);
   end;
-  FreeAndNil(SL);
+  FreeAndNil(StringList);
 end;
 
 procedure TFEditForm.DeleteListener(Listener: string);
-  var from, till, line: integer; SL: TStringList; block: string;
+var
+  From, Till, Line: Integer;
+  StringList: TStringList;
+  Block: string;
 begin
-  SL:= TStringList.Create;
-  SL.Text:= Listener;
-  from:= getLNGStartComponents;
-  till:= getLineNumberWithFrom(from, _(LNGEndComponents));
-  line:= getLineNumberWithFromTill(from, till, SL[0]);
-  while (line >= 0) and (line < till) do begin
-    block:= getBlock(line, SL.Count);
+  StringList := TStringList.Create;
+  StringList.Text := Listener;
+  From := GetLNGStartComponents;
+  Till := GetLineNumberWithFrom(From, _(LNGEndComponents));
+  Line := GetLineNumberWithFromTill(From, Till, StringList[0]);
+  while (Line >= 0) and (Line < Till) do
+  begin
+    Block := GetBlock(Line, StringList.Count);
     // due to caretPositonChanged <-> inputMethodTextChanged problem
-    if (Listener = block) or (Listener + #13#10 = block) then begin
-      deleteBlock(line, line + SL.Count - 1);
-      if trim(Editor.Lines[line]) = '' then
-        DeleteLine(line);
-      line:= -1;
-    end else
-     line:= getLineNumberWithFromTill(line + 1, till, SL[0]);
+    if (Listener = Block) or (Listener + #13#10 = Block) then
+    begin
+      DeleteBlock(Line, Line + StringList.Count - 1);
+      if Trim(FEditor.Lines[Line]) = '' then
+        DeleteLine(Line);
+      Line := -1;
+    end
+    else
+      Line := GetLineNumberWithFromTill(Line + 1, Till, StringList[0]);
   end;
-  FreeAndNil(SL);
+  FreeAndNil(StringList);
 end;
 
 procedure TFEditForm.DeleteFXListener(Listener: string);
-  var s1, s2: string; p, line: integer;
+var
+  Str1, Str2: string;
+  Posi, Line: Integer;
 begin
-  p:= Pos(#13#10, Listener);
-  s1:= trim(copy(Listener, 1, p-1));
-  delete(Listener, 1, p+1);
-  p:= Pos(#13#10, Listener);
-  s2:= trim(copy(Listener, 1, p-1));
+  Posi := Pos(#13#10, Listener);
+  Str1 := Trim(Copy(Listener, 1, Posi - 1));
+  Delete(Listener, 1, Posi + 1);
+  Posi := Pos(#13#10, Listener);
+  Str2 := Trim(Copy(Listener, 1, Posi - 1));
 
-  line:= getLineNumberWith(s2);
-  if line > -1 then begin
-    dec(line, 1);
-    deleteBlock(line, line + 2);
-    if trim(Editor.Lines[line]) = '' then
-      DeleteLine(line);
-    Modified:= true;
+  Line := GetLineNumberWith(Str2);
+  if Line > -1 then
+  begin
+    Dec(Line, 1);
+    DeleteBlock(Line, Line + 2);
+    if Trim(FEditor.Lines[Line]) = '' then
+      DeleteLine(Line);
+    Modified := True;
   end;
 end;
 
 procedure TFEditForm.DeleteLambdaListener(Listener: string);
 begin
-  var p:= Pos(#13#10, Listener);
-  if p > 0 then
-    Listener:= trim(copy(Listener, 1, p-1));
+  var
+  Posi := Pos(#13#10, Listener);
+  if Posi > 0 then
+    Listener := Trim(Copy(Listener, 1, Posi - 1));
   DeleteComponentValue(Listener);
 end;
 
 type
   TMethodSource = record
-     Name: string;
-     from: integer;
-     till: integer;
+    Name: string;
+    From: Integer;
+    Till: Integer;
   end;
 
-procedure TFEditForm.DeleteOldAddNewMethods(OldMethods, NewMethods: TStringList);
-  var i, p, from, till, Index: integer;
-      Ci, it: IModelIterator;
-      cent: TModelEntity;
-      Method: TOperation;
-      MethodArray: array of TMethodSource;
-      SL: TStringList;
-      s1, s2, func: string;
+procedure TFEditForm.DeleteOldAddNewMethods(OldMethods,
+  NewMethods: TStringList);
+var
+  Posi, From, Till, Index: Integer;
+  ClassIt, Ite: IModelIterator;
+  Cent: TModelEntity;
+  Method: TOperation;
+  MethodArray: array of TMethodSource;
+  StringList: TStringList;
+  Str1, Str2, Func: string;
 
-  function inMethodArray(MethodName: string): integer;
+  function inMethodArray(MethodName: string): Integer;
   begin
-    Result:= -1;
-    for var i:= 0 to Index do
-      if MethodArray[i].Name = MethodName then begin
-        Result:= i;
-        break;
+    Result := -1;
+    for var I := 0 to Index do
+      if MethodArray[I].Name = MethodName then
+      begin
+        Result := I;
+        Break;
       end;
   end;
 
@@ -4167,232 +4910,259 @@ procedure TFEditForm.DeleteOldAddNewMethods(OldMethods, NewMethods: TStringList)
   begin
     if EndsWith(Name, '_ActionPerformed') then
       Delete(Name, Pos('_ActionPerformed', Name), 16);
-    Result:= FConfiguration.Indent1 + 'public void ' + Name + '_ActionPerformed(ActionEvent evt) {' + CrLf +
-             FConfiguration.Indent2 + _(LNGTODO) + CrLf + CrLf +
-             FConfiguration.Indent1  + '}';
+    Result := FConfiguration.Indent1 + 'public void ' + Name +
+      '_ActionPerformed(ActionEvent evt) {' + CrLf + FConfiguration.Indent2 +
+      _(LNGTODO) + CrLf + CrLf + FConfiguration.Indent1 + '}';
     if FConfiguration.CommentClosingBrackets then
-      Result:= Result + ' // end of ' + Name;
+      Result := Result + ' // end of ' + Name;
   end;
 
 begin
   // 1. add new methods at the end
-  // 2. delete old methods in the middle
-  ParseSourceCode(true);
-  SL:= TStringList.Create;
+  // 2. delete Old methods in the middle
+  ParseSourceCode(True);
+  StringList := TStringList.Create;
   SetLength(MethodArray, 20);
 
   // get existing methods
-  Index:= -1;
-  Ci:= Model.ModelRoot.GetAllClassifiers;
-  while Ci.HasNext do begin
-    cent:= Ci.Next;
-    if cent is TClass then begin
-      It:= (cent as TClass).GetOperations;
-      while It.HasNext do begin
-        inc(Index);
+  Index := -1;
+  ClassIt := FModel.ModelRoot.GetAllClassifiers;
+  while ClassIt.HasNext do
+  begin
+    Cent := ClassIt.Next;
+    if Cent is TClass then
+    begin
+      Ite := (Cent as TClass).GetOperations;
+      while Ite.HasNext do
+      begin
+        Inc(Index);
         if Length(MethodArray) = Index then
           SetLength(MethodArray, Length(MethodArray) + 20);
-        Method:= It.Next as TOperation;
-        MethodArray[Index].Name:= Method.Name;
-        MethodArray[Index].from:= Method.LineS - 1;
-        MethodArray[Index].till:= Method.LineE - 1;
+        Method := Ite.Next as TOperation;
+        MethodArray[Index].Name := Method.Name;
+        MethodArray[Index].From := Method.Lines - 1;
+        MethodArray[Index].Till := Method.LineE - 1;
       end;
     end;
   end;
 
   // add missing new methods
-  for i:= 0 to NewMethods.Count - 1 do
-    if inMethodArray(NewMethods[i] + '_ActionPerformed') = -1 then begin
-      func:= CrLf + getActionMethod(NewMethods[i]);
-      SL.Add(func);
+  for var I := 0 to NewMethods.Count - 1 do
+    if inMethodArray(NewMethods[I] + '_ActionPerformed') = -1 then
+    begin
+      Func := CrLf + getActionMethod(NewMethods[I]);
+      StringList.Add(Func);
     end;
-  InsertProcedure(SL.Text);
+  InsertProcedure(StringList.Text);
 
   // delete unnecessary default methods
   // determine methods to delete
-  SL.Clear;
-  for i:= 0 to OldMethods.Count - 1 do   // keeps method lines valid
-    if NewMethods.IndexOf(OldMethods[i]) = -1 then begin
-      p:= inMethodArray(OldMethods[i] + '_ActionPerformed');
-      if p > -1 then begin
+  StringList.Clear;
+  for var I := 0 to OldMethods.Count - 1 do // keeps method Lines valid
+    if NewMethods.IndexOf(OldMethods[I]) = -1 then
+    begin
+      Posi := inMethodArray(OldMethods[I] + '_ActionPerformed');
+      if Posi > -1 then
+      begin
         // delete if default
-        from:= MethodArray[p].from;
-        till:= MethodArray[p].till;
-        s1:= getSource(from, till);
-        s2:= getActionMethod(MethodArray[p].Name) + #13#10;
-        if s1 = s2 then
-          SL.Add(OldMethods[i] + '_ActionPerformed');
+        From := MethodArray[Posi].From;
+        Till := MethodArray[Posi].Till;
+        Str1 := GetSource(From, Till);
+        Str2 := getActionMethod(MethodArray[Posi].Name) + #13#10;
+        if Str1 = Str2 then
+          StringList.Add(OldMethods[I] + '_ActionPerformed');
       end;
     end;
 
   // delete beginning at the end of the sourcecode
-  for i:= Index downto 0 do
-    if SL.indexOf(MethodArray[i].Name) > -1 then begin
-      from:= MethodArray[i].from;
-      till:= MethodArray[i].till;
-      DeleteBlock(from, till);
-      while (from < Editor.Lines.Count - 1) and (trim(Editor.Lines[from]) = '') do
-        DeleteLine(from);
-      InsertLinesAt(from, '');
+  for var I := Index downto 0 do
+    if StringList.IndexOf(MethodArray[I].Name) > -1 then
+    begin
+      From := MethodArray[I].From;
+      Till := MethodArray[I].Till;
+      DeleteBlock(From, Till);
+      while (From < FEditor.Lines.Count - 1) and
+        (Trim(FEditor.Lines[From]) = '') do
+        DeleteLine(From);
+      InsertLinesAt(From, '');
     end;
-  FreeAndNil(SL);
-  setLength(MethodArray, 0);
+  FreeAndNil(StringList);
+  SetLength(MethodArray, 0);
 end;
 
-procedure TFEditForm.DeleteFXOldAddNewMethods(OldMethods, NewMethods: TStringList);
-  var i, p, from, till, Index: integer;
-      Ci, it: IModelIterator;
-      cent: TModelEntity;
-      Method: TOperation;
-      MethodArray: array of TMethodSource;
-      SL: TStringList;
-      s1, s2, func: string;
+procedure TFEditForm.DeleteFXOldAddNewMethods(OldMethods,
+  NewMethods: TStringList);
+var
+  Posi, From, Till, Index: Integer;
+  ClassIt, Ite: IModelIterator;
+  Cent: TModelEntity;
+  Method: TOperation;
+  MethodArray: array of TMethodSource;
+  StringList: TStringList;
+  Str1, Str2, Func: string;
 
-  function inMethodArray(MethodName: string): integer;
-    var i: integer;
+  function inMethodArray(MethodName: string): Integer;
   begin
-    Result:= -1;
-    for i:= 0 to Index do
-      if MethodArray[i].Name = MethodName then begin
-        Result:= i;
-        break;
+    Result := -1;
+    for var I := 0 to Index do
+      if MethodArray[I].Name = MethodName then
+      begin
+        Result := I;
+        Break;
       end;
   end;
 
   function getActionMethod(Name: string): string;
   begin
-    Result:= FConfiguration.Indent1 + 'public void ' + Name + '(Event evt) {' + CrLf +
-             FConfiguration.Indent2 + _(LNGTODO) + CrLf + CrLf +
-             FConfiguration.Indent1  + '}';
+    Result := FConfiguration.Indent1 + 'public void ' + Name + '(Event evt) {' +
+      CrLf + FConfiguration.Indent2 + _(LNGTODO) + CrLf + CrLf +
+      FConfiguration.Indent1 + '}';
     if FConfiguration.CommentClosingBrackets then
-      Result:= Result + ' // end of ' + Name;
+      Result := Result + ' // end of ' + Name;
   end;
 
 begin
   // 1. add new methods at the end
-  // 2. delete old methods in the middle
-  ParseSourceCode(true);
-  SL:= TStringList.Create;
+  // 2. delete Old methods in the middle
+  ParseSourceCode(True);
+  StringList := TStringList.Create;
   SetLength(MethodArray, 20);
 
   // get existing methods
-  Index:= -1;
-  Ci:= Model.ModelRoot.GetAllClassifiers;
-  while Ci.HasNext do begin
-    cent:= Ci.Next;
-    if cent is TClass then begin
-      It:= (cent as TClass).GetOperations;
-      while It.HasNext do begin
-        inc(Index);
+  Index := -1;
+  ClassIt := FModel.ModelRoot.GetAllClassifiers;
+  while ClassIt.HasNext do
+  begin
+    Cent := ClassIt.Next;
+    if Cent is TClass then
+    begin
+      Ite := (Cent as TClass).GetOperations;
+      while Ite.HasNext do
+      begin
+        Inc(Index);
         if Length(MethodArray) = Index then
           SetLength(MethodArray, Length(MethodArray) + 20);
-        Method:= It.Next as TOperation;
-        MethodArray[Index].Name:= Method.Name;
-        MethodArray[Index].from:= Method.LineS - 1;
-        MethodArray[Index].till:= Method.LineE - 1;
+        Method := Ite.Next as TOperation;
+        MethodArray[Index].Name := Method.Name;
+        MethodArray[Index].From := Method.Lines - 1;
+        MethodArray[Index].Till := Method.LineE - 1;
       end;
     end;
   end;
 
-  //add missing new methods
-  for i:= 0 to NewMethods.Count - 1 do
-    if inMethodArray(NewMethods[i] + '_Action') = -1 then begin
-      func:= CrLf + getActionMethod(NewMethods[i] + '_Action');
-      SL.Add(func);
+  // add missing new methods
+  for var I := 0 to NewMethods.Count - 1 do
+    if inMethodArray(NewMethods[I] + '_Action') = -1 then
+    begin
+      Func := CrLf + getActionMethod(NewMethods[I] + '_Action');
+      StringList.Add(Func);
     end;
-  InsertProcedure(SL.Text);
+  InsertProcedure(StringList.Text);
 
   // delete unnecessary default methods
   // determine methods to delete
-  SL.Clear;
-  for i:= 0 to OldMethods.Count - 1 do   // keeps method lines valid
-    if NewMethods.IndexOf(OldMethods[i]) = -1 then begin
-      p:= inMethodArray(OldMethods[i] + '_Action');
-      if p > -1 then begin
+  StringList.Clear;
+  for var I := 0 to OldMethods.Count - 1 do // keeps method Lines valid
+    if NewMethods.IndexOf(OldMethods[I]) = -1 then
+    begin
+      Posi := inMethodArray(OldMethods[I] + '_Action');
+      if Posi > -1 then
+      begin
         // delete if default
-        from:= MethodArray[p].from;
-        till:= MethodArray[p].till;
-        s1:= getSource(from, till);
-        s2:= getActionMethod(MethodArray[p].Name) + #13#10;
-        if s1 = s2 then
-          SL.Add(OldMethods[i] + '_Action');
+        From := MethodArray[Posi].From;
+        Till := MethodArray[Posi].Till;
+        Str1 := GetSource(From, Till);
+        Str2 := getActionMethod(MethodArray[Posi].Name) + #13#10;
+        if Str1 = Str2 then
+          StringList.Add(OldMethods[I] + '_Action');
       end;
     end;
 
   // delete beginning at the end of the sourcecode
-  for i:= Index downto 0 do
-    if SL.indexOf(MethodArray[i].Name) > -1 then begin
-      from:= MethodArray[i].from;
-      till:= MethodArray[i].till;
-      DeleteBlock(from, till);
-      while (from < Editor.Lines.Count - 1) and (trim(Editor.Lines[from]) = '') do
-        DeleteLine(from);
-      InsertLinesAt(from, '');
+  for var I := Index downto 0 do
+    if StringList.IndexOf(MethodArray[I].Name) > -1 then
+    begin
+      From := MethodArray[I].From;
+      Till := MethodArray[I].Till;
+      DeleteBlock(From, Till);
+      while (From < FEditor.Lines.Count - 1) and
+        (Trim(FEditor.Lines[From]) = '') do
+        DeleteLine(From);
+      InsertLinesAt(From, '');
     end;
-  FreeAndNil(SL);
-  setLength(MethodArray, 0);
+  FreeAndNil(StringList);
+  SetLength(MethodArray, 0);
 end;
 
 procedure TFEditForm.SBClassEditClick(Sender: TObject);
 begin
-  if IsJava then begin
+  if IsJava then
+  begin
     if Modified then
       FJava.DoSave(Self, false);
-    if not myJavaCommands.HasValidClass(Pathname) then
-      myJavaCommands.CompileForm(Self);
+    if not MyJavaCommands.HasValidClass(Pathname) then
+      MyJavaCommands.CompileForm(Self);
     FJava.PrepareClassEdit(Pathname, 'Edit', nil);
   end;
 end;
 
-function TFEditForm.hasStartAndEnd(CorI: integer): boolean;
+function TFEditForm.HasStartAndEnd(CorI: Integer): Boolean;
 begin
-  Result:= true;
-  var i:= 0;
-  while Result and (i < CorI) do begin
-    Result:= Result and
-             hasText(GetLNG(1, i)) and hasText(GetLNG(2, i)) and
-             hasText(GetLNG(5, i)) and hasText(GetLNG(6, i));
-    inc(i);
+  Result := True;
+  var
+  I := 0;
+  while Result and (I < CorI) do
+  begin
+    Result := Result and HasText(GetLNG(1, I)) and HasText(GetLNG(2, I)) and
+      HasText(GetLNG(5, I)) and HasText(GetLNG(6, I));
+    Inc(I);
   end;
-  if Result and (FrameType > 1) then
-    Result:= Result and hasText(_(LNGStartComponents)) and hasText(_(LNGEndComponents));
+  if Result and (FFrameType > 1) then
+    Result := Result and HasText(_(LNGStartComponents)) and
+      HasText(_(LNGEndComponents));
 end;
 
-procedure TFEditForm.WMNCButtonDBLClick(var msg: TMessage);
+procedure TFEditForm.WMNCButtonDBLClick(var Msg: TMessage);
 begin
   FJava.MIMaximizedClick(Self);
 end;
 
 procedure TFEditForm.SBClassOpenClick(Sender: TObject);
-  var UMLForm: TFUMLForm;
-      s, fname, aClassname: string;
+var
+  UMLForm: TFUMLForm;
+  Str, AClassname: string;
 begin
-  if IsJava or IsPascal then begin
-    if Modified then FJava.DoSave(Self, false);
+  if IsJava or IsPascal then
+  begin
+    if Modified then
+      FJava.DoSave(Self, false);
     LockWindow(FJava.Handle);
-    var SL:= TStringList.Create;
+    var
+    StringList := TStringList.Create;
     try
-      s:= ChangeFileExt(Pathname, '.uml');
-      fname:= copy(s, 1, length(s)-4);
-      aClassname:= ChangeFileExt(ExtractFilename(Pathname), '');
-      if FileExists(s) then begin
-        FJava.OpenUMLWindow(s, '');
-        SL.LoadFromFile(s);
-        if Pos('[Box:  - ' + aClassname, SL.Text) = 0 then
+      Str := ChangeFileExt(Pathname, '.uml');
+      AClassname := ChangeFileExt(ExtractFileName(Pathname), '');
+      if FileExists(Str) then
+      begin
+        FJava.OpenUMLWindow(Str, '');
+        StringList.LoadFromFile(Str);
+        if Pos('[Box:  - ' + AClassname, StringList.Text) = 0 then
           FJava.DoOpenInUMLWindow(Pathname);
-      end else begin
-        UMLForm:= FJava.MakeNewUMLWindow(s, '');
-        FConfiguration.ShowAlways:= false;
+      end
+      else
+      begin
+        UMLForm := FJava.MakeNewUMLWindow(Str, '');
+        FConfiguration.ShowAlways := false;
         UMLForm.MainModul.AddToProject(Pathname);
         UMLForm.CreateTVFileStructure;
         UMLForm.MainModul.DoLayout;
-        FConfiguration.ShowAlways:= true;
+        FConfiguration.ShowAlways := True;
         FJava.DoSave(UMLForm, false);
       end;
-      FJava.RearrangeFileHistory(s);
+      FJava.RearrangeFileHistory(Str);
     finally
       UnlockWindow;
-      SL.Destroy;
+      StringList.Destroy;
     end;
   end;
 end;
@@ -4404,29 +5174,35 @@ end;
 
 procedure TFEditForm.SBBrowserClick(Sender: TObject);
 begin
-  if Modified then Save(false);
+  if Modified then
+    Save(false);
   FJava.CallApplet(Pathname);
 end;
 
 procedure TFEditForm.SBValidateClick(Sender: TObject);
 begin
-  var Browser:= FJava.NewBrowser('', '');
-  if isCSS
-    then Browser.UploadFilesHttpPost('https://jigsaw.w3.org/css-validator/validator', [], [], ['file'], [Pathname])
-    else Browser.UploadFilesHttpPost('https://validator.w3.org/check', [], [], ['uploaded_file'], [Pathname]);
+  var
+  Browser := FJava.NewBrowser('', '');
+  if IsCSS then
+    Browser.UploadFilesHttpPost('https://jigsaw.w3.org/css-validator/validator',
+      [], [], ['file'], [Pathname])
+  else
+    Browser.UploadFilesHttpPost('https://validator.w3.org/check', [], [],
+      ['uploaded_file'], [Pathname]);
 end;
 
 procedure TFEditForm.SBExplorerClick(Sender: TObject);
 begin
-  var s:= ExtractFilePath(Pathname);
-  FJava.NewExplorer(s, '');
+  var
+  Str := ExtractFilePath(Pathname);
+  FJava.NewExplorer(Str, '');
 end;
 
 procedure TFEditForm.MIRenewImportsClick(Sender: TObject);
 begin
-  FConfiguration.FixImports:= true;
-  NeedsParsing:= true;
-  ParseSourcecode(true);
+  FConfiguration.FixImports := True;
+  FNeedsParsing := True;
+  ParseSourceCode(True);
 end;
 
 procedure TFEditForm.MIFontClick(Sender: TObject);
@@ -4436,18 +5212,20 @@ end;
 
 procedure TFEditForm.MIGitAddClick(Sender: TObject);
 begin
-  if Modified then Save(false);
+  if Modified then
+    Save(false);
   FGit.GitCall('add ' + ExtractFileName(Pathname), ExtractFilePath(Pathname));
 end;
 
 procedure TFEditForm.MIGitCheckoutClick(Sender: TObject);
 begin
-  FGit.GitCall('checkout -- ' + ExtractFilename(Pathname), ExtractFilePath(Pathname));
+  FGit.GitCall('checkout -- ' + ExtractFileName(Pathname),
+    ExtractFilePath(Pathname));
 end;
 
 procedure TFEditForm.MIGitGuiClick(Sender: TObject);
 begin
-  FGit.ShowGui(ExtractFilePath(Pathname));
+  FGit.ShowGUI(ExtractFilePath(Pathname));
 end;
 
 procedure TFEditForm.MIGitViewerClick(Sender: TObject);
@@ -4462,7 +5240,8 @@ end;
 
 procedure TFEditForm.MIGitFetchClick(Sender: TObject);
 begin
-  FGit.GitCall('fetch ' + FConfiguration.GitRemoteRepository, ExtractFilePath(Pathname));
+  FGit.GitCall('fetch ' + FConfiguration.GitRemoteRepository,
+    ExtractFilePath(Pathname));
 end;
 
 procedure TFEditForm.MIGitLogClick(Sender: TObject);
@@ -4477,7 +5256,8 @@ end;
 
 procedure TFEditForm.MGitResetClick(Sender: TObject);
 begin
-  FGit.GitCall('reset HEAD ' + ExtractFileName(Pathname), ExtractFilePath(Pathname));
+  FGit.GitCall('reset HEAD ' + ExtractFileName(Pathname),
+    ExtractFilePath(Pathname));
 end;
 
 procedure TFEditForm.MIGitRemoteClick(Sender: TObject);
@@ -4495,222 +5275,268 @@ begin
   FGit.GitCall('status', ExtractFilePath(Pathname));
 end;
 
-function TFEditForm.EncodingAsString(const aEncoding: string): string;
+function TFEditForm.EncodingAsString(const AEncoding: string): string;
 begin
-  Result:= Uppercase(aEncoding);
-  if Pos('ANSI', Result) > 0 then Result:= 'ANSI' else
-  if Pos('ASCII', Result) > 0 then Result:= 'ASCII' else
-  if Pos('UTF-8', Result) > 0 then Result:= 'UTF-8' else
-  if Pos('UTF-16', Result) > 0 then Result:= 'UTF-16' else
-  if Pos('UNICODE', Result) > 0 then Result:= 'UTF-16' else
-  if Pos('CP1252', Result) > 0 then Result:= 'ANSI';
+  Result := UpperCase(AEncoding);
+  if Pos('ANSI', Result) > 0 then
+    Result := 'ANSI'
+  else if Pos('ASCII', Result) > 0 then
+    Result := 'ASCII'
+  else if Pos('UTF-8', Result) > 0 then
+    Result := 'UTF-8'
+  else if Pos('UTF-16', Result) > 0 then
+    Result := 'UTF-16'
+  else if Pos('UNICODE', Result) > 0 then
+    Result := 'UTF-16'
+  else if Pos('CP1252', Result) > 0 then
+    Result := 'ANSI';
 end;
 
 function TFEditForm.LinebreakAsString: string;
 begin
-  if LineBreak = #13#10 then Result:= 'Windows' else
-  if LineBreak = #10 then Result:= 'Unix'
-  else Result:= 'Mac';
+  if FLineBreak = #13#10 then
+    Result := 'Windows'
+  else if FLineBreak = #10 then
+    Result := 'Unix'
+  else
+    Result := 'Mac';
 end;
 
-function TFEditForm.LinebreakAsCtrls(const s: string): string;
+function TFEditForm.LinebreakAsCtrls(const Str: string): string;
 begin
-  if s = 'Windows' then Result:= #13#10 else
-  if s = 'Unix' then Result:= #10
-  else Result:= #13;
+  if Str = 'Windows' then
+    Result := #13#10
+  else if Str = 'Unix' then
+    Result := #10
+  else
+    Result := #13;
 end;
 
-procedure TFEditForm.SetEncoding(aEncoding: string);
+procedure TFEditForm.SetEncoding(AEncoding: string);
 begin
-  Self.Encoding:= EncodingAsString(aEncoding);
-  var p:= Pos('/', aEncoding);
-  delete(aEncoding, 1, p);
-  Linebreak:= LinebreakAsCtrls(aEncoding);
-  Editor.Lines.DefaultEncoding:= getEncodingAsType;
+  Self.FEncoding := EncodingAsString(AEncoding);
+  var
+  Posi := Pos('/', AEncoding);
+  Delete(AEncoding, 1, Posi);
+  FLineBreak := LinebreakAsCtrls(AEncoding);
+  FEditor.Lines.DefaultEncoding := GetEncodingAsType;
 end;
 
-function TFEditForm.getEncodingAsType: TEncoding;
+function TFEditForm.GetEncodingAsType: TEncoding;
 begin
-  if Encoding = 'ANSI' then Result:= TEncoding.ANSI else
-  if Encoding = 'UTF-8' then Result:= TEncoding.UTF8 else
-  Result:= TEncoding.Unicode;
+  if FEncoding = 'ANSI' then
+    Result := TEncoding.ANSI
+  else if FEncoding = 'UTF-8' then
+    Result := TEncoding.UTF8
+  else
+    Result := TEncoding.Unicode;
 end;
 
 procedure TFEditForm.CheckAge;
-  var FDT: TDateTime;
+var
+  FDT: TDateTime;
 begin
-  if not FConfiguration.CheckAge then exit;
+  if not FConfiguration.CheckAge then
+    Exit;
   FileAge(Pathname, FDT);
-  if Visible and (EditorAge <> 0) and CheckAgeEnabled and FileExists(Pathname) and (EditorAge <> FDT) then begin
-    if MessageDlg(Format(_('File %s externally modified. Open new?'),
-                    [Pathname]), mtConfirmation,[mbYes, mbNo], 0) = mrYes then
-     with Editor do
-       try
+  if Visible and (FEditorAge <> 0) and FCheckAgeEnabled and FileExists(Pathname)
+    and (FEditorAge <> FDT) then
+  begin
+    if MessageDlg(Format(_('File %s externally modified. Open new?'), [Pathname]
+      ), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      with FEditor do
+        try
           Lines.LoadFromFile(Pathname);
-          Editor.ReplaceTabs(FConfiguration.TabWidth);
-        except on e: Exception do
-          FConfiguration.Log('TFEditForm.CheckAge: ' + Pathname, e);
+          FEditor.ReplaceTabs(FConfiguration.TabWidth);
+        except
+          on e: Exception do
+            FConfiguration.Log('TFEditForm.CheckAge: ' + Pathname, e);
         end;
-    FileAge(Pathname, EditorAge);
+    FileAge(Pathname, FEditorAge);
   end;
 end;
 
-function TFEditForm.IsJava: boolean;
+function TFEditForm.IsJava: Boolean;
 begin
-  Result:= (FileExtension = '.java');
+  Result := (FFileExtension = '.java');
 end;
 
-function TFEditForm.IsPascal: boolean;
+function TFEditForm.IsPascal: Boolean;
 begin
-  Result:= (FileExtension = '.pas');
+  Result := (FFileExtension = '.pas');
 end;
 
-function TFEditForm.IsHTML: boolean;
+function TFEditForm.IsHTML: Boolean;
 begin
-  Result:= (FileExtension = '.html') or (FileExtension = '.htm');
+  Result := (FFileExtension = '.html') or (FFileExtension = '.htm');
 end;
 
-function TFEditForm.IsCSS: boolean;
+function TFEditForm.IsCSS: Boolean;
 begin
-  Result:= (FileExtension = '.css');
+  Result := (FFileExtension = '.css');
 end;
 
 procedure TFEditForm.Search;
 begin
-  FJava.ShowSearchReplaceDialog(Editor, false);
+  FJava.ShowSearchReplaceDialog(FEditor, false);
 end;
 
 procedure TFEditForm.SearchAgain;
 begin
-  FJava.DoSearchReplaceText(Editor, false);
+  FJava.DoSearchReplaceText(FEditor, false);
 end;
 
 procedure TFEditForm.Replace;
 begin
-  FJava.ShowSearchReplaceDialog(Editor, true);
+  FJava.ShowSearchReplaceDialog(FEditor, True);
 end;
 
 procedure TFEditForm.Show;
 begin
-  Visible:= true;
+  Visible := True;
   FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
 end;
 
 procedure TFEditForm.Hide;
 begin
-  Visible:= false;
+  Visible := false;
   FJava.DeleteTabAndWindow(Number);
 end;
 
-procedure TFEditForm.ReplaceWidthHeight(W, H: integer);
+procedure TFEditForm.ReplaceWidthHeight(Width, Height: Integer);
 
-  function aReplace(const LineText, wh: string; i: integer): string;
-    var s: string; p: integer;
+  function AReplace(const LineText, WidthHeight: string; I: Integer): string;
+  var
+    Str: string;
+    Posi: Integer;
   begin
-    s:= LineText;
-    p:= Pos(wh, s) + Pos(UpperCase(wh), s) + length(wh);
-    while s[p] <> '"' do inc(p);
-    inc(p);
-    while s[p] <> '"' do delete(s, p, 1);
-    insert(IntToStr(i), s, p);
-    Result:= s;
+    Str := LineText;
+    Posi := Pos(WidthHeight, Str) + Pos(UpperCase(WidthHeight), Str) +
+      Length(WidthHeight);
+    while Str[Posi] <> '"' do
+      Inc(Posi);
+    Inc(Posi);
+    while Str[Posi] <> '"' do
+      Delete(Str, Posi, 1);
+    Insert(IntToStr(I), Str, Posi);
+    Result := Str;
   end;
 
 begin
-  var line:= getLineNumberWith(' width=');
-  if line >= 0 then begin
-    Editor.Lines[line]:= aReplace(Editor.Lines[line], 'width', W);
-    line:= getLineNumberwithFrom(line+1, ' width=');
-    if line >= 0 then // PlugIn
-      Editor.Lines[line]:= aReplace(Editor.Lines[line], 'width', W);
-    Modified:= true;
+  var
+  Line := GetLineNumberWith(' width=');
+  if Line >= 0 then
+  begin
+    FEditor.Lines[Line] := AReplace(FEditor.Lines[Line], 'width', Width);
+    Line := GetLineNumberWithFrom(Line + 1, ' width=');
+    if Line >= 0 then // PlugIn
+      FEditor.Lines[Line] := AReplace(FEditor.Lines[Line], 'width', Width);
+    Modified := True;
   end;
-  line:= getLineNumberWith(' height=');
-  if line >= 0 then begin
-    Editor.Lines[line]:= aReplace(Editor.Lines[line], 'height', H);
-    line:= getLineNumberwithFrom(line+1, ' height=');
-    if line > 0 then
-      Editor.Lines[line]:= aReplace(Editor.Lines[line], 'height', H);
-    Modified:= true;
+  Line := GetLineNumberWith(' height=');
+  if Line >= 0 then
+  begin
+    FEditor.Lines[Line] := AReplace(FEditor.Lines[Line], 'height', Height);
+    Line := GetLineNumberWithFrom(Line + 1, ' height=');
+    if Line > 0 then
+      FEditor.Lines[Line] := AReplace(FEditor.Lines[Line], 'height', Height);
+    Modified := True;
   end;
 end;
 
 procedure TFEditForm.AutomatedCompleteImports;
-  var aClass, package, Shorttype, classimp, fullimp, aLine: string;
-      Ci: IModelIterator; cent: TClassifier;
-      FUnit: TUnitPackage; ClassImports, FullImports, AllImports: TStringList;
-      i, p: integer;
+var
+  AClass, Package, Shorttype, ClassImp, FullImp, ALine: string;
+  ClassIt: IModelIterator;
+  Cent: TClassifier;
+  FUnit: TUnitPackage;
+  ClassImports, FullImports, AllImports: TStringList;
+  Posi: Integer;
 begin
-  FUnit := (Model.ModelRoot as TLogicPackage).FindUnitPackage('Default');
-  if not assigned(FUnit) then exit;
+  FUnit := FModel.ModelRoot.FindUnitPackage('Default');
+  if not Assigned(FUnit) then
+    Exit;
 
-  with Editor do begin
+  with FEditor do
+  begin
     BeginUpdate;
-    FullImports:= FUnit.FullImports;   // import java.awt.*;
-    if FrameType in [2..4] then begin
+    FullImports := FUnit.FullImports; // import java.awt.*;
+    if FFrameType in [2 .. 4] then
+    begin
       FullImports.Add('java.awt.');
       FullImports.Add('java.awt.event.');
-    end else if FrameType in [5..7] then begin
+    end
+    else if FFrameType in [5 .. 7] then
+    begin
       FullImports.Add('java.awt.');
       FullImports.Add('java.awt.event.');
       FullImports.Add('javax.swing.');
       FullImports.Add('javax.swing.event.');
     end;
-    ClassImports:= FUnit.ClassImports; // import java.io.FileInputStream;
-    if FrameType = 8 then begin
+    ClassImports := FUnit.ClassImports; // import java.io.FileInputStream;
+    if FFrameType = 8 then
+    begin
       ClassImports.Add('Application=javafx.application');
       ClassImports.Add('Scene=javafx.scene');
       ClassImports.Add('Pane=javafx.scene.layout');
       ClassImports.Add('Stage=javafx.stage');
     end;
-    Ci:= Model.UnknownPackage.GetClassifiers;
-    while Ci.hasNext do begin
-      cent:= TClassifier(Ci.Next);
-      aclass:= WithoutGeneric(cent.Name);
-      Shorttype:= GetShortType(aClass);
-      package:= ExtractPackageName(aclass);
-      if (Pos('java.lang.', aclass) = 0) and (Pos('.', aclass) > 0) and
-         (FullImports.IndexOf(package + '.') = -1) and
-         (ClassImports.IndexOfName(Shorttype) = -1) then
-        ClassImports.Add(Shorttype + '=' + package)
+    ClassIt := FModel.UnknownPackage.GetClassifiers;
+    while ClassIt.HasNext do
+    begin
+      Cent := TClassifier(ClassIt.Next);
+      AClass := WithoutGeneric(Cent.Name);
+      Shorttype := GetShortType(AClass);
+      Package := ExtractPackageName(AClass);
+      if (Pos('java.lang.', AClass) = 0) and (Pos('.', AClass) > 0) and
+        (FullImports.IndexOf(Package + '.') = -1) and
+        (ClassImports.IndexOfName(Shorttype) = -1) then
+        ClassImports.Add(Shorttype + '=' + Package);
     end;
-    AllImports:= TStringList.Create;
-    AllImports.Sorted:= true;
-    AllImports.Duplicates:= dupIgnore;
-    for i:= 0 to FullImports.Count - 1 do
-      if FullImports.Strings[i] <> 'java.lang.' then
-        AllImports.Add('import ' + FullImports.Strings[i] + '*;');
-    for i:= 0 to ClassImports.Count - 1 do
-      AllImports.add('import ' + ClassImports.ValueFromIndex[I] + '.' + ClassImports.Names[i] + ';');
+    AllImports := TStringList.Create;
+    AllImports.Sorted := True;
+    AllImports.Duplicates := dupIgnore;
+    for var I := 0 to FullImports.Count - 1 do
+      if FullImports[I] <> 'java.lang.' then
+        AllImports.Add('import ' + FullImports[I] + '*;');
+    for var I := 0 to ClassImports.Count - 1 do
+      AllImports.Add('import ' + ClassImports.ValueFromIndex[I] + '.' +
+        ClassImports.Names[I] + ';');
 
-    for i:= 0 to FConfiguration.ImportCache.Count - 1 do begin
-      classimp:= FConfiguration.ImportCache.Strings[i];
-      delete(classimp, 1, Pos('=', classimp));
-      if (Pos('.', classimp) > 0) and (Pos('<', classimp) = 0) and
-         (Pos('[', classimp) = 0) and (Pos('java.lang.', classimp) = 0)then begin
-        fullimp:= 'import ' + copy(classimp, 1, Lastdelimiter('.', classimp)) + '*;';
-        if AllImports.IndexOf(fullimp) = -1 then
-          AllImports.add('import ' + classimp + ';');
+    for var I := 0 to FConfiguration.ImportCache.Count - 1 do
+    begin
+      ClassImp := FConfiguration.ImportCache[I];
+      Delete(ClassImp, 1, Pos('=', ClassImp));
+      if (Pos('.', ClassImp) > 0) and (Pos('<', ClassImp) = 0) and
+        (Pos('[', ClassImp) = 0) and (Pos('java.lang.', ClassImp) = 0) then
+      begin
+        FullImp := 'import ' + Copy(ClassImp, 1,
+          LastDelimiter('.', ClassImp)) + '*;';
+        if AllImports.IndexOf(FullImp) = -1 then
+          AllImports.Add('import ' + ClassImp + ';');
       end;
     end;
     // handle static imports
-    for i:= FUnit.ImportStartline-1 to FUnit.ImportEndline-1 do begin
-      aLine:= Editor.Lines[i];
-      p:= Pos(' static ', aLine);
-      if p > 0 then begin
-        delete(aLine, 1, p + length(' static'));
-        aLine:= 'import ' + trim(aLine);
-        p:= AllImports.IndexOf(aLine);
-        if p > -1 then begin
-          aLine:= AllImports.Strings[p];
-          insert(' static', aLine, length('import') + 1);
-          AllImports.delete(p);
-          AllImports.add(aLine);
+    for var I := FUnit.ImportStartline - 1 to FUnit.ImportEndline - 1 do
+    begin
+      ALine := FEditor.Lines[I];
+      Posi := Pos(' static ', ALine);
+      if Posi > 0 then
+      begin
+        Delete(ALine, 1, Posi + Length(' static'));
+        ALine := 'import ' + Trim(ALine);
+        Posi := AllImports.IndexOf(ALine);
+        if Posi > -1 then
+        begin
+          ALine := AllImports[Posi];
+          Insert(' static', ALine, Length('import') + 1);
+          AllImports.Delete(Posi);
+          AllImports.Add(ALine);
         end;
       end;
     end;
     if FUnit.ImportEndline >= FUnit.ImportStartline then
-      DeleteBlock(FUnit.ImportStartline-1, FUnit.ImportEndline-1);
+      DeleteBlock(FUnit.ImportStartline - 1, FUnit.ImportEndline - 1);
     if AllImports.Text <> '' then
       InsertLinesAt(FUnit.ImportStartline - 1, AllImports.Text);
     AllImports.Destroy;
@@ -4718,429 +5544,528 @@ begin
   end;
 end;
 
-function TFEditForm.getPackage: string;
+function TFEditForm.GetPackage: string;
 begin
-  var JavaScanner:= TJavaScanner.Create;
+  var
+  JavaScanner := TJavaScanner.Create;
   try
-    if assigned(Editor) and (Editor.Text <> '')
-       then Result:= JavaScanner.getPackage(Editor.Text)   // >>> TFEditForm.getPackage exe=0
-       else Result:= '';
+    if Assigned(FEditor) and (FEditor.Text <> '') then
+      Result := JavaScanner.GetPackage(FEditor.Text)
+      // >>> TFEditForm.getPackage exe=0
+    else
+      Result := '';
     JavaScanner.Destroy;
-  except on e: Exception do
-    FConfiguration.Log('TFEditForm.getPackage', e);
+  except
+    on e: Exception do
+      FConfiguration.Log('TFEditForm.getPackage', e);
   end;
 end;
 
-function TFEditForm.getAllPathnames: TStringList;
+function TFEditForm.GetAllPathnames: TStringList;
 begin
-  Result:= TStringList.Create;
-  if Editor.Text <> ''
-    then Result.Add(Pathname);
+  Result := TStringList.Create;
+  if FEditor.Text <> '' then
+    Result.Add(Pathname);
 end;
 
-function TFEditForm.getAllClassnames: TStringList;
+function TFEditForm.GetAllClassnames: TStringList;
 begin
-  Result:= TStringList.Create;
-  if IsJava then begin
-    ParseSourcecode(false);
-    var Ci:= Model.ModelRoot.GetAllClassifiers;
-    while Ci.HasNext do begin
-      var cent:= TClassifier(Ci.Next);
-      if (cent is TClass) and (cent.Pathname = Pathname) then
-        Result.Add(ExtractFilePath(Pathname) + withoutGeneric(cent.name) + '.class');
+  Result := TStringList.Create;
+  if IsJava then
+  begin
+    ParseSourceCode(false);
+    var
+    ClassIt := FModel.ModelRoot.GetAllClassifiers;
+    while ClassIt.HasNext do
+    begin
+      var
+      Cent := TClassifier(ClassIt.Next);
+      if (Cent is TClass) and (Cent.Pathname = Pathname) then
+        Result.Add(ExtractFilePath(Pathname) + WithoutGeneric(Cent.Name) +
+          '.class');
     end;
   end;
 end;
 
 procedure TFEditForm.DoOnMouseOverToken(Sender: TObject; const Token: string;
-            TokenType: Integer; Caret, P: TPoint; Attri: TSynHighlighterAttributes; var Highlight: Boolean);
+TokenType: Integer; Caret, Posi: TPoint; Attri: TSynHighlighterAttributes;
+var Highlight: Boolean);
 begin
-  if FConfiguration.TooltipAutomatic and isJava then begin
-    if Tokentype = Ord(SynHighlighterJava.tkIdentifier) then begin
-      if (Token <> LastToken) and (Trim(Token) <> '') then
-        CreateTooltip(Caret, P, Token);
-    end else
-      if FTooltip.Visible and not FTooltip.closemanually then
-        FTooltip.Hide;
+  if FConfiguration.TooltipAutomatic and IsJava then
+  begin
+    if TokenType = Ord(SynHighlighterJava.tkIdentifier) then
+    begin
+      if (Token <> FLastToken) and (Trim(Token) <> '') then
+        CreateTooltip(Caret, Posi, Token);
+    end
+    else if FTooltip.Visible and not FTooltip.CloseManually then
+      FTooltip.Hide;
   end;
-  LastToken:= Trim(Token);
+  FLastToken := Trim(Token);
 end;
 
-procedure TFEditForm.DoOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TFEditForm.DoOnMouseDown(Sender: TObject; Button: TMouseButton;
+Shift: TShiftState; X, Y: Integer);
 begin
   if FJava.scpJava.Form.Visible then
     FJava.scpJava.CancelCompletion;
 end;
 
-procedure TFEditForm.CreateTooltip(Caret, P: TPoint; const Token: string);
-  var SL: TStringList; Typ, Code: string;
-      freq, startTime, endTime: Int64;
-      duration: integer; TokenRect: TRect;
-      w, h: integer;
+procedure TFEditForm.CreateTooltip(Caret, Posi: TPoint; const Token: string);
+var
+  StringList: TStringList;
+  Typ, Code: string;
+  Freq, StartTime, EndTime: Int64;
+  Duration: Integer;
+  TokenRect: TRect;
+  Width, Height: Integer;
 begin
-  QueryPerformanceFrequency(freq);
-  QueryPerformanceCounter(startTime);
-  w:= Editor.Canvas.TextWidth(Token);
-  h:= Editor.Canvas.TextHeight(Token);
-  TokenRect:= Rect(P.x, P.y-h, P.x+w, P.y);
+  QueryPerformanceFrequency(Freq);
+  QueryPerformanceCounter(StartTime);
+  Width := FEditor.Canvas.TextWidth(Token);
+  Height := FEditor.Canvas.TextHeight(Token);
+  TokenRect := Rect(Posi.X, Posi.Y - Height, Posi.X + Width, Posi.Y);
 
-  Code:= getJavaCodeAt(Caret);
-  Typ:= MyCodeCompletion.SearchDocumentation(Code, Caret.Y);
-  if Typ <> '' then begin
-    FTooltip.Init(Self, P, TokenRect, Token);
-    SL:= TStringList.Create;
+  Code := GetJavaCodeAt(Caret);
+  Typ := MyCodeCompletion.SearchDocumentation(Code, Caret.Y);
+  if Typ <> '' then
+  begin
+    FTooltip.Init(Self, Posi, TokenRect, Token);
+    StringList := TStringList.Create;
     try
-      SL.Add(FTooltip.getHead);
-      SL.Add(Typ);
-      SL.Add('</body></html>');
+      StringList.Add(FTooltip.GetHead);
+      StringList.Add(Typ);
+      StringList.Add('</body></html>');
       try
-        SL.SaveToFile(FConfiguration.TempDir + 'Tooltip.html');
+        StringList.SaveToFile(FConfiguration.TempDir + 'Tooltip.html');
       except
+        on e: Exception do
+          ErrorMsg(e.Message);
       end;
     finally
-      FreeAndNil(SL);
+      FreeAndNil(StringList);
     end;
-    QueryPerformanceCounter(endTime);
-    duration:= (endTime - startTime) * 1000 div freq; // ms
-    duration:= FConfiguration.TooltipDelay - Duration;
-    if (Duration < 10) or (Token = '# VK_F2 #') then Duration:= 10;
-    FTooltip.OpenTooltipTimer.Interval:= Duration;
-    FTooltip.OpenTooltipTimer.Enabled:= true;
+    QueryPerformanceCounter(EndTime);
+    Duration := (EndTime - StartTime) * 1000 div Freq; // ms
+    Duration := FConfiguration.TooltipDelay - Duration;
+    if (Duration < 10) or (Token = '# VK_F2 #') then
+      Duration := 10;
+    FTooltip.OpenTooltipTimer.Interval := Duration;
+    FTooltip.OpenTooltipTimer.Enabled := True;
   end;
 end;
 
 procedure TFEditForm.MISearchDeclarationClick(Sender: TObject);
-  var Code: string;
-    Classifier: TClassifier;
-    Attribute: TAttribute;
-    Operation: TOperation;
-    aParameter: TParameter;
+var
+  Code: string;
+  Classifier: TClassifier;
+  Attribute: TAttribute;
+  Operation: TOperation;
+  AParameter: TParameter;
 begin
-  if MousePosition.Char > -1 then begin
-    Code:= getJavaCodeAt(Point(MousePosition.Char, MousePosition.Line));
-    if Code = '' then exit;
+  if FMousePosition.Char > -1 then
+  begin
+    Code := GetJavaCodeAt(Point(FMousePosition.Char, FMousePosition.Line));
+    if Code = '' then
+      Exit;
 
-    myCodeCompletion.getTypeOfCode(Code, MousePosition.Line, 0, false);
-    Classifier:= myCodeCompletion.CCClassifier;
-    Attribute:= myCodeCompletion.CCAttribute;
-    Operation:= myCodeCompletion.CCOperation;
-    aParameter:= myCodeCompletion.CCParameter;
+    MyCodeCompletion.GetTypeOfCode(Code, FMousePosition.Line, 0, false);
+    Classifier := MyCodeCompletion.CCClassifier;
+    Attribute := MyCodeCompletion.CCAttribute;
+    Operation := MyCodeCompletion.CCOperation;
+    AParameter := MyCodeCompletion.CCParameter;
 
-    if assigned(Classifier) then begin
-      if assigned(Attribute) then
-        FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname), Attribute.Spalte, Attribute.LineS, false)
-      else if assigned(Operation) then
-        FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname), Operation.Spalte, Operation.LineS, false)
-      else if assigned(aParameter) then
-        FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname), aParameter.Spalte, aParameter.LineS, false)
+    if Assigned(Classifier) then
+    begin
+      if Assigned(Attribute) then
+        FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname),
+          Attribute.Spalte, Attribute.Lines, false)
+      else if Assigned(Operation) then
+        FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname),
+          Operation.Spalte, Operation.Lines, false)
+      else if Assigned(AParameter) then
+        FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname),
+          AParameter.Spalte, AParameter.Lines, false)
       else
-        FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname), Classifier.Spalte, Classifier.LineS, false);
-     end;
-  end;
-end;
-
-procedure TFEditForm.setNeedsParsing(value: boolean);
-begin
-  if value <> FNeedsParsing then begin
-    if value and assigned(Editor) and not Editor.LockBuildStructure
-      then FNeedsParsing:= true
-      else FNeedsParsing:= false;
-  end;
-end;
-
-procedure TFEditForm.setFileExtension(value: string);
-begin
-  if value <> fFileExtension then
-    fFileExtension:= value;
-end;
-
-function TFEditForm.getJavaCodeAt(Caret: TPoint): string;
-  var s: string; p, brackets, line: Integer;
-begin
-  line:= Caret.Y - 1;
-  s:= Editor.Lines[line];
-  p:= max(Caret.X, 1);
-  // expand to right
-  while (p <= Length(s)) and (IsCharAlphaNumeric(s[p]) or (s[p] = '_')) do
-    inc(p);
-  // detect method call
-  if (p <= length(s)) and (s[p] = '(') then begin
-    // get Parameters
-    brackets:= 1;
-    while brackets > 0 do begin
-      if p = length(s) then begin  // parameter on next line
-        inc(line);
-        if line < Editor.Lines.Count
-          then s:= s + ' ' + Editor.Lines[line]
-          else break;
-      end;
-      inc(p);
-      if s[p] = ')' then dec(brackets) else
-      if s[p] = '(' then inc(brackets);
+        FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname),
+          Classifier.Spalte, Classifier.Lines, false);
     end;
-    s:= copy(s, 1, p);
-  end else
-    s:= copy(s, 1, p-1);
+  end;
+end;
+
+procedure TFEditForm.SetNeedsParsing(Value: Boolean);
+begin
+  if Value <> FNeedsParsing then
+  begin
+    if Value and Assigned(FEditor) and not FEditor.LockBuildStructure then
+      FNeedsParsing := True
+    else
+      FNeedsParsing := false;
+  end;
+end;
+
+function TFEditForm.GetJavaCodeAt(Caret: TPoint): string;
+var
+  Str: string;
+  Posi, Brackets, Line: Integer;
+begin
+  Line := Caret.Y - 1;
+  Str := FEditor.Lines[Line];
+  Posi := Max(Caret.X, 1);
+  // expand to right
+  while (Posi <= Length(Str)) and (IsCharAlphaNumeric(Str[Posi]) or
+    (Str[Posi] = '_')) do
+    Inc(Posi);
+  // detect method call
+  if (Posi <= Length(Str)) and (Str[Posi] = '(') then
+  begin
+    // get Parameters
+    Brackets := 1;
+    while Brackets > 0 do
+    begin
+      if Posi = Length(Str) then
+      begin // FParameter on next Line
+        Inc(Line);
+        if Line < FEditor.Lines.Count then
+          Str := Str + ' ' + FEditor.Lines[Line]
+        else
+          Break;
+      end;
+      Inc(Posi);
+      if Str[Posi] = ')' then
+        Dec(Brackets)
+      else if Str[Posi] = '(' then
+        Inc(Brackets);
+    end;
+    Str := Copy(Str, 1, Posi);
+  end
+  else
+    Str := Copy(Str, 1, Posi - 1);
 
   // expand to left
-  p:= Caret.X;
-  while (p > 0) and (p <= length(s)) and (IsCharAlphaNumeric(s[p]) or CharInSet(s[p], ['.', '_', ')', ']'])) do begin
-    if s[p] = ')' then begin
-      brackets:= 1;
-      while (p > 0) and (brackets > 0) do begin
-        dec(p);
-        if s[p] = ')' then inc(brackets) else
-        if s[p] = '(' then dec(brackets);
+  Posi := Caret.X;
+  while (Posi > 0) and (Posi <= Length(Str)) and
+    (IsCharAlphaNumeric(Str[Posi]) or CharInSet(Str[Posi],
+    ['.', '_', ')', ']'])) do
+  begin
+    if Str[Posi] = ')' then
+    begin
+      Brackets := 1;
+      while (Posi > 0) and (Brackets > 0) do
+      begin
+        Dec(Posi);
+        if Str[Posi] = ')' then
+          Inc(Brackets)
+        else if Str[Posi] = '(' then
+          Dec(Brackets);
       end;
     end;
-    if s[p] = ']' then begin
-      brackets:= 1;
-      while (p > 0) and (brackets > 0) do begin
-        dec(p);
-        if s[p] = ']' then inc(brackets) else
-        if s[p] = '[' then dec(brackets);
+    if Str[Posi] = ']' then
+    begin
+      Brackets := 1;
+      while (Posi > 0) and (Brackets > 0) do
+      begin
+        Dec(Posi);
+        if Str[Posi] = ']' then
+          Inc(Brackets)
+        else if Str[Posi] = '[' then
+          Dec(Brackets);
       end;
     end;
-    dec(p);
+    Dec(Posi);
   end;
-  delete(s, 1, p);
-  Result:= s;
+  Delete(Str, 1, Posi);
+  Result := Str;
 end;
 
 procedure TFEditForm.DoOnBuildStructure(Sender: TObject);
 begin
-  NeedsParsing:= true;
+  FNeedsParsing := True;
 end;
 
 // var Count: integer = 0;
 
-procedure TFEditForm.ParseSourcecodeWithThread(hasChanged: boolean);
+procedure TFEditForm.ParseSourcecodeWithThread(HasChanged: Boolean);
 begin
-  NeedsParsing:= NeedsParsing or hasChanged;
+  FNeedsParsing := FNeedsParsing or HasChanged;
 
   { // debugging
     inc(Count);
     FMessages.OutputToTerminal('Thread Count: ' + IntTostr(Count));
   }
 
-  if assigned(ParseThread) then begin
-    if (ParseThread.State > 0) and  (ParseThread.State < 3) then begin
-      ParseThread.abort:= true; // finish the job
-      ParseThread.WaitFor;
+  if Assigned(FParseThread) then
+  begin
+    if (FParseThread.State > 0) and (FParseThread.State < 3) then
+    begin
+      FParseThread.Abort := True; // finish the job
+      FParseThread.WaitFor;
     end;
-    FreeAndNil(ParseThread);
+    FreeAndNil(FParseThread);
   end;
 
-  if NeedsParsing then begin
-    ParseThread:= TParseThread.Create(Self, true);
+  if FNeedsParsing then
+  begin
+    FParseThread := TParseThread.Create(Self, True);
   end;
 end;
 
-procedure TFEditForm.ParseSourceCode(hasChanged: boolean);
+procedure TFEditForm.ParseSourceCode(HasChanged: Boolean);
 begin
-  NeedsParsing:= NeedsParsing or hasChanged;
-  if IsJava and NeedsParsing then begin
-    if assigned(ParseThread) then begin
-      ParseThread.abort:= true;
-      ParseThread.WaitFor;
-      FreeAndNil(ParseThread);
+  FNeedsParsing := FNeedsParsing or HasChanged;
+  if IsJava and FNeedsParsing then
+  begin
+    if Assigned(FParseThread) then
+    begin
+      FParseThread.Abort := True;
+      FParseThread.WaitFor;
+      FreeAndNil(FParseThread);
     end;
 
-    if assigned(Model) then
-      Model.Clear;
+    if Assigned(FModel) then
+      FModel.Clear;
     FConfiguration.ImportCache.Clear;
-    var Importer:= TJavaImporter.Create(Model, TFileProvider.Create);
+    var
+    Importer := TJavaImporter.Create(FModel, TFileProvider.Create);
     try
-      Importer.AddClasspath(UnHideBlanks(FConfiguration.getClassPathJarExpanded(Pathname, getPackage)), Pathname);
-      var Str:= Importer.CodeProvider.LoadStream(Pathname, Self);
-      if assigned(Str) then begin
-        FreeAndNil(Parser);
-        Parser:= TJavaParser.Create(true);
-        Parser.NeedPackage:= Importer.NeedPackageHandler;
-        Parser.ParseStream(Str, Model.ModelRoot, Model, Pathname, false, false);
-        Editor.Structures:= Parser.Structures.clone;
+      Importer.AddClasspath
+        (UnHideBlanks(FConfiguration.GetClassPathJarExpanded(Pathname,
+        GetPackage)), Pathname);
+      var
+      Str := Importer.CodeProvider.LoadStream(Pathname, Self);
+      if Assigned(Str) then
+      begin
+        FreeAndNil(FParser);
+        FParser := TJavaParser.Create(True);
+        FParser.NeedPackage := Importer.NeedPackageHandler;
+        FParser.ParseStream(Str, FModel.ModelRoot, FModel, Pathname,
+          false, false);
+        FEditor.Structures := FParser.Structures.Clone;
       end;
     finally
       FreeAndNil(Importer);
     end;
-    //FreeAndNil(Str); handeld by Scanner
-    if FConfiguration.FixImports then begin
+    // FreeAndNil(Str); handeld by Scanner
+    if FConfiguration.FixImports then
+    begin
       AutomatedCompleteImports;
-      NeedsParsing:= true;
-    end else begin
-      NeedsParsing:= false;
-      CreateTVFileStructure;
+      FNeedsParsing := True;
+    end
+    else
+    begin
+      FNeedsParsing := false;
+      if not FHidden then
+        CreateTVFileStructure;
     end;
   end;
-  FConfiguration.FixImports:= false;
+  FConfiguration.FixImports := false;
 end;
 
-function TFEditForm.ClassnameDifferentFromAncestors(const aClassname: string): boolean;
+function TFEditForm.ClassnameDifferentFromAncestors(const AClassname
+  : string): Boolean;
 begin
-  var MClassifier:= MyCodeCompletion.getMClassifier(aClassname, Self);
-  Result:= true;
-  while Result and assigned(MClassifier) do begin
-    var aAncestor:= ExtractClassName(MClassifier.getAncestorName);
-    if aAncestor = aClassname
-      then Result:= false
-      else MClassifier:= MyCodeCompletion.getMClassifier(aAncestor, Self);
+  var
+  MClassifier := MyCodeCompletion.GetMClassifier(AClassname, Self);
+  Result := True;
+  while Result and Assigned(MClassifier) do
+  begin
+    var
+    AAncestor := ExtractClassName(MClassifier.GetAncestorName);
+    if AAncestor = AClassname then
+      Result := false
+    else
+      MClassifier := MyCodeCompletion.GetMClassifier(AAncestor, Self);
   end;
 end;
 
 procedure TFEditForm.InitShowCompileErrors;
 begin
-  if Editor.Errors.Count > 0 then begin
-    Editor.InitShowCompileErrors;
-    Editor.InvalidateGutter;
+  if FEditor.Errors.Count > 0 then
+  begin
+    FEditor.InitShowCompileErrors;
+    FEditor.InvalidateGutter;
     ClearCompilerErrorMarks;
     Application.ProcessMessages;
   end;
 end;
 
-procedure TFEditForm.setErrorMark(line, column: integer; const error: string);
-  var Mark: TSynEditMark; i, j: integer; myhint: string;
+procedure TFEditForm.SetErrorMark(Line, Column: Integer; const Error: string);
+var
+  Mark: TSynEditMark;
+  Num: Integer;
+  MyHint: string;
 begin
-  Editor.setCompileError(Point(column, line+1));
-  j:= -1;
-  for i:= Editor.Marks.Count-1 downto 0 do
-    if (Editor.Marks.Items[i].ImageIndex = ErrorMarkIndex) and
-       (Editor.Marks.Items[i].Line = line) then begin
-      j:= i;
-      break;
+  FEditor.setCompileError(Point(Column, Line + 1));
+  Num := -1;
+  for var I := FEditor.Marks.Count - 1 downto 0 do
+    if (TSynEditMark(FEditor.Marks[I]).ImageIndex = ErrorMarkIndex) and
+      (TSynEditMark(FEditor.Marks[I]).Line = Line) then
+    begin
+      Num := I;
+      Break;
     end;
 
-  if j > -1 then begin
-    myhint:= Editor.Marks.Items[i].Hint;
-    if myhint = '' then
-      Editor.Marks.Items[i].Hint:= error;
-  end else
-    with Editor do begin
-      Mark:= TSynEditMark.Create(Editor);
-      Mark.Line:= line;
-      Mark.Char:= column;
-      Mark.ImageIndex:= ErrorMarkIndex;
-      Mark.Visible:= true;
-      Mark.Hint:= error;
+  if Num > -1 then
+  begin
+    MyHint := TSynEditMark(FEditor.Marks[Num]).Hint;
+    if MyHint = '' then
+      FEditor.Marks[Num].Hint := Error;
+  end
+  else
+    with FEditor do
+    begin
+      Mark := TSynEditMark.Create(FEditor);
+      Mark.Line := Line;
+      Mark.Char := Column;
+      Mark.ImageIndex := ErrorMarkIndex;
+      Mark.Visible := True;
+      Mark.Hint := Error;
       Marks.Add(Mark);
     end;
 end;
 
 procedure TFEditForm.ShowCompileErrors;
 begin
-  Editor.ShowCompileErrors;
+  FEditor.ShowCompileErrors;
 end;
 
 procedure TFEditForm.TerminateThread(Sender: TObject);
 begin
-  if not NeedsParsing then
-    CreateTVFileStructure;
+  // if not FNeedsParsing then
+  // CreateTVFileStructure;
 end;
 
 procedure TFEditForm.ChangeStyle;
 begin
-  if FConfiguration.isDark then begin
-    EditFormToolbar.Images:= vilEditorToolbarDark;
-    PopupEditor.Images:= vilContextMenuDark;
-    Editor.BookMarkOptions.BookmarkImages:= vilBookmarksDark;
-  end else begin
-    EditFormToolbar.Images:= vilEditorToolbarLight;
-    PopupEditor.Images:= vilContextMenuLight;
-    Editor.BookMarkOptions.BookmarkImages:= vilBookmarksLight;
+  if FConfiguration.IsDark then
+  begin
+    EditformToolbar.Images := vilEditorToolbarDark;
+    PopUpEditor.Images := vilContextMenuDark;
+    FEditor.BookMarkOptions.BookmarkImages := vilBookmarksDark;
+  end
+  else
+  begin
+    EditformToolbar.Images := vilEditorToolbarLight;
+    PopUpEditor.Images := vilContextMenuLight;
+    FEditor.BookMarkOptions.BookmarkImages := vilBookmarksLight;
   end;
 end;
 
-procedure TFEditForm.RemoveShortCutFromEditor(ShortCut: integer);
+procedure TFEditForm.RemoveShortCutFromEditor(ShortCut: Integer);
 begin
-  var i:= Editor.Keystrokes.FindShortcut(ShortCut);
-  if i >= 0 then
-    Editor.Keystrokes.Delete(i);
+  var
+  I := FEditor.Keystrokes.FindShortcut(ShortCut);
+  if I >= 0 then
+    FEditor.Keystrokes.Delete(I);
 end;
 
-procedure TFEditForm.ReplaceShortCutFromEditor(ShortCut, ShortCut2: integer);
+procedure TFEditForm.ReplaceShortCutFromEditor(ShortCut, ShortCut2: Integer);
 begin
-  var i:= Editor.Keystrokes.FindShortcut(ShortCut);
-  if i >= 0 then
+  var
+  I := FEditor.Keystrokes.FindShortcut(ShortCut);
+  if I >= 0 then
     try
-      Editor.Keystrokes.Items[i].ShortCut:= ShortCut2;
+      FEditor.Keystrokes[I].ShortCut := ShortCut2;
     except
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
 end;
 
 procedure TFEditForm.EditShortCuts;
-  var p, Line, Key, Key2: integer;
-      Keys: TStringList;
-      s: string;
+var
+  Posi, Line, Key, Key2: Integer;
+  Keys: TStringList;
+  Str: string;
 
   function GetNextLine: string;
   begin
-    inc(Line);
-    if Line < Keys.Count
-      then result:= Keys[Line]
-      else result:= '';
+    Inc(Line);
+    if Line < Keys.Count then
+      Result := Keys[Line]
+    else
+      Result := '';
   end;
 
 begin
-  if FileExists(FConfiguration.KeyboardFile) then begin
-    Keys:= TStringList.Create;
+  if FileExists(FConfiguration.KeyboardFile) then
+  begin
+    Keys := TStringList.Create;
     Keys.LoadFromFile(FConfiguration.KeyboardFile);
-    Line:= -1;
-    s:= getNextLine;
+    Line := -1;
+    Str := GetNextLine;
     repeat
-      p:= Pos('shortcut:', s);
-      if Pos('shortcut:end', s) > 0 then p:= 0;
-      if p = 1 then begin
-        Key:= FConfiguration.StringToShortCut(s);
+      Posi := Pos('shortcut:', Str);
+      if Pos('shortcut:end', Str) > 0 then
+        Posi := 0;
+      if Posi = 1 then
+      begin
+        Key := FConfiguration.StringToShortcut(Str);
         RemoveShortCutFromEditor(Key);
         repeat
-          s:= getNextLine;
-          p:= pos('shortcut:end', s);
-        until (p = 1) or (Line >= Keys.Count-1);
-      end else begin
-        p:= Pos('disableEditor:', s);
-        if p = 1 then begin
-          Key:= FConfiguration.StringToShortCut(s);
+          Str := GetNextLine;
+          Posi := Pos('shortcut:end', Str);
+        until (Posi = 1) or (Line >= Keys.Count - 1);
+      end
+      else
+      begin
+        Posi := Pos('disableEditor:', Str);
+        if Posi = 1 then
+        begin
+          Key := FConfiguration.StringToShortcut(Str);
           RemoveShortCutFromEditor(Key);
-        end else begin
-          p:= Pos('replaceEditor:', s);
-          if p = 1 then begin
-            Key:= FConfiguration.StringToShortCut(s);
-            s:= getNextLine;
-            p:= Pos('with:', s);
-            if p = 1 then begin
-              Key2:= FConfiguration.StringToShortCut(s);
+        end
+        else
+        begin
+          Posi := Pos('replaceEditor:', Str);
+          if Posi = 1 then
+          begin
+            Key := FConfiguration.StringToShortcut(Str);
+            Str := GetNextLine;
+            Posi := Pos('with:', Str);
+            if Posi = 1 then
+            begin
+              Key2 := FConfiguration.StringToShortcut(Str);
               ReplaceShortCutFromEditor(Key, Key2);
             end;
           end;
         end;
       end;
-      s:= getNextLine;
-    until Line >= Keys.Count-1;
+      Str := GetNextLine;
+    until Line >= Keys.Count - 1;
     FreeAndNil(Keys);
   end;
 end;
 
 function TFEditForm.MakeUpperEvents(Events: string): string;
 begin
-  if Events <> '' then begin
-    Events[1]:= UpCase(Events[1]);
-    for var i:= 1 to length(Events) do
-      if (Events[i] = '|') and (i < length(Events)) then
-        Events[i+1]:= UpCase(Events[i+1]);
+  if Events <> '' then
+  begin
+    Events[1] := UpCase(Events[1]);
+    for var I := 1 to Length(Events) do
+      if (Events[I] = '|') and (I < Length(Events)) then
+        Events[I + 1] := UpCase(Events[I + 1]);
   end;
-  Result:= Events;
+  Result := Events;
 end;
 
-procedure TFEditForm.SetFXBackgroundAsString(const Container, aName, aColor: string);
+procedure TFEditForm.SetFXBackgroundAsString(const Container, AName,
+  AColor: string);
 begin
-  if aColor = '' then
-    DeleteAttributeValue(aName + '.setBackground(')
-  else begin
-    var s1:= aName + '.setBackground(';
-    var s2:= 'new Background(new BackgroundFill(' + aColor + ', CornerRadii.EMPTY, Insets.EMPTY)));';
-    s2:= FConfiguration.Indent2 + s1 + s2;
-    if Container = 'root'
-      then setAttributValue(Container, s1, s2, 1)
-      else setAttributValue(Container, s1, s2, 0);
+  if AColor = '' then
+    DeleteAttributeValue(AName + '.setBackground(')
+  else
+  begin
+    var
+    Str1 := AName + '.setBackground(';
+    var
+    Str2 := 'new Background(new BackgroundFill(' + AColor +
+      ', CornerRadii.Empty, Insets.Empty)));';
+    Str2 := FConfiguration.Indent2 + Str1 + Str2;
+    if Container = 'root' then
+      SetAttributValue(Container, Str1, Str2, 1)
+    else
+      SetAttributValue(Container, Str1, Str2, 0);
     InsertImport('javafx.scene.paint.Color');
     InsertImport('javafx.geometry.Insets');
     InsertImport('javafx.scene.layout.*');
@@ -5149,28 +6074,29 @@ end;
 
 procedure TFEditForm.DPIChanged;
 begin
-  setFontSize(0);
+  SetFontSize(0);
   Hide;
   Show;
 end;
 
-function TFEditForm.CountClassOrInterface: integer;
+function TFEditForm.CountClassOrInterface: Integer;
 begin
-  if not assigned(Parser) then
-    ParseSourcecode(true);
-  if assigned(Parser)
-    then Result:= Parser.CountClasses
-    else Result:= 0;
+  if not Assigned(FParser) then
+    ParseSourceCode(True);
+  if Assigned(FParser) then
+    Result := FParser.CountClasses
+  else
+    Result := 0;
 end;
 
 type
   TCrackActivityIndicator = class(TActivityIndicator);
 
 procedure TFEditForm.SetActivityIndicator(TurnOn: Boolean; Hint: string;
-  OnClick: TNotifyEvent);
+OnClick: TNotifyEvent);
 begin
-  ActivityIndicator.Left:= Width div 2;
-  ActivityIndicator.Top:= Height div 2;
+  ActivityIndicator.Left := Width div 2;
+  ActivityIndicator.Top := Height div 2;
   ActivityIndicator.Visible := TurnOn;
   ActivityIndicator.Hint := Hint;
   ActivityIndicator.Animate := TurnOn;
@@ -5184,25 +6110,33 @@ end;
 
 function TFEditForm.IsApplet: Boolean;
 begin
-  Result:= (FrameType in [4, 7]);
+  Result := (FFrameType in [4, 7]);
 end;
 
 function TFEditForm.IsAWT: Boolean;
 begin
-  Result:= FrameType in [2, 3, 4];
+  Result := FFrameType in [2, 3, 4];
 end;
 
 function TFEditForm.FrameTypToString: string;
 begin
-  case FrameType of
-    8: Result:= 'Application';
-    7: Result:= 'JApplet';
-    6: Result:= 'JDialog';
-    5: Result:= 'JFrame';
-    4: Result:= 'Applet';
-    3: Result:= 'Dialog';
-    2: Result:= 'Frame';
-  else Result:= '';
+  case FFrameType of
+    8:
+      Result := 'Application';
+    7:
+      Result := 'JApplet';
+    6:
+      Result := 'JDialog';
+    5:
+      Result := 'JFrame';
+    4:
+      Result := 'Applet';
+    3:
+      Result := 'Dialog';
+    2:
+      Result := 'Frame';
+  else
+    Result := '';
   end;
 end;
 

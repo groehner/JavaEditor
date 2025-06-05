@@ -3,46 +3,46 @@ unit UFXHTMLEditor;
 interface
 
 uses
-  Classes, UFXComponents;
+  Classes,
+  UFXComponents;
 
 type
 
-  TFXHTMLEditor = class (TFXControl)
+  TFXHTMLEditor = class(TFXControl)
   private
     FHtmlText: string;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
   published
     property HtmlText: string read FHtmlText write FHtmlText;
   end;
-
 
 implementation
 
 uses Graphics;
 
-{--- TFXHTMLEditor ------------------------------------------------------------}
+{ --- TFXHTMLEditor ------------------------------------------------------------ }
 
 constructor TFXHTMLEditor.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= 140;
-  PrefWidth:= 200;
-  PrefHeight:= 200;
-  Background:= clBtnFace;
-  JavaType:= 'HTMLEditor';
+  inherited Create(AOwner);
+  Tag := 140;
+  PrefWidth := 200;
+  PrefHeight := 200;
+  Background := clBtnFace;
+  JavaType := 'HTMLEditor';
 end;
 
 procedure TFXHTMLEditor.Paint;
 begin
-  Canvas.Pen.Color:= DefaultBorderColor;
-  Canvas.Brush.Color:= Background;
+  Canvas.Pen.Color := DefaultBorderColor;
+  Canvas.Brush.Color := Background;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  Canvas.Brush.Color:= clWhite;
-  Canvas.FillRect(Rect(1, 70, Width-1, Height-1));
+  Canvas.Brush.Color := clWhite;
+  Canvas.FillRect(Rect(1, 70, Width - 1, Height - 1));
 end;
 
 procedure TFXHTMLEditor.NewControl;
@@ -52,9 +52,9 @@ begin
   InsertImport('javafx.scene.web.HTMLEditor');
 end;
 
-function TFXHTMLEditor.getAttributes(ShowAttributes: integer): string;
+function TFXHTMLEditor.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|HtmlText' + inherited getAttributes(ShowAttributes);
+  Result := '|HtmlText' + inherited GetAttributes(ShowAttributes);
 end;
 
 end.

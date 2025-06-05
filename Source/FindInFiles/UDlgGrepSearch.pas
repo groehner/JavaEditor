@@ -3,7 +3,11 @@ unit UDlgGrepSearch;
 interface
 
 uses
-  Forms, StdCtrls, UEditorForm, Vcl.Controls, System.Classes;
+  Forms,
+  StdCtrls,
+  Vcl.Controls,
+  System.Classes,
+  UEditorForm;
 
 type
   TFGrepSearch = class(TForm)
@@ -44,9 +48,16 @@ type
 
 implementation
 
-uses SysUtils, Graphics, Dialogs,
-     UJava, UConfiguration, UUtils,
-     JvGnugettext, UGrepResults, USearchOptions, UMessages;
+uses
+  SysUtils,
+  Graphics,
+  JvGnugettext,
+  UJava,
+  UConfiguration,
+  UUtils,
+  UGrepResults,
+  USearchOptions,
+  UMessages;
 
 {$R *.DFM}
 
@@ -60,16 +71,16 @@ end;
 procedure TFGrepSearch.DirEnable(New: Boolean);
 begin
   CBDirectory.Enabled:= New;
-  CBFilemask.Enabled:= New;
+  CBFileMask.Enabled:= New;
   CBInclude.Enabled:= New;
   if New then begin
-    cbDirectory.Color:= clWindow;
-    cbFilemask.Color := clWindow
+    CBDirectory.Color:= clWindow;
+    CBFileMask.Color := clWindow;
   end else begin
-    cbDirectory.Color:= clBtnFace;
-    cbFilemask.Color := clBtnFace;
+    CBDirectory.Color:= clBtnFace;
+    CBFileMask.Color := clBtnFace;
   end;
-  CBReplaceText.Enabled:= cbReplace.Checked;
+  CBReplaceText.Enabled:= CBReplace.Checked;
   if CBReplaceText.Enabled
     then CBReplaceText.Color:= clWindow
     else CBReplaceText.Color:= clBtnFace;
@@ -77,68 +88,64 @@ end;
 
 procedure TFGrepSearch.RBDirectoriesClick(Sender: TObject);
 begin
-  DirEnable(rbDirectories.Checked);
+  DirEnable(RBDirectories.Checked);
 end;
 
 procedure TFGrepSearch.BSelectClick(Sender: TObject);
   var Dir: string;
 begin
-  Dir:= FConfiguration.ExtendPath(cbDirectory);
+  Dir:= FConfiguration.ExtendPath(CBDirectory);
   if not SysUtils.DirectoryExists(Dir) then
-    if assigned(FJava.EditorForm)
+    if Assigned(FJava.EditorForm)
       then Dir:= ExtractFilePath(FJava.EditorForm.Pathname)
       else Dir:= '';
-  {$WARNINGS OFF}
   FConfiguration.FolderDialog.DefaultFolder:= Dir;
   if FConfiguration.FolderDialog.Execute then begin
-    FConfiguration.ShortenPath(cbDirectory, FConfiguration.FolderDialog.Filename);
-    RBDirectories.Checked:= true;
-    DirEnable(true);
+    FConfiguration.ShortenPath(CBDirectory, FConfiguration.FolderDialog.FileName);
+    RBDirectories.Checked:= True;
+    DirEnable(True);
   end;
-   {$WARNINGS ON}
   if CanFocus then SetFocus;
 end;
 
-procedure TFGrepSearch.ShowSearchDialog(Editform: TFEditform);
+procedure TFGrepSearch.ShowSearchDialog(Editform: TFEditForm);
 begin
-  mySearchOptions.LoadToForm(Self);
-  //if assigned(Editform) then
-  //  CBDirectory.Text:= ExtractFilePath(Editform.Pathname);
-  if assigned(Editform) and not mySearchOptions.RegEx then
+  MySearchOptions.LoadToForm(Self);
+  if Assigned(Editform) and not MySearchOptions.RegEx then
     CBSearchText.Text:= Editform.Editor.GetSearchText(CBSearchText.Text);
-  rbCurrentOnly.Enabled:= assigned(Editform);
-  rbOpenFiles.Enabled := FJava.hasEditforms;
-  if rbCurrentOnly.Checked and not rbCurrentOnly.Enabled then
-    rbOpenFiles.Checked:= true;
-  if rbOpenFiles.Checked and not rbOpenFiles.Enabled then
-    rbDirectories.Checked:= true;
-  DirEnable(rbDirectories.Checked);
+  RBCurrentOnly.Enabled:= Assigned(Editform);
+  RBOpenFiles.Enabled := FJava.HasEditforms;
+  if RBCurrentOnly.Checked and not RBCurrentOnly.Enabled then
+    RBOpenFiles.Checked:= True;
+  if RBOpenFiles.Checked and not RBOpenFiles.Enabled then
+    RBDirectories.Checked:= True;
+  DirEnable(RBDirectories.Checked);
   ActiveControl:= CBSearchText;
 
-  if ShowModal = mrOK then begin
-    ComboBoxAdd(cbSearchText);
-    ComboBoxAdd(cbReplaceText);
-    FConfiguration.ComboBoxAddEx(cbDirectory);
-    ComboBoxAdd(cbFilemask);
-    mySearchOptions.SaveFromForm(Self);
-    if mySearchOptions.GrepAction = 3 then begin
-      mySearchOptions.Directory:= withTrailingSlash(MySearchOptions.Directory);
-      if mySearchOptions.Directory = '\' then exit;
-      mySearchOptions.Filemask:= Trim(MySearchOptions.Filemask);
+  if ShowModal = mrOk then begin
+    ComboBoxAdd(CBSearchText);
+    ComboBoxAdd(CBReplaceText);
+    FConfiguration.ComboBoxAddEx(CBDirectory);
+    ComboBoxAdd(CBFileMask);
+    MySearchOptions.SaveFromForm(Self);
+    if MySearchOptions.GrepAction = 3 then begin
+      MySearchOptions.Directory:= WithTrailingSlash(MySearchOptions.Directory);
+      if MySearchOptions.Directory = '\' then Exit;
+      MySearchOptions.Filemask:= Trim(MySearchOptions.Filemask);
     end;
-    mySearchOptions.SaveSearchOptions;
+    MySearchOptions.SaveSearchOptions;
 
     FMessages.ShowIt;
     FMessages.SetMinHeight(200);
     FMessages.ShowTab(3);
-    if mySearchOptions.SearchText <> '' then
+    if MySearchOptions.SearchText <> '' then
       myGrepResults.Execute;
   end;
 end;
 
 procedure TFGrepSearch.LSearchRegSearchMouseEnter(Sender: TObject);
 begin
-  Screen.Cursor:= crHandpoint;
+  Screen.Cursor:= crHandPoint;
 end;
 
 procedure TFGrepSearch.LSearchRegSearchMouseLeave(Sender: TObject);
@@ -148,7 +155,7 @@ end;
 
 procedure TFGrepSearch.LSearchRegSearchClick(Sender: TObject);
 begin
-  mySearchOptions.ShowRegSearchHelp;
+  MySearchOptions.ShowRegSearchHelp;
 end;
 
 end.

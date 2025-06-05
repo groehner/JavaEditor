@@ -19,16 +19,19 @@ type
     function GetColor(Index: Integer): TColor;
   protected
     procedure CloseUp; override;
-    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
+    procedure DrawItem(Index: Integer; Rect: TRect;
+      State: TOwnerDrawState); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     function PickCustomColor: Boolean; virtual;
     procedure Select; override;
   public
-    constructor Create3(AOwner: TComponent; AParent: TWinControl; aLeft, aTop: integer);
+    constructor Create3(AOwner: TComponent; AParent: TWinControl;
+      aLeft, aTop: Integer);
     procedure PopulateList;
     property Colors[Index: Integer]: TColor read GetColor;
-    property Selected: TColor read GetSelected write SetSelected default clBlack;
+    property Selected: TColor read GetSelected write SetSelected
+      default clBlack;
   end;
 
 implementation
@@ -37,16 +40,17 @@ uses SysUtils, Dialogs, UITypes, ULink;
 
 { TBorderColorBox }
 
-constructor TBorderColorBox.Create3(AOwner: TComponent; AParent: TWinControl; aLeft, aTop: integer);
+constructor TBorderColorBox.Create3(AOwner: TComponent; AParent: TWinControl;
+  aLeft, aTop: Integer);
 begin
   inherited Create(AOwner);
   inherited Style := csOwnerDrawFixed;
   FSelectedColor := clBlack;
-  Parent:= aParent;
-  Width:= 170;
-  Height:= 22;
-  Top:= aTop;
-  Left:= aleft;
+  Parent := AParent;
+  Width := 170;
+  Height := 22;
+  Top := aTop;
+  Left := aLeft;
   PopulateList;
 end;
 
@@ -62,15 +66,12 @@ procedure TBorderColorBox.DrawItem(Index: Integer; Rect: TRect;
   function ColorToBorderColor(AColor: TColor): TColor;
   type
     TColorQuad = record
-      Red,
-      Green,
-      Blue,
-      Alpha: Byte;
+      Red, Green, Blue, Alpha: Byte;
     end;
+
   begin
-    if (TColorQuad(AColor).Red > 192) or
-       (TColorQuad(AColor).Green > 192) or
-       (TColorQuad(AColor).Blue > 192) then
+    if (TColorQuad(AColor).Red > 192) or (TColorQuad(AColor).Green > 192) or
+      (TColorQuad(AColor).Blue > 192) then
       Result := clBlack
     else if odSelected in State then
       Result := clWhite
@@ -82,7 +83,8 @@ var
   LRect: TRect;
   LBackground: TColor;
 begin
-  with Canvas do begin
+  with Canvas do
+  begin
     FillRect(Rect);
     LBackground := Brush.Color;
     LRect := Rect;
@@ -94,9 +96,8 @@ begin
     FrameRect(LRect);
     Brush.Color := LBackground;
     Rect.Left := LRect.Right + 5;
-    TextRect(Rect, Rect.Left,
-      Rect.Top + (Rect.Bottom - Rect.Top - TextHeight(Items[Index])) div 2,
-      Items[Index]);
+    TextRect(Rect, Rect.Left, Rect.Top + (Rect.Bottom - Rect.Top -
+      TextHeight(Items[Index])) div 2, Items[Index]);
   end;
 end;
 
@@ -140,7 +141,8 @@ begin
       Color := LColor;
       CustomColors.Text := Format('ColorA=%.8x', [LColor]);
       Result := Execute;
-      if Result then begin
+      if Result then
+      begin
         Items.Objects[0] := TObject(Color);
         Self.Invalidate;
       end;
@@ -150,17 +152,21 @@ begin
 end;
 
 procedure TBorderColorBox.PopulateList;
-  var LColor: TColor; SL: TStringList; i: integer; s: string;
+var
+  LColor: TColor;
+  SL: TStringList;
+  Str: string;
 begin
   Items.BeginUpdate;
   Items.Clear;
-  SL:= TStringList.Create;
+  SL := TStringList.Create;
   try
-    SL.Text:= JavaColorsText;
-    for i:= 1 to SL.Count - 1 do begin
-      s:= Java2DelphiColors(SL.Strings[i]);
-      LColor:= StringToColor(s);
-      Items.AddObject(SL.Strings[i], TObject(LColor));
+    SL.Text := JavaColorsText;
+    for var I := 1 to SL.Count - 1 do
+    begin
+      Str := Java2DelphiColors(SL.Strings[I]);
+      LColor := StringToColor(Str);
+      Items.AddObject(SL.Strings[I], TObject(LColor));
     end;
     Items.InsertObject(0, SColorBoxCustomCaption, TObject(clBlack));
   finally
@@ -182,16 +188,17 @@ end;
 
 procedure TBorderColorBox.SetSelected(const AColor: TColor);
 var
-  I, Index: Integer;
+  Int, Index: Integer;
 begin
-  if HandleAllocated then begin
-    I := Items.IndexOfObject(TObject(AColor));
-    if (I = -1) and (AColor <> NoColorSelected) then
+  if HandleAllocated then
+  begin
+    Int := Items.IndexOfObject(TObject(AColor));
+    if (Int = -1) and (AColor <> NoColorSelected) then
     begin
       Items.Objects[0] := TObject(AColor);
-      I := 0;
+      Int := 0;
     end
-    else if (I = 0) then
+    else if (Int = 0) then
     begin
       { Look for the color anywhere else but the first color before
         defaulting to selecting the "custom color". }
@@ -199,15 +206,15 @@ begin
       begin
         if Items.Objects[Index] = TObject(AColor) then
         begin
-          I := Index;
+          Int := Index;
           Break;
         end;
       end;
     end;
-    if (ItemIndex = 0) and (I = 0) then
+    if (ItemIndex = 0) and (Int = 0) then
       Invalidate { Refresh the color shown }
     else
-      ItemIndex := I;
+      ItemIndex := Int;
   end;
   FSelectedColor := AColor;
 end;

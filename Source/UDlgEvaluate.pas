@@ -3,7 +3,10 @@ unit UDlgEvaluate;
 interface
 
 uses
-  Forms, StdCtrls, Vcl.Controls, System.Classes;
+  Forms,
+  StdCtrls,
+  Vcl.Controls,
+  System.Classes;
 
 type
   TFEvaluate = class(TForm)
@@ -26,7 +29,11 @@ var
 
 implementation
 
-uses SysUtils, JvGnugettext, UDebugger, UWatches;
+uses
+  SysUtils,
+  JvGnugettext,
+  UDebugger,
+  UWatches;
 
 {$R *.dfm}
 
@@ -37,12 +44,12 @@ end;
 
 procedure TFEvaluate.BEvaluateClick(Sender: TObject);
 begin
-  myDebugger.NewCommand(12, 'eval ' + EExpression.Text);
+  MyDebugger.NewCommand(12, 'eval ' + EExpression.Text);
 end;
 
 procedure TFEvaluate.BWatchClick(Sender: TObject);
 begin
-  FWatches.Insert(trim(EExpression.Text));
+  FWatches.Insert(Trim(EExpression.Text));
 end;
 
 procedure TFEvaluate.BCloseClick(Sender: TObject);

@@ -3,13 +3,16 @@ unit UJLabel;
 interface
 
 uses
-  Classes, StdCtrls, UAComponents, UJComponents;
+  Classes,
+  StdCtrls,
+  UAComponents,
+  UJComponents;
 
 type
 
   TVertAlignment = (TOP, CENTER, BOTTOM);
 
-  TJLabel = class (TSwingComponent)
+  TJLabel = class(TSwingComponent)
   private
     FText: string;
     FVertAlignment: TVertAlignment;
@@ -18,23 +21,23 @@ type
     FDisabledIcon: string;
     FHorizontalTextPosition: THorzAlignment;
     FVerticalTextPosition: TVertAlignment;
-    FIconTextGap: integer;
+    FIconTextGap: Integer;
     FLabelFor: string;
     FDisplayedMnemonic: TShortCut;
-    FDisplayedMnemonicIndex: integer;
-    procedure setText(const aValue: string);
-    procedure setHorzAlignment(aValue: THorzAlignment);
-    procedure setVertAlignment(aValue: TVertAlignment);
-    procedure setIcon(const aValue: string);
-    procedure setDisabledIcon(const aValue: string);
-    procedure setHorizontalTextPosition(aValue: THorzAlignment);
-    procedure setVerticalTextPosition(aValue: TVertAlignment);
-    procedure setIconTextGap(aValue: integer);
+    FDisplayedMnemonicIndex: Integer;
+    procedure SetText(const AValue: string);
+    procedure SetHorzAlignment(AValue: THorzAlignment);
+    procedure SetVertAlignment(AValue: TVertAlignment);
+    procedure SetIcon(const AValue: string);
+    procedure SetDisabledIcon(const AValue: string);
+    procedure SetHorizontalTextPosition(AValue: THorzAlignment);
+    procedure SetVerticalTextPosition(AValue: TVertAlignment);
+    procedure SetIconTextGap(AValue: Integer);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(aLabel: TLabel);
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    constructor CreateFrom(ALabel: TLabel);
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure NewControl; override;
     procedure SizeToText; override;
@@ -42,74 +45,92 @@ type
     procedure DeleteComponent; override;
     procedure Paint; override;
   published
-    property Text: string read FText write setText;
-    property Icon: string read FIcon write setIcon;
-    property DisabledIcon: string read FDisabledIcon write setDisabledIcon;
-    property HorizontalAlignment: THorzAlignment read FHorzAlignment write setHorzAlignment;
-    property VerticalAlignment: TVertAlignment read FVertAlignment write setVertAlignment;
-    property HorizontalTextPosition: THorzAlignment read FHorizontalTextPosition write setHorizontalTextPosition;
-    property VerticalTextPosition: TVertAlignment read FVerticalTextPosition write setVerticalTextPosition;
-    property IconTextGap: integer read FIconTextGap write setIconTextGap;
+    property Text: string read FText write SetText;
+    property Icon: string read FIcon write SetIcon;
+    property DisabledIcon: string read FDisabledIcon write SetDisabledIcon;
+    property HorizontalAlignment: THorzAlignment read FHorzAlignment
+      write SetHorzAlignment;
+    property VerticalAlignment: TVertAlignment read FVertAlignment
+      write SetVertAlignment;
+    property HorizontalTextPosition: THorzAlignment read FHorizontalTextPosition
+      write SetHorizontalTextPosition;
+    property VerticalTextPosition: TVertAlignment read FVerticalTextPosition
+      write SetVerticalTextPosition;
+    property IconTextGap: Integer read FIconTextGap write SetIconTextGap;
     property LabelFor: string read FLabelFor write FLabelFor;
-    property DisplayedMnemonic: TShortCut read FDisplayedMnemonic write FDisplayedMnemonic;
-    property DisplayedMnemonicIndex: integer read FDisplayedMnemonicIndex write FDisplayedMnemonicIndex;
+    property DisplayedMnemonic: TShortCut read FDisplayedMnemonic
+      write FDisplayedMnemonic;
+    property DisplayedMnemonicIndex: Integer read FDisplayedMnemonicIndex
+      write FDisplayedMnemonicIndex;
   end;
 
 implementation
 
-uses SysUtils, Math, Graphics, Controls, UITypes,
-     Vcl.Imaging.GIFImg, Vcl.Imaging.jpeg, Vcl.Imaging.pngimage,
-     UUtils, UGuiDesigner;
+uses
+  SysUtils,
+  Math,
+  Graphics,
+  Controls,
+  UITypes,
+  Vcl.Imaging.GIFImg,
+  Vcl.Imaging.jpeg,
+  Vcl.Imaging.pngimage,
+  UUtils,
+  UGUIDesigner;
 
-{--- TJLabel ------------------------------------------------------------------}
+{ --- TJLabel ------------------------------------------------------------------ }
 
 constructor TJLabel.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= +1;
-  Width:= 80;
-  Height:= 24;
-  FText:= 'Text';
-  HorizontalAlignment:= UAComponents.LEFT; // LEADING
-  VerticalAlignment  := CENTER;
-  HorizontalTextPosition:= UAComponents.RIGHT; // TRAILING;
-  VerticalTextPosition:= CENTER;
-  IconTextGap:= 4;
-  Background:= clBtnFace;
-  JavaType:= 'JLabel';
+  inherited Create(AOwner);
+  Tag := +1;
+  Width := 80;
+  Height := 24;
+  FText := 'Text';
+  HorizontalAlignment := UAComponents.Left; // LEADING
+  VerticalAlignment := CENTER;
+  HorizontalTextPosition := UAComponents.Right; // TRAILING
+  VerticalTextPosition := CENTER;
+  IconTextGap := 4;
+  Background := clBtnFace;
+  JavaType := 'JLabel';
 end;
 
-constructor TJLabel.createFrom(aLabel: TLabel);
+constructor TJLabel.CreateFrom(ALabel: TLabel);
 begin
-  Create(aLabel.Owner);
-  CreateFromJ(aLabel);
-  Text:= aLabel.Caption;
-  Font:= aLabel.Font;
-  Foreground:= Font.Color;
-  Background:= aLabel.Color;
-  case aLabel.Alignment of
-    taLeftJustify : FHorzAlignment:= UAComponents.LEFT;
-    taRightJustify: FHorzAlignment:= UAComponents.RIGHT;
-    taCenter      : FHorzAlignment:= UAComponents.CENTER;
+  Create(ALabel.Owner);
+  CreateFromJ(ALabel);
+  Text := ALabel.Caption;
+  Font := ALabel.Font;
+  Foreground := Font.Color;
+  Background := ALabel.Color;
+  case ALabel.Alignment of
+    taLeftJustify:
+      FHorzAlignment := UAComponents.Left;
+    taRightJustify:
+      FHorzAlignment := UAComponents.Right;
+    taCenter:
+      FHorzAlignment := UAComponents.CENTER;
   end;
 end;
 
-function TJLabel.getAttributes(ShowAttributes: integer): string;
-  const
-    Label1 = '|Text|Font|Icon|LabelFor';
-    Label2 = '|DisabledIcon|HorizontalAlignment|VerticalAlignment|HorizontalTextPosition' +
-             '|VerticalTextPosition|IconTextGap|DisplayedMnemonic|DisplayedMnemonicIndex';
+function TJLabel.GetAttributes(ShowAttributes: Integer): string;
+const
+  Label1 = '|Text|Font|Icon|LabelFor';
+  Label2 = '|DisabledIcon|HorizontalAlignment|VerticalAlignment|HorizontalTextPosition'
+    + '|VerticalTextPosition|IconTextGap|DisplayedMnemonic|DisplayedMnemonicIndex';
 begin
-  if ShowAttributes = 1
-    then Result:= Label1
-    else Result:= Label1 + Label2;
-  Result:= Result + inherited;
+  if ShowAttributes = 1 then
+    Result := Label1
+  else
+    Result := Label1 + Label2;
+  Result := Result + inherited;
 end;
 
-procedure TJLabel.setAttribute(Attr, Value, Typ: string);
+procedure TJLabel.SetAttribute(Attr, Value, Typ: string);
 begin
   if (Attr = 'HorizontalAlignment') or (Attr = 'VerticalAlignment') or
-     (Attr = 'HorizontalTextPosition') or (Attr = 'VerticalTextPosition') then
+    (Attr = 'HorizontalTextPosition') or (Attr = 'VerticalTextPosition') then
     MakeAttribut(Attr, 'SwingConstants.' + Value)
   else if (Attr = 'Icon') or (Attr = 'DisabledIcon') then
     MakeIcon(Attr, Value, 'JLabel')
@@ -123,14 +144,15 @@ procedure TJLabel.NewControl;
 begin
   DefaultComponent;
   InsertNewVariable('private JLabel ' + Name + ' = new JLabel();');
-  MakeAttribut('Text', asString(Text));
+  MakeAttribut('Text', AsString(Text));
 end;
 
 procedure TJLabel.Rename(const OldName, NewName, Events: string);
 begin
   inherited;
-  Partner.ReplaceWord(OldName + 'DisabledIcon' , NewName + 'DisabledIcon', true);
-  Partner.ReplaceWord(OldName + 'Icon' , NewName + 'Icon', true);
+  FPartner.ReplaceWord(OldName + 'DisabledIcon',
+    NewName + 'DisabledIcon', True);
+  FPartner.ReplaceWord(OldName + 'Icon', NewName + 'Icon', True);
 end;
 
 procedure TJLabel.SizeToText;
@@ -147,218 +169,265 @@ end;
 procedure TJLabel.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteAttribute('private ImageIcon ' + Name + 'DisabledIcon');
-  Partner.DeleteAttribute('private ImageIcon ' + Name + 'Icon');
+  FPartner.DeleteAttribute('private ImageIcon ' + Name + 'DisabledIcon');
+  FPartner.DeleteAttribute('private ImageIcon ' + Name + 'Icon');
 end;
 
 procedure TJLabel.Paint;
-  var tx, ty, ix, iy, tw, th, itg, dx, dy, x1, x2, y1, y2: integer;
-      s, pathname, ext: string;
-      png: TPngImage;
-      gif: TGifImage;
-      jpg: TJPEGImage;
-      bmp: TBitmap;
+var
+  TextX, TextY, IXPos, IYPos, TextWidth, TextHeight, Itg, DeltaX, DeltaY, X1Pos,
+    X2Pos, Y1Pos, Y2Pos: Integer;
+  Str, Pathname, Ext: string;
+  Png: TPngImage;
+  Gif: TGIFImage;
+  Jpg: TJPEGImage;
+  Bmp: TBitmap;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= Background;
-  if Background = ColorNone
-    then Canvas.Brush.Color:= (Parent as TWinControl).Brush.Color
-    else Canvas.Brush.Color:= Background;
-  s:= FText;
-  Canvas.Font.Color:= Foreground;
+  Canvas.Pen.Color := Background;
+  if Background = ColorNone then
+    Canvas.Brush.Color := Parent.Brush.Color
+  else
+    Canvas.Brush.Color := Background;
+  Str := FText;
+  Canvas.Font.Color := Foreground;
 
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  tw:= Canvas.TextWidth(s);
-  if tw > Width  then begin
-    while (tw > Width - 19) and (s <> '') do begin
-      s:= UUtils.Left(s, Length(s)-1);
-      tw:= Canvas.TextWidth(s);
+  TextWidth := Canvas.TextWidth(Str);
+  if TextWidth > Width then
+  begin
+    while (TextWidth > Width - 19) and (Str <> '') do
+    begin
+      Str := UUtils.Left(Str, Length(Str) - 1);
+      TextWidth := Canvas.TextWidth(Str);
     end;
-    s:= s + '...';
+    Str := Str + '...';
   end;
 
-  tw:= Canvas.TextWidth(s);
-  tx:= 0;
+  TextWidth := Canvas.TextWidth(Str);
+  TextX := 0;
   case FHorzAlignment of
-    UAComponents.CENTER: tx:= (Width - tw) div 2;
-    UAComponents.LEFT  : tx:= 0;
-    UAComponents.RIGHT : tx:= Width - tw;
+    UAComponents.CENTER:
+      TextX := (Width - TextWidth) div 2;
+    UAComponents.Left:
+      TextX := 0;
+    UAComponents.Right:
+      TextX := Width - TextWidth;
   end;
-  th:= Canvas.TextHeight(s);
-  ty:= 0;
+  TextHeight := Canvas.TextHeight(Str);
+  TextY := 0;
   case FVertAlignment of
-    CENTER: ty:= (Height-2 - th) div 2 + 2;
-    UJLabel.TOP   : ty:= 1;
-    BOTTOM: ty:= Height - th;
+    CENTER:
+      TextY := (Height - 2 - TextHeight) div 2 + 2;
+    UJLabel.TOP:
+      TextY := 1;
+    BOTTOM:
+      TextY := Height - TextHeight;
   end;
 
-  pathname:= FGuiDesigner.getPath + 'images\' + copy(Icon, 8, length(Icon));
+  Pathname := FGUIDesigner.getPath + 'images\' + Copy(Icon, 8, Length(Icon));
 
-  if not FileExists(pathname) then begin
-    Canvas.TextRect(Rect(0, 0, Width, Height), tx, ty, s);
-    exit;
+  if not FileExists(Pathname) then
+  begin
+    Canvas.TextRect(Rect(0, 0, Width, Height), TextX, TextY, Str);
+    Exit;
   end;
 
-  ext:= Uppercase(ExtractFileExt(Icon));
-  bmp:= TBitmap.Create;
-  if ext = '.PNG' then begin
-    png:= TPngImage.Create;
-    png.LoadFromFile(pathname);
-    bmp.Assign(png);
-    FreeAndNil(png);
-  end else if ext = '.GIF' then begin
-    gif:= TGifImage.Create;
-    gif.LoadFromFile(Pathname);
-    bmp.Assign(gif.Bitmap);
-    FreeAndNil(gif);
-  end else if (ext = '.JPG') or (ext = 'JPEG') then begin
-    jpg:= TJPEGImage.Create;
-    jpg.LoadFromFile(Pathname);
-    bmp.Assign(jpg);
-    FreeAndNil(jpg);
+  Ext := UpperCase(ExtractFileExt(Icon));
+  Bmp := TBitmap.Create;
+  if Ext = '.Png' then
+  begin
+    Png := TPngImage.Create;
+    Png.LoadFromFile(Pathname);
+    Bmp.Assign(Png);
+    FreeAndNil(Png);
+  end
+  else if Ext = '.Gif' then
+  begin
+    Gif := TGIFImage.Create;
+    Gif.LoadFromFile(Pathname);
+    Bmp.Assign(Gif.Bitmap);
+    FreeAndNil(Gif);
+  end
+  else if (Ext = '.Jpg') or (Ext = 'JPEG') then
+  begin
+    Jpg := TJPEGImage.Create;
+    Jpg.LoadFromFile(Pathname);
+    Bmp.Assign(Jpg);
+    FreeAndNil(Jpg);
   end;
 
-  ix:= 0;
+  IXPos := 0;
   case FHorzAlignment of
-    UAComponents.CENTER: ix:= (Width - bmp.Width) div 2;
-    UAComponents.LEFT  : ix:= 0;
-    UAComponents.RIGHT : ix:= Width - bmp.Width;
+    UAComponents.CENTER:
+      IXPos := (Width - Bmp.Width) div 2;
+    UAComponents.Left:
+      IXPos := 0;
+    UAComponents.Right:
+      IXPos := Width - Bmp.Width;
   end;
-  iy:= 0;
+  IYPos := 0;
   case FVertAlignment of
-    CENTER: iy:= (Height - bmp.Height) div 2;
-    UJLabel.TOP   : iy:= 0;
-    BOTTOM: iy:= Height - bmp.Height;
+    CENTER:
+      IYPos := (Height - Bmp.Height) div 2;
+    UJLabel.TOP:
+      IYPos := 0;
+    BOTTOM:
+      IYPos := Height - Bmp.Height;
   end;
-  if FText = '' then begin
-    Canvas.Draw(ix, iy, bmp);
-    FreeAndNil(bmp);
-    exit;
+  if FText = '' then
+  begin
+    Canvas.Draw(IXPos, IYPos, Bmp);
+    FreeAndNil(Bmp);
+    Exit;
   end;
 
-  Canvas.Brush.Style:= bsClear;
-  itg:= FIconTextGap;
+  Canvas.Brush.Style := bsClear;
+  Itg := FIconTextGap;
   case FHorizontalTextPosition of
-    UAComponents.CENTER: tx:= ix + (bmp.Width - tw) div 2;
-    UAComponents.LEFT  : tx:= ix - itg - tw;
-    UAComponents.RIGHT : tx:= ix + bmp.Width + itg;
+    UAComponents.CENTER:
+      TextX := IXPos + (Bmp.Width - TextWidth) div 2;
+    UAComponents.Left:
+      TextX := IXPos - Itg - TextWidth;
+    UAComponents.Right:
+      TextX := IXPos + Bmp.Width + Itg;
   end;
-  if tx < 0 then begin
-    dx:= min(-tx, Width-ix-bmp.width);
-    inc(tx, dx);
-    inc(ix, dx);
-  end else begin
-    dx:= tx + tw - Width;
-    dx:= min(dx, ix);
-    if dx > 0 then begin
-      dec(tx, dx);
-      dec(ix, dx);
+  if TextX < 0 then
+  begin
+    DeltaX := Min(-TextX, Width - IXPos - Bmp.Width);
+    Inc(TextX, DeltaX);
+    Inc(IXPos, DeltaX);
+  end
+  else
+  begin
+    DeltaX := TextX + TextWidth - Width;
+    DeltaX := Min(DeltaX, IXPos);
+    if DeltaX > 0 then
+    begin
+      Dec(TextX, DeltaX);
+      Dec(IXPos, DeltaX);
     end;
   end;
 
   case FVerticalTextPosition of
-    CENTER: ty:= iy + (bmp.Height - th) div 2;
-    UJLabel.TOP   :
-      if FHorizontalTextPosition = UAComponents.CENTER then begin
-        ty:= iy - itg - th;
-        if ty < 0 then begin
-          iy:= iy - ty;
-          ty:= 0;
+    CENTER:
+      TextY := IYPos + (Bmp.Height - TextHeight) div 2;
+    UJLabel.TOP:
+      if FHorizontalTextPosition = UAComponents.CENTER then
+      begin
+        TextY := IYPos - Itg - TextHeight;
+        if TextY < 0 then
+        begin
+          IYPos := IYPos - TextY;
+          TextY := 0;
         end;
       end
-        else ty:= iy;
+      else
+        TextY := IYPos;
     BOTTOM:
-      if FHorizontalTextPosition = UAComponents.CENTER then begin
-        ty:= iy + bmp.Height + itg;
-        dy:= ty + th - Height;
-        if dy > 0 then begin
-          dec(iy, dy);
-          dec(ty, dy);
+      if FHorizontalTextPosition = UAComponents.CENTER then
+      begin
+        TextY := IYPos + Bmp.Height + Itg;
+        DeltaY := TextY + TextHeight - Height;
+        if DeltaY > 0 then
+        begin
+          Dec(IYPos, DeltaY);
+          Dec(TextY, DeltaY);
         end;
       end
-        else ty:= iy + bmp.Height - th;
+      else
+        TextY := IYPos + Bmp.Height - TextHeight;
   end;
 
-  if FHorzAlignment = UAComponents.CENTER then begin
-    x1:= min(tx, ix);
-    x2:= max(tx + tw, ix + bmp.width);
-    dx:= (Width - (x2 - x1)) div 2 - x1;
-    inc(tx, dx);
-    inc(ix, dx);
+  if FHorzAlignment = UAComponents.CENTER then
+  begin
+    X1Pos := Min(TextX, IXPos);
+    X2Pos := Max(TextX + TextWidth, IXPos + Bmp.Width);
+    DeltaX := (Width - (X2Pos - X1Pos)) div 2 - X1Pos;
+    Inc(TextX, DeltaX);
+    Inc(IXPos, DeltaX);
   end;
-  if FVertAlignment = CENTER then begin
-    y1:= min(ty, iy);
-    y2:= max(ty + th, iy + bmp.Height);
-    dy:= (Height - (y2 - y1)) div 2 - y1;
-    inc(ty, dy);
-    inc(iy, dy);
+  if FVertAlignment = CENTER then
+  begin
+    Y1Pos := Min(TextY, IYPos);
+    Y2Pos := Max(TextY + TextHeight, IYPos + Bmp.Height);
+    DeltaY := (Height - (Y2Pos - Y1Pos)) div 2 - Y1Pos;
+    Inc(TextY, DeltaY);
+    Inc(IYPos, DeltaY);
   end;
-  
-  Canvas.Draw(ix, iy, bmp);
-  Canvas.TextRect(Rect(0, 0, Width, Height), tx, ty, FText);
-  FreeAndNil(bmp);
+  Canvas.Draw(IXPos, IYPos, Bmp);
+  Canvas.TextRect(Rect(0, 0, Width, Height), TextX, TextY, FText);
+  FreeAndNil(Bmp);
 end;
 
-procedure TJLabel.setHorzAlignment(aValue: THorzAlignment);
+procedure TJLabel.SetHorzAlignment(AValue: THorzAlignment);
 begin
-  if aValue <> FHorzAlignment then begin
-    FHorzAlignment:= aValue;
+  if AValue <> FHorzAlignment then
+  begin
+    FHorzAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJLabel.setVertAlignment(aValue: TVertAlignment);
+procedure TJLabel.SetVertAlignment(AValue: TVertAlignment);
 begin
-  if aValue <> FVertAlignment then begin
-    FVertAlignment:= aValue;
+  if AValue <> FVertAlignment then
+  begin
+    FVertAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJLabel.setIcon(const aValue: string);
+procedure TJLabel.SetIcon(const AValue: string);
 begin
-  if aValue <> FIcon then begin
-    FIcon:= aValue;
+  if AValue <> FIcon then
+  begin
+    FIcon := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJLabel.setDisabledIcon(const aValue: string);
+procedure TJLabel.SetDisabledIcon(const AValue: string);
 begin
-  if aValue <> FDisabledIcon then begin
-    FDisabledIcon:= aValue;
+  if AValue <> FDisabledIcon then
+  begin
+    FDisabledIcon := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJLabel.setHorizontalTextPosition(aValue: THorzAlignment);
+procedure TJLabel.SetHorizontalTextPosition(AValue: THorzAlignment);
 begin
-  if aValue <> FHorizontalTextPosition then begin
-    FHorizontalTextPosition:= aValue;
+  if AValue <> FHorizontalTextPosition then
+  begin
+    FHorizontalTextPosition := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJLabel.setVerticalTextPosition(aValue: TVertAlignment);
+procedure TJLabel.SetVerticalTextPosition(AValue: TVertAlignment);
 begin
-  if aValue <> FVerticalTextPosition then begin
-    FVerticalTextPosition:= aValue;
+  if AValue <> FVerticalTextPosition then
+  begin
+    FVerticalTextPosition := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJLabel.setIconTextGap(aValue: integer);
+procedure TJLabel.SetIconTextGap(AValue: Integer);
 begin
-  if aValue <> FIconTextGap then begin
-    FIconTextGap:= aValue;
+  if AValue <> FIconTextGap then
+  begin
+    FIconTextGap := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJLabel.setText(const aValue: string);
+procedure TJLabel.SetText(const AValue: string);
 begin
-  if aValue <> FText then begin
-    FText:= aValue;
+  if AValue <> FText then
+  begin
+    FText := AValue;
     Invalidate;
   end;
 end;

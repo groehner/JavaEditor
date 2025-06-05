@@ -58,8 +58,8 @@ type
   TCustomDBSynEdit = class(TCustomSynEdit)
   private
     FDataLink: TFieldDataLink;
-    fEditing: boolean;
-    FBeginEdit: boolean;
+    fEditing: Boolean;
+    FBeginEdit: Boolean;
     FLoadData: TNotifyEvent;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
@@ -75,10 +75,10 @@ type
     procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
-    function GetReadOnly: boolean; override;
+    function GetReadOnly: Boolean; override;
     procedure Loaded; override;
     procedure DoChange; override;
-    procedure SetReadOnly(Value: boolean); override;
+    procedure SetReadOnly(Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

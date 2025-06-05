@@ -265,15 +265,15 @@ end;
 
 procedure TStCustomFormatDrive.SetDrive(const Value : string);
 var
-  P : Integer;
+  Posi : Integer;
 begin
   if Value <> '' then begin
     FDrive := AnsiUpperCase(Value);
     { Fix-up drive letter if necessary. Won't catch every }
     { user error but will catch the most common ones.    }
-    P := Pos('\', FDrive);
-    if P <> 0 then
-      Delete(FDrive, P, Length(FDrive) - P + 1);
+    Posi := Pos('\', FDrive);
+    if Posi <> 0 then
+      Delete(FDrive, Posi, Length(FDrive) - Posi + 1);
     if (Length(FDrive) = 1) and (Pos(':', FDrive) = 0) then
       FDrive := FDrive + ':';
   end else

@@ -3,21 +3,22 @@ unit UFXProgressBar;
 interface
 
 uses
-  Classes, UFXComponents;
+  Classes,
+  UFXComponents;
 
 type
 
   TFXProgressIndicator = class(TFXControl)
   private
-    FProgress: double;
-    procedure setProgress(Progress: double);
+    FProgress: Double;
+    procedure SetProgress(Progress: Double);
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
   published
-    property Progress: double read FProgress write setProgress;
+    property Progress: Double read FProgress write SetProgress;
   end;
 
   TFXProgressBar = class(TFXProgressIndicator)
@@ -29,96 +30,105 @@ type
 
 implementation
 
-uses Windows, SysUtils, Graphics, Math;
+uses
+  Windows,
+  SysUtils,
+  Graphics,
+  Math;
 
 constructor TFXProgressIndicator.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= 133;
-  PrefWidth:= 40;
-  PrefHeight:= 40;
-  FProgress:= 0.3;
-  Foreground:= RGB(0, 142, 190);
-  Background:= DefaultBackground;
-  JavaType:= 'ProgressIndicator';
+  inherited Create(AOwner);
+  Tag := 133;
+  PrefWidth := 40;
+  PrefHeight := 40;
+  FProgress := 0.3;
+  Foreground := RGB(0, 142, 190);
+  Background := DefaultBackground;
+  JavaType := 'ProgressIndicator';
 end;
 
 procedure TFXProgressIndicator.NewControl;
 begin
   DefaultComponent;
-  InsertNewVariable('private ProgressIndicator '  + Name + ' = new ProgressIndicator();');
+  InsertNewVariable('private ProgressIndicator ' + Name +
+    ' = new ProgressIndicator();');
   MakeAttribut('Progress', '0.3');
 end;
 
-function TFXProgressIndicator.getAttributes(ShowAttributes: integer): string;
+function TFXProgressIndicator.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Progress' + inherited getAttributes(ShowAttributes);
+  Result := '|Progress' + inherited GetAttributes(ShowAttributes);
 end;
 
 procedure TFXProgressIndicator.Paint;
-  var Pos, tw, th, _left, diameter, x, y: Integer; s: string;
-      alpha: double;
+var
+  Pos, TextWidth, TextHeight, ALeft, Diameter, XPos, YPos: Integer;
+  Str: string;
+  Alpha: Double;
 begin
   CanvasFontAssign;
-  Canvas.Brush.Color:= Background;
+  Canvas.Brush.Color := Background;
   Canvas.FillRect(Rect(0, 0, Width, Height));
-  Canvas.Pen.Color:= Foreground;
-  Pos:= Round(FProgress*100);
-  s:= IntToStr(Pos) + ' %';
-  tw:= Canvas.TextWidth(s);
-  th:= Canvas.TextHeight(s);
+  Canvas.Pen.Color := Foreground;
+  Pos := Round(FProgress * 100);
+  Str := IntToStr(Pos) + ' %';
+  TextWidth := Canvas.TextWidth(Str);
+  TextHeight := Canvas.TextHeight(Str);
 
-  diameter:= Math.min(Width, Height - th);
-  _left:= (width - diameter) div 2;
-  Canvas.TextOut((width - tw) div 2, diameter, s);
+  Diameter := Math.Min(Width, Height - TextHeight);
+  ALeft := (Width - Diameter) div 2;
+  Canvas.TextOut((Width - TextWidth) div 2, Diameter, Str);
 
-  Canvas.Brush.Color:= clWhite;
-  Canvas.Pen.Color:= RGB(168, 168, 168);
-  Canvas.Ellipse(_left, 0, _left + diameter, diameter);
+  Canvas.Brush.Color := clWhite;
+  Canvas.Pen.Color := RGB(168, 168, 168);
+  Canvas.Ellipse(ALeft, 0, ALeft + Diameter, Diameter);
 
-  Canvas.Brush.Color:= Foreground;
-  alpha:= 2*PI*FProgress;
-  x:= round(sin(alpha)*diameter);
-  y:= round(cos(alpha)*diameter);
+  Canvas.Brush.Color := Foreground;
+  Alpha := 2 * Pi * FProgress;
+  XPos := Round(Sin(Alpha) * Diameter);
+  YPos := Round(Cos(Alpha) * Diameter);
   if FProgress > 0 then
-    Canvas.Pie(_left, 0, _left + diameter, diameter,
-               _left + diameter div 2 + x, diameter div 2 - y, _left + diameter div 2, 0);
+    Canvas.Pie(ALeft, 0, ALeft + Diameter, Diameter, ALeft + Diameter div 2 +
+      XPos, Diameter div 2 - YPos, ALeft + Diameter div 2, 0);
 end;
 
-procedure TFXProgressIndicator.setProgress(Progress: double);
+procedure TFXProgressIndicator.SetProgress(Progress: Double);
 begin
-  if Progress <> FProgress then begin
-    FProgress:= Progress;
+  if Progress <> FProgress then
+  begin
+    FProgress := Progress;
     Invalidate;
   end;
 end;
 
-{--- TFXProgressBar -----------------------------------------------------------}
+{ --- TFXProgressBar ----------------------------------------------------------- }
 
 constructor TFXProgressBar.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= 132;
-  PrefWidth:= 120;
-  PrefHeight:= 24;
-  JavaType:= 'ProgressBar';
+  inherited Create(AOwner);
+  Tag := 132;
+  PrefWidth := 120;
+  PrefHeight := 24;
+  JavaType := 'ProgressBar';
 end;
 
 procedure TFXProgressBar.Paint;
-  var Pos: Integer;
+var
+  Pos: Integer;
 begin
-  Canvas.Brush.Color:= Background;
-  Canvas.Pen.Color:= RGB(168, 168, 168);
+  Canvas.Brush.Color := Background;
+  Canvas.Pen.Color := RGB(168, 168, 168);
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  Pos:= Round(Width * FProgress);
-  Canvas.Brush.Color:= Foreground;
-  Canvas.FillRect(Rect(2, 2, Pos, Height-2));
+  Pos := Round(Width * FProgress);
+  Canvas.Brush.Color := Foreground;
+  Canvas.FillRect(Rect(2, 2, Pos, Height - 2));
 end;
 
 procedure TFXProgressBar.NewControl;
 begin
   DefaultComponent;
-  InsertNewVariable('private ProgressBar '  + Name + ' = new ProgressBar();');
+  InsertNewVariable('private ProgressBar ' + Name + ' = new ProgressBar();');
   MakeAttribut('Progress', '0.3');
 end;
 

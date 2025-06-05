@@ -104,12 +104,12 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -230,7 +230,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 949 + Ord(Str^) * 246;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 971;
   fStringLen := Str - fToIdent;
@@ -251,15 +251,15 @@ end;
 
 procedure TSynKixSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if @fIdentFuncTable[i] = nil then
-      fIdentFuncTable[i] := KeyWordFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if @fIdentFuncTable[Int] = nil then
+      fIdentFuncTable[Int] := KeyWordFunc;
 end;
 
 function TSynKixSyn.AltFunc(Index: Integer): TtkTokenKind;
@@ -310,22 +310,22 @@ end;
 procedure TSynKixSyn.AsciiCharProc;
 begin
   fTokenID := tkString;
-  inc(Run);
-  while CharInSet(FLine[Run], ['0'..'9']) do inc(Run);
+  Inc(Run);
+  while CharInSet(FLine[Run], ['0'..'9']) do Inc(Run);
 end;
 
 procedure TSynKixSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
-  if fLine[Run] = #10 then inc(Run);
+  Inc(Run);
+  if fLine[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynKixSyn.IdentProc;
 begin
   fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  Inc(Run, fStringLen);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
 end;
 
 procedure TSynKixSyn.MacroProc;
@@ -341,34 +341,34 @@ procedure TSynKixSyn.MacroProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkMiscellaneous;
-  while IsMacroChar do inc(Run);
+  while IsMacroChar do Inc(Run);
 end;
 
 procedure TSynKixSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynKixSyn.PrintProc;
 begin
   fTokenID := tkKey;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynKixSyn.VariableProc;
 begin
   fTokenId := tkVariable;
-  inc(run);
-  while IsIdentChar(FLine[Run]) do inc(run);
+  Inc(run);
+  while IsIdentChar(FLine[Run]) do Inc(run);
 end;
 
 procedure TSynKixSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynKixSyn.NumberProc;
@@ -384,15 +384,15 @@ procedure TSynKixSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
   begin
     case FLine[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if FLine[Run + 1] = '.' then Break;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
@@ -400,15 +400,15 @@ procedure TSynKixSyn.CommentProc;
 begin
   fTokenID := tkComment;
   repeat
-    inc(Run);
+    Inc(Run);
   until IsLineEnd(Run);
 end;
 
 procedure TSynKixSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynKixSyn.StringProc;
@@ -419,16 +419,16 @@ begin
   C := fline[run];
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = C;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynKixSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -493,7 +493,7 @@ begin
   end;
 end;
 
-function TSynKixSyn.GetTokenKind: integer;
+function TSynKixSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

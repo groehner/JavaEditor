@@ -46,7 +46,6 @@ object FObjectInspector: TFObjectInspector
     Height = 33
     Align = alTop
     TabOrder = 1
-    ExplicitWidth = 255
     object CBObjects: TComboBox
       Left = 5
       Top = 4
@@ -66,8 +65,6 @@ object FObjectInspector: TFObjectInspector
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 289
-    ExplicitWidth = 255
     DesignSize = (
       263
       25)
@@ -90,7 +87,6 @@ object FObjectInspector: TFObjectInspector
       Caption = 'More'
       TabOrder = 1
       OnClick = BMoreClick
-      ExplicitLeft = 156
     end
   end
   object PMObjectInspector: TSpTBXPopupMenu

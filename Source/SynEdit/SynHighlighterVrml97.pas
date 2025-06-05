@@ -123,7 +123,7 @@ type
   TSynVrml97Syn = class(TSynCustomHighLighter)
   private
     fRange :TRangeState;
-    isDoctype :boolean;
+    isDoctype :Boolean;
     FTokenID :TtkTokenKind;
     fCommentAttri :TSynHighlighterAttributes;
     fIdentifierAttri :TSynHighlighterAttributes;
@@ -155,7 +155,7 @@ type
     fX3DHeaderAttri :TSynHighlighterAttributes;
 
     fKeywords: TSynHashEntryList;
-    procedure DoAddKeyword(AKeyword: string; AKind: integer);
+    procedure DoAddKeyword(AKeyword: string; AKind: Integer);
     function HashKey(Str: PWideChar): Integer;
     function IdentKind(MayBe: PWideChar): TtkTokenKind;
     procedure AndSymbolProc;
@@ -192,13 +192,13 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index :integer) :TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index :Integer) :TSynHighlighterAttributes;
       override;
     function GetEol :Boolean; override;
     function GetRange :Pointer; override;
     function GetTokenID :TtkTokenKind;
     function GetTokenAttribute :TSynHighlighterAttributes; override;
-    function GetTokenKind :integer; override;
+    function GetTokenKind :Integer; override;
     procedure Next; override;
     procedure SetRange(Value :Pointer); override;
     procedure ResetRange; override;
@@ -415,9 +415,9 @@ const
     'WorldInfo';
 
 
-procedure TSynVrml97Syn.DoAddKeyword(AKeyword: string; AKind: integer);
+procedure TSynVrml97Syn.DoAddKeyword(AKeyword: string; AKind: Integer);
 var
-  HashValue: integer;
+  HashValue: Integer;
 begin
   HashValue := HashKey(PWideChar(AKeyword));
   fKeywords[HashValue] := TSynHashEntry.Create(AKeyword, AKind);
@@ -460,12 +460,12 @@ begin
   while Assigned(Entry) do
   begin
     if Entry.KeywordLen > fStringLen then
-      break
+      Break
     else if Entry.KeywordLen = fStringLen then
       if IsCurrentToken(Entry.Keyword) then
       begin
         Result := TtkTokenKind(Entry.Kind);
-        exit;
+        Exit;
       end;
     Entry := Entry.Next;
   end;
@@ -675,18 +675,18 @@ end;
 procedure TSynVrml97Syn.AndSymbolProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if CharInSet(fLine[Run], ['=', '&']) then inc(Run);
+  Inc(Run);
+  if CharInSet(fLine[Run], ['=', '&']) then Inc(Run);
 end;
 
 function TSynVrml97Syn.NextTokenIs(T: string): Boolean;
 var
-  I, Len: Integer;
+  Int, Len: Integer;
 begin
   Result := True;
   Len := Length(T);
-  for I := 1 to Len do
-    if (fLine[Run + I] <> T[I]) then
+  for Int := 1 to Len do
+    if (fLine[Run + Int] <> T[Int]) then
     begin
       Result := False;
       Break;
@@ -707,7 +707,7 @@ begin
           begin
             fRange := rsNormalText;
             Inc(Run, 2);
-            break;
+            Break;
           end;
       until IsLineEnd(Run);
       Exit;
@@ -722,7 +722,7 @@ begin
     begin
       fTokenID := tkComment;
       repeat
-        inc(Run);
+        Inc(Run);
       until IsLineEnd(Run);
     end;
 end;
@@ -776,7 +776,7 @@ begin
     else
     begin
       fTokenID := tkSymbol;
-      inc(Run);
+      Inc(Run);
     end;
 end;
 
@@ -816,10 +816,10 @@ begin
           ((fLine[Run] = '-') and (fLine[Run + 1] = '-')) then
           begin
             fRange := rsNormalText;
-            inc(Run, 2);
-            break;
+            Inc(Run, 2);
+            Break;
           end;
-        inc(Run);
+        Inc(Run);
       until IsLineEnd(Run);
     end;
 end;
@@ -827,42 +827,42 @@ end;
 procedure TSynVrml97Syn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
-  if fLine[Run] = #10 then inc(Run);
+  Inc(Run);
+  if fLine[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynVrml97Syn.IdentProc;
 begin
   fTokenID := IdentKind(fLine + Run);
-  inc(Run, fStringLen);
+  Inc(Run, fStringLen);
   while IsIdentChar(fLine[Run]) do
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynVrml97Syn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynVrml97Syn.MinusProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if CharInSet(fLine[Run], ['=', '-', '>']) then inc(Run);
+  Inc(Run);
+  if CharInSet(fLine[Run], ['=', '-', '>']) then Inc(Run);
 end;
 
 procedure TSynVrml97Syn.ModSymbolProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if fLine[Run] = '=' then inc(Run);
+  Inc(Run);
+  if fLine[Run] = '=' then Inc(Run);
 end;
 
 procedure TSynVrml97Syn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynVrml97Syn.NumberProc;
@@ -912,22 +912,22 @@ end;
 procedure TSynVrml97Syn.OrSymbolProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if CharInSet(fLine[Run], ['=', '|']) then inc(Run);
+  Inc(Run);
+  if CharInSet(fLine[Run], ['=', '|']) then Inc(Run);
 end;
 
 procedure TSynVrml97Syn.PlusProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if CharInSet(fLine[Run], ['=', '+']) then inc(Run);
+  Inc(Run);
+  if CharInSet(fLine[Run], ['=', '+']) then Inc(Run);
 end;
 
 procedure TSynVrml97Syn.PointProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if (fLine[Run] = '.') and (fLine[Run + 1] = '.') then inc(Run, 2);
+  Inc(Run);
+  if (fLine[Run] = '.') and (fLine[Run + 1] = '.') then Inc(Run, 2);
 end;
 
 procedure TSynVrml97Syn.SlashProc;
@@ -951,7 +951,7 @@ begin
             begin
               fRange := rsNormalText;
               Inc(Run, 2);
-              break;
+              Break;
             end;
         until IsLineEnd(Run);
       end;
@@ -967,16 +967,16 @@ end;
 
 procedure TSynVrml97Syn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynVrml97Syn.StarProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
-  if fLine[Run] = '=' then inc(Run);
+  Inc(Run);
+  if fLine[Run] = '=' then Inc(Run);
 end;
 
 procedure TSynVrml97Syn.StringProc;
@@ -985,10 +985,10 @@ var
 begin
   fTokenID := tkString;
   l_strChar := FLine[Run]; // We could have '"' or #39
-  if (FLine[Run + 1] = l_strChar) and (FLine[Run + 2] = l_strChar) then inc(Run, 2);
+  if (FLine[Run + 1] = l_strChar) and (FLine[Run + 2] = l_strChar) then Inc(Run, 2);
   repeat
-    if IsLineEnd(Run) then break;
-    inc(Run);
+    if IsLineEnd(Run) then Break;
+    Inc(Run);
   until (FLine[Run] = l_strChar) and (FLine[Pred(Run)] <> '\');
   if not IsLineEnd(Run) then
     Inc(Run);
@@ -996,13 +996,13 @@ end;
 
 procedure TSynVrml97Syn.SymbolProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenId := tkSymbol;
 end;
 
 procedure TSynVrml97Syn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -1040,7 +1040,7 @@ begin
   inherited;
 end;
 
-function TSynVrml97Syn.GetDefaultAttribute(Index :integer) :TSynHighlighterAttributes;
+function TSynVrml97Syn.GetDefaultAttribute(Index :Integer) :TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -1107,7 +1107,7 @@ begin
   end;
 end;
 
-function TSynVrml97Syn.GetTokenKind :integer;
+function TSynVrml97Syn.GetTokenKind :Integer;
 begin
   Result := Ord(fTokenId);
 end;

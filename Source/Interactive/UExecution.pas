@@ -2,353 +2,415 @@ unit UExecution;
 
 interface
 
-uses Contnrs, Classes, Grids, SynEdit, UUMLForm, UComJava1;
+uses
+  Contnrs,
+  Classes,
+  Grids,
+  SynEdit,
+  UUMLForm,
+  UComJava1;
 
 type
 
-  TExecutionType = (None,
-                    ObjectCreation,      // Type aObject = new Type();
-                    VariableCreation,    // int  i = 7;
-                    ObjectDeclaration,   // Type aObject;
-                    VariableDeclaration, // int i;
-                    MethodCall,
-                    Statement,
-                    Assignment,          // i = 7; aObject = new Type;
-                    Expression,          // 7+3*4;
-                    ArrayDeclaration);   // int[] p = {1,2,3,4,4+5};
+  TExecutionType = (None, ObjectCreation, // Type aObject = new Type();
+    VariableCreation,    // int  i = 7;
+    ObjectDeclaration,   // Type aObject;
+    VariableDeclaration, // int i;
+    MethodCall, Statement, Assignment,   // i = 7 und aObject = new Type
+    Expression,          // 7+3*4;
+    ArrayDeclaration);   // int[] p = {1,2,3,4,4+5};
 
   TExecutionLine = class
+  private
+    FClassImport: string;
+    FKind: TExecutionType;
+    FMethod: string;
+    FName: string;
+    FParams: string;
+    FTypename: string;
+    FValue: string;
   public
-    Name: string;
-    Typename: string;
-    Method: string;
-    Value: string;
-    Kind: TExecutionType;
-    ClassImport: string;
-    Params: string;
-    constructor create(const aName: string); overload;
-    constructor create(const aName: string; aKind: TExecutionType); overload;
+    constructor Create(const Name: string); overload;
+    constructor Create(const Name: string; Kind: TExecutionType); overload;
+    property ClassImport: string read FClassImport write FClassImport;
+    property Kind: TExecutionType read FKind write FKind;
+    property Method: string read FMethod write FMethod;
+    property Name: string read FName write FName;
+    property Params: string read FParams write FParams;
+    property Typename: string read FTypename write FTypename;
+    property Value: string read FValue write FValue;
   end;
 
   TExecutionList = class(TObjectList)
-    constructor create;
-    function get(i: integer): TExecutionLine;
+    constructor Create;
+    function Get(Int: Integer): TExecutionLine;
   end;
 
   TVariable = class
+  private
+    FExisting: Boolean;
+    FName: string;
+    FPrimitive: Boolean;
+    FTyp: string;
   public
-    Name: string;
-    Typ: string;
-    existing: boolean;
-    primitive: boolean;
-    constructor create(const aName, aTyp: string);
-    function put: string;
-    function get: string;
-    function PrimitiveToObject(const s: string): string;
+    constructor Create(const Name, Typ: string);
+    function Put: string;
+    function Get: string;
+    function PrimitiveToObject(const Str: string): string;
+    property Existing: Boolean read FExisting write FExisting;
+    property Name: string read FName;
+    property Primitive: Boolean read FPrimitive;
+    property Typ: string read FTyp;
   end;
 
   TVariableList = class(TObjectList)
   public
-    constructor create;
-    function get(i: integer): TVariable; overload;
-    function get(const Name: string): TVariable; overload;
-    procedure delete(const Name: string);
-    procedure setNotExisting;
-    function isKnownType(const Typename: string): boolean;
+    constructor Create;
+    function Get(Int: Integer): TVariable; overload;
+    function Get(const Name: string): TVariable; overload;
+    procedure Delete(const Name: string);
+    procedure SetNotExisting;
+    function IsKnownType(const Typename: string): Boolean;
   end;
 
   TInteractiveExecuter = class
   private
-    ComJava: TComJava1;
-    UMLForm: TFUMLForm;
-    aSynEditor: TSynEdit;
-    SGVariables: TStringGrid;
-    ClassNr: integer;
-    aClassname: string;
-    Pathname: string;
-    Path: string;
-    SL: TStringList;
-    VariableList: TVariableList;
-    ExecutionList: TExecutionList;
-    function getVariables: string;
-    procedure existingToDeclared(const Name: string);
+    FComJava: TComJava1;
+    FUMLForm: TFUMLForm;
+    FSynEditor: TSynEdit;
+    FSGVariables: TStringGrid;
+    FClassNr: Integer;
+    FClassname: string;
+    FPathname: string;
+    FPath: string;
+    FStringList: TStringList;
+    FVariableList: TVariableList;
+    FExecutionList: TExecutionList;
+    function GetVariables: string;
+    procedure ExistingToDeclared(const Name: string);
     procedure DeclaredToExisting(const Name: string);
-    function putVariables: string;
-    procedure DeclareVariable(aExecution: TExecutionLine);
+    function PutVariables: string;
+    procedure DeclareVariable(Execution: TExecutionLine);
     procedure AddVarToGrid(const Name, Typ, Value: string);
-    function IsKnownType(const Typename: string): boolean;
-    function UpdateVariables: boolean;
-    procedure DeleteFiles(const aPathname: string);
+    function IsKnownType(const Typename: string): Boolean;
+    function UpdateVariables: Boolean;
+    procedure DeleteFiles(const Pathname: string);
     procedure MakePathname;
-    function StripFile(s: string): string;
-    function StripGetOb(const s: string): string;
-    procedure LogExecute(const s: string);
+    function StripFile(Str: string): string;
+    function StripGetOb(const Str: string): string;
+    procedure LogExecute(const Str: string);
     procedure Error(const Compiled: string);
-    procedure MakeClass(aExecution: TExecutionLine);
-    procedure MakeClassExpression(aExecution: TExecutionLine);
+    procedure MakeClass(Execution: TExecutionLine);
+    procedure MakeClassExpression(Execution: TExecutionLine);
     function DoCompile: string;
-    function Compile(aExecution: TExecutionLine; normal: boolean): string;
-    function Run(aExecution: TExecutionLine): boolean;
-    procedure getExpression(aExecution: TExecutionLine);
-    procedure assignWithoutType(aExecution: TExecutionLine);
-    function CreateVariable(aExecution: TExecutionLine): boolean;
-    procedure CreateObject(aExecution: TExecutionLine);
-    procedure CreateArray(aExecution: TExecutionLine);
+    function Compile(Execution: TExecutionLine; Normal: Boolean): string;
+    function Run(Execution: TExecutionLine): Boolean;
+    procedure GetExpression(Execution: TExecutionLine);
+    procedure AssignWithoutType(Execution: TExecutionLine);
+    function CreateVariable(Execution: TExecutionLine): Boolean;
+    procedure CreateObject(Execution: TExecutionLine);
+    procedure CreateArray(Execution: TExecutionLine);
   public
-    constructor Create(aUMLForm: TFUMLForm; SE: TSynEdit; SG: TStringGrid; C: TComJava1);
+    constructor Create(UMLForm: TFUMLForm; SynEdit: TSynEdit;
+      StringGrid: TStringGrid; ComJava: TComJava1);
     destructor Destroy; override;
-    procedure Execute(const s: string);
+    procedure Execute(const Command: string);
     procedure Clear;
     procedure DelVariable(const Name: string);
     procedure AddVariable(const Name, Typ, Value: string);
-    function NeedsSemicolon(const s: string): boolean;
+    function NeedsSemicolon(const Str: string): Boolean;
   end;
 
 implementation
 
-uses Windows, SysUtils, Forms, Controls, UJavaParser, JNI, {needed}
-     URtfdDiagram, UDlgAbout, UExecutionParser, UConfiguration, UMessages,
-     UJniWrapper1, UJava, StrUtils, UUtils;
+uses
+  SysUtils,
+  Forms,
+  StrUtils,
+  jni, {needed}
+  URtfdDiagram,
+  UDlgAbout,
+  UExecutionParser,
+  UConfiguration,
+  UMessages,
+  UJniWrapper1,
+  UJava,
+  UUtils;
 
-{--- TExecutionLine -----------------------------------------------------------}
+{ --- TExecutionLine ----------------------------------------------------------- }
 
-constructor TExecutionLine.create(const aName: string);
+constructor TExecutionLine.Create(const Name: string);
 begin
-  Self.Name:= aName;
+  Self.FName := Name;
 end;
 
-constructor TExecutionLine.create(const aName: string; aKind: TExecutionType);
+constructor TExecutionLine.Create(const Name: string; Kind: TExecutionType);
 begin
-  Self.Name:= aName;
-  Self.Kind:= aKind;
+  Self.FName := Name;
+  Self.FKind := Kind;
 end;
 
-{--- TExecutionList -----------------------------------------------------------}
+{ --- TExecutionList ----------------------------------------------------------- }
 
-constructor TExecutionList.create;
+constructor TExecutionList.Create;
 begin
-  OwnsObjects:= true;
+  OwnsObjects := True;
 end;
 
-function TExecutionList.get(i: Integer): TExecutionLine;
+function TExecutionList.Get(Int: Integer): TExecutionLine;
 begin
-  Result:= items[i] as TExecutionLine;
+  Result := Items[Int] as TExecutionLine;
 end;
 
-{--- TVariable ----------------------------------------------------------------}
+{ --- TVariable ---------------------------------------------------------------- }
 
-const prim : array[1..9] of string = ('byte', 'short', 'int', 'long', 'double', 'float', 'boolean', 'char', 'String');
-const obje : array[1..9] of string = ('Byte', 'Short', 'Integer', 'Long', 'Double', 'Float', 'Boolean', 'Character', 'String');
+const
+  Prim: array [1 .. 9] of string = ('byte', 'short', 'int', 'long',
+    'double', 'float', 'boolean', 'char', 'String');
 
-constructor TVariable.create(const aName, aTyp: string);
+  Obje: array [1 .. 9] of string = ('Byte', 'Short', 'Integer', 'Long',
+    'Double', 'Float', 'Boolean', 'Character', 'String');
+
+constructor TVariable.Create(const Name, Typ: string);
 begin
-  Self.Name:= aName;
-  self.Typ:= aTyp;
-  existing:= false;
-  var i:= 1;
-  while (i <= 8) and (prim[i] <> Typ) do inc(i);
-  primitive:= (i <= 8);
+  Self.FName := Name;
+  Self.FTyp := Typ;
+  FExisting := False;
+  var
+  Int := 1;
+  while (Int <= 8) and (Prim[Int] <> Typ) do
+    Inc(Int);
+  FPrimitive := (Int <= 8);
 end;
 
-function TVariable.put: string;
+function TVariable.Put: string;
 begin
-  if primitive
-    then Result:= '    p_.put("_lvp_' + Name + '",' + Name+ ');'
-    else Result:= '    p_.put("_lvo_' + Name + '",' + Name+ ');'
+  if FPrimitive then
+    Result := '    p_.put("_lvp_' + Name + '",' + Name + ');'
+  else
+    Result := '    p_.put("_lvo_' + Name + '",' + Name + ');';
 end;
 
-function TVariable.get: string;
+function TVariable.Get: string;
 begin
-  if primitive
-    then Result:= '    ' + Typ + ' ' + Name + ' = (' + PrimitiveToObject(Typ) +
-                  ') p_.get("_lvp_' + Name + '");'
-    else Result:= '    ' + ReplaceStr(Typ, '$', '.') + ' ' + Name + ' = (' + ReplaceStr(Typ, '$', '.') +
-                  ') p_.get("_lvo_' + Name + '");'
+  if FPrimitive then
+    Result := '    ' + Typ + ' ' + Name + ' = (' + PrimitiveToObject(Typ) +
+      ') p_.get("_lvp_' + Name + '");'
+  else
+    Result := '    ' + ReplaceStr(Typ, '$', '.') + ' ' + Name + ' = (' +
+      ReplaceStr(Typ, '$', '.') + ') p_.get("_lvo_' + Name + '");';
 end;
 
-function TVariable.PrimitiveToObject(const s: string): string;
+function TVariable.PrimitiveToObject(const Str: string): string;
 begin
-  var i:= 1;
-  while (i < 9) and (prim[i] <> s) do
-    inc(i);
-  if i <= 9
-    then Result:= obje[i]
-    else Result:= s;
+  var
+  Int := 1;
+  while (Int < 9) and (Prim[Int] <> Str) do
+    Inc(Int);
+  if Int <= 9 then
+    Result := Obje[Int]
+  else
+    Result := Str;
 end;
 
-{--- TVariableList -----------------------------------------------------------}
+{ --- TVariableList ----------------------------------------------------------- }
 
-constructor TVariableList.create;
+constructor TVariableList.Create;
 begin
-  OwnsObjects:= true;
+  OwnsObjects := True;
 end;
 
-function TVariableList.get(i: Integer): TVariable;
+function TVariableList.Get(Int: Integer): TVariable;
 begin
-  Result:= Items[i] as TVariable;
+  Result := Items[Int] as TVariable;
 end;
 
-function TVariableList.get(const Name: string): TVariable;
+function TVariableList.Get(const Name: string): TVariable;
 begin
-  Result:= nil;
-  for var i:= 0 to Count - 1 do begin
-    var Variable:= get(i);
-    if TVariable(Variable).Name = Name then begin
-      Result:= Variable;
-      break;
+  Result := nil;
+  for var I := 0 to Count - 1 do
+  begin
+    var
+    Variable := TVariable(Get(I));
+    if Variable.Name = Name then
+    begin
+      Result := Variable;
+      Break;
     end;
   end;
 end;
 
-procedure TVariableList.delete(const Name: string);
+procedure TVariableList.Delete(const Name: string);
 begin
-  for var i:= 0 to Count - 1 do begin
-    var Variable:= get(i);
-    if TVariable(Variable).Name = Name then begin
-      inherited Delete(i);
-      break;
+  for var I := 0 to Count - 1 do
+  begin
+    var
+    Variable := TVariable(Get(I));
+    if Variable.Name = Name then
+    begin
+      inherited Delete(I);
+      Break;
     end;
   end;
 end;
 
-procedure TVariableList.setNotExisting;
+procedure TVariableList.SetNotExisting;
 begin
-  for var i:= 0 to Count - 1 do begin
-    var Variable:= get(i);
-    TVariable(Variable).existing:= false;
+  for var I := 0 to Count - 1 do
+  begin
+    var
+    Variable := TVariable(Get(I));
+    Variable.Existing := False;
   end;
 end;
 
-function TVariableList.isKnownType(const Typename: string): boolean;
+function TVariableList.IsKnownType(const Typename: string): Boolean;
 begin
-  Result:= false;
-  for var i:= 0 to Count - 1 do begin
-    var Variable:= get(i);
-    Result:= Result or (TVariable(Variable).Typ = Typename);
+  Result := False;
+  for var I := 0 to Count - 1 do
+  begin
+    var
+    Variable := TVariable(Get(I));
+    Result := Result or (Variable.Typ = Typename);
   end;
 end;
 
-{--- TInteractiveExecuter ----------------------------------------------------------------}
+{ --- TInteractiveExecuter ---------------------------------------------------------------- }
 
-constructor TInteractiveExecuter.Create(aUMLForm: TFUMLForm; SE: TSynEdit; SG: TStringGrid; C: TComJava1);
+constructor TInteractiveExecuter.Create(UMLForm: TFUMLForm; SynEdit: TSynEdit;
+  StringGrid: TStringGrid; ComJava: TComJava1);
 begin
-  SL:= TStringList.Create;
-  VariableList:= TVariableList.create;
-  ExecutionList:= TExecutionList.create;
-  UMLForm:= aUMLForm;
-  aSynEditor:= SE;
-  SGVariables:= SG;
-  ComJava:= C;
-  ClassNr:= 0;
-  aClassname:= '';
+  FStringList := TStringList.Create;
+  FVariableList := TVariableList.Create;
+  FExecutionList := TExecutionList.Create;
+  FUMLForm := UMLForm;
+  FSynEditor := SynEdit;
+  FSGVariables := StringGrid;
+  FComJava := ComJava;
+  FClassNr := 0;
+  FClassname := '';
 end;
 
 destructor TInteractiveExecuter.Destroy;
 begin
-  FreeAndNil(SL);
-  FreeAndNil(VariableList);
-  FreeAndNil(ExecutionList);
-  // FreeAndNil(SGVariables);
+  FreeAndNil(FStringList);
+  FreeAndNil(FVariableList);
+  FreeAndNil(FExecutionList);
+  inherited;
 end;
 
-procedure TInteractiveExecuter.DeleteFiles(const aPathname: string);
-  var aPath, Mask: string; SearchRec: TSearchRec;
+procedure TInteractiveExecuter.DeleteFiles(const Pathname: string);
+var
+  Path, Mask: string;
+  SearchRec: TSearchRec;
 begin
-  aPath:= ExtractFilePath(aPathname);
-  Mask:= aPath + 'Class*.*';
-  if FindFirst(Mask, 0, SearchRec) = 0 then begin
-    DeleteFile(aPath + SearchRec.Name);
+  Path := ExtractFilePath(Pathname);
+  Mask := Path + 'Class*.*';
+  if FindFirst(Mask, 0, SearchRec) = 0 then
+  begin
+    DeleteFile(Path + SearchRec.Name);
     while FindNext(SearchRec) = 0 do
-      DeleteFile(aPath + SearchRec.Name);
+      DeleteFile(Path + SearchRec.Name);
     FindClose(SearchRec);
   end;
 end;
 
 procedure TInteractiveExecuter.MakePathname;
 begin
-  aClassname:= 'Class' + IntToStr(ClassNr);
-  inc(ClassNr);
-  Pathname:= Path + aClassname + '.java';
+  FClassname := 'Class' + IntToStr(FClassNr);
+  Inc(FClassNr);
+  FPathname := FPath + FClassname + '.java';
 end;
 
-function TInteractiveExecuter.StripFile(s: string): string;
-  var i, j, p: integer; aSL: TStringList;
+function TInteractiveExecuter.StripFile(Str: string): string;
+var
+  Int, JPos, Posi: Integer;
+  StringList: TStringList;
 begin
-  p:= Pos('.java:', s);   // VisibleStack.java:12:
-  if p > 0 then begin
-    s:= Right(s, p+6);
-    p:= Pos(':', s);
-    s:= Right(s, p+2);
+  Posi := Pos('.java:', Str); // VisibleStack.java:12:
+  if Posi > 0 then
+  begin
+    Str := Right(Str, Posi + 6);
+    Posi := Pos(':', Str);
+    Str := Right(Str, Posi + 2);
   end;
   // only first error
-  aSL:= TStringList.Create;
-  aSL.Text:= s;
-  i:= -1;
+  StringList := TStringList.Create;
+  StringList.Text := Str;
+  Int := -1;
   repeat
-    inc(i);
-    p:= Pos('.java:', aSL[i]);
-  until (i = aSL.Count-1) or (p > 0);
-  if p > 0 then
-    for j:= aSL.Count - 1 downto i do
-      aSL.Delete(j)
-  else begin
-    j:= aSL.Count;
+    Inc(Int);
+    Posi := Pos('.java:', StringList[Int]);
+  until (Int = StringList.Count - 1) or (Posi > 0);
+  if Posi > 0 then
+    for var J := StringList.Count - 1 downto Int do
+      StringList.Delete(J)
+  else
+  begin
+    JPos := StringList.Count;
     repeat
-      dec(j);
-      p:= Pos('1 error', aSL[j]);
-    until (j = 0) or (p > 0);
-    if p > 0 then begin
-      aSL.Delete(j);
-      aSL.Delete(j-1);
+      Dec(JPos);
+      Posi := Pos('1 error', StringList[JPos]);
+    until (JPos = 0) or (Posi > 0);
+    if Posi > 0 then
+    begin
+      StringList.Delete(JPos);
+      StringList.Delete(JPos - 1);
     end;
   end;
 
-  for i:= aSL.Count - 1 downto 0 do
-    if Pos('location: class', aSL[i]) > 0 then
-      aSL.Delete(i);
+  for var I := StringList.Count - 1 downto 0 do
+    if Pos('location: class', StringList[I]) > 0 then
+      StringList.Delete(I);
 
-  Result:= aSL.Text;
-  FreeAndNil(aSL);
+  Result := StringList.Text;
+  FreeAndNil(StringList);
 end;
 
-function TInteractiveExecuter.StripGetOb(const s: string): string;
-  var i, p: integer;
+function TInteractiveExecuter.StripGetOb(const Str: string): string;
+var
+  Int, Posi: Integer;
 begin
-  var aSL:= TStringList.Create;
-  p:= Pos('getOb(', s);
-  if p > 0 then begin
-    aSL.Text:= s;
-    i:= 0;
+  var
+  StringList := TStringList.Create;
+  Posi := Pos('getOb(', Str);
+  if Posi > 0 then
+  begin
+    StringList.Text := Str;
+    Int := 0;
     repeat
-      inc(i);
-      p:= pos('getOb(', aSL[i]);
-    until (p > 0) or (i = aSL.Count-1);
-    if p > 0 then begin
-      aSL[i]:= Left(aSL[i], -2);
-      aSL[i]:= '  ' + Right(aSL[i], p + 6);
-      if i + 1 < aSL.Count then
-        aSL[i+1]:= '  ' + Right(aSL[i+1], p + 6);
+      Inc(Int);
+      Posi := Pos('getOb(', StringList[Int]);
+    until (Posi > 0) or (Int = StringList.Count - 1);
+    if Posi > 0 then
+    begin
+      StringList[Int] := Left(StringList[Int], -2);
+      StringList[Int] := '  ' + Right(StringList[Int], Posi + 6);
+      if Int + 1 < StringList.Count then
+        StringList[Int + 1] := '  ' + Right(StringList[Int + 1], Posi + 6);
     end;
-    Result:= aSL.Text;
+    Result := StringList.Text;
   end
   else
-    Result:= s;
-  FreeAndNil(aSL);
+    Result := Str;
+  FreeAndNil(StringList);
 end;
 
-procedure TInteractiveExecuter.LogExecute(const s: string);
-  var F: TextFile;
+procedure TInteractiveExecuter.LogExecute(const Str: string);
+var
+  TeFile: TextFile;
 begin
-  if FConfiguration.LogfileInteractiveOK then begin
-    AssignFile(F, FConfiguration.LogfileInteractive);
+  if FConfiguration.LogfileInteractiveOK then
+  begin
+    AssignFile(TeFile, FConfiguration.LogfileInteractive);
     try
-      Append(F);
-      Writeln(F, DateTimeToStr(Now()) + ' ' + GetComputerNetName +
-                 ' Version: ' + UDlgAbout.Version);
-      Writeln(F, s);
-      CloseFile(F);
+      Append(TeFile);
+      Writeln(TeFile, DateTimeToStr(Now()) + ' ' + GetComputerNetName + ' Version: '
+        + UDlgAbout.Version);
+      Writeln(TeFile, Str);
+      CloseFile(TeFile);
     except
-      on e: exception do
+      on e: Exception do
         ErrorMsg(e.Message);
     end;
   end;
@@ -356,510 +418,623 @@ end;
 
 procedure TInteractiveExecuter.Error(const Compiled: string);
 begin
-  if SL.Count > 1
-    then FMessages.OutputToTerminal(StripFile(compiled))
-    else ErrorMsg(Right(compiled, 6));
+  if FStringList.Count > 1 then
+    FMessages.OutputToTerminal(StripFile(Compiled))
+  else
+    ErrorMsg(Right(Compiled, 6));
   LogExecute(Compiled);
 end;
 
-procedure TInteractiveExecuter.MakeClass(aExecution: TExecutionLine);
+procedure TInteractiveExecuter.MakeClass(Execution: TExecutionLine);
 begin
-  SL.Clear;
-  if aExecution.ClassImport <> '' then
-    SL.Add('import ' + aExecution.ClassImport + ';');
-  SL.Add('');
-  SL.Add('public class ' + aClassname + ' {');
-  SL.Add('  public static void run() {');    // static
-  SL.Add('    java.util.Properties p_ = System.getProperties();');
-  SL.Add(getVariables);
-  SL.Add('    ' + aExecution.Value);
-  SL.Add(putVariables);  // p_.put("lv_
-  SL.Add('  }');
-  SL.Add('}');
+  FStringList.Clear;
+  if Execution.ClassImport <> '' then
+    FStringList.Add('import ' + Execution.ClassImport + ';');
+  FStringList.Add('');
+  FStringList.Add('public class ' + FClassname + ' {');
+  FStringList.Add('  public static void run() {'); // static
+  FStringList.Add('    java.util.Properties p_ = System.getProperties();');
+  FStringList.Add(GetVariables);
+  FStringList.Add('    ' + Execution.Value);
+  FStringList.Add(PutVariables); // p_.put("lv_
+  FStringList.Add('  }');
+  FStringList.Add('}');
 end;
 
-procedure TInteractiveExecuter.MakeClassExpression(aExecution: TExecutionLine);
+procedure TInteractiveExecuter.MakeClassExpression(Execution: TExecutionLine);
 begin
-  SL.Clear;
-  if aExecution.ClassImport <> '' then
-    SL.Add('import ' + aExecution.ClassImport + ';');
-  SL.Add('');
-  SL.Add('public class ' + aClassname + ' extends Eval {');
-  SL.Add('  public static Object run() {');
-  SL.Add('    java.util.Properties p_ = System.getProperties();' + #13#10);
-  SL.Add(getVariables);
-  var s:= aExecution.Value;
-  if Copy(s, length(s), 1) = ';' then
-    delete(s, length(s), 1);
-  SL.Add('    Object aObject = getOb(' + s + ');');
-  SL.Add(putVariables);
-  SL.Add('    return aObject;');
-  SL.Add('  }');
-  SL.Add('}');
+  FStringList.Clear;
+  if Execution.ClassImport <> '' then
+    FStringList.Add('import ' + Execution.ClassImport + ';');
+  FStringList.Add('');
+  FStringList.Add('public class ' + FClassname + ' extends Eval {');
+  FStringList.Add('  public static Object run() {');
+  FStringList.Add('    java.util.Properties p_ = System.getProperties();'
+    + #13#10);
+  FStringList.Add(GetVariables);
+  var
+  Str := Execution.Value;
+  if Copy(Str, Length(Str), 1) = ';' then
+    Delete(Str, Length(Str), 1);
+  FStringList.Add('    Object aObject = getOb(' + Str + ');');
+  FStringList.Add(PutVariables);
+  FStringList.Add('    return aObject;');
+  FStringList.Add('  }');
+  FStringList.Add('}');
 end;
 
 function TInteractiveExecuter.DoCompile: string;
-  var s1, s2, compiled: string;
-      i, j, p: integer; SLCompiled, SLSplitSpace: TStringList;
+var
+  Str1, Str2, Compiled: string;
+  Int, JPos: Integer;
+  SLCompiled, SLSplitSpace: TStringList;
 begin
   repeat
-    Compiled:= ComJava.ExecuteCommand('compile'#4 + FConfiguration.JavaCompilerParameter + #4 + Pathname);
-    if (Left(Compiled, 4) = '-ERR') and (Pos('might not have been initialized', Compiled) > 0) then begin
-    try
-      SL.LoadFromFile(Pathname);
-      SLCompiled:= TStringList.Create;
-      SLCompiled.Text:= Compiled;
-      j:= 0;
-      while  j < SLCompiled.Count - 1 do begin
-        s1:= SLCompiled.Strings[j];
-        if Pos('might not have been initialized', s1) > 0 then begin
-          inc(j);
-          s2:= SLCompiled.Strings[j];
-          p:= SL.IndexOf(s2);
-          if p > -1 then SL.Delete(p);
-          SLSplitSpace:= Split(' ', s1);
-          i:= 0;
-          while SLSplitSpace.Strings[i] <> 'might' do inc(i);
-          if (0 <= i-1) and (i-1 < SLSplitSpace.Count) then
-            ExistingToDeclared(SLSplitSpace.Strings[i-1]);
-          FreeAndNil(SLSplitSpace);
+    Compiled := FComJava.ExecuteCommand
+      ('compile'#4 + FConfiguration.JavaCompilerParameter + #4 + FPathname);
+    if (Left(Compiled, 4) = '-ERR') and
+      (Pos('might not have been initialized', Compiled) > 0) then
+    begin
+      try
+        FStringList.LoadFromFile(FPathname);
+        SLCompiled := TStringList.Create;
+        SLCompiled.Text := Compiled;
+        JPos := 0;
+        while JPos < SLCompiled.Count - 1 do
+        begin
+          Str1 := SLCompiled[JPos];
+          if Pos('might not have been initialized', Str1) > 0 then
+          begin
+            Inc(JPos);
+            Str2 := SLCompiled[JPos];
+            var Posi := FStringList.IndexOf(Str2);
+            if Posi > -1 then
+              FStringList.Delete(Posi);
+            SLSplitSpace := Split(' ', Str1);
+            Int := 0;
+            while SLSplitSpace[Int] <> 'might' do
+              Inc(Int);
+            if (0 <= Int - 1) and (Int - 1 < SLSplitSpace.Count) then
+              ExistingToDeclared(SLSplitSpace[Int - 1]);
+            FreeAndNil(SLSplitSpace);
+          end;
+          Inc(JPos);
         end;
-        inc(j);
+        FreeAndNil(SLCompiled);
+        FStringList.SaveToFile(FPathname);
+      except
+        on e: Exception do
+          ErrorMsg(e.Message);
       end;
-      FreeAndNil(SLCompiled);
-      SL.SaveToFile(Pathname);
-    except
-      on e: exception do ErrorMsg(e.Message);
-    end;
-    end else
-      break;
-  until false;
-  Result:= Compiled;
+    end
+    else
+      Break;
+  until False;
+  Result := Compiled;
 end;
 
-function TInteractiveExecuter.Compile(aExecution: TExecutionLine; normal: boolean): string;
+function TInteractiveExecuter.Compile(Execution: TExecutionLine;
+  Normal: Boolean): string;
 begin
   MakePathname;
-  if Normal
-    then MakeClass(aExecution)      // instead of MakeClass / MakeThread
-    else MakeClassExpression(aExecution);
+  if Normal then
+    MakeClass(Execution) // instead of MakeClass / MakeThread
+  else
+    MakeClassExpression(Execution);
   try
-    SL.SaveToFile(Pathname);
+    FStringList.SaveToFile(FPathname);
   except
     on e: Exception do
-      Errormsg(e.Message);
+      ErrorMsg(e.Message);
   end;
-  var Compiled:= DoCompile;
+  var
+  Compiled := DoCompile;
   if Normal and (Left(Compiled, 4) = '-ERR') then
     Error(Compiled);
-  Result:= Compiled;
+  Result := Compiled;
 end;
 
-function TInteractiveExecuter.Run(aExecution: TExecutionLine): boolean;
-  var aJavaClass: TComJavaClass;
-      aJavaMethod: TComJavaMethod;
-      aJavaValue: TComJavaValue;
+function TInteractiveExecuter.Run(Execution: TExecutionLine): Boolean;
+var
+  JavaClass: TComJavaClass;
+  JavaMethod: TComJavaMethod;
+  JavaValue: TComJavaValue;
 begin
-  Result:= false;
-  if Left(Compile(aExecution, true), 3) = '+OK' then begin
-    Result:= true;
-    if ComJava.NewClass(aClassname, Pathname) then begin
-      aJavaClass:= ComJava.GetClass(aClassname);
-      aJavaMethod:= TComJavaMethod.create(aJavaClass, 'run', JNI.static, 'void', nil, ComJava);
+  Result := False;
+  if Left(Compile(Execution, True), 3) = '+OK' then
+  begin
+    Result := True;
+    if FComJava.NewClass(FClassname, FPathname) then
+    begin
+      JavaClass := FComJava.GetClass(FClassname);
+      JavaMethod := TComJavaMethod.Create(JavaClass, 'run', jni.static,
+        'void', nil, FComJava);
       try
-        // ShowCallMethod(theMethodName, theObjectname);
-        aJavaValue:= aJavaMethod.call(nil);
-        FreeAndNil(aJavaValue);
-        if not aJavaMethod.IsValid then
-          FMessages.OutputToTerminal(aJavaMethod.Error);
+        JavaValue := JavaMethod.Call(nil);
+        FreeAndNil(JavaValue);
+        if not JavaMethod.IsValid then
+          FMessages.OutputToTerminal(JavaMethod.Error);
       finally
-        FreeAndNil(aJavaMethod);
+        FreeAndNil(JavaMethod);
       end;
       UpdateVariables;
     end;
   end;
 end;
 
-procedure TInteractiveExecuter.GetExpression(aExecution: TExecutionLine);
-  var aJavaClass: TComJavaClass;
-      aJavaMethod: TComJavaMethod;
-      aComJavaValue: TComJavaValue;
-      Compiled, s: string;
+procedure TInteractiveExecuter.GetExpression(Execution: TExecutionLine);
+var
+  JavaClass: TComJavaClass;
+  JavaMethod: TComJavaMethod;
+  ComJavaValue: TComJavaValue;
+  Compiled, Value: string;
 begin
   // try method-call as an expression
-  Compiled:= Compile(aExecution, false);
-  if (Left(Compiled, 4) = '-ERR') and (Pos('''void'' type not allowed here', Compiled) > 0) then
-    run(aExecution)
-  else if Left(compiled, 3) = '+OK' then begin
-    if ComJava.NewClass(aClassname, Pathname) then begin
-      aJavaClass:= ComJava.GetClass(aClassname);
-      aJavaMethod:= TComJavaMethod.create(aJavaClass, 'run', JNI.static, 'java.lang.Object', nil, ComJava);
+  Compiled := Compile(Execution, False);
+  if (Left(Compiled, 4) = '-ERR') and
+    (Pos('''void''', Compiled) + Pos('"void"', Compiled) > 0) then
+    Run(Execution)
+  else if Left(Compiled, 3) = '+OK' then
+  begin
+    if FComJava.NewClass(FClassname, FPathname) then
+    begin
+      JavaClass := FComJava.GetClass(FClassname);
+      JavaMethod := TComJavaMethod.Create(JavaClass, 'run', jni.static,
+        'java.lang.Object', nil, FComJava);
       try
-        aComJavaValue:= aJavaMethod.getExpressionValue;
-        s:= aExecution.Value;
-        if assigned(aComJavaValue)
-          then FMessages.OutputToTerminal(copy(s, 1, length(s)-1) + ': ' + aComJavaValue.AsString)
-          else FMessages.OutputToTerminal(aJavaMethod.Error);
+        ComJavaValue := JavaMethod.GetExpressionValue;
+        Value := Execution.Value;
+        if Assigned(ComJavaValue) then
+          FMessages.OutputToTerminal(Copy(Value, 1, Length(Value) - 1) + ': ' +
+            ComJavaValue.AsString)
+        else
+          FMessages.OutputToTerminal(JavaMethod.Error);
       finally
-        FreeAndNil(aJavaMethod);
-        FreeAndNil(aComJavaValue);  //new
+        FreeAndNil(JavaMethod);
+        FreeAndNil(ComJavaValue); // new
       end;
       UpdateVariables;
     end;
-   end
-  else begin
-    s:= StripFile(compiled);
-    s:= StripGetOb(s);
-    FMessages.OutputToTerminal(s);
+  end
+  else
+  begin
+    Value := StripFile(Compiled);
+    Value := StripGetOb(Value);
+    FMessages.OutputToTerminal(Value);
   end;
 end;
 
-procedure TInteractiveExecuter.AssignWithoutType(aExecution: TExecutionLine);
-  var aJavaClass: TComJavaClass;
-      aJavaMethod: TComJavaMethod;
-      Compiled, s, varname: string;
-      p: integer;
-      aVariable: TVariable;
+procedure TInteractiveExecuter.AssignWithoutType(Execution: TExecutionLine);
+var
+  JavaClass: TComJavaClass;
+  JavaMethod: TComJavaMethod;
+  Compiled, Str, VarName: string;
+  Posi: Integer;
+  Variable: TVariable;
 begin
   // do we know the variable?
-  varname:= aExecution.Name;
-  p:= Pos('.', varname);
-  if p > 0 then delete(varname, p, length(varname));
-  aVariable:= VariableList.get(varname);
-  if assigned(aVariable) or FConfiguration.StrictJavaMode then begin
-    Run(aExecution);
-    exit;
+  VarName := Execution.Name;
+  Posi := Pos('.', VarName);
+  if Posi > 0 then
+    Delete(VarName, Posi, Length(VarName));
+  Variable := FVariableList.Get(VarName);
+  if Assigned(Variable) or FConfiguration.StrictJavaMode then
+  begin
+    Run(Execution);
+    Exit;
   end;
 
   // try method-call as an expression
-  s:= aExecution.Value;
-  p:= Pos('=', s);
-  aExecution.Value:= copy(s, p+1, length(s));
-  Compiled:= Compile(aExecution, false);
+  Str := Execution.Value;
+  Posi := Pos('=', Str);
+  Execution.FValue := Copy(Str, Posi + 1, Length(Str));
+  Compiled := Compile(Execution, False);
 
-  if Left(compiled, 3) = '+OK' then begin
-    if ComJava.NewClass(aClassname, Pathname) then begin
-      aJavaClass:= ComJava.GetClass(aClassname);
-      aJavaMethod:= TComJavaMethod.create(aJavaClass, 'run', JNI.static, 'java.lang.Object', nil, ComJava);
+  if Left(Compiled, 3) = '+OK' then
+  begin
+    if FComJava.NewClass(FClassname, FPathname) then
+    begin
+      JavaClass := FComJava.GetClass(FClassname);
+      JavaMethod := TComJavaMethod.Create(JavaClass, 'run', jni.static,
+        'java.lang.Object', nil, FComJava);
       try
-        aExecution.Typename:= aJavaMethod.getExpressionType;
-        if aJavaMethod.IsValid then begin
-          aExecution.Value:= aExecution.Typename + ' ' + s;
-          if Pos(' new ', aExecution.value) > 0
-            then CreateObject(aExecution)
-            else CreateVariable(aExecution);
-        end else
-          FMessages.OutputToTerminal(aJavaMethod.Error);
+        Execution.FTypename := JavaMethod.GetExpressionType;
+        if JavaMethod.IsValid then
+        begin
+          Execution.FValue := Execution.Typename + ' ' + Str;
+          if Pos(' new ', Execution.Value) > 0 then
+            CreateObject(Execution)
+          else
+            CreateVariable(Execution);
+        end
+        else
+          FMessages.OutputToTerminal(JavaMethod.Error);
       finally
-        FreeAndNil(aJavaMethod);
+        FreeAndNil(JavaMethod);
       end;
     end;
-  end else begin
-    s:= StripFile(compiled);
-    s:= StripGetOb(s);
-    FMessages.OutputToTerminal(s);
+  end
+  else
+  begin
+    Str := StripFile(Compiled);
+    Str := StripGetOb(Str);
+    FMessages.OutputToTerminal(Str);
   end;
 end;
 
-function TInteractiveExecuter.IsKnownType(const Typename: string): boolean;
+function TInteractiveExecuter.IsKnownType(const Typename: string): Boolean;
 begin
-  Result:= isSimpleType(Typename) or isSimpleType(WithoutArray(Typename)) or Variablelist.isKnownType(Typename);
+  Result := IsSimpleType(Typename) or IsSimpleType(WithoutArray(Typename)) or
+    FVariableList.IsKnownType(Typename);
 end;
 
-procedure TInteractiveExecuter.DeclareVariable(aExecution: TExecutionLine);
-  var Compiled: boolean; Variable: TVariable;
+procedure TInteractiveExecuter.DeclareVariable(Execution: TExecutionLine);
+var
+  Compiled: Boolean;
+  Variable: TVariable;
 begin
   // Type Var;
-  if isKnownType(aExecution.Typename)
-    then Compiled:= true
-    else Compiled:= (Left(Compile(aExecution, true), 3) = '+OK');
-  if Compiled then begin
-    Variable:= VariableList.get(aExecution.Name);
-    if assigned(Variable)
-      then Variable.Typ:= aExecution.Typename
-      else VariableList.Add(TVariable.create(aExecution.Name, aExecution.Typename));
-    AddVarToGrid(aExecution.Name, aExecution.Typename, '');
+  if IsKnownType(Execution.Typename) then
+    Compiled := True
+  else
+    Compiled := (Left(Compile(Execution, True), 3) = '+OK');
+  if Compiled then
+  begin
+    Variable := FVariableList.Get(Execution.Name);
+    if Assigned(Variable) then
+      Variable.FTyp := Execution.Typename
+    else
+      FVariableList.Add(TVariable.Create(Execution.Name, Execution.Typename));
+    AddVarToGrid(Execution.Name, Execution.Typename, '');
   end;
 end;
 
-function TInteractiveExecuter.CreateVariable(aExecution: TExecutionLine): boolean;
+function TInteractiveExecuter.CreateVariable(Execution
+  : TExecutionLine): Boolean;
 begin
   // create variable:  Type Var = Expression;
-  Result:= false;
-  var Variable:= VariableList.get(aExecution.Name);
-  if assigned(Variable) then begin
-    if Variable.Typ <> aExecution.Typename then begin
-      Variable.Typ:= aExecution.Typename;
-      Variable.existing:= false;
+  Result := False;
+  var
+  Variable := FVariableList.Get(Execution.Name);
+  if Assigned(Variable) then
+  begin
+    if Variable.Typ <> Execution.Typename then
+    begin
+      Variable.FTyp := Execution.Typename;
+      Variable.FExisting := False;
     end;
-  end else begin
-    Variable:= TVariable.create(aExecution.Name, aExecution.Typename);
-    VariableList.Add(Variable);
-    AddVarToGrid(aExecution.Name, aExecution.Typename, '');
+  end
+  else
+  begin
+    Variable := TVariable.Create(Execution.Name, Execution.Typename);
+    FVariableList.Add(Variable);
+    AddVarToGrid(Execution.Name, Execution.Typename, '');
   end;
-  if Run(aExecution)
-    then Result:= true
-    else DelVariable(Variable.Name);
-end;
-
-procedure TInteractiveExecuter.CreateObject(aExecution: TExecutionLine);
-begin
-  // create object  Type obj = new Type(...);
-  var Diagram:= UMLForm.MainModul.Diagram as TRtfdDiagram;
-  var aVariable:= VariableList.get(aExecution.Name);
-  if assigned(aVariable) then begin
-    Diagram.DeleteObject(aVariable.Name);
-    DelVariable(aExecution.Name);
-  end;
-  aVariable:= nil;
-
-  if CreateVariable(aExecution) and assigned(ComJava.getObject(aExecution.Name)) then
-    Diagram.ShowObject(aExecution.Name)
-  else if aVariable = nil then
-    DelVariable(aExecution.Name);
-end;
-
-procedure TInteractiveExecuter.CreateArray(aExecution: TExecutionLine);
-  var s: string; p: integer; Variable: TVariable;
-begin
-  // create variable:  Type[] Var = {1, 2, 3}; literal array
-  Variable:= VariableList.get(aExecution.Name);
-  if assigned(Variable) then begin
-    if Variable.Typ <> aExecution.Typename then begin
-      Variable.Typ:= aExecution.Typename;
-      Variable.existing:= false;
-    end;
-  end else begin
-    Variable:= TVariable.create(aExecution.Name, aExecution.Typename);
-    VariableList.Add(Variable);
-    AddVarToGrid(aExecution.Name, aExecution.Typename, '');
-  end;
-  s:= aExecution.Value;
-  p:= pos(' ' + aExecution.Name + ' ', s);
-  insert('_', s, p+1);
-  insert('_', s, p+3);
-  s:= s + #13#10 + '    ' + aExecution.Name + ' = _' + aExecution.Name + '_;';
-  aExecution.Value:= s;
-  if not Run(aExecution) then
+  if Run(Execution) then
+    Result := True
+  else
     DelVariable(Variable.Name);
 end;
 
-procedure TInteractiveExecuter.Execute(const s: string);
-  var i: integer; aFile: string; ok, Update: boolean; SLFiles: TStringlist;
-      ExecutionParser: TExecutionParser;
-      aExecution: TExecutionLine;
-      Diagram: TRtfdDiagram;
+procedure TInteractiveExecuter.CreateObject(Execution: TExecutionLine);
 begin
-  if s = '' then exit;
+  // create object  Type obj = new Type(...);
+  var
+  Diagram := FUMLForm.MainModul.Diagram as TRtfdDiagram;
+  var
+  Variable := FVariableList.Get(Execution.Name);
+  if Assigned(Variable) then
+  begin
+    Diagram.DeleteObject(Variable.Name);
+    DelVariable(Execution.Name);
+  end;
+  Variable := nil;
 
-  SLFiles:= FJava.getAllPathnames;
-  ok:= true;
-  for i:= 0 to SLFiles.Count - 1 do begin
-    aFile:= SLFiles.Strings[i];
-    if hasJavaExtension(aFile) then begin
-      if not FJava.PreCompile(nil, aFile) then begin
-        ok:= false; break;
+  if CreateVariable(Execution) and Assigned(FComJava.GetObject(Execution.Name))
+  then
+    Diagram.ShowObject(Execution.Name)
+  else if not Assigned(Variable) then
+    DelVariable(Execution.Name);
+end;
+
+procedure TInteractiveExecuter.CreateArray(Execution: TExecutionLine);
+var
+  Value: string;
+  Variable: TVariable;
+begin
+  // create variable:  Type[] Var = {1, 2, 3}; literal array
+  Variable := FVariableList.Get(Execution.Name);
+  if Assigned(Variable) then
+  begin
+    if Variable.Typ <> Execution.Typename then
+    begin
+      Variable.FTyp := Execution.Typename;
+      Variable.FExisting := False;
+    end;
+  end
+  else
+  begin
+    Variable := TVariable.Create(Execution.Name, Execution.Typename);
+    FVariableList.Add(Variable);
+    AddVarToGrid(Execution.Name, Execution.Typename, '');
+  end;
+  Value := Execution.Value;
+  var Posi := Pos(' ' + Execution.Name + ' ', Value);
+  Insert('_', Value, Posi + 1);
+  Insert('_', Value, Posi + 3);
+  Value := Value + #13#10 + '    ' + Execution.Name + ' = _' +
+    Execution.Name + '_;';
+  Execution.FValue := Value;
+  if not Run(Execution) then
+    DelVariable(Variable.Name);
+end;
+
+procedure TInteractiveExecuter.Execute(const Command: string);
+var
+  AFile: string;
+  IsOk, Update: Boolean;
+  SLFiles: TStringList;
+  ExecutionParser: TExecutionParser;
+  Execution: TExecutionLine;
+  Diagram: TRtfdDiagram;
+begin
+  if Command = '' then
+    Exit;
+
+  SLFiles := FJava.GetAllPathnames;
+  IsOk := True;
+  for var I := 0 to SLFiles.Count - 1 do
+  begin
+    AFile := SLFiles[I];
+    if HasJavaExtension(AFile) then
+    begin
+      if not FJava.PreCompile(nil, AFile) then
+      begin
+        IsOk := False;
+        Break;
       end;
     end;
   end;
   FreeAndNil(SLFiles);
-  if not ok then exit;
+  if not IsOk then
+    Exit;
 
-  SL.Text:= s;
-  if ComJava = ComJava.getFirstComJava
-    then Path:= FConfiguration.TempDir
-    else Path:= ExtractFilePath(UMLForm.Pathname);
-  Path:= IncludeTrailingPathDelimiter(Path);
+  FStringList.Text := Command;
+  if FComJava = FComJava.GetFirstComJava then
+    FPath := FConfiguration.TempDir
+  else
+    FPath := ExtractFilePath(FUMLForm.Pathname);
+  FPath := IncludeTrailingPathDelimiter(FPath);
 
   FMessages.ChangeTab(FMessages.TabControlMessages.TabIndex);
-  FMessages.TBExecute.Enabled:= false;
+  FMessages.TBExecute.Enabled := False;
 
-  SLFiles:= FJava.getAllClassnames;
-  for i:= 0 to SLFiles.Count - 1 do
-    ComJava.NewClass(ChangeFileExt(ExtractFileName(SLFiles.Strings[i]), ''), SLFiles.Strings[i]);
+  SLFiles := FJava.GetAllClassnames;
+  for var I := 0 to SLFiles.Count - 1 do
+    FComJava.NewClass(ChangeFileExt(ExtractFileName(SLFiles[I]), ''),
+      SLFiles[I]);
   FreeAndNil(SLFiles);
 
-  if assigned(UMLForm) then
-    LockWindow(UMLForm.Handle);
-  ExecutionParser:= TExecutionParser.Create(true);
-  Update:= true;
+  if Assigned(FUMLForm) then
+    LockWindow(FUMLForm.Handle);
+  ExecutionParser := TExecutionParser.Create(True);
+  Update := True;
   try
-    ExecutionParser.prepareExecute(SL.Text, ExecutionList);
-    for i:= 0 to ExecutionList.Count - 1 do begin
-      // i have got exceptions with ExecutionList.Count = 1 and i = 1 !
+    ExecutionParser.PrepareExecute(FStringList.Text, FExecutionList);
+    for var I := 0 to FExecutionList.Count - 1 do
+    begin
+      // i have got exceptions with FExecutionList.Count = 1 and i = 1 !
       try
-        aExecution:= ExecutionList.get(i);
-        if UpdateVariables then begin
-          case aExecution.Kind of
-            MethodCall:          getExpression(aExecution);     // java.lang.Math.random();
-            Statement:           Run(aExecution);               //  must be run(aExecution)
-               //while (i>0) i--;  new Auto() im StrictJavaMode
-            Assignment:          AssignWithoutType(aExecution); // i = 5+2*i;
-            VariableDeclaration,                                // int i;
-            ObjectDeclaration:   DeclareVariable(aExecution);   // Car car1;
-            VariableCreation:    createVariable(aExecution);    // int i = 6;
-            ObjectCreation:      createObject(aExecution);      // Car car = new Car("a car");
-            Expression:          getExpression(aExecution);     // i + 4;
-            ArrayDeclaration:    createArray(aExecution);       // int[] p = {1,2,3,4,4+5};
-          end
-        end else
-          Update:= false;
-      except on e: exception do
-        continue;
+        Execution := FExecutionList.Get(I);
+        if UpdateVariables then
+        begin
+          case Execution.Kind of
+            MethodCall:
+              GetExpression(Execution); // java.lang.Math.random()
+            Statement:
+              Run(Execution); // must be run(Execution)
+            // while (i>0) i--;  new Auto() im StrictJavaMode
+            Assignment:
+              AssignWithoutType(Execution); // i = 5+2*i
+            VariableDeclaration, // I i;
+            ObjectDeclaration:
+              DeclareVariable(Execution); // Car car1
+            VariableCreation:
+              CreateVariable(Execution); // I i = 6
+            ObjectCreation:
+              CreateObject(Execution); // Car car = new Car("a car")
+            Expression:
+              GetExpression(Execution); // i + 4
+            ArrayDeclaration:
+              CreateArray(Execution); // I[] p = {1,2,3,4,4+5}
+          end;
+        end
+        else
+          Update := False;
+      except
+        on e: Exception do
+          Continue;
       end;
     end;
   finally
-    Executionlist.Clear;
-    if assigned(UMLForm) and (UMLForm.Pathname <> '') and assigned(UMLForm.MainModul) and assigned(UMLForm.MainModul.Diagram) then begin
-      Diagram:= UMLForm.MainModul.Diagram as TRtfdDiagram;
+    FExecutionList.Clear;
+    if Assigned(FUMLForm) and (FUMLForm.Pathname <> '') and
+      Assigned(FUMLForm.MainModul) and Assigned(FUMLForm.MainModul.Diagram) then
+    begin
+      Diagram := FUMLForm.MainModul.Diagram as TRtfdDiagram;
       if FConfiguration.ShowAllNewObjects then
         Diagram.ShowAllNewObjects(Self);
       Diagram.UpdateAllObjects;
     end;
     if Update then
       UpdateVariables;
-    FMessages.TBExecute.Enabled:= true;
-    SL.Clear;
-    if assigned(UMLForm) then
+    FMessages.TBExecute.Enabled := True;
+    FStringList.Clear;
+    if Assigned(FUMLForm) then
       UnlockWindow;
     FreeAndNil(ExecutionParser);
     // debug je2java
-    DeleteFiles(Pathname);
-    Application.ProcessMessages;
+    DeleteFiles(FPathname);
+ // Application.ProcessMessages;  //TODO RR
   end;
 end;
 
-function TInteractiveExecuter.NeedsSemicolon(const s: string): boolean;
-  var ExecutionParser: TExecutionParser;
-      Kind: TExecutionType;
+function TInteractiveExecuter.NeedsSemicolon(const Str: string): Boolean;
+var
+  ExecutionParser: TExecutionParser;
+  Kind: TExecutionType;
 begin
-  SL.Text:= s;
-  ExecutionParser:= TExecutionParser.Create(true);
+  FStringList.Text := Str;
+  ExecutionParser := TExecutionParser.Create(True);
   try
-    ExecutionParser.PrepareExecute(SL.Text, ExecutionList);
-    if ExecutionList.Count = 1
-      then Kind:= ExecutionList.get(0).Kind
-      else Kind:= None;
-    Result:= (Kind in [ObjectCreation, VariableCreation, Assignment,
-                       VariableDeclaration, ObjectDeclaration, MethodCall]);
+    ExecutionParser.PrepareExecute(FStringList.Text, FExecutionList);
+    if FExecutionList.Count = 1 then
+      Kind := FExecutionList.Get(0).Kind
+    else
+      Kind := None;
+    Result := (Kind in [ObjectCreation, VariableCreation, Assignment,
+      VariableDeclaration, ObjectDeclaration, MethodCall]);
     // not None, Statement, Expression
   finally
     FreeAndNil(ExecutionParser);
-    SL.Clear;
+    FStringList.Clear;
   end;
 end;
 
-function TInteractiveExecuter.UpdateVariables: boolean;
-  var i, j, p: integer; s: string;
-      aSL: TStringList; aClass: TComJavaClass;
+function TInteractiveExecuter.UpdateVariables: Boolean;
+var
+  Variables: string;
+  StringList: TStringList;
+  AClass: TComJavaClass;
 begin
-  VariableList.setNotExisting;
-  s:= ComJava.ExecuteCommand('getVariables');
-  if Left(s, 3) = '+OK' then begin
-    aSL:= Split(#4, Right(s, 5));
-    for i:= 0 to aSL.Count - 1 do begin
-      s:= aSL.Names[i];
-      p:= Pos('|', s);
-      if p > 0 then begin // new object detected
-        aClassname:= copy(s, 1, p-1);
-        delete(s, 1, p);
-        if ComJava.ObjectList.IndexOf(s) = -1 then begin
-          aClass:= ComJava.GetClass(aClassname);
-          if not assigned(aClass) then begin
-            {$IFDEF WIN32}
-            aClass:= TComJavaClass.CreateWithHandle(aClassname, ComJava);
-            {$ELSE}
-            aClass:= TComJavaClass.CreateWithHandle(aClassname, ComJava, true);
-            {$ENDIF}
-            ComJava.ClassList.AddObject(aClassname, aClass);
+  FVariableList.SetNotExisting;
+  Variables := FComJava.ExecuteCommand('getVariables');
+  if Left(Variables, 3) = '+OK' then
+  begin
+    StringList := Split(#4, Right(Variables, 5));
+    for var I := 0 to StringList.Count - 1 do
+    begin
+      Variables := StringList.Names[I];
+      var Posi := Pos('|', Variables);
+      if Posi > 0 then
+      begin // new object detected
+        FClassname := Copy(Variables, 1, Posi - 1);
+        Delete(Variables, 1, Posi);
+        if FComJava.ObjectList.IndexOf(Variables) = -1 then
+        begin
+          AClass := FComJava.GetClass(FClassname);
+          if not Assigned(AClass) then
+          begin
+{$IFDEF WIN32}
+            AClass := TComJavaClass.CreateWithHandle(FClassname, FComJava);
+{$ELSE}
+            AClass := TComJavaClass.CreateWithHandle(FClassname, FComJava, True);
+{$ENDIF}
+            FComJava.ClassList.AddObject(FClassname, AClass);
           end;
-          ComJava.AddObject(s, aClass);
+          FComJava.AddObject(Variables, AClass);
         end;
       end;
-      DeclaredToExisting(s);
-      j:= 1;
-      while (j < SGVariables.RowCount) and (SGVariables.Cells[0, j] <> s) do
-        inc(j);
-      if j < SGVariables.RowCount then
-        SGVariables.Cells[2,j]:= aSL.ValueFromIndex[i];
+      DeclaredToExisting(Variables);
+      Posi := 1;
+      while (Posi < FSGVariables.RowCount) and (FSGVariables.Cells[0, Posi] <> Variables) do
+        Inc(Posi);
+      if Posi < FSGVariables.RowCount then
+        FSGVariables.Cells[2, Posi] := StringList.ValueFromIndex[I];
     end;
-    FreeAndNil(aSL);
-    Result:= true;
-  end else
-    Result:= false;
+    FreeAndNil(StringList);
+    Result := True;
+  end
+  else
+    Result := False;
 end;
 
-function TInteractiveExecuter.getVariables: string;
-  var s: string; i: integer; Variable: TVariable;
+function TInteractiveExecuter.GetVariables: string;
+var
+  Str: string;
+  Variable: TVariable;
 begin
-  s:= '';
-  for i:= 0 to VariableList.Count - 1 do begin
-    Variable:= VariableList.get(i);
-    if Variable.existing
-      then s:= s + Variable.get + #13#10
-      else s:= s + '    ' + Variable.Typ + ' ' + Variable.Name + ';' + #13#10;
+  Str := '';
+  for var I := 0 to FVariableList.Count - 1 do
+  begin
+    Variable := FVariableList.Get(I);
+    if Variable.FExisting then
+      Str := Str + Variable.Get + #13#10
+    else
+      Str := Str + '    ' + Variable.Typ + ' ' + Variable.Name + ';' + #13#10;
   end;
-  Result:= s;
+  Result := Str;
 end;
 
 procedure TInteractiveExecuter.ExistingToDeclared(const Name: string);
 begin
-  var Variable:= VariableList.get(Name);
-  if assigned(Variable) then
-    Variable.existing:= false;
+  var
+  Variable := FVariableList.Get(Name);
+  if Assigned(Variable) then
+    Variable.FExisting := False;
 end;
 
 procedure TInteractiveExecuter.DeclaredToExisting(const Name: string);
 begin
-  var Variable:= VariableList.get(Name);
-  if assigned(Variable) then
-    Variable.existing:= true;
+  var
+  Variable := FVariableList.Get(Name);
+  if Assigned(Variable) then
+    Variable.FExisting := True;
 end;
 
 function TInteractiveExecuter.PutVariables: string;
-  var s: string; i: integer; Variable: TVariable;
+var
+  Str: string;
+  Variable: TVariable;
 begin
-  s:= '';
-  for i:= 0 to VariableList.Count - 1 do begin
-    Variable:= VariableList.get(i);
-    s:= s + Variable.put + #13#10
+  Str := '';
+  for var I := 0 to FVariableList.Count - 1 do
+  begin
+    Variable := FVariableList.Get(I);
+    Str := Str + Variable.Put + #13#10;
   end;
-  Result:= s;
+  Result := Str;
 end;
 
 procedure TInteractiveExecuter.AddVarToGrid(const Name, Typ, Value: string);
 begin
   try
-    if assigned(SGVariables) and (SGVariables.ColCount >= 3) then begin
-      var i:= SGVariables.Cols[0].IndexOf(Name);
-      if i = -1 then begin // new object
-        if SGVariables.Cells[0, 1] <> '' then
-          SGVariables.RowCount:= SGVariables.RowCount + 1;
-        i:= SGVariables.RowCount - 1;
-        SGVariables.Cells[0, i]:= Name;
+    if Assigned(FSGVariables) and (FSGVariables.ColCount >= 3) then
+    begin
+      var
+      Int := FSGVariables.Cols[0].IndexOf(Name);
+      if Int = -1 then
+      begin // new object
+        if FSGVariables.Cells[0, 1] <> '' then
+          FSGVariables.RowCount := FSGVariables.RowCount + 1;
+        Int := FSGVariables.RowCount - 1;
+        FSGVariables.Cells[0, Int] := Name;
       end;
       // update object
-      SGVariables.Cells[1, i]:= Typ;
-      SGVariables.Cells[2, i]:= Value;
-    end else
-      FConfiguration.Log('AddVarToGrid SGVariables = nil');
-    if SGVariables.ColCount > 3 then
-      FConfiguration.Log('AddVarToGrid SGVariables.ColCount = ' + IntToStr(SGVariables.ColCount));
-  except on e: exception do
-    FConfiguration.Log('TInteractiveExecuter.AddVarToGrid ', e);
+      FSGVariables.Cells[1, Int] := Typ;
+      FSGVariables.Cells[2, Int] := Value;
+    end
+    else
+      FConfiguration.Log('AddVarToGrid FSGVariables = nil');
+    if FSGVariables.ColCount > 3 then
+      FConfiguration.Log('AddVarToGrid FSGVariables.ColCount = ' +
+        IntToStr(FSGVariables.ColCount));
+  except
+    on e: Exception do
+      FConfiguration.Log('TInteractiveExecuter.AddVarToGrid ', e);
   end;
 end;
 
 procedure TInteractiveExecuter.Clear;
-  var i: integer;
 begin
   try
-    if assigned(SGVariables) then begin
-      SGVariables.RowCount:= 2;
-      for i:= 0 to 2 do
-        SGVariables.Cells[i, 1]:= '';
-    if VariableList.Count > 0 then
-      VariableList.Clear;
+    if Assigned(FSGVariables) then
+    begin
+      FSGVariables.RowCount := 2;
+      for var I := 0 to 2 do
+        FSGVariables.Cells[I, 1] := '';
+      if FVariableList.Count > 0 then
+        FVariableList.Clear;
     end;
   except
   end;
@@ -867,47 +1042,53 @@ end;
 
 procedure TInteractiveExecuter.DelVariable(const Name: string);
 begin
-  VariableList.delete(Name);
-  var i:= SGVariables.Cols[0].IndexOf(Name);
-  if i > -1 then begin
-    for var j:= i to SGVariables.RowCount - 2 do
-      SGVariables.Rows[j]:= SGVariables.Rows[j+1];
-    if SGVariables.RowCount = 2 then begin
-      SGVariables.Cells[0,1]:= '';
-      SGVariables.Cells[1,1]:= '';
-      SGVariables.Cells[2,1]:= '';
-    end else
-      SGVariables.RowCount:= SGVariables.RowCount-1;
+  FVariableList.Delete(Name);
+  var
+  Int := FSGVariables.Cols[0].IndexOf(Name);
+  if Int > -1 then
+  begin
+    for var J := Int to FSGVariables.RowCount - 2 do
+      FSGVariables.Rows[J] := FSGVariables.Rows[J + 1];
+    if FSGVariables.RowCount = 2 then
+    begin
+      FSGVariables.Cells[0, 1] := '';
+      FSGVariables.Cells[1, 1] := '';
+      FSGVariables.Cells[2, 1] := '';
+    end
+    else
+      FSGVariables.RowCount := FSGVariables.RowCount - 1;
   end;
 end;
 
 procedure TInteractiveExecuter.AddVariable(const Name, Typ, Value: string);
 begin
-  var Variable:= VariableList.get(Name);
-  if assigned(Variable)
-    then Variable.Typ:= Typ
-    else VariableList.add(TVariable.create(Name, Typ));
+  var
+  Variable := FVariableList.Get(Name);
+  if Assigned(Variable) then
+    Variable.FTyp := Typ
+  else
+    FVariableList.Add(TVariable.Create(Name, Typ));
   AddVarToGrid(Name, Typ, Value);
 end;
 
-//function TInteractiveExecuter.getShell: TStringList;
-//  var aSL: TStringList;
-//begin
-//  aSL:= TStringList.Create;
-//  aSL.Add('class Eval {');
-//  aSL.Add('public static Wrap getOb(Object o) {return new Wrap(o);}');
-//  aSL.Add('protected static Object getOb(final String s) {return new Object() {public String result = s;};}');
-//  aSL.Add('protected static Object getOb(final boolean b) {return new Object() {public boolean result = b;};}');
-//  aSL.Add('protected static Object getOb(final byte b) {return new Object() {public byte result = b;};}');
-//  aSL.Add('protected static Object getOb(final char c) {return new Object() {public char result = c;};}');
-//  aSL.Add('protected static Object getOb(final double d) {return new Object() {public double result = d;};}');
-//  aSL.Add('protected static Object getOb(final float f) {return new Object() {public float result = f;};}');
-//  aSL.Add('protected static Object getOb(final int i) {return new Object() {public int result = i;};}');
-//  aSL.Add('protected static Object getOb(final long l) {return new Object() {public long result = l;};}');
-//  aSL.Add('protected static Object getOb(final short s) {return new Object() {public short result = s;};}');
-//  aSL.Add('}');
-//  aSL.Add('class Wrap { public Object result; Wrap(Object result) { this.result = result; } }');
-//  Result:= aSL;
-//end;
+// function TInteractiveExecuter.getShell: TStringList;
+// var aSL: TStringList;
+// begin
+// aSL:= TStringList.Create;
+// aSL.Add('class Eval {');
+// aSL.Add('public static Wrap getOb(Object o) {return new Wrap(o);}');
+// aSL.Add('protected static Object getOb(final String s) {return new Object() {public String result = s;};}');
+// aSL.Add('protected static Object getOb(final boolean b) {return new Object() {public boolean result = b;};}');
+// aSL.Add('protected static Object getOb(final byte b) {return new Object() {public byte result = b;};}');
+// aSL.Add('protected static Object getOb(final char c) {return new Object() {public char result = c;};}');
+// aSL.Add('protected static Object getOb(final double d) {return new Object() {public double result = d;};}');
+// aSL.Add('protected static Object getOb(final float f) {return new Object() {public float result = f;};}');
+// aSL.Add('protected static Object getOb(final int i) {return new Object() {public int result = i;};}');
+// aSL.Add('protected static Object getOb(final long l) {return new Object() {public long result = l;};}');
+// aSL.Add('protected static Object getOb(final short s) {return new Object() {public short result = s;};}');
+// aSL.Add('}');
+// aSL.Add('class Wrap { public Object result; Wrap(Object result) { this.result = result; } }');
+// Result:= aSL;
+// end;
 
 end.

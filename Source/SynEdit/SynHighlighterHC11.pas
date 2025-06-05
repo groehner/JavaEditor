@@ -113,12 +113,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -216,12 +216,12 @@ begin
   while Assigned(Entry) do
   begin
     if Entry.KeywordLen > fStringLen then
-      break
+      Break
     else if Entry.KeywordLen = fStringLen then
       if IsCurrentToken(Entry.Keyword) then
       begin
         Result := TtkTokenKind(Entry.Kind);
-        exit;
+        Exit;
       end;
     Entry := Entry.Next;
   end;
@@ -271,33 +271,33 @@ end;
 procedure TSynHC11Syn.SymAsciiCharProc;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then inc(Run, 2);
+  if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then Inc(Run, 2);
   repeat
     case FLine[Run] of
       #0, #10, #13:
       begin
         FKeyWordType:=kwNone;
-        break;
+        Break;
       end;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #39;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynHC11Syn.SymbolProc;
 begin
   fTokenID := tkSymbol;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynHC11Syn.SymDollarProc;
 begin
   fTokenID := tkNumber;
-  inc(Run);
+  Inc(Run);
   while CharInSet(FLine[Run], ['0'..'9', 'A'..'F', 'a'..'f']) do
   begin
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
@@ -305,49 +305,49 @@ procedure TSynHC11Syn.SymCRProc;
 begin
   fTokenID := tkSpace;
   FKeyWordType := kwNone;
-  inc(Run);
-  if fLine[Run] = #10 then inc(Run);
+  Inc(Run);
+  if fLine[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynHC11Syn.SymIdentProc;
 begin
   fTokenID := IdentKind(fLine + Run);
-  inc(Run, fStringLen);
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  Inc(Run, fStringLen);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
 end;
 
 procedure TSynHC11Syn.SymLFProc;
 begin
   FKeyWordType := kwNone;
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynHC11Syn.SymPercentProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while CharInSet(FLine[Run], ['0'..'1']) do
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynHC11Syn.SymNullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynHC11Syn.SymNumberProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while CharInSet(FLine[Run], ['0'..'9']) do
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynHC11Syn.SymSpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   if FKeyWordType in [kwOperandOver, kwNoOperand] then
   begin
     FKeyWordType := kwNone;
@@ -361,39 +361,39 @@ begin
       FKeyWordType := kwOperandOver;
     fTokenID := tkSpace;
     while (fLine[Run] <= #32) and not IsLineEnd(Run) do
-      inc(Run);
+      Inc(Run);
   end;
 end;
 
 procedure TSynHC11Syn.SymStarProc;
 begin
-  inc(Run);
+  Inc(Run);
   if FKeyWordType = kwOperandOver then
     fTokenID := tkSymbol
   else
   begin
     fTokenID := tkComment;
     while not IsLineEnd(Run) do
-      inc(Run);
+      Inc(Run);
   end;
 end;
 
 procedure TSynHC11Syn.SymStringProc;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then inc(Run, 2);
+  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then Inc(Run, 2);
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #34;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynHC11Syn.SymUnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -418,7 +418,7 @@ begin
   inherited;
 end;
 
-function TSynHC11Syn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynHC11Syn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -453,7 +453,7 @@ begin
   end;
 end;
 
-function TSynHC11Syn.GetTokenKind: integer;
+function TSynHC11Syn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

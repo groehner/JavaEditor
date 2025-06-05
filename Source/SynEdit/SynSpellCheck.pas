@@ -279,7 +279,7 @@ type
   TJHCMPLongintMatrix = array of TJHCMPLongintArray;
 
   TLanguageRec = record
-    Name, Version: String[50];
+    Name, Version: string[50];
   end;
 
   PWordRec = ^TWordRec;
@@ -559,18 +559,18 @@ end;
 
 function DupeString(const AText: string; ACount: Integer): string;
 var
-  P: PWideChar;
+  Posi: PWideChar;
   C: Integer;
 begin
   C := Length(AText);
   SetLength(Result, C * ACount);
-  P := Pointer(Result);
-  if P = nil then
+  Posi := Pointer(Result);
+  if Posi = nil then
     Exit;
   while ACount > 0 do
   begin
-    Move(Pointer(AText)^, P^, C * sizeof(WideChar));
-    Inc(P, C);
+    Move(Pointer(AText)^, Posi^, C * sizeof(WideChar));
+    Inc(Posi, C);
     Dec(ACount);
   end;
 end;
@@ -979,10 +979,10 @@ end;
 
 destructor TSynSpellCheck.Destroy;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := FEditors.Count - 1 downto 0 do
-    RemoveEditor(TCustomSynEdit(FEditors.Items[i]));
+  for Int := FEditors.Count - 1 downto 0 do
+    RemoveEditor(TCustomSynEdit(FEditors.Items[Int]));
   CloseDictionary;
   //////////////////////////////////////////////////////////////////////////////
   // Free used memory
@@ -1062,20 +1062,20 @@ var
 
   function CorrectCase(const AsWord: string; const Word: string): string;
   var
-    s1, s2, s3, s4: string;
+    Str1, Str2, Str3, Str4: string;
     iX: Integer;
   begin
-    s1 := WideUpperCase(AsWord);
-    s2 := WideLowerCase(AsWord);
-    s3 := WideUpperCase(Word);
-    s4 := WideLowerCase(Word);
+    Str1 := WideUpperCase(AsWord);
+    Str2 := WideLowerCase(AsWord);
+    Str3 := WideUpperCase(Word);
+    Str4 := WideLowerCase(Word);
     Result := Word;
     for iX := 1 to Length(Word) do
     begin
-      if s1[iX] = AsWord[iX] then
-        Result[iX] := s3[iX]
-      else if s2[iX] = AsWord[iX] then
-        Result[iX] := s4[iX];
+      if Str1[iX] = AsWord[iX] then
+        Result[iX] := Str3[iX]
+      else if Str2[iX] = AsWord[iX] then
+        Result[iX] := Str4[iX];
     end;
   end;
 
@@ -1123,19 +1123,19 @@ end;
 function TSynSpellCheck.JHCMPDiffCount(const Str1, Str2: string;
   Differences: TJHCMPLongintMatrix): Longint;
 var
-  I1, I2,
+  Int1, Int2,
     Length1,
     Length2: Longint;
 begin
   Length1 := Length(Str1);
   Length2 := Length(Str2);
-  for I1 := 1 to Length1 do
-    for I2 := 1 to Length2 do
-      if Str1[I1] = Str2[I2] then
-        Differences[I1][I2] := Differences[I1 - 1][I2 - 1]
+  for Int1 := 1 to Length1 do
+    for Int2 := 1 to Length2 do
+      if Str1[Int1] = Str2[Int2] then
+        Differences[Int1][Int2] := Differences[Int1 - 1][Int2 - 1]
       else
-        Differences[I1][I2] := JHCMPMin(Differences[I1 - 1][I2],
-          Differences[I1][I2 - 1], Differences[I1 - 1][I2 - 1]) + 1;
+        Differences[Int1][Int2] := JHCMPMin(Differences[Int1 - 1][Int2],
+          Differences[Int1][Int2 - 1], Differences[Int1 - 1][Int2 - 1]) + 1;
   Result := Differences[Length1][Length2];
 end;
 
@@ -1143,7 +1143,7 @@ function TSynSpellCheck.JHCMPDiffCount(const Str1, Str2: string): longint;
 var
   Differences: TJHCMPLongintMatrix;
 begin
-  JHCMPInit(length(Str1), length(Str2), Differences);
+  JHCMPInit(Length(Str1), Length(Str2), Differences);
   Result := JHCMPDiffCount(Str1, Str2, Differences);
 end;
 
@@ -1155,7 +1155,7 @@ begin
 end;
 
 function TSynSpellCheck.JHCMPIsSimilar(const Str1, Str2: string;
-  const MaxDiffCount: Integer; Differences: TJHCMPLongintMatrix): boolean;
+  const MaxDiffCount: Integer; Differences: TJHCMPLongintMatrix): Boolean;
 begin
   Result := (JHCMPDiffCount(Str1, Str2, Differences) <= MaxDiffCount);
 end;
@@ -1238,9 +1238,9 @@ begin
     AddDictWord(WordList.Strings[iI]);
 end;
 
-function TSynSpellCheck.AddEditor(AEditor: TCustomSynEdit): integer;
+function TSynSpellCheck.AddEditor(AEditor: TCustomSynEdit): Integer;
 var
-  i, iI: Integer;                                                               //Fiala
+  Int, iI: Integer;                                                               //Fiala
   Plugin: TDrawAutoSpellCheckPlugin;
 begin
   // Adds an Editor and returns its index in the list
@@ -1249,10 +1249,10 @@ begin
     if Assigned(AEditor) then                                                     //Fiala
     begin
       iI := -1;
-      for i := 0 to FEditors.Count - 1 do
-        if FEditors.Items[i] = AEditor then
+      for Int := 0 to FEditors.Count - 1 do
+        if FEditors.Items[Int] = AEditor then
         begin
-          iI := i;
+          iI := Int;
           Break;
         end;
       if iI = -1 then
@@ -1556,12 +1556,12 @@ var
 
   procedure SaveToDriveC;
   var
-    i: Integer;
+    Int: Integer;
     sl: TStringList;
   begin
     sl := TStringList.Create;
-    for i := 0 to FWordList.Count - 1 do
-      sl.Add(PWordRec(FWordList.Items[I])^.Word);
+    for Int := 0 to FWordList.Count - 1 do
+      sl.Add(PWordRec(FWordList.Items[Int])^.Word);
     sl.SaveToFile('C:\Dic.txt');
     sl.Free;
   end;
@@ -1649,7 +1649,7 @@ end;
 
 function TSynSpellCheck.FindWord(sWord: string): Integer;
 var
-  L, H, I, C: Integer;
+  L, H, Int, C: Integer;
   sw: string;
 
 begin
@@ -1663,22 +1663,22 @@ begin
   H := FCacheArray[Ord(sw[1])][1];
   while L <= H do
   begin
-    I := (L + H) shr 1;
+    Int := (L + H) shr 1;
     { weak place, in some cases i was greater than word count }                 //Fiala
-    if I >= FWordList.Count then
+    if Int >= FWordList.Count then
     begin
       Result := -1;
       Exit;
     end;
     { must be CompareStr not AnsiCompareStr, because dictionary is ASCII sorted }
-    C := CompareStr(PWordRec(FWordList.Items[I])^.Word, sw);
+    C := CompareStr(PWordRec(FWordList.Items[Int])^.Word, sw);
     if C < 0 then
-      L := I + 1
+      L := Int + 1
     else
     begin
-      H := I - 1;
+      H := Int - 1;
       if C = 0 then
-        Result := I;
+        Result := Int;
     end;
   end;
 end;
@@ -1691,17 +1691,17 @@ end;
 
 function TSynSpellCheck.RemoveEditor(AEditor: TCustomSynEdit): Boolean;
 var
-  i, iI: Integer;                                                               //Fiala
+  Int, iI: Integer;                                                               //Fiala
 begin
   Result := False;
   try
     if Assigned(AEditor) then                                                     //Fiala
     begin
       iI := -1;
-      for i := 0 to FEditors.Count - 1 do
-        if TCustomSynEdit(FEditors.Items[i]) = AEditor then
+      for Int := 0 to FEditors.Count - 1 do
+        if TCustomSynEdit(FEditors.Items[Int]) = AEditor then
         begin
-          iI := i;
+          iI := Int;
           Break;
         end;
       if iI > -1 then
@@ -2244,7 +2244,7 @@ end;
 
 function TSynEditEx.SCNextWordPosEx(SpellIsIdentChar, SpellIsWhiteChar: TCategoryMethod): TBufferCoord;
 var
-  CX, CY, LineLen: integer;
+  CX, CY, LineLen: Integer;
   Line: string;
 
   procedure CheckOnNextLine;

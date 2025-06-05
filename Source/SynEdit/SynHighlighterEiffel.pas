@@ -211,12 +211,12 @@ type
     function GetRange: Pointer; override;
     procedure ResetRange; override;
     procedure SetRange(Value: Pointer); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes; override;
     function GetEol: Boolean; override;
     function GetKeyWords(TokenKind: Integer): string; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
     function IsOperatorChar(AChar: WideChar): Boolean;
   published
@@ -293,7 +293,7 @@ begin
   while IsIdentChar(Str^) or IsOperatorChar(Str^) do
   begin
     Result := Result * 543 + Ord(Str^) * 79;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 503;
   fStringLen := Str - fToIdent;
@@ -314,11 +314,11 @@ end;
 
 procedure TSynEiffelSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[34] := OperatorFunc;
   fIdentFuncTable[92] := OperatorFunc;
@@ -1200,29 +1200,29 @@ end;
 
 procedure TSynEiffelSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynEiffelSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynEiffelSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
   if fLine[Run] = #10 then
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynEiffelSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynEiffelSyn.OperatorAndSymbolProc;
@@ -1379,14 +1379,14 @@ end;
 procedure TSynEiffelSyn.IdentProc;
 begin
   fTokenID := IdentKind(fLine + Run);
-  inc(Run, fStringLen);
+  Inc(Run, fStringLen);
   while IsIdentChar(fLine[Run]) do
     Inc(Run);
 end;
 
 procedure TSynEiffelSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -1408,7 +1408,7 @@ begin
   inherited;
 end;
 
-function TSynEiffelSyn.GetDefaultAttribute(Index: integer): TSynHighLighterAttributes;
+function TSynEiffelSyn.GetDefaultAttribute(Index: Integer): TSynHighLighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -1463,7 +1463,7 @@ begin
   end;
 end;
 
-function TSynEiffelSyn.GetTokenKind: integer;
+function TSynEiffelSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

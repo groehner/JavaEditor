@@ -25,7 +25,6 @@ object FExplorer: TFExplorer
     Height = 23
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 704
     object Splitter: TSplitter
       Left = 593
       Top = 1
@@ -180,7 +179,6 @@ object FExplorer: TFExplorer
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 106
     end
   end
   object PFolder: TPanel
@@ -191,8 +189,6 @@ object FExplorer: TFExplorer
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 704
-    ExplicitHeight = 361
     object SplitterBottom: TSplitter
       Left = 89
       Top = 0
@@ -210,7 +206,6 @@ object FExplorer: TFExplorer
       BevelOuter = bvNone
       Constraints.MinWidth = 50
       TabOrder = 0
-      ExplicitHeight = 361
     end
     object PListView: TPanel
       Left = 93
@@ -220,8 +215,6 @@ object FExplorer: TFExplorer
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 611
-      ExplicitHeight = 361
     end
   end
   object ExplorerTimer: TTimer

@@ -3,56 +3,64 @@ unit UJGuiForm;
 interface
 
 uses
-  Classes, UJComponents;
+  Classes,
+  UJComponents;
 
 type
 
-  TJGuiForm = class (TSwingComponent)
+  TJGuiForm = class(TSwingComponent)
   public
     constructor Create(AOwner: TComponent); override;
-    procedure DeleteListener(const event: string); override;
-    function MakeEventProcedureName(const event: string): string; override;
-    procedure AddListener(const event: string); override;
+    procedure DeleteListener(const Event: string); override;
+    function MakeEventProcedureName(const Event: string): string; override;
+    procedure AddListener(const Event: string); override;
   end;
 
 implementation
 
-uses UObjectInspector, UUtils;
+uses
+  UObjectInspector,
+  UUtils;
 
 constructor TJGuiForm.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= 0;
+  inherited Create(AOwner);
+  Tag := 0;
 end;
 
-procedure TJGuiForm.DeleteListener(const event: string);
-  var EventMethod, Listener: string;
+procedure TJGuiForm.DeleteListener(const Event: string);
+var
+  EventMethod, Listener: string;
 begin
-  EventMethod:= MakeEventProcedure(Event);
-  Partner.DeleteEventMethod(EventMethod);
-  Listener:= getListener(Event);
-  Partner.DeleteListener(Listener);
+  EventMethod := MakeEventProcedure(Event);
+  FPartner.DeleteEventMethod(EventMethod);
+  Listener := GetListener(Event);
+  FPartner.DeleteListener(Listener);
 end;
 
-function TJGuiForm.MakeEventProcedureName(const event: string): string;
+function TJGuiForm.MakeEventProcedureName(const Event: string): string;
 begin
-  if Pos(event, WindowEvents) > 0
-    then Result:= UpperLower(event)
-    else Result:= Name + '_' + UpperLower(event);
+  if Pos(Event, WindowEvents) > 0 then
+    Result := UpperLower(Event)
+  else
+    Result := Name + '_' + UpperLower(Event);
 end;
 
-procedure TJGuiForm.AddListener(const event: string);
-  var EventProcedurename: string;
+procedure TJGuiForm.AddListener(const Event: string);
+var
+  EventProcedurename: string;
 begin
-  var Listener:= getListener(Event);
-  Partner.InsertListener(GetContainerAdd, Listener);
-  EventProcedureName:= MakeEventProcedureName(Event);
-  if not Partner.hasText('public void ' + EventProcedureName) then
-    Partner.InsertProcedure(0, MakeEventProcedure(Event));
+  var
+  Listener := GetListener(Event);
+  FPartner.InsertListener(GetContainerAdd, Listener);
+  EventProcedurename := MakeEventProcedureName(Event);
+  if not FPartner.HasText('public void ' + EventProcedurename) then
+    FPartner.InsertProcedure(0, MakeEventProcedure(Event));
 
-  TThread.ForceQueue(nil, procedure
+  TThread.ForceQueue(nil,
+    procedure
     begin
-      FObjectInspector.ELEventInspector.SetByCaption(event, EventProcedureName);
+      FObjectInspector.ELEventInspector.SetByCaption(Event, EventProcedurename);
     end);
 end;
 

@@ -3,13 +3,16 @@ inherited AFrameRtfdDiagram: TAFrameRtfdDiagram
   inherited PopMenuClass: TSpTBXPopupMenu
     inherited MIClassPopupConnect: TSpTBXSubmenuItem
       ImageIndex = -1
+      ImageName = ''
     end
     inherited MIClassPopupSelectAssociation: TSpTBXItem
       ImageIndex = -1
+      ImageName = ''
     end
-    inherited N1: TSpTBXSeparatorItem
-      Tag = 0
-    end
+  end
+  inherited icMenuClassObject: TSVGIconImageCollection
+    Left = 152
+    Top = 80
   end
   inherited vilClassObjectLight: TVirtualImageList
     Images = <

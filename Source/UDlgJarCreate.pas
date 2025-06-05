@@ -3,7 +3,11 @@ unit UDlgJarCreate;
 interface
 
 uses
-  Forms, StdCtrls, CheckLst, Vcl.Controls, System.Classes;
+  Forms,
+  StdCtrls,
+  CheckLst,
+  Vcl.Controls,
+  System.Classes;
 
 type
   TFJarCreateDialog = class(TForm)
@@ -16,61 +20,78 @@ type
     procedure BDeleteClick(Sender: TObject);
     procedure BNewItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+  private
+    FJarCreateAll: string;
+    FJarCreateCurrent: string;
   public
-    JarCreateCurrent: string;
-    JarCreateAll: string;
-    procedure Init(s: string);
+    procedure Init(Str: string);
+    property JarCreateAll: string read FJarCreateAll;
+    property JarCreateCurrent: string read FJarCreateCurrent;
   end;
 
 implementation
 
-uses SysUtils, JvGnugettext;
+uses
+  SysUtils,
+  JvGnugettext;
 
 {$R *.dfm}
 
-procedure TFJarCreateDialog.Init(s: string);
-  var item: string; Count, p: integer; ok: boolean;
+procedure TFJarCreateDialog.Init(Str: string);
+var
+  Item: string;
+  Count, Posi: Integer;
+  ItemOk: Boolean;
 begin
   JarCreateItems.Clear;
-  Count:= 0;
-  if s <> '' then
+  Count := 0;
+  if Str <> '' then
     repeat
-      p:= Pos(';', s);
-      if p > 0 then begin
-        item:= Trim(Copy(s, 1, p-1));
-        delete(s, 1, p);
-      end else begin
-        item:= s;
-        s:= '';
+      Posi := Pos(';', Str);
+      if Posi > 0 then
+      begin
+        Item := Trim(Copy(Str, 1, Posi - 1));
+        Delete(Str, 1, Posi);
+      end
+      else
+      begin
+        Item := Str;
+        Str := '';
       end;
-      p:= Pos('#', item);
-      if p = 2 then begin
-        ok:= item[1] = '1';
-        delete(item, 1, 2);
-        item:= trim(item);
-        if item <> '' then begin
-          JarCreateItems.addItem(item, nil);
-          JarCreateItems.Checked[Count]:= ok;
-          inc(Count);
+      Posi := Pos('#', Item);
+      if Posi = 2 then
+      begin
+        ItemOk := Item[1] = '1';
+        Delete(Item, 1, 2);
+        Item := Trim(Item);
+        if Item <> '' then
+        begin
+          JarCreateItems.AddItem(Item, nil);
+          JarCreateItems.Checked[Count] := ItemOk;
+          Inc(Count);
         end;
       end;
-    until s = '';
+    until Str = '';
 end;
 
 procedure TFJarCreateDialog.BSaveClick(Sender: TObject);
+  var Str1, Str2: string;
 begin
-  var s1:= '';
-  var s2:= '';
-  for var i:= 0 to JarCreateItems.Count - 1 do begin
-    if trim(JarCreateItems.Items[i]) <> '' then
-      if JarCreateItems.Checked[i] then begin
-        s1:= s1 + JarCreateItems.Items[i] + ' ';
-        s2:= s2 + '1#' + JarCreateItems.Items[i] + ';'
-      end else
-        s2:= s2 + '0#' + JarCreateItems.Items[i] + ';';
+  Str1 := '';
+  Str2 := '';
+  for var I := 0 to JarCreateItems.Count - 1 do
+  begin
+    if Trim(JarCreateItems.Items[I]) <> '' then
+      if JarCreateItems.Checked[I] then
+      begin
+        Str1 := Str1 + JarCreateItems.Items[I] + ' ';
+        Str2 := Str2 + '1#' + JarCreateItems.Items[I] + ';';
+      end
+      else
+        Str2 := Str2 + '0#' + JarCreateItems.Items[I] + ';';
   end;
-  JarCreateCurrent:= s1;
-  JarCreateall:= s2;
+  FJarCreateCurrent := Str1;
+  FJarCreateAll := Str2;
 end;
 
 procedure TFJarCreateDialog.BDeleteClick(Sender: TObject);
@@ -80,10 +101,12 @@ end;
 
 procedure TFJarCreateDialog.BNewItemClick(Sender: TObject);
 begin
-  var s:= trim(ENewItem.Text);
-  if s <> '' then begin
-    JarCreateItems.AddItem(s, nil);
-    JarCreateItems.Checked[JarCreateItems.Count-1]:= true;
+  var
+  Str := Trim(ENewItem.Text);
+  if Str <> '' then
+  begin
+    JarCreateItems.AddItem(Str, nil);
+    JarCreateItems.Checked[JarCreateItems.Count - 1] := True;
   end;
 end;
 

@@ -22,15 +22,17 @@ unit UDocumentation;
 interface
 
 type
-  //Instance of this class is a member of TModelEntity
+  // Instance of this class is a member of TModelEntity
   TDocumentation = class
   private
-    FDescription : string;
+    FDescription: string;
+    FLineE: Integer;
+    FLineS: Integer;
     procedure SetDescription(const Value: string);
   public
-    LineS: integer;
-    LineE: integer;
-    property Description : string read FDescription write SetDescription;
+    property Description: string read FDescription write SetDescription;
+    property LineE: Integer read FLineE write FLineE;
+    property LineS: Integer read FLineS write FLineS;
   end;
 
 implementation
@@ -41,14 +43,15 @@ uses SysUtils;
 
 procedure TDocumentation.SetDescription(const Value: string);
 begin
-  var i:= 1;
-  while (i < Length(Value)+1) and CharInset(Value[i], ['*','_','/',' ',#13,#10]) do
-    Inc(i);
-  if i > 1 then
-    FDescription := Copy(Value, i, MAXINT)
+  var
+  Int := 1;
+  while (Int < Length(Value) + 1) and
+    CharInSet(Value[Int], ['*', '_', '/', ' ', #13, #10]) do
+    Inc(Int);
+  if Int > 1 then
+    FDescription := Copy(Value, Int, MaxInt)
   else
     FDescription := Value;
-
   FDescription := Value;
 end;
 

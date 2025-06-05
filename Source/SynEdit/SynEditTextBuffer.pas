@@ -76,19 +76,19 @@ type
   TSynEditStringRecList = array[0..MaxSynEditStrings - 1] of TSynEditStringRec;
 
   TStringListChangeEvent = procedure(Sender: TObject; Index: Integer;
-    Count: integer) of object;
+    Count: Integer) of object;
 
-  TExpandAtWideGlyphsFunc = function (const S: string): string of object;
+  TExpandAtWideGlyphsFunc = function (const Str: string): string of object;
 
   TSynEditStringList = class(TStrings)
   private
     fList: PSynEditStringRecList;
-    fCount: integer;
-    fCapacity: integer;
+    fCount: Integer;
+    fCapacity: Integer;
     fFileFormat: TSynEditFileFormat;
     fConvertTabsProc: TConvertTabsProcEx;
-    fIndexOfLongestLine: integer;
-    fTabWidth: integer;
+    fIndexOfLongestLine: Integer;
+    fTabWidth: Integer;
     fExpandAtWideGlyphsFunc: TExpandAtWideGlyphsFunc;
     fCharIndexesAreValid : Boolean;
     fDetectUTF8: Boolean;
@@ -100,38 +100,38 @@ type
     fOnInserted: TStringListChangeEvent;
     fOnPutted: TStringListChangeEvent;
     fOnInfoLoss: TSynInfoLossEvent;
-    function ExpandString(Index: integer): string;
-    function GetExpandedString(Index: integer): string;
-    function GetExpandedStringLength(Index: integer): integer;
+    function ExpandString(Index: Integer): string;
+    function GetExpandedString(Index: Integer): string;
+    function GetExpandedStringLength(Index: Integer): Integer;
     function GetLengthOfLongestLine: Integer;
-    function GetRange(Index: integer): TSynEditRange;
+    function GetRange(Index: Integer): TSynEditRange;
     procedure Grow;
-    procedure InsertItem(Index: integer; const S: string);
-    procedure PutRange(Index: integer; ARange: TSynEditRange);
+    procedure InsertItem(Index: Integer; const Str: string);
+    procedure PutRange(Index: Integer; ARange: TSynEditRange);
   protected
     function Get(Index: Integer): string; override;
-    function GetCapacity: integer; override;
-    function GetCount: integer; override;
-    function GetObject(Index: integer): TObject; override;
-    procedure Put(Index: integer; const S: string); override;
-    procedure PutObject(Index: integer; AObject: TObject); override;
-    procedure SetCapacity(NewCapacity: integer); override;
-    procedure SetTabWidth(Value: integer);
+    function GetCapacity: Integer; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const Str: string); override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetCapacity(NewCapacity: Integer); override;
+    procedure SetTabWidth(Value: Integer);
     procedure SetUpdateState(Updating: Boolean); override;
     procedure UpdateCharIndexes;
   public
     constructor Create(AExpandAtWideGlyphsFunc: TExpandAtWideGlyphsFunc);
     destructor Destroy; override;
-    function Add(const S: string): integer; override;
+    function Add(const Str: string): Integer; override;
     procedure AddStrings(Strings: TStrings); override;
     procedure Clear; override;
-    procedure Delete(Index: integer); override;
-    procedure DeleteLines(Index, NumLines: integer);
-    procedure Exchange(Index1, Index2: integer); override;
-    procedure Insert(Index: integer; const S: string); override;
-    procedure InsertLines(Index, NumLines: integer);
-    procedure InsertStrings(Index: integer; NewStrings: TStrings);
-    procedure InsertText(Index: integer; NewText: string);
+    procedure Delete(Index: Integer); override;
+    procedure DeleteLines(Index, NumLines: Integer);
+    procedure Exchange(Index1, Index2: Integer); override;
+    procedure Insert(Index: Integer; const Str: string); override;
+    procedure InsertLines(Index, NumLines: Integer);
+    procedure InsertStrings(Index: Integer; NewStrings: TStrings);
+    procedure InsertText(Index: Integer; NewText: string);
     procedure LoadFromStream(Stream: TStream; Encoding: TEncoding); override;
     procedure SaveToStream(Stream: TStream; Encoding: TEncoding); override;
     function GetSeparatedText(Separators: string): string;
@@ -142,11 +142,11 @@ type
     procedure SetEncoding(const Value: TEncoding); override;
 
     property FileFormat: TSynEditFileFormat read fFileFormat write fFileFormat;
-    property ExpandedStrings[Index: integer]: string read GetExpandedString;
-    property ExpandedStringLengths[Index: integer]: integer read GetExpandedStringLength;
+    property ExpandedStrings[Index: Integer]: string read GetExpandedString;
+    property ExpandedStringLengths[Index: Integer]: Integer read GetExpandedStringLength;
     property LengthOfLongestLine: Integer read GetLengthOfLongestLine;
-    property Ranges[Index: integer]: TSynEditRange read GetRange write PutRange;
-    property TabWidth: integer read fTabWidth write SetTabWidth;
+    property Ranges[Index: Integer]: TSynEditRange read GetRange write PutRange;
+    property TabWidth: Integer read fTabWidth write SetTabWidth;
     property UTF8CheckLen: Integer read fUTF8CheckLen write fUTF8CheckLen;
     property DetectUTF8: Boolean read fDetectUTF8 write fDetectUTF8;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
@@ -184,7 +184,7 @@ type
     fChangeStartPos: TBufferCoord;
     fChangeEndPos: TBufferCoord;
     fChangeStr: string;
-    fChangeNumber: integer;                                                     
+    fChangeNumber: Integer;                                                     
   public
     procedure Assign(Source: TPersistent); override;
     property ChangeReason: TSynChangeReason read fChangeReason;
@@ -192,27 +192,27 @@ type
     property ChangeStartPos: TBufferCoord read fChangeStartPos;
     property ChangeEndPos: TBufferCoord read fChangeEndPos;
     property ChangeStr: string read fChangeStr;
-    property ChangeNumber: integer read fChangeNumber;
+    property ChangeNumber: Integer read fChangeNumber;
   end;
 
   TSynEditUndoList = class(TPersistent)
   protected
-    fBlockChangeNumber: integer;
-    fBlockCount: integer;
-    fFullUndoImposible: boolean;
+    fBlockChangeNumber: Integer;
+    fBlockCount: Integer;
+    fFullUndoImposible: Boolean;
     fItems: TList;
-    fLockCount: integer;
-    fMaxUndoActions: integer;
-    fNextChangeNumber: integer;
-    fInitialChangeNumber: integer;
-    fInsideRedo: boolean;
+    fLockCount: Integer;
+    fMaxUndoActions: Integer;
+    fNextChangeNumber: Integer;
+    fInitialChangeNumber: Integer;
+    fInsideRedo: Boolean;
     fOnAddedUndo: TNotifyEvent;
     procedure EnsureMaxEntries;
-    function GetCanUndo: boolean;
-    function GetItemCount: integer;
-    procedure SetMaxUndoActions(Value: integer);
-    procedure SetInitialState(const Value: boolean);
-    function GetInitialState: boolean;
+    function GetCanUndo: Boolean;
+    function GetItemCount: Integer;
+    procedure SetMaxUndoActions(Value: Integer);
+    procedure SetInitialState(const Value: Boolean);
+    function GetInitialState: Boolean;
     function GetItems(Index: Integer): TSynEditUndoItem;
     procedure SetItems(Index: Integer; const Value: TSynEditUndoItem);
   public
@@ -233,17 +233,17 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure AddGroupBreak;
     procedure DeleteItem(AIndex: Integer);
-    property BlockChangeNumber: integer read fBlockChangeNumber
+    property BlockChangeNumber: Integer read fBlockChangeNumber
       write fBlockChangeNumber;
-    property CanUndo: boolean read GetCanUndo;
-    property FullUndoImpossible: boolean read fFullUndoImposible;
-    property InitialState: boolean read GetInitialState write SetInitialState;
+    property CanUndo: Boolean read GetCanUndo;
+    property FullUndoImpossible: Boolean read fFullUndoImposible;
+    property InitialState: Boolean read GetInitialState write SetInitialState;
     property Items[Index: Integer]: TSynEditUndoItem read GetItems write SetItems;
-    property ItemCount: integer read GetItemCount;
-    property BlockCount: integer read fBlockCount;
-    property MaxUndoActions: integer read fMaxUndoActions
+    property ItemCount: Integer read GetItemCount;
+    property BlockCount: Integer read fBlockCount;
+    property MaxUndoActions: Integer read fMaxUndoActions
       write SetMaxUndoActions;
-    property InsideRedo: boolean read fInsideRedo write fInsideRedo;
+    property InsideRedo: Boolean read fInsideRedo write fInsideRedo;
     property OnAddedUndo: TNotifyEvent read fOnAddedUndo write fOnAddedUndo;
   end;
 
@@ -257,7 +257,7 @@ resourcestring
 
 { TSynEditStringList }
 
-procedure ListIndexOutOfBounds(Index: integer);
+procedure ListIndexOutOfBounds(Index: Integer);
 begin
   raise ESynEditStringList.CreateFmt(SListIndexOutOfBounds, [Index]);
 end;
@@ -285,11 +285,11 @@ begin
   SetCapacity(0);
 end;
 
-function TSynEditStringList.Add(const S: string): integer;
+function TSynEditStringList.Add(const Str: string): Integer;
 begin
   BeginUpdate;
   Result := fCount;
-  InsertItem(Result, S);
+  InsertItem(Result, Str);
   if Assigned(OnInserted) then
     OnInserted(Self, Result, 1);
   EndUpdate;
@@ -297,21 +297,21 @@ end;
 
 procedure TSynEditStringList.AddStrings(Strings: TStrings);
 var
-  i, FirstAdded: integer;
+  Int, FirstAdded: Integer;
 begin
   if Strings.Count > 0 then begin
     fIndexOfLongestLine := -1;
     BeginUpdate;
     try
-      i := fCount + Strings.Count;
-      if i > fCapacity then
-        SetCapacity((i + 15) and (not 15));
+      Int := fCount + Strings.Count;
+      if Int > fCapacity then
+        SetCapacity((Int + 15) and (not 15));
       FirstAdded := fCount;
-      for i := 0 to Strings.Count - 1 do begin
+      for Int := 0 to Strings.Count - 1 do begin
         with fList^[fCount] do begin
           Pointer(fString) := nil;
-          fString := Strings[i];
-          fObject := Strings.Objects[i];
+          fString := Strings[Int];
+          fObject := Strings.Objects[Int];
           fRange := NullRange;
           fExpandedLength := -1;
           fFlags := [sfExpandedLengthUnknown];
@@ -345,7 +345,7 @@ begin
   fIndexOfLongestLine := -1;
 end;
 
-procedure TSynEditStringList.Delete(Index: integer);
+procedure TSynEditStringList.Delete(Index: Integer);
 begin
   if (Index < 0) or (Index >= fCount) then
     ListIndexOutOfBounds(Index);
@@ -364,7 +364,7 @@ end;
 
 procedure TSynEditStringList.DeleteLines(Index, NumLines: Integer);
 var
-  LinesAfter: integer;
+  LinesAfter: Integer;
 begin
   if NumLines > 0 then begin
     if (Index < 0) or (Index >= fCount) then
@@ -389,7 +389,7 @@ begin
   end;
 end;
 
-procedure TSynEditStringList.Exchange(Index1, Index2: integer);
+procedure TSynEditStringList.Exchange(Index1, Index2: Integer);
 var
   Temp: TSynEditStringRec;
 begin
@@ -408,7 +408,7 @@ begin
   EndUpdate;
 end;
 
-function TSynEditStringList.ExpandString(Index: integer): string;
+function TSynEditStringList.ExpandString(Index: Integer): string;
 var
   HasTabs: Boolean;
 begin
@@ -435,7 +435,7 @@ begin
     end;
 end;
 
-function TSynEditStringList.Get(Index: integer): string;
+function TSynEditStringList.Get(Index: Integer): string;
 begin
   if Cardinal(Index)<Cardinal(fCount) then
     Result := fList^[Index].fString
@@ -445,17 +445,17 @@ end;
 
 procedure TSynEditStringList.UpdateCharIndexes;
 var
-  i, n : Integer;
-  p : PSynEditStringRec;
+  Int, n : Integer;
+  Posi : PSynEditStringRec;
 begin
   fCharIndexesAreValid:=True;
   if fCount=0 then Exit;
-  p:=@fList^[0];
+  Posi:=@fList^[0];
   n:=0;
-  for i:=1 to fCount do begin
-    p.fCharIndex:=n;
-    Inc(n, Length(p.FString));
-    Inc(p);
+  for Int:=1 to fCount do begin
+    Posi.fCharIndex:=n;
+    Inc(n, Length(Posi.FString));
+    Inc(Posi);
   end;
 end;
 
@@ -475,12 +475,12 @@ begin
   end else Result:=0;
 end;
 
-function TSynEditStringList.GetCapacity: integer;
+function TSynEditStringList.GetCapacity: Integer;
 begin
   Result := fCapacity;
 end;
 
-function TSynEditStringList.GetCount: integer;
+function TSynEditStringList.GetCount: Integer;
 begin
   Result := fCount;
 end;
@@ -497,7 +497,7 @@ begin
     Result := '';
 end;
 
-function TSynEditStringList.GetExpandedStringLength(Index: integer): integer;
+function TSynEditStringList.GetExpandedStringLength(Index: Integer): Integer;
 begin
   if (Index >= 0) and (Index < fCount) then
   begin
@@ -512,7 +512,7 @@ end;
 
 function TSynEditStringList.GetLengthOfLongestLine: Integer;
 var
-  i, MaxLen: Integer;
+  Int, MaxLen: Integer;
   PRec: PSynEditStringRec;
 begin
   if fIndexOfLongestLine < 0 then
@@ -521,14 +521,14 @@ begin
     if fCount > 0 then
     begin
       PRec := @fList^[0];
-      for i := 0 to fCount - 1 do
+      for Int := 0 to fCount - 1 do
       begin
         if sfExpandedLengthUnknown in PRec^.fFlags then
-          ExpandString(i);
+          ExpandString(Int);
         if PRec^.fExpandedLength > MaxLen then
         begin
           MaxLen := PRec^.fExpandedLength;
-          fIndexOfLongestLine := i;
+          fIndexOfLongestLine := Int;
         end;
         Inc(PRec);
       end;
@@ -540,7 +540,7 @@ begin
     Result := 0;
 end;
 
-function TSynEditStringList.GetObject(Index: integer): TObject;
+function TSynEditStringList.GetObject(Index: Integer): TObject;
 begin
   if (Index >= 0) and (Index < fCount) then
     Result := fList^[Index].fObject
@@ -548,7 +548,7 @@ begin
     Result := nil;
 end;
 
-function TSynEditStringList.GetRange(Index: integer): TSynEditRange;
+function TSynEditStringList.GetRange(Index: Integer): TSynEditRange;
 begin
   if (Index >= 0) and (Index < fCount) then
     Result := fList^[Index].fRange
@@ -559,13 +559,13 @@ end;
 function TSynEditStringList.GetSeparatedText(Separators: string): string;
 {Optimized by Eric Grange}
 var
-  I, L, Size, LineBreakSize: Integer;
-  P, PLineBreak: PChar;
+  Int, L, Size, LineBreakSize: Integer;
+  Posi, PLineBreak: PChar;
   PRec: PSynEditStringRec;
 begin
   if fCount = 0 then begin
      Result := '';
-     exit;
+     Exit;
   end;
   LineBreakSize := Length(Separators);
   PLineBreak := Pointer(Separators);
@@ -576,39 +576,39 @@ begin
           + Length( fList^[fCount-1].FString );
   SetLength(Result, Size);
 
-  P := Pointer(Result);
+  Posi := Pointer(Result);
   PRec := @fList^[0];
 
   // handle 1st line separately (to avoid trailing line break)
   L := Length(PRec.FString);
   if L <> 0 then
   begin
-    System.Move(Pointer(PRec.FString)^, P^, L * SizeOf(Char));
-    Inc(P, L);
+    System.Move(Pointer(PRec.FString)^, Posi^, L * SizeOf(Char));
+    Inc(Posi, L);
   end;
   Inc(PRec);
 
-  for I := 1 to fCount-1 do
+  for Int := 1 to fCount-1 do
   begin
     case LineBreakSize of
       0 : ;
       1 : begin
-        P^ := PLineBreak^;
-        Inc(P);
+        Posi^ := PLineBreak^;
+        Inc(Posi);
       end;
       2 : begin
-        PSynEditTwoWideChars(P)^ := PSynEditTwoWideChars(PLineBreak)^;
-        Inc(P, 2);
+        PSynEditTwoWideChars(Posi)^ := PSynEditTwoWideChars(PLineBreak)^;
+        Inc(Posi, 2);
       end;
     else
-      System.Move(PLineBreak^, P^, LineBreakSize * SizeOf(Char));
-      Inc(P, LineBreakSize);
+      System.Move(PLineBreak^, Posi^, LineBreakSize * SizeOf(Char));
+      Inc(Posi, LineBreakSize);
     end;
     if Pointer( PRec.FString ) <> nil then
     begin
       L := Length(PRec.FString);
-      System.Move(Pointer(PRec.FString)^, P^, L * SizeOf(Char));
-      Inc(P, L);
+      System.Move(Pointer(PRec.FString)^, Posi^, L * SizeOf(Char));
+      Inc(Posi, L);
     end;
     Inc(PRec);
   end;
@@ -625,18 +625,18 @@ begin
   SetCapacity(fCapacity + Delta);
 end;
 
-procedure TSynEditStringList.Insert(Index: integer; const S: string);
+procedure TSynEditStringList.Insert(Index: Integer; const Str: string);
 begin
   if (Index < 0) or (Index > fCount) then
     ListIndexOutOfBounds(Index);
   BeginUpdate;
-  InsertItem(Index, S);
+  InsertItem(Index, Str);
   if Assigned(fOnInserted) then
     fOnInserted( Self, Index, 1 );
   EndUpdate;
 end;
 
-procedure TSynEditStringList.InsertItem(Index: Integer; const S: string);
+procedure TSynEditStringList.InsertItem(Index: Integer; const Str: string);
 begin
   BeginUpdate;
   if fCount = fCapacity then
@@ -650,7 +650,7 @@ begin
   with fList^[Index] do
   begin
     Pointer(fString) := nil;
-    fString := S;
+    fString := Str;
     fObject := nil;
     fRange := NullRange;
     fExpandedLength := -1;
@@ -694,30 +694,30 @@ begin
   end;
 end;
 
-procedure TSynEditStringList.InsertStrings(Index: integer;
+procedure TSynEditStringList.InsertStrings(Index: Integer;
   NewStrings: TStrings);
 var
-  i, Cnt: integer;
+  Int, Cnt: Integer;
 begin
   Cnt := NewStrings.Count;
-  if Cnt = 0 then exit;
+  if Cnt = 0 then Exit;
 
   BeginUpdate;
   try
     InsertLines(Index, Cnt);
-    for i := 0 to Cnt - 1 do
-      Strings[Index + i] := NewStrings[i];
+    for Int := 0 to Cnt - 1 do
+      Strings[Index + Int] := NewStrings[Int];
   finally
     EndUpdate;
   end;
 end;
 
-procedure TSynEditStringList.InsertText(Index: integer;
+procedure TSynEditStringList.InsertText(Index: Integer;
   NewText: string);
 var
   TmpStringList: TStringList;
 begin
-  if NewText = '' then exit;
+  if NewText = '' then Exit;
 
   TmpStringList := TStringList.Create;
   try
@@ -757,7 +757,7 @@ procedure TSynEditStringList.SaveToStream(Stream: TStream; Encoding: TEncoding);
 var
   Cancel: Boolean;
   OldLineBreak: string;
-  S: string;
+  Str: string;
   Buffer, Preamble: TBytes;
 begin
   if Encoding = nil then
@@ -766,13 +766,13 @@ begin
   OldLineBreak := LineBreak;
   try
     LineBreak := LineBreakFromFileFormat(fFileFormat);
-    S := GetTextStr;
+    Str := GetTextStr;
   finally
     LineBreak := OldLineBreak;
   end;
 
   Cancel := False;
-  if (Encoding = TEncoding.ANSI) and Assigned(fOnInfoLoss) and not IsAnsiOnly(S) then
+  if (Encoding = TEncoding.ANSI) and Assigned(fOnInfoLoss) and not IsAnsiOnly(Str) then
   begin
     fOnInfoLoss(Encoding, Cancel);
     if Cancel then
@@ -781,7 +781,7 @@ begin
       SetEncoding(Encoding);
   end;
 
-  Buffer := Encoding.GetBytes(S);
+  Buffer := Encoding.GetBytes(Str);
   if WriteBOM then
   begin
     Preamble := Encoding.GetPreamble;
@@ -791,10 +791,10 @@ begin
   Stream.WriteBuffer(Buffer, Length(Buffer));
 end;
 
-procedure TSynEditStringList.Put(Index: integer; const S: string);
+procedure TSynEditStringList.Put(Index: Integer; const Str: string);
 begin
   if (Index = 0) and (fCount = 0) or (fCount = Index) then
-    Add(S)
+    Add(Str)
   else begin
     if Cardinal(Index)>=Cardinal(fCount) then
       ListIndexOutOfBounds(Index);
@@ -804,7 +804,7 @@ begin
       Include(fFlags, sfExpandedLengthUnknown);
       Exclude(fFlags, sfHasTabs);
       Exclude(fFlags, sfHasNoTabs);
-      fString := S;
+      fString := Str;
     end;
     if Assigned(fOnPutted) then
       fOnPutted( Self, Index, 1 );
@@ -812,7 +812,7 @@ begin
   end;
 end;
 
-procedure TSynEditStringList.PutObject(Index: integer; AObject: TObject);
+procedure TSynEditStringList.PutObject(Index: Integer; AObject: TObject);
 begin
   if Cardinal(Index)>=Cardinal(fCount) then
     ListIndexOutOfBounds(Index);
@@ -821,14 +821,14 @@ begin
   EndUpdate;
 end;
 
-procedure TSynEditStringList.PutRange(Index: integer; ARange: TSynEditRange);
+procedure TSynEditStringList.PutRange(Index: Integer; ARange: TSynEditRange);
 begin
   if Cardinal(Index)>=Cardinal(fCount) then
     ListIndexOutOfBounds(Index);
   fList^[Index].fRange := ARange;
 end;
 
-procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
+procedure TSynEditStringList.SetCapacity(NewCapacity: Integer);
 begin
   if NewCapacity < Count then
     EListError.Create( SInvalidCapacity );
@@ -836,16 +836,16 @@ begin
   fCapacity := NewCapacity;
 end;
 
-procedure TSynEditStringList.SetTabWidth(Value: integer);
+procedure TSynEditStringList.SetTabWidth(Value: Integer);
 var
-  i: integer;
+  Int: Integer;
 begin
   if Value <> fTabWidth then begin
     fTabWidth := Value;
     fConvertTabsProc := GetBestConvertTabsProcEx(fTabWidth);
     fIndexOfLongestLine := -1;
-    for i := 0 to fCount - 1 do
-      with fList^[i] do begin
+    for Int := 0 to fCount - 1 do
+      with fList^[Int] do begin
         fExpandedLength := -1;
         Exclude(fFlags, sfHasNoTabs);
         Include(fFlags, sfExpandedLengthUnknown);
@@ -855,9 +855,9 @@ end;
 
 procedure TSynEditStringList.SetTextAndFileFormat(const Value: string);
 var
-  S: string;
+  Str: string;
   Size: Integer;
-  P, Start, Pmax: PWideChar;
+  Posi, Start, Pmax: PWideChar;
   fCR, fLF, fLINESEPARATOR: Boolean;
 begin
   fLINESEPARATOR := False;
@@ -866,41 +866,41 @@ begin
   BeginUpdate;
   try
     Clear;
-    P := Pointer(Value);
-    if P <> nil then
+    Posi := Pointer(Value);
+    if Posi <> nil then
     begin
       Size := Length(Value);
       Pmax := @Value[Size];
-      while (P <= Pmax) do
+      while (Posi <= Pmax) do
       begin
-        Start := P;
-        while not (Ord(P^) in [0, $A, $D]) and (P^ <> WideLineSeparator) do
+        Start := Posi;
+        while not (Ord(Posi^) in [0, $A, $D]) and (Posi^ <> WideLineSeparator) do
         begin
-          Inc(P);
+          Inc(Posi);
         end;
-        if P<>Start then
+        if Posi<>Start then
         begin
-          SetString(S, Start, P - Start);
-          InsertItem(fCount, S);
+          SetString(Str, Start, Posi - Start);
+          InsertItem(fCount, Str);
         end
         else
           InsertItem(fCount, '');
-        if P^ = #0 then
-          Inc(P);
-        if P^ = WideLineSeparator then
+        if Posi^ = #0 then
+          Inc(Posi);
+        if Posi^ = WideLineSeparator then
         begin
           fLINESEPARATOR := True;
-          Inc(P);
+          Inc(Posi);
         end;
-        if P^ = WideCR then
+        if Posi^ = WideCR then
         begin
           fCR := True;
-          Inc(P);
+          Inc(Posi);
         end;
-        if P^ = WideLF then
+        if Posi^ = WideLF then
         begin
           fLF := True;
-          Inc(P);
+          Inc(Posi);
         end;
       end;
       // keep the old format of the file
@@ -938,11 +938,11 @@ end;
 
 procedure TSynEditStringList.FontChanged;
 var
-  i: Integer;
+  Int: Integer;
 begin
   fIndexOfLongestLine := -1;
-  for i := 0 to fCount - 1 do
-    with fList^[i] do
+  for Int := 0 to fCount - 1 do
+    with fList^[Int] do
     begin
       fExpandedLength := -1;
       Exclude(fFlags, sfHasNoTabs);
@@ -988,16 +988,16 @@ end;
 
 procedure TSynEditUndoList.Assign(Source: TPersistent);
 var
-  i: Integer;
+  Int: Integer;
   UndoItem: TSynEditUndoItem;
 begin
   if (Source is TSynEditUndoList) then
   begin
     Clear;
-    for i:=0 to TSynEditUndoList(Source).fItems.Count-1 do
+    for Int:=0 to TSynEditUndoList(Source).fItems.Count-1 do
     begin
       UndoItem:=TSynEditUndoItem.Create;
-      UndoItem.Assign(TSynEditUndoList(Source).fItems[i]);
+      UndoItem.Assign(TSynEditUndoList(Source).fItems[Int]);
       fItems.Add(UndoItem);
     end;
     fBlockChangeNumber:=TSynEditUndoList(Source).fBlockChangeNumber;
@@ -1053,17 +1053,17 @@ end;
 
 procedure TSynEditUndoList.Clear;
 var
-  i: integer;
+  Int: Integer;
 begin
-  for i := 0 to fItems.Count - 1 do
-    TSynEditUndoItem(fItems[i]).Free;
+  for Int := 0 to fItems.Count - 1 do
+    TSynEditUndoItem(fItems[Int]).Free;
   fItems.Clear;
   fFullUndoImposible := False;
 end;
 
 procedure TSynEditUndoList.EndBlock;
 var
-  iBlockID: integer;
+  iBlockID: Integer;
 begin
   if fBlockCount > 0 then begin
     Dec(fBlockCount);
@@ -1097,12 +1097,12 @@ begin
   end;
 end;
 
-function TSynEditUndoList.GetCanUndo: boolean;
+function TSynEditUndoList.GetCanUndo: Boolean;
 begin
   Result := fItems.Count > 0;
 end;
 
-function TSynEditUndoList.GetItemCount: integer;
+function TSynEditUndoList.GetItemCount: Integer;
 begin
   Result := fItems.Count;
 end;
@@ -1114,7 +1114,7 @@ end;
 
 function TSynEditUndoList.PeekItem: TSynEditUndoItem;
 var
-  iLast: integer;
+  iLast: Integer;
 begin
   Result := nil;
   iLast := fItems.Count - 1;
@@ -1124,7 +1124,7 @@ end;
 
 function TSynEditUndoList.PopItem: TSynEditUndoItem;
 var
-  iLast: integer;
+  iLast: Integer;
 begin
   Result := nil;
   iLast := fItems.Count - 1;
@@ -1144,7 +1144,7 @@ begin
   end;
 end;
 
-procedure TSynEditUndoList.SetMaxUndoActions(Value: integer);
+procedure TSynEditUndoList.SetMaxUndoActions(Value: Integer);
 begin
   if Value < 0 then
     Value := 0;
@@ -1163,9 +1163,9 @@ end;
 function TSynEditUndoList.LastChangeReason: TSynChangeReason;
 begin
   if fItems.Count = 0 then
-    result := crNothing
+    Result := crNothing
   else
-    result := TSynEditUndoItem(fItems[fItems.Count - 1]).fChangeReason;
+    Result := TSynEditUndoItem(fItems[fItems.Count - 1]).fChangeReason;
 end;
 
 procedure TSynEditUndoList.AddGroupBreak;
@@ -1180,7 +1180,7 @@ begin
   end;
 end;
 
-procedure TSynEditUndoList.SetInitialState(const Value: boolean);
+procedure TSynEditUndoList.SetInitialState(const Value: Boolean);
 begin
   if Value then
   begin
@@ -1199,7 +1199,7 @@ begin
       fInitialChangeNumber := -1;
 end;
 
-function TSynEditUndoList.GetInitialState: boolean;
+function TSynEditUndoList.GetInitialState: Boolean;
 begin
   if ItemCount = 0 then
     Result := fInitialChangeNumber = 0

@@ -8,17 +8,34 @@
 // Target:          Win32, Delphi 7                                            .
 // Author:          Angus Johnson - angusj-AT-myrealbox-DOT-com                .
 // Copyright:       © 2003-2004 Angus Johnson                                  .
-//                  © 2006-2024 Gerhard Röhner                                 .
+//                  © 2006-2025 Gerhard Röhner                                 .
 // -----------------------------------------------------------------------------
 
 interface
 
 uses
-  Windows, Graphics, Controls, Forms, ExtCtrls, Menus, ComCtrls, Classes,
-  UBaseForm, UEditorForm, UDiff, USynEditExDiff, SynEditTextBuffer,
-  System.ImageList, Vcl.ImgList, Vcl.ToolWin, SVGIconImageListBase,
-  SVGIconVirtualImageList, Vcl.BaseImageCollection, SVGIconImageCollection,
-  Vcl.VirtualImageList, TB2Item, SpTBXItem, SpTBXSkins;
+  Windows,
+  Graphics,
+  Controls,
+  Forms,
+  ExtCtrls,
+  Menus,
+  ComCtrls,
+  Classes,
+  System.ImageList,
+  Vcl.ImgList,
+  Vcl.ToolWin,
+  Vcl.BaseImageCollection,
+  Vcl.VirtualImageList,
+  SVGIconImageCollection,
+  TB2Item,
+  SpTBXItem,
+  SpTBXSkins,
+  SynEditTextBuffer,
+  UBaseForm,
+  UEditorForm,
+  UDiff,
+  USynEditExDiff;
 
 type
 
@@ -59,11 +76,13 @@ type
     PopupEditor: TSpTBXPopupMenu;
     MIClose: TSpTBXItem;
     MIPaste: TSpTBXItem;
-    SpTBXSeparatorItem1: TSpTBXSeparatorItem;
+    N1Sep: TSpTBXSeparatorItem;
     MICopy: TSpTBXItem;
     MICut: TSpTBXItem;
     MIRedo: TSpTBXItem;
     MIUndo: TSpTBXItem;
+    N2Sep: TSpTBXSeparatorItem;
+    MIOpenFile: TSpTBXItem;
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -93,144 +112,164 @@ type
     procedure liDrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
       ItemInfo: TSpTBXMenuItemInfo; const PaintStage: TSpTBXPaintStage;
       var PaintDefault: Boolean);
+    procedure MIOpenFileClick(Sender: TObject);
+    procedure PopupEditorPopup(Sender: TObject);
   private
-    Diff: TDiff;
-    Lines1, Lines2: TSynEditStringList;
-    addClr, delClr, modClr, DefaultClr: TColor;
-    CodeEdit1: TSynEditExDiff;
-    CodeEdit2: TSynEditExDiff;
-    OnlyDifferences: boolean;
-    IgnoreBlanks: boolean;
-    IgnoreCase: boolean;
-    procedure LinkScroll(IsLinked: boolean);
+    FDiff: TDiff;
+    FLines1, FLines2: TSynEditStringList;
+    FAddClr, FDelClr, FModClr, FDefaultClr: TColor;
+    FCodeEdit1: TSynEditExDiff;
+    FCodeEdit2: TSynEditExDiff;
+    FFilesCompared: Boolean;
+    FOnlyDifferences: Boolean;
+    FIgnoreBlanks: Boolean;
+    FIgnoreCase: Boolean;
+    FNumber: Integer;
+    procedure LinkScroll(IsLinked: Boolean);
     procedure DoCompare;
-    procedure DoSaveFile(Nr: integer; WithBackup: boolean);
-    procedure DoLoadFile(const Filename: string; Nr: integer);
-    procedure ChooseFiles(F1: TFEditForm);
+    procedure DoSaveFile(Num: Integer; WithBackup: Boolean);
+    procedure DoLoadFile(const FileName: string; Num: Integer);
+    procedure ChooseFiles(EditForm: TFEditForm);
     procedure DisplayDiffs;
     procedure SynEditEnter(Sender: TObject);
+    procedure DoSaveBoth;
+    procedure ShowFileNames;
+    function GetCodeEdit: TSynEditExDiff;
+    procedure SetFilesCompared(Value: Boolean);
   public
-    Nr: integer;
-    FilesCompared: boolean;
     constructor Create(AOwner: TComponent); override;
-    procedure New(F1, F2: TFEditForm);
-    procedure Open(const Filename: string); overload;
+    procedure New(EditForm1, EditForm2: TFEditForm);
+    procedure Open(const FileName: string); overload;
     procedure Open(const Filename1, Filename2: string); overload;
     procedure ShowDiffState;
     procedure SyncScroll(Sender: TObject; ScrollBar: TScrollBarKind);
-
+    procedure Save(WithBackup: Boolean); override;
+    function GetFont: TFont; override;
+    procedure ChangeStyle; override;
+    function GetFormType: string; override;
+    procedure SetFont(AFont: TFont); override;
+    procedure SetFontSize(Delta: Integer); override;
+    procedure CutToClipboard; override;
+    procedure CopyToClipboard; override;
+    procedure PasteFromClipboard; override;
     procedure Search; override;
     procedure SearchAgain; override;
     procedure Replace; override;
     procedure Undo; override;
     procedure Redo; override;
-    procedure GotoLine(i: integer);
-    procedure DoSaveBoth;
-    procedure ShowFileNames;
-    function GetCodeEdit: TSynEditExDiff;
-    procedure SetFilesCompared(Value: boolean);
-    procedure Save(WithBackup: boolean); override;
-    function  GetFont: TFont; override;
-    procedure SetFont(aFont: TFont); override;
-    procedure SetFontSize(Delta: integer); override;
-    procedure CutToClipboard; override;
-    procedure CopyToClipboard; override;
-    procedure PasteFromClipboard; override;
-    procedure ChangeStyle; override;
-    function GetFormType: string; override;
     procedure DPIChanged; override;
+
+    property FilesCompared: Boolean read FFilesCompared;
+    property Number: Integer read FNumber write FNumber;
   end;
 
 implementation
 
-uses SysUtils, Themes, Dialogs, SynEdit, JvGnugettext, UStringRessources,
-     UJava, UConfiguration, UUtils, UHashUnit;
+uses
+  SysUtils,
+  Themes,
+  Dialogs,
+  SynEdit,
+  JvGnugettext,
+  UStringRessources,
+  UJava,
+  UConfiguration,
+  UUtils,
+  UHashUnit;
 
 {$R *.DFM}
 
 constructor TFTextDiff.Create(AOwner: TComponent);
 begin
   inherited;
-  FormTag:= 4;
+  FormTag := 4;
 end;
 
 procedure TFTextDiff.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
   ToMainPanel;
-  var State   := FConfiguration.ReadStringU('TextDiff', 'State', '');
-  IgnoreCase  := FConfiguration.ReadBoolU('TextDiff', 'IgnoreCase', false);
-  IgnoreBlanks:= FConfiguration.ReadBoolU('TextDiff', 'IgnoreBlanks', false);
-  TBIgnoreCase.Down:= IgnoreCase;
-  TBIgnoreBlanks.Down:= IgnoreBlanks;
+  var
+  State := FConfiguration.ReadStringU('TextDiff', 'State', '');
+  FIgnoreCase := FConfiguration.ReadBoolU('TextDiff', 'FIgnoreCase', False);
+  FIgnoreBlanks := FConfiguration.ReadBoolU('TextDiff', 'FIgnoreBlanks', False);
+  TBIgnoreCase.Down := FIgnoreCase;
+  TBIgnoreBlanks.Down := FIgnoreBlanks;
   SetState(State);
 
-  //the diff engine ...
-  Diff:= TDiff.create(self);
-  //Diff.OnProgress:= DiffProgress;
+  // the Diff engine ...
+  FDiff := TDiff.Create(Self);
 
-  //lines1 & lines2 contain the unmodified files
-  Lines1:= TSynEditStringList.Create(nil);
-  Lines2:= TSynEditStringList.Create(nil);
+  // FLines1 & FLines2 contain the unmodified files
+  FLines1 := TSynEditStringList.Create(nil);
+  FLines2 := TSynEditStringList.Create(nil);
 
-  //edit windows where color highlighing of diffs and changes are displayed ...
-  CodeEdit1:= TSynEditExDiff.create(self);
-  with CodeEdit1 do begin
-    Nr:= 1;
-    Parent:= PLeft;
-    Align:= alClient;
-    PCaption:= PCaptionLeft;
-    PopupMenu:= PopUpEditor;
-    onEnter:= SynEditEnter;
+  // edit windows where color highlighing of Diffs and changes are displayed ...
+  FCodeEdit1 := TSynEditExDiff.Create(Self);
+  with FCodeEdit1 do
+  begin
+    Number := 1;
+    Parent := PLeft;
+    Align := alClient;
+    PCaption := PCaptionLeft;
+    PopupMenu := PopupEditor;
+    OnEnter := SynEditEnter;
   end;
-  CodeEdit2:= TSynEditExDiff.create(self);
-  with CodeEdit2 do begin
-    Nr:= 2;
-    Parent:= PRight;
-    Align:= alClient;
-    PCaption:= PCaptionRight;
-    PopupMenu:= PopUpEditor;
-    onEnter:= SynEditEnter;
+  FCodeEdit2 := TSynEditExDiff.Create(Self);
+  with FCodeEdit2 do
+  begin
+    Number := 2;
+    Parent := PRight;
+    Align := alClient;
+    PCaption := PCaptionRight;
+    PopupMenu := PopupEditor;
+    OnEnter := SynEditEnter;
   end;
-  Nr:= 1;
+  FNumber := 1;
   SetFont(FConfiguration.EditFont);
-  OnlyDifferences:= false;
-  OnClose:= FormClose;
-  OnMouseActivate:= FormMouseActivate;
-  TBCopyBlockLeft.Hint:= _(LNGCopyBlockLeft);
-  TBCopyBlockRight.Hint:= _(LNGCopyBlockRight);
+  FOnlyDifferences := False;
+  OnClose := FormClose;
+  OnMouseActivate := FormMouseActivate;
+  TBCopyBlockLeft.Hint := _(LNGCopyBlockLeft);
+  TBCopyBlockRight.Hint := _(LNGCopyBlockRight);
   FConfiguration.RemoveShortcutsFrom(PopupEditor);
   ChangeStyle;
 end;
 
-procedure TFTextDiff.New(F1, F2: TFEditForm);
+procedure TFTextDiff.New(EditForm1, EditForm2: TFEditForm);
 begin
-  Pathname:= Caption;
+  Pathname := Caption;
   FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
-  if assigned(F1) and assigned(F2) then
-    Open(F1.Pathname, F2.Pathname)
-  else begin
-    if assigned(F1) then
-      Open(F1.Pathname);
-    ChooseFiles(F1);
+  if Assigned(EditForm1) and Assigned(EditForm2) then
+    Open(EditForm1.Pathname, EditForm2.Pathname)
+  else
+  begin
+    if Assigned(EditForm1) then
+      Open(EditForm1.Pathname);
+    ChooseFiles(EditForm1);
   end;
   DoCompare;
 end;
 
-procedure TFTextDiff.liDrawItem(Sender: TObject; ACanvas: TCanvas;
-  ARect: TRect; ItemInfo: TSpTBXMenuItemInfo;
-  const PaintStage: TSpTBXPaintStage; var PaintDefault: Boolean);
+procedure TFTextDiff.liDrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
+  ItemInfo: TSpTBXMenuItemInfo; const PaintStage: TSpTBXPaintStage;
+  var PaintDefault: Boolean);
 begin
-  if PaintStage = pstPrePaint then begin
-    PaintDefault:= False;
-    var aColor:= clBtnFace;
+  if PaintStage = pstPrePaint then
+  begin
+    PaintDefault := False;
+    var
+    AColor := clBtnFace;
     case (Sender as TSpTBXLabelItem).Tag of
-      1: aColor:= addClr;
-      2: aColor:= modClr;
-      3: aColor:= delClr;
+      1:
+        AColor := FAddClr;
+      2:
+        AColor := FModClr;
+      3:
+        AColor := FDelClr;
     end;
-    ACanvas.Brush.Color:= aColor;
-    ACanvas.Pen.Color:= aColor;
+    ACanvas.Brush.Color := AColor;
+    ACanvas.Pen.Color := AColor;
     ACanvas.Rectangle(ARect);
   end;
 end;
@@ -238,401 +277,462 @@ end;
 procedure TFTextDiff.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   inherited;
-  FreeAndNil(Diff);
-  FreeAndNil(CodeEdit1);
-  FreeAndNil(CodeEdit2);
-  FreeAndNil(Lines1);
-  FreeAndNil(Lines2);
-  Action:= caFree;
+  FreeAndNil(FDiff);
+  FreeAndNil(FCodeEdit1);
+  FreeAndNil(FCodeEdit2);
+  FreeAndNil(FLines1);
+  FreeAndNil(FLines2);
+  Action := caFree;
 end;
 
 procedure TFTextDiff.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   FConfiguration.WriteStringU('TextDiff', 'State', GetState);
-  FConfiguration.WriteBoolU('TextDiff', 'IgnoreCase', IgnoreCase);
-  FConfiguration.WriteBoolU('TextDiff', 'IgnoreBlanks', IgnoreBlanks);
-  if OnlyDifferences then TBDiffsOnlyClick(Self);
+  FConfiguration.WriteBoolU('TextDiff', 'FIgnoreCase', FIgnoreCase);
+  FConfiguration.WriteBoolU('TextDiff', 'FIgnoreBlanks', FIgnoreBlanks);
+  if FOnlyDifferences then
+    TBDiffsOnlyClick(Self);
   DoSaveBoth;
-  FJava.EditorAgeTimer.Enabled:= FConfiguration.CheckAge;
-  CanClose:= true;
+  FJava.EditorAgeTimer.Enabled := FConfiguration.CheckAge;
+  CanClose := True;
 end;
 
 procedure TFTextDiff.TBDiffsOnlyClick(Sender: TObject);
-  var CodeEdit: TSynEditExDiff; Caret: TBufferCoord;
+var
+  CodeEdit: TSynEditExDiff;
+  Caret: TBufferCoord;
 begin
-  if OnlyDifferences then begin
-    OnlyDifferences:= false;
-    CodeEdit1.ReadOnly:= false;
-    CodeEdit2.ReadOnly:= false;
-    CodeEdit1.Gutter.Autosize:= true;
-    CodeEdit2.Gutter.Autosize:= true;
-    TBCopyBlockLeft.Enabled:= true;
-    TBCopyBlockRight.Enabled:= true;
-    CodeEdit:= GetCodeEdit;
-    Caret:= CodeEdit.CaretXY;
+  if FOnlyDifferences then
+  begin
+    FOnlyDifferences := False;
+    FCodeEdit1.ReadOnly := False;
+    FCodeEdit2.ReadOnly := False;
+    FCodeEdit1.Gutter.AutoSize := True;
+    FCodeEdit2.Gutter.AutoSize := True;
+    TBCopyBlockLeft.Enabled := True;
+    TBCopyBlockRight.Enabled := True;
+    CodeEdit := GetCodeEdit;
+    Caret := CodeEdit.CaretXY;
     if Caret.Line - 1 > 0 then
-      Caret.Line:= CodeEdit.GetLineObj(Caret.Line-1).Tag;
+      Caret.Line := CodeEdit.GetLineObj(Caret.Line - 1).Tag;
     DisplayDiffs;
-    CodeEdit.CaretXY:= Caret;
+    CodeEdit.CaretXY := Caret;
     SyncScroll(GetCodeEdit, sbVertical);
-  end else begin
+  end
+  else
+  begin
     DoSaveBoth;
-    if not FilesCompared then DoCompare;
-    if FilesCompared then begin
-      OnlyDifferences:= true;
-      CodeEdit1.Gutter.Autosize:= false;
-      CodeEdit2.Gutter.Autosize:= false;
+    if not FilesCompared then
+      DoCompare;
+    if FilesCompared then
+    begin
+      FOnlyDifferences := True;
+      FCodeEdit1.Gutter.AutoSize := False;
+      FCodeEdit2.Gutter.AutoSize := False;
       DisplayDiffs;
-      CodeEdit1.ReadOnly:= true;
-      CodeEdit2.ReadOnly:= true;
-      TBCopyBlockLeft.Enabled:= false;
-      TBCopyBlockRight.Enabled:= false;
+      FCodeEdit1.ReadOnly := True;
+      FCodeEdit2.ReadOnly := True;
+      TBCopyBlockLeft.Enabled := False;
+      TBCopyBlockRight.Enabled := False;
     end;
   end;
 end;
 
-function TFTextDiff.getFormType: string;
+function TFTextDiff.GetFormType: string;
 begin
-  Result:= '%D%';
+  Result := '%D%';
 end;
 
-procedure TFTextDiff.Save(WithBackup: boolean);
+procedure TFTextDiff.Save(WithBackup: Boolean);
 begin
-  DoSaveFile(GetCodeEdit.Nr, WithBackup);
+  DoSaveFile(GetCodeEdit.Number, WithBackup);
 end;
 
-procedure TFTextDiff.Open(const Filename: string);
+procedure TFTextDiff.Open(const FileName: string);
 begin
-  DoLoadFile(Filename, Nr);
+  DoLoadFile(FileName, FNumber);
 end;
 
-procedure TFTextDiff.DoLoadFile(const Filename: string; Nr: integer);
+procedure TFTextDiff.DoLoadFile(const FileName: string; Num: Integer);
 begin
-  if OnlyDifferences then
+  if FOnlyDifferences then
     TBDiffsOnlyClick(Self);
-  SetFilesCompared(false);
-  LinkScroll(false);
-  if Nr = 1
-    then CodeEdit1.Load(Lines1, Filename)
-    else CodeEdit2.Load(Lines2, Filename);
+  SetFilesCompared(False);
+  LinkScroll(False);
+  if Num = 1 then
+    FCodeEdit1.Load(FLines1, FileName)
+  else
+    FCodeEdit2.Load(FLines2, FileName);
 end;
 
 procedure TFTextDiff.Open(const Filename1, Filename2: string);
 begin
-  if OnlyDifferences then
+  if FOnlyDifferences then
     TBDiffsOnlyClick(Self);
-  SetFilesCompared(false);
-  LinkScroll(false);
-  CodeEdit1.Load(Lines1, Filename1);
-  CodeEdit2.Load(Lines2, Filename2);
+  SetFilesCompared(False);
+  LinkScroll(False);
+  FCodeEdit1.Load(FLines1, Filename1);
+  FCodeEdit2.Load(FLines2, Filename2);
+  DoCompare;
 end;
 
 procedure TFTextDiff.HorzSplitClick(Sender: TObject);
 begin
-  TBView.ImageIndex:= 3 - TBView.ImageIndex;
-  if TBView.ImageIndex = 2 then begin
-    PLeft.Align:= alTop;
-    PLeft.Height:= PMain.ClientHeight div 2 -1;
-    Splitter.Align:= alTop;
-    Splitter.Cursor:= crVSplit;
-    TBCopyBlockLeft.Hint:= _('Copy block up');
-    TBCopyBlockLeft.ImageIndex:= 10;
-    TBCopyBlockRight.Hint:= _('Copy block down');
-    TBCopyBlockRight.ImageIndex:= 11;
-  end else begin
-    PLeft.Align:= alLeft;
-    PLeft.Width:= PMain.ClientWidth div 2 -1;
-    Splitter.Align:= alLeft;
-    Splitter.Left:= PPIScale(10);
-    Splitter.Cursor:= crHSplit;
-    TBCopyBlockLeft.Hint:= _(LNGCopyBlockLeft);
-    TBCopyBlockLeft.ImageIndex:= 8;
-    TBCopyBlockRight.Hint:= _(LNGCopyBlockRight);
-    TBCopyBlockRight.ImageIndex:= 9;
+  TBView.ImageIndex := 3 - TBView.ImageIndex;
+  if TBView.ImageIndex = 2 then
+  begin
+    PLeft.Align := alTop;
+    PLeft.Height := PMain.ClientHeight div 2 - 1;
+    Splitter.Align := alTop;
+    Splitter.Cursor := crVSplit;
+    TBCopyBlockLeft.Hint := _('Copy block up');
+    TBCopyBlockLeft.ImageIndex := 10;
+    TBCopyBlockRight.Hint := _('Copy block down');
+    TBCopyBlockRight.ImageIndex := 11;
+  end
+  else
+  begin
+    PLeft.Align := alLeft;
+    PLeft.Width := PMain.ClientWidth div 2 - 1;
+    Splitter.Align := alLeft;
+    Splitter.Left := PPIScale(10);
+    Splitter.Cursor := crHSplit;
+    TBCopyBlockLeft.Hint := _(LNGCopyBlockLeft);
+    TBCopyBlockLeft.ImageIndex := 8;
+    TBCopyBlockRight.Hint := _(LNGCopyBlockRight);
+    TBCopyBlockRight.ImageIndex := 9;
   end;
-  CodeEdit1.ShowFilename;
+  FCodeEdit1.ShowFilename;
   GetCodeEdit.EnsureCursorPosVisible;
   SyncScroll(GetCodeEdit, sbVertical);
 end;
 
 procedure TFTextDiff.DoCompare;
 var
-  i: integer;
   HashArray1, HashArray2: TArrOfInteger;
   CodeEdit: TSynEditExDiff;
   Caret: TBufferCoord;
 begin
-  if (Lines1.Count = 0) or (Lines2.Count = 0) then exit;
+  if (FLines1.Count = 0) or (FLines2.Count = 0) then
+    Exit;
 
-  CodeEdit:= GetCodeEdit;
-  Caret:= CodeEdit.CaretXY;
+  CodeEdit := GetCodeEdit;
+  Caret := CodeEdit.CaretXY;
 
-  if CodeEdit1.Modified or CodeEdit2.Modified then
+  if FCodeEdit1.Modified or FCodeEdit2.Modified then
     DoSaveBoth;
 
-  CodeEdit1.Color:= DefaultClr;
-  CodeEdit2.Color:= DefaultClr;
+  FCodeEdit1.Color := FDefaultClr;
+  FCodeEdit2.Color := FDefaultClr;
 
-  //THIS PROCEDURE IS WHERE ALL THE HEAVY LIFTING (COMPARING) HAPPENS ...
+  // THIS PROCEDURE IS WHERE ALL THE HEAVY LIFTING (COMPARING) HAPPENS ...
 
-  //Because it's SO MUCH EASIER AND FASTER comparing hashes (integers) than
-  //comparing whole lines of text, we'll build an array of hashes for each line
-  //in the source files. Each line is represented by a (virtually) unique
-  //hash that is based on the contents of that line. Also, since the
-  //likelihood of 2 different lines generating the same hash is so small,
-  //we can safely ignore that possibility.
+  // Because it's SO MUCH EASIER AND FASTER comparing hashes (integers) than
+  // comparing whole lines of text, we'll build an array of hashes for each line
+  // in the source files. Each line is represented by a (virtually) unique
+  // hash that is based on the contents of that line. Also, since the
+  // likelihood of 2 Different lines generating the same hash is so small,
+  // we can safely ignore that possibility.
 
   try
-    Screen.Cursor:= crHourGlass;
-    SetLength(HashArray1, Lines1.Count);
-    SetLength(HashArray2, Lines2.Count);
-    for i:= 0 to Lines1.Count-1 do
-      HashArray1[i]:= HashLine(Lines1[i], IgnoreCase, IgnoreBlanks);
-    for i:= 0 to Lines2.Count-1 do
-      HashArray2[i]:= HashLine(Lines2[i], IgnoreCase, IgnoreBlanks);
-    try
-      //CALCULATE THE DIFFS HERE ...
-       if not Diff.Execute(HashArray1, HashArray2,
-                           Lines1.Count, Lines2.Count) then exit;
-      SetFilesCompared(true);
-      DisplayDiffs;
-    finally
-    end;
-    LinkScroll(true);
-    setActiveControl(CodeEdit);
-    CodeEdit.CaretXY:= Caret;
+    Screen.Cursor := crHourGlass;
+    SetLength(HashArray1, FLines1.Count);
+    SetLength(HashArray2, FLines2.Count);
+    for var I := 0 to FLines1.Count - 1 do
+      HashArray1[I] := HashLine(FLines1[I], FIgnoreCase, FIgnoreBlanks);
+    for var I := 0 to FLines2.Count - 1 do
+      HashArray2[I] := HashLine(FLines2[I], FIgnoreCase, FIgnoreBlanks);
+    // CALCULATE THE DiffS HERE ...
+    if not FDiff.Execute(HashArray1, HashArray2, FLines1.Count, FLines2.Count)
+    then
+      Exit;
+    SetFilesCompared(True);
+    DisplayDiffs;
+    LinkScroll(True);
+    SetActiveControl(CodeEdit);
+    CodeEdit.CaretXY := Caret;
     SyncScroll(GetCodeEdit, sbVertical);
   finally
-    Screen.Cursor:= crDefault;
-    HashArray1:= nil;
-    HashArray2:= nil;
+    Screen.Cursor := crDefault;
+    HashArray1 := nil;
+    HashArray2 := nil;
   end;
-end;
-
-function Log10(int: integer): integer;
-begin
-  result:= 1;
-  while int > 9 do begin inc(result); int:= int div 10; end;
 end;
 
 procedure TFTextDiff.DisplayDiffs;
 
   procedure AddAndFormat(CodeEdit: TSynEditExDiff; const Text: string;
-                         Color: TColor; Num: longint);
+    Color: TColor; Num: LongInt);
   begin
-    var i:= CodeEdit.Lines.Count;
-    var LineObject:= TLineObj.Create;
-    LineObject.Spezial:= Color <> DefaultClr;
-    LineObject.BackClr:= Color;
-    LineObject.Tag:= Num;
-    CodeEdit.InsertItem(i, Text, LineObject);
+    var
+    Int := CodeEdit.Lines.Count;
+    var
+    LineObject := TLineObj.Create;
+    LineObject.Spezial := Color <> FDefaultClr;
+    LineObject.BackClr := Color;
+    LineObject.Tag := Num;
+    CodeEdit.InsertItem(Int, Text, LineObject);
   end;
 
 begin
-  // THIS IS WHERE THE TDIFF RESULT IS CONVERTED INTO COLOR HIGHLIGHTING ...
-  CodeEdit1.Lines.BeginUpdate;
-  CodeEdit2.Lines.BeginUpdate;
+  // THIS IS WHERE THE TDiff RESULT IS CONVERTED INTO COLOR HIGHLIGHTING ...
+  FCodeEdit1.Lines.BeginUpdate;
+  FCodeEdit2.Lines.BeginUpdate;
   try
-    CodeEdit1.LinesClearAll;
-    CodeEdit2.LinesClearAll;
-    CodeEdit1.OnSpecialLineColors:= CodeEdit1.SynEditorSpecialLineColors;
-    CodeEdit2.OnSpecialLineColors:= CodeEdit2.SynEditorSpecialLineColors;
+    FCodeEdit1.LinesClearAll;
+    FCodeEdit2.LinesClearAll;
+    FCodeEdit1.OnSpecialLineColors := FCodeEdit1.SynEditorSpecialLineColors;
+    FCodeEdit2.OnSpecialLineColors := FCodeEdit2.SynEditorSpecialLineColors;
 
-    CodeEdit1.OnGutterGetText:= CodeEdit1.GutterTextEvent;
-    CodeEdit2.OnGutterGetText:= CodeEdit2.GutterTextEvent;
+    FCodeEdit1.OnGutterGetText := FCodeEdit1.GutterTextEvent;
+    FCodeEdit2.OnGutterGetText := FCodeEdit2.GutterTextEvent;
 
-    for var i:= 0 to Diff.Count-1 do
-      with Diff.Compares[i] do
-        if Kind = ckAdd then begin
-           AddAndFormat(CodeEdit1, '', addClr, 0);
-           AddAndFormat(CodeEdit2, lines2[oldindex2], addClr, oldindex2+1);
-        end else if Kind = ckDelete then begin
-           AddAndFormat(CodeEdit1, lines1[oldindex1], delClr, oldindex1+1);
-           AddAndFormat(CodeEdit2, '', delClr, 0);
-        end else if Kind = ckModify then begin
-           AddAndFormat(CodeEdit1, lines1[oldindex1], modClr, oldindex1+1);
-           AddAndFormat(CodeEdit2, lines2[oldindex2], modClr, oldindex2+1);
-        end else if not OnlyDifferences then begin
-           AddAndFormat(CodeEdit1, lines1[oldindex1], defaultClr, oldindex1+1);
-           AddAndFormat(CodeEdit2, lines2[oldindex2], defaultClr, oldindex2+1);
+    for var I := 0 to FDiff.Count - 1 do
+      with FDiff[I] do
+        if Kind = ckAdd then
+        begin
+          AddAndFormat(FCodeEdit1, '', FAddClr, 0);
+          AddAndFormat(FCodeEdit2, FLines2[OldIndex2], FAddClr, OldIndex2 + 1);
+        end
+        else if Kind = ckDelete then
+        begin
+          AddAndFormat(FCodeEdit1, FLines1[OldIndex1], FDelClr, OldIndex1 + 1);
+          AddAndFormat(FCodeEdit2, '', FDelClr, 0);
+        end
+        else if Kind = ckModify then
+        begin
+          AddAndFormat(FCodeEdit1, FLines1[OldIndex1], FModClr, OldIndex1 + 1);
+          AddAndFormat(FCodeEdit2, FLines2[OldIndex2], FModClr, OldIndex2 + 1);
+        end
+        else if not FOnlyDifferences then
+        begin
+          AddAndFormat(FCodeEdit1, FLines1[OldIndex1], FDefaultClr, OldIndex1 + 1);
+          AddAndFormat(FCodeEdit2, FLines2[OldIndex2], FDefaultClr, OldIndex2 + 1);
         end;
-    CodeEdit1.SetModified(false);
-    CodeEdit2.SetModified(false);
+    FCodeEdit1.SetModified(False);
+    FCodeEdit2.SetModified(False);
   finally
-    CodeEdit1.Lines.EndUpdate;
-    CodeEdit2.Lines.EndUpdate;
+    FCodeEdit1.Lines.EndUpdate;
+    FCodeEdit2.Lines.EndUpdate;
   end;
-  with Diff.DiffStats do
-  if adds + modifies + deletes = 0 then begin
-    CodeEdit1.withColoredLines:= false;
-    CodeEdit2.withColoredLines:= false;
+  with FDiff.DiffStats do
+    if adds + modifies + deletes = 0 then
+    begin
+      FCodeEdit1.WithColoredLines := False;
+      FCodeEdit2.WithColoredLines := False;
     end
-  else begin
-    CodeEdit1.withColoredLines:= true;
-    CodeEdit2.withColoredLines:= true;
-  end;
+    else
+    begin
+      FCodeEdit1.WithColoredLines := True;
+      FCodeEdit2.WithColoredLines := True;
+    end;
   ShowDiffState;
 end;
 
 procedure TFTextDiff.ShowDiffState;
 begin
-  liAdded.Caption:= Format(' ' + _('%d lines added') + ' ', [Diff.DiffStats.adds]);
-  liModified.Caption:= Format(' ' + _('%d lines modified') + ' ', [Diff.DiffStats.modifies]);;
-  liDeleted.Caption:= Format(' ' + _('%d lines deleted') + ' ', [Diff.DiffStats.deletes]);
-  with Diff.DiffStats do
-    if adds + modifies + deletes = 0
-      then liDifferences.Caption:= _('No differences.')
-      else liDifferences.Caption:= '';
+  liAdded.Caption := Format(' ' + _('%d lines added') + ' ',
+    [FDiff.DiffStats.adds]);
+  liModified.Caption := Format(' ' + _('%d lines modified') + ' ',
+    [FDiff.DiffStats.modifies]);
+  liDeleted.Caption := Format(' ' + _('%d lines deleted') + ' ',
+    [FDiff.DiffStats.deletes]);
+  with FDiff.DiffStats do
+    if adds + modifies + deletes = 0 then
+      liDifferences.Caption := _('No Differences.')
+    else
+      liDifferences.Caption := '';
 end;
 
-//Syncronise scrolling of both CodeEdits (once files are compared)...
-var IsSyncing: boolean;
+// Syncronise scrolling of both CodeEdits (once files are compared)...
+var
+  IsSyncing: Boolean;
 
 procedure TFTextDiff.SyncScroll(Sender: TObject; ScrollBar: TScrollBarKind);
 begin
-  if IsSyncing or not (CodeEdit1.withColoredLines and CodeEdit2.withColoredLines)
-    then exit;
-  IsSyncing:= true; //stops recursion
+  if IsSyncing or not(FCodeEdit1.WithColoredLines and FCodeEdit2.WithColoredLines)
+  then
+    Exit;
+  IsSyncing := True; // stops recursion
   try
-    if (Sender as  TSynEditExDiff) = CodeEdit1
-      then CodeEdit2.TopLine:= CodeEdit1.TopLine
-      else CodeEdit1.TopLine:= CodeEdit2.TopLine;
+    if (Sender as TSynEditExDiff) = FCodeEdit1 then
+      FCodeEdit2.TopLine := FCodeEdit1.TopLine
+    else
+      FCodeEdit1.TopLine := FCodeEdit2.TopLine;
   finally
-    IsSyncing:= false;
+    IsSyncing := False;
   end;
 end;
 
 procedure TFTextDiff.ShowFileNames;
 begin
-  CodeEdit1.ShowFilename;
-  CodeEdit2.ShowFilename;
+  FCodeEdit1.ShowFilename;
+  FCodeEdit2.ShowFilename;
 end;
 
-procedure TFTextDiff.LinkScroll(IsLinked: boolean);
+procedure TFTextDiff.LinkScroll(IsLinked: Boolean);
 begin
-  if IsLinked then begin
-    CodeEdit1.OnScroll:= SyncScroll;
-    CodeEdit2.OnScroll:= SyncScroll;
+  if IsLinked then
+  begin
+    FCodeEdit1.OnScroll := SyncScroll;
+    FCodeEdit2.OnScroll := SyncScroll;
     SyncScroll(GetCodeEdit, sbVertical);
-  end else begin
-    CodeEdit1.OnScroll:= nil;
-    CodeEdit2.OnScroll:= nil;
+  end
+  else
+  begin
+    FCodeEdit1.OnScroll := nil;
+    FCodeEdit2.OnScroll := nil;
   end;
 end;
 
-//go to next color block (only enabled if files have been compared)
+// go to next color block (only enabled if files have been compared)
 procedure TFTextDiff.NextClick(Sender: TObject);
 begin
-  //get next colored block ...
-  with GetCodeEdit do begin
-    if (lines.Count = 0) or not withColoredLines then exit;
-    var i:= CaretY - 1;
-    var clr:= GetLineObj(i).BackClr;
+  // get next colored block ...
+  with GetCodeEdit do
+  begin
+    if (Lines.Count = 0) or not WithColoredLines then
+      Exit;
+    var
+    Int := CaretY - 1;
+    var
+    Clr := GetLineObj(Int).BackClr;
     repeat
-      inc(i);
-    until (i = Lines.Count) or (GetLineObj(i).BackClr <> clr);
-    if (i = Lines.Count) then //do nothing here
-    else if GetLineObj(i).BackClr = color then
-    repeat
-      inc(i);
-    until (i = Lines.Count) or (GetLineObj(i).BackClr <> color);
-    if (i = Lines.Count) then
+      Inc(Int);
+    until (Int = Lines.Count) or (GetLineObj(Int).BackClr <> Clr);
+    if (Int = Lines.Count) then // do nothing here
+    else if GetLineObj(Int).BackClr = Color then
+      repeat
+        Inc(Int);
+      until (Int = Lines.Count) or (GetLineObj(Int).BackClr <> Color);
+    if (Int = Lines.Count) then
     begin
-      Windows.Beep(600, 100); //not found
-      exit;
+      Windows.Beep(600, 100); // not found
+      Exit;
     end;
-    CaretY:= i+1;
-    //now make sure as much of the block as possible is visible ...
-    clr:= GetLineObj(i).BackClr;
+    CaretY := Int + 1;
+    // now make sure as much of the block as possible is visible ...
+    Clr := GetLineObj(Int).BackClr;
     repeat
-      inc(i);
-    until(i = Lines.Count) or (GetLineObj(i).BackClr <> clr);
-    if i >= TopLine + LinesInWindow then TopLine:= CaretY;
+      Inc(Int);
+    until (Int = Lines.Count) or (GetLineObj(Int).BackClr <> Clr);
+    if Int >= TopLine + LinesInWindow then
+      TopLine := CaretY;
     SyncScroll(GetCodeEdit, sbVertical);
   end;
 end;
 
-//go to previous color block (only enabled if files have been compared)
+// go to previous color block (only enabled if files have been compared)
 procedure TFTextDiff.PrevClick(Sender: TObject);
 begin
-  //get prev colored block ...
-  with GetCodeEdit do begin
-    if not withColoredLines then exit;
-    var i:= CaretY-1;
-    if i = Lines.count then begin Windows.Beep(600, 100); exit end;
-    var clr:= GetLineObj(i).BackClr;
+  // get prev colored block ...
+  with GetCodeEdit do
+  begin
+    if not WithColoredLines then
+      Exit;
+    var
+    Int := CaretY - 1;
+    if Int = Lines.Count then
+    begin
+      Windows.Beep(600, 100);
+      Exit;
+    end;
+    var
+    Clr := GetLineObj(Int).BackClr;
     repeat
-      dec(i);
-    until (i < 0) or (GetLineObj(i).BackClr <> clr);
-    if i < 0 then begin Windows.Beep(600, 100); exit end;
-    if GetLineObj(i).BackClr = Color then
-    repeat
-      dec(i);
-    until (i < 0) or (GetLineObj(i).BackClr <> Color);
-    if i < 0 then Windows.Beep(600, 100) else begin
-      clr:= GetLineObj(i).BackClr;
-      while (i > 0) and (GetLineObj(i-1).BackClr = clr) do dec(i);
-      //'i' now at the beginning of the previous color block.
-      CaretY:= i+1;
+      Dec(Int);
+    until (Int < 0) or (GetLineObj(Int).BackClr <> Clr);
+    if Int < 0 then
+    begin
+      Windows.Beep(600, 100);
+      Exit;
+    end;
+    if GetLineObj(Int).BackClr = Color then
+      repeat
+        Dec(Int);
+      until (Int < 0) or (GetLineObj(Int).BackClr <> Color);
+    if Int < 0 then
+      Windows.Beep(600, 100)
+    else
+    begin
+      Clr := GetLineObj(Int).BackClr;
+      while (Int > 0) and (GetLineObj(Int - 1).BackClr = Clr) do
+        Dec(Int);
+      // 'i' now at the beginning of the previous color block.
+      CaretY := Int + 1;
       SyncScroll(GetCodeEdit, sbVertical);
     end;
   end;
 end;
 
 procedure TFTextDiff.CopyBlockRightClick(Sender: TObject);
-  var from, _to: integer;
-      emptyClipboard: boolean;
-      clr: TColor; LinObj: TLineObj;
+var
+  From, Till: Integer;
+  EmptyClipboard: Boolean;
+  Clr: TColor;
+  LinObj: TLineObj;
 begin
-  if (myActiveControl <> CodeEdit1) or OnlyDifferences or not FilesCompared then exit;
-  with CodeEdit1 do begin
-    if lines.Count = 0 then exit;
-    from:= CaretY - 1;
-    clr:= GetLineObj(from).BackClr;
-    if clr = color then exit; //we're not in a colored block !!!
-    _to:= from;
-    while (from > 0) and
-      (GetLineObj(from-1).BackClr = clr) do dec(from);
-    while (_to < Lines.Count-1) and
-      (GetLineObj(_to+1).BackClr = clr) do inc(_to);
-    //make sure color blocks still match up ...
-    if (_to > CodeEdit2.Lines.Count -1) or
-      (CodeEdit2.GetLineObj(from).BackClr <> clr) or
-      (CodeEdit2.GetLineObj(_to).BackClr <> clr) then exit;
-    emptyClipboard:= CopyToClipboardFT(from, _to);
-    LinObj:= GetLineObj(from);
+  if (MyActiveControl <> FCodeEdit1) or FOnlyDifferences or not FilesCompared then
+    Exit;
+  with FCodeEdit1 do
+  begin
+    if Lines.Count = 0 then
+      Exit;
+    From := CaretY - 1;
+    Clr := GetLineObj(From).BackClr;
+    if Clr = Color then
+      Exit; // we're not in a colored block !!!
+    Till := From;
+    while (From > 0) and (GetLineObj(From - 1).BackClr = Clr) do
+      Dec(From);
+    while (Till < Lines.Count - 1) and (GetLineObj(Till + 1).BackClr = Clr) do
+      Inc(Till);
+    // make sure color blocks still match up ...
+    if (Till > FCodeEdit2.Lines.Count - 1) or
+      (FCodeEdit2.GetLineObj(From).BackClr <> Clr) or
+      (FCodeEdit2.GetLineObj(Till).BackClr <> Clr) then
+      Exit;
+    EmptyClipboard := CopyToClipboardFT(From, Till);
+    LinObj := GetLineObj(From);
   end;
-  CodeEdit2.PasteFromClipboardFT(emptyClipboard, from, _to, LinObj.Tag);
-  SyncScroll(CodeEdit1, sbVertical);
-  CodeEdit1.Enter(Self);
+  FCodeEdit2.PasteFromClipboardFT(EmptyClipboard, From, Till, LinObj.Tag);
+  SyncScroll(FCodeEdit1, sbVertical);
+  FCodeEdit1.Enter(Self);
 end;
 
 procedure TFTextDiff.CopyBlockLeftClick(Sender: TObject);
-  var from, _to: integer;
-      emptyClipboard: boolean;
-      clr: TColor; LinObj: TLineObj;
+var
+  From, Till: Integer;
+  EmptyClipboard: Boolean;
+  Clr: TColor;
+  LinObj: TLineObj;
 begin
-  if (myActiveControl <> CodeEdit2) or OnlyDifferences or not FilesCompared then exit;
-  with CodeEdit2 do begin
-    if lines.Count = 0 then exit;
-    from:= CaretY - 1;
-    clr:= GetLineObj(from).BackClr;
-    if clr = color then exit; //we're not in a colored block !!!
-    _to:= from;
-    while (from > 0) and
-      (GetLineObj(from-1).BackClr = clr) do dec(from);
-    while (_to < Lines.Count-1) and
-      (GetLineObj(_to+1).BackClr = clr) do inc(_to);
-    //make sure color blocks still match up ...
-    if (_to > CodeEdit1.Lines.Count -1) or
-      (CodeEdit1.GetLineObj(from).BackClr <> clr) or
-      (CodeEdit1.GetLineObj(_to).BackClr <> clr) then exit;
-    emptyClipboard:= CopyToClipboardFT(from, _to);
-    LinObj:= GetLineObj(from);
+  if (MyActiveControl <> FCodeEdit2) or FOnlyDifferences or not FilesCompared then
+    Exit;
+  with FCodeEdit2 do
+  begin
+    if Lines.Count = 0 then
+      Exit;
+    From := CaretY - 1;
+    Clr := GetLineObj(From).BackClr;
+    if Clr = Color then
+      Exit; // we're not in a colored block !!!
+    Till := From;
+    while (From > 0) and (GetLineObj(From - 1).BackClr = Clr) do
+      Dec(From);
+    while (Till < Lines.Count - 1) and (GetLineObj(Till + 1).BackClr = Clr) do
+      Inc(Till);
+    // make sure color blocks still match up ...
+    if (Till > FCodeEdit1.Lines.Count - 1) or
+      (FCodeEdit1.GetLineObj(From).BackClr <> Clr) or
+      (FCodeEdit1.GetLineObj(Till).BackClr <> Clr) then
+      Exit;
+    EmptyClipboard := CopyToClipboardFT(From, Till);
+    LinObj := GetLineObj(From);
   end;
-  CodeEdit1.PasteFromClipboardFT(emptyClipboard, from, _to, LinObj.Tag);
-  SyncScroll(CodeEdit2, sbVertical);
-  CodeEdit2.Enter(Self);
+  FCodeEdit1.PasteFromClipboardFT(EmptyClipboard, From, Till, LinObj.Tag);
+  SyncScroll(FCodeEdit2, sbVertical);
+  FCodeEdit2.Enter(Self);
 end;
 
 procedure TFTextDiff.MIUndoClick(Sender: TObject);
@@ -648,6 +748,12 @@ end;
 procedure TFTextDiff.MICutClick(Sender: TObject);
 begin
   CutToClipboard;
+end;
+
+procedure TFTextDiff.MIOpenFileClick(Sender: TObject);
+begin
+  FJava.MIOpenClick(Self);
+  DoCompare;
 end;
 
 procedure TFTextDiff.MICopyClick(Sender: TObject);
@@ -677,44 +783,58 @@ end;
 
 procedure TFTextDiff.CutToClipboard;
 begin
-  GetCodeEdit.CutToClipBoard;
+  GetCodeEdit.CutToClipboard;
 end;
 
 procedure TFTextDiff.CopyToClipboard;
 begin
-  GetCodeEdit.CopyToClipBoard;
+  GetCodeEdit.CopyToClipboard;
 end;
 
 procedure TFTextDiff.PasteFromClipboard;
 begin
-  with GetCodeEdit do begin
-    PasteFromClipBoard;
+  with GetCodeEdit do
+  begin
+    PasteFromClipboard;
     CreateObjects;
   end;
 end;
 
 function TFTextDiff.GetFont: TFont;
 begin
-  Result:= CodeEdit1.Font;
+  Result := FCodeEdit1.Font;
 end;
 
-procedure TFTextDiff.SetFont(aFont: TFont);
+procedure TFTextDiff.SetFont(AFont: TFont);
 begin
-  CodeEdit1.Font.Assign(aFont);
-  CodeEdit2.Font.Assign(aFont);
+  FCodeEdit1.Font.Assign(AFont);
+  FCodeEdit2.Font.Assign(AFont);
   SetFontSize(0);
 end;
 
-procedure TFTextDiff.SetFontSize(Delta: integer);
+procedure TFTextDiff.SetFontSize(Delta: Integer);
+
+  function Log10(Inte: Integer): Integer;
+  begin
+    Result := 1;
+    while Inte > 9 do
+    begin
+      Inc(Result);
+      Inte := Inte div 10;
+    end;
+  end;
+
 begin
-  var Size:= CodeEdit1.Font.Size + Delta;
-  if Size < 6 then Size:= 6;
-  CodeEdit1.Font.Size:= Size;
-  CodeEdit2.Font.Size:= Size;
-  CodeEdit1.Gutter.Font.Size:= Size;
-  CodeEdit2.Gutter.Font.Size:= Size;
-  CodeEdit1.Gutter.Width:= CodeEdit1.CharWidth*(Log10(Lines1.Count)+1);
-  CodeEdit2.Gutter.Width:= CodeEdit2.CharWidth*(Log10(Lines2.Count)+1);
+  var
+  Size := FCodeEdit1.Font.Size + Delta;
+  if Size < 6 then
+    Size := 6;
+  FCodeEdit1.Font.Size := Size;
+  FCodeEdit2.Font.Size := Size;
+  FCodeEdit1.Gutter.Font.Size := Size;
+  FCodeEdit2.Gutter.Font.Size := Size;
+  FCodeEdit1.Gutter.Width := FCodeEdit1.CharWidth * (Log10(FLines1.Count) + 1);
+  FCodeEdit2.Gutter.Width := FCodeEdit2.CharWidth * (Log10(FLines2.Count) + 1);
   ShowFileNames;
 end;
 
@@ -730,69 +850,77 @@ end;
 
 procedure TFTextDiff.FormResize(Sender: TObject);
 begin
-  if TBView.Marked
-    then PLeft.height:= PMain.ClientHeight div 2 - 1
-    else PLeft.width := PMain.ClientWidth  div 2 - 1;
+  if TBView.Marked then
+    PLeft.Height := PMain.ClientHeight div 2 - 1
+  else
+    PLeft.Width := PMain.ClientWidth div 2 - 1;
 end;
 
 procedure TFTextDiff.Search;
 begin
-  FJava.ShowSearchReplaceDialog(GetCodeEdit, false);
+  FJava.ShowSearchReplaceDialog(GetCodeEdit, False);
 end;
 
 procedure TFTextDiff.SearchAgain;
 begin
-  FJava.DoSearchReplaceText(GetCodeEdit, false);
+  FJava.DoSearchReplaceText(GetCodeEdit, False);
 end;
 
 procedure TFTextDiff.Replace;
 begin
-  FJava.ShowSearchReplaceDialog(GetCodeEdit, true);
+  FJava.ShowSearchReplaceDialog(GetCodeEdit, True);
 end;
 
 procedure TFTextDiff.TBCompareClick(Sender: TObject);
 begin
-  if OnlyDifferences then TBDiffsOnlyClick(Self);
+  if FOnlyDifferences then
+    TBDiffsOnlyClick(Self);
   DoCompare;
 end;
 
-procedure TFTextDiff.DoSaveFile(Nr: integer; WithBackup: boolean);
-  var CodeEdit: TSynEditExDiff;
+procedure TFTextDiff.DoSaveFile(Num: Integer; WithBackup: Boolean);
+var
+  CodeEdit: TSynEditExDiff;
 begin
-  if Nr = 1
-    then CodeEdit:= CodeEdit1
-    else CodeEdit:= CodeEdit2;
-  if (CodeEdit.Pathname = '') or OnlyDifferences then exit;
+  if Num = 1 then
+    CodeEdit := FCodeEdit1
+  else
+    CodeEdit := FCodeEdit2;
+  if (CodeEdit.Pathname = '') or FOnlyDifferences then
+    Exit;
   CodeEdit.Save(WithBackup);
-  if Nr = 1
-    then Lines1.Assign(CodeEdit.Lines)
-    else Lines2.Assign(CodeEdit.Lines);
-  SetFilesCompared(false);
+  if Num = 1 then
+    FLines1.Assign(CodeEdit.Lines)
+  else
+    FLines2.Assign(CodeEdit.Lines);
+  SetFilesCompared(False);
 end;
 
 procedure TFTextDiff.DoSaveBoth;
 begin
-  DoSaveFile(1, false);
-  DoSaveFile(2, false);
+  DoSaveFile(1, False);
+  DoSaveFile(2, False);
 end;
 
 procedure TFTextDiff.TBSourcecodeClick(Sender: TObject);
-  var CodeEdit: TSynEditExDiff;
-      Caret: TBufferCoord;
+var
+  CodeEdit: TSynEditExDiff;
+  Caret: TBufferCoord;
 begin
-  if OnlyDifferences then TBDiffsOnlyClick(Self);
-  CodeEdit:= GetCodeEdit;
-  Caret:= CodeEdit.CaretXY;
-  DoSaveFile(1, false);
-  DoSaveFile(2, false);
-  CodeEdit.CaretXY:= Caret;
-  setActiveControl(CodeEdit);
+  if FOnlyDifferences then
+    TBDiffsOnlyClick(Self);
+  CodeEdit := GetCodeEdit;
+  Caret := CodeEdit.CaretXY;
+  DoSaveFile(1, False);
+  DoSaveFile(2, False);
+  CodeEdit.CaretXY := Caret;
+  SetActiveControl(CodeEdit);
   SyncScroll(GetCodeEdit, sbVertical);
 end;
 
-procedure TFTextDiff.SetFilesCompared(Value: boolean);
+procedure TFTextDiff.SetFilesCompared(Value: Boolean);
 begin
-  FilesCompared:= Value;
+  FFilesCompared := Value;
 end;
 
 procedure TFTextDiff.TBCloseClick(Sender: TObject);
@@ -800,122 +928,139 @@ begin
   Close;
 end;
 
-procedure TFTextDiff.GotoLine(i: integer);
-begin
-  if i = 0 then exit;
-  CodeEdit1.CaretX := 1;
-  CodeEdit1.CaretY := i;
-  CodeEdit1.Topline:= i;
-  SyncScroll(CodeEdit1, sbVertical);
-end;
-
 function TFTextDiff.GetCodeEdit: TSynEditExDiff;
 begin
-  if myActiveControl = CodeEdit1
-    then Result:= CodeEdit1
-    else Result:= CodeEdit2;
+  if MyActiveControl = FCodeEdit1 then
+    Result := FCodeEdit1
+  else
+    Result := FCodeEdit2;
 end;
 
 procedure TFTextDiff.SplitterMoved(Sender: TObject);
 begin
   ShowFileNames;
-end;                                         
+end;
 
 procedure TFTextDiff.TBIgnoreCaseClick(Sender: TObject);
 begin
-  IgnoreCase:= not IgnoreCase;
-  TBIgnoreCase.Down:= IgnoreCase;
-  if FilesCompared then TBCompareClick(Self);
+  FIgnoreCase := not FIgnoreCase;
+  TBIgnoreCase.Down := FIgnoreCase;
+  if FilesCompared then
+    TBCompareClick(Self);
 end;
 
 procedure TFTextDiff.TBIgnoreBlanksClick(Sender: TObject);
 begin
-  IgnoreBlanks:= not IgnoreBlanks;
-  TBIgnoreBlanks.Down:= IgnoreBlanks;
-  if FilesCompared then TBCompareClick(Self);
+  FIgnoreBlanks := not FIgnoreBlanks;
+  TBIgnoreBlanks.Down := FIgnoreBlanks;
+  if FilesCompared then
+    TBCompareClick(Self);
 end;
 
 procedure TFTextDiff.TBParagraphClick(Sender: TObject);
 begin
-  var Options:= CodeEdit1.Options;
-  if eoShowSpecialChars in Options
-    then Exclude(Options, eoShowSpecialChars)
-    else Include(Options, eoShowSpecialChars);
-  CodeEdit1.Options:= Options;
-  Options:= CodeEdit2.Options;
-  if eoShowSpecialChars in Options
-    then Exclude(Options, eoShowSpecialChars)
-    else Include(Options, eoShowSpecialChars);
-  CodeEdit2.Options:= Options;
-  TBParagraph.Down:= (eoShowSpecialChars in Options);
+  var
+  Options := FCodeEdit1.Options;
+  if eoShowSpecialChars in Options then
+    Exclude(Options, eoShowSpecialChars)
+  else
+    Include(Options, eoShowSpecialChars);
+  FCodeEdit1.Options := Options;
+  Options := FCodeEdit2.Options;
+  if eoShowSpecialChars in Options then
+    Exclude(Options, eoShowSpecialChars)
+  else
+    Include(Options, eoShowSpecialChars);
+  FCodeEdit2.Options := Options;
+  TBParagraph.Down := (eoShowSpecialChars in Options);
 end;
 
 procedure TFTextDiff.ChangeStyle;
 begin
-  if FConfiguration.isDark then begin
-    addClr:= $97734F;
-    modClr:= $16A231;
-    delClr:= $621EA6;
-    DefaultClr:= StyleServices.GetSystemColor(clWindow);
-    TBTextDiff.Images:= vilTextDiffDark;
-  end else begin
-    addClr:= $F0CCA8;
-    modClr:= $6FFB8A;
-    delClr:= $BB77FF;
-    DefaultClr:= clWindow;
-    TBTextDiff.Images:= vilTextDiffLight;
+  if FConfiguration.IsDark then
+  begin
+    FAddClr := $97734F;
+    FModClr := $16A231;
+    FDelClr := $621EA6;
+    FDefaultClr := StyleServices.GetSystemColor(clWindow);
+    TBTextDiff.Images := vilTextDiffDark;
+  end
+  else
+  begin
+    FAddClr := $F0CCA8;
+    FModClr := $6FFB8A;
+    FDelClr := $BB77FF;
+    FDefaultClr := clWindow;
+    TBTextDiff.Images := vilTextDiffLight;
   end;
   DisplayDiffs;
 end;
 
-procedure TFTextDiff.ChooseFiles(F1: TFEditForm);
+procedure TFTextDiff.ChooseFiles(EditForm: TFEditForm);
 
   procedure InitDir;
   begin
-    with FJava.ODOpen do begin
-      InitialDir:= FConfiguration.Sourcepath;
+    with FJava.ODOpen do
+    begin
+      InitialDir := FConfiguration.Sourcepath;
       if not SysUtils.DirectoryExists(InitialDir) then
-        InitialDir:= GetDocumentsPath;
+        InitialDir := GetDocumentsPath;
     end;
   end;
 
 begin
-  with FJava.ODOpen do begin
-    if assigned(F1) then begin
-      InitialDir:= ExtractFilePath(F1.Pathname);
+  with FJava.ODOpen do
+  begin
+    if Assigned(EditForm) then
+    begin
+      InitialDir := ExtractFilePath(EditForm.Pathname);
       if InitialDir + '\' = FConfiguration.TempDir then
         InitDir;
-        Nr:= 2
-    end else begin
+      FNumber := 2;
+    end
+    else
+    begin
       InitDir;
-      Nr:= 1;
+      FNumber := 1;
     end;
-    Filename:= '';
-    var TempFilter:= Filter;
-    Filter:= 'Java (*.java)|*.java|HTML (*.html)|*.html;*.htm|Text (*.txt)|*.txt|' + _(LNGAll) + ' (*.*)|*.*';
-    FilterIndex:= 1;
-    Title:= _(LNGOpenFile);
+    FileName := '';
+    var
+    TempFilter := Filter;
+    Filter := 'Java (*.java)|*.java|HTML (*.html)|*.html;*.htm|Text (*.txt)|*.txt|'
+      + _(LNGAll) + ' (*.*)|*.*';
+    FilterIndex := 1;
+    Title := _(LNGOpenFile);
     try
-      if Execute then begin
-        FConfiguration.Sourcepath:= ExtractFilePath(Filename);
-        if Files.Count >= 2
-          then Open(Files.Strings[0], Files.Strings[1])
-          else Open(Filename);
+      if Execute then
+      begin
+        FConfiguration.Sourcepath := ExtractFilePath(FileName);
+        if Files.Count >= 2 then
+          Open(Files[0], Files[1])
+        else
+          Open(FileName);
       end;
     finally
-      Filter:= TempFilter;
+      Filter := TempFilter;
     end;
   end;
 end;
 
 procedure TFTextDiff.SynEditEnter(Sender: TObject);
 begin
-  Nr:= (Sender as TSynEditExDiff).Nr;
+  FNumber := (Sender as TSynEditExDiff).Number;
 end;
 
 procedure TFTextDiff.DPIChanged;
 begin
-  setFontsize(0);
+  SetFontSize(0);
+end;
+
+procedure TFTextDiff.PopupEditorPopup(Sender: TObject);
+begin
+  if PopupEditor.PopupComponent = FCodeEdit1 then
+    FNumber:= 1;
+  if PopupEditor.PopupComponent = FCodeEdit2 then
+    FNumber:= 2;
 end;
 
 end.

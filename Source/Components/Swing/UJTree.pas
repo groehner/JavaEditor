@@ -3,22 +3,25 @@ unit UJTree;
 interface
 
 uses
-  ComCtrls, Classes, UJEComponents, UJComponents;
+  ComCtrls,
+  Classes,
+  UJEComponents,
+  UJComponents;
 
 type
 
-  TJTree = class (TSwingComponent)
+  TJTree = class(TSwingComponent)
   private
-    FRowHeight: integer;
-    FRootVisible: boolean;
-    FDragEnabled: boolean;
-    FEditable: boolean;
-    FInvokesStopCellEditing: boolean;
-    FExpandsSelectedPaths: boolean;
-    FScrollsOnExpand: boolean;
-    FSelectionRow: integer;
-    FShowsRootHandles: boolean;
-    FToggleClickCount: integer;
+    FRowHeight: Integer;
+    FRootVisible: Boolean;
+    FDragEnabled: Boolean;
+    FEditable: Boolean;
+    FInvokesStopCellEditing: Boolean;
+    FExpandsSelectedPaths: Boolean;
+    FScrollsOnExpand: Boolean;
+    FSelectionRow: Integer;
+    FShowsRootHandles: Boolean;
+    FToggleClickCount: Integer;
     FModel: TStrings;
     FtreeCollapsed: string;
     FtreeExpanded: string;
@@ -26,21 +29,21 @@ type
     FHorizontalScrollBarPolicy: TScrollBarPolicy;
     FVerticalScrollBarPolicy: TScrollBarPolicy;
 
-    procedure setRowHeight(aValue: integer);
-    procedure setRootVisible(aValue: boolean);
-    procedure setShowsRootHandles(aValue: boolean);
-    procedure setItems(aValue: TStrings);
-    procedure setHorizontalScrollBarPolicy(Value: TScrollBarPolicy);
-    procedure setVerticalScrollBarPolicy(Value: TScrollBarPolicy);
-    function NodeName(Nr: integer): string;
+    procedure SetRowHeight(AValue: Integer);
+    procedure SetRootVisible(AValue: Boolean);
+    procedure SetShowsRootHandles(AValue: Boolean);
+    procedure SetItems(AValue: TStrings);
+    procedure SetHorizontalScrollBarPolicy(Value: TScrollBarPolicy);
+    procedure SetVerticalScrollBarPolicy(Value: TScrollBarPolicy);
+    function NodeName(Num: Integer): string;
     procedure MakeTree;
   public
-    constructor Create (AOwner: TComponent); override;
-    constructor CreateFrom(aTreeView: TTreeView);
+    constructor Create(AOwner: TComponent); override;
+    constructor CreateFrom(ATreeView: TTreeView);
     destructor Destroy; override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getEvents(ShowEvents: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure DeleteComponent; override;
     procedure SetPositionAndSize; override;
@@ -48,56 +51,70 @@ type
     function GetContainerAdd: string; override;
     procedure Paint; override;
   published
-    property RowHeight: integer read FRowHeight write setRowHeight;
-    property RootVisible: boolean read FRootVisible write setRootVisible;
-    property Model: TStrings read FModel write setItems;
-    property ShowsRootHandles: boolean read FShowsRootHandles write setShowsRootHandles;
-    property HorizontalScrollBarPolicy: TScrollBarPolicy read FHorizontalScrollBarPolicy write setHorizontalScrollBarPolicy;
-    property VerticalScrollBarPolicy: TScrollBarPolicy read FVerticalScrollBarPolicy write setVerticalScrollBarPolicy;
-    property DragEnabled: boolean read FDragEnabled write FDragEnabled;
-    property Editable: boolean read FEditable write FEditable;
-    property InvokesStopCellEditing: boolean read FInvokesStopCellEditing write FInvokesStopCellEditing;
-    property ExpandsSelectedPaths: boolean read FExpandsSelectedPaths write FExpandsSelectedPaths;
-    property ScrollsOnExpand: boolean read FScrollsOnExpand write FScrollsOnExpand;
-    property SelectionRow: integer read FSelectionRow write FSelectionRow;
-    property ToggleClickCount: integer read FToggleClickCount write FToggleClickCount;
+    property RowHeight: Integer read FRowHeight write SetRowHeight;
+    property RootVisible: Boolean read FRootVisible write SetRootVisible;
+    property Model: TStrings read FModel write SetItems;
+    property ShowsRootHandles: Boolean read FShowsRootHandles
+      write SetShowsRootHandles;
+    property HorizontalScrollBarPolicy: TScrollBarPolicy
+      read FHorizontalScrollBarPolicy write SetHorizontalScrollBarPolicy;
+    property VerticalScrollBarPolicy: TScrollBarPolicy
+      read FVerticalScrollBarPolicy write SetVerticalScrollBarPolicy;
+    property DragEnabled: Boolean read FDragEnabled write FDragEnabled;
+    property Editable: Boolean read FEditable write FEditable;
+    property InvokesStopCellEditing: Boolean read FInvokesStopCellEditing
+      write FInvokesStopCellEditing;
+    property ExpandsSelectedPaths: Boolean read FExpandsSelectedPaths
+      write FExpandsSelectedPaths;
+    property ScrollsOnExpand: Boolean read FScrollsOnExpand
+      write FScrollsOnExpand;
+    property SelectionRow: Integer read FSelectionRow write FSelectionRow;
+    property ToggleClickCount: Integer read FToggleClickCount
+      write FToggleClickCount;
 
     property treeCollapsed: string read FtreeCollapsed write FtreeCollapsed;
     property treeExpanded: string read FtreeExpanded write FtreeExpanded;
-    property treeValueChanged: string read FtreeValueChanged write FtreeValueChanged;
+    property treeValueChanged: string read FtreeValueChanged
+      write FtreeValueChanged;
   end;
 
 implementation
 
-uses SysUtils, Graphics, Controls, Forms, UGUIDesigner, UUtils;
+uses
+  SysUtils,
+  Graphics,
+  Controls,
+  UGUIDesigner,
+  UUtils;
 
 constructor TJTree.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
-  Tag:= 20;
-  Width:= 240;
-  Height:= 120;
-  Background:= clWhite;
-  FRowHeight:= 18;
-  FDragEnabled:= false;
-  FEditable:= false;
-  FRootVisible:= true;
-  FModel:= TStringList.Create;
-  FModel.Text:= 'root'#13#10'  node 1'#13#10'    leaf 1'#13#10'    leaf 2'#13#10'    leaf 3'#13#10'  node 2'#13#10'    node 3'#13#10'      leaf 4'#13#10'    leaf 5'#13#10'  node 4'#13#10'    leaf 6'#13#10'    leaf 7';
-  FToggleClickCount:= 2;
-  FHorizontalScrollBarPolicy:= AS_NEEDED;
-  FVerticalScrollBarPolicy:= AS_NEEDED;  
-  Font.Style:= [];  // not bold;
-  JavaType:= 'JTree';
+  inherited Create(AOwner);
+  Tag := 20;
+  Width := 240;
+  Height := 120;
+  Background := clWhite;
+  FRowHeight := 18;
+  FDragEnabled := False;
+  FEditable := False;
+  FRootVisible := True;
+  FModel := TStringList.Create;
+  FModel.Text :=
+    'root'#13#10'  node 1'#13#10'    leaf 1'#13#10'    leaf 2'#13#10'    leaf 3'#13#10'  node 2'#13#10'    node 3'#13#10'      leaf 4'#13#10'    leaf 5'#13#10'  node 4'#13#10'    leaf 6'#13#10'    leaf 7';
+  FToggleClickCount := 2;
+  FHorizontalScrollBarPolicy := AS_NEEDED;
+  FVerticalScrollBarPolicy := AS_NEEDED;
+  Font.Style := []; // not bold;
+  JavaType := 'JTree';
 end;
 
-constructor TJTree.CreateFrom(aTreeView: TTreeView);
+constructor TJTree.CreateFrom(ATreeView: TTreeView);
 begin
-  Create(aTreeView.Owner);
-  CreateFromJ(aTreeView);
-  Background:= aTreeView.Color;
-  RowHeight:= aTreeView.Indent;
-  RootVisible:= aTreeView.ShowRoot;
+  Create(ATreeView.Owner);
+  CreateFromJ(ATreeView);
+  Background := ATreeView.Color;
+  RowHeight := ATreeView.Indent;
+  RootVisible := ATreeView.ShowRoot;
 end;
 
 destructor TJTree.Destroy;
@@ -106,374 +123,452 @@ begin
   inherited;
 end;
 
-function TJTree.getAttributes(ShowAttributes: integer): string;
-  const
-    tree1 = '|RowHeight|RootVisible|Model|ShowsRootHandles' +
-            '|HorizontalScrollBarPolicy|VerticalScrollBarPolicy';
-    tree2 = '|DragEnabled|Editable|InvokesStopCellEditing|ExpandsSelectedPaths' +
-            '|ScrollsOnExpand|SelectionRow|ToggleClickCount|';
+function TJTree.GetAttributes(ShowAttributes: Integer): string;
+const
+  Tree1 = '|RowHeight|RootVisible|Model|ShowsRootHandles' +
+    '|HorizontalScrollBarPolicy|VerticalScrollBarPolicy';
+  Tree2 = '|DragEnabled|Editable|InvokesStopCellEditing|ExpandsSelectedPaths' +
+    '|ScrollsOnExpand|SelectionRow|ToggleClickCount|';
 begin
-  if ShowAttributes = 1
-    then Result:= tree1
-    else Result:= tree1 + tree2;
-  Result:= Result + inherited;
+  if ShowAttributes = 1 then
+    Result := Tree1
+  else
+    Result := Tree1 + Tree2;
+  Result := Result + inherited;
 end;
 
-procedure TJTree.setAttribute(Attr, Value, Typ: string);
+procedure TJTree.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'Model' then
     MakeTree
-  else if (Attr = 'HorizontalScrollBarPolicy') or (Attr = 'VerticalScrollBarPolicy') then
+  else if (Attr = 'HorizontalScrollBarPolicy') or
+    (Attr = 'VerticalScrollBarPolicy') then
     MakeScrollbarDisplayPolicy(Attr, Value)
   else
     inherited;
 end;
 
-function TJTree.getEvents(ShowEvents: integer): string;
+function TJTree.GetEvents(ShowEvents: Integer): string;
 begin
-  Result:= '|treeCollapsed|treeExpanded|treeValueChanged' + inherited;
+  Result := '|treeCollapsed|treeExpanded|treeValueChanged' + inherited;
 end;
 
 procedure TJTree.NewControl;
-  var node1, node2, s: string;
+var
+  Node1, Node2, Str: string;
 begin
-  Partner.InsertImport('javax.swing.tree.*');
-  InsertNewVariable('private DefaultMutableTreeNode ' + Name + 'Node0 = new DefaultMutableTreeNode("root");');
-  InsertNewVariable('private JTree ' + Name + ' = new JTree('+ Name + 'Node0);');
-  InsertNewVariable('  private JScrollPane ' + Name + 'ScrollPane = new JScrollPane(' + Name + ');');
-  setAttributValue(Name + 'ScrollPane.setBounds(', Indent2 + Name + 'ScrollPane' + getBounds);
+  FPartner.InsertImport('javax.swing.tree.*');
+  InsertNewVariable('private DefaultMutableTreeNode ' + Name +
+    'Node0 = new DefaultMutableTreeNode("root");');
+  InsertNewVariable('private JTree ' + Name + ' = new JTree(' + Name +
+    'Node0);');
+  InsertNewVariable('  private JScrollPane ' + Name +
+    'ScrollPane = new JScrollPane(' + Name + ');');
+  SetAttributValue(Name + 'ScrollPane.setBounds(', Indent2 + Name + 'ScrollPane'
+    + GetBounds);
 
-  s:= '';
-  node1:= Name + 'Node1';
-  node2:= Name + 'Node2';
-  s:= s + surroundFix2('DefaultMutableTreeNode ' + node1 + ' = new DefaultMutableTreeNode("node 1");');
-  s:= s + surroundFix2(node1 + '.add(new DefaultMutableTreeNode("leaf 1"));');
-  s:= s + surroundFix2(node1 + '.add(new DefaultMutableTreeNode("leaf 2"));');
-  s:= s + surroundFix2(node1 + '.add(new DefaultMutableTreeNode("leaf 3"));');
-  s:= s + surroundFix2(Name + 'Node0.add(' + node1 + ');');
-  s:= s + surroundFix2(node1 + ' = new DefaultMutableTreeNode("node 2");');
-  s:= s + surroundFix2('DefaultMutableTreeNode ' + node2 + ' = new DefaultMutableTreeNode("node 3");');
-  s:= s + surroundFix2(node2 + '.add(new DefaultMutableTreeNode("leaf 4"));');
-  s:= s + surroundFix2(node1 + '.add(' + node2 + ');');
-  s:= s + surroundFix2(node1 + '.add(new DefaultMutableTreeNode("leaf 5"));');
-  s:= s + surroundFix2(Name + 'Node0.add(' + node1 + ');');
-  s:= s + surroundFix2(node1 + ' = new DefaultMutableTreeNode("node 4");');
-  s:= s + surroundFix2(node1 + '.add(new DefaultMutableTreeNode("leaf 6"));');
-  s:= s + surroundFix2(node1 + '.add(new DefaultMutableTreeNode("leaf 7"));');
-  s:= s + surroundFix2(Name + 'Node0.add(' + node1 + ');');
-  s:= s + surroundFix2(Name + '.expandRow(0);');
-  s:= s + surroundFix2(Name + '.expandRow(1);');
-  s:= s + surroundFix2(GetContainerAdd);
-  Partner.InsertComponent(s);
+  Str := '';
+  Node1 := Name + 'Node1';
+  Node2 := Name + 'Node2';
+  Str := Str + SurroundFix2('DefaultMutableTreeNode ' + Node1 +
+    ' = new DefaultMutableTreeNode("node 1");');
+  Str := Str + SurroundFix2
+    (Node1 + '.add(new DefaultMutableTreeNode("leaf 1"));');
+  Str := Str + SurroundFix2
+    (Node1 + '.add(new DefaultMutableTreeNode("leaf 2"));');
+  Str := Str + SurroundFix2
+    (Node1 + '.add(new DefaultMutableTreeNode("leaf 3"));');
+  Str := Str + SurroundFix2(Name + 'Node0.add(' + Node1 + ');');
+  Str := Str + SurroundFix2(Node1 + ' = new DefaultMutableTreeNode("node 2");');
+  Str := Str + SurroundFix2('DefaultMutableTreeNode ' + Node2 +
+    ' = new DefaultMutableTreeNode("node 3");');
+  Str := Str + SurroundFix2
+    (Node2 + '.add(new DefaultMutableTreeNode("leaf 4"));');
+  Str := Str + SurroundFix2(Node1 + '.add(' + Node2 + ');');
+  Str := Str + SurroundFix2
+    (Node1 + '.add(new DefaultMutableTreeNode("leaf 5"));');
+  Str := Str + SurroundFix2(Name + 'Node0.add(' + Node1 + ');');
+  Str := Str + SurroundFix2(Node1 + ' = new DefaultMutableTreeNode("node 4");');
+  Str := Str + SurroundFix2
+    (Node1 + '.add(new DefaultMutableTreeNode("leaf 6"));');
+  Str := Str + SurroundFix2
+    (Node1 + '.add(new DefaultMutableTreeNode("leaf 7"));');
+  Str := Str + SurroundFix2(Name + 'Node0.add(' + Node1 + ');');
+  Str := Str + SurroundFix2(Name + '.expandRow(0);');
+  Str := Str + SurroundFix2(Name + '.expandRow(1);');
+  Str := Str + SurroundFix2(GetContainerAdd);
+  FPartner.InsertComponent(Str);
   MakeFont;
 end;
 
 procedure TJTree.MakeTree;
-  var s: string; NodesDepth, NodeNr: integer;
+var
+  Str: string;
+  NodesDepth, NodeNr: Integer;
 
-  function getIndent(const s: string): integer;
-    var i, l: integer;
+  function GetIndent(const Str: string): Integer;
+  var
+    Int, Len: Integer;
   begin
-    l:= Length(s);
-    i:= 1;
-    while (i <= l) and (s[i] <= ' ') do
-      inc(i);
-    Result:= i-1;
+    Len := Length(Str);
+    Int := 1;
+    while (Int <= Len) and (Str[Int] <= ' ') do
+      Inc(Int);
+    Result := Int - 1;
   end;
 
-  procedure makeNode(Depth: integer);
-    var IndentNr, IndentNr1: integer; s1, aLabel: string;
+  procedure MakeNode(Depth: Integer);
+  var
+    IndentNr, IndentNr1: Integer;
+    Str1, ALabel: string;
   begin
-    aLabel:= Model[NodeNr];
-    IndentNr:= getIndent(aLabel);
-    aLabel:= trim(aLabel);
-    while NodeNr < Model.Count do begin
-      if NodeNr +1 < Model.Count
-        then IndentNr1:= getIndent(Model[NodeNr+1])
-        else IndentNr1:= IndentNr;
-      if IndentNr1 > IndentNr then begin
-        s1:= NodeName(Depth) + ' = new DefaultMutableTreeNode("' + aLabel + '");';
-        if NodesDepth < Depth then begin
-          s:= s + surroundFix2('DefaultMutableTreeNode ' + s1);
-          inc(NodesDepth);
-        end else
-          s:= s + surroundFix2(s1);
+    ALabel := Model[NodeNr];
+    IndentNr := GetIndent(ALabel);
+    ALabel := Trim(ALabel);
+    while NodeNr < Model.Count do
+    begin
+      if NodeNr + 1 < Model.Count then
+        IndentNr1 := GetIndent(Model[NodeNr + 1])
+      else
+        IndentNr1 := IndentNr;
+      if IndentNr1 > IndentNr then
+      begin
+        Str1 := NodeName(Depth) + ' = new DefaultMutableTreeNode("' +
+          ALabel + '");';
+        if NodesDepth < Depth then
+        begin
+          Str := Str + SurroundFix2('DefaultMutableTreeNode ' + Str1);
+          Inc(NodesDepth);
+        end
+        else
+          Str := Str + SurroundFix2(Str1);
         Inc(NodeNr);
-        makeNode(Depth + 1);
-        if NodeNr < Model.Count
-          then IndentNr1:= getIndent(Model[NodeNr])
-          else IndentNr1:= 0;
+        MakeNode(Depth + 1);
+        if NodeNr < Model.Count then
+          IndentNr1 := GetIndent(Model[NodeNr])
+        else
+          IndentNr1 := 0;
         if IndentNr1 <= IndentNr then
-          s:= s + surroundFix2(NodeName(Depth-1) + '.add(' + NodeName(Depth) + ');');
-      end else if IndentNr1 <= IndentNr then begin
-        s:= s + surroundFix2(NodeName(Depth-1) + '.add(new DefaultMutableTreeNode("' + aLabel + '"));');
+          Str := Str + SurroundFix2(NodeName(Depth - 1) + '.add(' +
+            NodeName(Depth) + ');');
+      end
+      else if IndentNr1 <= IndentNr then
+      begin
+        Str := Str + SurroundFix2(NodeName(Depth - 1) +
+          '.add(new DefaultMutableTreeNode("' + ALabel + '"));');
         Inc(NodeNr);
       end;
-      if IndentNr1 < IndentNr
-        then exit
-      else if NodeNr < Model.Count
-        then aLabel:= trim(Model[NodeNr]);
+      if IndentNr1 < IndentNr then
+        Exit
+      else if NodeNr < Model.Count then
+        ALabel := Trim(Model[NodeNr]);
     end;
   end;
 
 begin
-  s:= Indent1 + 'private DefaultMutableTreeNode ' + Name +
-                'Node0 = new DefaultMutableTreeNode("' + Trim(Model[0]) + '");';
-  Partner.ReplaceAttribute('private DefaultMutableTreeNode ' + Name, s);
-  Partner.DeleteAttributeValues(Name + '.expandRow');
-  Partner.DeleteAttributeValues(Name + 'ScrollPane');
+  Str := Indent1 + 'private DefaultMutableTreeNode ' + Name +
+    'Node0 = new DefaultMutableTreeNode("' + Trim(Model[0]) + '");';
+  FPartner.ReplaceAttribute('private DefaultMutableTreeNode ' + Name, Str);
+  FPartner.DeleteAttributeValues(Name + '.expandRow');
+  FPartner.DeleteAttributeValues(Name + 'ScrollPane');
 
-  for var i:= 0 to Model.Count - 1 do
-    Partner.DeleteAttributeValues(NodeName(i));
-  s:= surroundFix2(Name + 'ScrollPane' + getBounds);
-  NodesDepth:= 0;
-  NodeNr:= 1;
+  for var I := 0 to Model.Count - 1 do
+    FPartner.DeleteAttributeValues(NodeName(I));
+  Str := SurroundFix2(Name + 'ScrollPane' + GetBounds);
+  NodesDepth := 0;
+  NodeNr := 1;
   FormatItems(FModel);
   if Model.Count > 1 then
-    makeNode(1);
-  s:= s + surroundFix2(Name + '.expandRow(0);');
-  s:= s + surroundFix2(Name + '.expandRow(1);');
-  s:= s + surroundFix2(GetContainerAdd);
-  Partner.InsertComponent(s);
+    MakeNode(1);
+  Str := Str + SurroundFix2(Name + '.expandRow(0);');
+  Str := Str + SurroundFix2(Name + '.expandRow(1);');
+  Str := Str + SurroundFix2(GetContainerAdd);
+  FPartner.InsertComponent(Str);
 end;
 
 procedure TJTree.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteAttribute('private DefaultMutableTreeNode ' + Name + 'Node0');
-  Partner.DeleteAttribute('private JScrollPane ' + Name + 'ScrollPane');
-  Partner.DeleteAttributeValues(Name + 'ScrollPane');
-  for var i:= 0 to Model.Count - 1 do
-    Partner.DeleteAttributeValues(NodeName(i));
+  FPartner.DeleteAttribute('private DefaultMutableTreeNode ' + Name + 'Node0');
+  FPartner.DeleteAttribute('private JScrollPane ' + Name + 'ScrollPane');
+  FPartner.DeleteAttributeValues(Name + 'ScrollPane');
+  for var I := 0 to Model.Count - 1 do
+    FPartner.DeleteAttributeValues(NodeName(I));
 end;
 
-function TJTree.NodeName(Nr: integer): string;
+function TJTree.NodeName(Num: Integer): string;
 begin
-  Result:= Name + 'Node' + IntToStr(Nr);
+  Result := Name + 'Node' + IntToStr(Num);
 end;
 
 procedure TJTree.SetPositionAndSize;
 begin
-  ChangeAttributValue(Name + 'ScrollPane.setBounds(', Name + 'ScrollPane' + getBounds);
+  ChangeAttributValue(Name + 'ScrollPane.setBounds(',
+    Name + 'ScrollPane' + GetBounds);
 end;
 
 procedure TJTree.Rename(const OldName, NewName, Events: string);
-  procedure rename(var name: string);
+  procedure Rename(var Name: string);
   begin
-    if name <> '' then
-      name:= NewName + UUtils.Right(name, Length(OldName) + 1);
+    if Name <> '' then
+      Name := NewName + UUtils.Right(Name, Length(OldName) + 1);
   end;
 
 begin
   inherited;
-  rename(FtreeCollapsed);
-  rename(FtreeExpanded);
-  rename(FtreeValueChanged);
-  Partner.ReplaceWord(OldName + 'ScrollPane' , NewName + 'ScrollPane', true);
-  for var i:= 0 to Model.Count - 1 do
-    Partner.ReplaceWord(OldName + 'Node' + IntToStr(i), NewName + 'Node' + IntToStr(i), true);
+  Rename(FtreeCollapsed);
+  Rename(FtreeExpanded);
+  Rename(FtreeValueChanged);
+  FPartner.ReplaceWord(OldName + 'ScrollPane', NewName + 'ScrollPane', True);
+  for var I := 0 to Model.Count - 1 do
+    FPartner.ReplaceWord(OldName + 'Node' + IntToStr(I),
+      NewName + 'Node' + IntToStr(I), True);
 end;
 
 function TJTree.GetContainerAdd: string;
 begin
-  Result:= AWTSwingContainer;
-  if Result = ''
-    then Result:= 'add(' + name + 'ScrollPane);'
-    else Result:= Result + '.add(' + name + 'ScrollPane);';
+  Result := AWTSwingContainer;
+  if Result = '' then
+    Result := 'add(' + Name + 'ScrollPane);'
+  else
+    Result := Result + '.add(' + Name + 'ScrollPane);';
 end;
 
 procedure TJTree.Paint;
-  const cdx = 20;
-  var s: string;
-      i, j, js, th, x, y, IndentS, dx, PicNr, p17: integer;
-      vsb, hsb: boolean;
+const
+  Cdx = 20;
+var
+  Str: string;
+  JSPos, TextHeight, XPos, YPos, IndentS, DeltaX, PicNr, P17: Integer;
+  Vsb, Hsb: Boolean;
 
-  function isLeaf(Nr: integer): boolean;
-    var i1, i2: integer;
+  function isLeaf(Num: Integer): Boolean;
+  var
+    Int1, Int2: Integer;
   begin
-    if Nr + 1 = FModel.Count
-       then Result:= true
-    else begin
-      i1:= getIndent(FModel.Strings[Nr]);
-      i2:= getIndent(FModel.Strings[Nr+1]);
-      Result:= (i2 <= i1);
-    end;
-  end;
-
-  function hasBrother(Nr: integer): boolean;
-    var i, i1, i2: integer;
-  begin
-    Result:= false;
-    i1:= getIndent(FModel.Strings[Nr]);
-    i:= Nr + 1;
-    while (i < FModel.Count) and not Result do begin
-      i2:= getIndent(FModel.Strings[i]);
-      if i2 = i1
-        then Result:= true
-      else if i2 < i1
-        then break;
-      inc(i);
-    end;
-  end;
-
-  function ParentHasBrotherToBitmap(Parent, Nr: integer): integer;
-    var i, i1: integer;
-  begin
-    Result:= -1;
-    i:= Nr + 1;
-    while (i < FModel.Count) and (Result = -1) do begin
-      i1:= getIndent(FModel.Strings[i]);
-      if i1 = Parent
-        then Result:= 4
-      else if i1 < Parent
-        then break;
-      inc(i);
-    end;
-  end;
-
-  function LeafToBitmap(Leaf:Boolean): integer;
-  begin
-    if Leaf then Result:= 1 else Result:= 0;
-  end;
-
-  function BrotherLeafToBitmap(brother, leaf: boolean): integer;
-  begin
-    if brother then
-      if Leaf then Result:= 6 else Result:= 2
+    if Num + 1 = FModel.Count then
+      Result := True
     else
-      if Leaf then Result:= 5 else Result:= 3;
+    begin
+      Int1 := GetIndent(FModel[Num]);
+      Int2 := GetIndent(FModel[Num + 1]);
+      Result := (Int2 <= Int1);
+    end;
+  end;
+
+  function hasBrother(Num: Integer): Boolean;
+  var
+    Int, Int1, Int2: Integer;
+  begin
+    Result := False;
+    Int1 := GetIndent(FModel[Num]);
+    Int := Num + 1;
+    while (Int < FModel.Count) and not Result do
+    begin
+      Int2 := GetIndent(FModel[Int]);
+      if Int2 = Int1 then
+        Result := True
+      else if Int2 < Int1 then
+        Break;
+      Inc(Int);
+    end;
+  end;
+
+  function ParentHasBrotherToBitmap(Parent, Num: Integer): Integer;
+  var
+    Int, Int1: Integer;
+  begin
+    Result := -1;
+    Int := Num + 1;
+    while (Int < FModel.Count) and (Result = -1) do
+    begin
+      Int1 := GetIndent(FModel[Int]);
+      if Int1 = Parent then
+        Result := 4
+      else if Int1 < Parent then
+        Break;
+      Inc(Int);
+    end;
+  end;
+
+  function LeafToBitmap(Leaf: Boolean): Integer;
+  begin
+    if Leaf then
+      Result := 1
+    else
+      Result := 0;
+  end;
+
+  function BrotherLeafToBitmap(Brother, Leaf: Boolean): Integer;
+  begin
+    if Brother then
+      if Leaf then
+        Result := 6
+      else
+        Result := 2
+    else if Leaf then
+      Result := 5
+    else
+      Result := 3;
   end;
 
 begin
   CanvasFontAssign;
-  Canvas.Font.Color:= DefaultForeground; 
-  Canvas.Pen.Color:= DarkShadow;
-  Canvas.Brush.Color:= Background;
+  Canvas.Font.Color := DefaultForeground;
+  Canvas.Pen.Color := DarkShadow;
+  Canvas.Brush.Color := Background;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
-  th:= Canvas.TextHeight('Hg');
-  vsb:= (VerticalScrollBarPolicy = ALWAYS);
-  hsb:= (HorizontalScrollBarPolicy = ALWAYS);
-  dx:= PPIScale(cdx);
-  y:= PPIScale(2);
-  FRowHeight:= PPIScale(18);
+  TextHeight := Canvas.TextHeight('Hg');
+  Vsb := (VerticalScrollBarPolicy = ALWAYS);
+  Hsb := (HorizontalScrollBarPolicy = ALWAYS);
+  DeltaX := PPIScale(Cdx);
+  YPos := PPIScale(2);
+  FRowHeight := PPIScale(18);
 
   // Show root
-  if FRootVisible and ShowsRootHandles then begin
-    FGUIDesigner.vilControls1618.Draw(Canvas, 0, y, 3);
-    x:= dx;
-  end else
-    x:= 0;
+  if FRootVisible and ShowsRootHandles then
+  begin
+    FGUIDesigner.vilControls1618.Draw(Canvas, 0, YPos, 3);
+    XPos := DeltaX;
+  end
+  else
+    XPos := 0;
 
-  if FRootVisible and (Model.Count > 0) then begin
-    FGUIDesigner.vilControls1618.Draw(Canvas, x, y, LeafToBitmap(isLeaf(0)));
-    s:= FModel.Strings[0];
-    Canvas.TextOut(x + dx,  y + (FRowHeight-th) div 2, s);
-    y:= y + FRowHeight;
+  if FRootVisible and (Model.Count > 0) then
+  begin
+    FGUIDesigner.vilControls1618.Draw(Canvas, XPos, YPos,
+      LeafToBitmap(isLeaf(0)));
+    Str := FModel[0];
+    Canvas.TextOut(XPos + DeltaX, YPos + (FRowHeight - TextHeight) div 2, Str);
+    YPos := YPos + FRowHeight;
   end;
 
   // show nodes
-  for i:= 1 to Model.Count - 1 do begin
-    s:= FModel.Strings[i];
-    indentS:= getIndent(s);
-    if y > Height then break;
-    if FRootVisible and ShowsRootHandles
-      then x:= dx
-      else x:= 2;
-    if RootVisible
-      then js:= 1
-      else js:= 2;
-    for j:= js to indentS-1 do begin
-      PicNr:= ParentHasBrotherToBitmap(j, i);
-      if PicNr > -1 then begin
-        FGUIDesigner.vilControls1618.Draw(Canvas, x, y, PicNr);
-        inc(x, dx);
+  for var I := 1 to Model.Count - 1 do
+  begin
+    Str := FModel[I];
+    IndentS := GetIndent(Str);
+    if YPos > Height then
+      Break;
+    if FRootVisible and ShowsRootHandles then
+      XPos := DeltaX
+    else
+      XPos := 2;
+    if RootVisible then
+      JSPos := 1
+    else
+      JSPos := 2;
+    for var J := JSPos to IndentS - 1 do
+    begin
+      PicNr := ParentHasBrotherToBitmap(J, I);
+      if PicNr > -1 then
+      begin
+        FGUIDesigner.vilControls1618.Draw(Canvas, XPos, YPos, PicNr);
+        Inc(XPos, DeltaX);
       end;
     end;
-    if (IndentS > 1) or RootVisible then begin
-      FGUIDesigner.vilControls1618.Draw(Canvas, x, y, BrotherLeafToBitmap(hasBrother(i), isLeaf(i)));
-      inc(x, dx);
+    if (IndentS > 1) or RootVisible then
+    begin
+      FGUIDesigner.vilControls1618.Draw(Canvas, XPos, YPos,
+        BrotherLeafToBitmap(hasBrother(I), isLeaf(I)));
+      Inc(XPos, DeltaX);
     end;
-    FGUIDesigner.vilControls1618.Draw(Canvas, x, y, LeafToBitmap(isLeaf(i)));
-    Canvas.TextOut(x + dx + 2, y + (FRowHeight-th) div 2, trim(s));
-    y:= y + FRowHeight;
-    if (x + dx + 2 + Canvas.TextWidth(s) > Width) and
+    FGUIDesigner.vilControls1618.Draw(Canvas, XPos, YPos,
+      LeafToBitmap(isLeaf(I)));
+    Canvas.TextOut(XPos + DeltaX + 2, YPos + (FRowHeight - TextHeight) div 2,
+      Trim(Str));
+    YPos := YPos + FRowHeight;
+    if (XPos + DeltaX + 2 + Canvas.TextWidth(Str) > Width) and
       (HorizontalScrollBarPolicy <> NEVER) then
-      hsb:= true;
+      Hsb := True;
   end;
-  if (y > Height) and (VerticalScrollBarPolicy <> NEVER) then
-    vsb:= true;
+  if (YPos > Height) and (VerticalScrollBarPolicy <> NEVER) then
+    Vsb := True;
 
   // paint scrollbars
-  p17:= PPIScale(17);
-  if hsb and vsb then begin
-    Canvas.Brush.Color:= DefaultBackground;
-    Canvas.FillRect(Rect(Width-p17, Height-p17, Width-1, Height-1));
-    ScrollBar(Rect(Width-p17, 1, Width-1, Height-p17), false, true); // vsb
-    ScrollBar(Rect(1, Height-p17, Width-p17, Height-1), true, true); // hsb
-    Canvas.Pen.Color:= DarkShadow;
-    Canvas.MoveTo(1, Height-p17);
-    Canvas.LineTo(Width-p17, Height-p17);
-    Canvas.LineTo(Width-p17, 0);
-    Canvas.MoveTo(1, Height-1);
-    Canvas.LineTo(Width-1, Height-1);
-    Canvas.LineTo(Width-1, 0);
-  end else if hsb then begin
-    ScrollBar(Rect(1, Height-p17, Width-1, Height-1), true, true);
-    Canvas.Pen.Color:= DarkShadow;
-    Canvas.MoveTo(1, Height-p17);
-    Canvas.LineTo(Width-1, Height-p17);
-  end else if vsb then begin
-    ScrollBar(Rect(Width-p17, 1, Width-1, Height-1), false, true);
-    Canvas.Pen.Color:= DarkShadow;
-    Canvas.MoveTo(Width-p17, Height-p17);
-    Canvas.LineTo(Width-p17, 0);
+  P17 := PPIScale(17);
+  if Hsb and Vsb then
+  begin
+    Canvas.Brush.Color := DefaultBackground;
+    Canvas.FillRect(Rect(Width - P17, Height - P17, Width - 1, Height - 1));
+    Scrollbar(Rect(Width - P17, 1, Width - 1, Height - P17), False, True);
+    // Vsb
+    Scrollbar(Rect(1, Height - P17, Width - P17, Height - 1), True, True);
+    // Hsb
+    Canvas.Pen.Color := DarkShadow;
+    Canvas.MoveTo(1, Height - P17);
+    Canvas.LineTo(Width - P17, Height - P17);
+    Canvas.LineTo(Width - P17, 0);
+    Canvas.MoveTo(1, Height - 1);
+    Canvas.LineTo(Width - 1, Height - 1);
+    Canvas.LineTo(Width - 1, 0);
+  end
+  else if Hsb then
+  begin
+    Scrollbar(Rect(1, Height - P17, Width - 1, Height - 1), True, True);
+    Canvas.Pen.Color := DarkShadow;
+    Canvas.MoveTo(1, Height - P17);
+    Canvas.LineTo(Width - 1, Height - P17);
+  end
+  else if Vsb then
+  begin
+    Scrollbar(Rect(Width - P17, 1, Width - 1, Height - 1), False, True);
+    Canvas.Pen.Color := DarkShadow;
+    Canvas.MoveTo(Width - P17, Height - P17);
+    Canvas.LineTo(Width - P17, 0);
   end;
 end;
 
-procedure TJTree.SetRowHeight(aValue: integer);
+procedure TJTree.SetRowHeight(AValue: Integer);
 begin
-  if aValue <> FRowHeight then begin
-    FRowHeight:= aValue;
+  if AValue <> FRowHeight then
+  begin
+    FRowHeight := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJTree.setRootVisible(aValue: boolean);
+procedure TJTree.SetRootVisible(AValue: Boolean);
 begin
-  if aValue <> FRootVisible then begin
-    FRootVisible:= aValue;
+  if AValue <> FRootVisible then
+  begin
+    FRootVisible := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJTree.setShowsRootHandles(aValue: boolean);
+procedure TJTree.SetShowsRootHandles(AValue: Boolean);
 begin
-  if aValue <> FShowsRootHandles then begin
-    FShowsRootHandles:= aValue;
+  if AValue <> FShowsRootHandles then
+  begin
+    FShowsRootHandles := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJTree.setItems(aValue: TStrings);
+procedure TJTree.SetItems(AValue: TStrings);
 begin
-  if FModel.Text <> aValue.Text then begin
-    FModel.Assign(aValue);
+  if FModel.Text <> AValue.Text then
+  begin
+    FModel.Assign(AValue);
     Invalidate;
   end;
 end;
 
-procedure TJTree.setHorizontalScrollBarPolicy(Value: TScrollBarPolicy);
+procedure TJTree.SetHorizontalScrollBarPolicy(Value: TScrollBarPolicy);
 begin
-  if Value <> FHorizontalScrollBarPolicy then begin
-    FHorizontalScrollBarPolicy:= Value;
+  if Value <> FHorizontalScrollBarPolicy then
+  begin
+    FHorizontalScrollBarPolicy := Value;
     Invalidate;
   end;
 end;
 
-procedure TJTree.setVerticalScrollBarPolicy(Value: TScrollBarPolicy);
+procedure TJTree.SetVerticalScrollBarPolicy(Value: TScrollBarPolicy);
 begin
-  if Value <> FVerticalScrollBarPolicy then begin
-    FVerticalScrollBarPolicy:= Value;
+  if Value <> FVerticalScrollBarPolicy then
+  begin
+    FVerticalScrollBarPolicy := Value;
     Invalidate;
   end;
 end;

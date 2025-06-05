@@ -7,7 +7,7 @@ uses Classes, Windows, Messages, Controls, Graphics,
 
 type
   TOnMouseOverToken = procedure(Sender: TObject; const Token: string;
-                                TokenType: Integer; Caret, P: TPoint; Attri: TSynHighlighterAttributes;
+                                TokenType: Integer; Caret, Posi: TPoint; Attri: TSynHighlighterAttributes;
                                 var Highlight: Boolean) of object;
   TOnTokenClick = procedure(Sender: TObject; XY:TPoint; const Token: string; TokenType: Integer; Attri: TSynHighlighterAttributes) of object;
 
@@ -51,14 +51,14 @@ rectangle may need to be increased so the entire structure line can be repainted
 TErrors = class
   private
     FArray: array of TPoint;
-    FCount: integer;
-    function getError(Index: integer): TPoint;
-    procedure setError(Index: integer; p: TPoint);
+    FCount: Integer;
+    function getError(Index: Integer): TPoint;
+    procedure setError(Index: Integer; Posi: TPoint);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Add(Value: TPoint);
-    procedure Delete(Index: integer);
+    procedure Delete(Index: Integer);
     procedure Clear;
     property Count: Integer read FCount;
     property Error[Index: Integer]: TPoint read getError write setError; default;
@@ -92,18 +92,18 @@ TSynEditEx = class(TSynEdit)
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure DoTokenCheck(Shift: TShiftState; X,Y: Integer); virtual;
-    procedure HighlightToken(XY: TPoint; const s: string; Start,TokenType: Integer; Attributes: TSynHighlighterAttributes);
+    procedure HighlightToken(XY: TPoint; const Str: string; Start,TokenType: Integer; Attributes: TSynHighlighterAttributes);
     procedure Click; override;
     procedure Paint; override;
-    procedure PaintTextLines(AClip: TRect; const aFirstRow, aLastRow, FirstCol, LastCol: integer); override;
+    procedure PaintTextLines(AClip: TRect; const aFirstRow, aLastRow, FirstCol, LastCol: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetSearchText(const s: string): string;
-    function NeedsWordWrap: boolean;
-    procedure ReplaceTabs(Width: integer);
+    function GetSearchText(const Str: string): string;
+    function NeedsWordWrap: Boolean;
+    procedure ReplaceTabs(Width: Integer);
     procedure InitShowCompileErrors;
-    procedure setCompileError(p: TPoint);
+    procedure SetCompileError(Posi: TPoint);
     procedure ShowCompileErrors;
     procedure LinesInserted(FirstLine, Count: Integer);
     procedure LinesDeleted(FirstLine, Count: Integer);
@@ -121,7 +121,7 @@ implementation
 uses Types, UITypes, Math, SysUtils,
      SynEditTypes, SynTextDrawer, SynEditTextBuffer;
 
-function RectIntersects(R1, R2: TRect): boolean;
+function RectIntersects(R1, R2: TRect): Boolean;
   var R: TRect;
 begin
   Result:= IntersectRect(R, R1, R2) or UnionRect(R, R1, R2);
@@ -134,16 +134,16 @@ begin
   Result.Y:= D.Row;
 end;
 
-function PointToBuffer(P: TPoint): TBufferCoord;
+function PointToBuffer(Posi: TPoint): TBufferCoord;
 begin
-  Result.Char:= P.X;
-  Result.Line:= P.Y;
+  Result.Char:= Posi.X;
+  Result.Line:= Posi.Y;
 end;
 
-function PointToDisplay(P: TPoint): TDisplayCoord;
+function PointToDisplay(Posi: TPoint): TDisplayCoord;
 begin
-  Result.Column:= P.x;
-  Result.Row:= P.Y;
+  Result.Column:= Posi.x;
+  Result.Row:= Posi.Y;
 end;
 
 { Error Plugin }
@@ -165,7 +165,7 @@ end;
 
 constructor TErrorPlugin.Create(AOwner: TCustomSynEdit);
 begin
-  inherited create(AOwner);
+  inherited Create(AOwner);
 end;
 
 { TSynEditEx }
@@ -198,27 +198,27 @@ begin
 end;
 
 procedure TSynEditEx.DoTokenCheck(Shift: TShiftState; X, Y: Integer);
-var S: string;
+var Str: string;
     Start, TokenType: Integer;
     Attri: TSynHighlighterAttributes;
-    P1, P2: TPoint;
+    Posi1, Posi2: TPoint;
     DoHighlight: Boolean;
 begin
-  DoHighlight:= false;
+  DoHighlight:= False;
   Start:= 0;
   if {(not (ssCtrl in Shift)) or }(FTokenInfo=nil) or (not Assigned(OnMouseOverToken)) then
   begin
     InvalidateToken;
-    exit;
+    Exit;
   end;
-  P1:= DisplayToPoint(PixelsToRowColumn(X,Y));
-  P1.Y:= RowToLine(P1.Y);
-  GetHighlighterAttriAtRowColEx(PointToBuffer(P1), S, TokenType, Start, Attri);
-  P2:= RowColumnToPixels(DisplayCoord(Start, LineToRow(P1.Y+1)));
-  OnMouseOverToken(Self, S, TokenType, P1, ClientToScreen(P2), Attri, DoHighlight); // new position before next if
-  if (S <> '') and (Attri <> nil) then begin
+  Posi1:= DisplayToPoint(PixelsToRowColumn(X,Y));
+  Posi1.Y:= RowToLine(Posi1.Y);
+  GetHighlighterAttriAtRowColEx(PointToBuffer(Posi1), Str, TokenType, Start, Attri);
+  Posi2:= RowColumnToPixels(DisplayCoord(Start, LineToRow(Posi1.Y+1)));
+  OnMouseOverToken(Self, Str, TokenType, Posi1, ClientToScreen(Posi2), Attri, DoHighlight); // new position before next if
+  if (Str <> '') and (Attri <> nil) then begin
     if DoHighlight and not fTokenIsHighlighted then begin
-      HighlightToken(P1, S, Start, TokenType, Attri);
+      HighlightToken(Posi1, Str, Start, TokenType, Attri);
       fTokenIsHighlighted:= True;
       end
     else if not DoHighlight then
@@ -229,13 +229,13 @@ begin
   if not DoHighlight then InvalidateToken;
 end;
 
-procedure TSynEditEx.HighlightToken(XY: TPoint; const s: string; Start,TokenType: Integer; Attributes: TSynHighlighterAttributes);
-  var P: TPoint;
+procedure TSynEditEx.HighlightToken(XY: TPoint; const Str: string; Start,TokenType: Integer; Attributes: TSynHighlighterAttributes);
+  var Posi: TPoint;
       fTextDrawer: TheTextDrawer;
       Rect: TRect;
-      i: Integer;
+      Int: Integer;
 begin
-  if FTokenInfo.Active and ((FTokenInfo.Token<>S) or (FTokenInfo.Start<>Start) or (FTokenInfo.XY.Y<>XY.Y)) then
+  if FTokenInfo.Active and ((FTokenInfo.Token<>Str) or (FTokenInfo.Start<>Start) or (FTokenInfo.XY.Y<>XY.Y)) then
     InvalidateToken;
   Canvas.Font:= Font;
   Canvas.Font.Color:= clBlue;
@@ -244,8 +244,8 @@ begin
     then Canvas.Brush.Color:= Color
     else Canvas.Brush.Color:= Attributes.Background;
   Canvas.Font.Style:= Canvas.Font.Style+[fsUnderLine];
-  P.X:= Start;
-  P.Y:= XY.Y;
+  Posi.X:= Start;
+  Posi.Y:= XY.Y;
 
   fTextDrawer:= TheTextDrawer.Create(Canvas.Font.Style, Canvas.Font);
   try
@@ -257,13 +257,13 @@ begin
     //it doesn't seem to match up for certain fonts like Lucida. This could
     //probably be optimized by someone who understands SynEdit painting better
     //then I do
-    for i:= 1 to length(S) do begin
-      P:= RowColumnToPixels(DisplayCoord(Start+(i-1),XY.Y));
-      Rect.TopLeft:=P;
+    for Int:= 1 to Length(Str) do begin
+      Posi:= RowColumnToPixels(DisplayCoord(Start+(Int-1),XY.Y));
+      Rect.TopLeft:=Posi;
       Rect.Right  := Rect.Left + fTextDrawer.CharWidth;
       Rect.Bottom := Rect.Top + fTextDrawer.CharHeight;
       if (Rect.Left>Gutter.RealGutterWidth(CharWidth)) then
-        fTextDrawer.ExtTextOut(P.X, P.Y, [tooOpaque] {ETO_OPAQUE}, Rect, @S[i], 1);
+        fTextDrawer.ExtTextOut(Posi.X, Posi.Y, [tooOpaque] {ETO_OPAQUE}, Rect, @Str[Int], 1);
     end;
     fTextDrawer.EndDrawing;
   finally
@@ -271,11 +271,11 @@ begin
   end;
   Canvas.Brush.Style:= bsSolid;
   FTokenInfo.XY:= XY;
-  FTokenInfo.Token:= S;
+  FTokenInfo.Token:= Str;
   FTokenInfo.Start:= Start;
   FTokenInfo.Attributes:= Attributes;
   FTokenInfo.TokenType:= TokenType;
-  FTokenInfo.Active:= true;
+  FTokenInfo.Active:= True;
   Cursor:= crHandPoint;
 end;
 
@@ -283,7 +283,7 @@ procedure TSynEditEx.InvalidateToken;
 begin
   if FTokenInfo.Active then begin
     Cursor:= crIBeam;
-    FTokenInfo.Active:= false;
+    FTokenInfo.Active:= False;
     InvalidateLine(FTokenInfo.XY.Y);
   end;
 end;
@@ -296,13 +296,13 @@ begin
 end;
 
 procedure TSynEditEx.KeyDown(var Key: Word; Shift: TShiftState);
-  var P: TPoint;
+  var Posi: TPoint;
 begin
   if (ssCtrl in Shift) then begin
-    GetCursorPos(P);
-    P:= ScreenToClient(P);
-    if (P.X > 0) and (P.Y > 0) and (P.X < Width) and (P.Y < Height) then
-      DoTokenCheck(Shift,P.X,P.Y);
+    GetCursorPos(Posi);
+    Posi:= ScreenToClient(Posi);
+    if (Posi.X > 0) and (Posi.Y > 0) and (Posi.X < Width) and (Posi.Y < Height) then
+      DoTokenCheck(Shift,Posi.X,Posi.Y);
   end;
   inherited;
 end;
@@ -332,47 +332,47 @@ begin
 end;
 
 procedure TSynEditEx.PaintTextLines(AClip: TRect; const aFirstRow, aLastRow,
-      FirstCol, LastCol: integer);
+      FirstCol, LastCol: Integer);
 begin
   inherited;
   ShowCompileErrors;
 end;
 
-function TSynEditEx.GetSearchText(const s: string): string;
+function TSynEditEx.GetSearchText(const Str: string): string;
 begin
   if SelAvail and (BlockBegin.Line = BlockEnd.Line)
     then Result:= SelText
   else
     if WordAtCursor <> ''
       then Result:= WordAtCursor
-      else Result:= s;
+      else Result:= Str;
 end;
 
-procedure TSynEditEx.ReplaceTabs(Width: integer);
-  var i, OldTabWidth: Integer; s: string;
+procedure TSynEditEx.ReplaceTabs(Width: Integer);
+  var Int, OldTabWidth: Integer; Str: string;
 begin
   if Pos(#9, Text) > 0 then begin
     OldTabWidth:= TabWidth;
     TabWidth:= Width;    // wegen ExpandedStrings
     Lines.BeginUpdate;
-    for i:= 0 to Lines.Count - 1 do
-      if Pos(#9, Lines[i]) > 0 then begin
-        s:= TSynEditStringList(Lines).ExpandedStrings[i];
-        Lines[i]:= StringReplace(s, #9, ' ', [rfReplaceAll]);
+    for Int:= 0 to Lines.Count - 1 do
+      if Pos(#9, Lines[Int]) > 0 then begin
+        Str:= TSynEditStringList(Lines).ExpandedStrings[Int];
+        Lines[Int]:= StringReplace(Str, #9, ' ', [rfReplaceAll]);
       end;
     TabWidth:= OldTabWidth;
     Lines.EndUpdate;
   end;
 end;
 
-function TSynEditEx.NeedsWordWrap: boolean;
-  var i: Integer;
+function TSynEditEx.NeedsWordWrap: Boolean;
+  var Int: Integer;
 begin
-  Result:= false;
-  for i:= 0 to Lines.Count - 1 do
-    if Length(Lines[i]) > 500 then begin
-      Result:= true;
-      break;
+  Result:= False;
+  for Int:= 0 to Lines.Count - 1 do
+    if Length(Lines[Int]) > 500 then begin
+      Result:= True;
+      Break;
     end;
 end;
 
@@ -381,48 +381,48 @@ begin
   FErrors.Clear;
 end;
 
-procedure TSynEditEx.setCompileError(p: TPoint);
+procedure TSynEditEx.setCompileError(Posi: TPoint);
 begin
-  FErrors.Add(p);
+  FErrors.Add(Posi);
 end;
 
 procedure TSynEditEx.ShowCompileErrors;
   var GP: TRect;
-      i, x, xe, y: Integer;
-      p1, p2: TPoint;
-      s: string;
+      Int, x, xe, y: Integer;
+      Posi1, Posi2: TPoint;
+      Str: string;
 begin
   Canvas.Pen.Color:= clRed;
-  for i:= 0 to fErrors.Count-1 do begin
-    p1:= FErrors[i];
-    s:= Lines[p1.y-2];
-    if p1.X = -1 then begin  // unknown column, only line
-      p1.X:= 1;
-      while (p1.X < length(s)) and IsWordBreakChar(s[p1.X]) do
-        inc(p1.X);
+  for Int:= 0 to fErrors.Count-1 do begin
+    Posi1:= FErrors[Int];
+    Str:= Lines[Posi1.y-2];
+    if Posi1.X = -1 then begin  // unknown column, only line
+      Posi1.X:= 1;
+      while (Posi1.X < Length(Str)) and IsWordBreakChar(Str[Posi1.X]) do
+        Inc(Posi1.X);
     end else begin
-      p1.X:= Math.max(p1.X - 3, 1);
-      while (p1.X > 0) and (p1.x <= length(s)) and not IsWordBreakChar(s[p1.X]) do
-        dec(p1.X);
-      inc(p1.x);
-      while (p1.X < length(s)) and (s[p1.X] = ' ') do
-        inc(p1.X);
+      Posi1.X:= Math.Max(Posi1.X - 3, 1);
+      while (Posi1.X > 0) and (Posi1.x <= Length(Str)) and not IsWordBreakChar(Str[Posi1.X]) do
+        Dec(Posi1.X);
+      Inc(Posi1.x);
+      while (Posi1.X < Length(Str)) and (Str[Posi1.X] = ' ') do
+        Inc(Posi1.X);
     end;
 
-    p2:= FErrors[i];
-    if p2.x = -1 then begin // unknown column, only line
-      p2.x:= length(s);
-      while (p2.x > 0) and (p2.x <= length(s)) and IsWordBreakChar(s[p2.X]) do
-        dec(p2.x);
-      inc(p2.x);
+    Posi2:= FErrors[Int];
+    if Posi2.x = -1 then begin // unknown column, only line
+      Posi2.x:= Length(Str);
+      while (Posi2.x > 0) and (Posi2.x <= Length(Str)) and IsWordBreakChar(Str[Posi2.X]) do
+        Dec(Posi2.x);
+      Inc(Posi2.x);
     end else begin
-      p2.x:= Math.min(p2.X + 3, length(s));
-      while (p2.X < length(s)) and not IsWordBreakChar(s[p2.X]) do
-        inc(p2.X);
+      Posi2.x:= Math.Min(Posi2.X + 3, Length(Str));
+      while (Posi2.X < Length(Str)) and not IsWordBreakChar(Str[Posi2.X]) do
+        Inc(Posi2.X);
     end;
 
-    GP.BottomRight:= RowColumnToPixels(PointToDisplay(p1));
-    GP.TopLeft:= RowColumnToPixels(PointToDisplay(p2));
+    GP.BottomRight:= RowColumnToPixels(PointToDisplay(Posi1));
+    GP.TopLeft:= RowColumnToPixels(PointToDisplay(Posi2));
     if GP.Left <= Gutter.RealGutterWidth(CharWidth) then Continue;
     if RectIntersects(ClientRect, GP) then begin
       x:= GP.BottomRight.X;
@@ -441,28 +441,28 @@ begin
 end;
 
 procedure TSynEditEx.LinesInserted(FirstLine, Count: Integer);
-  var i: Integer; p: TPoint;
+  var Int: Integer; Posi: TPoint;
 begin
-  for i:= 0 to FErrors.Count - 1 do begin
-    p:= FErrors[i];
-    if p.y - 2 >= FirstLine - 1 then begin
-      p.y := p.y + Count;
-      FErrors[i]:= p;
+  for Int:= 0 to FErrors.Count - 1 do begin
+    Posi:= FErrors[Int];
+    if Posi.y - 2 >= FirstLine - 1 then begin
+      Posi.y := Posi.y + Count;
+      FErrors[Int]:= Posi;
     end;
   end;
 end;
 
 procedure TSynEditEx.LinesDeleted(FirstLine, Count: Integer);
-  var i: Integer; p: TPoint;
+  var Int: Integer; Posi: TPoint;
 begin
-  for i:= 0 to FErrors.Count - 1 do begin
-    p:= FErrors[i];
-    if p.y - 1 > FirstLine + Count then begin
-      p.y := p.y - Count;
-      FErrors[i]:= p;
+  for Int:= 0 to FErrors.Count - 1 do begin
+    Posi:= FErrors[Int];
+    if Posi.y - 1 > FirstLine + Count then begin
+      Posi.y := Posi.y - Count;
+      FErrors[Int]:= Posi;
     end
-    else if p.y - 1 > FirstLine then
-      FErrors.delete(i);
+    else if Posi.y - 1 > FirstLine then
+      FErrors.Delete(Int);
   end;
 end;
 
@@ -488,28 +488,28 @@ end;
 constructor TErrors.Create;
 begin
   FCount:= 0;
-  setLength(FArray, 10);
+  SetLength(FArray, 10);
 end;
 
 destructor TErrors.destroy;
 begin
-  setLength(FArray, 0);
+  SetLength(FArray, 0);
 end;
 
 procedure TErrors.Add(Value: TPoint);
 begin
   if Length(FArray) = FCount then
-    setLength(FArray, FCount + 10);
+    SetLength(FArray, FCount + 10);
   FArray[FCount]:= Value;
-  inc(FCount);
+  Inc(FCount);
 end;
 
-procedure TErrors.Delete(Index: integer);
-  var i: integer;
+procedure TErrors.Delete(Index: Integer);
+  var Int: Integer;
 begin
-  for i:= Index + 1 to FCount-1 do
-    FArray[i-1]:= FArray[i];
-  dec(FCount);
+  for Int:= Index + 1 to FCount-1 do
+    FArray[Int-1]:= FArray[Int];
+  Dec(FCount);
 end;
 
 function TErrors.getError(Index: Integer): TPoint;
@@ -517,15 +517,15 @@ begin
   Result:= FArray[Index];
 end;
 
-procedure TErrors.setError(Index: integer; p: TPoint);
+procedure TErrors.setError(Index: Integer; Posi: TPoint);
 begin
-  FArray[Index]:= p;
+  FArray[Index]:= Posi;
 end;
 
 procedure TErrors.Clear;
 begin
   FCount:= 0;
-  setLength(FArray, 10);
+  SetLength(FArray, 10);
 end;
 
 end.

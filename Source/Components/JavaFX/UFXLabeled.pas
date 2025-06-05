@@ -2,312 +2,400 @@ unit UFXLabeled;
 
 interface
 
-uses Classes, Graphics, UFXComponents;
+uses
+  Classes,
+  Graphics,
+  UFXComponents;
 
 type
 
   TContentDisplay = (_CD_BOTTOM, _CD_CENTER, _CD_GRAPHIC_ONLY, _CD_LEFT,
-                     _CD_RIGHT, _CD_TEXT_ONLY, _CD_TOP);
+    _CD_RIGHT, _CD_TEXT_ONLY, _CD_TOP);
 
-  TFXLabeled = class (TFXControl)
+  TFXLabeled = class(TFXControl)
   private
     FAlignment: TAlignment;
     FContentDisplay: TContentDisplay;
     FEllipsisString: string;
     FGraphic: string;
-    FGraphicTextGap: integer;
-    FLineSpacing: double;
-    FMnemonicParsing: boolean;
+    FGraphicTextGap: Integer;
+    FLineSpacing: Double;
+    FMnemonicParsing: Boolean;
     FTextAlignment: TTextAlignment;
     FTextFill: TColor;
-    FUnderline: boolean;
-    FWrapText: boolean;
-    procedure setLineSpacing(aValue: double);
-    procedure setUnderline(aValue: boolean);
-    procedure setTextFill(aColor: TColor);
-    procedure setGraphic(const aValue: string);
-    procedure setGraphicTextGap(aValue: integer);
-    procedure setTextAlignment(aValue: TTextAlignment);
-    procedure setAlignment(aValue: TAlignment);
-    procedure setContentDisplay(aValue: TContentDisplay);
+    FUnderline: Boolean;
+    FWrapText: Boolean;
+    procedure SetLineSpacing(AValue: Double);
+    procedure SetUnderline(AValue: Boolean);
+    procedure SetTextFill(AColor: TColor);
+    procedure SetGraphic(const AValue: string);
+    procedure SetGraphicTextGap(AValue: Integer);
+    procedure SetTextAlignment(AValue: TTextAlignment);
+    procedure SetAlignment(AValue: TAlignment);
+    procedure SetContentDisplay(AValue: TContentDisplay);
   protected
     FText: string;
-    TopSpace: integer;
-    LeftSpace: integer;
-    RightSpace: integer;
-    BottomSpace: integer;
-    procedure setText(const aValue: string); virtual;
+    FTopSpace: Integer;
+    FLeftSpace: Integer;
+    FRightSpace: Integer;
+    FBottomSpace: Integer;
+    procedure SetText(const AValue: string); virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure Paint; override;
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure DeleteComponent; override;
-    function getPicNr: integer; virtual;
+    function GetPicNr: Integer; virtual;
     procedure MakeFont; override;
   published
-    property Alignment: TAlignment read FAlignment write setAlignment;
-    property ContentDisplay: TContentDisplay read FContentDisplay write setContentDisplay;
+    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property ContentDisplay: TContentDisplay read FContentDisplay
+      write SetContentDisplay;
     property EllipsisString: string read FEllipsisString write FEllipsisString;
-    property LineSpacing: double read FLineSpacing write setLineSpacing;
-    property Underline: boolean read FUnderline write setUnderline;
-    property TextFill: TColor read FTextFill write setTextFill;
-    property Graphic: string read FGraphic write setGraphic;
-    property GraphicTextGap: integer read FGraphicTextGap write setGraphicTextGap;
-    property MnemonicParsing: boolean read FMnemonicParsing write FMnemonicParsing;
-    property Text: string read FText write setText;
-    property TextAlignment: TTextAlignment read FTextAlignment write setTextAlignment;
-    property WrapText: boolean read FWrapText write FWrapText;
+    property LineSpacing: Double read FLineSpacing write SetLineSpacing;
+    property Underline: Boolean read FUnderline write SetUnderline;
+    property TextFill: TColor read FTextFill write SetTextFill;
+    property Graphic: string read FGraphic write SetGraphic;
+    property GraphicTextGap: Integer read FGraphicTextGap
+      write SetGraphicTextGap;
+    property MnemonicParsing: Boolean read FMnemonicParsing
+      write FMnemonicParsing;
+    property Text: string read FText write SetText;
+    property TextAlignment: TTextAlignment read FTextAlignment
+      write SetTextAlignment;
+    property WrapText: Boolean read FWrapText write FWrapText;
   end;
 
 implementation
 
-uses SysUtils, Controls, GIFImg, jpeg, pngimage, Math,
-     UGuiDesigner, UJEComponents, UUtils;
+uses
+  SysUtils,
+  Controls,
+  GIFImg,
+  jpeg,
+  pngimage,
+  Math,
+  UGUIDesigner,
+  UJEComponents,
+  UUtils;
 
-{--- TFXLabeled ---------------------------------------------------------------}
+{ --- TFXLabeled --------------------------------------------------------------- }
 
 constructor TFXLabeled.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  FAlignment:= CENTER_LEFT;
-  FContentDisplay:= _CD_LEFT;
-  FEllipsisString:= '...';
-  FGraphicTextGap:= 4;
-  FLineSpacing:= 0;
-  FTextAlignment:= _TA_LEFT;
-  FTextFill:= $333333;
-  LeftSpace:= 0;
-  RightSpace:= 0;
-  TopSpace:= 0;
-  BottomSpace:= 0;
-  Background:= clBtnFace;
+  inherited Create(AOwner);
+  FAlignment := CENTER_LEFT;
+  FContentDisplay := _CD_LEFT;
+  FEllipsisString := '...';
+  FGraphicTextGap := 4;
+  FLineSpacing := 0;
+  FTextAlignment := _TA_LEFT;
+  FTextFill := $333333;
+  FLeftSpace := 0;
+  FRightSpace := 0;
+  FTopSpace := 0;
+  FBottomSpace := 0;
+  Background := clBtnFace;
 end;
 
 procedure TFXLabeled.Paint;
-  var tx, ty, tw, th, x, y, w, h, gw, gh, gx, gy, maxw, maxh, mgw, mtw, gtg, bx, by: integer;
-      s, pathname, ext: string;
-      png: TPngImage;
-      gif: TGifImage;
-      jpg: TJPEGImage;
-      bmp: Graphics.TBitmap;
+var
+  TextX, TextY, TextWidth, TextHeight, XPos, YPos, WPos, HPos, GeW, GeH, GeX,
+    GeY, MaxW, MaxH, Mgw, Mtw, Gtg, BeX, BeY: Integer;
+  Str, Pathname, Ext: string;
+  Png: TPngImage;
+  Gif: TGIFImage;
+  Jpg: TJPEGImage;
+  Bmp: Graphics.TBitmap;
 
-  function Shorten(s: string; w: integer): string;
-    var e: integer;
+  function Shorten(Str: string; Width: Integer): string;
+  var
+    Ellip: Integer;
   begin
-    e:= Canvas.TextWidth(EllipsisString);
-    tw:= Canvas.TextWidth(s);
-    if tw > w then begin
-      while (tw > w - e) and (s <> '') do begin
-        s:= UUtils.Left(s, Length(s)-1);
-        tw:= Canvas.TextWidth(s);
+    Ellip := Canvas.TextWidth(EllipsisString);
+    TextWidth := Canvas.TextWidth(Str);
+    if TextWidth > Width then
+    begin
+      while (TextWidth > Width - Ellip) and (Str <> '') do
+      begin
+        Str := UUtils.Left(Str, Length(Str) - 1);
+        TextWidth := Canvas.TextWidth(Str);
       end;
-      s:= s + EllipsisString;
-      tw:= tw + e;
+      Str := Str + EllipsisString;
+      TextWidth := TextWidth + Ellip;
     end;
-    Result:= s;
+    Result := Str;
   end;
 
 begin
   CanvasFontAssign;
-  Canvas.Font.Color:= FTextFill;
-  h:= Height - TopSpace - BottomSpace;
-  w:= Width - LeftSpace - RightSpace;
-  tw:= Canvas.TextWidth(Text);
-  th:= Canvas.TextHeight('Hg');
-  s:= Text;
+  Canvas.Font.Color := FTextFill;
+  HPos := Height - FTopSpace - FBottomSpace;
+  WPos := Width - FLeftSpace - FRightSpace;
+  TextWidth := Canvas.TextWidth(Text);
+  TextHeight := Canvas.TextHeight('Hg');
+  Str := Text;
 
-  pathname:= FGuiDesigner.getPath + 'images\' + copy(Graphic, 8, length(Graphic));
-  if (ContentDisplay = _CD_TEXT_ONLY) or (Graphic = '') or not FileExists(pathname) then begin
+  Pathname := FGUIDesigner.GetPath + 'images\' +
+    Copy(Graphic, 8, Length(Graphic));
+  if (ContentDisplay = _CD_TEXT_ONLY) or (Graphic = '') or
+    not FileExists(Pathname) then
+  begin
     // without graphic
-    s:= Shorten(s, w);
+    Str := Shorten(Str, WPos);
     case Alignment of
-      TOP_LEFT:      begin x:= 0; y:= 1; end;
-      TOP_CENTER:    begin x:= (w - tw) div 2; y:= 1 end;
-      TOP_RIGHT:     begin x:= w - 5 - tw; y:= 1 end;
-      BASELINE_LEFT,
-      CENTER_LEFT:   begin x:= 0; y:= (h - th) div 2; end;
-      BASELINE_CENTER,
-      CENTER:        begin x:= (w - tw) div 2; y:= (h - th) div 2; end;
-      BASELINE_RIGHT,
-      CENTER_RIGHT:  begin x:= w - 5 - tw; y:= (h - th) div 2; end;
-      BOTTOM_LEFT:   begin x:= 0; y:= h - 1 - th end;
-      BOTTOM_CENTER: begin x:= (w - tw) div 2; y:= h - 1 - th end;
-      BOTTOM_RIGHT:  begin x:= w - 5 - tw; y:= h - 1 - th; end;
-      else           begin x:= 0; y:= 0; end;
+      TOP_LEFT:
+        begin
+          XPos := 0;
+          YPos := 1;
+        end;
+      TOP_CENTER:
+        begin
+          XPos := (WPos - TextWidth) div 2;
+          YPos := 1;
+        end;
+      TOP_RIGHT:
+        begin
+          XPos := WPos - 5 - TextWidth;
+          YPos := 1;
+        end;
+      BASELINE_LEFT, CENTER_LEFT:
+        begin
+          XPos := 0;
+          YPos := (HPos - TextHeight) div 2;
+        end;
+      BASELINE_CENTER, CENTER:
+        begin
+          XPos := (WPos - TextWidth) div 2;
+          YPos := (HPos - TextHeight) div 2;
+        end;
+      BASELINE_RIGHT, CENTER_RIGHT:
+        begin
+          XPos := WPos - 5 - TextWidth;
+          YPos := (HPos - TextHeight) div 2;
+        end;
+      BOTTOM_LEFT:
+        begin
+          XPos := 0;
+          YPos := HPos - 1 - TextHeight;
+        end;
+      BOTTOM_CENTER:
+        begin
+          XPos := (WPos - TextWidth) div 2;
+          YPos := HPos - 1 - TextHeight;
+        end;
+      BOTTOM_RIGHT:
+        begin
+          XPos := WPos - 5 - TextWidth;
+          YPos := HPos - 1 - TextHeight;
+        end;
+    else
+      begin
+        XPos := 0;
+        YPos := 0;
+      end;
     end;
-    Canvas.Font.Color:= TextFill;
-    Canvas.TextOut(LeftSpace + x, TopSpace + y, s);
-  end else begin
+    Canvas.Font.Color := TextFill;
+    Canvas.TextOut(FLeftSpace + XPos, FTopSpace + YPos, Str);
+  end
+  else
+  begin
     // with graphic
-    ext:= Uppercase(ExtractFileExt(Graphic));
-    bmp:= Graphics.TBitmap.Create;
-    if ext = '.PNG' then begin
-      png:= TPngImage.Create;
-      png.LoadFromFile(pathname);
-      bmp.Assign(png);
-      FreeAndNil(png);
-    end else if ext = '.GIF' then begin
-      gif:= TGifImage.Create;
-      gif.LoadFromFile(Pathname);
-      bmp.Assign(gif.Bitmap);
-      FreeAndNil(gif);
-    end else if (ext = '.JPG') or (ext = 'JPEG') then begin
-      jpg:= TJPEGImage.Create;
-      jpg.LoadFromFile(Pathname);
-      bmp.Assign(jpg);
-      FreeAndNil(jpg);
+    Ext := UpperCase(ExtractFileExt(Graphic));
+    Bmp := Graphics.TBitmap.Create;
+    if Ext = '.Png' then
+    begin
+      Png := TPngImage.Create;
+      Png.LoadFromFile(Pathname);
+      Bmp.Assign(Png);
+      FreeAndNil(Png);
+    end
+    else if Ext = '.Gif' then
+    begin
+      Gif := TGIFImage.Create;
+      Gif.LoadFromFile(Pathname);
+      Bmp.Assign(Gif.Bitmap);
+      FreeAndNil(Gif);
+    end
+    else if (Ext = '.Jpg') or (Ext = 'JPEG') then
+    begin
+      Jpg := TJPEGImage.Create;
+      Jpg.LoadFromFile(Pathname);
+      Bmp.Assign(Jpg);
+      FreeAndNil(Jpg);
     end;
 
-    gw:= bmp.Width;
-    gh:= bmp.Height;
+    GeW := Bmp.Width;
+    GeH := Bmp.Height;
 
-    if ContentDisplay = _CD_GRAPHIC_ONLY then begin
-      s:= '';
-      tw:= 0;
-      gtg:= 0;
-    end else
-      gtg:= GraphicTextGap;
+    if ContentDisplay = _CD_GRAPHIC_ONLY then
+    begin
+      Str := '';
+      TextWidth := 0;
+      Gtg := 0;
+    end
+    else
+      Gtg := GraphicTextGap;
 
     case ContentDisplay of
-      _CD_TOP, _CD_BOTTOM: begin
-        s:= Shorten(s, w);
-        maxw:= max(tw, gw);
-        maxh:= gh + gtg + th;
-      end;
-      _CD_GRAPHIC_ONLY: begin
-        maxw:= gw;
-        maxh:= gh;
-      end;
-      _CD_LEFT, _CD_RIGHT: begin
-        s:= Shorten(s, w - gtg - gw);
-        maxw:= gw + gtg + tw;
-        maxh:= max(th, gh);
-      end;
-      _CD_CENTER: begin
-        s:= Shorten(s, w);
-        maxw:= max(gw, tw);
-        maxh:= max(th, gh);
-      end;
-      else begin
-        maxw:= 0;
-        maxh:= 0;
+      _CD_TOP, _CD_BOTTOM:
+        begin
+          Str := Shorten(Str, WPos);
+          MaxW := Max(TextWidth, GeW);
+          MaxH := GeH + Gtg + TextHeight;
+        end;
+      _CD_GRAPHIC_ONLY:
+        begin
+          MaxW := GeW;
+          MaxH := GeH;
+        end;
+      _CD_LEFT, _CD_RIGHT:
+        begin
+          Str := Shorten(Str, WPos - Gtg - GeW);
+          MaxW := GeW + Gtg + TextWidth;
+          MaxH := Max(TextHeight, GeH);
+        end;
+      _CD_CENTER:
+        begin
+          Str := Shorten(Str, WPos);
+          MaxW := Max(GeW, TextWidth);
+          MaxH := Max(TextHeight, GeH);
+        end;
+    else
+      begin
+        MaxW := 0;
+        MaxH := 0;
       end;
     end;
-    if maxw > w then begin
-      width:= LeftSpace + maxw;
-      w:= maxw;
+    if MaxW > WPos then
+    begin
+      Width := FLeftSpace + MaxW;
+      WPos := MaxW;
     end;
 
-    // bx, by = position of compound box of graphic and text
-    // maxw, maxh = size of compound box
+    // BeX, BeY = position of compound box of graphic and text
+    // MaxW, MaxH = size of compound box
     case Alignment of
-      TOP_LEFT: begin
-        bx:= 0;
-        by:= 0;
-      end;
-      TOP_CENTER: begin
-        bx:= (w - maxw) div 2;
-        by:= 0;
-      end;
-      TOP_RIGHT: begin
-        bx:= w - maxw;
-        by:= 0;
-      end;
-      CENTER_LEFT,
-      BASELINE_LEFT: begin
-        bx:= 0;
-        by:= (h - maxh) div 2;
-      end;
-      CENTER,
-      BASELINE_CENTER: begin
-        bx:= (w - maxw) div 2;
-        by:= (h - maxh) div 2;
-      end;
-      CENTER_RIGHT,
-      BASELINE_RIGHT: begin
-        bx:= w - maxw;
-        by:= (h - maxh) div 2;
-      end;
-      BOTTOM_LEFT: begin
-        bx:= 0;
-        by:= h - maxh;
-      end;
-      BOTTOM_CENTER: begin
-        bx:= (w - maxw) div 2;
-        by:= h - maxh;
-      end;
-      BOTTOM_RIGHT: begin
-        bx:= w - maxw;
-        by:= h - maxh;
-      end;
-      else begin
-        bx:= 0;
-        by:= 0;
+      TOP_LEFT:
+        begin
+          BeX := 0;
+          BeY := 0;
+        end;
+      TOP_CENTER:
+        begin
+          BeX := (WPos - MaxW) div 2;
+          BeY := 0;
+        end;
+      TOP_RIGHT:
+        begin
+          BeX := WPos - MaxW;
+          BeY := 0;
+        end;
+      CENTER_LEFT, BASELINE_LEFT:
+        begin
+          BeX := 0;
+          BeY := (HPos - MaxH) div 2;
+        end;
+      CENTER, BASELINE_CENTER:
+        begin
+          BeX := (WPos - MaxW) div 2;
+          BeY := (HPos - MaxH) div 2;
+        end;
+      CENTER_RIGHT, BASELINE_RIGHT:
+        begin
+          BeX := WPos - MaxW;
+          BeY := (HPos - MaxH) div 2;
+        end;
+      BOTTOM_LEFT:
+        begin
+          BeX := 0;
+          BeY := HPos - MaxH;
+        end;
+      BOTTOM_CENTER:
+        begin
+          BeX := (WPos - MaxW) div 2;
+          BeY := HPos - MaxH;
+        end;
+      BOTTOM_RIGHT:
+        begin
+          BeX := WPos - MaxW;
+          BeY := HPos - MaxH;
+        end;
+    else
+      begin
+        BeX := 0;
+        BeY := 0;
       end;
     end;
 
-    mgw:= (maxw - gw) div 2;
-    mtw:= (maxw - tw) div 2;    
+    Mgw := (MaxW - GeW) div 2;
+    Mtw := (MaxW - TextWidth) div 2;
 
     case ContentDisplay of
-      _CD_TOP: begin
-        gx:= mgw;
-        gy:= 0;
-        tx:= mtw;
-        ty:= gh + gtg;
-      end;
-      _CD_BOTTOM: begin
-        gx:= mgw;
-        gy:= maxh - gh;
-        tx:= mtw;
-        ty:= 0;
-      end;
-      _CD_LEFT: begin
-        gx:= 0;
-        gy:= 0;
-        tx:= gw + gtg;
-        ty:= (maxh - th) div 2;
-      end;
-      _CD_RIGHT: begin
-        gx:= maxw - gw;
-        gy:= 0;
-        tx:= 0;
-        ty:= (maxh - th) div 2;
-      end;
-      _CD_CENTER: begin
-        gx:= mgw;
-        gy:= 0;
-        tx:= mtw;
-        ty:=  (maxh - th) div 2;
-      end;
-      else begin
-        gx:= 0;
-        gy:= 0;
-        tx:= 0;
-        ty:= 0;
+      _CD_TOP:
+        begin
+          GeX := Mgw;
+          GeY := 0;
+          TextX := Mtw;
+          TextY := GeH + Gtg;
+        end;
+      _CD_BOTTOM:
+        begin
+          GeX := Mgw;
+          GeY := MaxH - GeH;
+          TextX := Mtw;
+          TextY := 0;
+        end;
+      _CD_LEFT:
+        begin
+          GeX := 0;
+          GeY := 0;
+          TextX := GeW + Gtg;
+          TextY := (MaxH - TextHeight) div 2;
+        end;
+      _CD_RIGHT:
+        begin
+          GeX := MaxW - GeW;
+          GeY := 0;
+          TextX := 0;
+          TextY := (MaxH - TextHeight) div 2;
+        end;
+      _CD_CENTER:
+        begin
+          GeX := Mgw;
+          GeY := 0;
+          TextX := Mtw;
+          TextY := (MaxH - TextHeight) div 2;
+        end;
+    else
+      begin
+        GeX := 0;
+        GeY := 0;
+        TextX := 0;
+        TextY := 0;
       end;
     end;
 
-    gx:= bx + gx;
-    gy:= by + gy;
-    tx:= bx + tx;
-    ty:= by + ty;
+    GeX := BeX + GeX;
+    GeY := BeY + GeY;
+    TextX := BeX + TextX;
+    TextY := BeY + TextY;
 
-
-    if Underline then Canvas.Font.Style:= [fsUnderline];
+    if Underline then
+      Canvas.Font.Style := [fsUnderline];
     if ContentDisplay <> _CD_GRAPHIC_ONLY then
-      Canvas.TextOut(LeftSpace + tx, TopSpace + ty, s);
-    Canvas.Font.Style:= [];
-    Canvas.Draw(LeftSpace + gx, TopSpace + gy, bmp);
-    FreeAndNil(bmp);
+      Canvas.TextOut(FLeftSpace + TextX, FTopSpace + TextY, Str);
+    Canvas.Font.Style := [];
+    Canvas.Draw(FLeftSpace + GeX, FTopSpace + GeY, Bmp);
+    FreeAndNil(Bmp);
   end;
 end;
 
-function TFXLabeled.getPicNr: integer;
+function TFXLabeled.GetPicNr: Integer;
 begin
-  Result:= 0;
+  Result := 0;
 end;
 
 procedure TFXLabeled.MakeFont;
@@ -315,111 +403,126 @@ begin
   DoMakeFont;
 end;
 
-procedure TFXLabeled.setLineSpacing(aValue: double);
+procedure TFXLabeled.SetLineSpacing(AValue: Double);
 begin
-  if aValue <> FLineSpacing then begin
-    FLineSpacing:= aValue;
+  if AValue <> FLineSpacing then
+  begin
+    FLineSpacing := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXLabeled.setUnderline(aValue: boolean);
+procedure TFXLabeled.SetUnderline(AValue: Boolean);
 begin
-  if aValue <> FUnderline then begin
-    FUnderline:= aValue;
+  if AValue <> FUnderline then
+  begin
+    FUnderline := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXLabeled.setTextFill(aColor: TColor);
+procedure TFXLabeled.SetTextFill(AColor: TColor);
 begin
-  if aColor <> FTextFill then begin
-    FTextFill:= aColor;
+  if AColor <> FTextFill then
+  begin
+    FTextFill := AColor;
     Invalidate;
   end;
 end;
 
-procedure TFXLabeled.setGraphicTextGap(aValue: integer);
+procedure TFXLabeled.SetGraphicTextGap(AValue: Integer);
 begin
-  if aValue <> FGraphicTextGap then begin
-    FGraphicTextGap:= aValue;
+  if AValue <> FGraphicTextGap then
+  begin
+    FGraphicTextGap := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXLabeled.setGraphic(const aValue: string);
+procedure TFXLabeled.SetGraphic(const AValue: string);
 begin
-  if aValue <> FGraphic then begin
-    FGraphic:= aValue;
+  if AValue <> FGraphic then
+  begin
+    FGraphic := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXLabeled.setTextAlignment(aValue: TTextAlignment);
+procedure TFXLabeled.SetTextAlignment(AValue: TTextAlignment);
 begin
-  if aValue <> FTextAlignment then begin
-    FTextAlignment:= aValue;
+  if AValue <> FTextAlignment then
+  begin
+    FTextAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXLabeled.setText(const aValue: string);
+procedure TFXLabeled.SetText(const AValue: string);
 begin
-  if aValue <> FText then begin
-    FText:= aValue;
+  if AValue <> FText then
+  begin
+    FText := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXLabeled.setAlignment(aValue: TAlignment);
+procedure TFXLabeled.SetAlignment(AValue: TAlignment);
 begin
-  if aValue <> FAlignment then begin
-    FAlignment:= aValue;
+  if AValue <> FAlignment then
+  begin
+    FAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TFXLabeled.setContentDisplay(aValue: TContentDisplay);
+procedure TFXLabeled.SetContentDisplay(AValue: TContentDisplay);
 begin
-  if aValue <> FContentDisplay then begin
-    FContentDisplay:= aValue;
+  if AValue <> FContentDisplay then
+  begin
+    FContentDisplay := AValue;
     Invalidate;
   end;
 end;
 
 procedure TFXLabeled.SetAttribute(Attr, Value, Typ: string);
 begin
-  if Attr = 'ContentDisplay' then begin
+  if Attr = 'ContentDisplay' then
+  begin
     InsertImport('javafx.scene.control.*');
     MakeAttribut(Attr, 'ContentDisplay.' + Value);
-  end else if Attr = 'TextAlignment' then begin
+  end
+  else if Attr = 'TextAlignment' then
+  begin
     InsertImport('javafx.scene.text.*');
     MakeAttribut(Attr, 'TextAlignment.' + Value);
-  end else
+  end
+  else
     inherited;
 end;
 
-function TFXLabeled.getAttributes(ShowAttributes: integer): string;
-  const Attributes1 = '|ContentDisplay|Graphic|Text|Font';
-        Attributes2 =  Attributes1 +
-                      '|Alignment|LineSpacing|Underline|TextFill|EllipsisString' +
-                      '|GraphicTextGap|MnemonicParsing|TextAlignment|WrapText';
+function TFXLabeled.GetAttributes(ShowAttributes: Integer): string;
+const
+  Attributes1 = '|ContentDisplay|Graphic|Text|Font';
+  Attributes2 = Attributes1 +
+    '|Alignment|LineSpacing|Underline|TextFill|EllipsisString' +
+    '|GraphicTextGap|MnemonicParsing|TextAlignment|WrapText';
 begin
-  if ShowAttributes = 1
-    then Result:= Attributes1 + inherited getAttributes(ShowAttributes)
-    else Result:= Attributes2 + inherited getAttributes(ShowAttributes);
+  if ShowAttributes = 1 then
+    Result := Attributes1 + inherited GetAttributes(ShowAttributes)
+  else
+    Result := Attributes2 + inherited GetAttributes(ShowAttributes);
 end;
 
 procedure TFXLabeled.Rename(const OldName, NewName, Events: string);
 begin
   inherited;
-  Partner.ReplaceWord(OldName + 'Graphic' , NewName + 'Graphic', true);
+  FPartner.ReplaceWord(OldName + 'Graphic', NewName + 'Graphic', True);
 end;
 
 procedure TFXLabeled.DeleteComponent;
 begin
   inherited;
-  Partner.DeleteAttribute('private Image ' + Name + 'Graphic');
+  FPartner.DeleteAttribute('private Image ' + Name + 'Graphic');
 end;
 
 end.

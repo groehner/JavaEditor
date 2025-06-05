@@ -3,7 +3,8 @@ unit UFXCanvas;
 interface
 
 uses
-  Classes, UFXComponents;
+  Classes,
+  UFXComponents;
 
 type
 
@@ -12,7 +13,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
     procedure NewControl; override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetPositionAndSize; override;
     procedure MakeFont; override;
   end;
@@ -30,46 +31,48 @@ type
 
 implementation
 
-uses Graphics, ULink;
+uses
+  Graphics,
+  ULink;
 
-{--- TFXCanvas -----------------------------------------------------------------}
+{ --- TFXCanvas ----------------------------------------------------------------- }
 
 constructor TFXCanvas.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Width:= 120;
-  Height:= 80;
-  Tag:= 114;
-  Background:= clBtnFace;
-  JavaType:= 'Canvas';
+  Width := 120;
+  Height := 80;
+  Tag := 114;
+  Background := clBtnFace;
+  JavaType := 'Canvas';
 end;
 
 procedure TFXCanvas.Paint;
 begin
   CanvasFontAssign;
-  Canvas.Pen.Color:= Background;
-  Canvas.Brush.Color:= Background;
+  Canvas.Pen.Color := Background;
+  Canvas.Brush.Color := Background;
   Canvas.Rectangle(Rect(0, 0, Width, Height));
 end;
 
 procedure TFXCanvas.NewControl;
 begin
   InsertImport('javafx.scene.canvas.*');
-  InsertNewVariable('private Canvas '  + Name + ' = new Canvas();');
+  InsertNewVariable('private Canvas ' + Name + ' = new Canvas();');
   DefaultComponent;
 end;
 
-function TFXCanvas.getAttributes(ShowAttributes: integer): string;
+function TFXCanvas.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Width|Height' + inherited getAttributes(ShowAttributes);
+  Result := '|Width|Height' + inherited GetAttributes(ShowAttributes);
 end;
 
 procedure TFXCanvas.SetPositionAndSize;
 begin
-  ChangeAttributValue(Name + '.setLayoutX(', getLayoutXCode);
-  ChangeAttributValue(Name + '.setLayoutY(', getLayoutYCode);
-  ChangeAttributValue(Name + '.setWidth(', getWidthCode);
-  ChangeAttributValue(Name + '.setHeight(', getHeightCode);
+  ChangeAttributValue(Name + '.setLayoutX(', GetLayoutXCode);
+  ChangeAttributValue(Name + '.setLayoutY(', GetLayoutYCode);
+  ChangeAttributValue(Name + '.setWidth(', GetWidthCode);
+  ChangeAttributValue(Name + '.setHeight(', GetHeightCode);
 end;
 
 procedure TFXCanvas.MakeFont;
@@ -77,20 +80,21 @@ begin
   // no font
 end;
 
-{--- TFXSubCanvas -----------------------------------------------------------------}
+{ --- TFXSubCanvas ----------------------------------------------------------------- }
 
 constructor TFXSubCanvas.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Tag:= 122;
-  SubType:= ULink.PanelCanvasType;
-  JavaType:= SubType;
+  Tag := 122;
+  SubType := ULink.PanelCanvasType;
+  JavaType := SubType;
 end;
 
 procedure TFXSubCanvas.NewControl;
-  var Typ: string;
+var
+  Typ: string;
 begin
-  Typ:= ULink.PanelCanvasType;
+  Typ := ULink.PanelCanvasType;
   DefaultComponent;
   InsertNewVariable('private ' + Typ + ' ' + Name + ' = new ' + Typ + '();');
   InsertImport('javafx.scene.canvas.*');

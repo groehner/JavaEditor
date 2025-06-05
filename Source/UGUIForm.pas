@@ -2,12 +2,17 @@ unit UGUIForm;
 
 interface
 
-uses Messages, Windows, Classes, Graphics, Forms, Controls, UBaseForm,
-  Vcl.StdCtrls, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList;
+uses
+  Messages,
+  Classes,
+  Graphics,
+  Forms,
+  Controls,
+  UBaseForm;
 
 type
   TFGUIForm = class (TFForm)
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction); override;
+    procedure FormClose(Sender: TObject; var AAction: TCloseAction); override;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormResize(Sender: TObject);
     procedure FormMouseActivate(Sender: TObject; Button: TMouseButton;
@@ -21,10 +26,10 @@ type
     procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
       var Resize: Boolean);
   private
-    FResizable: boolean;
-    FUndecorated: boolean;
+    FResizable: Boolean;
+    FUndecorated: Boolean;
     FTitle: string;
-    FFontSize: integer;
+    FFontSize: Integer;
     FancestorMoved: string;
     FancestorResized: string;
     FcaretPositionChanged: string;
@@ -50,6 +55,7 @@ type
     FmouseReleased: string;
     FmouseWheelMoved: string;
     FpropertyChange: string;
+    FReadOnly: Boolean;
     FwindowActivated: string;
     FwindowClosed: string;
     FwindowClosing: string;
@@ -61,29 +67,27 @@ type
     FwindowOpened: string;
     FwindowStateChanged: string;
 
-    function getBackground: TColor;
-    procedure setBackground(aValue: TColor);
-    function toJavaColor(col: string): string;
+    function GetBackground: TColor;
+    procedure SetBackground(AValue: TColor);
+    function ToJavaColor(Col: string): string;
     procedure SetGridOptions;
-    procedure getFontSize;
+    procedure GetFontSize;
   public
-    ReadOnly: boolean;
     constructor Create(AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string;
-    function getEvents(ShowEvents: integer): string;
-    procedure setAttribute(Attr, Value, Typ: string); virtual;
-    procedure Open(const Filename: string; State: string); virtual;
+    function GetAttributes(ShowAttributes: Integer): string;
+    function GetEvents(ShowEvents: Integer): string;
+    procedure SetAttribute(Attr, Value, Typ: string); virtual;
+    procedure Open(const FileName: string; State: string); virtual;
     procedure Enter(Sender: TObject); override;
-    procedure Save(MitBackup: boolean); override;
+    procedure Save(WithBackup: Boolean); override;
     procedure SaveIn(const Dir: string); override;
     procedure Change(const NewFilename: string);
     function GetSaveAsName: string; override;
-    procedure SaveAs(const Filename: string);
+    procedure SaveAs(const FileName: string);
     function GetFormType: string; override;
-    procedure Print; override;
     procedure UpdateState; override;
-    procedure Zooming(_in: boolean);
-    procedure DeleteGUIComponent(const aName: string);
+    procedure Zooming(InOut: Boolean);
+    procedure DeleteGUIComponent(const AName: string);
     procedure EnsureOnDesktop;
     procedure CutToClipboard; override;
     procedure CopyToClipboard; override;
@@ -92,15 +96,16 @@ type
     procedure SetBoundsForFormular;
     procedure SetOptions; override;
     procedure DPIChanged; override;
-    procedure Scale(NewPPI, OldPPI: integer);
-    procedure EndOfResizeMoveDetected(var Msg: Tmessage); message WM_EXITSIZEMOVE;
+    procedure Scale(NewPPI, OldPPI: Integer);
+    procedure EndOfResizeMoveDetected(var Msg: TMessage); message WM_EXITSIZEMOVE;
     function GetFrameType: Integer;
+    property ReadOnly: Boolean read FReadOnly;// write FReadOnly;
   published
-    property Resizable: boolean read FResizable write FResizable;
-    property Undecorated: boolean read FUndecorated write FUndecorated;
-    property Background: TColor read getBackground write setBackground;
+    property Resizable: Boolean read FResizable write FResizable;
+    property Undecorated: Boolean read FUndecorated write FUndecorated;
+    property Background: TColor read GetBackground write SetBackground;
     property Title: string read FTitle write FTitle;
-    property FontSize: integer read FFontSize write FFontSize;
+    property FontSize: Integer read FFontSize write FFontSize;
 
     property ancestorMoved: string read FancestorMoved write FancestorMoved;
     property ancestorResized: string read FancestorResized write FancestorResized;
@@ -141,10 +146,25 @@ type
 
 implementation
 
-uses SysUtils, ComCtrls, Clipbrd, Dialogs, Math, UXTheme, System.Generics.Collections,
-     JvGnugettext, UStringRessources,
-     SpTBXTabs, UJava, UGUIDesigner, UObjectInspector, UEditorForm, UMessages,
-     UUtils, UObjectGenerator, UAComponents, UJEComponents, UConfiguration;
+uses
+  Windows,
+  SysUtils,
+  Clipbrd,
+  Math,
+  Winapi.UxTheme,
+  System.Generics.Collections,
+  JvGnugettext,
+  UUtils,
+  UJava,
+  UGUIDesigner,
+  UObjectInspector,
+  UEditorForm,
+  UMessages,
+  UStringRessources,
+  UObjectGenerator,
+  UAComponents,
+  UJEComponents,
+  UConfiguration;
 
 {$R *.DFM}
 
@@ -152,33 +172,32 @@ constructor TFGUIForm.Create(AOwner: TComponent);
 begin
   inherited;
   FormTag:= 3;
-  Resizable:= true;
+  Resizable:= True;
   // don't theme this window
   SetWindowTheme(Handle, nil, nil);
   SetGridOptions;
 end;
 
-procedure TFGUIForm.Open(const Filename: String; State: string);
+procedure TFGUIForm.Open(const FileName: string; State: string);
 begin
   var Animation:= GetAnimation;
   if Animation then
-    SetAnimation(false);
-  // inherited Create(AOwner);
-  Pathname:= Filename;
-  Caption:= ChangeFileExt(ExtractFilename(Filename), '');
+    SetAnimation(False);
+  Pathname:= FileName;
+  Caption:= ChangeFileExt(ExtractFileName(FileName), '');
   Title:= Caption;
-  Modified:= false;
+  Modified:= False;
   OnMouseActivate:= FormMouseActivate;
 
   FJava.ConnectGUIAndJavaWindow(Self);
-  if (Partner as TFEditForm).isAWT then
+  if (Partner as TFEditForm).IsAWT then
     Background:= clWhite;
   SetState(State);
   Enter(Self); // must stay!
   if Animation then
-    SetAnimation(true);
-  ReadOnly:= IsWriteProtected(Filename);
-  if GetFrametype in [4, 7] then
+    SetAnimation(True);
+  FReadOnly:= IsWriteProtected(FileName);
+  if GetFrameType in [4, 7] then
     Caption:= '';
   if FontSize = 0 then
     GetFontSize;
@@ -186,18 +205,17 @@ end;
 
 procedure TFGUIForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  FGUIDesigner.ELDesigner.Active:= false;
+  FGUIDesigner.ELDesigner.Active:= False;
   FGUIDesigner.ELDesigner.DesignControl:= nil;
   FGUIDesigner.DesignForm:= nil;
   FObjectInspector.RefreshCBObjects;
-  Save(true);
-  CanClose:= true;
+  Save(True);
+  CanClose:= True;
   FJava.ActiveTool:= -1;
 end;
 
 procedure TFGUIForm.FormCreate(Sender: TObject);
 begin
-  inherited;
   TranslateComponent(Self);
 end;
 
@@ -213,35 +231,34 @@ procedure TFGUIForm.FormCanResize(Sender: TObject; var NewWidth,
   NewHeight: Integer; var Resize: Boolean);
 begin
   if FGUIDesigner.ELDesigner.Active then
-    FGUIDesigner.ELDesigner.Active:= false;
+    FGUIDesigner.ELDesigner.Active:= False;
 end;
 
-procedure TFGUIForm.FormClose(Sender: TObject; var aAction: TCloseAction);
+procedure TFGUIForm.FormClose(Sender: TObject; var AAction: TCloseAction);
 begin
   FJava.TDIFormsList.Remove(Self);
   if Assigned(Partner) then
     Partner.Partner:= nil;
-  for var i:= 1 to maxTab do  // 0 is tab Program
-    FJava.TabsControl.Items[i].Visible:= FConfiguration.vistabs[i];
-  aAction:= caFree;
+  for var I:= 1 to MaxTab do  // 0 is tab Program
+    FJava.TabsControl.Items[I].Visible:= FConfiguration.VisTabs[I];
+  AAction:= caFree;
 end;
 
-function TFGUIForm.getBackground: TColor;
+function TFGUIForm.GetBackground: TColor;
 begin
   Result:= Color;
 end;
 
-procedure TFGUIForm.setBackground(aValue: TColor);
+procedure TFGUIForm.SetBackground(AValue: TColor);
 begin
-  Color:= aValue;
+  Color:= AValue;
 end;
 
-{$WARNINGS OFF}
-procedure TFGUIForm.Save(MitBackup: boolean);
+procedure TFGUIForm.Save(WithBackup: Boolean);
   var BackupName: string;
 begin
-  if ReadOnly then exit;
-  if MitBackup then begin
+  if ReadOnly then Exit;
+  if WithBackup then begin
     BackupName:= Pathname;
     BackupName:= ChangeFileExt(BackupName, '.~fm');
     if FileExists(BackupName) then
@@ -251,30 +268,29 @@ begin
   end;
   FGUIDesigner.Save(Pathname, Self);
   FMessages.StatusMessage(Pathname + ' ' + _(LNGSaved));
-  Modified:= false;
+  Modified:= False;
 end;
-{$WARNINGS ON}
 
-procedure TFGUIForm.SaveAs(const Filename: string);
+procedure TFGUIForm.SaveAs(const FileName: string);
 begin
   FObjectInspector.RefreshCBObjects;
-  Pathname:= Filename;
-  ReadOnly:= false;
-  Caption:= ChangeFileExt(ExtractFilename(Filename), '');
+  Pathname:= FileName;
+  FReadOnly:= False;
+  Caption:= ChangeFileExt(ExtractFileName(FileName), '');
   Title:= Caption;
   Save(WithoutBackup);
 end;
 
 procedure TFGUIForm.SaveIn(const Dir: string);
 begin
-  SaveAs(Dir + ExtractFilename(Pathname));
+  SaveAs(Dir + ExtractFileName(Pathname));
 end;
 
 procedure TFGUIForm.Change(const NewFilename: string);
 begin
-  var old:= Pathname;
+  var Old:= Pathname;
   SaveAs(NewFilename);
-  DeleteFile(PCHar(old));
+  DeleteFile(PChar(Old));
 end;
 
 function TFGUIForm.GetSaveAsName: string;
@@ -285,11 +301,11 @@ end;
 procedure TFGUIForm.Enter(Sender: TObject);
 begin
   FJava.DisableUpdateMenuItems;
-  if assigned(Partner) then begin
-    var Form:= FJava.getTDIWindow(Partner.Pathname);
-    if assigned(Form) then
+  if Assigned(Partner) then begin
+    var Form:= FJava.GetTDIWindow(Partner.Pathname);
+    if Assigned(Form) then
       FJava.SetSelectedTabAndWindow(Form.Number);
-    FJava.myTabBarClick(Self);
+    FJava.MyTabBarClick(Self);
   end;
   if not FObjectInspector.Visible then
     FObjectInspector.ShowIt;
@@ -329,35 +345,35 @@ begin
     FObjectGenerator.Partner:= TFEditForm(Partner);
     SetBoundsForFormular;
   end;
-  Modified:= true;
+  Modified:= True;
   UpdateState;
 end;
 
 procedure TFGUIForm.SetBoundsForFormular;
-  var s1, s2: string; EditForm, HTMLPartner: TFEditForm;
+  var Str1, Str2: string; EditForm, HTMLPartner: TFEditForm;
 begin
   EditForm:= Partner as TFEditForm;
   if GetFrameType in [2, 3, 5, 6] then begin
-    s1:= 'int frameWidth';
-    s2:= FConfiguration.Indent2 + 'int frameWidth = ' + IntToStr(PPIUnScale(Width)) + '; ';
-    EditForm.ReplaceLine(s1, s2);
-    s1:= 'int frameHeight';
-    s2:= FConfiguration.Indent2 + 'int frameHeight = ' + IntToStr(PPIUnScale(Height)) + ';';
-    EditForm.ReplaceLine(s1, s2);
+    Str1:= 'int frameWidth';
+    Str2:= FConfiguration.Indent2 + 'int frameWidth = ' + IntToStr(PPIUnScale(Width)) + '; ';
+    EditForm.ReplaceLine(Str1, Str2);
+    Str1:= 'int frameHeight';
+    Str2:= FConfiguration.Indent2 + 'int frameHeight = ' + IntToStr(PPIUnScale(Height)) + ';';
+    EditForm.ReplaceLine(Str1, Str2);
   end else if GetFrameType in [4, 7] then begin // Applet, JApplet
-    s1:= ' cp.setBounds(';
-    s2:= FConfiguration.Indent2 + 'cp.setBounds(0, 0, ' + IntToStr(PPIUnScale(Width)) + ', ' +
+    Str1:= ' cp.setBounds(';
+    Str2:= FConfiguration.Indent2 + 'cp.setBounds(0, 0, ' + IntToStr(PPIUnScale(Width)) + ', ' +
          IntToStr(PPIUnScale(Height)) + ');';
-    EditForm.ReplaceLine(s1, s2);
-    s1:= ChangeFileExt(EditForm.Pathname, '.html');
-    HTMLPartner:= TFEditForm(FJava.getTDIWindowType(s1, '%E%'));
+    EditForm.ReplaceLine(Str1, Str2);
+    Str1:= ChangeFileExt(EditForm.Pathname, '.html');
+    HTMLPartner:= TFEditForm(FJava.GetTDIWindowType(Str1, '%E%'));
     if Assigned(HTMLPartner) then
       HTMLPartner.ReplaceWidthHeight(Width, Height);
   end else if GetFrameType = 8 then begin // JavaFX
-    s1:= 'Scene scene = new Scene(root';
-    s2:= FConfiguration.Indent2 + 'Scene scene = new Scene(root, ' +
+    Str1:= 'Scene scene = new Scene(root';
+    Str2:= FConfiguration.Indent2 + 'Scene scene = new Scene(root, ' +
            IntToStr(PPIUnScale(Width-16)) + ', ' + IntToStr(PPIUnScale(Height-38)) + ');';
-    EditForm.ReplaceLine(s1, s2);
+    EditForm.ReplaceLine(Str1, Str2);
   end;
 end;
 
@@ -368,21 +384,16 @@ end;
 
 function TFGUIForm.GetFormType: string;
 begin
-  Result:= '%G%'
+  Result:= '%G%';
 end;
 
-procedure TFGUIForm.Print;
+procedure TFGUIForm.DeleteGUIComponent(const AName: string);
 begin
-  inherited Print;
-end;
-
-procedure TFGUIForm.DeleteGUIComponent(const aName: string);
-begin
-  for var i:= ComponentCount - 1 downto 0 do begin
+  for var I:= ComponentCount - 1 downto 0 do begin
     var Temp:= Components[I];
-    if Temp.Name = aName then begin
+    if Temp.Name = AName then begin
       FreeAndNil(Temp);
-      exit;
+      Exit;
     end;
   end;
 end;
@@ -397,9 +408,9 @@ begin
   if FGUIDesigner.ELDesigner.CanCopy then
     FGUIDesigner.CopyClick(Self)
   else begin
-    var BM:= GetFormImage();
-    Clipboard.Assign(BM);
-    FreeAndNil(BM);
+    var Bitmap:= GetFormImage;
+    Clipboard.Assign(Bitmap);
+    FreeAndNil(Bitmap);
   end;
 end;
 
@@ -412,35 +423,34 @@ end;
 procedure TFGUIForm.UpdateState;
 begin
   inherited;
-  FGuiDesigner.UpdateState(false);
+  FGUIDesigner.UpdateState(False);
 end;
 
-procedure TFGuiForm.Zooming(_in: boolean);
+procedure TFGUIForm.Zooming(InOut: Boolean);
 begin
   (Partner as TFEditForm).Editor.BeginUpdate;
-  for var i:= 0 to ComponentCount - 1 do
-    if Components[i] is TJEComponent then
-      (Components[i] as TJEComponent).Zooming(_in);
-  if _in
+  for var I:= 0 to ComponentCount - 1 do
+    if Components[I] is TJEComponent then
+      (Components[I] as TJEComponent).Zooming(InOut);
+  if InOut
     then FontSize:= FontSize + FConfiguration.ZoomSteps
-    else FontSize:= max(FontSize - FConfiguration.ZoomSteps, 6);
+    else FontSize:= Max(FontSize - FConfiguration.ZoomSteps, 6);
   (Partner as TFEditForm).Editor.EndUpdate;
 end;
 
 procedure TFGUIForm.EnsureOnDesktop;
-  var l, t, w, h: integer;
+  var Left1, Top1: Integer;
 begin
-  w:= width;
-  h:= Height;
-  l:= Left;
-  if l < 0 then l:= 0;
-  if l + w > Screen.DesktopWidth then
-    l:= Screen.DesktopWidth - w;
-  t:= Top;
-  if t < 0 then t:= 0;
-  if t + h > Screen.DesktopHeight then
-    t:= Screen.DesktopHeight - h;
-  SetBounds(l, t, w, h);
+  Left1:= Left;
+  if Left1 < 0 then
+    Left1:= 0;
+  if Left1 + Width > Screen.DesktopWidth then
+    Left1:= Screen.DesktopWidth - Width;
+  Top1:= Top;
+  if Top1 < 0 then Top1:= 0;
+  if Top1 + Height > Screen.DesktopHeight then
+    Top1:= Screen.DesktopHeight - Height;
+  SetBounds(Left1, Top1, Width, Height);
 end;
 
 procedure TFGUIForm.Paint;
@@ -449,12 +459,12 @@ begin
   Canvas.FillRect(ClientRect);
 end;
 
-function TFGuiForm.getAttributes(ShowAttributes: integer): string;
+function TFGUIForm.GetAttributes(ShowAttributes: Integer): string;
 begin
   Result:= '|Background|Height|Resizable|Title|Undecorated|Width|';
 end;
 
-function TFGuiForm.getEvents(ShowEvents: integer): string;
+function TFGUIForm.GetEvents(ShowEvents: Integer): string;
 begin
   case ShowEvents of
     1: Result:= '';
@@ -463,41 +473,41 @@ begin
                 HierarchyEvents + InputMethodEvents + PropertyEvents +
                 AncestorEvents1 + CaretEvents + ComponentEvents;
   end;
-  if not GetFrameType in [4, 7] then
+  if not (GetFrameType in [4, 7]) then
     Result:= Result + WindowEvents;
   Result:= Result + '|';
 end;
 
-procedure TFGuiForm.setAttribute(Attr, Value, Typ: string);
+procedure TFGUIForm.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'Title' then
     Caption:= Value;
-  var s1:= 'set' + Attr;
-  var s2:= '';
+  var Str1:= 'set' + Attr;
+  var Str2:= '';
   if (Typ = 'Integer') or (Typ = 'Boolean') then
-    s2:= FConfiguration.Indent2 + s1 + '(' + Value + ');'
+    Str2:= FConfiguration.Indent2 + Str1 + '(' + Value + ');'
   else if Typ = 'string' then
-    s2:= FConfiguration.Indent2 + s1 + '("' + Value + '");'
+    Str2:= FConfiguration.Indent2 + Str1 + '("' + Value + '");'
   else if Attr = 'Background' then begin
     if Value = '(NONE)' then
       (Partner as TFEditForm).DeleteAttributeValue('cp.setBackground')
     else begin
-      s1:= 'cp.setBackground';
-      s2:= FConfiguration.Indent2 + s1 + '(' + toJavaColor(Value) + ');';
+      Str1:= 'cp.setBackground';
+      Str2:= FConfiguration.Indent2 + Str1 + '(' + ToJavaColor(Value) + ');';
     end;
   end;
-  if s2 <> '' then
-    (Partner as TFEditForm).setAttributValue(_(LNGStartComponents), s1, s2, 0);
+  if Str2 <> '' then
+    (Partner as TFEditForm).SetAttributValue(_(LNGStartComponents), Str1, Str2, 0);
 end;
 
-function TFGuiForm.toJavaColor(col: string): string;
+function TFGUIForm.toJavaColor(Col: string): string;
 begin
-  if copy(col, 1, 2) = '0x'
-    then Result:= 'new Color(' + col + ')'
-    else Result:= 'Color.' + col;
+  if Copy(Col, 1, 2) = '0x'
+    then Result:= 'new Color(' + Col + ')'
+    else Result:= 'Color.' + Col;
 end;
 
-procedure TFGuiForm.DPIChanged;
+procedure TFGUIForm.DPIChanged;
 begin
   // do nothing
 end;
@@ -505,10 +515,10 @@ end;
 type
   TControlClass = class(TControl);
 
-procedure TFGuiForm.Scale(NewPPI, OldPPI: integer);
+procedure TFGUIForm.Scale(NewPPI, OldPPI: Integer);
 begin
   if NewPPI = OldPPI then
-    exit;
+    Exit;
   FIScaling := True;
   try
     ScaleScrollBars(NewPPI, OldPPI);
@@ -526,26 +536,26 @@ begin
   end;
 end;
 
-function TFGuiForm.getFrameType: Integer;
+function TFGUIForm.GetFrameType: Integer;
 begin
-  if assigned(Partner)
+  if Assigned(Partner)
     then Result:= (Partner as TFEditForm).FrameType
     else Result:= 0;
 end;
 
-procedure TFGUIForm.EndOfResizeMoveDetected(var Msg: Tmessage);
+procedure TFGUIForm.EndOfResizeMoveDetected(var Msg: TMessage);
 begin
-  FGUIDesigner.ELDesigner.Active:= true;
+  FGUIDesigner.ELDesigner.Active:= True;
 end;
 
-procedure TFGUIForm.getFontSize;
-  var CompFontSize, Value, Key, MaxFontCount, MaxFontKey: integer;
+procedure TFGUIForm.GetFontSize;
+  var CompFontSize, Value, Key, MaxFontCount, MaxFontKey: Integer;
       FontSizeDictionary: TDictionary<Integer, Integer>;
 begin
   FontSizeDictionary := TDictionary<Integer, Integer>.Create(20);
-  for var i:= 0 to ComponentCount - 1 do
-    if Components[i] is TJEComponent then begin
-      CompFontSize:= (Components[i] as TJEComponent).Font.Size;
+  for var I:= 0 to ComponentCount - 1 do
+    if Components[I] is TJEComponent then begin
+      CompFontSize:= (Components[I] as TJEComponent).Font.Size;
       if FontSizeDictionary.TryGetValue(CompFontSize, Value) then
         FontSizeDictionary.AddOrSetValue(CompFontSize, Value +1)
       else
@@ -554,8 +564,8 @@ begin
   MaxFontCount:= 0;
   MaxFontKey:= 0;
   for Key in FontSizeDictionary.Keys do
-    if FontSizeDictionary.Items[Key] > MaxFontCount then begin
-      MaxFontCount:= FontSizeDictionary.Items[Key];
+    if FontSizeDictionary[Key] > MaxFontCount then begin
+      MaxFontCount:= FontSizeDictionary[Key];
       MaxFontKey:= Key;
     end;
   if MaxFontKey > 0

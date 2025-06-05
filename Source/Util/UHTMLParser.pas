@@ -1,62 +1,62 @@
 { Copyright by Przemyslaw Jankowski }
-{ e-mail: pjank@home.pl             }
+{ e-mail: pjank@home.pl }
 
-(***********************************************************************************)
-(*                                                                                 *)
-(*   Classes defined in this unit allow you to parse (and update!) any HTML data   *)
-(*                                                                                 *)
-(* To use this unit you must first:                                                *)
-(*  - create a THtmlParser object                                                  *)
-(*  - set its >Text< property to the HTML text you want to parse                   *)
-(* Then you can "move around" this text with two methods:                          *)
-(*  - NextTag - moves you to the next tag from current position                    *)
-(*              (after setting Text current position is the beginning of the text) *)
-(*  - PrevTag - moves to the previous tag ("goes back")                            *)
-(* The current tag (the tag at current position) is returned by Tag property       *)
-(* You have also access to the text between two tags - it's in TextBetween prop.   *)
-(* There are also some useful methods:                                             *)
-(*  - LoadFromFile  - loads Text from the specified file from disk                 *)
-(*  - GotoBeginning - sets current position at the beginning of the text           *)
-(*                    (note: Tag and TextBetween are set to nothing)               *)
-(*  - RemoveTag     - deletes the current tag                                      *)
-(*  - InsertTag     - inserts a new tag before the current one                     *)
-(*                    (the current position "moves" behind the new tag)            *)
-(*  - InsertText    - inserts some text in the current position                    *)
-(*                                                                                 *)
-(*                                                                                 *)
-(* The TTag class provides you access to everything between two brackets: < and >  *)
-(*  - Name - this is the tag's name (e.g. 'TABLE', 'IMG' or '/BODY')               *)
-(*           (when you read it, it always returns uppercase)                       *)
-(*  - Params - this is a TStringList with all parameters                           *)
-(*             (each line is something like: 'width=100' or 'ALT="my image"')      *)
-(*             hint: you may use the TStringList's Names, Values properties        *)
-(*                                                                                 *)
-(*                                                                                 *)
-(* Take a look at the Demo1.pas (Button1Click) to see an example.                  *)
-(*                                                                                 *)
-(***********************************************************************************)
-(*                                                                                 *)
-(*  version 1.0 -  18.03.2000                                                      *)
-(*   - fixed adding empty lines in Tag.Params                                      *)
-(*     (thanks to: JulianWEB <julian@clubdelphi.com>)                              *)
-(*   - changed the name TParser to THtmlParser because of a conflict               *)
-(*     with Classes.pas unit  (thanks: Michael Belmont)                            *)
-(*   - a little improved demo project - now shows, what's inside all TTag objects  *)
-(*                                                                                 *)
-(*  version 0.9  -  30.12.1999                                                     *)
-(*   - first released version                                                      *)
-(*                                                                                 *)
-(***********************************************************************************)
-(*                                                                                 *)
-(* Everything here is FREE                                                         *)
-(* I wrote it in Delphi5 and don't know if it works in other versions              *)
-(*                                                                                 *)
-(* If you find any bugs or have any comments, please let me know                   *)
-(* (the e-mail is at the top of this file)                                         *)
-(*                                                                                 *)
-(* The newest version is always at "Delphi Super Page" - http://delphi.icm.edu.pl  *)
-(*                                                                                 *)
-(***********************************************************************************)
+(* ********************************************************************************* *)
+(* *)
+(* Classes defined in this unit allow you to parse (and update!) any HTML data *)
+(* *)
+(* To use this unit you must first: *)
+(* - create a THtmlParser object *)
+(* - set its >Text< property to the HTML text you want to parse *)
+(* Then you can "move around" this text with two methods: *)
+(* - NextTag - moves you to the next tag from current position *)
+(* (after setting Text current position is the beginning of the text) *)
+(* - PrevTag - moves to the previous tag ("goes back") *)
+(* The current tag (the tag at current position) is returned by Tag property *)
+(* You have also access to the text between two tags - it's in TextBetween prop. *)
+(* There are also some useful methods: *)
+(* - LoadFromFile  - loads Text from the specified file from disk *)
+(* - GotoBeginning - sets current position at the beginning of the text *)
+(* (note: Tag and TextBetween are set to nothing) *)
+(* - RemoveTag     - deletes the current tag *)
+(* - InsertTag     - inserts a new tag before the current one *)
+(* (the current position "moves" behind the new tag) *)
+(* - InsertText    - inserts some text in the current position *)
+(* *)
+(* *)
+(* The TTag class provides you access to everything between two brackets: < and > *)
+(* - Name - this is the tag's name (e.g. 'TABLE', 'IMG' or '/BODY') *)
+(* (when you read it, it always returns uppercase) *)
+(* - Params - this is a TStringList with all parameters *)
+(* (each line is something like: 'width=100' or 'ALT="my image"') *)
+(* hint: you may use the TStringList's Names, Values properties *)
+(* *)
+(* *)
+(* Take a look at the Demo1.pas (Button1Click) to see an example. *)
+(* *)
+(* ********************************************************************************* *)
+(* *)
+(* version 1.0 -  18.03.2000 *)
+(* - fixed adding empty lines in Tag.Params *)
+(* (thanks to: JulianWEB <julian@clubdelphi.com>) *)
+(* - changed the name TParser to THtmlParser because of a conflict *)
+(* with Classes.pas unit  (thanks: Michael Belmont) *)
+(* - a little improved demo project - now shows, what's inside all TTag objects *)
+(* *)
+(* version 0.9  -  30.12.1999 *)
+(* - first released version *)
+(* *)
+(* ********************************************************************************* *)
+(* *)
+(* Everything here is FREE *)
+(* I wrote it in Delphi5 and don't know if it works in other versions *)
+(* *)
+(* If you find any bugs or have any comments, please let me know *)
+(* (the e-mail is at the top of this file) *)
+(* *)
+(* The newest version is always at "Delphi Super Page" - http://delphi.icm.edu.pl *)
+(* *)
+(* ********************************************************************************* *)
 
 unit UHTMLParser;
 
@@ -70,66 +70,69 @@ type
 
   TTag = class
   private
-    fName: string;
-    fParams: TStrings;
-    fOnChanged: TSimpleEvent;
+    FName: string;
+    FParams: TStrings;
+    FOnChanged: TSimpleEvent;
     procedure Changed;
-    function GetName:string;
-    function GetText:string;
-    procedure SetName(const NewName:string);
-    procedure SetText(const text:string);
-    property OnChanged:TSimpleEvent read fOnChanged write fOnChanged;
+    function GetName: string;
+    function GetText: string;
+    procedure SetName(const NewName: string);
+    procedure SetText(const Text: string);
+    property OnChanged: TSimpleEvent read FOnChanged write FOnChanged;
   public
     constructor Create;
     destructor Destroy; override;
-    property Text:string read GetText write SetText;  // this is all the stuff
-                                                      // between "<" and ">"
-    property Name:string read GetName write SetName;  // tag name (returns uppercase)
-    property Params:TStrings read fParams;            // parameters list
+    property Text: string read GetText write SetText; // this is all the stuff
+    // between "<" and ">"
+    property Name: string read GetName write SetName;
+    // tag name (returns uppercase)
+    property Params: TStrings read FParams; // parameters list
   end;
 
   THtmlParser = class
   private
-    fText: string;
-    fTextBetween: string;
-    fTag: TTag;
-    fPos: Integer;               // current position in Text
-    fTagPos, fTagLen: Integer;   // Tag position and length (including brackets)
-    fTBPos: Integer;             // TextBetween position
-    function GetTag:TTag;
-    procedure SetText(const NewText:string);
-    procedure SetTextBetween(const text:string);
+    FText: string;
+    FTextBetween: string;
+    FTag: TTag;
+    FPos: Integer; // current position in Text
+    FTagPos, FTagLen: Integer; // Tag position and length (including brackets)
+    FTBPos: Integer; // TextBetween position
+    function GetTag: TTag;
+    procedure SetText(const NewText: string);
+    procedure SetTextBetween(const Text: string);
     procedure TagChanged;
     procedure ClearTag;
     procedure ClearTB;
     procedure CheckPos;
-    procedure SetTagText(const text:string);
-    function FindTag(next:Boolean):Boolean;
+    procedure SetTagText(const Text: string);
+    function FindTag(Next: Boolean): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure RemoveTag;                // remove the current tag
-    procedure InsertTag(NewTag: TTag);  // insert a new tag BEFORE the current one
-    procedure InsertText(const text: string); // insert some text before the current tag
-    function NextTag: Boolean;          // find next tag from current pos.
-    function PrevTag: Boolean;          // find previous tag from current pos.
+    procedure RemoveTag; // remove the current tag
+    procedure InsertTag(NewTag: TTag);
+    // insert a new tag BEFORE the current one
+    procedure InsertText(const Text: string);
+    // insert some text before the current tag
+    function NextTag: Boolean; // find next tag from current pos.
+    function PrevTag: Boolean; // find previous tag from current pos.
     procedure GotoBeginning;
-    procedure GotoPos(p: integer);
-    function NextTR: boolean;
-    function NextDIV: boolean;
-    function GotoTag(const Tag: string): boolean;
-    function getTDCell: string;
-    function getDIVCell: string;
-    function getCompleteClass: string;
-    function getNextLink: string;
-    function DeleteLinebreaks(s: string): string;
+    procedure GotoPos(Posi: Integer);
+    function NextTR: Boolean;
+    function NextDIV: Boolean;
+    function GotoTag(const Tag: string): Boolean;
+    function GetTDCell: string;
+    function GetDIVCell: string;
+    function GetCompleteClass: string;
+    function GetNextLink: string;
+    function DeleteLinebreaks(Str: string): string;
 
-    property Position: integer read fPos;
-    property Text: string read fText write SetText;     // here is all the HTML file
-    property Tag: TTag read GetTag;     // current tag
-    property TextBetween:string        // this is the text between two tags:
-             read fTextBetween         // - the last one - before calling NextTag/PrevTag
-             write SetTextBetween;     // - and the new (current) one
+    property Position: Integer read FPos;
+    property Text: string read FText write SetText; // here is all the HTML file
+    property Tag: TTag read GetTag; // current tag
+    property TextBetween: string // this is the text between two tags:
+      read FTextBetween // - the last one - before calling NextTag/PrevTag
+      write SetTextBetween; // - and the new (current) one
   end;
 
 implementation
@@ -139,385 +142,447 @@ uses SysUtils, StrUtils;
 { TParams }
 
 type
-  TParams = class (TStringList)
+  TParams = class(TStringList)
+  private
+    FTag: TTag;
   public
-    fTag: TTag;
     procedure Changed; override;
+    property Tag: TTag read FTag;
   end;
 
 procedure TParams.Changed;
 begin
   inherited;
-  if Assigned(fTag) then fTag.Changed;
+  if Assigned(FTag) then
+    FTag.Changed;
 end;
 
 { TTag }
 
 constructor TTag.Create;
 begin
-  fName:= '';
-  fParams:= TParams.Create;
-  TParams(fParams).fTag:= Self;
-  fOnChanged:= nil;
+  FName := '';
+  FParams := TParams.Create;
+  TParams(FParams).FTag := Self;
+  FOnChanged := nil;
 end;
 
 destructor TTag.Destroy;
 begin
-  FreeAndNil(fParams);
+  FreeAndNil(FParams);
   inherited Destroy;
 end;
 
 procedure TTag.Changed;
 begin
-  if Assigned(fOnChanged) then fOnChanged;
+  if Assigned(FOnChanged) then
+    FOnChanged;
 end;
 
 function TTag.GetName: string;
 begin
-  Result:= UpperCase(fName);
+  Result := UpperCase(FName);
 end;
 
 procedure TTag.SetName(const NewName: string);
 begin
-  if NewName<>fName then begin
-    fName:= NewName;
+  if NewName <> FName then
+  begin
+    FName := NewName;
     Changed;
   end;
 end;
 
 function TTag.GetText: string;
 begin
-  Result:= fName;
-  for var i:= 0 to fParams.Count-1 do
-    Result:= Result + ' ' + fParams[i];
+  Result := FName;
+  for var I := 0 to FParams.Count - 1 do
+    Result := Result + ' ' + FParams[I];
 end;
 
-procedure TTag.SetText(const text: string);
-var i,k: Integer;
-    len: Integer;
-    q1,q2: Boolean;
+procedure TTag.SetText(const Text: string);
+var
+  Int, Kidx: Integer;
+  Len: Integer;
+  Qv1, Qv2: Boolean;
 
   procedure AddParam;
-  var s: string;
+  var
+    Str: string;
   begin
-    s:= Trim(Copy(text,k,i-k+1));
-    if s<>'' then fParams.Add(s);
-    k:= i+1;
+    Str := Trim(Copy(Text, Kidx, Int - Kidx + 1));
+    if Str <> '' then
+      FParams.Add(Str);
+    Kidx := Int + 1;
   end;
 
 begin
-  q1:= False;
-  q2:= False;
-  len:= Length(text);
+  Qv1 := False;
+  Qv2 := False;
+  Len := Length(Text);
 
   // getting name
-  i:= 1;
-  while not ((i>len) or (text[i]=' ')) do Inc(i);
-  fName:= Copy(text, 1, i-1);
+  Int := 1;
+  while not((Int > Len) or (Text[Int] = ' ')) do
+    Inc(Int);
+  FName := Copy(Text, 1, Int - 1);
 
-  k:= i+1;  i:= k;
-  fParams.Clear;
+  Kidx := Int + 1;
+  Int := Kidx;
+  FParams.Clear;
   // getting parameters
-  while not (i>len) do begin
-    if CharInSet(text[i], ['''', '"']) then begin
-      if (text[i]='"')
-       then begin if not q1 then q2:= not q2 end
-       else begin if not q2 then q1:= not q1 end;
-      if not (q1 or q2) then AddParam;
-    end else
-    if (text[i]=' ') and not (q1 or q2) then AddParam;
-    Inc(i);
+  while not(Int > Len) do
+  begin
+    if CharInSet(Text[Int], ['''', '"']) then
+    begin
+      if (Text[Int] = '"') then
+      begin
+        if not Qv1 then
+          Qv2 := not Qv2;
+      end
+      else
+      begin
+        if not Qv2 then
+          Qv1 := not Qv1;
+      end;
+      if not(Qv1 or Qv2) then
+        AddParam;
+    end
+    else if (Text[Int] = ' ') and not(Qv1 or Qv2) then
+      AddParam;
+    Inc(Int);
   end;
-  if k<i then AddParam;
+  if Kidx < Int then
+    AddParam;
 end;
 
 { THtmlParser }
 
 constructor THtmlParser.Create;
 begin
-  fTag:= TTag.Create;
+  FTag := TTag.Create;
   SetText('');
 end;
 
-procedure THtmlParser.SetTagText(const text: string);
+procedure THtmlParser.SetTagText(const Text: string);
 begin
-  fTag.OnChanged:= nil;
-  fTag.Text:= text;
-  fTag.OnChanged:= TagChanged;
+  FTag.OnChanged := nil;
+  FTag.Text := Text;
+  FTag.OnChanged := TagChanged;
 end;
 
 destructor THtmlParser.Destroy;
 begin
-  FreeAndNil(fTag);
+  FreeAndNil(FTag);
   inherited Destroy;
 end;
 
-function THtmlParser.GetTag:TTag;
+function THtmlParser.GetTag: TTag;
 begin
-  if fTagPos=0
-   then Result:= nil
-   else Result:= fTag;
+  if FTagPos = 0 then
+    Result := nil
+  else
+    Result := FTag;
 end;
 
 procedure THtmlParser.ClearTag;
 begin
   SetTagText('');
-  fTagPos:= 0;
-  fTagLen:= 0;
+  FTagPos := 0;
+  FTagLen := 0;
 end;
 
 procedure THtmlParser.ClearTB;
 begin
-  fTextBetween:= '';
-  fTBPos:= 0;
+  FTextBetween := '';
+  FTBPos := 0;
 end;
 
 procedure THtmlParser.CheckPos;
 begin
-  if fPos<1 then fPos:= 1  else
-  if fPos>Length(fText) then fPos:= Length(fText);
+  if FPos < 1 then
+    FPos := 1
+  else if FPos > Length(FText) then
+    FPos := Length(FText);
 end;
 
 procedure THtmlParser.InsertTag(NewTag: TTag);
 begin
   CheckPos;
-  Insert('<'+NewTag.Text+'>', fText, fPos);
+  Insert('<' + NewTag.Text + '>', FText, FPos);
   NextTag;
 end;
 
-procedure THtmlParser.InsertText(const text: string);
+procedure THtmlParser.InsertText(const Text: string);
 begin
   CheckPos;
   ClearTB;
-  Insert(text, fText, fPos);
-  Inc(fPos, Length(text));
+  Insert(Text, FText, FPos);
+  Inc(FPos, Length(Text));
 end;
 
 procedure THtmlParser.RemoveTag;
 begin
-  if fTagPos=0 then Exit;
-  Delete(fText, fTagPos, fTagLen);
+  if FTagPos = 0 then
+    Exit;
+  Delete(FText, FTagPos, FTagLen);
   ClearTag;
   ClearTB;
 end;
 
 procedure THtmlParser.SetText(const NewText: string);
 begin
-  fText:= NewText;
+  FText := NewText;
   GotoBeginning;
 end;
 
-procedure THtmlParser.SetTextBetween(const text: string);
+procedure THtmlParser.SetTextBetween(const Text: string);
 begin
-  if fTBPos=0 then Exit;
-  if text<>fTextBetween then begin
-    if (fTBPos<>0) and (fTagPos>fTBPos) then
-      Inc(fTagPos, Length(text)-Length(fTextBetween));
-    Delete(fText, fTBPos, Length(fTextBetween));
-    Insert(text, fText, fTBPos);
+  if FTBPos = 0 then
+    Exit;
+  if Text <> FTextBetween then
+  begin
+    if (FTBPos <> 0) and (FTagPos > FTBPos) then
+      Inc(FTagPos, Length(Text) - Length(FTextBetween));
+    Delete(FText, FTBPos, Length(FTextBetween));
+    Insert(Text, FText, FTBPos);
   end;
 end;
 
 procedure THtmlParser.TagChanged;
 begin
-  if fTagPos=0 then Exit;
-  Delete(fText, fTagPos+1, fTagLen-2);
-  var s:= fTag.Text;
-  if (fTBPos>fTagPos) then Inc(fTBPos, Length(s)+2-fTagLen);
-  fTagLen:= Length(s)+2;
-  Insert(s, fText, fTagPos+1);
+  if FTagPos = 0 then
+    Exit;
+  Delete(FText, FTagPos + 1, FTagLen - 2);
+  var
+  Str := FTag.Text;
+  if (FTBPos > FTagPos) then
+    Inc(FTBPos, Length(Str) + 2 - FTagLen);
+  FTagLen := Length(Str) + 2;
+  Insert(Str, FText, FTagPos + 1);
 end;
 
 function THtmlParser.NextTag: Boolean;
 begin
-  Result:= FindTag(True);
+  Result := FindTag(True);
 end;
 
 function THtmlParser.PrevTag: Boolean;
 begin
-  Result:= FindTag(False);
+  Result := FindTag(False);
 end;
 
-function FindNext(const text: string; ch:char; startfrom:Integer; var pos:Integer):Boolean;
+function FindNext(const Text: string; Chr: Char; StartFrom: Integer;
+  var Pos: Integer): Boolean;
 begin
-  pos:= startfrom;
-  while (pos < Length(text)) and (text[pos] <> ch) do Inc(pos);
-  Result:= (text[pos] = ch);
+  Pos := StartFrom;
+  while (Pos < Length(Text)) and (Text[Pos] <> Chr) do
+    Inc(Pos);
+  Result := (Text[Pos] = Chr);
 end;
 
-function FindPrev(const text: string; ch:char; startfrom:Integer; var pos:Integer):Boolean;
+function FindPrev(const Text: string; Chr: Char; StartFrom: Integer;
+  var Pos: Integer): Boolean;
 begin
-  pos:= startfrom;
-  while (pos>0) and (text[pos]<>ch) do Dec(pos);
-  Result:= (text[pos]=ch);
+  Pos := StartFrom;
+  while (Pos > 0) and (Text[Pos] <> Chr) do
+    Dec(Pos);
+  Result := (Text[Pos] = Chr);
 end;
 
-function THtmlParser.FindTag(next: Boolean): Boolean;
-var tag1, tag2,         // first/last char of the new tag
-    tb1, tb2: Integer;  // first/last char of new TextBetween
+function THtmlParser.FindTag(Next: Boolean): Boolean;
+var
+  Tag1, Tag2, // first/last char of the new tag
+  Tb1, Tb2: Integer; // first/last char of new TextBetween
 begin
 
-  if Length(fText)=0 then begin
-    Result:= False;
+  if Length(FText) = 0 then
+  begin
+    Result := False;
     Exit;
   end;
 
-  if fTagPos<>0 then
-    if next then Inc(fPos) else Dec(fPos);
+  if FTagPos <> 0 then
+    if Next then
+      Inc(FPos)
+    else
+      Dec(FPos);
 
   CheckPos;
 
-  if next then begin
+  if Next then
+  begin
     // find next tag
-    Result:= FindNext(fText, '<', fPos, tag1) and FindNext(fText, '>', tag1, tag2);
+    Result := FindNext(FText, '<', FPos, Tag1) and
+      FindNext(FText, '>', Tag1, Tag2);
     // find end of current tag
-    if FindNext(fText, '>', fPos, tb1) and (tb1<tag1)
-     then tb1:= tb1+1
-     else tb1:= fPos;
-    tb2:= 0; //this is just to get rid of a stupid warning
+    if FindNext(FText, '>', FPos, Tb1) and (Tb1 < Tag1) then
+      Tb1 := Tb1 + 1
+    else
+      Tb1 := FPos;
+    Tb2 := 0; // this is just to get rid of a stupid warning
   end
-  else begin
-    tb2:= fPos;
+  else
+  begin
+    Tb2 := FPos;
     // find previous tag
-    Result:= FindPrev(fText, '>', tb2, tag2) and FindPrev(fText, '<', tag2, tag1);
+    Result := FindPrev(FText, '>', Tb2, Tag2) and
+      FindPrev(FText, '<', Tag2, Tag1);
   end;
 
-  if Result then begin
-    fPos:= tag1;
-    if next
-     then tb2:= tag1-1
-     else tb1:= tag2+1;
+  if Result then
+  begin
+    FPos := Tag1;
+    if Next then
+      Tb2 := Tag1 - 1
+    else
+      Tb1 := Tag2 + 1;
   end
-  else begin
-    if next then begin
-      fPos:= Length(fText);
-      tb2:= Length(fText);
+  else
+  begin
+    if Next then
+    begin
+      FPos := Length(FText);
+      Tb2 := Length(FText);
     end
-    else begin
-      fPos:= 1;
-      tb1:= 1;
+    else
+    begin
+      FPos := 1;
+      Tb1 := 1;
     end;
-    tag1:= 0;
-    tag2:= 0;
+    Tag1 := 0;
+    Tag2 := 0;
   end;
 
-  fTagPos:= tag1;
-  fTagLen:= tag2-tag1+1;
-  SetTagText(Copy(fText, fTagPos+1, fTagLen-2));
-  fTBPos:= tb1;
-  fTextBetween:= Copy(fText, fTBPos, tb2-tb1+1);
+  FTagPos := Tag1;
+  FTagLen := Tag2 - Tag1 + 1;
+  SetTagText(Copy(FText, FTagPos + 1, FTagLen - 2));
+  FTBPos := Tb1;
+  FTextBetween := Copy(FText, FTBPos, Tb2 - Tb1 + 1);
 end;
 
 procedure THtmlParser.GotoBeginning;
 begin
-  fPos:= 0;
+  FPos := 0;
   ClearTag;
   ClearTB;
 end;
 
-procedure THtmlParser.GotoPos(p: integer);
+procedure THtmlParser.GotoPos(Posi: Integer);
 begin
-  fPos:= p;
+  FPos := Posi;
   ClearTag;
   ClearTB;
 end;
 
-function THtmlParser.NextTR: boolean;
+function THtmlParser.NextTR: Boolean;
 begin
   while NextTag do
-    if (fTag.Name = 'TR') or (fTag.Name = '/TABLE') then break;
-  Result:= (fTag.Name = 'TR');
+    if (FTag.Name = 'TR') or (FTag.Name = '/TABLE') then
+      Break;
+  Result := (FTag.Name = 'TR');
 end;
 
-function THtmlParser.NextDIV: boolean;
+function THtmlParser.NextDIV: Boolean;
 begin
-  Result:= false;
+  Result := False;
   while NextTag do
-    if (fTag.Name = 'DIV') then
-      Exit(true);
+    if (FTag.Name = 'DIV') then
+      Exit(True);
 end;
 
-function THtmlParser.GotoTag(const Tag: string): boolean;
+function THtmlParser.GotoTag(const Tag: string): Boolean;
 begin
   while NextTag do
-    if (fTag.Name = Tag) or (fPos = Length(Text)) then break;
-  Result:= (ftag.Name = Tag);
+    if (FTag.Name = Tag) or (FPos = Length(Text)) then
+      Break;
+  Result := (FTag.Name = Tag);
 end;
 
-function THtmlParser.DeleteLinebreaks(s: string): string;
+function THtmlParser.DeleteLinebreaks(Str: string): string;
 begin
-  s:= ReplaceStr(s, #13#10, '');
-  s:= ReplaceStr(s, #10, '');
-  s:= ReplaceStr(s, '&nbsp;', ' ');
-  s:= ReplaceStr(s, '&gt;', '>');
-  s:= ReplaceStr(s, '&lt;', '<');
-  Result:= trim(s);
+  Str := ReplaceStr(Str, #13#10, '');
+  Str := ReplaceStr(Str, #10, '');
+  Str := ReplaceStr(Str, '&nbsp;', ' ');
+  Str := ReplaceStr(Str, '&gt;', '>');
+  Str := ReplaceStr(Str, '&lt;', '<');
+  Result := Trim(Str);
 end;
 
-function THtmlParser.getTDCell: string;
+function THtmlParser.GetTDCell: string;
 begin
-  var s:= '';
+  var
+  Str := '';
   repeat
     NextTag;
-    if fTag.Name='DIV'
-      then s:= s + ' ' + TextBetween
-      else s:= s + TextBetween;
-    if fTag.Name = 'TABLE' then
+    if FTag.Name = 'DIV' then
+      Str := Str + ' ' + TextBetween
+    else
+      Str := Str + TextBetween;
+    if FTag.Name = 'TABLE' then
       repeat
         NextTag;
-        s:= s+ TextBetween;
-      until fTag.Name = '/TABLE';
-  until (fTag.Name = '/TD') or (fPos >= length(FText));
-  Result:= DeleteLinebreaks(s);
+        Str := Str + TextBetween;
+      until FTag.Name = '/TABLE';
+  until (FTag.Name = '/TD') or (FPos >= Length(FText));
+  Result := DeleteLinebreaks(Str);
 end;
 
-function THtmlParser.getDIVCell: string;
+function THtmlParser.GetDIVCell: string;
 begin
-  var s:= '';
+  var
+  Str := '';
   repeat
     NextTag;
-    if fTag.Name='DIV'
-      then s:= s + ' ' + TextBetween
-      else s:= s + TextBetween;
-  until (fTag.Name = '/DIV') or (fPos >= length(FText));
-  Result:= DeleteLinebreaks(s);
+    if FTag.Name = 'DIV' then
+      Str := Str + ' ' + TextBetween
+    else
+      Str := Str + TextBetween;
+  until (FTag.Name = '/DIV') or (FPos >= Length(FText));
+  Result := DeleteLinebreaks(Str);
 end;
 
-function THtmlParser.getCompleteClass: string;
+function THtmlParser.GetCompleteClass: string;
 begin
-  while (fTag.Name <> 'A') and (fPos < Length(fText)) do
+  while (FTag.Name <> 'A') and (FPos < Length(FText)) do
     NextTag;
-  var s:= fTag.Params.Text;
-  var p:= Pos('href="', s);
-  if p > 0 then begin
-    delete(s, 1, p+5);
-    delete(s, length(s), 1);
-    p:= Pos('#', s);
-    if p > 0 then
-      delete(s, p, length(s));
-    while Pos('../', s) > 0 do
-      delete(s, 1, 3);
-    s:= ChangeFileExt(s, '');
-    s:= ReplaceStr(s, '/', '.');
-    p:= Pos('.api.', s);
-    if p > 0  then
-      Delete(s, 1, p + 4);
-    Result:= s;
+  var
+  Str := FTag.Params.Text;
+  var
+  Posi := Pos('href="', Str);
+  if Posi > 0 then
+  begin
+    Delete(Str, 1, Posi + 5);
+    Delete(Str, Length(Str), 1);
+    Posi := Pos('#', Str);
+    if Posi > 0 then
+      Delete(Str, Posi, Length(Str));
+    while Pos('../', Str) > 0 do
+      Delete(Str, 1, 3);
+    Str := ChangeFileExt(Str, '');
+    Str := ReplaceStr(Str, '/', '.');
+    Posi := Pos('.api.', Str);
+    if Posi > 0 then
+      Delete(Str, 1, Posi + 4);
+    Result := Str;
   end
   else
-    Result:= '';
+    Result := '';
 end;
 
-function THtmlParser.getNextLink: string;
+function THtmlParser.GetNextLink: string;
 begin
-  Result:= '';
+  Result := '';
   while NextTag do
-    if fTag.Name = 'A' then begin
-      var s:= fTag.Params.Strings[0];
-      if Pos('HREF="', s) = 1 then begin
-        delete(s, 1, 6);
-        delete(s, length(s), 1);
-        exit(s);
+    if FTag.Name = 'A' then
+    begin
+      var
+      Str := FTag.Params[0];
+      if Pos('HREF="', Str) = 1 then
+      begin
+        Delete(Str, 1, 6);
+        Delete(Str, Length(Str), 1);
+        Exit(Str);
       end;
     end;
 end;

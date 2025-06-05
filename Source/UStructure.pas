@@ -28,22 +28,22 @@ rectangle may need to be increased so the entire structure line can be repainted
 
 TStructureEx = class
   public
-    FDepth: integer;
-    FTopBottom: integer;
-    FTopBottomRight: integer;
-    FBottomTop: integer;
+    FDepth: Integer;
+    FTopBottom: Integer;
+    FTopBottomRight: Integer;
+    FBottomTop: Integer;
     FGraphicRect: TRect;
     FTextRect: TRect;
     FFoldedTextRect: TRect;
-    FSingleStatement: boolean;
-    FHidden: boolean;
+    FSingleStatement: Boolean;
+    FHidden: Boolean;
     function ToString: string; override;
-    function clone: TStructureEx;
+    function Clone: TStructureEx;
     property GraphicRect: TRect read FGraphicRect write FGraphicRect;
     property TextRect: TRect read FTextRect write FTextRect;
     property FoldedTextRect: TRect read FFoldedTextRect write FFoldedTextRect;
-    property Hidden: boolean read FHidden write FHidden;
-    property SingleStatement: boolean read FSingleStatement write FSingleStatement;
+    property Hidden: Boolean read FHidden write FHidden;
+    property SingleStatement: Boolean read FSingleStatement write FSingleStatement;
     procedure decTopBottom;
     procedure decBottom;
 end;
@@ -73,15 +73,15 @@ implementation
 
 uses SysUtils;
 
-function TStructureEx.toString: string;
+function TStructureEx.ToString: string;
 begin
-  var s:= 'L:' + IntToStr(FTextRect.Left) + ' T:' + IntToStr(FTextRect.Top) +
-          ' R:' + IntTostr(FTextRect.Right) + ' B:' + IntTostr(FTextRect.Bottom) +
-          ' De:' + IntTostr(FDepth);
-  Result:= s;
+  var Str:= 'L:' + IntToStr(FTextRect.Left) + ' T:' + IntToStr(FTextRect.Top) +
+          ' R:' + IntToStr(FTextRect.Right) + ' B:' + IntToStr(FTextRect.Bottom) +
+          ' De:' + IntToStr(FDepth);
+  Result:= Str;
 end;
 
-function TStructureEx.clone: TStructureEx;
+function TStructureEx.Clone: TStructureEx;
 begin
   Result:= TStructureEx.Create;
   Result.FDepth:= FDepth;
@@ -97,13 +97,13 @@ end;
 
 procedure TStructureEx.decTopBottom;
 begin
-  dec(FFoldedTextRect.Top);
-  dec(FFoldedTextRect.Bottom);
+  Dec(FFoldedTextRect.Top);
+  Dec(FFoldedTextRect.Bottom);
 end;
 
 procedure TStructureEx.decBottom;
 begin
-  dec(FFoldedTextRect.Bottom);
+  Dec(FFoldedTextRect.Bottom);
 end;
 
 { TStructures }
@@ -170,25 +170,25 @@ begin
     Result:= TStructureEx.Create;
 end;
 
-function TStructures.toString: string;
+function TStructures.ToString: string;
 begin
-  var s:= '';
-  for var i := 0 to FList.Count-1 do begin
-    var aStructure:= GetStructure(i);
-    if assigned(aStructure)
-      then s:= s + aStructure.toString + #13#10
-      else s:= s + '<structure index error>' + #13#10
+  var Str:= '';
+  for var Int := 0 to FList.Count-1 do begin
+    var aStructure:= GetStructure(Int);
+    if Assigned(aStructure)
+      then Str:= Str + aStructure.ToString + #13#10
+      else Str:= Str + '<structure index error>' + #13#10
   end;
-  Result:= s;
+  Result:= Str;
 end;
 
 function TStructures.Clone: TStructures;
 begin
   Result:= TStructures.Create;
-  for var i:= 0 to Count - 1 do begin
-    var aStructure:= getStructure(i);
-    if assigned(aStructure) then
-      Result.Add(aStructure.clone);
+  for var Int:= 0 to Count - 1 do begin
+    var aStructure:= getStructure(Int);
+    if Assigned(aStructure) then
+      Result.Add(aStructure.Clone);
   end;
 end;
 

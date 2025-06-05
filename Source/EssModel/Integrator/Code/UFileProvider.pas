@@ -21,7 +21,10 @@ unit UFileProvider;
 
 interface
 
-uses Classes, uCodeProvider, UBaseForm;
+uses
+  Classes,
+  UCodeProvider,
+  UBaseForm;
 
 type
 
@@ -33,123 +36,148 @@ type
     procedure HookChanges; override;
     procedure UnhookChanges; override;
   public
-    function LoadStream(const AName: string; Form: TFForm = nil): TStream; override;
+    function LoadStream(const AName: string; Form: TFForm = nil)
+      : TStream; override;
     procedure SaveStream(const AName: string; AStream: TStream); override;
     function LocateFile(const AName: string): string; override;
   end;
 
 implementation
 
-uses SysUtils, UJava, UEditorForm, UUtils, SynUnicode;
+uses
+  SysUtils,
+  UJava,
+  UEditorForm,
+  UUtils,
+  SynUnicode;
 
 { TFileProvider }
 
-function TFileProvider.LoadStream(const AName: string; Form: TFForm = nil): TStream;
-  var fStream: TFileStream; mStream: TMemoryStream; sStream: TStringStream;
-      Lines: TStringList; source: string; EditForm: TFEditForm;
-      withBOM: boolean; Encoding: TEncoding;
+function TFileProvider.LoadStream(const AName: string;
+  Form: TFForm = nil): TStream;
+var
+  FStream: TFileStream;
+  MStream: TMemoryStream;
+  SStream: TStringStream;
+  Lines: TStringList;
+  Source: string;
+  EditForm: TFEditForm;
+  WithBOM: Boolean;
+  Encoding: TEncoding;
 begin
-  Result:= nil;
+  Result := nil;
   try
-    if AName <> '' then begin
-      if hasClassExtension(AName) then begin
-        fStream:= TFileStream.Create(AName, fmOpenRead);
+    if AName <> '' then
+    begin
+      if HasClassExtension(AName) then
+      begin
+        FStream := TFileStream.Create(AName, fmOpenRead);
         try
-          mStream:= TMemoryStream.Create;
-          mStream.CopyFrom(fStream, fStream.Size);
-          mStream.writeData(#0);
+          MStream := TMemoryStream.Create;
+          MStream.CopyFrom(FStream, FStream.Size);
+          MStream.WriteData(#0);
         finally
-          FreeAndNil(fStream);
+          FreeAndNil(FStream);
         end;
-        mStream.Seek(0, soFromBeginning);
-        Result:= mStream;
-      end else begin
-        if Form = nil
-          then EditForm:= TFEditForm(FJava.getTDIWindowType(AName, '%E%'))
-          else EditForm:= Form as TFEditForm;
-        if Assigned(EditForm) then begin
-          Source:= EditForm.Editor.Text + #0;
-          if Source = #0 then Source:= 'null' + #0;
-          Result:= TStringStream.Create(Source, TEncoding.Unicode);
-        end else if FileExists(AName) and ValidFilename(AName) then begin
+        MStream.Seek(0, soFromBeginning);
+        Result := MStream;
+      end
+      else
+      begin
+        if not Assigned(Form) then
+          EditForm := TFEditForm(FJava.GetTDIWindowType(AName, '%E%'))
+        else
+          EditForm := Form as TFEditForm;
+        if Assigned(EditForm) then
+        begin
+          Source := EditForm.Editor.Text + #0;
+          if Source = #0 then
+            Source := 'null' + #0;
+          Result := TStringStream.Create(Source, TEncoding.Unicode);
+        end
+        else if FileExists(AName) and ValidFilename(AName) then
+        begin
           // used by ClassInsert
           try
             try
-              Lines:= TStringList.Create;
-              fStream:= TFileStream.Create(AName, fmOpenRead or fmShareDenyWrite);
-              Encoding:= SynUnicode.GetEncoding(fStream, withBOM);
-              Lines.LoadFromStream(fStream, Encoding);
-              sStream:= TStringStream.Create(Lines.Text + #0, TEncoding.Unicode, true);
-              Result:= sStream;
-            except on e: Exception do
-              ErrorMsg(e.Message);
+              Lines := TStringList.Create;
+              FStream := TFileStream.Create(AName, fmOpenRead or
+                fmShareDenyWrite);
+              Encoding := SynUnicode.GetEncoding(FStream, WithBOM);
+              Lines.LoadFromStream(FStream, Encoding);
+              SStream := TStringStream.Create(Lines.Text + #0,
+                TEncoding.Unicode, True);
+              Result := SStream;
+            except
+              on e: Exception do
+                ErrorMsg(e.Message);
             end;
           finally
-            FreeAndNil(fStream);
+            FreeAndNil(FStream);
             FreeAndNil(Lines);
           end;
-        end else
-          //Result:= TStringStream.Create('null' + #0, TEncoding.Unicode)
-          Result:= TStringStream.Create('null' + #0)
+        end
+        else
+          // Result:= TStringStream.Create('null' + #0, TEncoding.Unicode)
+          Result := TStringStream.Create('null' + #0);
       end;
-      Inc(LoadedCount);
+      Inc(FLoadedCount);
       AddChangeWatch(AName);
       AddSearchPath(ExtractFilePath(AName));
     end;
   except
-    on e: exception do begin
-      ErrorMsg(E.Message);
-      Result:= nil;
+    on e: Exception do
+    begin
+      ErrorMsg(e.Message);
+      Result := nil;
     end;
   end;
 end;
 
 procedure TFileProvider.SaveStream(const AName: string; AStream: TStream);
 var
-  fs: TFileStream;
+  FileStream: TFileStream;
 begin
-   //inherited;
-   { TODO : Make a backup before we save the file. }
-  fs := TFileStream.Create(AName, fmOpenWrite + fmShareExclusive);
+  { TODO : Make a backup before we save the file. }
+  FileStream := TFileStream.Create(AName, fmOpenWrite + fmShareExclusive);
   try
     try
-      fs.CopyFrom(AStream, 0);
+      FileStream.CopyFrom(AStream, 0);
     except
-      on e: exception do
+      on e: Exception do
         ErrorMsg(e.Message);
     end;
   finally
-    FreeAndNil(fs);
+    FreeAndNil(FileStream);
   end;
 end;
 
 procedure TFileProvider.HookChanges;
 begin
-   { TODO : Attach a filesystem listener. }
+  { TODO : Attach a filesystem listener. }
 
 end;
 
 procedure TFileProvider.UnhookChanges;
 begin
-   { TODO : Dettach the filesystem listener. }
+  { TODO : Dettach the filesystem listener. }
 end;
 
 function TFileProvider.LocateFile(const AName: string): string;
 var
-  i: Integer;
-  p: string;
+  Posi: string;
 begin
   Result := '';
-  if ( Pos(Copy(AName, 1, 1), '\/') > 0 ) or (Copy(AName, 2, 1) = ':') then
+  if (Pos(Copy(AName, 1, 1), '\/') > 0) or (Copy(AName, 2, 1) = ':') then
   begin
-    //Filename with an absolute path
+    // Filename with an absolute path
     if FileExists(AName) then
       Result := AName;
   end
   else
   begin
-    //Filename without a path, use searchpath to locate it.
-    for I := 0 to SearchPath.Count - 1 do
+    // Filename without a path, use searchpath to locate it.
+    for var I := 0 to SearchPath.Count - 1 do
     begin
       if FileExists(SearchPath[I] + AName) then
       begin
@@ -161,10 +189,9 @@ begin
 
   // Add the searchpath of the file to searchpaths.
   // It will only be added if it doesn't already exist in searchpaths
-  P := ExtractFilePath(Result);
-  if (P <> '') and (SearchPath.IndexOf(P) < 0) then
-    SearchPath.Add(P);
+  Posi := ExtractFilePath(Result);
+  if (Posi <> '') and (SearchPath.IndexOf(Posi) < 0) then
+    SearchPath.Add(Posi);
 end;
 
 end.
-

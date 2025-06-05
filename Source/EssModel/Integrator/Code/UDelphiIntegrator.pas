@@ -21,7 +21,9 @@ unit UDelphiIntegrator;
 
 interface
 
-uses Classes, uIntegrator;
+uses
+  Classes,
+  UIntegrator;
 
 type
 
@@ -32,18 +34,20 @@ type
     procedure NeedPackageHandler(var AName: string; Packagename: string;
                                  var AStream: TStream; OnlyLookUp: Boolean = False);
   public
-    procedure ImportOneFile(const FileName : string; withoutNeedSouce: boolean = false); override;
+    procedure ImportOneFile(const FileName : string; WithoutNeedSouce: Boolean = False); override;
     class function GetFileExtensions : TStringList; override;
   end;
 
 
 implementation
 
-uses SysUtils, uModel, uDelphiParser, uCodeProvider;
+uses
+  SysUtils,
+  UDelphiParser;
 
 { TDelphiImporter }
 
-procedure TDelphiImporter.ImportOneFile(const FileName : string; withoutNeedSouce: boolean);
+procedure TDelphiImporter.ImportOneFile(const FileName : string; WithoutNeedSouce: Boolean);
 var
   Str: TStream;
   Parser: TDelphiParser;
@@ -61,7 +65,7 @@ begin
     Parser := TDelphiParser.Create;
     try
       Parser.NeedPackage := NeedPackageHandler;
-      Parser.ParseStreamWithDefines(Str, Model.ModelRoot, Model, GlobalDefines, Filename);
+      Parser.ParseStreamWithDefines(Str, Model.ModelRoot, Model, GlobalDefines, FileName);
     finally
       FreeAndNil(Parser);
       FreeAndNil(GlobalDefines);
@@ -89,10 +93,10 @@ begin
     FileName := AName;
   FileName := CodeProvider.LocateFile(FileName);
 
-  if (not OnlyLookUp) and (FileName<>'') and (FilesRead.IndexOf(FileName)=-1) then
+  if (not OnlyLookUp) and (FileName<>'') and (FFilesRead.IndexOf(FileName)=-1) then
   begin
     AStream := CodeProvider.LoadStream(FileName);
-    FilesRead.Add(FileName);
+    FFilesRead.Add(FileName);
   end;
 end;
 

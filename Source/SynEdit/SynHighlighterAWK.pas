@@ -101,12 +101,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -222,33 +222,33 @@ end;
 
 procedure TSynAWKSyn.IdentProc;
 var
-  i: Integer;
+  Int: Integer;
   idx: Integer;
-  s: string;
+  Str: string;
 begin
-  i := Run;
-  while CharInSet(fLine[i], ['a'..'z', 'A'..'Z']) do
-    Inc(i);
-  SetLength(s, i - Run);
-  StrLCopy(PWideChar(s), fLine + Run, i - Run);
-  Run := i;
-  if AWKSyntaxList.Find(s, idx) and (AWKSyntaxList.Strings[idx] = s) then
+  Int := Run;
+  while CharInSet(fLine[Int], ['a'..'z', 'A'..'Z']) do
+    Inc(Int);
+  SetLength(Str, Int - Run);
+  StrLCopy(PWideChar(Str), fLine + Run, Int - Run);
+  Run := Int;
+  if AWKSyntaxList.Find(Str, idx) and (AWKSyntaxList.Strings[idx] = Str) then
   begin
     fTokenID := TtkTokenKind(AWKSyntaxList.Objects[idx]);
     if (fTokenID = tkUnKnown) then
     begin
       fTokenID := tkKey;
-      if (fLine[i] = ' ') then
+      if (fLine[Int] = ' ') then
       begin
-        while (fLine[i] = ' ') do
-          Inc(i);
-        if (fLine[i + 0] = 'f') and
-          (fLine[i + 1] = 'i') and
-          (fLine[i + 2] = 'l') and
-          (fLine[i + 3] = 'e') and
-          CharInSet(fLine[i + 4], [#0..#32, ';']) then
+        while (fLine[Int] = ' ') do
+          Inc(Int);
+        if (fLine[Int + 0] = 'f') and
+          (fLine[Int + 1] = 'i') and
+          (fLine[Int + 2] = 'l') and
+          (fLine[Int + 3] = 'e') and
+          CharInSet(fLine[Int + 4], [#0..#32, ';']) then
         begin
-          Run := (i + 4);
+          Run := (Int + 4);
         end;
       end;
     end;
@@ -474,17 +474,17 @@ end;
 procedure TSynAWKSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynAWKSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
-function TSynAWKSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynAWKSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -523,7 +523,7 @@ begin
   end;
 end;
 
-function TSynAWKSyn.GetTokenKind: integer;
+function TSynAWKSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

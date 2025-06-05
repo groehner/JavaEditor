@@ -15,7 +15,7 @@ type
     IImage: TImage;
     procedure FormCreate(Sender: TObject);
   public
-    procedure PrepareShow(AEditorRect: TRect; X, Y1, Y2: integer;
+    procedure PrepareShow(AEditorRect: TRect; XPos, Y1Pos, Y2Pos: Integer;
       const AReplaceText: string);
   end;
 
@@ -34,25 +34,25 @@ begin
 end;
 
 procedure TFConfirmReplace.PrepareShow(AEditorRect: TRect;
-  X, Y1, Y2: integer; const AReplaceText: string);
+  XPos, Y1Pos, Y2Pos: Integer; const AReplaceText: string);
 var
-  nW, nH: integer;
+  Width, Height: Integer;
 begin
   LConfirmation.Caption := Format(_('"%s" replace?'), [AReplaceText]);
-  nW := AEditorRect.Right - AEditorRect.Left;
-  nH := AEditorRect.Bottom - AEditorRect.Top;
+  Width := AEditorRect.Right - AEditorRect.Left;
+  Height := AEditorRect.Bottom - AEditorRect.Top;
 
-  if nW <= Width then
-    X := AEditorRect.Left - (Width - nW) div 2
+  if Width <= Width then
+    XPos := AEditorRect.Left - (Width - Width) div 2
   else begin
-    if X + Width > AEditorRect.Right then
-      X := AEditorRect.Right - Width;
+    if XPos + Width > AEditorRect.Right then
+      XPos := AEditorRect.Right - Width;
   end;
-  if Y2 > AEditorRect.Top + MulDiv(nH, 2, 3) then
-    Y2 := Y1 - Height - 4
+  if Y2Pos > AEditorRect.Top + MulDiv(Height, 2, 3) then
+    Y2Pos := Y1Pos - Height - 4
   else
-    Inc(Y2, 4);
-  SetBounds(X, Y2, Width, Height);
+    Inc(Y2Pos, 4);
+  SetBounds(XPos, Y2Pos, Width, Height);
 end;
 
 end.

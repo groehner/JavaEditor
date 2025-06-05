@@ -34,7 +34,7 @@
 {   TDragDockObject);                                                          }
 { begin                                                                        }
 {   DragObject:= TTransparentDragDockObject.Create(Self);                      }
-{ end;                                                                         } 
+{ end;                                                                         }
 {                                                                              }
 {******************************************************************************}
 unit DockingUtils;
@@ -82,7 +82,7 @@ end;
 constructor TTransparentDragDockObject.Create(AControl: TControl);
 begin
   inherited;
-  if TransparentForm = nil then
+  if not Assigned(TransparentForm) then
   begin
     TransparentForm:= TTransparentForm.CreateNew(Application);
     TransparentForm.AlphaBlend:= True;
@@ -100,7 +100,7 @@ end;
 
 procedure TTransparentDragDockObject.DrawDragDockImage;
 begin
-  if TransparentForm <> nil then
+  if Assigned(TransparentForm) then
   begin
     TransparentForm.BoundsRect:= DockRect;
     if not TransparentForm.Visible then

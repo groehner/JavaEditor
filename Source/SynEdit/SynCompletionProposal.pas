@@ -112,7 +112,7 @@ type
     FPosition: Integer;
     FLinesInWindow: Integer;
     FTitleFontHeight: Integer;
-    FFontHeight: integer;
+    FFontHeight: Integer;
     FScrollbar: TScrollBar;
     FOnValidate: TValidateEvent;
     FOnCancel: TNotifyEvent;
@@ -133,15 +133,15 @@ type
     FImages: TCustomImageList;
 
 //These are the reflections of the Options property of the CompletionProposal
-    FCase: boolean;
+    FCase: Boolean;
     FMatchText: Boolean;
     FFormattedText: Boolean;
     FCenterTitle: Boolean;
-    FUseInsertList: boolean;
+    FUseInsertList: Boolean;
     FCompleteWithTab: Boolean;
     FCompleteWithEnter: Boolean;
 
-    FMouseWheelAccumulator: integer;
+    FMouseWheelAccumulator: Integer;
     FDisplayKind: SynCompletionType;
     FParameterToken: TCompletionParameter;
     FCurrentIndex: Integer;
@@ -224,9 +224,9 @@ type
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 0;
     property Margin: Integer read FMargin write FMargin default 2;
 
-    property UsePrettyText: boolean read FFormattedText write FFormattedText default False;
-    property UseInsertList: boolean read FUseInsertList write FUseInsertList default False;
-    property CenterTitle: boolean read FCenterTitle write FCenterTitle   default True;
+    property UsePrettyText: Boolean read FFormattedText write FFormattedText default False;
+    property UseInsertList: Boolean read FUseInsertList write FUseInsertList default False;
+    property CenterTitle: Boolean read FCenterTitle write FCenterTitle   default True;
     property CaseSensitive: Boolean read fCase write fCase default False;
     property CurrentEditor: TCustomSynEdit read fCurrentEditor write fCurrentEditor;
     property MatchText: Boolean read fMatchText write fMatchText;
@@ -323,8 +323,8 @@ type
       Data: Pointer; HandlerData: Pointer); virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Execute(s: string; x, y: Integer);
-    procedure ExecuteEx(s: string; x, y: Integer; Kind: SynCompletionType = ctCode); virtual;
+    procedure Execute(Str: string; x, y: Integer);
+    procedure ExecuteEx(Str: string; x, y: Integer; Kind: SynCompletionType = ctCode); virtual;
     procedure Activate;
     procedure Deactivate;
 
@@ -402,7 +402,7 @@ type
     function GetCurrentInput(AEditor: TCustomSynEdit): string;
     function GetTimerInterval: Integer;
     procedure SetTimerInterval(const Value: Integer);
-    function GetEditor(i: Integer): TCustomSynEdit;
+    function GetEditor(Int: Integer): TCustomSynEdit;
     procedure InternalCancelCompletion;
   protected
     procedure DoExecute(AEditor: TCustomSynEdit); virtual;
@@ -417,14 +417,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddEditor(AEditor: TCustomSynEdit);
-    function RemoveEditor(AEditor: TCustomSynEdit): boolean;
-    function EditorsCount: integer;
-    procedure ExecuteEx(s: string; x, y: Integer; Kind : SynCompletionType = ctCode); override;
+    function RemoveEditor(AEditor: TCustomSynEdit): Boolean;
+    function EditorsCount: Integer;
+    procedure ExecuteEx(Str: string; x, y: Integer; Kind : SynCompletionType = ctCode); override;
     procedure ActivateCompletion;
     procedure CancelCompletion;
     procedure ActivateTimer(ACurrentEditor: TCustomSynEdit);
     procedure DeactivateTimer;
-    property Editors[i: Integer]: TCustomSynEdit read GetEditor;
+    property Editors[Int: Integer]: TCustomSynEdit read GetEditor;
     property CompletionStart: Integer read FCompletionStart write FCompletionStart; // ET 04/02/2003
   published
     property ShortCut: TShortCut read FShortCut write SetShortCut;
@@ -484,7 +484,7 @@ type
     property ShortCut: TShortCut read FShortCut write SetShortCut;
     property OnBeforeExecute: TNotifyEvent read FOnBeforeExecute write FOnBeforeExecute;
     property OnAfterExecute: TNotifyEvent read FOnAfterExecute write FOnAfterExecute;
-    property DoLookupWhenNotExact: Boolean read FDoLookup write SetDoLookup default true;
+    property DoLookupWhenNotExact: Boolean read FDoLookup write SetDoLookup default True;
     property Options: TSynCompletionOptions read GetOptions write SetOptions default DefaultProposalOptions;
   end;
 
@@ -643,7 +643,7 @@ var
 
   procedure NextChar;
   begin
-    inc(CurPos);
+    Inc(CurPos);
     {$IFOPT R+}
     // Work-around Delphi's annoying behaviour of failing the RangeCheck when
     // reading the final #0 char
@@ -691,7 +691,7 @@ var
     begin
       CurrentChunk := CurrentChunk  + '\';
       NextChar;
-      exit;
+      Exit;
     end;
 
     if CurrentChunk <> '' then
@@ -810,7 +810,7 @@ begin
   Assert(Assigned(ChunkList));
 
   if FormattedString = '' then
-    exit;
+    Exit;
 
   ErrorFound := False;
   CurrentChunk := '';
@@ -833,15 +833,15 @@ end;
 function StripFormatCommands(const FormattedString: string): string;
 var
   Chunks: TFormatChunkList;
-  i: Integer;
+  Int: Integer;
 begin
   Chunks := TFormatChunkList.Create;
   try
     ParseFormatChunks(FormattedString, Chunks, AllCommands);
 
     Result := '';
-    for i := 0 to Chunks.Count -1 do
-      Result := Result + Chunks[i]^.Str;
+    for Int := 0 to Chunks.Count -1 do
+      Result := Result + Chunks[Int]^.Str;
 
   finally
     Chunks.Free;
@@ -849,11 +849,11 @@ begin
 end;
 
 
-function PaintChunks(TargetCanvas: TCanvas; const Rect: TRect; PPI : integer;
+function PaintChunks(TargetCanvas: TCanvas; const Rect: TRect; PPI : Integer;
   ChunkList: TFormatChunkList; Columns: TProposalColumns; Images: TCustomImageList;
   Invisible: Boolean): Integer;
 var
-  i: Integer;
+  Int: Integer;
   X: Integer;
   C: PFormatChunk;
   CurrentColumn: TProposalColumn;
@@ -882,9 +882,9 @@ begin
 
     TargetCanvas.Brush.Style := bsClear;
 
-    for i := 0 to ChunkList.Count -1 do
+    for Int := 0 to ChunkList.Count -1 do
     begin
-      C := ChunkList[i];
+      C := ChunkList[Int];
 
       case C^.Command of
       fcNoCommand:
@@ -892,9 +892,9 @@ begin
           if not Invisible then
             TargetCanvas.TextOut(X, Rect.Top, C^.Str);
 
-          inc(X, TargetCanvas.TextWidth(C^.Str));
+          Inc(X, TargetCanvas.TextWidth(C^.Str));
           if X > Rect.Right then
-            break;
+            Break;
         end;
       fcColor:
         if not Invisible then
@@ -925,10 +925,10 @@ begin
         begin
           if CurrentColumnIndex <= Columns.Count -1 then
           begin
-            inc(LastColumnStart, MulDiv(CurrentColumn.FColumnWidth, PPI, 96));
+            Inc(LastColumnStart, MulDiv(CurrentColumn.FColumnWidth, PPI, 96));
             X := LastColumnStart;
 
-            inc(CurrentColumnIndex);
+            Inc(CurrentColumnIndex);
             if CurrentColumnIndex <= Columns.Count -1 then
             begin
               CurrentColumn := TProposalColumn(Columns.Items[CurrentColumnIndex]);
@@ -939,9 +939,9 @@ begin
         end;
       fcHSpace:
         begin
-          inc(X, MulDiv(Integer(C^.Data), PPI, 96));
+          Inc(X, MulDiv(Integer(C^.Data), PPI, 96));
           if X > Rect.Right then
-            break;
+            Break;
         end;
       fcImage:
         begin
@@ -949,9 +949,9 @@ begin
 
           Images.Draw(TargetCanvas, X, Rect.Top, Integer(C^.Data));
 
-          inc(X, Images.Width);
+          Inc(X, Images.Width);
           if X > Rect.Right then
-            break;
+            Break;
         end;
       end;
     end;
@@ -1004,30 +1004,30 @@ end;
 function PrettyTextToFormattedString(const APrettyText: string;
   AlternateBoldStyle: Boolean = False): string;
 var
-  i: Integer;
+  Int: Integer;
   Color: TColor;
 begin
   Result := '';
-  i := 1;
-  while i <= Length(APrettyText) do
-    case APrettyText[i] of
+  Int := 1;
+  while Int <= Length(APrettyText) do
+    case APrettyText[Int] of
       #1, #2:
         begin
-          Color := (Ord(APrettyText[i + 3]) shl 8
-            +Ord(APrettyText[i + 2])) shl 8
-            +Ord(APrettyText[i + 1]);
+          Color := (Ord(APrettyText[Int + 3]) shl 8
+            +Ord(APrettyText[Int + 2])) shl 8
+            +Ord(APrettyText[Int + 1]);
 
           Result := Result+'\color{'+ColorToString(Color)+'}';
 
-          inc(i, 4);
+          Inc(Int, 4);
         end;
       #3:
         begin
-          if CharInSet(System.SysUtils.AnsiUpperCase(APrettyText[i + 1])[1], ['B', 'I', 'U']) then
+          if CharInSet(System.SysUtils.AnsiUpperCase(APrettyText[Int + 1])[1], ['B', 'I', 'U']) then
           begin
             Result := Result + '\style{';
 
-            case APrettyText[i + 1] of
+            case APrettyText[Int + 1] of
             'B': Result := Result + '+B';
             'b': Result := Result + '-B';
             'I': Result := Result + '+I';
@@ -1038,18 +1038,18 @@ begin
 
             Result := Result + '}';
           end;
-          inc(i, 2);
+          Inc(Int, 2);
         end;
       #9:
         begin
           Result := Result + '\column{}';
           if AlternateBoldStyle then
             Result := Result + '\style{~B}';
-          inc(i);
+          Inc(Int);
         end;
       else
-        Result := Result + APrettyText[i];
-        inc(i);
+        Result := Result + APrettyText[Int];
+        Inc(Int);
     end;
 end;
 
@@ -1127,23 +1127,23 @@ end;
 //============================================================================
 
 
-function FormatParamList(const S: string; CurrentIndex: Integer): string;
+function FormatParamList(const Str: string; CurrentIndex: Integer): string;
 var
-  i: Integer;
+  Int: Integer;
   List: TStrings;
 begin
   Result := '';
   List := TStringList.Create;
   try
-    List.CommaText := S;
-    for i := 0 to List.Count - 1 do
+    List.CommaText := Str;
+    for Int := 0 to List.Count - 1 do
     begin
-      if i = CurrentIndex then
-        Result := Result + '\style{~B}' + List[i] + '\style{~B}'
+      if Int = CurrentIndex then
+        Result := Result + '\style{~B}' + List[Int] + '\style{~B}'
       else
-        Result := Result + List[i];
+        Result := Result + List[Int];
 
-      if i < List.Count - 1 then
+      if Int < List.Count - 1 then
 //        Result := Result + ', ';
         Result := Result + ' ';
     end;
@@ -1274,7 +1274,7 @@ procedure TSynBaseCompletionProposalForm.KeyDown(var Key: Word; Shift: TShiftSta
 var
   C: WideChar;
   Cmd: TSynEditorCommand;
-  i: integer;
+  Int: Integer;
 
   procedure ExecuteCmdAndCancel;
   begin
@@ -1289,9 +1289,9 @@ var
 begin
   if DisplayType = ctCode then
   begin
-    i := (CurrentEditor as TCustomSynEdit).Keystrokes.FindKeycode(Key, Shift);
-    if i >= 0 then
-      Cmd := TCustomSynEdit(CurrentEditor).Keystrokes[i].Command
+    Int := (CurrentEditor as TCustomSynEdit).Keystrokes.FindKeycode(Key, Shift);
+    if Int >= 0 then
+      Cmd := TCustomSynEdit(CurrentEditor).Keystrokes[Int].Command
     else
       Cmd := ecNone;
     case Key of
@@ -1440,13 +1440,10 @@ procedure TSynBaseCompletionProposalForm.MouseDown(Button: TMouseButton;
 begin
   y := (y - fHeightBuffer) div FEffectiveItemHeight;
   Position := FScrollbar.Position + y;
-//  (CurrentEditor as TCustomSynEdit).UpdateCaret;
 end;
 
 procedure TSynBaseCompletionProposalForm.Resize;
 begin
-  inherited;
-
   if FEffectiveItemHeight <> 0 then
     FLinesInWindow := (ClientHeight - FHeightBuffer) div FEffectiveItemHeight;
 
@@ -1475,7 +1472,7 @@ var
   TmpX: Integer;
   AlreadyDrawn: Boolean;
   TmpString: string;
-  i: Integer;
+  Int: Integer;
   ScaledMargin: Integer;
 begin
   ScaledMargin := MulDiv((Owner as TSynBaseCompletionProposal).Margin, CurrentPPI, 96);
@@ -1486,14 +1483,14 @@ begin
       ResetCanvas;
       Canvas.Pen.Color := StyleServices.GetSystemColor(clBtnFace);
       Canvas.Rectangle(0, 0, ClientWidth - FScrollbar.Width, ClientHeight);
-      for i := 0 to Min(FLinesInWindow - 1, FAssignedList.Count - 1) do
+      for Int := 0 to Min(FLinesInWindow - 1, FAssignedList.Count - 1) do
       begin
-        if i + FScrollbar.Position = Position then
+        if Int + FScrollbar.Position = Position then
         begin
           Canvas.Brush.Color := StyleServices.GetSystemColor(FClSelect);
           Canvas.Pen.Color := StyleServices.GetSystemColor(FClSelect);
-          Canvas.Rectangle(0, FEffectiveItemHeight * i, ClientWidth - FScrollbar.Width,
-            FEffectiveItemHeight * (i + 1));
+          Canvas.Rectangle(0, FEffectiveItemHeight * Int, ClientWidth - FScrollbar.Width,
+            FEffectiveItemHeight * (Int + 1));
           Canvas.Pen.Color := StyleServices.GetSystemColor(fClSelectText);
           Canvas.Font.Assign(FFont);
           Canvas.Font.Color := StyleServices.GetSystemColor(FClSelectText);
@@ -1502,9 +1499,9 @@ begin
         AlreadyDrawn := False;
 
         if Assigned(OnPaintItem) then
-          OnPaintItem(Self, LogicalToPhysicalIndex(FScrollBar.Position + i),
-            Canvas, Rect(0, FEffectiveItemHeight * i, ClientWidth - FScrollbar.Width,
-            FEffectiveItemHeight * (i + 1)), AlreadyDrawn);
+          OnPaintItem(Self, LogicalToPhysicalIndex(FScrollBar.Position + Int),
+            Canvas, Rect(0, FEffectiveItemHeight * Int, ClientWidth - FScrollbar.Width,
+            FEffectiveItemHeight * (Int + 1)), AlreadyDrawn);
 
         if AlreadyDrawn then
           ResetCanvas
@@ -1513,18 +1510,18 @@ begin
           if FFormattedText then
           begin
             FormattedTextOut(Canvas, Rect(ScaledMargin,
-              FEffectiveItemHeight * i  + ((FEffectiveItemHeight - FFontHeight) div 2),
-              Bitmap.Width, FEffectiveItemHeight * (i + 1)),
-              CurrentPPI, FAssignedList[FScrollbar.Position + i],
-              (i + FScrollbar.Position = Position), FColumns, FImages);
+              FEffectiveItemHeight * Int  + ((FEffectiveItemHeight - FFontHeight) div 2),
+              Bitmap.Width, FEffectiveItemHeight * (Int + 1)),
+              CurrentPPI, FAssignedList[FScrollbar.Position + Int],
+              (Int + FScrollbar.Position = Position), FColumns, FImages);
           end
           else
           begin
-            Canvas.TextOut(ScaledMargin, FEffectiveItemHeight * i,
-              FAssignedList[FScrollbar.Position + i]);
+            Canvas.TextOut(ScaledMargin, FEffectiveItemHeight * Int,
+              FAssignedList[FScrollbar.Position + Int]);
           end;
 
-          if i + FScrollbar.Position = Position then
+          if Int + FScrollbar.Position = Position then
             ResetCanvas;
         end;
       end;
@@ -1544,7 +1541,7 @@ begin
         TmpRect := Rect(0, 0, ClientWidth + 1, FHeightBuffer);                        //GBN
         Canvas.FillRect(TmpRect);
         Canvas.Pen.Color := StyleServices.GetSystemColor(clBtnShadow);
-        dec(TmpRect.Bottom, 1);
+        Dec(TmpRect.Bottom, 1);
         Canvas.PenPos := TmpRect.BottomRight;
         Canvas.LineTo(TmpRect.Left - 1,TmpRect.Bottom);
         Canvas.Pen.Color := StyleServices.GetSystemColor(clBtnFace);
@@ -1576,25 +1573,25 @@ begin
       if StyleServices.IsSystemStyle then
         Frame3D(Canvas, tmpRect, cl3DLight, cl3DDkShadow, 1);
 
-      for i := 0 to FAssignedList.Count - 1 do
+      for Int := 0 to FAssignedList.Count - 1 do
       begin
         AlreadyDrawn := False;
         if Assigned(OnPaintItem) then
-          OnPaintItem(Self, i, Canvas, Rect(0, FEffectiveItemHeight * i + ScaledMargin,
-            ClientWidth, FEffectiveItemHeight * (i + 1) + ScaledMargin), AlreadyDrawn);
+          OnPaintItem(Self, Int, Canvas, Rect(0, FEffectiveItemHeight * Int + ScaledMargin,
+            ClientWidth, FEffectiveItemHeight * (Int + 1) + ScaledMargin), AlreadyDrawn);
 
         if AlreadyDrawn then
           ResetCanvas
         else
         begin
           if (FDisplayKind = ctParams) then
-            TmpString := FormatParamList(FAssignedList[i], CurrentIndex)
+            TmpString := FormatParamList(FAssignedList[Int], CurrentIndex)
           else
-            TmpString := FAssignedList[i];
+            TmpString := FAssignedList[Int];
 
           FormattedTextOut(Canvas, Rect(ScaledMargin + 1,
-            FEffectiveItemHeight * i + ((FEffectiveItemHeight-FFontHeight) div 2) + ScaledMargin,
-            Bitmap.Width - 1, FEffectiveItemHeight * (i + 1) + ScaledMargin), CurrentPPI, TmpString,
+            FEffectiveItemHeight * Int + ((FEffectiveItemHeight-FFontHeight) div 2) + ScaledMargin,
+            Bitmap.Width - 1, FEffectiveItemHeight * (Int + 1) + ScaledMargin), CurrentPPI, TmpString,
             False, nil, FImages);
         end;
       end;
@@ -1650,16 +1647,16 @@ begin
 end;
 
 function TSynBaseCompletionProposalForm.PhysicalToLogicalIndex(Index: Integer): Integer;
-var i : Integer;
+var Int : Integer;
 begin
   if FMatchText then
   begin
     Result := -1;
-    for i := 0 to FAssignedList.Count - 1 do
-      if Integer(FAssignedList.Objects[i]) = Index then
+    for Int := 0 to FAssignedList.Count - 1 do
+      if Integer(FAssignedList.Objects[Int]) = Index then
       begin
-        Result := i;
-        break;
+        Result := Int;
+        Break;
       end;
   end else
     Result := Index;
@@ -1705,22 +1702,22 @@ procedure TSynBaseCompletionProposalForm.SetCurrentString(const Value: string);
 
   procedure RecalcList;
   var
-    i: Integer;
+    Int: Integer;
   begin
     FAssignedList.Clear;
-    for i := 0 to FItemList.Count -1 do
+    for Int := 0 to FItemList.Count -1 do
     begin
-      if MatchItem(i, True) then
-        FAssignedList.AddObject(FItemList[i], TObject(i));
+      if MatchItem(Int, True) then
+        FAssignedList.AddObject(FItemList[Int], TObject(Int));
     end;
   end;
 
 var
-  i: Integer;
+  Int: Integer;
 begin
   FCurrentString := Value;
   if DisplayType <> ctCode then
-    exit;
+    Exit;
   if FMatchText then
   begin
     RecalcList;
@@ -1735,12 +1732,12 @@ begin
   end
   else
   begin
-    i := 0;
-    while (i < ItemList.Count) and (not MatchItem(i, True)) do
-      inc(i);
+    Int := 0;
+    while (Int < ItemList.Count) and (not MatchItem(Int, True)) do
+      Inc(Int);
 
-    if i < ItemList.Count then
-      Position := i
+    if Int < ItemList.Count then
+      Position := Int
     else
       Position := 0;
   end;
@@ -1768,7 +1765,7 @@ end;
 procedure TSynBaseCompletionProposalForm.SetPosition(const Value: Integer);
 begin
   if ((Value <= 0) and (FPosition = 0)) or (FPosition = Value) then
-    exit;
+    Exit;
 
   if Value <= FAssignedList.Count - 1 then
   begin
@@ -1838,10 +1835,10 @@ end;
 
 procedure TSynBaseCompletionProposalForm.WMMouseWheel(var Msg: TMessage);
 var
-  nDelta: integer;
-  nWheelClicks: integer;
+  nDelta: Integer;
+  nWheelClicks: Integer;
 begin
-  if csDesigning in ComponentState then exit;
+  if csDesigning in ComponentState then Exit;
 
   if GetKeyState(VK_CONTROL) >= 0 then nDelta := Mouse.WheelScrollLines
     else nDelta := FLinesInWindow;
@@ -1849,7 +1846,7 @@ begin
   Inc(fMouseWheelAccumulator, SmallInt(Msg.wParamHi));
   nWheelClicks := fMouseWheelAccumulator div WHEEL_DELTA;
   fMouseWheelAccumulator := fMouseWheelAccumulator mod WHEEL_DELTA;
-  if (nDelta = integer(WHEEL_PAGESCROLL)) or (nDelta > FLinesInWindow) then
+  if (nDelta = Integer(WHEEL_PAGESCROLL)) or (nDelta > FLinesInWindow) then
     nDelta := FLinesInWindow;
 
   Position := Position - (nDelta * nWheelClicks);
@@ -1859,7 +1856,7 @@ end;
 procedure TSynBaseCompletionProposalForm.WMNCHitTest(var Message: TWMNCHitTest);
 var
   D: Integer;
-  P: TPoint;
+  Posi: TPoint;
 begin
   if not (FResizeable and (DisplayType = ctCode)) then
   begin
@@ -1869,31 +1866,31 @@ begin
 
   D := GetSystemMetrics(SM_CXSIZEFRAME);
 
-  P := Self.ScreenToClient(Message.Pos);
+  Posi := Self.ScreenToClient(Message.Pos);
 
-  if P.Y < D then
+  if Posi.Y < D then
   begin
-    if P.X < D then
+    if Posi.X < D then
       Message.Result := HTTOPLEFT
-    else if P.X > ClientWidth - D then
+    else if Posi.X > ClientWidth - D then
       Message.Result := HTTOPRIGHT
     else
       Message.Result := HTTOP;
   end
-  else if P.Y > ClientHeight - D then
+  else if Posi.Y > ClientHeight - D then
   begin
-    if P.X < D then
+    if Posi.X < D then
       Message.Result := HTBOTTOMLEFT
-    else if P.X > ClientWidth - D then
+    else if Posi.X > ClientWidth - D then
       Message.Result := HTBOTTOMRIGHT
     else
       Message.Result := HTBOTTOM;
   end
   else
   begin
-    if P.X < D then
+    if Posi.X < D then
       Message.Result := HTLEFT
-    else if P.X > ClientWidth - D then
+    else if Posi.X > ClientWidth - D then
       Message.Result := HTRIGHT
   end;
 
@@ -1905,22 +1902,22 @@ function GetMDIParent (const Form: TSynForm): TSynForm;
 { Returns the parent of the specified MDI child form. But, if Form isn't a
   MDI child, it simply returns Form. }
 var
-  I, J: Integer;
+  Int, J: Integer;
 begin
   Result := Form;
   if Form = nil then
-    exit;
+    Exit;
   if (Form is TSynForm) and
      ((Form as TForm).FormStyle = fsMDIChild) then
-    for I := 0 to Screen.FormCount-1 do
-      with Screen.Forms[I] do
+    for Int := 0 to Screen.FormCount-1 do
+      with Screen.Forms[Int] do
       begin
         if FormStyle <> fsMDIForm then Continue;
         for J := 0 to MDIChildCount-1 do
           if MDIChildren[J] = Form then
           begin
-            Result := Screen.Forms[I];
-            exit;
+            Result := Screen.Forms[Int];
+            Exit;
           end;
       end;
 end;
@@ -2121,12 +2118,12 @@ begin
   DefaultType := ctCode;
 end;
 
-procedure TSynBaseCompletionProposal.Execute(s: string; x, y: integer);
+procedure TSynBaseCompletionProposal.Execute(Str: string; x, y: Integer);
 begin
-  ExecuteEx(s, x, y, DefaultType);
+  ExecuteEx(Str, x, y, DefaultType);
 end;
 
-procedure TSynBaseCompletionProposal.ExecuteEx(s: string; x, y: integer; Kind : SynCompletionType);
+procedure TSynBaseCompletionProposal.ExecuteEx(Str: string; x, y: Integer; Kind : SynCompletionType);
 var
   WorkArea : TRect;
   Monitor: TMonitor;
@@ -2141,21 +2138,21 @@ var
     Result := WorkArea.Bottom;
   end;
 
-  function GetParamWidth(const S: string): Integer;
+  function GetParamWidth(const Str: string): Integer;
   var
-    i: Integer;
+    Int: Integer;
     List: TStringList;
     NewWidth: Integer;
   begin
     List := TStringList.Create;
     try
-      List.CommaText := S;
+      List.CommaText := Str;
 
       Result := 0;
-      for i := -1 to List.Count -1 do
+      for Int := -1 to List.Count -1 do
       begin
         NewWidth := FormattedTextWidth(Form.Canvas,
-        FormatParamList(S, i), Form.CurrentPPI, Columns, FForm.Images);
+        FormatParamList(Str, Int), Form.CurrentPPI, Columns, FForm.Images);
 
         if NewWidth > Result then
           Result := NewWidth;
@@ -2167,7 +2164,7 @@ var
 
   procedure RecalcFormPlacement;
   var
-    i: Integer;
+    Int: Integer;
     tmpWidth: Integer;
     tmpHeight: Integer;
     tmpX: Integer;
@@ -2175,7 +2172,7 @@ var
     tmpStr: string;
     NewWidth: Integer;
     ScaledMargin: Integer;
-    ActivePPI: integer;
+    ActivePPI: Integer;
   begin
     if Assigned(FForm.CurrentEditor) then
       ActivePPI := FForm.CurrentEditor.CurrentPPI
@@ -2204,34 +2201,34 @@ var
         tmpHeight := Form.FEffectiveItemHeight * ItemList.Count +  2 * ScaledMargin;
 
         Form.Canvas.Font.Assign(Font);
-        for i := 0 to ItemList.Count -1 do
+        for Int := 0 to ItemList.Count -1 do
         begin
-          tmpStr := ItemList[i];
+          tmpStr := ItemList[Int];
           NewWidth := FormattedTextWidth(Form.Canvas, tmpStr,
             Form.CurrentPPI, nil, FForm.Images);
           if NewWidth > tmpWidth then
             tmpWidth := NewWidth;
         end;
 
-        inc(tmpWidth, 2 * ScaledMargin);
+        Inc(tmpWidth, 2 * ScaledMargin);
       end;
     ctParams:
       begin
         tmpHeight := Form.FEffectiveItemHeight * ItemList.Count + 2 * ScaledMargin;
 
         Form.Canvas.Font.Assign(Font);
-        for i := 0 to ItemList.Count -1 do
+        for Int := 0 to ItemList.Count -1 do
         begin
-          NewWidth := GetParamWidth(StripFormatCommands(ItemList[i]));
+          NewWidth := GetParamWidth(StripFormatCommands(ItemList[Int]));
 
           if Assigned(Form.OnMeasureItem) then
-            Form.OnMeasureItem(Self, i, Form.Canvas, NewWidth);
+            Form.OnMeasureItem(Self, Int, Form.Canvas, NewWidth);
 
           if NewWidth > tmpWidth then
             tmpWidth := NewWidth;
         end;
 
-        inc(tmpWidth, 2 * ScaledMargin);
+        Inc(tmpWidth, 2 * ScaledMargin);
       end;
     end;
 
@@ -2265,13 +2262,13 @@ begin
 
   FCanExecute := True;
   if Assigned(OnExecute) then
-    OnExecute(Kind, Self, s, x, y, FCanExecute);
+    OnExecute(Kind, Self, Str, x, y, FCanExecute);
 
   if (not FCanExecute) or (ItemList.Count = 0) then
   begin
     if Form.Visible and (Kind = ctParams) then
       Form.Visible := False;
-    exit;
+    Exit;
   end;
 
   Form.PopupMode := pmExplicit;
@@ -2279,7 +2276,7 @@ begin
 
   if Assigned(Form.CurrentEditor) then
   begin
-    TmpOffset := (Form.CurrentEditor as TCustomSynEdit).Canvas.TextWidth(Copy(s, 1, DotOffset));
+    TmpOffset := (Form.CurrentEditor as TCustomSynEdit).Canvas.TextWidth(Copy(Str, 1, DotOffset));
     if DotOffset > 1 then
       TmpOffset := TmpOffset + (3 * (DotOffset -1));
     Form.PopupParent := GetParentForm(Form.CurrentEditor);
@@ -2291,8 +2288,8 @@ begin
 
   case Kind of
   ctCode:
-    if (s = '') and (Form.AssignedList.Count > 0) or    // Rr
-       (s <> '') and (Form.AssignedList.Count > 1) then
+    if (Str = '') and (Form.AssignedList.Count > 0) or    // Rr
+       (Str <> '') and (Form.AssignedList.Count > 1) then
     begin
       //This may seem redundant, but it fixes scrolling bugs for the first time
       //That is the only time these occur
@@ -2304,7 +2301,7 @@ begin
       RecalcFormPlacement;
       Form.Show;
 
-      CurrentString := s;  // bug id 1496148
+      CurrentString := Str;  // bug id 1496148
     end;
   ctParams, ctHint:
     begin
@@ -2919,27 +2916,27 @@ end;
 
 function TSynCompletionProposal.GetCurrentInput(AEditor: TCustomSynEdit): string;
 var
-  s: string;
-  i: integer;
+  Str: string;
+  Int: Integer;
 begin
   Result := '';
   if AEditor <> nil then
   begin
-    s := AEditor.LineText;
-    i := AEditor.CaretX - 1;
-    if i <= Length(s) then
+    Str := AEditor.LineText;
+    Int := AEditor.CaretX - 1;
+    if Int <= Length(Str) then
     begin
       FAdjustCompletionStart := False;
-      while (i > 0) and (s[i] > #32) and not Self.IsWordBreakChar(s[i]) do
-        dec(i);
+      while (Int > 0) and (Str[Int] > #32) and not Self.IsWordBreakChar(Str[Int]) do
+        Dec(Int);
 
-      FCompletionStart := i + 1;
-      Result := Copy(s, i + 1, AEditor.CaretX - i - 1);
+      FCompletionStart := Int + 1;
+      Result := Copy(Str, Int + 1, AEditor.CaretX - Int - 1);
     end
     else
       FAdjustCompletionStart := True;
 
-    FCompletionStart := i + 1;
+    FCompletionStart := Int + 1;
   end;
 end;
 
@@ -2950,20 +2947,20 @@ var
 begin
   Result := '';
   if not Assigned(AEditor) then
-    exit;
+    Exit;
 
   Line := AEditor.Lines[AEditor.CaretXY.Line - 1];
   X := AEditor.CaretXY.Char - 1;
   if (X = 0) or (X > Length(Line)) or (Length(Line) = 0) then
-    exit;
+    Exit;
 
   if Self.IsWordBreakChar(Line[X]) then
-    dec(X);
+    Dec(X);
 
   while (X > 0) and not(Self.IsWordBreakChar(Line[X])) do
   begin
     Result := Line[X] + Result;
-    dec(x);
+    Dec(x);
   end;
 end;
 
@@ -3022,7 +3019,7 @@ end;
 
 procedure TSynCompletionProposal.TimerExecute(Sender: TObject);
 begin
-  if not Assigned(FTimer) then exit;
+  if not Assigned(FTimer) then Exit;
   FTimer.Enabled := False;
   if Application.Active then
   begin
@@ -3068,7 +3065,7 @@ begin
 
 end;
 
-procedure TSynCompletionProposal.ExecuteEx(s: string; x, y: integer;
+procedure TSynCompletionProposal.ExecuteEx(Str: string; x, y: Integer;
   Kind: SynCompletionType);
 begin
   inherited;
@@ -3078,10 +3075,10 @@ end;
 
 procedure TSynCompletionProposal.AddEditor(AEditor: TCustomSynEdit);
 var
-  i : integer;
+  Int : Integer;
 begin
-  i := fEditors.IndexOf(AEditor);
-  if i = -1 then begin
+  Int := fEditors.IndexOf(AEditor);
+  if Int = -1 then begin
     AEditor.FreeNotification(Self);
     fEditors.Add(AEditor);
     AEditor.AddKeyDownHandler(EditorKeyDown);
@@ -3090,26 +3087,26 @@ begin
   end;
 end;
 
-function TSynCompletionProposal.EditorsCount: integer;
+function TSynCompletionProposal.EditorsCount: Integer;
 begin
-  result := fEditors.count;
+  Result := fEditors.Count;
 end;
 
-function TSynCompletionProposal.GetEditor(i: integer): TCustomSynEdit;
+function TSynCompletionProposal.GetEditor(Int: Integer): TCustomSynEdit;
 begin
-  if (i < 0) or (i >= EditorsCount) then
+  if (Int < 0) or (Int >= EditorsCount) then
     Result := nil
   else
-    Result := fEditors[i];
+    Result := fEditors[Int];
 end;
 
-function TSynCompletionProposal.RemoveEditor(AEditor: TCustomSynEdit): boolean;
+function TSynCompletionProposal.RemoveEditor(AEditor: TCustomSynEdit): Boolean;
 var
-  i: integer;
+  Int: Integer;
 begin
-  i := fEditors.Remove(AEditor);
-  result := i <> -1;
-  if result then begin
+  Int := fEditors.Remove(AEditor);
+  Result := Int <> -1;
+  if Result then begin
     if Form.CurrentEditor = AEditor then
     begin
       if Form.Visible then
@@ -3127,27 +3124,27 @@ end;
 
 procedure TSynCompletionProposal.DoExecute(AEditor: TCustomSynEdit);
 var
-  p: TPoint;
-  i: integer;
+  Posi: TPoint;
+  Int: Integer;
 begin
-  i := FEditors.IndexOf(AEditor);
-  if i <> -1 then
+  Int := FEditors.IndexOf(AEditor);
+  if Int <> -1 then
     with AEditor do
     begin
       if (DefaultType <> ctCode) or not ReadOnly then
       begin
         if DefaultType = ctHint then
-          GetCursorPos(P)
+          GetCursorPos(Posi)
         else
         begin
-          p := ClientToScreen(RowColumnToPixels(DisplayXY));
-          Inc(p.y, LineHeight);
+          Posi := ClientToScreen(RowColumnToPixels(DisplayXY));
+          Inc(Posi.y, LineHeight);
         end;
 
         Form.CurrentEditor := AEditor;
 
         FPreviousToken := GetPreviousToken(Form.CurrentEditor as TCustomSynEdit);
-        ExecuteEx(GetCurrentInput(AEditor), p.x, p.y, DefaultType);
+        ExecuteEx(GetCurrentInput(AEditor), Posi.x, Posi.y, DefaultType);
         FNoNextKey := (DefaultType = ctCode) and FCanExecute and Form.Visible;
       end;
     end;
@@ -3261,7 +3258,7 @@ begin
   CreateInternalCompletion;
   FEndOfTokenChr := DefaultEndOfTokenChr;
   fAutoCompleteList := TStringList.Create;
-  fNoNextKey := false;
+  fNoNextKey := False;
   fShortCut := Vcl.Menus.ShortCut(Ord(' '), [ssShift]);
 end;
 
@@ -3316,7 +3313,7 @@ procedure TSynAutoComplete.ExecuteEx(Token: string; Editor: TCustomSynEdit;
   LookupIfNotExact: Boolean);
 var
   Temp: string;
-  i, j: integer;
+  Int, j: Integer;
   StartOfBlock: TBufferCoord;
   ChangedIndent: Boolean;
   ChangedTrailing: Boolean;
@@ -3327,8 +3324,8 @@ var
 begin
   if Assigned(OnBeforeExecute) then OnBeforeExecute(Self);
   try
-    i := AutoCompleteList.IndexOf(Token);
-    if (Length(Token) > 0) and (i <> -1) then
+    Int := AutoCompleteList.IndexOf(Token);
+    if (Length(Token) > 0) and (Int <> -1) then
     begin
       Editor.Lines.BeginUpdate;
       try
@@ -3358,22 +3355,22 @@ begin
         else
           Spacing := StringofChar(' ', BeginningSpaceCount);
 
-        inc(i);
-        if (i < AutoCompleteList.Count) and
-           (Length(AutoCompleteList[i]) > 0) and
-           (AutoCompleteList[i][1] = '|') then
+        Inc(Int);
+        if (Int < AutoCompleteList.Count) and
+           (Length(AutoCompleteList[Int]) > 0) and
+           (AutoCompleteList[Int][1] = '|') then
         begin
-          inc(i);
+          Inc(Int);
         end;
         StartOfBlock.Char := -1;
         StartOfBlock.Line := -1;
-        while (i < AutoCompleteList.Count) and
-              (length(AutoCompleteList[i]) > 0) and
-              (AutoCompleteList[i][1] = '=') do
+        while (Int < AutoCompleteList.Count) and
+              (Length(AutoCompleteList[Int]) > 0) and
+              (AutoCompleteList[Int][1] = '=') do
         begin
     {      for j := 0 to PrevSpace - 1 do
             Editor.CommandProcessor(ecDeleteLastChar, ' ', nil);}
-          Temp := AutoCompleteList[i];
+          Temp := AutoCompleteList[Int];
           for j := 2 to Length(Temp) do begin
             if (Temp[j] = #9) then
               Editor.CommandProcessor(ecTab, Temp[j], nil)
@@ -3382,13 +3379,13 @@ begin
             if (Temp[j] = '|') then
               StartOfBlock := Editor.CaretXY
           end;
-          inc(i);
-          if (i < AutoCompleteList.Count) and
-             (length(AutoCompleteList[i]) > 0) and
-             (AutoCompleteList[i][1] = '=') then
+          Inc(Int);
+          if (Int < AutoCompleteList.Count) and
+             (Length(AutoCompleteList[Int]) > 0) and
+             (AutoCompleteList[Int][1] = '=') then
           begin
              Editor.CommandProcessor (ecLineBreak,' ',nil);
-             for j := 1 to length(Spacing) do
+             for j := 1 to Length(Spacing) do
                if (Spacing[j] = #9) then
                  Editor.CommandProcessor(ecTab, #9, nil)
                else
@@ -3413,20 +3410,20 @@ begin
     begin
       FInternalCompletion.AddEditor(Editor);
       FInternalCompletion.ClearList;
-      for i := 0 to AutoCompleteList.Count - 1 do
-        if (Length(AutoCompleteList[i]) > 0) and (AutoCompleteList[i][1] <> '=') and (AutoCompleteList[i][1] <> '|') then
+      for Int := 0 to AutoCompleteList.Count - 1 do
+        if (Length(AutoCompleteList[Int]) > 0) and (AutoCompleteList[Int][1] <> '=') and (AutoCompleteList[Int][1] <> '|') then
         begin
-          if (i + 1 < AutoCompleteList.Count) and (length(AutoCompleteList[i + 1]) > 0) and
-            (AutoCompleteList[i + 1][1] = '|') then
+          if (Int + 1 < AutoCompleteList.Count) and (Length(AutoCompleteList[Int + 1]) > 0) and
+            (AutoCompleteList[Int + 1][1] = '|') then
           begin
-            Temp := AutoCompleteList[i + 1];
+            Temp := AutoCompleteList[Int + 1];
             Delete(Temp, 1, 1);
           end
           else
-            Temp := AutoCompleteList[i];
-          Temp := '\style{+B}' + AutoCompleteList[i] + '\style{-B}\column{}' + Temp;
+            Temp := AutoCompleteList[Int];
+          Temp := '\style{+B}' + AutoCompleteList[Int] + '\style{-B}\column{}' + Temp;
           FInternalCompletion.ItemList.Add(Temp);
-          FInternalCompletion.InsertList.Add(AutoCompleteList[i]);
+          FInternalCompletion.InsertList.Add(AutoCompleteList[Int]);
         end;
       FInternalCompletion.DoExecute(Editor);
     end;
@@ -3444,19 +3441,19 @@ end;
 
 function TSynAutoComplete.GetPreviousToken(Editor: TCustomSynEdit): string;
 var
-  s: string;
-  i: Integer;
+  Str: string;
+  Int: Integer;
 begin
   Result := '';
   if Editor <> nil then
   begin
-    s := Editor.LineText;
-    i := Editor.CaretX - 1;
-    if i <= Length (s) then
+    Str := Editor.LineText;
+    Int := Editor.CaretX - 1;
+    if Int <= Length (Str) then
     begin
-      while (i > 0) and (s[i] > ' ') and (Pos(s[i], FEndOfTokenChr) = 0) do
-        Dec(i);
-      Result := copy(s, i + 1, Editor.CaretX - i - 1);
+      while (Int > 0) and (Str[Int] > ' ') and (Pos(Str[Int], FEndOfTokenChr) = 0) do
+        Dec(Int);
+      Result := Copy(Str, Int + 1, Editor.CaretX - Int - 1);
     end;
   end
 end;
@@ -3496,16 +3493,16 @@ end;
 function TSynAutoComplete.GetTokenList: string;
 var
   List: TStringList;
-  i: integer;
+  Int: Integer;
 begin
   Result := '';
   if AutoCompleteList.Count < 1 then Exit;
   List := TStringList.Create;
-  i := 0;
-  while (i < AutoCompleteList.Count) do begin
-    if (length(AutoCompleteList[i]) > 0) and (AutoCompleteList[i][1] <> '=') then
-      List.Add(Trim(AutoCompleteList[i]));
-    inc(i);
+  Int := 0;
+  while (Int < AutoCompleteList.Count) do begin
+    if (Length(AutoCompleteList[Int]) > 0) and (AutoCompleteList[Int][1] <> '=') then
+      List.Add(Trim(AutoCompleteList[Int]));
+    Inc(Int);
   end;
   Result := List.Text;
   List.Free;
@@ -3513,23 +3510,23 @@ end;
 
 function TSynAutoComplete.GetTokenValue(Token: string): string;
 var
-  i: integer;
+  Int: Integer;
   List: TStringList;
 begin
   Result := '';
-  i := AutoCompleteList.IndexOf(Token);
-  if i <> -1 then
+  Int := AutoCompleteList.IndexOf(Token);
+  if Int <> -1 then
   begin
     List := TStringList.Create;
-    Inc(i);
-    while (i < AutoCompleteList.Count) and
-      (length(AutoCompleteList[i]) > 0) and
-      (AutoCompleteList[i][1] = '=') do begin
-      if Length(AutoCompleteList[i]) = 1 then
+    Inc(Int);
+    while (Int < AutoCompleteList.Count) and
+      (Length(AutoCompleteList[Int]) > 0) and
+      (AutoCompleteList[Int][1] = '=') do begin
+      if Length(AutoCompleteList[Int]) = 1 then
         List.Add('')
       else
-        List.Add(Copy(AutoCompleteList[i], 2, Length(AutoCompleteList[i])));
-      inc(i);
+        List.Add(Copy(AutoCompleteList[Int], 2, Length(AutoCompleteList[Int])));
+      Inc(Int);
     end;
     Result := List.Text;
     List.Free;

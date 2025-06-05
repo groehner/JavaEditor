@@ -190,24 +190,24 @@ end;
 
 function TStCustomShortcut.CreateShortcut: Boolean;
 var
-  S   : string;
+  Str   : string;
 begin
   if not FileExists(FFileName) then
     RaiseStError(ESsShortcutError, ssscInvalidTargetFile);
   if (FLocationType = ltDirectory) and (FDestinationDir = '') then
     RaiseStError(ESsShortcutError, ssscNoPathSpecified);
-  MakePath(S);
+  MakePath(Str);
   if (FLocationType = ltSpecialFolder) and (FSpecialFolder = sfRecentFiles) then begin
-    SHAddToRecentDocs(SHARD_PATH, Pointer(PChar(S)));
+    SHAddToRecentDocs(SHARD_PATH, Pointer(PChar(Str)));
     Result := True;
     Exit;
   end;
   if FAutoName then begin
-    S := S + ssscDefaultShortcutPrefix;
-    S := S + ExtractFileName(FFileName) + '.lnk';
+    Str := Str + ssscDefaultShortcutPrefix;
+    Str := Str + ExtractFileName(FFileName) + '.lnk';
   end else
-    S := S + FDescription + '.lnk';
-  Result := Save(S);
+    Str := Str + FDescription + '.lnk';
+  Result := Save(Str);
 end;
 
 destructor TStCustomShortcut.Destroy;

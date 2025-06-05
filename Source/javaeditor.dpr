@@ -29,7 +29,7 @@ uses
   UJavaCommands in 'UJavaCommands.pas',
   UMessages in 'UMessages.pas' {FMessages},
   UDlgHelp in 'UDlgHelp.pas' {FHelpDialog},
-  UDlgFavoriten in 'UDlgFavoriten.pas' {FFavoritenDialog},
+  UDlgFavorites in 'UDlgFavorites.pas' {FFavoritenDialog},
   UUMLModule in 'essmodel\System\UUMLModule.pas' {DMUMLModule: TDataModule},
   UListeners in 'essmodel\Model\UListeners.pas',
   UIntegrator in 'essmodel\Integrator\UIntegrator.pas',
@@ -200,7 +200,6 @@ uses
   uTabHost in 'Dockable\uTabHost.pas' {TabDockHost},
   uConjoinHost in 'Dockable\uConjoinHost.pas' {ConjoinDockHost},
   UDlgConnect in 'SequenceDiagram\UDlgConnect.pas' {FConnectDialog},
-  ULifeLine in 'SequenceDiagram\ULifeLine.pas',
   USequenceForm in 'SequenceDiagram\USequenceForm.pas' {FSequenceForm},
   USequencePanel in 'SequenceDiagram\USequencePanel.pas',
   UGenerateStructogram in 'Structogram\UGenerateStructogram.pas',
@@ -282,7 +281,8 @@ uses
   MarkdownProcessor in '..\..\delphi-markdown\source\MarkdownProcessor.pas',
   MarkdownTables in '..\..\delphi-markdown\source\MarkdownTables.pas',
   MarkdownTxtMark in '..\..\delphi-markdown\source\MarkdownTxtMark.pas',
-  MarkdownUtils in '..\..\delphi-markdown\source\MarkdownUtils.pas';
+  MarkdownUtils in '..\..\delphi-markdown\source\MarkdownUtils.pas',
+  ULifeline in 'Sequencediagram\ULifeline.pas';
 
 {$R *.RES}
 

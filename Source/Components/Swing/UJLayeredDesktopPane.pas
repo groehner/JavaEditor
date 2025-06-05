@@ -3,7 +3,8 @@ unit UJLayeredDesktopPane;
 interface
 
 uses
-  Classes, UJComponents;
+  Classes,
+  UJComponents;
 
 type
 
@@ -12,7 +13,7 @@ type
   TJLayeredPane = class (TSwingComponent)
   public
     constructor Create (AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure NewControl; override;
     procedure Paint; override;
   published
@@ -25,8 +26,8 @@ type
     FDragMode: TDragMode;
   public
     constructor Create (AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
   published
     property DragMode: TDragMode read FDragMode write FDragMode;
@@ -42,7 +43,10 @@ type
 
 implementation
 
-uses SysUtils, Graphics, Controls, UGUIDesigner;
+uses
+  Graphics,
+  Controls,
+  UGUIDesigner;
 
 {--- JLayeredPane -------------------------------------------------------------}
 
@@ -54,7 +58,7 @@ begin
   JavaType:= 'JLayeredPane';
 end;
 
-function TJLayeredPane.getAttributes(ShowAttributes: integer): string;
+function TJLayeredPane.GetAttributes(ShowAttributes: Integer): string;
 begin
   Result:= '|Border' + inherited;
 end;
@@ -83,12 +87,12 @@ begin
   JavaType:= 'JDesktopPane';
 end;
 
-function TJDesktopPane.getAttributes(ShowAttributes: integer): string;
+function TJDesktopPane.GetAttributes(ShowAttributes: Integer): string;
 begin
   Result:= '|Border|DragMode' + inherited;
 end;
 
-procedure TJDesktopPane.setAttribute(Attr, Value, Typ: string);
+procedure TJDesktopPane.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'DragMode' then
     MakeAttribut(Attr, 'JDesktopPane.' + Value)
@@ -111,7 +115,7 @@ begin
   Foreground:= DarkShadow;
   Background:= DefaultBackground;
   ControlStyle:= [csAcceptsControls];
-  visible:= true;
+  Visible:= True;
   JavaType:= 'JInternalFrame';
 end;
 
@@ -133,13 +137,13 @@ begin
   Canvas.LineTo(Width, PPIScale(27));
   if Background <> DefaultBackground then begin
     Canvas.Brush.Color:= Background;
-    Canvas.FillRect(Rect(PPIScale(5), PPIScale(28), width-PPIScale(6), height-PPIScale(6)));
+    Canvas.FillRect(Rect(PPIScale(5), PPIScale(28), Width-PPIScale(6), Height-PPIScale(6)));
   end;
   FGUIDesigner.vilControls1616.Draw(Canvas, PPIScale(10), PPIScale(8), 15);
-  var x:= PPIScale(36);
-  while x + PPIScale(8) < Width - 15 do begin
-    FGUIDesigner.vilControls1616.Draw(Canvas, x, PPIScale(8), 14);
-    x:= x + PPIScale(8);
+  var XPos:= PPIScale(36);
+  while XPos + PPIScale(8) < Width - 15 do begin
+    FGUIDesigner.vilControls1616.Draw(Canvas, XPos, PPIScale(8), 14);
+    XPos:= XPos + PPIScale(8);
   end;
 end;
 

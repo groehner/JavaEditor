@@ -3,7 +3,10 @@ unit UDlgMindstormsEV3;
 interface
 
 uses
-  Forms, StdCtrls, System.Classes, Vcl.Controls;
+  Forms,
+  StdCtrls,
+  System.Classes,
+  Vcl.Controls;
 
 type
   TFMindstormsEV3Dialog = class(TForm)
@@ -25,37 +28,43 @@ implementation
 
 {$R *.dfm}
 
-uses Windows, JvGnugettext, UConfiguration, UJava, UJavaCommands;
+uses
+  Windows,
+  JvGnugettext,
+  UConfiguration,
+  UJava,
+  UJavaCommands;
 
 procedure TFMindstormsEV3Dialog.FormCreate(Sender: TObject);
 begin
-  TranslateComponent(Self);;
+  TranslateComponent(Self);
 end;
 
 procedure TFMindstormsEV3Dialog.BControlCenterClick(Sender: TObject);
 begin
-  myJavaCommands.ExecWithoutWait(FConfiguration.LejosVerzeichnis + '\bin\ev3control.bat', '', '', SW_Hide);
+  MyJavaCommands.ExecWithoutWait(FConfiguration.LejosVerzeichnis +
+    '\bin\ev3control.bat', '', '', SW_HIDE);
 end;
 
 procedure TFMindstormsEV3Dialog.BRunClick(Sender: TObject);
 begin
-  FConfiguration.MindstormsRun:= true;
+  FConfiguration.MindstormsRun := True;
   FJava.MIRunClick(Self);
 end;
 
 procedure TFMindstormsEV3Dialog.BShutDownClick(Sender: TObject);
 begin
-  myJavaCommands.CallEV3('-s');
+  MyJavaCommands.CallEV3('-s');
 end;
 
 procedure TFMindstormsEV3Dialog.BTerminateClick(Sender: TObject);
 begin
-  myJavaCommands.CallEV3('-t');
+  MyJavaCommands.CallEV3('-t');
 end;
 
 procedure TFMindstormsEV3Dialog.BUploadClick(Sender: TObject);
 begin
-  FConfiguration.MindstormsRun:= false;
+  FConfiguration.MindstormsRun := False;
   FJava.MIRunClick(Self);
 end;
 

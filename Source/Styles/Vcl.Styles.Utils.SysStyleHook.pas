@@ -200,9 +200,9 @@ type
     procedure Invalidate; virtual;
     procedure InvalidateNC; virtual;
     procedure Refresh; virtual;
-    procedure DrawControlText(Canvas: TCanvas; Details: TThemedElementDetails; const S: string; var R: TRect; const Flags: Cardinal);
-    function DrawTextCentered(DC: HDC; Details: TThemedElementDetails; const R: TRect; S: string; const Flags: DWORD = 0): Integer;
-    function DrawText(DC: HDC; Details: TThemedElementDetails; S: string; var R: TRect; const Flags: TTextFormat = []): Integer;
+    procedure DrawControlText(Canvas: TCanvas; Details: TThemedElementDetails; const Str: string; var R: TRect; const Flags: Cardinal);
+    function DrawTextCentered(DC: HDC; Details: TThemedElementDetails; const R: TRect; Str: string; const Flags: DWORD = 0): Integer;
+    function DrawText(DC: HDC; Details: TThemedElementDetails; Str: string; var R: TRect; const Flags: TTextFormat = []): Integer;
     property Handle: HWND read FHandle;
     property ParentHandle: HWND read GetParentHandle;
     property Handled: Boolean read FHandled write FHandled;
@@ -581,7 +581,7 @@ begin
     if (FOrgWndProc <> 0) then
       Result := CallWindowProc(Pointer(FOrgWndProc), Handle, Msg.Msg, Msg.wParam, Msg.lParam);
   except
-    on e : exception do
+    on e : Exception do
       OutputDebugString(PWideChar('CallDefaultProc error : ' + e.message + chr(0)));
   end;
 end;
@@ -596,7 +596,7 @@ begin
       PaintBorder(SysControl, True);
 end;
 
-procedure TSysStyleHook.DrawControlText(Canvas: TCanvas; Details: TThemedElementDetails; const S: string; var R: TRect; const Flags: Cardinal);
+procedure TSysStyleHook.DrawControlText(Canvas: TCanvas; Details: TThemedElementDetails; const Str: string; var R: TRect; const Flags: Cardinal);
 var
   ThemeTextColor: TColor;
   TextFormat: TTextFormatFlags;
@@ -606,41 +606,41 @@ begin
   if StyleServices.GetElementColor(Details, ecTextColor, ThemeTextColor) then
   begin
     Canvas.Font.Color := ThemeTextColor;
-    StyleServices.DrawText(Canvas.Handle, Details, S, R, TextFormat, Canvas.Font.Color);
+    StyleServices.DrawText(Canvas.Handle, Details, Str, R, TextFormat, Canvas.Font.Color);
   end
   else
   begin
     Canvas.Refresh;
-    StyleServices.DrawText(Canvas.Handle, Details, S, R, TextFormat);
+    StyleServices.DrawText(Canvas.Handle, Details, Str, R, TextFormat);
   end;
 end;
 
 procedure TSysStyleHook.DrawParentBackground(DC: HDC; const ARect: PRect);
 var
   Bmp: TBitmap;
-  P: TPoint;
+  Posi: TPoint;
 begin
-  P := Point(0, 0);
+  Posi := Point(0, 0);
   if ARect <> nil then
-    P := Point(ARect.Left, ARect.Top);
+    Posi := Point(ARect.Left, ARect.Top);
 
   Bmp := TBitmap.Create;
   try
     Bmp.SetSize(SysControl.Parent.Width, SysControl.Parent.Height);
     SendMessage(ParentHandle, WM_ERASEBKGND, Bmp.Canvas.Handle, $93);
-    ClientToScreen(Handle, P);
-    ScreenToClient(ParentHandle, P);
+    ClientToScreen(Handle, Posi);
+    ScreenToClient(ParentHandle, Posi);
     if ARect <> nil then
-      BitBlt(DC, ARect.Left, ARect.Top, ARect.Width, ARect.Height, Bmp.Canvas.Handle, P.X, P.Y, SRCCOPY)
+      BitBlt(DC, ARect.Left, ARect.Top, ARect.Width, ARect.Height, Bmp.Canvas.Handle, Posi.X, Posi.Y, SRCCOPY)
     else
-      BitBlt(DC, 0, 0, SysControl.Width, SysControl.Height, Bmp.Canvas.Handle, P.X, P.Y, SRCCOPY);
+      BitBlt(DC, 0, 0, SysControl.Width, SysControl.Height, Bmp.Canvas.Handle, Posi.X, Posi.Y, SRCCOPY);
   finally
     Bmp.Free;
   end;
 
 end;
 
-function TSysStyleHook.DrawText(DC: HDC; Details: TThemedElementDetails; S: string; var R: TRect; const Flags: TTextFormat): Integer;
+function TSysStyleHook.DrawText(DC: HDC; Details: TThemedElementDetails; Str: string; var R: TRect; const Flags: TTextFormat): Integer;
 var
   DrawFlags: Cardinal;
   SaveIndex: Integer;
@@ -655,14 +655,14 @@ begin
       LColor := FontColor;
     SetTextColor(DC, ColorToRGB(LColor));
     DrawFlags := TTextFormatFlags(Flags);
-    Result := Winapi.Windows.DrawText(DC, S, -1, R, DrawFlags);
+    Result := Winapi.Windows.DrawText(DC, Str, -1, R, DrawFlags);
   finally
     RestoreDC(DC, SaveIndex);
   end;
 end;
 
 function TSysStyleHook.DrawTextCentered(DC: HDC; Details: TThemedElementDetails;
-                           const R: TRect; S: string; const Flags: DWORD = 0): Integer;
+                           const R: TRect; Str: string; const Flags: DWORD = 0): Integer;
 var
   DrawRect: TRect;
   DrawFlags: Cardinal;
@@ -683,7 +683,7 @@ begin
     if DrawFlags <> 0 then
       DrawFlags := DrawFlags or Flags;
 
-    Winapi.Windows.DrawText(DC, PChar(S), -1, DrawRect, DrawFlags or DT_CALCRECT);
+    Winapi.Windows.DrawText(DC, PChar(Str), -1, DrawRect, DrawFlags or DT_CALCRECT);
     DrawRect.Right := R.Right;
     if DrawRect.Bottom < R.Bottom then
       OffsetRect(DrawRect, 0, (R.Bottom - DrawRect.Bottom) div 2)
@@ -691,7 +691,7 @@ begin
       DrawRect.Bottom := R.Bottom;
     ZeroMemory(@DrawParams, SizeOf(DrawParams));
     DrawParams.cbSize := SizeOf(DrawParams);
-    DrawTextEx(DC, PChar(S), -1, DrawRect, DrawFlags, @DrawParams);
+    DrawTextEx(DC, PChar(Str), -1, DrawRect, DrawFlags, @DrawParams);
     Result := DrawParams.uiLengthDrawn;
   finally
     RestoreDC(DC, SaveIndex);
@@ -887,7 +887,7 @@ var
   Child: HWND;
   SavedDC: HDC;
   SysChild: TSysControl;
-  P: TPoint;
+  Posi: TPoint;
   FrameBrush: HBRUSH;
 begin
   Result := False;
@@ -899,11 +899,11 @@ begin
     with SysChild do
     begin
       SavedDC := SaveDC(DC);
-      P := Point(Left, Top);
-      ScreenToClient(ParentHandle, P);
-      if Visible and IsChild and RectVisible(DC, Rect(P.X, P.Y, P.X + Width, P.Y + Height)) then
+      Posi := Point(Left, Top);
+      ScreenToClient(ParentHandle, Posi);
+      if Visible and IsChild and RectVisible(DC, Rect(Posi.X, Posi.Y, Posi.X + Width, Posi.Y + Height)) then
       begin
-        MoveWindowOrg(DC, P.X, P.Y);
+        MoveWindowOrg(DC, Posi.X, Posi.Y);
         IntersectClipRect(DC, 0, 0, Width, Height);
         SendMessage(Child, WM_PAINT, lParam(DC), 0);
         if SysChild.HasBorder then
@@ -1054,7 +1054,7 @@ var
   var
     Child: HWND;
     SysChild: TSysControl;
-    P: TPoint;
+    Posi: TPoint;
   begin
     Result := False;
     SysChild := nil;
@@ -1064,10 +1064,10 @@ var
       begin
         Result := True;
         SysChild := TSysControl.Create(Child);
-        with SysChild, P do
+        with SysChild, Posi do
         begin
-          P := Point(Left, Top);
-          ScreenToClient(Self.Handle, P);
+          Posi := Point(Left, Top);
+          ScreenToClient(Self.Handle, Posi);
           if Visible and IsChild and RectVisible(DC, Rect(X, Y, X + Width, Y + Height)) then
           begin
             ExcludeClipRect(DC, X, Y, X + Width, Y + Height);
@@ -1387,11 +1387,11 @@ end;
 
 procedure TMouseTrackSysControlStyleHook.DoHotTrackTimer(Sender: TObject);
 var
-  P: TPoint;
+  Posi: TPoint;
   FWindowHandle: HWND;
 begin
-  GetCursorPos(P);
-  FWindowHandle := WindowFromPoint(P);
+  GetCursorPos(Posi);
+  FWindowHandle := WindowFromPoint(Posi);
   if (FWindowHandle <> Handle) and not IsChildHandle(FWindowHandle) then
   begin
     StopHotTrackTimer;

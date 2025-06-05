@@ -57,7 +57,7 @@ type
       FBufOfs  : longint;      {offset of buffer in underlying stream}
       FBufPos  : TStMemSize;   {current position in buffer}
       FBufSize : TStMemSize;   {size of buffer}
-      FDirty   : boolean;      {has data in buffer been changed?}
+      FDirty   : Boolean;      {has data in buffer been changed?}
       FSize    : longint;      {size of underlying stream}
       FStream  : TStream;      {underlying stream}
 //      {$IFNDEF VERSION3}
@@ -68,7 +68,7 @@ type
       procedure bsSetStream(aValue : TStream);
 
       procedure bsInitForNewStream; virtual;
-      function bsReadAnsiChar(var aCh : AnsiChar) : boolean;
+      function bsReadAnsiChar(var aCh : AnsiChar) : Boolean;
       function bsReadByte(var AByte: Byte): Boolean;
       function bsReadWideChar(var ACh: Char): Boolean;
       procedure bsReadFromStream;
@@ -111,7 +111,7 @@ type
   TStAnsiTextStream = class(TStBufferedStream)
     private
       FLineEndCh   : AnsiChar;
-      FLineLen     : integer;
+      FLineLen     : Integer;
       FLineTerm    : TStLineTerminator;
       FFixedLine   : PAnsiChar;
       FLineCount   : longint;
@@ -119,13 +119,13 @@ type
       FLineCurOfs  : longint;
       FLineIndex   : TList;
       FLineInxStep : longint;
-      FLineInxTop  : integer;
+      FLineInxTop  : Integer;
     protected
       function atsGetLineCount : longint;
 
       procedure atsSetLineTerm(aValue : TStLineTerminator);
       procedure atsSetLineEndCh(aValue : AnsiChar);
-      procedure atsSetLineLen(aValue : integer);
+      procedure atsSetLineLen(aValue : Integer);
 
       procedure atsGetLine(var aStartPos : longint;
                            var aEndPos   : longint;
@@ -137,7 +137,7 @@ type
       constructor Create(aStream : TStream);
       destructor Destroy; override;
 
-      function AtEndOfStream : boolean;
+      function AtEndOfStream : Boolean;
 
       function ReadLine : AnsiString;
       function ReadLineArray(aCharArray : PAnsiChar; aLen : TStMemSize)
@@ -151,7 +151,7 @@ type
       procedure WriteLineArray(aCharArray : PAnsiChar; aLen : TStMemSize);
       procedure WriteLineZ(aSt : PAnsiChar);
 
-      property FixedLineLength : integer
+      property FixedLineLength : Integer
                   read FLineLen write atsSetLineLen;
       property LineCount : longint
                   read atsGetLineCount;
@@ -165,7 +165,7 @@ type
   TStTextStream = class(TStBufferedStream)
   private
     FLineEndCh   : Char;
-    FLineLen     : integer;
+    FLineLen     : Integer;
     FLineTerm    : TStLineTerminator;
     FFixedLine   : PChar;
     FLineCount   : longint;
@@ -173,14 +173,14 @@ type
     FLineCurOfs  : longint;
     FLineIndex   : TList<Int64>;
     FLineInxStep : longint;
-    FLineInxTop  : integer;
+    FLineInxTop  : Integer;
     FEncoding: TEncoding;
   protected
     function atsGetLineCount: longint;
 
     procedure atsSetLineTerm(aValue : TStLineTerminator);
     procedure atsSetLineEndCh(aValue : Char);
-    procedure atsSetLineLen(aValue : integer);
+    procedure atsSetLineLen(aValue : Integer);
 
     procedure atsGetLine(out aStartPos : longint;
                          out aEndPos   : longint;
@@ -188,12 +188,12 @@ type
     procedure atsResetLineIndex;
 
     procedure bsInitForNewStream; override;
-    function bsReadChar(var aCh : Char) : boolean;
+    function bsReadChar(var aCh : Char) : Boolean;
   public
     constructor Create(aStream : TStream);
     destructor Destroy; override;
 
-    function AtEndOfStream : boolean;
+    function AtEndOfStream : Boolean;
 
     function ReadLine : string;
     function ReadLineArray(aCharArray : PChar; aLen : TStMemSize): TStMemSize;
@@ -206,7 +206,7 @@ type
     procedure WriteLineArray(aCharArray : PChar; aLen : TStMemSize);
     procedure WriteLineZ(aSt : PChar);
 
-    property FixedLineLength : integer read FLineLen write atsSetLineLen;
+    property FixedLineLength : Integer read FLineLen write atsSetLineLen;
     property LineCount : longint read atsGetLineCount;
     property LineTermChar : Char read FLineEndCh write atsSetLineEndCh;
     property LineTerminator : TStLineTerminator read FLineTerm write atsSetLineTerm;
@@ -343,20 +343,20 @@ begin
   FBufCount := 0;
   FBufOfs := 0;
   FBufPos := 0;
-  FDirty := false;
+  FDirty := False;
 end;
 
 {-----------------------------------------------------------------------------}
 
-function TStBufferedStream.bsReadAnsiChar(var aCh : AnsiChar) : boolean;
+function TStBufferedStream.bsReadAnsiChar(var aCh : AnsiChar) : Boolean;
 begin
   {is there anything to read?}
   if (FSize = (FBufOfs + FBufPos)) then begin
-    Result := false;
+    Result := False;
     Exit;
   end;
   {if we get here, we'll definitely read a character}
-  Result := true;
+  Result := True;
   {make sure that the buffer has some data in it}
   if (FBufCount = 0) then
     bsReadFromStream
@@ -364,23 +364,23 @@ begin
     if FDirty then
       bsWriteToStream;
     FBufPos := 0;
-    inc(FBufOfs, FBufSize);
+    Inc(FBufOfs, FBufSize);
     bsReadFromStream;
   end;
   {get the next character}
   aCh := AnsiChar(FBuffer[FBufPos]);
-  inc(FBufPos);
+  Inc(FBufPos);
 end;
 
 function TStBufferedStream.bsReadByte(var AByte: Byte): Boolean;
 begin
   {is there anything to read?}
   if (FSize = (FBufOfs + FBufPos)) then begin
-    Result := false;
+    Result := False;
     Exit;
   end;
   {if we get here, we'll definitely read a character}
-  Result := true;
+  Result := True;
   {make sure that the buffer has some data in it}
   if (FBufCount = 0) then
     bsReadFromStream
@@ -388,12 +388,12 @@ begin
     if FDirty then
       bsWriteToStream;
     FBufPos := 0;
-    inc(FBufOfs, FBufSize);
+    Inc(FBufOfs, FBufSize);
     bsReadFromStream;
   end;
   {get the next character}
   aByte := Byte(FBuffer[FBufPos]);
-  inc(FBufPos);
+  Inc(FBufPos);
 end;
 
 {-----------------------------------------------------------------------------}
@@ -447,7 +447,7 @@ begin
   BytesWritten := FStream.Write(FBuffer^, FBufCount);
   if (BytesWritten <> FBufCount) then
     RaiseStError(ESsBufStreamError, ssscCannotWrite);
-  FDirty := false;
+  FDirty := False;
 end;
 
 {-----------------------------------------------------------------------------}
@@ -475,8 +475,8 @@ begin
     {transfer that number of bytes}
     Move(FBuffer[FBufPos], BufAsBytes[0], BytesToRead);
     {update our counters}
-    inc(FBufPos, BytesToRead);
-    dec(BytesToGo, BytesToRead);
+    Inc(FBufPos, BytesToRead);
+    Dec(BytesToGo, BytesToRead);
     {if we have more bytes to read then we've reached the end of the
      buffer and so we need to read another, and another, etc}
     DestPos := 0;
@@ -486,17 +486,17 @@ begin
         bsWriteToStream;
       {position and read the next buffer}
       FBufPos := 0;
-      inc(FBufOfs, FBufSize);
+      Inc(FBufOfs, FBufSize);
       bsReadFromStream;
       {calculate the new destination position, and the number of bytes
        to read from this buffer}
-      inc(DestPos, BytesToRead);
+      Inc(DestPos, BytesToRead);
       BytesToRead := MinLong(BytesToGo, FBufCount - FBufPos);
       {transfer that number of bytes}
       Move(FBuffer[FBufPos], BufAsBytes[DestPos], BytesToRead);
       {update our counters}
-      inc(FBufPos, BytesToRead);
-      dec(BytesToGo, BytesToRead);
+      Inc(FBufPos, BytesToRead);
+      Dec(BytesToGo, BytesToRead);
     end;
   end;
 end;
@@ -607,14 +607,14 @@ begin
     BytesToWrite := MinLong(BytesToGo, FBufSize - FBufPos);
     {transfer that number of bytes}
     Move(BufAsBytes[0], FBuffer[FBufPos], BytesToWrite);
-    FDirty := true;
+    FDirty := True;
     {update our counters}
-    inc(FBufPos, BytesToWrite);
+    Inc(FBufPos, BytesToWrite);
     if (FBufCount < FBufPos) then begin
       FBufCount := FBufPos;
       FSize := FBufOfs + FBufPos;
     end;
-    dec(BytesToGo, BytesToWrite);
+    Dec(BytesToGo, BytesToWrite);
     {if we have more bytes to write then we've reached the end of the
      buffer and so we need to write another, and another, etc}
     DestPos := 0;
@@ -623,25 +623,25 @@ begin
       bsWriteToStream;
       {position and read the next buffer, if required}
       FBufPos := 0;
-      inc(FBufOfs, FBufSize);
+      Inc(FBufOfs, FBufSize);
       if (FBufOfs < FSize) then
         bsReadFromStream
       else
         FBufCount := 0;
       {calculate the new destination position, and the number of bytes
        to write to this buffer}
-      inc(DestPos, BytesToWrite);
+      Inc(DestPos, BytesToWrite);
       BytesToWrite := MinLong(BytesToGo, FBufSize - FBufPos);
       {transfer that number of bytes}
       Move(BufAsBytes[DestPos], FBuffer[0], BytesToWrite);
-      FDirty := true;
+      FDirty := True;
       {update our counters}
-      inc(FBufPos, BytesToWrite);
+      Inc(FBufPos, BytesToWrite);
       if (FBufCount < FBufPos) then begin
         FBufCount := FBufPos;
         FSize := FBufOfs + FBufPos;
       end;
-      dec(BytesToGo, BytesToWrite);
+      Dec(BytesToGo, BytesToWrite);
     end;
   end;
 end;
@@ -672,7 +672,7 @@ end;
 
 {-----------------------------------------------------------------------------}
 
-function TStAnsiTextStream.AtEndOfStream : boolean;
+function TStAnsiTextStream.AtEndOfStream : Boolean;
 begin
   Result := FSize = (FBufOfs + FBufPos);
 end;
@@ -683,7 +683,7 @@ procedure TStAnsiTextStream.atsGetLine(var aStartPos : longint;
                                        var aEndPos   : longint;
                                        var aLen      : longint);
 var
-  Done   : boolean;
+  Done   : Boolean;
   Ch     : AnsiChar;
   PrevCh : AnsiChar;
 begin
@@ -695,11 +695,11 @@ begin
   else begin
     aStartPos := FBufOfs + FBufPos;
     Ch := #0;
-    Done := false;
+    Done := False;
     while not Done do begin
       PrevCh := Ch;
       if not bsReadAnsiChar(Ch) then begin
-        Done := true;
+        Done := True;
         aEndPos := FBufOfs + FBufPos;
         aLen := aEndPos - aStartPos;
       end
@@ -707,17 +707,17 @@ begin
         case LineTerminator of
           ltNone : {this'll never get hit};
           ltCR   : if (Ch = #13) then begin
-                     Done := true;
+                     Done := True;
                      aEndPos := FBufOfs + FBufPos;
                      aLen := aEndPos - aStartPos - 1;
                    end;
           ltLF   : if (Ch = #10) then begin
-                     Done := true;
+                     Done := True;
                      aEndPos := FBufOfs + FBufPos;
                      aLen := aEndPos - aStartPos - 1;
                    end;
           ltCRLF : if (Ch = #10) then begin
-                     Done := true;
+                     Done := True;
                      aEndPos := FBufOfs + FBufPos;
                      if PrevCh = #13 then
                        aLen := aEndPos - aStartPos - 2
@@ -725,7 +725,7 @@ begin
                        aLen := aEndPos - aStartPos - 1;
                    end;
           ltOther: if (Ch = LineTermChar) then begin
-                     Done := true;
+                     Done := True;
                      aEndPos := FBufOfs + FBufPos;
                      aLen := aEndPos - aStartPos - 1;
                    end;
@@ -802,7 +802,7 @@ end;
 
 {-----------------------------------------------------------------------------}
 
-procedure TStAnsiTextStream.atsSetLineLen(aValue : integer);
+procedure TStAnsiTextStream.atsSetLineLen(aValue : Integer);
 begin
   if (aValue <> FixedLineLength) and ((FBufOfs + FBufPos) = 0) then begin
     {validate the new length first}
@@ -930,9 +930,8 @@ var
   CurPos  : longint;
   EndPos  : longint;
   Len     : longint;
-  i       : longint;
-  Done    : boolean;
-  L, R, M : integer;
+  Done    : Boolean;
+  L, R, M : Integer;
 begin
   {if the offset we want is for the current line, reposition at the
    current line offset, return the current line number and exit}
@@ -970,38 +969,38 @@ begin
     CurLine := longint(FLineIndex[FLineInxTop]);
     CurOfs := longint(FLineIndex[FLineInxTop+1]);
     Seek(CurOfs, soFromBeginning);
-    Done := false;
+    Done := False;
     {continue reading lines in chunks of FLineInxStep and add an index
      entry for each chunk}
     while not Done do begin
-      for i := 0 to pred(FLineInxStep) do begin
+      for var I := 0 to pred(FLineInxStep) do begin
         atsGetLine(CurPos, EndPos, Len);
-        inc(CurLine);
+        Inc(CurLine);
         CurOfs := EndPos;
         if (EndPos = FSize) then begin
-          Done := true;
+          Done := True;
           Break;
         end;
       end;
       if Done then
         FLineCount := CurLine
       else begin
-        inc(FLineInxTop, 2);
+        Inc(FLineInxTop, 2);
         if (FLineInxTop = (LineIndexCount * 2)) then begin
           {we've exhausted the space in the index: rescale}
           FLineInxTop := FLineInxTop div 2;
-          for i := 0 to pred(FLineInxTop) do begin
-            if Odd(i) then
-              FLineIndex.Exchange((i*2)-1, i)
+          for var I := 0 to pred(FLineInxTop) do begin
+            if Odd(I) then
+              FLineIndex.Exchange((I*2)-1, I)
             else
-              FLineIndex.Exchange(i*2, i);
+              FLineIndex.Exchange(I*2, I);
           end;
           FLineInxStep := FLineInxStep * 2;
         end;
         FLineIndex[FLineInxTop] := pointer(CurLine);
         FLineIndex[FLineInxTop+1] := pointer(CurOfs);
         if (aOffset <= CurOfs) then
-          Done := true;
+          Done := True;
       end;
     end;
   end;
@@ -1012,7 +1011,7 @@ begin
   while (L <= R) do begin
     M := (L + R) div 2;
     if not Odd(M) then
-      inc(M);
+      Inc(M);
     if (aOffset < longint(FLineIndex[M])) then
       R := M - 2
     else if (aOffset > longint(FLineIndex[M])) then
@@ -1030,9 +1029,9 @@ begin
    and read through the stream forwards}
   CurLine := longint(FLineIndex[L-3]);
   Seek(longint(FLineIndex[L-2]), soFromBeginning);
-  while true do begin
+  while True do begin
     atsGetLine(CurPos, EndPos, Len);
-    inc(CurLine);
+    Inc(CurLine);
     if (EndPos > aOffset) then begin
       FLineCurrent := CurLine - 1;
        FLineCurOfs := CurPos;
@@ -1059,9 +1058,8 @@ var
   CurPos  : longint;
   EndPos  : longint;
   Len     : longint;
-  i       : longint;
-  Done    : boolean;
-  L, R, M : integer;
+  Done    : Boolean;
+  L, R, M : Integer;
 begin
   {if the line number we want is the current line, reposition at the
    current line offset, return the current line number and exit}
@@ -1098,38 +1096,38 @@ begin
     CurLine := longint(FLineIndex[FLineInxTop]);
     CurOfs := longint(FLineIndex[FLineInxTop+1]);
     Seek(CurOfs, soFromBeginning);
-    Done := false;
+    Done := False;
     {continue reading lines in chunks of FLineInxStep and add an index
      entry for each chunk}
     while not Done do begin
-      for i := 0 to pred(FLineInxStep) do begin
+      for var I := 0 to pred(FLineInxStep) do begin
         atsGetLine(CurPos, EndPos, Len);
-        inc(CurLine);
+        Inc(CurLine);
         CurOfs := EndPos;
         if (EndPos = FSize) then begin
-          Done := true;
+          Done := True;
           Break;
         end;
       end;
       if Done then
         FLineCount := CurLine
       else begin
-        inc(FLineInxTop, 2);
+        Inc(FLineInxTop, 2);
         if (FLineInxTop = (LineIndexCount * 2)) then begin
           {we've exhausted the space in the index: rescale}
           FLineInxTop := FLineInxTop div 2;
-          for i := 0 to pred(FLineInxTop) do begin
-            if Odd(i) then
-              FLineIndex.Exchange((i*2)-1, i)
+          for var I := 0 to pred(FLineInxTop) do begin
+            if Odd(I) then
+              FLineIndex.Exchange(I*2-1, I)
             else
-              FLineIndex.Exchange(i*2, i);
+              FLineIndex.Exchange(I*2, I);
           end;
           FLineInxStep := FLineInxStep * 2;
         end;
         FLineIndex[FLineInxTop] := pointer(CurLine);
         FLineIndex[FLineInxTop+1] := pointer(CurOfs);
         if (aLineNum <= CurLine) then
-          Done := true;
+          Done := True;
       end;
     end;
   end;
@@ -1140,7 +1138,7 @@ begin
   while (L <= R) do begin
     M := (L + R) div 2;
     if Odd(M) then
-      dec(M);
+      Dec(M);
     if (aLineNum < longint(FLineIndex[M])) then
       R := M - 2
     else if (aLineNum > longint(FLineIndex[M])) then
@@ -1157,9 +1155,9 @@ begin
    one we want; start here and read through the stream forwards}
   CurLine := longint(FLineIndex[L-2]);
   Seek(longint(FLineIndex[L-1]), soFromBeginning);
-  while true do begin
+  while True do begin
     atsGetLine(CurPos, EndPos, Len);
-    inc(CurLine);
+    Inc(CurLine);
     if (CurLine = FLineCount) or (CurLine = aLineNum) then begin
       FLineCurrent := CurLine;
       FLineCurOfs := EndPos;
@@ -1174,7 +1172,7 @@ end;
 
 procedure TStAnsiTextStream.WriteLine(const aSt : AnsiString);
 begin
-  WriteLineArray(@aSt[1], length(aSt));
+  WriteLineArray(@aSt[1], Length(aSt));
 end;
 
 {-----------------------------------------------------------------------------}
@@ -1480,14 +1478,14 @@ end;
 
 { TStTextStream }
 
-function TStTextStream.AtEndOfStream: boolean;
+function TStTextStream.AtEndOfStream: Boolean;
 begin
   Result := FSize = (FBufOfs + FBufPos);
 end;
 
 procedure TStTextStream.atsGetLine(out aStartPos, aEndPos, aLen: Integer);
 var
-  Done   : boolean;
+  Done   : Boolean;
   Ch     : Char;
   PrevCh : Char;
 begin
@@ -1499,11 +1497,11 @@ begin
   else begin
     aStartPos := FBufOfs + FBufPos;
     Ch := #0;
-    Done := false;
+    Done := False;
     while not Done do begin
       PrevCh := Ch;
       if not bsReadChar(Ch) then begin
-        Done := true;
+        Done := True;
         aEndPos := FBufOfs + FBufPos;
         aLen := aEndPos - aStartPos;
       end
@@ -1511,17 +1509,17 @@ begin
         case LineTerminator of
           ltNone : {this'll never get hit};
           ltCR   : if (Ch = #13) then begin
-                     Done := true;
+                     Done := True;
                      aEndPos := FBufOfs + FBufPos;
                      aLen := aEndPos - aStartPos - 1;
                    end;
           ltLF   : if (Ch = #10) then begin
-                     Done := true;
+                     Done := True;
                      aEndPos := FBufOfs + FBufPos;
                      aLen := aEndPos - aStartPos - 1;
                    end;
           ltCRLF : if (Ch = #10) then begin
-                     Done := true;
+                     Done := True;
                      aEndPos := FBufOfs + FBufPos;
                      if PrevCh = #13 then
                        aLen := aEndPos - aStartPos - 2
@@ -1529,7 +1527,7 @@ begin
                        aLen := aEndPos - aStartPos - 1;
                    end;
           ltOther: if (Ch = LineTermChar) then begin
-                     Done := true;
+                     Done := True;
                      aEndPos := FBufOfs + FBufPos;
                      aLen := aEndPos - aStartPos - 1;
                    end;
@@ -1576,7 +1574,7 @@ begin
   end;
 end;
 
-procedure TStTextStream.atsSetLineLen(aValue: integer);
+procedure TStTextStream.atsSetLineLen(aValue: Integer);
 begin
   if (aValue <> FixedLineLength) and ((FBufOfs + FBufPos) = 0) then begin
     {validate the new length first}
@@ -1618,13 +1616,13 @@ begin
   atsResetLineIndex;
 end;
 
-function TStTextStream.bsReadChar(var aCh: Char): boolean;
+function TStTextStream.bsReadChar(var aCh: Char): Boolean;
 var
   tmp: AnsiChar;
 
-  function SwapWord(i: Char): Char;
+  function SwapWord(Int: Char): Char;
   begin
-    Result := Char((Byte(I) shl 8) or (Byte(I) shr 8))  // Rr changed uncheckde
+    Result := Char((Byte(Int) shl 8) or (Byte(Int) shr 8))  // Rr changed uncheckde
   end;
 
 begin
@@ -1696,11 +1694,11 @@ end;
 function TStTextStream.ReadLineArray(aCharArray: PChar;
   aLen: TStMemSize): TStMemSize;
 var
-  S: string;
+  Str: string;
 begin
-  S := Copy(ReadLine, 1, aLen);
-  Result := Length(S);
-  StrPLCopy(aCharArray, S, aLen);
+  Str := Copy(ReadLine, 1, aLen);
+  Result := Length(Str);
+  StrPLCopy(aCharArray, Str, aLen);
 end;
 
 function TStTextStream.ReadLineZ(aSt: PChar; aMaxLen: TStMemSize): PChar;

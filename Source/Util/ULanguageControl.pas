@@ -145,7 +145,7 @@ resourcestring
 procedure ReplaceResourceString(RStringRec: PResStringRec; const AString: string);
   var OldProtect: Cardinal;
 begin
-  if (RStringRec = nil) or (length(AString) = 0) then exit;
+  if (RStringRec = nil) or (Length(AString) = 0) then Exit;
   if VirtualProtect(RStringRec, SizeOf(RStringRec^), PAGE_EXECUTE_READWRITE, @OldProtect) then begin
     RStringRec^.Identifier:= Integer(PChar(AString));
     VirtualProtect(RStringRec, SizeOf(RStringRec^), OldProtect, @OldProtect);
@@ -153,27 +153,27 @@ begin
   else ErrorMsg(SysErrorMessage(GetLastError));
 end;
 
-function PortApp(const s: string): string;
-  var SL1, SL2: TStringList; i, j: integer;
+function PortApp(const Str: string): string;
+  var SL1, SL2: TStringList; Int, j: Integer;
 begin
-  if copy(s, 1, 2) = ':\' then // old portable concept
-    if length(PortAppDrive) = 1
-      then Result:= PortAppDrive + s
-      else Result:= PortAppDrive + copy(s, 2, length(s))
-  else if copy(s, 2, 2) = ':\' then // absolute path
-    Result:= s
-  else if Pos('\\', s) = 1 then   // UNC
-    Result:= s
+  if Copy(Str, 1, 2) = ':\' then // old portable concept
+    if Length(PortAppDrive) = 1
+      then Result:= PortAppDrive + Str
+      else Result:= PortAppDrive + Copy(Str, 2, Length(Str))
+  else if Copy(Str, 2, 2) = ':\' then // absolute path
+    Result:= Str
+  else if Pos('\\', Str) = 1 then   // UNC
+    Result:= Str
   else begin // new portable concept, relative to Editorfolder
     SL1:= Split('\', withoutTrailingSlash(ExtractFilePath(ParamStr(0))));
-    SL2:= Split('\', withoutTrailingSlash(s));
-    i:= 0;
-    while (i < SL2.Count) and (SL2.Strings[i] = '..') do
-      inc(i);
+    SL2:= Split('\', withoutTrailingSlash(Str));
+    Int:= 0;
+    while (Int < SL2.Count) and (SL2.Strings[Int] = '..') do
+      Inc(Int);
     Result:= '';
-    for j:= 0 to SL1.Count - 1 - i do
+    for j:= 0 to SL1.Count - 1 - Int do
       Result:= Result + SL1.Strings[j] + '\';
-    for j:= i to SL2.Count - 1 do
+    for j:= Int to SL2.Count - 1 do
       Result:= Result + SL2.Strings[j] + '\';
     FreeAndNil(SL1);
     FreeAndNil(SL2);
@@ -181,26 +181,26 @@ begin
 end;
 
 function GetLanguageCode: string;
-  var s, language: string;
+  var Str, language: string;
       MachineIniFile: TMemIniFile;
       MyRegistry: TRegistry;
 begin
-  s:= ParamStr(1);
-  if (s = '') or (UpperCase(ExtractFileExt(s)) <> '.INI')
-    then s:= ExtractFilePath(ParamStr(0)) + 'JEMachine.ini'
-    else s:= ExpandFileName(s);
-  PortAppDrive:= ExtractFileDrive(s);   // with UNC we get \\Server\Folder
+  Str:= ParamStr(1);
+  if (Str = '') or (UpperCase(ExtractFileExt(Str)) <> '.INI')
+    then Str:= ExtractFilePath(ParamStr(0)) + 'JEMachine.ini'
+    else Str:= ExpandFileName(Str);
+  PortAppDrive:= ExtractFileDrive(Str);   // with UNC we get \\Server\Folder
   if Pos(':', PortAppDrive) > 0 then
-    PortAppDrive:= copy(PortAppDrive, 1, 1);
-  if FileExists(s) then begin // INI-File configuration
-    MachineIniFile:= TMemIniFile.Create(s);
+    PortAppDrive:= Copy(PortAppDrive, 1, 1);
+  if FileExists(Str) then begin // INI-File configuration
+    MachineIniFile:= TMemIniFile.Create(Str);
     language:= MachineIniFile.ReadString('Options', 'Language', 'XXX');
-    s:= MachineIniFile.Readstring('User', 'HomeDir', '<nix>');
+    Str:= MachineIniFile.Readstring('User', 'HomeDir', '<nix>');
     FreeAndNil(MachineIniFile);
 
     if language = 'XXX' then begin
-      s:= PortApp(WithTrailingSlash(dissolveUsername(s))) + 'JEUser.ini';
-      MachineIniFile:= TMemIniFile.Create(s);
+      Str:= PortApp(WithTrailingSlash(dissolveUsername(Str))) + 'JEUser.ini';
+      MachineIniFile:= TMemIniFile.Create(Str);
       language:= MachineIniFile.ReadString('Options', 'Language', 'XXX');
       if language = 'XXX' then language:= MachineIniFile.ReadString('Java', 'Language', 'XXX');
       if language = 'XXX' then language:= 'en';
@@ -212,7 +212,7 @@ begin
       RootKey:= HKEY_CURRENT_USER;
       Access:= KEY_READ;
       try
-        OpenKey('\Software\JavaEditor\Options' , false);
+        OpenKey('\Software\JavaEditor\Options' , False);
         if ValueExists('Language')
           then language:= ReadString('Language')
           else language:= '';

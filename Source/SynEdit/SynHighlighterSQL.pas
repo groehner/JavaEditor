@@ -107,7 +107,7 @@ type
     fVariableAttri: TSynHighlighterAttributes;
     function HashKey(Str: PWideChar): Integer;
     function IdentKind(MayBe: PWideChar): TtkTokenKind;
-    procedure DoAddKeyword(AKeyword: string; AKind: integer);
+    procedure DoAddKeyword(AKeyword: string; AKind: Integer);
     procedure SetDialect(Value: TSQLDialect);
     procedure SetTableNames(const Value: TStrings);
     procedure SetFunctionNames(const Value: TStrings);
@@ -1381,7 +1381,7 @@ begin
 {$ELSE}
     Result := (2 * Result + GetOrd) and $FFFFFF;
 {$ENDIF}
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result and $FF; // 255
   if Assigned(fToIdent) then
@@ -1399,12 +1399,12 @@ begin
   while Assigned(Entry) do
   begin
     if Entry.KeywordLen > fStringLen then
-      break
+      Break
     else if Entry.KeywordLen = fStringLen then
       if IsCurrentToken(Entry.Keyword) then
       begin
         Result := TtkTokenKind(Entry.Kind);
-        exit;
+        Exit;
       end;
     Entry := Entry.Next;
   end;
@@ -1552,7 +1552,7 @@ begin
           if (not IsEsc) and (FLine[Run + 1] = #39) then
           begin
             Inc(Run);
-            break;
+            Break;
           end;
           Inc(Run);
         until IsLineEnd(Run);
@@ -1592,7 +1592,7 @@ var
   FoundDoubleMinus: Boolean;
 begin
   fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
+  Inc(Run, fStringLen);
   if FTokenID in [tkComment, tkConsoleOutput] then
   begin
     while not IsLineEnd(Run) do
@@ -1603,14 +1603,14 @@ begin
     begin
       FoundDoubleMinus := (fLine[Run] = '-') and (fLine[Run + 1] = '-');
       if FoundDoubleMinus then Break;
-      inc(Run);
+      Inc(Run);
     end;
 end;
 
 procedure TSynSQLSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynSQLSyn.LowerProc;
@@ -1659,7 +1659,7 @@ end;
 procedure TSynSQLSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynSQLSyn.NumberProc;
@@ -1675,7 +1675,7 @@ procedure TSynSQLSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
   begin
@@ -1684,7 +1684,7 @@ begin
         if FLine[Run + 1] = '.' then
           Break;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end;
 
@@ -1733,7 +1733,7 @@ begin
           if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then begin
             fRange := rsUnknown;
             Inc(Run, 2);
-            break;
+            Break;
           end;
         until IsLineEnd(Run);
       end;
@@ -1759,9 +1759,9 @@ end;
 
 procedure TSynSQLSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynSQLSyn.QuoteProc;
@@ -1843,7 +1843,7 @@ end;
 
 procedure TSynSQLSyn.VariableProc;
 var
-  i: integer;
+  Int: Integer;
   FoundDoubleMinus: Boolean;
 begin
   // MS SQL Server uses @@ to indicate system functions/variables
@@ -1858,13 +1858,13 @@ begin
   else
   begin
     fTokenID := tkVariable;
-    i := Run;
+    Int := Run;
     repeat
-      FoundDoubleMinus := (fLine[i] = '-') and (fLine[i + 1] = '-');
+      FoundDoubleMinus := (fLine[Int] = '-') and (fLine[Int + 1] = '-');
       if FoundDoubleMinus then Break;
-      Inc(i);
-    until not IsIdentChar(fLine[i]);
-    Run := i;
+      Inc(Int);
+    until not IsIdentChar(fLine[Int]);
+    Run := Int;
   end;
 end;
 
@@ -1951,7 +1951,7 @@ begin
   inherited;
 end;
 
-function TSynSQLSyn.GetDefaultAttribute(Index: integer):
+function TSynSQLSyn.GetDefaultAttribute(Index: Integer):
   TSynHighlighterAttributes;
 begin
   case Index of
@@ -2009,7 +2009,7 @@ begin
   end;
 end;
 
-function TSynSQLSyn.GetTokenKind: integer;
+function TSynSQLSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;
@@ -2052,7 +2052,7 @@ begin
   Result := SYNS_LangSQL;
 end;
 
-procedure TSynSQLSyn.DoAddKeyword(AKeyword: string; AKind: integer);
+procedure TSynSQLSyn.DoAddKeyword(AKeyword: string; AKind: Integer);
 var
   HashValue: Integer;
 begin
@@ -2073,72 +2073,72 @@ end;
 
 procedure TSynSQLSyn.PutTableNamesInKeywordList;
 var
-  i: Integer;
+  Int: Integer;
   Entry: TSynHashEntry;
 begin
-  for i := 0 to fTableNames.Count - 1 do
+  for Int := 0 to fTableNames.Count - 1 do
   begin
-    Entry := fKeywords[HashKey(PWideChar(fTableNames[i]))];
+    Entry := fKeywords[HashKey(PWideChar(fTableNames[Int]))];
     while Assigned(Entry) do
     begin
-      if SysUtils.AnsiLowerCase(Entry.Keyword) = SysUtils.AnsiLowerCase(fTableNames[i]) then
+      if SysUtils.AnsiLowerCase(Entry.Keyword) = SysUtils.AnsiLowerCase(fTableNames[Int]) then
         Break;
       Entry := Entry.Next;
     end;
     if not Assigned(Entry) then
-      if not fTableDict.ContainsKey(SysUtils.AnsiLowerCase(fTableNames[i])) then
-        FTableDict.Add(SysUtils.AnsiLowerCase(FTableNames[i]), True);
+      if not fTableDict.ContainsKey(SysUtils.AnsiLowerCase(fTableNames[Int])) then
+        FTableDict.Add(SysUtils.AnsiLowerCase(FTableNames[Int]), True);
   end;
 end;
 
 procedure TSynSQLSyn.PutFunctionNamesInKeywordList;
 var
-  i: Integer;
+  Int: Integer;
   Entry: TSynHashEntry;
 begin
-  for i := 0 to (fFunctionNames.Count - 1) do
+  for Int := 0 to (fFunctionNames.Count - 1) do
   begin
-    Entry := fKeywords[HashKey(PWideChar(fFunctionNames[i]))];
+    Entry := fKeywords[HashKey(PWideChar(fFunctionNames[Int]))];
     while Assigned(Entry) do
     begin
-      if SysUtils.AnsiLowerCase(Entry.Keyword) = SysUtils.AnsiLowerCase(fFunctionNames[i]) then
+      if SysUtils.AnsiLowerCase(Entry.Keyword) = SysUtils.AnsiLowerCase(fFunctionNames[Int]) then
         Break;
       Entry := Entry.Next;
     end;
     if not Assigned(Entry) then
-      DoAddKeyword(fFunctionNames[i], Ord(tkFunction));
+      DoAddKeyword(fFunctionNames[Int], Ord(tkFunction));
   end;
 end;
 
 procedure TSynSQLSyn.PutProcNamesInKeywordList;
 var
-  i: Integer;
+  Int: Integer;
   Entry: TSynHashEntry;
 begin
-  for i := 0 to fProcNames.Count - 1 do
+  for Int := 0 to fProcNames.Count - 1 do
   begin
-    Entry := fKeywords[HashKey(PWideChar(FProcNames[i]))];
+    Entry := fKeywords[HashKey(PWideChar(FProcNames[Int]))];
     while Assigned(Entry) do
     begin
-      if SysUtils.AnsiLowerCase(Entry.Keyword) = SysUtils.AnsiLowerCase(FProcNames[i]) then
+      if SysUtils.AnsiLowerCase(Entry.Keyword) = SysUtils.AnsiLowerCase(FProcNames[Int]) then
         Break;
       Entry := Entry.Next;
     end;
     if not Assigned(Entry) then
-      DoAddKeyword(fProcNames[i], Ord(tkProcName));
+      DoAddKeyword(fProcNames[Int], Ord(tkProcName));
   end;
 end;
 
 procedure TSynSQLSyn.InitializeKeywordLists;
 var
-  I: Integer;
+  Int: Integer;
 begin
   fKeywords.Clear;
   fTableDict.Clear;
   fToIdent := nil;
 
-  for I := 0 to Ord(High(TtkTokenKind)) do
-    EnumerateKeywords(I, GetKeywords(I), IsIdentChar, DoAddKeyword);
+  for Int := 0 to Ord(High(TtkTokenKind)) do
+    EnumerateKeywords(Int, GetKeywords(Int), IsIdentChar, DoAddKeyword);
 
   PutProcNamesInKeywordList;
   PutTableNamesInKeywordList;

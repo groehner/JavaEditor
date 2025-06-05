@@ -8,7 +8,7 @@
 // and is subject to that software license agreement.
 
 //---------------------------------------------------------------------------
-unit uTabHost;
+unit UTabHost;
 
 interface
 
@@ -18,11 +18,10 @@ uses
 type
   TTabDockHost = class(TForm)
     PageControl1: TPageControl;
-    procedure FormClose(Sender: TObject; var aAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var AAction: TCloseAction);
     procedure PageControl1UnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
     procedure PageControl1GetSiteInfo(Sender: TObject; DockClient: TControl; var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
     procedure PageControl1DockOver(Sender: TObject; Source: TDragDockObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-  public
   end;
 
 var
@@ -34,7 +33,7 @@ implementation
 
 uses Windows, Messages, uDockForm;
 
-procedure TTabDockHost.FormClose(Sender: TObject; var aAction: TCloseAction);
+procedure TTabDockHost.FormClose(Sender: TObject; var AAction: TCloseAction);
 var
   ARect: TRect;
 begin
@@ -46,10 +45,10 @@ begin
       ARect.BottomRight := ClientToScreen(Point(UndockWidth, UndockHeight));
       ManualFloat(ARect);
     end;
-    aAction := caFree;
+    AAction := caFree;
   end
   else
-    aAction := caHide;
+    AAction := caHide;
 end;
 
 procedure TTabDockHost.PageControl1UnDock(Sender: TObject;

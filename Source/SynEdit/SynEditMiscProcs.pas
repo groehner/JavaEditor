@@ -59,10 +59,10 @@ type
 
 function MinMax(x, mi, ma: Integer): Integer;
 procedure SwapInt(var l, r: Integer);
-function MaxPoint(const P1, P2: TPoint): TPoint;
-function MinPoint(const P1, P2: TPoint): TPoint;
+function MaxPoint(const Posi1, Posi2: TPoint): TPoint;
+function MinPoint(const Posi1, Posi2: TPoint): TPoint;
 
-function GetIntArray(Count: Cardinal; InitialValue: integer): PIntArray;
+function GetIntArray(Count: Cardinal; InitialValue: Integer): PIntArray;
 
 procedure InternalFillRect(dc: HDC; const rcPaint: TRect);
 
@@ -86,6 +86,8 @@ function ConvertTabsEx(const Line: string; TabWidth: Integer;
   var HasTabs: Boolean): string;
 
 function GetExpandedLength(const aStr: string; aTabWidth: Integer): Integer;
+function LeftSpaces(const Line: string; ExpandTabs: Boolean;
+  TabWidth: Integer = 2): Integer;
 
 function CharIndex2CaretPos(Index, TabWidth: Integer;
   const Line: string): Integer;
@@ -103,10 +105,10 @@ function GetEOL(Line: PWideChar): PWideChar;
 
 // Remove all '/' characters from string by changing them into '\.'.
 // Change all '\' characters into '\\' to allow for unique decoding.
-function EncodeString(s: string): string;
+function EncodeString(Str: string): string;
 
 // Decodes string, encoded with EncodeString.
-function DecodeString(s: string): string;
+function DecodeString(Str: string): string;
 
 type
   THighlighterAttriProc = function (Highlighter: TSynCustomHighlighter;
@@ -128,7 +130,7 @@ function CalcFCS(const ABuf; ABufSize: Cardinal): Word;
 procedure SynDrawGradient(const ACanvas: TCanvas; const AStartColor, AEndColor: TColor;
   ASteps: Integer; const ARect: TRect; const AHorizontal: Boolean);
 
-function DeleteTypePrefixAndSynSuffix(S: string): string;
+function DeleteTypePrefixAndSynSuffix(Str: string): string;
 
 // In Windows Vista or later use the Consolas font
 function DefaultFontName: string;
@@ -161,34 +163,34 @@ begin
   l := tmp;
 end;
 
-function MaxPoint(const P1, P2: TPoint): TPoint;
+function MaxPoint(const Posi1, Posi2: TPoint): TPoint;
 begin
-  if (P2.y > P1.y) or ((P2.y = P1.y) and (P2.x > P1.x)) then
-    Result := P2
+  if (Posi2.y > Posi1.y) or ((Posi2.y = Posi1.y) and (Posi2.x > Posi1.x)) then
+    Result := Posi2
   else
-    Result := P1;
+    Result := Posi1;
 end;
 
-function MinPoint(const P1, P2: TPoint): TPoint;
+function MinPoint(const Posi1, Posi2: TPoint): TPoint;
 begin
-  if (P2.y < P1.y) or ((P2.y = P1.y) and (P2.x < P1.x)) then
-    Result := P2
+  if (Posi2.y < Posi1.y) or ((Posi2.y = Posi1.y) and (Posi2.x < Posi1.x)) then
+    Result := Posi2
   else
-    Result := P1;
+    Result := Posi1;
 end;
 
 function GetIntArray(Count: Cardinal; InitialValue: Integer): PIntArray;
 var
-  p: PInteger;
+  Posi: PInteger;
 begin
   Result := AllocMem(Count * SizeOf(Integer));
   if Assigned(Result) and (InitialValue <> 0) then
   begin
-    p := PInteger(Result);
+    Posi := PInteger(Result);
     while (Count > 0) do
     begin
-      p^ := InitialValue;
-      Inc(p);
+      Posi^ := InitialValue;
+      Inc(Posi);
       Dec(Count);
     end;
   end;
@@ -207,7 +209,7 @@ begin
   begin
     while pLine^ <> #0 do 
     begin
-      if pLine^ = #9 then break;
+      if pLine^ = #9 then Break;
       Inc(CharsBefore);
       Inc(pLine);
     end;
@@ -250,7 +252,7 @@ end;
 function ConvertTabs2nEx(const Line: string; TabWidth: Integer;
   var HasTabs: Boolean): string;
 var
-  i, DestLen, TabCount, TabMask: Integer;
+  Int, DestLen, TabCount, TabMask: Integer;
   pSrc, pDest: PWideChar;
 begin
   Result := Line;  // increment reference count only
@@ -283,14 +285,14 @@ begin
     repeat
       if pSrc^ = #9 then
       begin
-        i := TabWidth - (DestLen and TabMask);
-        Inc(DestLen, i);
+        Int := TabWidth - (DestLen and TabMask);
+        Inc(DestLen, Int);
         //This is used for both drawing and other stuff and is meant to be #9 and not #32
         repeat
           pDest^ := #9;
           Inc(pDest);
-          Dec(i);
-        until (i = 0);
+          Dec(Int);
+        until (Int = 0);
         Dec(TabCount);
         if TabCount = 0 then
         begin
@@ -299,7 +301,7 @@ begin
             pDest^ := pSrc^;
             Inc(pDest);
           until (pSrc^ = #0);
-          exit;
+          Exit;
         end;
       end
       else
@@ -325,7 +327,7 @@ end;
 function ConvertTabsEx(const Line: string; TabWidth: Integer;
   var HasTabs: Boolean): string;
 var
-  i, DestLen, TabCount: Integer;
+  Int, DestLen, TabCount: Integer;
   pSrc, pDest: PWideChar;
 begin
   Result := Line;  // increment reference count only
@@ -355,13 +357,13 @@ begin
     repeat
       if pSrc^ = #9 then
       begin
-        i := TabWidth - (DestLen mod TabWidth);
-        Inc(DestLen, i);
+        Int := TabWidth - (DestLen mod TabWidth);
+        Inc(DestLen, Int);
         repeat
           pDest^ := #9;
           Inc(pDest);
-          Dec(i);
-        until (i = 0);
+          Dec(Int);
+        until (Int = 0);
         Dec(TabCount);
         if TabCount = 0 then
         begin
@@ -370,7 +372,7 @@ begin
             pDest^ := pSrc^;
             Inc(pDest);
           until (pSrc^ = #0);
-          exit;
+          Exit;
         end;
       end
       else
@@ -399,7 +401,7 @@ var
 begin
   nW := 2;
   repeat
-    if (nW >= TabWidth) then break;
+    if (nW >= TabWidth) then Break;
     Inc(nW, nW);
   until (nW >= $10000);  // we don't want 64 kByte spaces...
   Result := (nW = TabWidth);
@@ -439,6 +441,23 @@ begin
   end;
 end;
 
+function LeftSpaces(const Line: string; ExpandTabs: Boolean;
+  TabWidth: Integer = 2): Integer;
+var
+  P: PChar;
+begin
+  Result := 0;
+  P := PChar(Line);
+  while (P^ >= #1) and ((P^ <= #32) or (P^ = #$00A0)) do
+  begin
+    if (P^ = #9) and ExpandTabs then
+      Inc(Result, TabWidth - (Result mod TabWidth))
+    else
+      Inc(Result);
+    Inc(P);
+  end;
+end;
+
 function CharIndex2CaretPos(Index, TabWidth: Integer;
   const Line: string): Integer;
 var
@@ -468,7 +487,7 @@ begin
             #0:
               begin
                 Inc(Result, Index);
-                break;
+                Break;
               end;
             #9:
               begin
@@ -516,14 +535,14 @@ begin
         while iPos < Position do
         begin
           case pNext^ of
-            #0: break;
+            #0: Break;
             #9: begin
                   Inc(iPos, TabWidth);
                   Dec(iPos, iPos mod TabWidth);
                   if iPos > Position then
                   begin
                     InsideTabChar := True;
-                    break;
+                    Break;
                   end;
                 end;
             else
@@ -542,20 +561,20 @@ end;
 function StrScanForCharInCategory(const Line: string; Start: Integer;
   IsOfCategory: TCategoryMethod): Integer;
 var
-  p: PWideChar;
+  Posi: PWideChar;
 begin
   if (Start > 0) and (Start <= Length(Line)) then
   begin
-    p := PWideChar(@Line[Start]);
+    Posi := PWideChar(@Line[Start]);
     repeat
-      if IsOfCategory(p^) then
+      if IsOfCategory(Posi^) then
       begin
         Result := Start;
-        exit;
+        Exit;
       end;
-      Inc(p);
+      Inc(Posi);
       Inc(Start);
-    until p^ = #0;
+    until Posi^ = #0;
   end;
   Result := 0;
 end;
@@ -563,15 +582,15 @@ end;
 function StrRScanForCharInCategory(const Line: string; Start: Integer;
   IsOfCategory: TCategoryMethod): Integer;
 var
-  I: Integer;
+  Int: Integer;
 begin
   Result := 0;
   if (Start > 0) and (Start <= Length(Line)) then
   begin
-    for I := Start downto 1 do
-      if IsOfCategory(Line[I]) then
+    for Int := Start downto 1 do
+      if IsOfCategory(Line[Int]) then
       begin
-        Result := I;
+        Result := Int;
         Exit;
       end;
   end;
@@ -587,62 +606,62 @@ end;
 
 {$IFOPT R+}{$DEFINE RestoreRangeChecking}{$ELSE}{$UNDEF RestoreRangeChecking}{$ENDIF}
 {$R-}
-function EncodeString(s: string): string;
+function EncodeString(Str: string): string;
 var
-  i, j: Integer;
+  Int, j: Integer;
 begin
-  SetLength(Result, 2 * Length(s)); // worst case
+  SetLength(Result, 2 * Length(Str)); // worst case
   j := 0;
-  for i := 1 to Length(s) do
+  for Int := 1 to Length(Str) do
   begin
     Inc(j);
-    if s[i] = '\' then
+    if Str[Int] = '\' then
     begin
       Result[j] := '\';
       Result[j + 1] := '\';
       Inc(j);
     end
-    else if s[i] = '/' then
+    else if Str[Int] = '/' then
     begin
       Result[j] := '\';
       Result[j + 1] := '.';
       Inc(j);
     end
     else
-      Result[j] := s[i];
+      Result[j] := Str[Int];
   end; //for
   SetLength(Result, j);
 end; { EncodeString }
 
-function DecodeString(s: string): string;
+function DecodeString(Str: string): string;
 var
-  i, j: Integer;
+  Int, j: Integer;
 begin
-  SetLength(Result, Length(s)); // worst case
+  SetLength(Result, Length(Str)); // worst case
   j := 0;
-  i := 1;
-  while i <= Length(s) do
+  Int := 1;
+  while Int <= Length(Str) do
   begin
     Inc(j);
-    if s[i] = '\' then
+    if Str[Int] = '\' then
     begin
-      Inc(i);
-      if s[i] = '\' then
+      Inc(Int);
+      if Str[Int] = '\' then
         Result[j] := '\'
       else
         Result[j] := '/';
     end
     else
-      Result[j] := s[i];
-    Inc(i);
+      Result[j] := Str[Int];
+    Inc(Int);
   end; //for
   SetLength(Result,j);
 end; { DecodeString }
 {$IFDEF RestoreRangeChecking}{$R+}{$ENDIF}
 
-function DeleteTypePrefixAndSynSuffix(S: string): string;
+function DeleteTypePrefixAndSynSuffix(Str: string): string;
 begin
-  Result := S;
+  Result := Str;
   if CharInSet(Result[1], ['T', 't']) then //ClassName is never empty so no AV possible
     if Pos('tsyn', LowerCase(Result)) = 1 then
       Delete(Result, 1, 4)
@@ -656,21 +675,21 @@ end;
 function GetHighlighterIndex(Highlighter: TSynCustomHighlighter;
   HighlighterList: TList): Integer;
 var
-  i: Integer;
+  Int: Integer;
 begin
   Result := 1;
-  for i := 0 to HighlighterList.Count - 1 do
-    if HighlighterList[i] = Highlighter then
+  for Int := 0 to HighlighterList.Count - 1 do
+    if HighlighterList[Int] = Highlighter then
       Exit
-    else if Assigned(HighlighterList[i]) and (TObject(HighlighterList[i]).ClassType = Highlighter.ClassType) then
-      inc(Result);
+    else if Assigned(HighlighterList[Int]) and (TObject(HighlighterList[Int]).ClassType = Highlighter.ClassType) then
+      Inc(Result);
 end;
 
 function InternalEnumHighlighterAttris(Highlighter: TSynCustomHighlighter;
   SkipDuplicates: Boolean; HighlighterAttriProc: THighlighterAttriProc;
   Params: array of Pointer; HighlighterList: TList): Boolean;
 var
-  i: Integer;
+  Int: Integer;
   UniqueAttriName: string;
 begin
   Result := True;
@@ -689,29 +708,29 @@ begin
         HighlighterAttriProc, Params, HighlighterList);
       if not Result then Exit;
 
-      for i := 0 to Schemes.Count - 1 do
+      for Int := 0 to Schemes.Count - 1 do
       begin
         UniqueAttriName := Highlighter.ExportName +
           IntToStr(GetHighlighterIndex(Highlighter, HighlighterList)) + '.' +
-          Schemes[i].MarkerAttri.Name + IntToStr(i + 1);
+          Schemes[Int].MarkerAttri.Name + IntToStr(Int + 1);
 
-        Result := HighlighterAttriProc(Highlighter, Schemes[i].MarkerAttri,
+        Result := HighlighterAttriProc(Highlighter, Schemes[Int].MarkerAttri,
           UniqueAttriName, Params);
         if not Result then Exit;
 
-        Result := InternalEnumHighlighterAttris(Schemes[i].Highlighter,
+        Result := InternalEnumHighlighterAttris(Schemes[Int].Highlighter,
           SkipDuplicates, HighlighterAttriProc, Params, HighlighterList);
         if not Result then Exit
       end
     end
   else if Assigned(Highlighter) then
-    for i := 0 to Highlighter.AttrCount - 1 do
+    for Int := 0 to Highlighter.AttrCount - 1 do
     begin
       UniqueAttriName := Highlighter.ExportName +
         IntToStr(GetHighlighterIndex(Highlighter, HighlighterList)) + '.' +
-        Highlighter.Attribute[i].Name;
+        Highlighter.Attribute[Int].Name;
 
-      Result := HighlighterAttriProc(Highlighter, Highlighter.Attribute[i],
+      Result := HighlighterAttriProc(Highlighter, Highlighter.Attribute[Int],
         UniqueAttriName, Params);
       if not Result then Exit
     end
@@ -781,15 +800,15 @@ const
 function CalcFCS(const ABuf; ABufSize: Cardinal): Word;
 var
   CurFCS: Word;
-  P: ^Byte;
+  Posi: ^Byte;
 begin
   CurFCS := $ffff;
-  P := @ABuf;
+  Posi := @ABuf;
   while ABufSize <> 0 do
   begin
-    CurFCS := (CurFCS shr 8) xor fcstab[(CurFCS xor P^) and $ff];
+    CurFCS := (CurFCS shr 8) xor fcstab[(CurFCS xor Posi^) and $ff];
     Dec(ABufSize);
-    Inc(P);
+    Inc(Posi);
   end;
   Result := CurFCS;
 end;
@@ -800,7 +819,7 @@ procedure SynDrawGradient(const ACanvas: TCanvas; const AStartColor, AEndColor: 
 var
   StartColorR, StartColorG, StartColorB: Byte;
   DiffColorR, DiffColorG, DiffColorB: Integer;
-  i, Size: Integer;
+  Int, Size: Integer;
   PaintRect: TRect;
 begin
   StartColorR := GetRValue(ColorToRGB(AStartColor));
@@ -819,14 +838,14 @@ begin
     PaintRect.Top := ARect.Top;
     PaintRect.Bottom := ARect.Bottom;
 
-    for i := 0 to ASteps - 1 do
+    for Int := 0 to ASteps - 1 do
     begin
-      PaintRect.Left := ARect.Left + MulDiv(i, Size, ASteps);
-      PaintRect.Right := ARect.Left + MulDiv(i + 1, Size, ASteps);
+      PaintRect.Left := ARect.Left + MulDiv(Int, Size, ASteps);
+      PaintRect.Right := ARect.Left + MulDiv(Int + 1, Size, ASteps);
 
-      ACanvas.Brush.Color := RGB(StartColorR + MulDiv(i, DiffColorR, ASteps - 1),
-                                 StartColorG + MulDiv(i, DiffColorG, ASteps - 1),
-                                 StartColorB + MulDiv(i, DiffColorB, ASteps - 1));
+      ACanvas.Brush.Color := RGB(StartColorR + MulDiv(Int, DiffColorR, ASteps - 1),
+                                 StartColorG + MulDiv(Int, DiffColorG, ASteps - 1),
+                                 StartColorB + MulDiv(Int, DiffColorB, ASteps - 1));
 
       ACanvas.FillRect(PaintRect);
     end;
@@ -837,14 +856,14 @@ begin
     PaintRect.Left := ARect.Left;
     PaintRect.Right := ARect.Right;
 
-    for i := 0 to ASteps - 1 do
+    for Int := 0 to ASteps - 1 do
     begin
-      PaintRect.Top := ARect.Top + MulDiv(i, Size, ASteps);
-      PaintRect.Bottom := ARect.Top + MulDiv(i + 1, Size, ASteps);
+      PaintRect.Top := ARect.Top + MulDiv(Int, Size, ASteps);
+      PaintRect.Bottom := ARect.Top + MulDiv(Int + 1, Size, ASteps);
 
-      ACanvas.Brush.Color := RGB(StartColorR + MulDiv(i, DiffColorR, ASteps - 1),
-                                 StartColorG + MulDiv(i, DiffColorG, ASteps - 1),
-                                 StartColorB + MulDiv(i, DiffColorB, ASteps - 1));
+      ACanvas.Brush.Color := RGB(StartColorR + MulDiv(Int, DiffColorR, ASteps - 1),
+                                 StartColorG + MulDiv(Int, DiffColorG, ASteps - 1),
+                                 StartColorB + MulDiv(Int, DiffColorB, ASteps - 1));
 
       ACanvas.FillRect(PaintRect);
     end;
@@ -906,13 +925,13 @@ const
       #$02419, #$0241A, #$0241B, #$0241C, #$0241D, #$0241E, #$0241F);
   DeleteChar  = #$02421;
 var
-  I: Integer;
+  Int: Integer;
 begin
   UniqueString(Input);
-  for I := 1 to Input.Length do
-    case Ord(Input[I]) of
-      1..8, 10..31: Input[I] := GraphicChars[Byte(Ord(Input[I]))];
-      127: Input[I] := DeleteChar;
+  for Int := 1 to Input.Length do
+    case Ord(Input[Int]) of
+      1..8, 10..31: Input[Int] := GraphicChars[Byte(Ord(Input[Int]))];
+      127: Input[Int] := DeleteChar;
     end;
 end;
 

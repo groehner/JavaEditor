@@ -51,7 +51,7 @@ object FStructogram: TFStructogram
       Left = 1
       Top = 309
       Width = 22
-      Height = 363
+      Height = 362
       Hint = 'Trash bin'
       Align = alClient
       ImageCollection = icStructogram
@@ -302,8 +302,10 @@ object FStructogram: TFStructogram
         IconName = 'Algorithm'
         SVGText = 
           '<svg viewBox="0 0 16 16">'#13#10'  <path stroke="#000000" d="M1 1.5h14' +
-          ' M14.5 1 v14 M15 14.5 h-14 M1.5 15 v-14 "/>'#13#10'  <text x="3.5" y="' +
-          '13" font-size="13">A</text>'#13#10'</svg>'#13#10
+          ' M14.5 1 v14 M15 14.5 h-14 M1.5 15 v-14 "/>'#13#10'  <line stroke="#00' +
+          '0000" x1="4" y1="13" x2="8" y2="3" />'#13#10'  <line stroke="#000000" ' +
+          'x1="12" y1="13" x2="8" y2="3" />'#13#10'  <line stroke="#000000" x1="6' +
+          '" y1="8" x2="10" y2="8" />'#13#10'</svg>'#13#10
       end
       item
         IconName = 'GenerateJava'
@@ -426,8 +428,10 @@ object FStructogram: TFStructogram
         IconName = 'Algorithm'
         SVGText = 
           '<svg viewBox="0 0 16 16">'#13#10'  <path stroke="#ffffff" d="M1 1.5h14' +
-          ' M14.5 1 v14 M15 14.5 h-14 M1.5 15 v-14 "/>'#13#10'  <text x="3.5" y="' +
-          '13" font-size="13" fill="#ffffff">A</text>'#13#10'</svg>'
+          ' M14.5 1 v14 M15 14.5 h-14 M1.5 15 v-14 "/>'#13#10'  <line stroke="#ff' +
+          'ffff" x1="4" y1="13" x2="8" y2="3" />'#13#10'  <line stroke="#ffffff" ' +
+          'x1="12" y1="13" x2="8" y2="3" />'#13#10'  <line stroke="#ffffff" x1="6' +
+          '" y1="8" x2="10" y2="8" /></svg>'
       end
       item
         IconName = 'GenerateJava'

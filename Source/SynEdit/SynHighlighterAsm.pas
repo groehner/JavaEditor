@@ -91,7 +91,7 @@ type
     procedure SingleQuoteStringProc;
     procedure SymbolProc;
     procedure UnknownProc;
-    procedure DoAddKeyword(AKeyword: string; AKind: integer);
+    procedure DoAddKeyword(AKeyword: string; AKind: Integer);
     function IdentKind(MayBe: PWideChar): TtkTokenKind;
   protected
     function GetSampleSource: string; override;
@@ -102,12 +102,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -164,7 +164,7 @@ const
     'sldt,smsw,stc,std,sti,stos,stosb,stosd,stosw,str,sub,test,verr,verw,' +
     'wait,wbinvd,xadd,xchg,xlat,xlatb,xor';
 
-procedure TSynAsmSyn.DoAddKeyword(AKeyword: string; AKind: integer);
+procedure TSynAsmSyn.DoAddKeyword(AKeyword: string; AKind: Integer);
 var
   HashValue: Cardinal;
 begin
@@ -179,7 +179,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 197 + Ord(Str^) * 14;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 4561;
   fStringLen := Str - fToIdent;
@@ -195,12 +195,12 @@ begin
   while Assigned(Entry) do
   begin
     if Entry.KeywordLen > fStringLen then
-      break
+      Break
     else if Entry.KeywordLen = fStringLen then
       if IsCurrentToken(Entry.Keyword) then
       begin
         Result := TtkTokenKind(Entry.Kind);
-        exit;
+        Exit;
       end;
     Entry := Entry.Next;
   end;
@@ -268,14 +268,14 @@ end;
 procedure TSynAsmSyn.IdentProc;
 begin
   fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
-  while IsIdentChar(fLine[Run]) do inc(Run);
+  Inc(Run, fStringLen);
+  while IsIdentChar(fLine[Run]) do Inc(Run);
 end;
 
 procedure TSynAsmSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynAsmSyn.LowerProc;
@@ -288,7 +288,7 @@ end;
 procedure TSynAsmSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynAsmSyn.NumberProc;
@@ -304,7 +304,7 @@ procedure TSynAsmSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
     Inc(Run);
@@ -334,39 +334,39 @@ procedure TSynAsmSyn.StringProc;
 begin
   fTokenID := tkString;
   if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then
-    inc(Run, 2);
+    Inc(Run, 2);
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #34;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynAsmSyn.SingleQuoteStringProc;
 begin
   fTokenID := tkString;
   if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then
-    inc(Run, 2);
+    Inc(Run, 2);
   repeat
     case FLine[Run] of
-      #0, #10, #13: break;
+      #0, #10, #13: Break;
     end;
-    inc(Run);
+    Inc(Run);
   until FLine[Run] = #39;
-  if FLine[Run] <> #0 then inc(Run);
+  if FLine[Run] <> #0 then Inc(Run);
 end;
 
 procedure TSynAsmSyn.SymbolProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynAsmSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkIdentifier;
 end;
 
@@ -399,7 +399,7 @@ begin
   inherited;
 end;
 
-function TSynAsmSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynAsmSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -433,7 +433,7 @@ begin
   end;
 end;
 
-function TSynAsmSyn.GetTokenKind: integer;
+function TSynAsmSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

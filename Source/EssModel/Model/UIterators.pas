@@ -25,64 +25,70 @@ interface
   Iterators and filters for model navigation.
 }
 
-uses Contnrs, UUtils, uModelEntity;
+uses
+  Contnrs,
+  UModelEntity,
+  UUtils;
 
 type
 
-  //Baseclass for iterators
+  // Baseclass for iterators
   TModelIterator = class(TInterfacedObject, IModelIterator)
   private
-    FItems : TObjectList;
-    OwnsItems : boolean;
-    NextI : integer;
-    FNext : TModelEntity;
-    FHasNext : boolean;
-  private
-    procedure Init(List : IModelIterator; Filter : IIteratorFilter; Order : TIteratorOrder);
+    FItems: TObjectList;
+    FOwnsItems: Boolean;
+    FNextI: Integer;
+    FNext: TModelEntity;
+    FHasNext: Boolean;
+    procedure Init(List: IModelIterator; Filter: IIteratorFilter;
+      Order: TIteratorOrder);
   protected
     procedure Advance; virtual;
   public
-    constructor Create(ObList: TObjectList; MakeCopy : boolean = False); overload;
-    constructor Create(List: IModelIterator; Filter: IIteratorFilter; Order: TIteratorOrder = ioNone); overload;
-    constructor Create(List: IModelIterator;
-      OneClass: TModelEntityClass;
+    constructor Create(ObList: TObjectList; MakeCopy: Boolean = False);
+      overload;
+    constructor Create(List: IModelIterator; Filter: IIteratorFilter;
+      Order: TIteratorOrder = ioNone); overload;
+    constructor Create(List: IModelIterator; FOneClass: TModelEntityClass;
       MinVisibility: TVisibility = Low(TVisibility);
-      Order: TIteratorOrder = ioNone;
-      All: boolean = false); overload;
-    constructor Create(List: IModelIterator; Order: TIteratorOrder = ioNone); overload;
-    constructor Create(List: IModelIterator; MinVisibility: TVisibility); overload;
+      Order: TIteratorOrder = ioNone; All: Boolean = False); overload;
+    constructor Create(List: IModelIterator;
+      Order: TIteratorOrder = ioNone); overload;
+    constructor Create(List: IModelIterator;
+      MinVisibility: TVisibility); overload;
     destructor Destroy; override;
-    //IModelIterator
-    function HasNext : boolean;
-    function Next : TModelEntity;
+    // IModelIterator
+    function HasNext: Boolean;
+    function Next: TModelEntity;
     procedure Reset;
-    function Count : integer;
+    function Count: Integer;
   end;
 
-  //Baseclass for filter used in iterators
+  // Baseclass for filter used in iterators
   TIteratorFilter = class(TInterfacedObject, IIteratorFilter)
   public
-    function Accept(M : TModelEntity) : boolean; virtual; abstract;
+    function Accept(Model: TModelEntity): Boolean; virtual; abstract;
   end;
 
-  //Filters on a class and a minimum visibilty
+  // Filters on a class and a minimum visibilty
   TClassAndVisibilityFilter = class(TIteratorFilter)
   private
-    OneClass : TModelEntityClass;
-    MinVisibility : TVisibility;
-    All: boolean;
+    FOneClass: TModelEntityClass;
+    FMinVisibility: TVisibility;
+    FAll: Boolean;
   public
-    constructor Create(aOneClass : TModelEntityClass; aMinVisibility : TVisibility = Low(TVisibility); aAll: boolean = false);
-    function Accept(M : TModelEntity) : boolean; override;
+    constructor Create(OneClass: TModelEntityClass;
+      MinVisibility: TVisibility = Low(TVisibility); All: Boolean = False);
+    function Accept(Model: TModelEntity): Boolean; override;
   end;
 
-  //Excludes an entity
+  // Excludes an entity
   TEntitySkipFilter = class(TIteratorFilter)
   private
-    SkipEntity : TModelEntity;
+    FSkipEntity: TModelEntity;
   public
-    constructor Create(aSkipEntity : TModelEntity);
-    function Accept(M : TModelEntity) : boolean; override;
+    constructor Create(SkipEntity: TModelEntity);
+    function Accept(Model: TModelEntity): Boolean; override;
   end;
 
 implementation
@@ -91,95 +97,105 @@ uses Classes, SysUtils;
 
 { TModelIterator }
 
-//Creates iterator as a direct copy of an objectlist.
-//If makecopy=false then reference oblist, else copy all items.
+// Creates iterator as a direct copy of an objectlist.
+// If makecopy=false then reference oblist, else copy all items.
 
-constructor TModelIterator.Create(ObList: TObjectList; MakeCopy : boolean = False);
+constructor TModelIterator.Create(ObList: TObjectList;
+  MakeCopy: Boolean = False);
 begin
   inherited Create;
-  if MakeCopy then begin
-    //Copy oblist to items
-    OwnsItems := True;
+  if MakeCopy then
+  begin
+    // Copy oblist to items
+    FOwnsItems := True;
     FItems := TObjectList.Create(False);
-    for var i:=0 to ObList.Count-1 do
-      FItems.Add(ObList[i]);
-  end else begin
-    //Reference, same list instead of copy
-    OwnsItems := False;
+    for var I := 0 to ObList.Count - 1 do
+      FItems.Add(ObList[I]);
+  end
+  else
+  begin
+    // Reference, same list instead of copy
+    FOwnsItems := False;
     FItems := ObList;
   end;
   Advance;
 end;
 
-
-//Creates an iterator based on another iterator, filter with Filter, sort on Order.
-constructor TModelIterator.Create(List: IModelIterator; Filter : IIteratorFilter; Order : TIteratorOrder = ioNone);
+// Creates an iterator based on another iterator, filter with Filter, sort on Order.
+constructor TModelIterator.Create(List: IModelIterator; Filter: IIteratorFilter;
+  Order: TIteratorOrder = ioNone);
 begin
   inherited Create;
   Init(List, Filter, Order);
 end;
 
-//Creates an iterator based on another iterator, filter on class and
-//visibility, sort result.
+// Creates an iterator based on another iterator, filter on class and
+// visibility, sort result.
 constructor TModelIterator.Create(List: IModelIterator;
-  OneClass: TModelEntityClass;
-  MinVisibility : TVisibility = Low(TVisibility);
-  Order : TIteratorOrder = ioNone;
-  All: boolean = false);
+  FOneClass: TModelEntityClass; MinVisibility: TVisibility = Low(TVisibility);
+  Order: TIteratorOrder = ioNone; All: Boolean = False);
 begin
   inherited Create;
-  Init(List, TClassAndVisibilityFilter.Create(OneClass, MinVisibility, All), Order);
+  Init(List, TClassAndVisibilityFilter.Create(FOneClass, MinVisibility,
+    All), Order);
 end;
 
-//Creates an iterator based on another iterator, sort result.
+// Creates an iterator based on another iterator, sort result.
 constructor TModelIterator.Create(List: IModelIterator; Order: TIteratorOrder);
 begin
   inherited Create;
   Init(List, nil, Order);
 end;
 
-//Creates an iterator based on another iterator, filtered on visibility.
-constructor TModelIterator.Create(List: IModelIterator; MinVisibility: TVisibility);
+// Creates an iterator based on another iterator, filtered on visibility.
+constructor TModelIterator.Create(List: IModelIterator;
+  MinVisibility: TVisibility);
 begin
   inherited Create;
-  //TModelEntity as classfilter = always true
-  Init(List, TClassAndVisibilityFilter.Create(TModelEntity, MinVisibility), ioNone);
+  // TModelEntity as classfilter = always true
+  Init(List, TClassAndVisibilityFilter.Create(TModelEntity,
+    MinVisibility), ioNone);
 end;
 
 destructor TModelIterator.Destroy;
 begin
-  if OwnsItems then
+  if FOwnsItems then
     FreeAndNil(FItems);
   inherited;
 end;
 
 function SortVisibility(Item1, Item2: Pointer): Integer;
 begin
-  //Visibility, then alpha
-  var E1:= TModelEntity(Item1);
-  var E2:= TModelEntity(Item2);
-  if (E1.Visibility < E2.Visibility) then
-    Result:= -1  //Lower
-  else if (E1.Visibility = E2.Visibility) then
-    Result:= CompareText(E1.Name, E2.Name)
+  // Visibility, then alpha
+  var
+  Model1 := TModelEntity(Item1);
+  var
+  Model2 := TModelEntity(Item2);
+  if (Model1.Visibility < Model2.Visibility) then
+    Result := -1 // Lower
+  else if (Model1.Visibility = Model2.Visibility) then
+    Result := CompareText(Model1.Name, Model2.Name)
   else
-    Result:= 1; //Higher
+    Result := 1; // Higher
 end;
 
 function SortAlpha(Item1, Item2: Pointer): Integer;
 begin
-  Result := CompareText( TModelEntity(Item1).Name , TModelEntity(Item2).Name );
+  Result := CompareText(TModelEntity(Item1).Name, TModelEntity(Item2).Name);
 end;
 
-//Called by all iterator constructors that has an iterator as a parameter
-//Initializes iterator
-procedure TModelIterator.Init(List: IModelIterator; Filter: IIteratorFilter; Order: TIteratorOrder);
+// Called by all iterator constructors that has an iterator as a parameter
+// Initializes iterator
+procedure TModelIterator.Init(List: IModelIterator; Filter: IIteratorFilter;
+  Order: TIteratorOrder);
 begin
-  OwnsItems := True;
+  FOwnsItems := True;
   FItems := TObjectList.Create(False);
   if Assigned(Filter) then
-    while List.HasNext do begin
-      var E := List.Next;
+    while List.HasNext do
+    begin
+      var
+      E := List.Next;
       if Filter.Accept(E) then
         FItems.Add(E);
     end
@@ -188,26 +204,31 @@ begin
       FItems.Add(List.Next);
   // sort
   case Order of
-    ioNone: ;
-    ioVisibility: FItems.Sort(SortVisibility);
-    ioAlpha     : FItems.Sort(SortAlpha);
+    ioNone:
+      ;
+    ioVisibility:
+      FItems.Sort(SortVisibility);
+    ioAlpha:
+      FItems.Sort(SortAlpha);
   end;
   Advance;
 end;
 
 procedure TModelIterator.Advance;
 begin
-  if assigned(FItems)
-    then FHasNext := NextI < FItems.Count
-    else FHasNext := false;
-  if FHasNext then begin
-    if FItems[NextI] is TModelEntity then
-      FNext := FItems[NextI] as TModelEntity;
-    Inc(NextI);
+  if Assigned(FItems) then
+    FHasNext := FNextI < FItems.Count
+  else
+    FHasNext := False;
+  if FHasNext then
+  begin
+    if FItems[FNextI] is TModelEntity then
+      FNext := FItems[FNextI] as TModelEntity;
+    Inc(FNextI);
   end;
 end;
 
-function TModelIterator.HasNext: boolean;
+function TModelIterator.HasNext: Boolean;
 begin
   Result := FHasNext;
 end;
@@ -222,44 +243,45 @@ end;
 
 procedure TModelIterator.Reset;
 begin
-  NextI := 0;
+  FNextI := 0;
   Advance;
 end;
 
-function TModelIterator.Count: integer;
+function TModelIterator.Count: Integer;
 begin
   Result := FItems.Count;
 end;
 
-
 { TClassAndVisibilityFilter }
 
-constructor TClassAndVisibilityFilter.Create(aOneClass: TModelEntityClass;
-  aMinVisibility: TVisibility; aAll: boolean);
+constructor TClassAndVisibilityFilter.Create(OneClass: TModelEntityClass;
+  MinVisibility: TVisibility; All: Boolean);
 begin
   inherited Create;
-  Self.OneClass := aOneClass;
-  Self.MinVisibility := aMinVisibility;
-  Self.All:= aAll;
+  Self.FOneClass := OneClass;
+  Self.FMinVisibility := MinVisibility;
+  Self.FAll := All;
 end;
 
-function TClassAndVisibilityFilter.Accept(M: TModelEntity): boolean;
+function TClassAndVisibilityFilter.Accept(Model: TModelEntity): Boolean;
 begin
-  if All
-    then Result := (M is OneClass) and (M.Visibility >= MinVisibility)
-    else Result := (M is OneClass) and (M.Visibility >= MinVisibility) and not M.Hidden;
+  if FAll then
+    Result := (Model is FOneClass) and (Model.Visibility >= FMinVisibility)
+  else
+    Result := (Model is FOneClass) and (Model.Visibility >= FMinVisibility) and
+      not Model.Hidden;
 end;
 
 { TEntitySkipFilter }
 
-constructor TEntitySkipFilter.Create(aSkipEntity: TModelEntity);
+constructor TEntitySkipFilter.Create(SkipEntity: TModelEntity);
 begin
-  Self.SkipEntity := aSkipEntity;
+  Self.FSkipEntity := SkipEntity;
 end;
 
-function TEntitySkipFilter.Accept(M: TModelEntity): boolean;
+function TEntitySkipFilter.Accept(Model: TModelEntity): Boolean;
 begin
-  Result := M<>SkipEntity;
+  Result := Model <> FSkipEntity;
 end;
 
 end.

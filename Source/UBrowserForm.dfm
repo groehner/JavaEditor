@@ -47,7 +47,6 @@ object FBrowser: TFBrowser
     Height = 25
     Align = alTop
     TabOrder = 1
-    ExplicitWidth = 678
     object PTop: TPanel
       Left = 188
       Top = 1
@@ -56,7 +55,6 @@ object FBrowser: TFBrowser
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 489
       object Splitter: TSplitter
         Left = 156
         Top = 0
@@ -99,7 +97,6 @@ object FBrowser: TFBrowser
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitWidth = 329
       end
     end
     object ToolBar: TToolBar

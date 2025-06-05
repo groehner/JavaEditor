@@ -15,75 +15,72 @@ type
   TFWindow = class(TForm)
     procedure FormCreate(Sender: TObject);
   private
-    WM_ENUMERATE_ID: integer;
-    aWindowHandle: HWnd;
-    WindowCaption: string;
+    FWM_ENUMERATE_ID: Cardinal;
+    FWindowHandle: HWND;
+    FWindowCaption: string;
   public
-    procedure WriteText(Wnd: HWnd);
-    procedure WndProc(var message: TMessage); override;
-    function GetWindowHandle(const aCaption: string): Hwnd;
+    procedure WriteText(Wnd: HWND);
+    procedure WndProc(var Message: TMessage); override;
+    function GetWindowHandle(const ACaption: string): HWND;
   end;
 
 var
   FWindow: TFWindow;
 
-
 implementation
 
-uses SysUtils, Controls;
+uses SysUtils;
 
 {$R *.DFM}
 
-function RegisterMessage: integer;
+function RegisterMessage: Cardinal;
 begin
   Result:= RegisterWindowMessage('Enumerate this Window');
 end;
 
 // this is the callbackfunction. Don't miss stdcall
 // can't be part of the form.
-function EnumWinProc(Wnd: HWnd; param: lParam): boolean; stdcall;
-  var iMsgID: integer;
+function EnumWinProc(Wnd: HWND; Param: LParam): Boolean; stdcall;
+  var IMsgID: Cardinal;
 begin
-  iMsgID:= RegisterMessage;
-  SendMessage(param, iMsgID, 0, Wnd);
+  IMsgID:= RegisterMessage;
+  SendMessage(Param, IMsgID, 0, Wnd);
   // give data to main form
-  Result:=true;
+  Result:=True;
 end;
 
-{$WARNINGS OFF}
-procedure TFWindow.WndProc(var message: TMessage);
+procedure TFWindow.WndProc(var Message: TMessage);
 begin
-  if message.Msg = WM_ENUMERATE_ID then
+  if Message.Msg = FWM_ENUMERATE_ID then
     // oh! Enumerate Window found a window, lets do something
-    WriteText(message.lParam)
+    WriteText(Message.LParam)
   else
-    inherited WndProc(message);
+    inherited WndProc(Message);
 end;
-{$WARNINGS ON}
 
-procedure TFWindow.WriteText(Wnd: HWnd);
-  var pcWinText: PChar;
+procedure TFWindow.WriteText(Wnd: HWND);
+  var PcWinText: PChar;
 begin
-  if IsWindowVisible(wnd) then begin
-    pcWinText:= StrAlloc(202);
-    GetWindowText(Wnd, pcWinText, 200);
-    if Pos(WindowCaption, pcWinText) > 0 then
-      aWindowHandle:= Wnd;
-    StrDispose(pcWinText);
+  if IsWindowVisible(Wnd) then begin
+    PcWinText:= StrAlloc(202);
+    GetWindowText(Wnd, PcWinText, 200);
+    if Pos(FWindowCaption, PcWinText) > 0 then
+      FWindowHandle:= Wnd;
+    StrDispose(PcWinText);
   end;
 end;
 
 procedure TFWindow.FormCreate(Sender: TObject);
 begin
-  WM_ENUMERATE_ID:= RegisterMessage;  // get our msgID
+  FWM_ENUMERATE_ID:= RegisterMessage;  // get our msgID
 end;
 
-function TFWindow.GetWindowHandle(const aCaption: string): HWnd;
+function TFWindow.GetWindowHandle(const ACaption: string): HWND;
 begin
-  aWindowHandle:= 0;
-  WindowCaption:= aCaption;
-  EnumWindows(@EnumWinProc, self.Handle);
-  Result:= aWindowHandle;
+  FWindowHandle:= 0;
+  FWindowCaption:= ACaption;
+  EnumWindows(@EnumWinProc, Self.Handle);
+  Result:= FWindowHandle;
 end;
 
 end.

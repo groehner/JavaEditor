@@ -360,7 +360,7 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
@@ -684,7 +684,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 627 + Ord(Str^) * 829;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 2179;
   fStringLen := Str - fToIdent;
@@ -705,15 +705,15 @@ end;
 
 procedure TSynHTMLSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if @fIdentFuncTable[i] = nil then
-      fIdentFuncTable[i] := KeyWordFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if @fIdentFuncTable[Int] = nil then
+      fIdentFuncTable[Int] := KeyWordFunc;
 end;
 
 function TSynHTMLSyn.AltFunc(Index: Integer): TtkTokenKind;
@@ -801,7 +801,7 @@ begin
     begin
       fRange := rsText;
       Inc(Run);
-      break;
+      Break;
     end;
     Inc(Run);
   end;
@@ -872,7 +872,7 @@ end;
 procedure TSynHTMLSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynHTMLSyn.TextProc;
@@ -898,12 +898,12 @@ procedure TSynHTMLSyn.TextProc;
   end;
 
 var
-  i: Integer;
+  Int: Integer;
 begin
   if CharInSet(fLine[Run], [#0..#31, '<']) then
   begin
     NextProcedure;
-    exit;
+    Exit;
   end;
 
   fTokenID := tkText;
@@ -917,30 +917,30 @@ begin
       if (fLine[Run + 1] = '#') then
       begin
         fAndCode := -1;
-        i := Run;
-        inc(Run, 2);
+        Int := Run;
+        Inc(Run, 2);
         if CharInSet(fLine[Run], ['X', 'x']) then
         begin
-          inc(Run);
+          Inc(Run);
           while IsNumberChar do
-            inc(Run);
+            Inc(Run);
         end
         else
           while CharInSet(fLine[Run], ['0'..'9']) do
-            inc(Run);
+            Inc(Run);
         if (fLine[Run] = ';') then
         begin
-          inc(Run);
-          Run := i;
+          Inc(Run);
+          Run := Int;
           fRange := rsAmpersand;
         end;
-        break;
+        Break;
       end
       else
-        for i := Low(EscapeAmps) to High(EscapeAmps) do
-          if (AnsiStrLComp((fLine + Run), EscapeAmps[i], Length(EscapeAmps[i])) = 0) then
+        for Int := Low(EscapeAmps) to High(EscapeAmps) do
+          if (AnsiStrLComp((fLine + Run), EscapeAmps[Int], Length(EscapeAmps[Int])) = 0) then
           begin
-            fAndCode := i;
+            fAndCode := Int;
             fRange := rsAmpersand;
             Exit;
           end;
@@ -988,18 +988,18 @@ begin
       if (fLine[Run + 1] = '#') then
       begin
         fAndCode := -1;
-        inc(Run, 2);
+        Inc(Run, 2);
         if CharInSet(fLine[Run], ['X', 'x']) then
         begin
-          inc(Run);
+          Inc(Run);
           while IsNumberChar do
-            inc(Run);
+            Inc(Run);
         end
         else
           while CharInSet(fLine[Run], ['0'..'9']) do
-            inc(Run);
+            Inc(Run);
         if (fLine[Run] = ';') then begin
-          inc(Run);
+          Inc(Run);
           fTokenID := tkAmpersand;
         end else
           fTokenID := tkText;
@@ -1012,11 +1012,11 @@ end;
 
 procedure TSynHTMLSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
   while fLine[Run] <= #32 do
   begin
-    if CharInSet(fLine[Run], [#0, #9, #10, #13]) then break;
+    if CharInSet(fLine[Run], [#0, #9, #10, #13]) then Break;
     Inc(Run);
   end;
 end;
@@ -1064,7 +1064,7 @@ begin
         fRange := rsParam
       else
         fRange := rsText;
-      break;
+      Break;
     end;
     Inc(Run);
   end;
@@ -1120,7 +1120,7 @@ begin
   end;
 end;
 
-function TSynHTMLSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynHTMLSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -1159,7 +1159,7 @@ begin
   end;
 end;
 
-function TSynHTMLSyn.GetTokenKind: integer;
+function TSynHTMLSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

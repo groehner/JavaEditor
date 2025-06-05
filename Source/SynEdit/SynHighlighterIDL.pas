@@ -160,11 +160,11 @@ type
     function GetRange: Pointer; override;
     procedure ResetRange; override;
     procedure SetRange(Value: Pointer); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes; override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     function IsIdentChar(AChar: WideChar): Boolean; override;
     procedure Next; override;
   published
@@ -211,7 +211,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 612 + Ord(Str^) * 199;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 101;
   fStringLen := Str - fToIdent;
@@ -232,11 +232,11 @@ end;
 
 procedure TSynIdlSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[51] := FuncAbstract;
   fIdentFuncTable[41] := FuncAny;
@@ -679,15 +679,15 @@ end;
 
 procedure TSynIdlSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynIdlSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynIdlSyn.NumberProc;
@@ -703,7 +703,7 @@ procedure TSynIdlSyn.NumberProc;
   end;
 
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkNumber;
   while IsNumberChar do
   begin
@@ -711,7 +711,7 @@ begin
       '.': if FLine[Run + 1] = '.' then
              Break;
     end;
-    inc(Run);
+    Inc(Run);
   end;
 end; { NumberProc }
 
@@ -719,15 +719,15 @@ end; { NumberProc }
 procedure TSynIdlSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
   if fLine[Run] = #10 then
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynIdlSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynIdlSyn.CommentOpenProc;
@@ -901,7 +901,7 @@ end;
 procedure TSynIdlSyn.IdentProc;
 begin
   fTokenID := IdentKind((fLine + Run));
-  inc(Run, fStringLen);
+  Inc(Run, fStringLen);
   while IsIdentChar(fLine[Run]) do
     Inc(Run);
 end;
@@ -914,7 +914,7 @@ end;
 
 procedure TSynIdlSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -947,7 +947,7 @@ begin
   inherited;
 end;
 
-function TSynIdlSyn.GetDefaultAttribute(Index: integer): TSynHighLighterAttributes;
+function TSynIdlSyn.GetDefaultAttribute(Index: Integer): TSynHighLighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -989,7 +989,7 @@ begin
   end;
 end;
 
-function TSynIdlSyn.GetTokenKind: integer;
+function TSynIdlSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenId);
 end;

@@ -1378,7 +1378,7 @@ var
   {$ENDIF COMPILER16_UP}
   Options: TDTTOpts;
   {$IFDEF COMPILER11}
-  S: WideString;
+  Str: WideString;
   {$ENDIF COMPILER11}
 {$ENDIF COMPILER11_UP}
 begin
@@ -1419,9 +1419,9 @@ begin
                            TextFlags, TextRect, Options) <> E_NOTIMPL then
           Exit;
       {$ELSE}
-      S := Text;
+      Str := Text;
       with ThemeServices do
-        if DrawThemeTextEx(Theme[teToolBar], DC, TP_BUTTON, TS_NORMAL, PWideChar(S), Length(S),
+        if DrawThemeTextEx(Theme[teToolBar], DC, TP_BUTTON, TS_NORMAL, PWideChar(Str), Length(Str),
                            TextFlags, @TextRect, Options) <> E_NOTIMPL then
           Exit;
       {$ENDIF COMPILER12_UP}
@@ -1729,11 +1729,11 @@ end;
 
 function TThemeHookList.FindControl(Control: TControl): TThemeHook;
 var
-  I: Integer;
+  Int: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for Int := 0 to Count - 1 do
   begin
-    Result := TThemeHook(Items[I]);
+    Result := TThemeHook(Items[Int]);
     if Result.FControl = Control then
       Exit;
   end;
@@ -1742,14 +1742,14 @@ end;
 
 function TThemeHookList.GetControl(Control: TControl): TThemeHook;
 var
-  I: Integer;
+  Int: Integer;
 begin
   Result := FindControl(Control);
   if Result = nil then
   begin
-    for I := 0 to FDeadList.Count - 1 do
+    for Int := 0 to FDeadList.Count - 1 do
     begin
-      Result := TThemeHook(FDeadList[I]);
+      Result := TThemeHook(FDeadList[Int]);
       if Result.Control = Control then
       begin
         Result.FDead := False;
@@ -2034,30 +2034,30 @@ var
 procedure InstallWinControlHook;
 var
   Code: TJumpCode;
-  P: procedure;
+  Posi: procedure;
   N: Cardinal;
 begin
   if WinControlHookInstalled then
     Exit;
 
-  P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
-  if Assigned(P) then
+  Posi := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
+  if Assigned(Posi) then
   begin
-    if PByte(@P)^ = $53 then // push ebx
+    if PByte(@Posi)^ = $53 then // push ebx
       Code.Pop := $5B // pop ebx                           
     else
-    if PByte(@P)^ = $55 then // push ebp
+    if PByte(@Posi)^ = $55 then // push ebp
       Code.Pop := $5D // pop ebp
     else
       Exit;
 
     Code.Jmp := $E9;
-    Code.Offset := PAnsiChar(@WMEraseBkgndHook) - (PAnsiChar(@P) + 1) - SizeOf(Code);
+    Code.Offset := PAnsiChar(@WMEraseBkgndHook) - (PAnsiChar(@Posi) + 1) - SizeOf(Code);
 
     { The strange thing is that the $e9 cannot be overriden with a "PUSH xxx" }
-    if ReadProcessMemory(GetCurrentProcess, Pointer(PAnsiChar(@P) + 1),
+    if ReadProcessMemory(GetCurrentProcess, Pointer(PAnsiChar(@Posi) + 1),
                          @SavedWinControlCode, SizeOf(SavedWinControlCode), N) and
-      WriteProtectedMemory(Pointer(PAnsiChar(@P) + 1), @Code, SizeOf(Code), N) then
+      WriteProtectedMemory(Pointer(PAnsiChar(@Posi) + 1), @Code, SizeOf(Code), N) then
     begin
       WinControlHookInstalled := True;
       ThemeHooks.FEraseBkgndHooked := True;
@@ -2067,24 +2067,24 @@ end;
 
 procedure UninstallWinControlHook;
 var
-  P: procedure;
+  Posi: procedure;
   OldProtect, Dummy: Cardinal;
 begin
   if not WinControlHookInstalled then
     Exit;
 
-  P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
-  if Assigned(P) then
+  Posi := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
+  if Assigned(Posi) then
   begin
     // Pointer(Cardinal(@P): Delphi 5 and 6 are 32bit only, so no problem here with 64bit code
-    if VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(SavedWinControlCode), PAGE_EXECUTE_READWRITE,
+    if VirtualProtect(Pointer(Cardinal(@Posi) + 1), SizeOf(SavedWinControlCode), PAGE_EXECUTE_READWRITE,
                       OldProtect) then
     try
-      PJumpCode(Cardinal(@P) + 1)^ := SavedWinControlCode;
+      PJumpCode(Cardinal(@Posi) + 1)^ := SavedWinControlCode;
       WinControlHookInstalled := False;
-      FlushInstructionCache(GetCurrentProcess, @P, SizeOf(SavedWinControlCode));
+      FlushInstructionCache(GetCurrentProcess, @Posi, SizeOf(SavedWinControlCode));
     finally
-      VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(SavedWinControlCode), OldProtect, Dummy);
+      VirtualProtect(Pointer(Cardinal(@Posi) + 1), SizeOf(SavedWinControlCode), OldProtect, Dummy);
     end;
   end;
 end;
@@ -2137,13 +2137,13 @@ end;
 function FindWMPrintClient: PPointer;
 var
   IdxList: PDynamicIndexList;
-  I: Integer;
+  Int: Integer;
 begin
   IdxList := GetDynamicIndexList(TWinControl);
-  for I := 0 to GetDynamicMethodCount(TWinControl) - 1 do
-    if IdxList[I] = WM_PRINTCLIENT then
+  for Int := 0 to GetDynamicMethodCount(TWinControl) - 1 do
+    if IdxList[Int] = WM_PRINTCLIENT then
     begin
-      Result := @(GetDynamicAddressList(TWinControl)[I]);
+      Result := @(GetDynamicAddressList(TWinControl)[Int]);
       Exit;
     end;
   Result := nil;

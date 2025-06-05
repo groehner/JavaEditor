@@ -3,43 +3,47 @@ unit UJSeparator;
 interface
 
 uses
-  Classes, UJEComponents, UJComponents;
+  Classes,
+  UJEComponents,
+  UJComponents;
 
 type
 
-  TJSeparator = class (TSwingComponent)
+  TJSeparator = class(TSwingComponent)
   private
     FOrientation: TOrientation;
-    procedure setOrientation(aValue: TOrientation);
+    procedure SetOrientation(AValue: TOrientation);
   public
     constructor Create(AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure NewControl; override;
     procedure Paint; override;
   published
-    property Orientation: TOrientation read FOrientation write setOrientation;
+    property Orientation: TOrientation read FOrientation write SetOrientation;
   end;
 
 implementation
 
-uses Graphics, Controls;
+uses
+  Graphics,
+  Controls;
 
-{--- TJSeparator --------------------------------------------------------------}
+{ --- TJSeparator -------------------------------------------------------------- }
 
 constructor TJSeparator.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  Tag:= +24;
-  Width:= 80;
-  Height:= 8;
-  Background:= clWhite;
-  Foreground:= BlueColor;
-  JavaType:= 'JSeparator';
+  inherited Create(AOwner);
+  Tag := +24;
+  Width := 80;
+  Height := 8;
+  Background := clWhite;
+  Foreground := BlueColor;
+  JavaType := 'JSeparator';
 end;
 
-function TJSeparator.getAttributes(ShowAttributes: integer): string;
+function TJSeparator.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|Orientation' + inherited;
+  Result := '|Orientation' + inherited;
 end;
 
 procedure TJSeparator.NewControl;
@@ -50,30 +54,38 @@ end;
 
 procedure TJSeparator.Paint;
 begin
-  if Orientation = HORIZONTAL then begin
-    Canvas.Pen.Color:= Foreground;
+  if Orientation = HORIZONTAL then
+  begin
+    Canvas.Pen.Color := Foreground;
     Canvas.MoveTo(0, 0);
-    Canvas.LineTo(Width-1, 0);
-    Canvas.Pen.Color:= Background;
+    Canvas.LineTo(Width - 1, 0);
+    Canvas.Pen.Color := Background;
     Canvas.MoveTo(0, 1);
-    Canvas.LineTo(Width-1, 1);
-  end else begin
-    Canvas.Pen.Color:= Foreground;
+    Canvas.LineTo(Width - 1, 1);
+  end
+  else
+  begin
+    Canvas.Pen.Color := Foreground;
     Canvas.MoveTo(0, 0);
-    Canvas.LineTo(0, Height-1);
-    Canvas.Pen.Color:= Background;
+    Canvas.LineTo(0, Height - 1);
+    Canvas.Pen.Color := Background;
     Canvas.MoveTo(1, 0);
-    Canvas.LineTo(1, Height-1);
+    Canvas.LineTo(1, Height - 1);
   end;
 end;
 
-procedure TJSeparator.setOrientation(aValue: TOrientation);
-  var h: integer;
+procedure TJSeparator.SetOrientation(AValue: TOrientation);
+var
+  Tmp: Integer;
 begin
-  if aValue <> FOrientation then begin
-    FOrientation:= aValue;
-    if not (csLoading in ComponentState) then begin
-      h:= Width; Width:= Height; Height:= h;
+  if AValue <> FOrientation then
+  begin
+    FOrientation := AValue;
+    if not(csLoading in ComponentState) then
+    begin
+      Tmp := Width;
+      Width := Height;
+      Height := Tmp;
     end;
     Invalidate;
   end;

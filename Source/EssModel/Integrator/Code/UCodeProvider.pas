@@ -40,7 +40,7 @@ type
     FWatched: TStringList;
     procedure SetActive(const Value: Boolean);
   protected
-    LoadedCount : integer;
+    FLoadedCount : Integer;
     procedure HookChanges; virtual; abstract;
     procedure UnhookChanges; virtual; abstract;
     procedure AddChangeWatch(const AName: string);

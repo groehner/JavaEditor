@@ -3,7 +3,8 @@ unit UFXLabel;
 interface
 
 uses
-  Classes, UFXLabeled;
+  Classes,
+  UFXLabeled;
 
 type
   TFXLabel = class (TFXLabeled)
@@ -12,8 +13,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure NewControl; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
-    function getAttributes(ShowAttributes: integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SizeToText; override;
     procedure NameFromText; override;
     procedure Paint; override;
@@ -27,7 +28,7 @@ implementation
 
 constructor TFXLabel.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
+  inherited Create(AOwner);
   Tag:= +101;
   PrefWidth:= 80;
   PrefHeight:= 24;
@@ -39,7 +40,7 @@ procedure TFXLabel.NewControl;
 begin
   DefaultComponent;
   InsertNewVariable('private Label ' + Name + ' = new Label();');
-  MakeAttribut('Text', asString(Text));
+  MakeAttribut('Text', AsString(Text));
   MakeFont;
 end;
 
@@ -53,9 +54,9 @@ begin
     inherited;
 end;
 
-function TFXLabel.getAttributes(ShowAttributes: integer): string;
+function TFXLabel.GetAttributes(ShowAttributes: Integer): string;
 begin
-  Result:= '|LabelFor' + inherited getAttributes(ShowAttributes);
+  Result:= '|LabelFor' + inherited GetAttributes(ShowAttributes);
 end;
 
 procedure TFXLabel.SizeToText;

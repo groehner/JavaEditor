@@ -3,8 +3,16 @@ unit UDlgConnect;
 interface
 
 uses
-  Windows, Controls, Forms, StdCtrls, ComCtrls, USequencePanel,
-  System.ImageList, Vcl.ImgList, System.Classes, Vcl.VirtualImageList;
+  Windows,
+  Controls,
+  Forms,
+  StdCtrls,
+  ComCtrls,
+  System.ImageList,
+  System.Classes,
+  Vcl.ImgList,
+  Vcl.VirtualImageList,
+  USequencePanel;
 
 type
 
@@ -26,38 +34,47 @@ type
     procedure LBConnectionsDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
   private
-    ILConnections: TVirtualImageList;
+    FIsTurned: Boolean;
+    FILConnections: TVirtualImageList;
   public
-    isTurned: boolean;
-    procedure init(IsConnecting: boolean; conn: TConnection; SelectedControls: integer);
-    function getConnectionAttributes: TConnectionAttributes;
+    procedure Init(IsConnecting: Boolean; Conn: TConnection;
+      SelectedControls: Integer);
+    function GetConnectionAttributes: TConnectionAttributes;
+    property IsTurned: Boolean read FIsTurned;
   end;
 
 implementation
 
-uses SysUtils, Graphics, Themes, JvGnugettext, UImages, UConfiguration;
+uses
+  SysUtils,
+  Graphics,
+  Themes,
+  JvGnugettext,
+  UConfiguration;
 
 {$R *.dfm}
 
 procedure TFConnectDialog.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
-  LBConnections.Color:= StyleServices.GetSystemColor(clWindow);
-  LBConnections.ItemHeight:= LBConnections.Height div LBConnections.Items.Count;
-  if FConfiguration.isDark
-    then ILConnections:= vilConnectionsDark
-    else ILConnections:= vilConnectionsLight;
+  LBConnections.Color := StyleServices.GetSystemColor(clWindow);
+  LBConnections.ItemHeight := LBConnections.Height div LBConnections.
+    Items.Count;
+  if FConfiguration.IsDark then
+    FILConnections := vilConnectionsDark
+  else
+    FILConnections := vilConnectionsLight;
 end;
 
 procedure TFConnectDialog.FormShow(Sender: TObject);
 begin
-  Top:= Mouse.CursorPos.Y + 25;
+  Top := Mouse.CursorPos.Y + 25;
   if Top + Height > Application.MainForm.Height then
-    Top:= Application.MainForm.Height - Height - 25;
-  Left:= Mouse.CursorPos.X + 25;
+    Top := Application.MainForm.Height - Height - 25;
+  Left := Mouse.CursorPos.X + 25;
   if Left + Width > Application.MainForm.Width then
-    Left:= Application.MainForm.Width - Width - 25;
-  ShowScrollBar(LBConnections.Handle, SB_VERT, false);
+    Left := Application.MainForm.Width - Width - 25;
+  ShowScrollBar(LBConnections.Handle, SB_VERT, False);
   if ERelation.CanFocus then
     ERelation.SetFocus;
 end;
@@ -65,12 +82,14 @@ end;
 procedure TFConnectDialog.LBConnectionsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
-  var aCaption:= (Control as TListBox).Items[Index];
-  var aCanvas:= (Control as TListBox).Canvas;
-  aCanvas.FillRect(Rect);
-  ILConnections.SetSize(Rect.Height, Rect.Height);
-  ILConnections.Draw(aCanvas, 4, Rect.Top, 12 + Index);
-  aCanvas.TextOut(4 + ILConnections.Width + 8, Rect.Top + 2, aCaption);
+  var
+  ACaption := (Control as TListBox).Items[Index];
+  var
+  ACanvas := (Control as TListBox).Canvas;
+  ACanvas.FillRect(Rect);
+  FILConnections.SetSize(Rect.Height, Rect.Height);
+  FILConnections.Draw(ACanvas, 4, Rect.Top, 12 + Index);
+  ACanvas.TextOut(4 + FILConnections.Width + 8, Rect.Top + 2, ACaption);
 end;
 
 procedure TFConnectDialog.LBConnectionsClick(Sender: TObject);
@@ -81,43 +100,53 @@ end;
 
 procedure TFConnectDialog.LBConnectionsDblClick(Sender: TObject);
 begin
-  ModalResult:= mrOK;
+  ModalResult := mrOk;
 end;
 
-procedure TFConnectDialog.init(IsConnecting: Boolean; conn: TConnection; SelectedControls: integer);
+procedure TFConnectDialog.Init(IsConnecting: Boolean; Conn: TConnection;
+  SelectedControls: Integer);
 begin
-  if IsConnecting then begin
-    BTurn.Enabled:= false;
-    BDelete.Enabled:= false;
-  end else begin
-    BTurn.Enabled:= true;
-    BDelete.Enabled:= true;
+  if IsConnecting then
+  begin
+    BTurn.Enabled := False;
+    BDelete.Enabled := False;
+  end
+  else
+  begin
+    BTurn.Enabled := True;
+    BDelete.Enabled := True;
   end;
-  if assigned(conn) then begin
-    ERelation.Text:= conn.aMessage;
-    LBConnections.ItemIndex:= Ord(conn.ArrowStyle);
-    IsTurned:= false;
-    if conn.isRecursiv then begin
-      LBConnections.Items.delete(4);
-      LBConnections.items.delete(3);
+  if Assigned(Conn) then
+  begin
+    ERelation.Text := Conn.FMessage;
+    LBConnections.ItemIndex := Ord(Conn.ArrowStyle);
+    FIsTurned := False;
+    if Conn.IsRecursiv then
+    begin
+      LBConnections.Items.Delete(4);
+      LBConnections.Items.Delete(3);
     end;
-  end else begin
-    ERelation.Text:= '';
-    LBConnections.ItemIndex:= 0;
+  end
+  else
+  begin
+    ERelation.Text := '';
+    LBConnections.ItemIndex := 0;
   end;
 end;
 
-function TFConnectDialog.getConnectionAttributes: TConnectionAttributes;
+function TFConnectDialog.GetConnectionAttributes: TConnectionAttributes;
 begin
-  Result:= TConnectionAttributes.Create;
-  Result.ArrowStyle:= TArrowStyle(LBConnections.ItemIndex);
-  if Result.ArrowStyle = casClose then begin
-    var s:= trim(ERelation.Text);
-    if s = '' then
-      s:= FConfiguration.SDClose;
-    ERelation.Text:= s;
+  Result := TConnectionAttributes.Create;
+  Result.ArrowStyle := TArrowStyle(LBConnections.ItemIndex);
+  if Result.ArrowStyle = casClose then
+  begin
+    var
+    Str := Trim(ERelation.Text);
+    if Str = '' then
+      Str := FConfiguration.SDClose;
+    ERelation.Text := Str;
   end;
-  Result.aMessage:= ERelation.Text;
+  Result.FMessage := ERelation.Text;
 end;
 
 end.

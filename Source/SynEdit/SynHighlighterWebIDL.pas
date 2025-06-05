@@ -283,11 +283,11 @@ end;
 
 procedure TSynWebIDLSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[34] := FuncAny;
   fIdentFuncTable[21] := FuncAttribute;
@@ -343,7 +343,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 622 + Ord(Str^) * 657;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 59;
   fStringLen := Str - fToIdent;
@@ -673,15 +673,15 @@ end;
 
 procedure TSynWebIDLSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynWebIDLSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynWebIDLSyn.NumberProc;
@@ -746,9 +746,9 @@ end;
 procedure TSynWebIDLSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
   if fLine[Run] = #10 then
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynWebIDLSyn.GreaterProc;
@@ -768,7 +768,7 @@ end;
 procedure TSynWebIDLSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynWebIDLSyn.SlashProc;
@@ -888,7 +888,7 @@ end;
 
 procedure TSynWebIDLSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 

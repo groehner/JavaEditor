@@ -101,13 +101,13 @@ type
     class function GetFriendlyLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
+    function GetTokenKind: Integer; override;
     procedure Next; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -242,7 +242,7 @@ end;
 
 procedure TSynDfmSyn.BraceCloseProc;
 begin
-  inc(Run);
+  Inc(Run);
   fRange := rsUnknown;
   fTokenId := tkIdentifier;
 end;
@@ -257,11 +257,11 @@ procedure TSynDfmSyn.CommentProc;
 begin
   fTokenID := tkComment;
   repeat
-    inc(Run);
+    Inc(Run);
     if fLine[Run] = '}' then begin
       Inc(Run);
       fRange := rsUnknown;
-      break;
+      Break;
     end;
   until IsLineEnd(Run);
 end;
@@ -302,20 +302,20 @@ procedure TSynDfmSyn.IntegerProc;
 begin
   fTokenID := tkNumber;
   repeat
-    inc(Run);
+    Inc(Run);
   until not IsIntegerChar;
 end;
 
 procedure TSynDfmSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynDfmSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynDfmSyn.NumberProc;
@@ -337,7 +337,7 @@ begin
     if fLine[Run] = '.' then
     begin
       if fLine[Run + 1] <> '.' then Inc(Run);
-      break;
+      Break;
     end;
   until not IsNumberChar;
 end;
@@ -405,20 +405,20 @@ begin
     Inc(Run);
     if fLine[Run] = '''' then begin
       Inc(Run);
-      if fLine[Run] <> '''' then break
+      if fLine[Run] <> '''' then Break
     end;
   until IsLineEnd(Run);
 end;
 
 procedure TSynDfmSyn.SymbolProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSymbol;
 end;
 
 procedure TSynDfmSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -459,7 +459,7 @@ begin
   inherited;
 end;
 
-function TSynDfmSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynDfmSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -503,7 +503,7 @@ begin
   end;
 end;
 
-function TSynDfmSyn.GetTokenKind: integer;
+function TSynDfmSyn.GetTokenKind: Integer;
 begin
   Result := Ord(fTokenID);
 end;

@@ -2,7 +2,10 @@ unit UFXShape;
 
 interface
 
-uses Messages, Classes, Controls, Graphics, UFXComponents;
+uses
+  Classes,
+  Graphics,
+  UFXComponents;
 
 type
 
@@ -10,59 +13,61 @@ type
   TStrokeLineJoin = (_CD_BEVEL, _CD_MITER, _CD_ROUND);
   TStrokeType = (_TA_CENTERED, _TA_INSIDE, _TA_OUTSIDE);
 
-  TFXShape = class (TFXNode)
+  TFXShape = class(TFXNode)
   private
     FFill: TColor;
-    FSmooth: boolean;
+    FSmooth: Boolean;
     FStroke: TColor;
-    FStrokeDashOffset: double;
+    FStrokeDashOffset: Double;
     FStrokeLineCap: TStrokeLineCap;
     FStrokeLineJoin: TStrokeLineJoin;
-    FStrokeMiterLimit: double;
+    FStrokeMiterLimit: Double;
     FStrokeType: TStrokeType;
-    FStrokeWidth: double;
-    procedure setAColor(aColor: TColor);
-    procedure setStrokeColor(aColor: TColor);
+    FStrokeWidth: Double;
+    procedure SetAColor(AColor: TColor);
+    procedure SetStrokeColor(AColor: TColor);
   public
     constructor Create(AOwner: TComponent); override;
-    function getAttributes(ShowAttributes: integer): string; override;
-    procedure setAttribute(Attr, Value, Typ: string); override;
+    function GetAttributes(ShowAttributes: Integer): string; override;
+    procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
     procedure DefaultPenBrush;
     procedure MakeFont; override;
 
-    //procedure WmEraseBkgnd (var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    //procedure CreateParams (var Params: TCreateParams); override;
+    // procedure WmEraseBkgnd (var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+    // procedure CreateParams (var Params: TCreateParams); override;
   published
-    property Fill: TColor read FFill write setAColor;
-    property Smooth: boolean read FSmooth write fSmooth;
-    property Stroke: TColor read FStroke write setStrokeColor;
-    property StrokeDashOffset: double read FStrokeDashOffset write FStrokeDashOffset;
-    property StrokeLineCap: TStrokeLineCap read FStrokeLineCap write FStrokeLineCap;
-    property StrokeLineJoin: TStrokeLineJoin read FStrokeLineJoin write FStrokeLineJoin;
-    property StrokeMiterLimit: double read FStrokeMiterLimit write FStrokeMiterLimit;
+    property Fill: TColor read FFill write SetAColor;
+    property Smooth: Boolean read FSmooth write FSmooth;
+    property Stroke: TColor read FStroke write SetStrokeColor;
+    property StrokeDashOffset: Double read FStrokeDashOffset
+      write FStrokeDashOffset;
+    property StrokeLineCap: TStrokeLineCap read FStrokeLineCap
+      write FStrokeLineCap;
+    property StrokeLineJoin: TStrokeLineJoin read FStrokeLineJoin
+      write FStrokeLineJoin;
+    property StrokeMiterLimit: Double read FStrokeMiterLimit
+      write FStrokeMiterLimit;
     property StrokeType: TStrokeType read FStrokeType write FStrokeType;
-    property StrokeWidth: double read FStrokeWidth write FStrokeWidth;
+    property StrokeWidth: Double read FStrokeWidth write FStrokeWidth;
   end;
 
 implementation
 
-uses Windows, SysUtils;
-
-{--- TFXShape -----------------------------------------------------------------}
+{ --- TFXShape ----------------------------------------------------------------- }
 
 constructor TFXShape.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
-  FFill:= clBlack;
-  FSmooth:= true;
-  FStroke:= -16777201; // clNone
-  FStrokeLineCap:= _TA_SQUARE;
-  FStrokeLineJoin:= _CD_MITER;
-  FStrokeType:= _TA_CENTERED;
-  FStrokeDashOffset:= 0;
-  FStrokeMiterLimit:= 10;
-  FStrokeWidth:= 1;
+  inherited Create(AOwner);
+  FFill := clBlack;
+  FSmooth := True;
+  FStroke := -16777201; // clNone
+  FStrokeLineCap := _TA_SQUARE;
+  FStrokeLineJoin := _CD_MITER;
+  FStrokeType := _TA_CENTERED;
+  FStrokeDashOffset := 0;
+  FStrokeMiterLimit := 10;
+  FStrokeWidth := 1;
 end;
 
 procedure TFXShape.NewControl;
@@ -71,64 +76,72 @@ begin
   InsertImport('javafx.scene.paint.*'); // colors
 end;
 
-function TFXShape.getAttributes(ShowAttributes: integer): string;
-  const Attributes1 = '|Smooth|Fill|Stroke';
-        Attributes2 =  Attributes1 +
-                       '|StrokeDashOffset|StrokeLineCap|StrokeLineJoin' +
-                       '|StrokeMiterLimit|StrokeType|StrokeWidth';
+function TFXShape.GetAttributes(ShowAttributes: Integer): string;
+const
+  Attributes1 = '|Smooth|Fill|Stroke';
+  Attributes2 = Attributes1 + '|StrokeDashOffset|StrokeLineCap|StrokeLineJoin' +
+    '|StrokeMiterLimit|StrokeType|StrokeWidth';
 begin
-  if ShowAttributes = 1
-    then Result:= Attributes1 + inherited getAttributes(ShowAttributes)
-    else Result:= Attributes2 + inherited getAttributes(ShowAttributes);
-  var p:= Pos('|LayoutX|LayoutY', Result);
-  if p > 0 then delete(Result, p, 16);
+  if ShowAttributes = 1 then
+    Result := Attributes1 + inherited GetAttributes(ShowAttributes)
+  else
+    Result := Attributes2 + inherited GetAttributes(ShowAttributes);
+  var
+  Posi := Pos('|LayoutX|LayoutY', Result);
+  if Posi > 0 then
+    Delete(Result, Posi, 16);
 end;
 
 procedure TFXShape.SetAttribute(Attr, Value, Typ: string);
-  var s1, s2: string;
+var
+  Str1, Str2: string;
 begin
-  s1:= Name + '.set' + Attr;
-  s2:= '';
+  Str1 := Name + '.set' + Attr;
+  Str2 := '';
   if Attr = 'StrokeLineCap' then
-    s2:= '(StrokeLineCap.' + Value + ');'
+    Str2 := '(StrokeLineCap.' + Value + ');'
   else if Attr = 'StrokeLineJoin' then
-    s2:= '(StrokeLineJoin.' + Value + ');'
+    Str2 := '(StrokeLineJoin.' + Value + ');'
   else if Attr = 'StrokeType' then
-    s2:= '(StrokeType.' + Value + ');';
-  if s2 <> '' then begin
-    s2:= s1 + s2;
-    setAttributValue(s1, s2);
-  end else
+    Str2 := '(StrokeType.' + Value + ');';
+  if Str2 <> '' then
+  begin
+    Str2 := Str1 + Str2;
+    SetAttributValue(Str1, Str2);
+  end
+  else
     inherited;
 end;
 
-procedure TFXShape.SetAColor(aColor: TColor);
+procedure TFXShape.SetAColor(AColor: TColor);
 begin
-  if aColor <> FFill then begin
-    FFill:= aColor;
+  if AColor <> FFill then
+  begin
+    FFill := AColor;
     Invalidate;
   end;
 end;
 
-procedure TFXShape.SetStrokeColor(aColor: TColor);
+procedure TFXShape.SetStrokeColor(AColor: TColor);
 begin
-  if aColor <> FStroke then begin
-    FStroke:= aColor;
+  if AColor <> FStroke then
+  begin
+    FStroke := AColor;
     Invalidate;
   end;
 end;
 
 {
-procedure TFXShape.CreateParams (var Params: TCreateParams);
-begin
+  procedure TFXShape.CreateParams (var Params: TCreateParams);
+  begin
   inherited CreateParams(Params);
   Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
-end;
+  end;
 
-procedure TFXShape.WmEraseBkgnd(var Msg: TWMEraseBkgnd);
-begin
+  procedure TFXShape.WmEraseBkgnd(var Msg: TWMEraseBkgnd);
+  begin
   Msg.Result := 1
-end;
+  end;
 }
 
 procedure TFXShape.MakeFont;
@@ -138,12 +151,12 @@ end;
 
 procedure TFXShape.DefaultPenBrush;
 begin
-  Canvas.Pen.Color:= Stroke;
-  Canvas.Pen.Mode:= pmCopy;
-  Canvas.Pen.Style:= psSolid;
-  Canvas.Pen.Width:= 1;
-  Canvas.Brush.Color:= Fill;
-  Canvas.Brush.Style:= bsSolid;
+  Canvas.Pen.Color := Stroke;
+  Canvas.Pen.Mode := pmCopy;
+  Canvas.Pen.Style := psSolid;
+  Canvas.Pen.Width := 1;
+  Canvas.Brush.Color := Fill;
+  Canvas.Brush.Style := bsSolid;
 end;
 
 end.

@@ -261,9 +261,9 @@ var
 begin
   Epoch := (Year div 100) * 100;
   if ValidDate(Day + 1, Month, Year, Epoch) then
-    Result := false
+    Result := False
   else
-    Result := true;
+    Result := True;
 end;
 
 function IsLastDayofFeb(Date : TStDate) : Boolean;
@@ -273,12 +273,12 @@ var
 begin
   StDateToDMY(Date, Day, Month, Year);
   if (Month = 2) and IsLastDayOfMonth(Day, Month, Year) then
-    Result := true
+    Result := True
   else
-    Result := false;
+    Result := False;
 end;
 
-procedure ExchangeLongInts(var I, J : LongInt);
+procedure ExchangeLongInts(var Int, J : LongInt);
 register;
 asm
   mov  ecx, [eax]
@@ -289,7 +289,7 @@ asm
   mov  [edx], ecx
 end;
 
-procedure ExchangeStructs(var I, J; Size : Cardinal);
+procedure ExchangeStructs(var Int, J; Size : Cardinal);
 register;
 asm
   push edi
@@ -303,9 +303,9 @@ asm
   mov  edi, [edx]
   mov  [edx], ebx
   mov  [eax], edi
-  add  eax, 4
-  add  edx, 4
-  dec  ecx
+  Add  eax, 4
+  Add  edx, 4
+  Dec  ecx
   jnz  @@AgainDWords
 
 @@LessThanFour:
@@ -316,18 +316,18 @@ asm
   mov  bh, [edx]
   mov  [edx], bl
   mov  [eax], bh
-  inc  eax
-  inc  edx
-  dec  ecx
+  Inc  eax
+  Inc  edx
+  Dec  ecx
   jz   @@Done
 
   mov  bl, [eax]
   mov  bh, [edx]
   mov  [edx], bl
   mov  [eax], bh
-  inc  eax
-  inc  edx
-  dec  ecx
+  Inc  eax
+  Inc  edx
+  Dec  ecx
   jz   @@Done
 
   mov  bl, [eax]
@@ -367,7 +367,7 @@ begin
   Result := DMYToStDate(Date,Month,Year,0);
 end;
 
-function DaysInMonth(Month : integer; Year, Epoch : Integer) : Integer;
+function DaysInMonth(Month : Integer; Year, Epoch : Integer) : Integer;
     {-Return the number of days in the specified month of a given year}
 begin
   Year := ResolveEpoch(Year, Epoch);
@@ -461,7 +461,7 @@ end;
 
 function AstJulianDatePrim(Year, Month, Date : Integer; UT : TStTime) : Double;
 var
-  A, B : integer;
+  A, B : Integer;
   LY,
   GC   : Boolean;
 
@@ -536,7 +536,7 @@ end;
 procedure StDateToDMY(Julian : TStDate; var Day, Month, Year : Integer);
   {-Convert from a julian date to month, day, year}
 var
-  I, J : LongInt;
+  Int, J : LongInt;
 begin
   if Julian = BadDate then begin
     Day := 0;
@@ -552,14 +552,14 @@ begin
       Day := Julian-30;
     end;
   end else begin
-    I := (4*LongInt(Julian-First2Months))-1;
+    Int := (4*LongInt(Julian-First2Months))-1;
 
-    J := (4*((I mod Days400Yr) div 4))+3;
-    Year := (100*(I div Days400Yr))+(J div 1461);
-    I := (5*(((J mod 1461)+4) div 4))-3;
-    Day := ((I mod 153)+5) div 5;
+    J := (4*((Int mod Days400Yr) div 4))+3;
+    Year := (100*(Int div Days400Yr))+(J div 1461);
+    Int := (5*(((J mod 1461)+4) div 4))-3;
+    Day := ((Int mod 153)+5) div 5;
 
-    Month := I div 153;
+    Month := Int div 153;
     if Month < 10 then
       Inc(Month, 3)
     else begin

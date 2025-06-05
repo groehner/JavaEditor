@@ -2398,7 +2398,7 @@ object FEditForm: TFEditForm
         OnClick = mnAssistantCancelClick
       end
     end
-    object N1: TSpTBXSeparatorItem
+    object MILine0: TSpTBXSeparatorItem
     end
     object MIExecute: TSpTBXItem
       Caption = 'Execute'
@@ -2414,7 +2414,7 @@ object FEditForm: TFEditForm
       Caption = '  with console'
       OnClick = MIExecuteWithConsoleClick
     end
-    object N2: TSpTBXSeparatorItem
+    object MILine5: TSpTBXSeparatorItem
     end
     object MIGit: TSpTBXSubmenuItem
       Caption = 'Git'
@@ -2436,7 +2436,7 @@ object FEditForm: TFEditForm
         Caption = 'Log'
         OnClick = MIGitLogClick
       end
-      object N3: TSpTBXSeparatorItem
+      object MIGItLin1: TSpTBXSeparatorItem
       end
       object MGitReset: TSpTBXItem
         Caption = 'Reset'
@@ -2450,7 +2450,7 @@ object FEditForm: TFEditForm
         Caption = 'Remove'
         OnClick = MIGitRemoveClick
       end
-      object N4: TSpTBXSeparatorItem
+      object MIGitLine2: TSpTBXSeparatorItem
       end
       object MIGitRemote: TSpTBXItem
         Caption = 'Remote'
@@ -2464,7 +2464,7 @@ object FEditForm: TFEditForm
         Caption = 'Push'
         OnClick = MIGitPushClick
       end
-      object N5: TSpTBXSeparatorItem
+      object MIGitLine3: TSpTBXSeparatorItem
       end
       object MIGitGui: TSpTBXItem
         Caption = 'GUI'

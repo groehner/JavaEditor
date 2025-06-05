@@ -279,11 +279,11 @@ const
 
 procedure TSynRexxSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[15] := FuncAbbrev;
   fIdentFuncTable[60] := FuncAbs;
@@ -393,7 +393,7 @@ begin
   while IsIdentChar(Str^) do
   begin
     Result := Result * 290 + Ord(Str^) * 365;
-    inc(Str);
+    Inc(Str);
   end;
   Result := Result mod 349;
   fStringLen := Str - fToIdent;
@@ -1211,29 +1211,29 @@ end;
 
 procedure TSynRexxSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynRexxSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynRexxSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
   if fLine[Run] = #10 then
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynRexxSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynRexxSyn.MultilineCommentOpenProc;
@@ -1392,14 +1392,14 @@ end;
 procedure TSynRexxSyn.IdentProc;
 begin
   fTokenID := IdentKind((fLine + Run));
-   inc(Run, fStringLen);
+   Inc(Run, fStringLen);
    while IsIdentChar(fLine[Run]) do
           Inc(Run);
 end;
 
 procedure TSynRexxSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 

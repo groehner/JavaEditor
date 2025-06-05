@@ -34,11 +34,11 @@ function RectVCenter(var R: TRect; const Bounds: TRect): TRect;
 procedure MoveWindowOrg(DC: HDC; const DX, DY: Integer);
 {$IFDEF EventLog}
 procedure AddToLog(const Msg: TMessage); overload;
-procedure AddToLog(const S: string; const Value: Integer); overload;
+procedure AddToLog(const Str: string; const Value: Integer); overload;
 procedure AddToLog(const Msg: string); overload;
 function WM_To_String(const WM_Message: Integer): string;
 {$ENDIF}
-function ExecutingInMainThread: boolean;
+function ExecutingInMainThread: Boolean;
 
 implementation
 
@@ -46,7 +46,7 @@ uses
   Winapi.CommCtrl,
   System.SysUtils;
 
-function ExecutingInMainThread: boolean;
+function ExecutingInMainThread: Boolean;
 begin
   // VCL is not thread safe and some components like CEF will create Windows
   // controls in secondary threads. It's strongly recommended to define
@@ -69,9 +69,9 @@ begin
       IntToStr(wParam) + ' LParam = ' + IntToStr(lParam)));
 end;
 
-procedure AddToLog(const S: string; const Value: Integer);
+procedure AddToLog(const Str: string; const Value: Integer);
 begin
-  OutputDebugString(PChar((S) + ' = ' + IntToStr(Value)));
+  OutputDebugString(PChar((Str) + ' = ' + IntToStr(Value)));
 end;
 
 procedure AddToLog(const Msg: string);
@@ -823,10 +823,10 @@ end;
 
 procedure MoveWindowOrg(DC: HDC; const DX, DY: Integer);
 var
-  P: TPoint;
+  Posi: TPoint;
 begin
-  GetWindowOrgEx(DC, P);
-  SetWindowOrgEx(DC, P.X - DX, P.Y - DY, nil);
+  GetWindowOrgEx(DC, Posi);
+  SetWindowOrgEx(DC, Posi.X - DX, Posi.Y - DY, nil);
 end;
 
 end.

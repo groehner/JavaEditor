@@ -339,11 +339,11 @@ end;
 
 procedure TSynLLVMIRSyn.InitIdent;
 var
-  i: Integer;
+  Int: Integer;
 begin
-  for i := Low(fIdentFuncTable) to High(fIdentFuncTable) do
-    if KeyIndices[i] = -1 then
-      fIdentFuncTable[i] := AltFunc;
+  for Int := Low(fIdentFuncTable) to High(fIdentFuncTable) do
+    if KeyIndices[Int] = -1 then
+      fIdentFuncTable[Int] := AltFunc;
 
   fIdentFuncTable[1458] := FuncKey; // acq95rel
   fIdentFuncTable[659] := FuncKey; // acquire
@@ -637,29 +637,29 @@ end;
 
 procedure TSynLLVMIRSyn.SpaceProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkSpace;
-  while (FLine[Run] <= #32) and not IsLineEnd(Run) do inc(Run);
+  while (FLine[Run] <= #32) and not IsLineEnd(Run) do Inc(Run);
 end;
 
 procedure TSynLLVMIRSyn.NullProc;
 begin
   fTokenID := tkNull;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynLLVMIRSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
   if fLine[Run] = #10 then
-    inc(Run);
+    Inc(Run);
 end;
 
 procedure TSynLLVMIRSyn.LFProc;
 begin
   fTokenID := tkSpace;
-  inc(Run);
+  Inc(Run);
 end;
 
 procedure TSynLLVMIRSyn.IntegerTypeProc;
@@ -834,7 +834,7 @@ procedure TSynLLVMIRSyn.NumberProc;
 
 var
   idx1: Integer; // token[1]
-  i: Integer;
+  Int: Integer;
 begin
   idx1 := Run;
   Inc(Run);
@@ -874,8 +874,8 @@ begin
         if (fTokenID <> tkHex) then
           if CharInSet(FLine[Pred(Run)], ['0'..'9']) then // exponent
           begin
-            for i := idx1 to Pred(Run) do
-              if CharInSet(FLine[i], ['e', 'E']) then // too many exponents
+            for Int := idx1 to Pred(Run) do
+              if CharInSet(FLine[Int], ['e', 'E']) then // too many exponents
               begin
                 fTokenID := tkUnknown;
                 Exit;
@@ -925,7 +925,7 @@ end;
 
 procedure TSynLLVMIRSyn.UnknownProc;
 begin
-  inc(Run);
+  Inc(Run);
   fTokenID := tkUnknown;
 end;
 
