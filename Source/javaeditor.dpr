@@ -259,7 +259,6 @@ uses
   UFXTreeView in 'Components\JavaFX\UFXTreeView.pas',
   UExecution in 'Interactive\UExecution.pas',
   UExecutionParser in 'Interactive\UExecutionParser.pas',
-  Vcl.Menus in 'System\Vcl.Menus.pas',
   UDlgEvaluate in 'UDlgEvaluate.pas' {FEvaluate},
   UGrepResults in 'FindInFiles\UGrepResults.pas',
   URegExSearch in 'FindInFiles\URegExSearch.pas',
@@ -275,14 +274,8 @@ uses
   ULLMSupport in 'ULLMSupport.pas',
   ULLMSuggestForm in 'ULLMSuggestForm.pas' {SuggestWindow},
   ULLMChatForm in 'ULLMChatForm.pas' {LLMChatForm},
-  MarkdownCommonMark in '..\..\delphi-markdown\source\MarkdownCommonMark.pas',
-  MarkdownDaringFireball in '..\..\delphi-markdown\source\MarkdownDaringFireball.pas',
-  MarkdownMathCode in '..\..\delphi-markdown\source\MarkdownMathCode.pas',
-  MarkdownProcessor in '..\..\delphi-markdown\source\MarkdownProcessor.pas',
-  MarkdownTables in '..\..\delphi-markdown\source\MarkdownTables.pas',
-  MarkdownTxtMark in '..\..\delphi-markdown\source\MarkdownTxtMark.pas',
-  MarkdownUtils in '..\..\delphi-markdown\source\MarkdownUtils.pas',
-  ULifeline in 'Sequencediagram\ULifeline.pas';
+  ULifeline in 'Sequencediagram\ULifeline.pas',
+  Vcl.Menus in 'VclSystem\Vcl.Menus.pas';
 
 {$R *.RES}
 

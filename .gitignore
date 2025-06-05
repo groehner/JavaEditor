@@ -44,7 +44,6 @@ __recovery/
 *.otares
 *.drc
 *.rc
-*.res
 *.local
 *.prjmgc
 *.user
@@ -66,7 +65,7 @@ VirtualTreeView.zip
 *.chw
 
 *.bat
-System/
+VclSystem/
 Source/Wegweiser.txt
 Source/_ToDo.txt
 Source/download.txt

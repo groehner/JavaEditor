@@ -1,0 +1,13 @@
+I use the free Delphi 12 Community edition to compile JavaEditor.
+
+You need these instructions to prepare the compilation:
+https://github.com/pyscripter/pyscripter/blob/master/Compilation%20Instructions.txt
+
+Not all components are used in JavaEditor:
+1. You don't need "Pyhton for Delphi"
+2. Due to colored background painting in the editor an old SynEdit component is used,
+which is included in the GitHub source code. See folder Source/SynEdit
+
+The JavaEditor changes the Delphi unit Vcl.Menus.pas.
+The var MenuKeyCaps is moved from the implementation to the interface part,
+so that they can localized in procedure TFJava.SetMenuKeyCaps;
