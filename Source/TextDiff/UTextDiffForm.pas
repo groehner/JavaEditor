@@ -539,7 +539,7 @@ begin
     [FDiff.DiffStats.deletes]);
   with FDiff.DiffStats do
     if adds + modifies + deletes = 0 then
-      liDifferences.Caption := _('No Differences.')
+      liDifferences.Caption := _('No differences.')
     else
       liDifferences.Caption := '';
 end;

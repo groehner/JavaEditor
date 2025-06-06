@@ -1076,7 +1076,7 @@ begin
     AFont.Assign(Header.DefaultFont);
     AFont.Size := Header.DefaultFont.Size - 2;
 
-    DocTitle := _('File from Java-FEditor');
+    DocTitle := _('File from Java-Editor');
     SelectedOnly := (FJava.PrintDialog.PrintRange = prSelection);
     Highlight := Assigned(FEditor.Highlighter);
     Highlighter := FEditor.Highlighter;
@@ -5394,12 +5394,14 @@ end;
 procedure TFEditForm.Show;
 begin
   Visible := True;
+  FHidden := False;
   FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
 end;
 
 procedure TFEditForm.Hide;
 begin
-  Visible := false;
+  Visible := False;
+  FHidden := True;
   FJava.DeleteTabAndWindow(Number);
 end;
 

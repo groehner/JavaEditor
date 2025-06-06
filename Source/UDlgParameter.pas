@@ -77,7 +77,7 @@ begin
         begin
           EStartClass.Text := '';
           FConfiguration.JavaStartClass := '';
-          ErrorMsg(FileName + _(' has no main-method')); // TODO LNG
+          ErrorMsg(FileName + _(' has no main() method'));
         end;
         UnlockWindow;
       end;

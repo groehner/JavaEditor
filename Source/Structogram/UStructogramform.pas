@@ -1121,7 +1121,7 @@ begin
       .StrList is TStrAlgorithm)) then
     begin
       ShowMessage
-        (_('Switch from a single algorithm structogram as the final FSolution to puzzle mode.')
+        (_('Switch from a single algorithm structogram as the final solution to puzzle mode.')
         );
       Exit;
     end;

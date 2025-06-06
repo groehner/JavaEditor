@@ -4287,10 +4287,10 @@ begin
     Exit(_('array required, but found'));
   if Err = 'incompatible types' then
     Exit(_('incompatible types'));
-  if Err = 'incompatible types: missing return Value' then
-    Exit(_('incompatible types: missing return Value'));
-  if Err = 'incompatible types: unexpected return Value' then
-    Exit(_('incompatible types: unexpected return Value'));
+  if Err = 'incompatible types: missing return value' then
+    Exit(_('incompatible types: missing return value'));
+  if Err = 'incompatible types: unexpected return value' then
+    Exit(_('incompatible types: unexpected return value'));
   if Err = 'incompatible types: possible lossy' then
     Exit(_('incompatible types: possible lossy'));
   if Err = 'invalid method declaration; return type required' then
@@ -4450,9 +4450,9 @@ begin
     if Str = '<nix>' then
     begin
       ErrorMsg(Format
-        (_('In section [User] of the configuration file "%s" the Value'),
+        (_('In section [user] of the configuration file "%s" the value'),
         [FMachineIniFile.FileName]) + #13#10 +
-        _('of the Key "HomeDir" for the home directory of the User is not set.')
+        _('of the key "HomeDir" for the home directory of the user is not set.')
         );
       FUserIniFile := nil;
       Exit;

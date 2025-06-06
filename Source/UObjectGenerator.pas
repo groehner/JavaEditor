@@ -74,6 +74,7 @@ uses
   Windows,
   SysUtils,
   Math,
+  System.Types,
   UITypes,
   JvGnugettext,
   jni,

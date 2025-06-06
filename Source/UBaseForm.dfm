@@ -1,9 +1,8 @@
 object FForm: TFForm
   Left = 686
   Top = 223
-  Caption = #39'F'
-  ClientHeight = 111
-  ClientWidth = 102
+  ClientHeight = 125
+  ClientWidth = 222
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

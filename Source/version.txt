@@ -1,4 +1,9 @@
-23.04, 2ß25-04.16
+23.07, 2025.06.05
+major intern linting 
+improvements for "copy to picture" for structograms and sequence diagrams
+improvement for code completion
+
+23.06, 2025.04.16
 improved code folding
 bugfix for "same width" in messages window
 

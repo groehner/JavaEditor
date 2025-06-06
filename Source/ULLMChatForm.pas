@@ -788,7 +788,7 @@ begin
   try
     FLLMChat.LoadChat(FileName);
   except
-    StyledMessageDlg(_('Could not read the Chat history'), TMsgDlgType.mtError,
+    StyledMessageDlg(_('Could not read the chat history'), TMsgDlgType.mtError,
       [TMsgDlgBtn.mbOK], 0);
     DeleteFile(FileName);
   end;

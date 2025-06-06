@@ -4269,7 +4269,7 @@ procedure TFJava.JarCall(const Call, Dir: string);
 begin
   FMessages.ShowTab(K_Interpreter);
   FMessages.DeleteTab(K_Interpreter);
-  FMessages.OutputLineTo(K_Interpreter, _('Jar Call') + ': ' +
+  FMessages.OutputLineTo(K_Interpreter, _('Jar call') + ': ' +
     HideBlanks(FConfiguration.JavaJar) + ' ' + Call);
   Screen.Cursor := crHourGlass;
   if MyJavaCommands.ExecAndWait(FConfiguration.JavaJar, Call, Dir,
@@ -7324,8 +7324,8 @@ var
       Str2 := 'array required, but found';
       FreeAndNil(StringList1);
     end
-    else if Str2 = 'incompatible types: missing return Value' then
-    else if Str2 = 'incompatible types: unexpected return Value' then
+    else if Str2 = 'incompatible types: missing return value' then
+    else if Str2 = 'incompatible types: unexpected return value' then
     else if Pos('incompatible types: possible lossy conversion from', Str2) = 1
     then
     begin

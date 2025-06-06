@@ -289,7 +289,7 @@ var
 begin
   if FSearching then
   begin
-    InformationMsg(_('Still FSearching!'));
+    InformationMsg(_('Still searching!'));
     Exit;
   end;
   Screen.Cursor := crHourGlass;
