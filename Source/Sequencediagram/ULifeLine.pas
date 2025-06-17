@@ -1,3 +1,10 @@
+{ -------------------------------------------------------------------------------
+  Unit:     ULifeLine
+  Author:   Gerhard Röhner
+  Date:     July 2019
+  Purpose:  lifeline class
+  ------------------------------------------------------------------------------- }
+
 unit ULifeline;
 
 interface
@@ -52,8 +59,8 @@ type
     property HeadHeight: Integer read FHeadHeight;
     property InternalName: string read FInternalName;
     property LineHeight: Integer read FLineHeight;
-    property OnCreatedChanged: TNotifyEvent read FOnCreatedChanged write
-        FOnCreatedChanged;
+    property OnCreatedChanged: TNotifyEvent read FOnCreatedChanged
+      write FOnCreatedChanged;
     property Participant: string read FParticipant write FParticipant;
     property Renamed: Boolean read FRenamed;
   end;
@@ -68,6 +75,7 @@ uses
   Controls,
   UITypes,
   Themes,
+  UUtils,
   UConfiguration;
 
 constructor TLifeline.CreateLL(AOwner: TComponent; const Participant: string;
@@ -106,26 +114,19 @@ var
   Conn1, Conn2: TConnection;
   Jdx, Y1Pos, Y2Pos: Integer;
   HeadColor: TColor;
-
-  function IsDark(Color: TColor): Boolean;
-  begin
-    var
-    Val := Max(GetRValue(Color), Max(GetGValue(Color), GetBValue(Color)));
-    Result := (Val <= 128);
-  end;
-
 begin
-  Canvas.Pen.Color:= FForegroundColor;
-  Canvas.Font.Color:= FForegroundColor;
+  Canvas.Pen.Color := FForegroundColor;
+  Canvas.Font.Color := FForegroundColor;
 
-  if FConfiguration.SDNoFilling
-    then Canvas.Brush.Color:= FBackgroundColor
-    else Canvas.Brush.Color:= FConfiguration.SDFillingcolor;
-  HeadColor:= Canvas.Brush.Color;
-  if IsDark(HeadColor) and IsDark(FForegroundColor) then
-    Canvas.Font.Color:= FForegroundColor
-  else if not IsDark(HeadColor) and not IsDark(FForegroundColor) then
-    Canvas.Font.Color:= FBackgroundColor;
+  if FConfiguration.SDNoFilling then
+    Canvas.Brush.Color := FBackgroundColor
+  else
+    Canvas.Brush.Color := FConfiguration.SDFillingcolor;
+  HeadColor := Canvas.Brush.Color;
+  if IsColorDark(HeadColor) and IsColorDark(FForegroundColor) then
+    Canvas.Font.Color := FForegroundColor
+  else if not IsColorDark(HeadColor) and not IsColorDark(FForegroundColor) then
+    Canvas.Font.Color := FBackgroundColor;
 
   ShowHead;
   Connections := FSequencePanel.GetConnections;
@@ -166,7 +167,8 @@ begin
       while Jdx < Connections.Count do
       begin
         Conn2 := TConnection(Connections[Jdx]);
-        if (Conn2.EndControl = Conn1.StartControl) and (Conn2.StartControl = Conn1.EndControl) and
+        if (Conn2.EndControl = Conn1.StartControl) and
+          (Conn2.StartControl = Conn1.EndControl) and
           (Conn2.ArrowStyle = casReturn) and
           (not Conn1.IsRecursiv or (Conn2.FromActivation = Conn1.FromActivation
           + 1)) then
@@ -199,7 +201,7 @@ begin
   begin
     Canvas.Pen.Width := 1;
     Mid := Width div 2;
-    Unity := Round(LineHeight * 0.7);
+    Unity := Round(FLineHeight * 0.7);
     Delta := Round(Unity * 0.935);
     Base := Round(Unity * 2.21);
     Rec := Rect(Mid - Unity div 2, 0, Mid + Unity div 2, Unity);
@@ -235,7 +237,7 @@ begin
   Width := Max(FTextWidth + FPadding, FMinWidth);
   FHeadHeight := Max(FTextHeight + FPadding, FMinHeight);
   if Pos('Actor', Participant) = 1 then
-    FHeadHeight := Round(LineHeight * 0.7 * (0.935 + 2.21));
+    FHeadHeight := Round(FLineHeight * 0.7 * (0.935 + 2.21));
 end;
 
 procedure TLifeline.GetWidthHeigthOfText(const Text: string;
@@ -245,7 +247,7 @@ var
   Posi: Integer;
 begin
   Width := FMinWidth;
-  Height := LineHeight;
+  Height := FLineHeight;
   Str := Text;
   Posi := Pos(#13#10, Str);
   while Posi > 0 do
@@ -253,7 +255,7 @@ begin
     Str1 := Copy(Str, 1, Posi - 1);
     System.Delete(Str, 1, Posi + 1);
     Width := Max(Canvas.TextWidth(Str1), Width);
-    Height := Height + LineHeight;
+    Height := Height + FLineHeight;
     Posi := Pos(#13#10, Str);
   end;
   Width := Max(Canvas.TextWidth(Str), Width);
@@ -285,7 +287,8 @@ begin
   else
   begin
     FBackgroundColor := StyleServices.GetStyleColor(scPanel);
-    FForegroundColor := StyleServices.GetStyleFontColor(sfTabTextInactiveNormal);
+    FForegroundColor := StyleServices.GetStyleFontColor
+      (sfTabTextInactiveNormal);
   end;
 end;
 

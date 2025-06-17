@@ -921,13 +921,8 @@ begin
 end;
 
 function HasDefaultPrinter: Boolean;
-var
-  ResStr: array [0 .. 255] of Char;
-  DefaultPrinter: string;
 begin
-  GetProfileString('Windows', 'device', '', ResStr, 255);
-  DefaultPrinter := StrPas(ResStr);
-  Result := (DefaultPrinter <> '');
+  Result:= (-1 < Printer.PrinterIndex) and (Printer.PrinterIndex < Printer.Printers.Count);
 end;
 
 procedure ScrollEndListBox(ListBox: TListBox);

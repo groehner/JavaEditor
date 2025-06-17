@@ -23,9 +23,11 @@ type
   }
 
   TSquare = class
+  private
     // Points[1] and Points[2] belong to FFromBorder
     // Points[3] and Points[4] belong to FToBorder
-    Points: array [1 .. 4] of TPoint;
+    FPoints: array [1 .. 4] of TPoint;
+  public
     constructor Create;
     procedure Init;
     procedure EnlargeRight(FromCorner, ToCorner: Integer;
@@ -37,15 +39,15 @@ type
     procedure EnlargeRight(Corner, DeltaX: Integer); overload;
     procedure EnlargeTop(Corner, DeltaY: Integer);
     procedure EnlargeBottom(Corner, DeltaY: Integer);
-    procedure Term(FFromBorder, FToBorder: TPoint); overload;
-    procedure Term(Corner: Integer; FFivePoints: TFivePoints); overload;
-    procedure Draw(ACanvas: TCanvas);
+    procedure Term(FromBorder, ToBorder: TPoint); overload;
+    procedure Term(Corner: Integer; FivePoints: TFivePoints); overload;
+    procedure Draw(Canvas: TCanvas);
     function LineIntersectsLine(L1p1, L1p2, L2p1, L2p2: TPoint): Boolean;
     function Intersects(Point1, Point2: TPoint; Rect: TRect): Boolean; overload;
-    function Intersects(Point1, Point2: TPoint; FSquare: TSquare)
+    function Intersects(Point1, Point2: TPoint; Square: TSquare)
       : Boolean; overload;
     function Intersects(Rect: TRect): Boolean; overload;
-    function Intersects(FSquare: TSquare): Boolean; overload;
+    function Intersects(Square: TSquare): Boolean; overload;
   end;
 
   // Available linestyles
@@ -149,7 +151,6 @@ type
     function GetSVGLine(X1Pos, Y1Pos, X2Pos, Y2Pos: Real): string;
     function GetSVGPolyline(Points: array of TPoint): string;
     function GetSVGPolygon(Points: array of TPoint; Color: string): string;
-    function GetSVG: string;
 
     property Cutted: Boolean read FCutted write FCutted;
     property FromControl: TControl read FFromControl write FFromControl;
@@ -163,6 +164,7 @@ type
     property ToControl: TControl read FToControl write FToControl;
     property Selected: Boolean read FSelected write FSelected;
     property Square: TSquare read FSquare;
+    property SVG: string read FSVG;
     property XDecrease: Integer read FXDecrease;
     property XEnlarge: Integer read FXEnlarge;
     property YDecrease: Integer read FYDecrease;
@@ -171,7 +173,14 @@ type
 
 implementation
 
-uses Types, Math, Themes, UITypes, SysUtils, URtfdComponents, UUtils;
+uses
+  Types,
+  Math,
+  Themes,
+  UITypes,
+  SysUtils,
+  URtfdComponents,
+  UUtils;
 
 const
   RecDx = 30; // recursive connections
@@ -188,7 +197,7 @@ end;
 procedure TSquare.Init;
 begin
   for var I := 1 to 4 do
-    Points[I] := Point(0, 0);
+    FPoints[I] := Point(0, 0);
 end;
 
 procedure TSquare.EnlargeRight(FromCorner, ToCorner: Integer;
@@ -196,23 +205,23 @@ procedure TSquare.EnlargeRight(FromCorner, ToCorner: Integer;
 begin
   case FromCorner of
     1:
-      Points[1].Y := Max(Points[1].Y, +DeltaY);
+      FPoints[1].Y := Max(FPoints[1].Y, +DeltaY);
     2:
-      Points[1].X := Max(Points[1].X, +DeltaX);
+      FPoints[1].X := Max(FPoints[1].X, +DeltaX);
     3:
-      Points[1].Y := Min(Points[1].Y, -DeltaY);
+      FPoints[1].Y := Min(FPoints[1].Y, -DeltaY);
     4:
-      Points[1].X := Min(Points[1].X, -DeltaX);
+      FPoints[1].X := Min(FPoints[1].X, -DeltaX);
   end;
   case ToCorner of
     1:
-      Points[4].Y := Min(Points[4].Y, -DeltaY);
+      FPoints[4].Y := Min(FPoints[4].Y, -DeltaY);
     2:
-      Points[4].X := Min(Points[4].X, -DeltaX);
+      FPoints[4].X := Min(FPoints[4].X, -DeltaX);
     3:
-      Points[4].Y := Max(Points[4].Y, +DeltaY);
+      FPoints[4].Y := Max(FPoints[4].Y, +DeltaY);
     4:
-      Points[4].X := Max(Points[4].X, +DeltaX);
+      FPoints[4].X := Max(FPoints[4].X, +DeltaX);
   end;
 end;
 
@@ -221,23 +230,23 @@ procedure TSquare.EnlargeLeft(FromCorner, ToCorner: Integer;
 begin
   case FromCorner of
     1:
-      Points[2].Y := Min(Points[2].Y, -DeltaY);
+      FPoints[2].Y := Min(FPoints[2].Y, -DeltaY);
     2:
-      Points[2].X := Min(Points[2].X, -DeltaX);
+      FPoints[2].X := Min(FPoints[2].X, -DeltaX);
     3:
-      Points[2].Y := Max(Points[2].Y, +DeltaY);
+      FPoints[2].Y := Max(FPoints[2].Y, +DeltaY);
     4:
-      Points[2].X := Max(Points[2].X, +DeltaX);
+      FPoints[2].X := Max(FPoints[2].X, +DeltaX);
   end;
   case ToCorner of
     1:
-      Points[3].Y := Max(Points[3].Y, +DeltaY);
+      FPoints[3].Y := Max(FPoints[3].Y, +DeltaY);
     2:
-      Points[3].X := Max(Points[3].X, +DeltaX);
+      FPoints[3].X := Max(FPoints[3].X, +DeltaX);
     3:
-      Points[3].Y := Min(Points[3].Y, -DeltaY);
+      FPoints[3].Y := Min(FPoints[3].Y, -DeltaY);
     4:
-      Points[3].X := Min(Points[3].X, -DeltaX);
+      FPoints[3].X := Min(FPoints[3].X, -DeltaX);
   end;
 end;
 
@@ -259,8 +268,8 @@ begin
     Int1 := Prev(Int1);
     Int2 := Prev(Int2);
   end;
-  Points[Int1].X := Min(Points[Int1].X, -DeltaX);
-  Points[Int2].X := Min(Points[Int2].X, -DeltaX);
+  FPoints[Int1].X := Min(FPoints[Int1].X, -DeltaX);
+  FPoints[Int2].X := Min(FPoints[Int2].X, -DeltaX);
 end;
 
 procedure TSquare.EnlargeRight(Corner, DeltaX: Integer);
@@ -274,8 +283,8 @@ begin
     Int1 := Prev(Int1);
     Int2 := Prev(Int2);
   end;
-  Points[Int1].X := Max(Points[Int1].X, DeltaX);
-  Points[Int2].X := Max(Points[Int2].X, DeltaX);
+  FPoints[Int1].X := Max(FPoints[Int1].X, DeltaX);
+  FPoints[Int2].X := Max(FPoints[Int2].X, DeltaX);
 end;
 
 procedure TSquare.EnlargeTop(Corner, DeltaY: Integer);
@@ -289,8 +298,8 @@ begin
     Int1 := Prev(Int1);
     Int2 := Prev(Int2);
   end;
-  Points[Int1].Y := Min(Points[Int1].Y, -DeltaY);
-  Points[Int2].Y := Min(Points[Int2].Y, -DeltaY);
+  FPoints[Int1].Y := Min(FPoints[Int1].Y, -DeltaY);
+  FPoints[Int2].Y := Min(FPoints[Int2].Y, -DeltaY);
 end;
 
 procedure TSquare.EnlargeBottom(Corner, DeltaY: Integer);
@@ -304,47 +313,47 @@ begin
     Int1 := Prev(Int1);
     Int2 := Prev(Int2);
   end;
-  Points[Int1].Y := Max(Points[Int1].Y, DeltaY);
-  Points[Int2].Y := Max(Points[Int2].Y, DeltaY);
+  FPoints[Int1].Y := Max(FPoints[Int1].Y, DeltaY);
+  FPoints[Int2].Y := Max(FPoints[Int2].Y, DeltaY);
 end;
 
-procedure TSquare.Term(FFromBorder, FToBorder: TPoint);
+procedure TSquare.Term(FromBorder, ToBorder: TPoint);
 begin
-  Points[1].X := FFromBorder.X + Points[1].X;
-  Points[1].Y := FFromBorder.Y + Points[1].Y;
-  Points[2].X := FFromBorder.X + Points[2].X;
-  Points[2].Y := FFromBorder.Y + Points[2].Y;
-  Points[3].X := FToBorder.X + Points[3].X;
-  Points[3].Y := FToBorder.Y + Points[3].Y;
-  Points[4].X := FToBorder.X + Points[4].X;
-  Points[4].Y := FToBorder.Y + Points[4].Y;
+  FPoints[1].X := FromBorder.X + FPoints[1].X;
+  FPoints[1].Y := FromBorder.Y + FPoints[1].Y;
+  FPoints[2].X := FromBorder.X + FPoints[2].X;
+  FPoints[2].Y := FromBorder.Y + FPoints[2].Y;
+  FPoints[3].X := ToBorder.X + FPoints[3].X;
+  FPoints[3].Y := ToBorder.Y + FPoints[3].Y;
+  FPoints[4].X := ToBorder.X + FPoints[4].X;
+  FPoints[4].Y := ToBorder.Y + FPoints[4].Y;
 end;
 
-procedure TSquare.Term(Corner: Integer; FFivePoints: TFivePoints);
+procedure TSquare.Term(Corner: Integer; FivePoints: TFivePoints);
 begin
   for var I := 2 to 4 do
   begin
-    Points[I].X := FFivePoints[I].X + Points[I].X;
-    Points[I].Y := FFivePoints[I].Y + Points[I].Y;
+    FPoints[I].X := FivePoints[I].X + FPoints[I].X;
+    FPoints[I].Y := FivePoints[I].Y + FPoints[I].Y;
   end;
   if Corner in [1, 3] then
   begin
-    Points[1].X := FFivePoints[4].X + Points[1].X;
-    Points[1].Y := FFivePoints[2].Y + Points[1].Y;
+    FPoints[1].X := FivePoints[4].X + FPoints[1].X;
+    FPoints[1].Y := FivePoints[2].Y + FPoints[1].Y;
   end
   else
   begin
-    Points[1].X := FFivePoints[2].X + Points[1].X;
-    Points[1].Y := FFivePoints[4].Y + Points[1].Y;
+    FPoints[1].X := FivePoints[2].X + FPoints[1].X;
+    FPoints[1].Y := FivePoints[4].Y + FPoints[1].Y;
   end;
 end;
 
-procedure TSquare.Draw(ACanvas: TCanvas);
+procedure TSquare.Draw(Canvas: TCanvas);
 begin
-  ACanvas.Pen.Color := clYellow;
-  ACanvas.MoveTo(Points[4].X, Points[4].Y);
+  Canvas.Pen.Color := clYellow;
+  Canvas.MoveTo(FPoints[4].X, FPoints[4].Y);
   for var I := 1 to 4 do
-    ACanvas.LineTo(Points[I].X, Points[I].Y);
+    Canvas.LineTo(FPoints[I].X, FPoints[I].Y);
 
 end;
 
@@ -377,28 +386,28 @@ begin
     Point(Rect.Left, Rect.Bottom), Point(Rect.Left, Rect.Top));
 end;
 
-function TSquare.Intersects(Point1, Point2: TPoint; FSquare: TSquare): Boolean;
+function TSquare.Intersects(Point1, Point2: TPoint; Square: TSquare): Boolean;
 begin
-  Result := LineIntersectsLine(Point1, Point2, FSquare.Points[1],
-    FSquare.Points[2]) or LineIntersectsLine(Point1, Point2, FSquare.Points[2],
-    FSquare.Points[3]) or LineIntersectsLine(Point1, Point2, FSquare.Points[3],
-    FSquare.Points[4]) or LineIntersectsLine(Point1, Point2, FSquare.Points[4],
-    FSquare.Points[1]);
+  Result := LineIntersectsLine(Point1, Point2, Square.FPoints[1],
+    Square.FPoints[2]) or LineIntersectsLine(Point1, Point2, Square.FPoints[2],
+    Square.FPoints[3]) or LineIntersectsLine(Point1, Point2, Square.FPoints[3],
+    Square.FPoints[4]) or LineIntersectsLine(Point1, Point2, Square.FPoints[4],
+    Square.FPoints[1]);
 end;
 
 function TSquare.Intersects(Rect: TRect): Boolean;
 begin
-  Result := Intersects(Points[1], Points[2], Rect) or
-    Intersects(Points[2], Points[3], Rect) or Intersects(Points[3], Points[4],
-    Rect) or Intersects(Points[4], Points[1], Rect);
+  Result := Intersects(FPoints[1], FPoints[2], Rect) or
+    Intersects(FPoints[2], FPoints[3], Rect) or Intersects(FPoints[3], FPoints[4],
+    Rect) or Intersects(FPoints[4], FPoints[1], Rect);
 end;
 
-function TSquare.Intersects(FSquare: TSquare): Boolean;
+function TSquare.Intersects(Square: TSquare): Boolean;
 begin
-  Result := Intersects(Points[1], Points[2], FSquare) or
-    Intersects(Points[2], Points[3], FSquare) or
-    Intersects(Points[3], Points[4], FSquare) or
-    Intersects(Points[4], Points[1], FSquare);
+  Result := Intersects(FPoints[1], FPoints[2], Square) or
+    Intersects(FPoints[2], FPoints[3], Square) or
+    Intersects(FPoints[3], FPoints[4], Square) or
+    Intersects(FPoints[4], FPoints[1], Square);
 end;
 
 { --- TConnection -------------------------------------------------------------- }
@@ -689,7 +698,7 @@ var
     if YLineDelta = 0 then
       Alpha := 0
     else
-      Alpha := Round(RadToDeg(ArcTan2(YLineDelta, XLineDelta)));
+      Alpha := Round(RadToDeg(ArcTan2(Double(YLineDelta), Double(XLineDelta))));
     if (Abs(Alpha) < 25) or (Abs(Abs(Alpha) - 180) < 25) then
       Rect.Left := XBase + DeltaX - TWidth div 2;
     if Abs(Abs(Alpha) - 90) < 20 then
@@ -980,7 +989,7 @@ var
 
   procedure DrawArrowStart(Point1, Point2: TPoint);
   var
-    Posi3, Posi4: TPoint;
+    Point3, Point4: TPoint;
     DeltaX, DeltaY: Integer;
   begin
     case FArrowStyle of
@@ -1001,28 +1010,28 @@ var
     if DeltaY = 0 then
     begin
       Point2.X := Point1.X + HeadLength * 2 * Sign(DeltaX);
-      Posi3.X := Point1.X + HeadLength * Sign(DeltaX);
-      Posi3.Y := Point1.Y - HeadLength;
-      Posi4.X := Posi3.X;
-      Posi4.Y := Point1.Y + HeadLength;
+      Point3.X := Point1.X + HeadLength * Sign(DeltaX);
+      Point3.Y := Point1.Y - HeadLength;
+      Point4.X := Point3.X;
+      Point4.Y := Point1.Y + HeadLength;
     end
     else
     begin
       Point2.Y := Point1.Y + HeadLength * 2 * Sign(DeltaY);
-      Posi3.X := Point1.X + HeadLength;
-      Posi3.Y := Point1.Y + HeadLength * Sign(DeltaY);
-      Posi4.X := Point1.X - HeadLength;
-      Posi4.Y := Posi3.Y;
+      Point3.X := Point1.X + HeadLength;
+      Point3.Y := Point1.Y + HeadLength * Sign(DeltaY);
+      Point4.X := Point1.X - HeadLength;
+      Point4.Y := Point3.Y;
     end;
     if FArrowStyle = asAssociation3 then
     begin
-      PointArray := [Posi3, Point1, Posi4];
+      PointArray := [Point3, Point1, Point4];
       ACanvas.Polyline(PointArray);
       FSVG := FSVG + GetSVGPolyline(PointArray);
     end
     else
     begin
-      PointArray := [Point1, Posi3, Point2, Posi4];
+      PointArray := [Point1, Point3, Point2, Point4];
       ACanvas.Polygon(PointArray);
       if FArrowStyle in [asAggregation1, asAggregation2] then
         FSVG := FSVG + GetSVGPolygon(PointArray, 'white')
@@ -1034,29 +1043,29 @@ var
 
   procedure DrawArrowHead(Point1, Point2: TPoint);
   var
-    Posi3, Posi4: TPoint;
+    Point3, Point4: TPoint;
     DeltaX, DeltaY: Integer;
   begin
     DeltaX := Point2.X - Point1.X;
     DeltaY := Point2.Y - Point1.Y;
     if DeltaY = 0 then
     begin
-      Posi3.X := Point1.X + HeadLength * Sign(DeltaX);
-      Posi3.Y := Point1.Y - HeadLength;
-      Posi4.X := Posi3.X;
-      Posi4.Y := Point1.Y + HeadLength;
+      Point3.X := Point1.X + HeadLength * Sign(DeltaX);
+      Point3.Y := Point1.Y - HeadLength;
+      Point4.X := Point3.X;
+      Point4.Y := Point1.Y + HeadLength;
     end
     else
     begin
-      Posi3.X := Point1.X + HeadLength;
-      Posi3.Y := Point1.Y + HeadLength * Sign(DeltaY);
-      Posi4.X := Point1.X - HeadLength;
-      Posi4.Y := Posi3.Y;
+      Point3.X := Point1.X + HeadLength;
+      Point3.Y := Point1.Y + HeadLength * Sign(DeltaY);
+      Point4.X := Point1.X - HeadLength;
+      Point4.Y := Point3.Y;
     end;
     case FArrowStyle of
       asInheritends, asImplements:
         begin
-          PointArray := [Point1, Posi3, Posi4];
+          PointArray := [Point1, Point3, Point4];
           ACanvas.Polygon(PointArray);
           if FArrowStyle in [asAggregation1, asAggregation2] then
             FSVG := FSVG + GetSVGPolygon(PointArray, 'white')
@@ -1066,9 +1075,9 @@ var
       asAssociation2, asAssociation3, asAggregation2, asComposition2,
         asInstanceOf:
         begin
-          PointArray := [Posi3, Point1, Posi4];
+          PointArray := [Point3, Point1, Point4];
           ACanvas.Polyline(PointArray);
-          ACanvas.Pixels[Posi4.X, Posi4.Y] := ACanvas.Pen.Color;
+          ACanvas.Pixels[Point4.X, Point4.Y] := ACanvas.Pen.Color;
           FSVG := FSVG + GetSVGPolyline(PointArray);
         end;
       asAssociation1, asAggregation1, asComposition1, asComment:
@@ -1853,8 +1862,8 @@ end;
 
 function TConnection.GetSVGLine(X1Pos, Y1Pos, X2Pos, Y2Pos: Real): string;
 begin
-  Result := '  <line x1=' + FloatToVal(X1Pos) + ' Y1Pos=' + FloatToVal(Y1Pos) +
-    ' x2=' + FloatToVal(X2Pos) + ' Y2Pos=' + FloatToVal(Y2Pos) +
+  Result := '  <line x1=' + FloatToVal(X1Pos) + ' y1=' + FloatToVal(Y1Pos) +
+    ' x2=' + FloatToVal(X2Pos) + ' y2=' + FloatToVal(Y2Pos) +
     ' stroke="black" stroke-linecap="square" />'#13#10;
 end;
 
@@ -1875,11 +1884,6 @@ begin
     Result := Result + PointToVal(Points[I]);
   Result[Length(Result)] := '"';
   Result := Result + ' fill="' + Color + '" stroke="black" />'#13#10;
-end;
-
-function TConnection.GetSVG: string;
-begin
-  Result := FSVG;
 end;
 
 end.

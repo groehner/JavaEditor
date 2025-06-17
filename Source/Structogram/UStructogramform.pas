@@ -878,8 +878,8 @@ begin
         var
         Rect := StrList.RctList;
         Rect.Right := Max(ARect.Right - ARect.Left, StrList.RctList.Right);
-        // ToDo prüfen
         Rect.Bottom := Max(ARect.Bottom - ARect.Top, StrList.RctList.Bottom);
+        StrList.RctList := Rect;
         StrList.Rct := StrList.RctList;
         StrList.ListImage.Left := Image.Left + ARect.Left + DeltaY;
         StrList.ListImage.Top := Image.Top + ARect.Top + DeltaX;
@@ -932,8 +932,6 @@ end;
 
 procedure TFStructogram.CalculateInsertionShape(DestList, InsertList: TStrList;
   XPos, YPos: Integer);
-var
-  DeltaY: Integer;
 begin
   // FCurElement.debug()
   if not Assigned(FCurElement) then
@@ -962,7 +960,7 @@ begin
       end
       else
       begin
-        DeltaY := (FCurElement.Rct.Bottom - FCurElement.Rct.Top) div 4;
+        var DeltaY := (FCurElement.Rct.Bottom - FCurElement.Rct.Top) div 4;
         if YPos < FCurElement.Rct.Top + DeltaY then
         begin
           FOldShape := Rect(Rct.Left, Rct.Top, Rct.Right, Rct.Top);
@@ -1178,20 +1176,18 @@ begin
 end;
 
 procedure TFStructogram.MIDeleteCaseClick(Sender: TObject);
-var
-  Int, Num: Integer;
 begin
   CloseEdit;
   if GetCurListAndCurElement and (FCurElement is TStrSwitch) then
   begin
     var
     Switch := (FCurElement as TStrSwitch);
-    Int := 0;
+    var Int := 0;
     while (Int < Length(Switch.CaseElems)) and
       (FMousePos.X > Switch.CaseElems[Int].Rct.Right) do
       Inc(Int);
     FreeAndNil(Switch.CaseElems[Int]);
-    Num := High(Switch.CaseElems);
+    var Num := High(Switch.CaseElems);
     for var K := Int to Num - 1 do
       Switch.CaseElems[K] := Switch.CaseElems[K + 1];
     var
@@ -1427,8 +1423,8 @@ begin
           FJava.RearrangeFileHistory(FileName);
       end;
     except
-      on e: Exception do
-        ErrorMsg(Format(_(LNGCanNotCreateFile), [FileName, e.Message]));
+      on E: Exception do
+        ErrorMsg(Format(_(LNGCanNotCreateFile), [FileName, E.Message]));
     end;
   finally
     FreeAndNil(ProgList);
@@ -1583,12 +1579,10 @@ begin
 end;
 
 procedure TFStructogram.MICopyAsPictureClick(Sender: TObject);
-var
-  Bitmap: Graphics.TBitmap;
 begin
   if GetCurList then
   begin
-    Bitmap := TBitmap.Create;
+    var Bitmap := TBitmap.Create;
     try
       Bitmap.Width := FCurList.ListImage.Width +
         FConfiguration.StructogramShadowWidth;
@@ -1847,10 +1841,8 @@ begin
 end;
 
 function TFStructogram.GetAlgorithmParameter(ParamList: TStringList): string;
-var
-  Param: string;
 begin
-  Param := '';
+  var Param := '';
   for var I := 0 to ParamList.Count - 1 do
     Param := Param + Trim(ParamList[I]) + ', ';
   if Param <> '' then
@@ -1953,10 +1945,8 @@ var
   SwitchElement: TStrSwitch;
 
   function StripLNG(const LNG: string; Str: string): string;
-  var
-    Posi: Integer;
   begin
-    Posi := Pos(LNG, Str);
+    var Posi := Pos(LNG, Str);
     if Posi > 0 then
       Delete(Str, Posi, Length(LNG));
     Result := Trim(Str);
@@ -1978,11 +1968,9 @@ var
   end;
 
   procedure ReplaceInsertMarker(const Repl: string);
-  var
-    Posi: Integer;
   begin
-    Str := StringList[TPos];
-    Posi := Pos('|', Str);
+    var Str := StringList[TPos];
+    var Posi := Pos('|', Str);
     if Posi = 0 then
     begin // do while
       Posi := Pos('(', Str);
@@ -2544,7 +2532,7 @@ end;
 function TFStructogram.GetStructogramAsBitmap: TBitmap;
 var
   ARect: TRect;
-  ABitmap: TBitmap;
+  Bitmap: TBitmap;
 begin
   for var I := 0 to ScrollBox.ControlCount - 1 do
     if ScrollBox.Controls[I] is TListImage then
@@ -2556,14 +2544,14 @@ begin
       ARect := TListImage(ScrollBox.Controls[I]).BoundsRect
     else
       ARect := UnionRect(ARect, TListImage(ScrollBox.Controls[I]).BoundsRect);
-  ABitmap := TBitmap.Create;
-  ABitmap.Width := ARect.Width + FConfiguration.StructogramShadowWidth;
-  ABitmap.Height := ARect.Height + FConfiguration.StructogramShadowWidth;
+  Bitmap := TBitmap.Create;
+  Bitmap.Width := ARect.Width + FConfiguration.StructogramShadowWidth;
+  Bitmap.Height := ARect.Height + FConfiguration.StructogramShadowWidth;
   for var I := 0 to ScrollBox.ControlCount - 1 do begin
     var ListImage := TListImage(ScrollBox.Controls[I]);
-    ABitmap.Canvas.Draw(ListImage.Left - ARect.Left, ListImage.Top - ARect.Top, ListImage.Picture.Graphic);
+    Bitmap.Canvas.Draw(ListImage.Left - ARect.Left, ListImage.Top - ARect.Top, ListImage.Picture.Graphic);
   end;
-  Result := ABitmap;
+  Result := Bitmap;
 
   for var I := 0 to ScrollBox.ControlCount - 1 do
     if ScrollBox.Controls[I] is TListImage then

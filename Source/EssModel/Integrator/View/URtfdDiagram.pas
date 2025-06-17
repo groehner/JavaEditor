@@ -951,7 +951,7 @@ var
   Ini: TMemIniFile;
   Int1, Posi, Comments: Integer;
   Box: TRtfdBox;
-  Str, CName, FName, Str1, Path: string;
+  Section, CName, FName, Str1, Path: string;
   Connections: TList;
   Conn: TConnection;
   Values: TStrings;
@@ -995,60 +995,60 @@ begin
         begin
           // Objects
           Box := FBoxNames.Objects[I] as TRtfdObject;
-          Str := 'Object: ' + Package.Fullname + ' - ' + Box.Entity.Fullname;
-          Ini.WriteInteger(Str, 'X', PPIUnScale(Box.Left));
-          Ini.WriteInteger(Str, 'Y', PPIUnScale(Box.Top));
+          Section := 'Object: ' + Package.Fullname + ' - ' + Box.Entity.Fullname;
+          Ini.WriteInteger(Section, 'X', PPIUnScale(Box.Left));
+          Ini.WriteInteger(Section, 'Y', PPIUnScale(Box.Top));
           AJavaObject := FComJava.GetObject(Box.Entity.Name);
-          Ini.WriteString(Str, 'Name', Box.Entity.Name);
+          Ini.WriteString(Section, 'Name', Box.Entity.Name);
           if Assigned(AJavaObject) then
-            Ini.WriteString(Str, 'Typ', AJavaObject.ClassRef.ImportTyp)
+            Ini.WriteString(Section, 'Typ', AJavaObject.ClassRef.ImportTyp)
           else
-            Ini.WriteString(Str, 'Typ', 'unknown');
+            Ini.WriteString(Section, 'Typ', 'unknown');
         end
         else if FBoxNames.Objects[I] is TRtfdCommentBox then
         begin
           Box := FBoxNames.Objects[I] as TRtfdBox;
-          Str := Box.Entity.Fullname;
-          Ini.WriteInteger(Str, 'X', PPIUnScale(Box.Left));
-          Ini.WriteInteger(Str, 'Y', PPIUnScale(Box.Top));
-          Ini.WriteInteger(Str, 'W', PPIUnScale(Box.Width));
-          Ini.WriteInteger(Str, 'H', PPIUnScale(Box.Height));
+          Section := Box.Entity.Fullname;
+          Ini.WriteInteger(Section, 'X', PPIUnScale(Box.Left));
+          Ini.WriteInteger(Section, 'Y', PPIUnScale(Box.Top));
+          Ini.WriteInteger(Section, 'W', PPIUnScale(Box.Width));
+          Ini.WriteInteger(Section, 'H', PPIUnScale(Box.Height));
           Str1 := (Box as TRtfdCommentBox).TrMemo.Text;
-          Ini.WriteString(Str, 'Comment', '_;_' + ReplaceStr(Str1,
+          Ini.WriteString(Section, 'Comment', '_;_' + ReplaceStr(Str1,
             #13#10, '_;_'));
         end
         else
         begin
           // Class, Stereotype, Interface
           Box := FBoxNames.Objects[I] as TRtfdBox;
-          Str := 'Box: ' + Package.Fullname + ' - ' + Box.Entity.Fullname;
-          Ini.WriteInteger(Str, 'X', PPIUnScale(Box.Left));
-          Ini.WriteInteger(Str, 'Y', PPIUnScale(Box.Top));
-          Ini.WriteInteger(Str, 'MinVis', Integer(Box.MinVisibility));
-          Ini.WriteInteger(Str, 'ShowParameter', Box.ShowParameter);
-          Ini.WriteInteger(Str, 'SortOrder', Box.SortOrder);
-          Ini.WriteInteger(Str, 'ShowIcons', Box.ShowIcons);
+          Section := 'Box: ' + Package.Fullname + ' - ' + Box.Entity.Fullname;
+          Ini.WriteInteger(Section, 'X', PPIUnScale(Box.Left));
+          Ini.WriteInteger(Section, 'Y', PPIUnScale(Box.Top));
+          Ini.WriteInteger(Section, 'MinVis', Integer(Box.MinVisibility));
+          Ini.WriteInteger(Section, 'ShowParameter', Box.ShowParameter);
+          Ini.WriteInteger(Section, 'SortOrder', Box.SortOrder);
+          Ini.WriteInteger(Section, 'ShowIcons', Box.ShowIcons);
           if Box.TypeBinding <> '' then
-            Ini.WriteString(Str, 'TypeBinding', Box.TypeBinding);
+            Ini.WriteString(Section, 'TypeBinding', Box.TypeBinding);
         end;
 
       // Diagram stuff
-      Str := 'Diagram';
-      Ini.WriteInteger(Str, 'Comments', Comments);
-      Ini.WriteInteger(Str, 'OffsetX', FFrame.ScrollBox.VertScrollBar.Position);
-      Ini.WriteInteger(Str, 'OffsetY', FFrame.ScrollBox.HorzScrollBar.Position);
+      Section := 'Diagram';
+      Ini.WriteInteger(Section, 'Comments', Comments);
+      Ini.WriteInteger(Section, 'OffsetX', FFrame.ScrollBox.VertScrollBar.Position);
+      Ini.WriteInteger(Section, 'OffsetY', FFrame.ScrollBox.HorzScrollBar.Position);
 
-      Ini.WriteInteger(Str, 'Visibility', Integer(VisibilityFilter));
-      Ini.WriteInteger(Str, 'ShowParameter', ShowParameter);
-      Ini.WriteInteger(Str, 'SortOrder', SortOrder);
-      Ini.WriteInteger(Str, 'ShowIcons', ShowIcons);
-      Ini.WriteInteger(Str, 'ShowConnections', ShowConnections);
-      Ini.WriteString(Str, 'Fontname', Font.Name);
-      Ini.WriteInteger(Str, 'Fontsize', PPIUnScale(Font.Size));
-      Ini.WriteBool(Str, 'ShowObjectDiagram', ShowObjectDiagram);
+      Ini.WriteInteger(Section, 'Visibility', Integer(VisibilityFilter));
+      Ini.WriteInteger(Section, 'ShowParameter', ShowParameter);
+      Ini.WriteInteger(Section, 'SortOrder', SortOrder);
+      Ini.WriteInteger(Section, 'ShowIcons', ShowIcons);
+      Ini.WriteInteger(Section, 'ShowConnections', ShowConnections);
+      Ini.WriteString(Section, 'Fontname', Font.Name);
+      Ini.WriteInteger(Section, 'Fontsize', PPIUnScale(Font.Size));
+      Ini.WriteBool(Section, 'ShowObjectDiagram', ShowObjectDiagram);
 
       // Connections
-      Str := 'Connections';
+      Section := 'Connections';
       Connections := FPanel.GetConnections;
       for var I := 0 to Connections.Count - 1 do
       begin
@@ -1061,23 +1061,23 @@ begin
             IntToStr(RecursivCorner) + '#' + BoolToStr(IsTurned) + '#' +
             BoolToStr(IsEdited) + '#' + HideCrLf(RoleA) + '#' + HideCrLf(RoleB)
             + '#' + BoolToStr(ReadingOrderA) + '#' + BoolToStr(ReadingOrderB);
-        Ini.WriteString(Str, 'V' + IntToStr(I), CName);
+        Ini.WriteString(Section, 'V' + IntToStr(I), CName);
       end;
       FreeAndNil(Connections);
 
       // FInteractive
-      Str := 'FInteractive';
+      Section := 'FInteractive';
       for var I := 0 to FInteractive.InteractiveEditor.Lines.Count - 1 do
-        Ini.WriteString(Str, 'I' + IntToStr(I),
+        Ini.WriteString(Section, 'I' + IntToStr(I),
           FInteractive.InteractiveEditor.Lines[I]);
 
       // Window
       for var I := 0 to Values.Count - 1 do
       begin
-        Str := Values[I];
-        Posi := Pos('=', Str);
-        Ini.WriteString('Window', Copy(Str, 1, Posi - 1),
-          Copy(Str, Posi + 1, Length(Str)));
+        Section := Values[I];
+        Posi := Pos('=', Section);
+        Ini.WriteString('Window', Copy(Section, 1, Posi - 1),
+          Copy(Section, Posi + 1, Length(Section)));
       end;
       Ini.UpdateFile;
     except
@@ -1100,7 +1100,7 @@ var
   Ini: TMemIniFile;
   Int, Num, Posi, CountObjects: Integer;
   Box, Box1, Box2: TRtfdBox;
-  Str, CName, AFile, B1Name, B2Name, Path: string;
+  Section, CName, AFile, B1Name, B2Name, Path: string;
   FilesPre, FilesPost, Sections, StringList: TStringList;
   AlleBoxen: TList;
 
@@ -1126,25 +1126,25 @@ begin
   FilesPost := TStringList.Create;
   Attributes := TConnectionAttributes.Create;
   try
-    Str := 'Diagram';
-    if not Ini.SectionExists(Str) and Assigned(Package) then
-      Str := 'Diagram: ' + Package.Fullname; // old format
-    FFrame.ScrollBox.VertScrollBar.Position := Ini.ReadInteger(Str, 'OffsetX',
+    Section := 'Diagram';
+    if not Ini.SectionExists(Section) and Assigned(Package) then
+      Section := 'Diagram: ' + Package.Fullname; // old format
+    FFrame.ScrollBox.VertScrollBar.Position := Ini.ReadInteger(Section, 'OffsetX',
       FFrame.ScrollBox.VertScrollBar.Position);
-    FFrame.ScrollBox.HorzScrollBar.Position := Ini.ReadInteger(Str, 'OffsetY',
+    FFrame.ScrollBox.HorzScrollBar.Position := Ini.ReadInteger(Section, 'OffsetY',
       FFrame.ScrollBox.HorzScrollBar.Position);
 
-    ShowConnections := Ini.ReadInteger(Str, 'ShowConnections', 0);
-    VisibilityFilterAsInteger := Ini.ReadInteger(Str, 'Visibility', 0);
+    ShowConnections := Ini.ReadInteger(Section, 'ShowConnections', 0);
+    VisibilityFilterAsInteger := Ini.ReadInteger(Section, 'Visibility', 0);
     VisibilityFilter := TVisibility(VisibilityFilterAsInteger);
-    ShowParameter := Ini.ReadInteger(Str, 'ShowParameter', ShowParameter);
-    SortOrder := Ini.ReadInteger(Str, 'SortOrder', SortOrder);
-    ShowIcons := Ini.ReadInteger(Str, 'ShowIcons', ShowIcons);
-    ShowObjectDiagram := Ini.ReadBool(Str, 'ShowObjectDiagram', False);
-    Font.Name := Ini.ReadString(Str, 'Fontname', 'Segoe UI');
+    ShowParameter := Ini.ReadInteger(Section, 'ShowParameter', ShowParameter);
+    SortOrder := Ini.ReadInteger(Section, 'SortOrder', SortOrder);
+    ShowIcons := Ini.ReadInteger(Section, 'ShowIcons', ShowIcons);
+    ShowObjectDiagram := Ini.ReadBool(Section, 'ShowObjectDiagram', False);
+    Font.Name := Ini.ReadString(Section, 'Fontname', 'Segoe UI');
     if Font.Name = 'MS Sans Serif' then
       Font.Name := 'Segoe UI';
-    Font.Size := PPIScale(Ini.ReadInteger(Str, 'Fontsize', 11));
+    Font.Size := PPIScale(Ini.ReadInteger(Section, 'Fontsize', 11));
     SetFont(Font);
 
     // read files
@@ -1175,20 +1175,20 @@ begin
       if (FBoxNames.Objects[I] is TRtfdClass) or
         (FBoxNames.Objects[I] is TRtfdInterface) then
       begin
-        Str := 'Box: ' + Package.Fullname + ' - ' + Box.Entity.Fullname;
-        if not Ini.SectionExists(Str) then
-          Str := 'Box: ' + ' - ' + Box.Entity.Fullname;
-        if Ini.SectionExists(Str) then
+        Section := 'Box: ' + Package.Fullname + ' - ' + Box.Entity.Fullname;
+        if not Ini.SectionExists(Section) then
+          Section := 'Box: ' + ' - ' + Box.Entity.Fullname;
+        if Ini.SectionExists(Section) then
         begin
-          Box.Left := PPIScale(Ini.ReadInteger(Str, 'X', Box.Left));
-          Box.Top := PPIScale(Ini.ReadInteger(Str, 'Y', Box.Top));
-          Box.MinVisibility := TVisibility(Ini.ReadInteger(Str, 'MinVis',
+          Box.Left := PPIScale(Ini.ReadInteger(Section, 'X', Box.Left));
+          Box.Top := PPIScale(Ini.ReadInteger(Section, 'Y', Box.Top));
+          Box.MinVisibility := TVisibility(Ini.ReadInteger(Section, 'MinVis',
             VisibilityFilterAsInteger));
-          BoxShowParameter := Ini.ReadInteger(Str, 'ShowParameter',
+          BoxShowParameter := Ini.ReadInteger(Section, 'ShowParameter',
             ShowParameter);
-          BoxSortorder := Ini.ReadInteger(Str, 'SortOrder', SortOrder);
-          BoxShowIcons := Ini.ReadInteger(Str, 'ShowIcons', ShowIcons);
-          BoxTypeBinding := Ini.ReadString(Str, 'TypeBinding', '');
+          BoxSortorder := Ini.ReadInteger(Section, 'SortOrder', SortOrder);
+          BoxShowIcons := Ini.ReadInteger(Section, 'ShowIcons', ShowIcons);
+          BoxTypeBinding := Ini.ReadString(Section, 'TypeBinding', '');
           ShadowWidth := FConfiguration.ShadowWidth;
           Box.SetParameters(BoxShowParameter, BoxSortorder, BoxShowIcons,
             ShadowWidth, Font, BoxTypeBinding);
@@ -1224,15 +1224,15 @@ begin
     begin
       if Pos('Object', Sections[I]) > 0 then
       begin
-        Str := Sections[I];
+        Section := Sections[I];
         UnitPackage := Model.ModelRoot.FindUnitPackage('Default');
         // TODO nicht bei package
         if not Assigned(UnitPackage) then
           UnitPackage := Model.ModelRoot.AddUnit('Default');
         FComJava.Transfer(UnitPackage.ClassImports, UnitPackage.FullImports,
           GetSourcePath);
-        TheClassname := Ini.ReadString(Str, 'Typ', '');
-        TheObjectname := Ini.ReadString(Str, 'Name', '');
+        TheClassname := Ini.ReadString(Section, 'Typ', '');
+        TheObjectname := Ini.ReadString(Section, 'Name', '');
         MyObject := FComJava.GetObject(TheObjectname);
 
         AClass := nil;
@@ -1270,8 +1270,8 @@ begin
           if Num > -1 then
           begin
             Box := FBoxNames.Objects[Num] as TRtfdBox;
-            Box.Left := PPIScale(Ini.ReadInteger(Str, 'X', Box.Left));
-            Box.Top := PPIScale(Ini.ReadInteger(Str, 'Y', Box.Top));
+            Box.Left := PPIScale(Ini.ReadInteger(Section, 'X', Box.Left));
+            Box.Top := PPIScale(Ini.ReadInteger(Section, 'Y', Box.Top));
             Box.Font.Assign(Font);
           end;
           Inc(CountObjects);
@@ -1285,30 +1285,30 @@ begin
     begin
       if Pos('Comment', Sections[I]) = 1 then
       begin
-        Str := Sections[I];
-        Num := FBoxNames.IndexOf(Str);
+        Section := Sections[I];
+        Num := FBoxNames.IndexOf(Section);
         if Num = -1 then
         begin
-          CommentBox := TRtfdCommentBox.Create(FPanel, Str, FFrame, viPublic,
+          CommentBox := TRtfdCommentBox.Create(FPanel, Section, FFrame, viPublic,
             HANDLESIZE);
-          FBoxNames.AddObject(Str, CommentBox);
+          FBoxNames.AddObject(Section, CommentBox);
           FPanel.AddManagedObject(CommentBox);
-          Num := FBoxNames.IndexOf(Str);
+          Num := FBoxNames.IndexOf(Section);
         end;
 
         if Num > -1 then
         begin
           Box := FBoxNames.Objects[Num] as TRtfdBox;
-          Box.Left := PPIScale(Ini.ReadInteger(Str, 'X', Box.Left));
-          Box.Top := PPIScale(Ini.ReadInteger(Str, 'Y', Box.Top));
-          Box.Width := PPIScale(Ini.ReadInteger(Str, 'W', Box.Width));
-          Box.Height := PPIScale(Ini.ReadInteger(Str, 'H', Box.Height));
+          Box.Left := PPIScale(Ini.ReadInteger(Section, 'X', Box.Left));
+          Box.Top := PPIScale(Ini.ReadInteger(Section, 'Y', Box.Top));
+          Box.Width := PPIScale(Ini.ReadInteger(Section, 'W', Box.Width));
+          Box.Height := PPIScale(Ini.ReadInteger(Section, 'H', Box.Height));
           Box.Font.Assign(Font);
-          Str := Ini.ReadString(Str, 'Comment', '');
-          if Copy(Str, 1, 3) = '_;_' then
-            Delete(Str, 1, 3);
+          Section := Ini.ReadString(Section, 'Comment', '');
+          if Copy(Section, 1, 3) = '_;_' then
+            Delete(Section, 1, 3);
           (Box as TRtfdCommentBox).TrMemo.Text :=
-            ReplaceStr(Str, '_;_', #13#10);
+            ReplaceStr(Section, '_;_', #13#10);
         end;
       end;
     end;
@@ -1316,10 +1316,10 @@ begin
     FPanel.DeleteConnections;
     AlleBoxen := FPanel.GetManagedObjects;
 
-    Str := 'Connections';
+    Section := 'Connections';
     Int := 0;
     repeat
-      CName := Ini.ReadString(Str, 'V' + IntToStr(Int), '');
+      CName := Ini.ReadString(Section, 'V' + IntToStr(Int), '');
       if CName <> '' then
       begin
         Box1 := nil;
@@ -1372,14 +1372,14 @@ begin
       SetShowObjectDiagram(ShowObjectDiagram);
     UpdateAllObjects;
 
-    Str := 'FInteractive';
+    Section := 'Interactive';
     if Assigned(FInteractive) and Assigned(FInteractive.InteractiveEditor) and
       Assigned(FInteractive.InteractiveEditor.Lines) then
     begin
       FInteractive.InteractiveEditor.BeginUpdate;
       FInteractive.InteractiveEditor.Lines.Clear;
       StringList := TStringList.Create;
-      Ini.ReadSectionValues(Str, StringList);
+      Ini.ReadSectionValues(Section, StringList);
       for var I := 0 to StringList.Count - 1 do
       begin
         CName := StringList[I];
@@ -1430,19 +1430,19 @@ function TRtfdDiagram.GetBox(Typ: string): TRtfdBox;
 begin
   Typ := WithoutGeneric(Typ);
   var
-  I := 0;
-  while I < FBoxNames.Count do
+  Int := 0;
+  while Int < FBoxNames.Count do
   begin
     var
-    Str := WithoutGeneric(FBoxNames[I]);
+    Str := WithoutGeneric(FBoxNames[Int]);
     if Typ = Str then
       Break;
-    Inc(I);
+    Inc(Int);
   end;
-  if I = FBoxNames.Count then
+  if Int = FBoxNames.Count then
     Result := nil
   else
-    Result := FBoxNames.Objects[I] as TRtfdBox;
+    Result := FBoxNames.Objects[Int] as TRtfdBox;
 end;
 
 procedure TRtfdDiagram.SetVisibilityFilter(const Value: TVisibility);
@@ -1640,17 +1640,14 @@ end;
 
 // Returns list with str = 'x1,y1,x2,y2', obj = modelentity
 function TRtfdDiagram.GetClickAreas: TStringList;
-var
-  Box: TRtfdBox;
-  Str: string;
 begin
   Result := TStringList.Create;
   for var I := 0 to FBoxNames.Count - 1 do
   begin
-    Box := FBoxNames.Objects[I] as TRtfdBox;
-    Str := IntToStr(Box.Left) + ',' + IntToStr(Box.Top) + ',' +
+    var Box := FBoxNames.Objects[I] as TRtfdBox;
+    var Size := IntToStr(Box.Left) + ',' + IntToStr(Box.Top) + ',' +
       IntToStr(Box.Left + Box.Width) + ',' + IntToStr(Box.Top + Box.Height);
-    Result.AddObject(Str, Box.Entity);
+    Result.AddObject(Size, Box.Entity);
   end;
 end;
 
@@ -1730,7 +1727,7 @@ var
     AControl: TControl;
     List: TList;
     Box: TRtfdBox;
-    Str: string;
+    Name: string;
   begin
     Result := 0;
     List := FPanel.GetManagedObjects;
@@ -1742,10 +1739,10 @@ var
         Box := AControl as TRtfdBox;
         if (AControl is TRtfdClass) or (AControl is TRtfdInterface) then
         begin
-          Str := Box.Entity.Name;
-          Delete(Str, 1, LastDelimiter('.', Str));
+          Name := Box.Entity.Name;
+          Delete(Name, 1, LastDelimiter('.', Name));
           // if Pos(AClassname, s) = 1 then inc(Result)
-          if AClassname = Str then
+          if AClassname = Name then
             Inc(Result);
         end;
       end;
@@ -1850,11 +1847,11 @@ procedure TRtfdDiagram.CurrentEntityChanged;
 begin
   inherited;
   var
-  Posi := CurrentEntity;
-  while Assigned(Posi) and (not(Posi is TAbstractPackage)) do
-    Posi := Posi.Owner;
-  if Assigned(Posi) and (Posi <> Package) then
-    Package := Posi as TAbstractPackage;
+  ModelEntity := CurrentEntity;
+  while Assigned(ModelEntity) and (not(ModelEntity is TAbstractPackage)) do
+    ModelEntity := ModelEntity.Owner;
+  if Assigned(ModelEntity) and (ModelEntity <> Package) then
+    Package := ModelEntity as TAbstractPackage;
   if (CurrentEntity is TClass) or (CurrentEntity is TInterface) then
     ScreenCenterEntity(CurrentEntity);
 end;
@@ -4693,21 +4690,21 @@ var
   CName: string;
   Src: TControl;
   Dest: TRtfdBox;
-  FUMLForm: TFUMLForm;
+  UMLForm: TFUMLForm;
 begin
   Src := FPanel.GetFirstSelected;
   if Assigned(Src) and (Src is TRtfdBox) then
   begin
     if Src.Owner.Owner is TFUMLForm then
-      FUMLForm := Src.Owner.Owner as TFUMLForm
+      UMLForm := Src.Owner.Owner as TFUMLForm
     else
-      FUMLForm := nil;
-    LockFormUpdate(FUMLForm);
+      UMLForm := nil;
+    LockFormUpdate(UMLForm);
     CName := (Sender as TSpTBXItem).Caption;
     Dest := GetBox(CName);
     FPanel.FindManagedControl(Dest).Selected := True;
     FPanel.ConnectBoxes(Src, Dest);
-    UnlockFormUpdate(FUMLForm);
+    UnlockFormUpdate(UMLForm);
   end;
 end;
 

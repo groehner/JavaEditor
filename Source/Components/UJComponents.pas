@@ -3,7 +3,11 @@ unit UJComponents;
 interface
 
 uses
-  Classes, Graphics, Controls, Types, UAComponents;
+  Classes,
+  Graphics,
+  Controls,
+  Types,
+  UAComponents;
 
 const
   AncestorEvents1 = '|ancestorMoved|ancestorResized';

@@ -4418,15 +4418,17 @@ var
   Start, From, Till: Integer;
   Container: string;
 begin
-  Container := (Control as TJEComponent).GetContainerAdd;
-  Start := GetLNGStartComponents;
-  From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
-  Till := GetLineNumberWithFrom(Start, Container);
-  if Till > -1 then
-    if Control is TFXNode then
-      MoveBlock(From, Till, Start + 1, 0, '')
-    else
-      MoveBlock(From, Till, GetLNGEndComponents, 0, '');
+  if Control is TJEComponent then begin
+    Container := (Control as TJEComponent).GetContainerAdd;
+    Start := GetLNGStartComponents;
+    From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
+    Till := GetLineNumberWithFrom(Start, Container);
+    if Till > -1 then
+      if Control is TFXNode then
+        MoveBlock(From, Till, Start + 1, 0, '')
+      else
+        MoveBlock(From, Till, GetLNGEndComponents, 0, '');
+  end;
 end;
 
 procedure TFEditForm.ToForeground(Control: TControl);
@@ -4434,15 +4436,17 @@ var
   Start, From, Till: Integer;
   Container: string;
 begin
-  Container := (Control as TJEComponent).GetContainerAdd;
-  Start := GetLineNumberWith(_(LNGStartComponents));
-  From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
-  Till := GetLineNumberWithFrom(Start, Container);
-  if Till > -1 then
-    if Control is TFXNode then
-      MoveBlock(From, Till, GetLNGEndComponents, 0, '')
-    else
-      MoveBlock(From, Till, Start + 1, 0, '');
+  if Control is TJEComponent then begin
+    Container := (Control as TJEComponent).GetContainerAdd;
+    Start := GetLineNumberWith(_(LNGStartComponents));
+    From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
+    Till := GetLineNumberWithFrom(Start, Container);
+    if Till > -1 then
+      if Control is TFXNode then
+        MoveBlock(From, Till, GetLNGEndComponents, 0, '')
+      else
+        MoveBlock(From, Till, Start + 1, 0, '');
+  end;
 end;
 
 procedure TFEditForm.Go_To(const Str: string);

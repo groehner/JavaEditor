@@ -479,8 +479,8 @@ begin
     end;
     try
       RunJava.SaveToFile(Path, TEncoding.ANSI);
-    except on e: Exception do
-      ErrorMsg(Format(_(LNGCanNotCreateFile), [Path, e.Message]));
+    except on E: Exception do
+      ErrorMsg(Format(_(LNGCanNotCreateFile), [Path, E.Message]));
     end;
   finally
     FreeAndNil(RunJava);

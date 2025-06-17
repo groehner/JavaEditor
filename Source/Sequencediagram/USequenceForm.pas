@@ -361,7 +361,7 @@ begin
       with Conn do
         ConnStr := HideCrLf((StartControl as TLifeline).Participant) +
           GetArrowStyleAsString + HideCrLf((EndControl as TLifeline)
-          .Participant) + ' | ' + Conn.FMessage;
+          .Participant) + ' | ' + Conn.AMessage;
       StringList.Add(ConnStr);
     end;
   finally
@@ -617,7 +617,7 @@ begin
       Attributes := TConnectionAttributes.Create;
       try
         Attributes.ArrowStyle := casNew;
-        Attributes.FMessage := FConfiguration.SDNew;
+        Attributes.AMessage := FConfiguration.SDNew;
         Connections := FSequencePanel.GetConnections;
         Int := 0;
         Pos := 0;
@@ -832,7 +832,7 @@ begin
         (Conn.StartControl = Lifeline2) and (Conn.EndControl = Lifeline1) or
         (Conn.StartControl = Lifeline1) and (Conn.EndControl = Lifeline1) then
       begin
-        Width2 := Canvas.TextWidth(Conn.FMessage);
+        Width2 := Canvas.TextWidth(Conn.AMessage);
         if Conn.ArrowStyle = casNew then
           Width1 := Max(Width1, Width2 + Lifeline2.Width div 2)
         else
@@ -847,9 +847,9 @@ begin
           (ConnPrev.StartControl = Lifeline1) and
           (ConnPrev.EndControl = Lifeline2) then
         begin
-          Width2 := Canvas.TextWidth(ConnPrev.FMessage) +
+          Width2 := Canvas.TextWidth(ConnPrev.AMessage) +
             ConnPrev.EndControl.Width div 2;
-          Width3 := Canvas.TextWidth(Conn.FMessage) +
+          Width3 := Canvas.TextWidth(Conn.AMessage) +
             +ConnPrev.EndControl.Width div 2 - FMinDist;
           Width1 := Max(Max(Width1, Width2), Width3);
         end;
@@ -984,7 +984,7 @@ begin
     Attributes := TConnectionAttributes.Create;
     try
       Attributes.ArrowStyle := ArrowStyle;
-      Attributes.FMessage := BMessage;
+      Attributes.AMessage := BMessage;
       if Attributes.ArrowStyle = casNew then
         Lifeline2.Created := True;
       if Attributes.ArrowStyle = casClose then
@@ -1106,7 +1106,7 @@ begin
   if Assigned(Conn) and not FReadOnly then
   begin
     FEditConnection := Conn;
-    EMessage.Text := Conn.FMessage;
+    EMessage.Text := Conn.AMessage;
     EMessage.Font.Assign(Font);
     EMessage.SetBounds(Conn.TextRect.Left - 1, TBSequence.Height +
       Conn.TextRect.Top + 1, Round(Conn.TextRect.Width + 100),
@@ -1114,7 +1114,7 @@ begin
     EMessage.Visible := True;
     if EMessage.CanFocus then
       EMessage.SetFocus;
-    EMessage.SelStart := Length(Conn.FMessage);
+    EMessage.SelStart := Length(Conn.AMessage);
   end;
 end;
 
@@ -1162,7 +1162,7 @@ begin
   begin
     if Assigned(FEditConnection) then
     begin
-      FEditConnection.FMessage := EMessage.Text;
+      FEditConnection.AMessage := EMessage.Text;
       Modified := True;
       FSequencePanel.Invalidate;
     end;
@@ -1315,14 +1315,14 @@ begin
   Conn := FSequencePanel.Get2NdLastConnection;
   if Assigned(Conn) then
     for var I := 0 to Parameter.Count - 1 do
-      if Pos(Parameter.Names[I], Conn.FMessage) > 0 then
-        Conn.FMessage := ReplaceStr(Conn.FMessage, Parameter.Names[I],
+      if Pos(Parameter.Names[I], Conn.AMessage) > 0 then
+        Conn.AMessage := ReplaceStr(Conn.AMessage, Parameter.Names[I],
           Parameter.ValueFromIndex[I]);
   Conn := FSequencePanel.GetLastConnection;
   if Assigned(Conn) then
     for var I := 0 to Parameter.Count - 1 do
-      if Pos(Parameter.Names[I], Conn.FMessage) > 0 then
-        Conn.FMessage := ReplaceStr(Conn.FMessage, Parameter.Names[I],
+      if Pos(Parameter.Names[I], Conn.AMessage) > 0 then
+        Conn.AMessage := ReplaceStr(Conn.AMessage, Parameter.Names[I],
           Parameter.ValueFromIndex[I]);
 end;
 
@@ -1422,7 +1422,7 @@ begin
             FMessage := ReplaceStr(FAResult, '"', '')
           else
             FMessage := '';
-        Attributes.FMessage := FMessage;
+        Attributes.AMessage := FMessage;
         FSequencePanel.ConnectObjects(Lifeline1, Lifeline2, Attributes);
       end;
     finally

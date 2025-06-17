@@ -1492,7 +1492,7 @@ end;
 
 procedure TFGUIDesigner.ChangeStyle;
 begin
-  if FConfiguration.isDark then
+  if FConfiguration.IsDark then
     PopupMenu.Images := vilGUIDesignerDark
   else
     PopupMenu.Images := vilGuiDesignerLight;

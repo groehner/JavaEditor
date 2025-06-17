@@ -218,7 +218,7 @@ begin
     FMessages.DelInteractive(Pathname);
     if Assigned(TVFileStructure) then
       for var I := TVFileStructure.Items.Count - 1 downto 0 do
-        FreeAndNil(TVFileStructure.Items[I].Data);
+        Dispose(TVFileStructure.Items[I].Data);
   finally
     inherited;
   end;

@@ -222,10 +222,10 @@ type
 
     property IsModified: Boolean read FIsModified write SetModified;
     property IsMoving: Boolean read FIsMoving write FIsMoving;
-    property OnContentChanged: TNotifyEvent read FOnContentChanged
-      write FOnContentChanged;
     // Bitmap to be used as background for printing
     property BackBitmap: TBitmap read FBackBitmap write FBackBitmap;
+    property OnContentChanged: TNotifyEvent read FOnContentChanged
+      write FOnContentChanged;
     property OnModified: TBoolEvent read FOnModified write FOnModified;
     property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged
       write FOnSelectionChanged;
@@ -418,9 +418,9 @@ end;
 procedure TEssConnectPanel.ShowAll;
 var
   ZOrderArr: array of Integer;
-  NextZ, Count: Integer;
   ZNameArr: array of string;
-  ABox: TRtfdBox;
+  NextZ, Count: Integer;
+  Box: TRtfdBox;
 begin
   HideConnections;
 
@@ -435,8 +435,8 @@ begin
         .FControl);
       if (TManagedObject(FManagedObjects[I]).FControl is TRtfdBox) then
       begin
-        ABox := TManagedObject(FManagedObjects[I]).FControl as TRtfdBox;
-        ZNameArr[I] := ABox.Entity.Name + '-' + IntToStr(ZOrderArr[I]);
+        Box := TManagedObject(FManagedObjects[I]).FControl as TRtfdBox;
+        ZNameArr[I] := Box.Entity.Name + '-' + IntToStr(ZOrderArr[I]);
       end;
     end;
     ShowConnections;
@@ -454,8 +454,8 @@ begin
       if (Pos <= Count - 1) and TManagedObject(FManagedObjects[Pos]).FControl.Visible
       then
       begin
-        ABox := TManagedObject(FManagedObjects[Pos]).FControl as TRtfdBox;
-        ABox.Paint;
+        Box := TManagedObject(FManagedObjects[Pos]).FControl as TRtfdBox;
+        Box.Paint;
       end;
       Inc(NextZ);
     end;
@@ -2077,8 +2077,8 @@ begin
         CommentBox.TrMemo.Perform(EM_GETRECT, 0, LPARAM(@Rect));
         // TODO em_getrect from MyMsic
         FirstChar := CommentBox.TrMemo.Perform(EM_LINEINDEX,
-          // TODO EM_GETFIRSTVISIBLELINE from MyMisc
-          CommentBox.TrMemo.Perform(EM_GETFIRSTVISIBLELINE, 0, 0), 0);
+        // TODO EM_GETFIRSTVISIBLELINE from MyMisc
+        CommentBox.TrMemo.Perform(EM_GETFIRSTVISIBLELINE, 0, 0), 0);
         Str := Copy(CommentBox.TrMemo.Text, FirstChar + 1, MaxInt);
         Canvas.TextOut(Rect.Left, Rect.Top, ' '); // ensures font is selected
         OffsetRect(Rect, CommentBox.Left + CommentBox.TrMemo.Left,
@@ -2141,7 +2141,7 @@ begin
     var
     Conn := (FConnections[I] as TConnection);
     if Conn.FromControl.Visible and Conn.ToControl.Visible then
-      Str := Str + Conn.GetSVG;
+      Str := Str + Conn.SVG;
   end;
   Result := Str;
 end;

@@ -118,7 +118,7 @@ begin
   end;
   if Assigned(Conn) then
   begin
-    ERelation.Text := Conn.FMessage;
+    ERelation.Text := Conn.AMessage;
     LBConnections.ItemIndex := Ord(Conn.ArrowStyle);
     FIsTurned := False;
     if Conn.IsRecursiv then
@@ -146,7 +146,7 @@ begin
       Str := FConfiguration.SDClose;
     ERelation.Text := Str;
   end;
-  Result.FMessage := ERelation.Text;
+  Result.AMessage := ERelation.Text;
 end;
 
 end.

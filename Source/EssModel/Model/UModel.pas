@@ -77,9 +77,9 @@ type
     FGenericName: string;
     FImportname: string;
     FInner: Boolean;
+    FPathname: string;
     FSourceRead: Boolean;
   public
-    Pathname: string;
     constructor Create(Owner: TModelEntity); override;
     destructor Destroy; override;
     function GetFeatures: IModelIterator;
@@ -96,6 +96,7 @@ type
     property GenericName: string read FGenericName write FGenericName;
     property Importname: string read FImportname write FImportname;
     property Inner: Boolean read FInner write FInner;
+    property Pathname: string read FPathname write FPathname;
     property SourceRead: Boolean read FSourceRead write FSourceRead;
   end;
 
@@ -167,6 +168,7 @@ type
     function HasMain: Boolean;
     procedure SetAttributeScope(ScopeDepth, LineE: Integer);
     function GetFormattedDescription: string;
+
     property Annotation: string read FAnnotation write FAnnotation;
     property HasComment: Boolean read FHasComment write FHasComment;
     property HasSourceCode: Boolean read FHasSourceCode write FHasSourceCode;
@@ -328,7 +330,7 @@ type
     function FindClassifier(const CName: string;
       TheClass: TModelEntityClass = nil; CaseSense: Boolean = False)
       : TClassifier;
-    function FindClass(const Pathname: string): TClassifier;
+    function FindClass(const FPathname: string): TClassifier;
     function GetClassifiers: IModelIterator;
     function GetUnitDependencies: IModelIterator;
     function GetObjects(const Typ: string): TStringList;
@@ -555,25 +557,25 @@ end;
 function TLogicPackage.FindUnitPackage(const PName: string;
   CaseSense: Boolean = False): TUnitPackage;
 var
-  Posi: TAbstractPackage;
+  Package: TAbstractPackage;
   Compare: TStrCompare;
 begin
   Compare := CompareFunc[CaseSense];
   Result := nil;
   for var I := 0 to FPackages.Count - 1 do
   begin
-    Posi := FPackages[I] as TAbstractPackage;
-    if Posi is TLogicPackage then
+    Package := FPackages[I] as TAbstractPackage;
+    if Package is TLogicPackage then
     begin
-      Result := (Posi as TLogicPackage).FindUnitPackage(PName);
+      Result := (Package as TLogicPackage).FindUnitPackage(PName);
       if Assigned(Result) then
         Exit;
     end
-    else if Posi is TUnitPackage then
+    else if Package is TUnitPackage then
     begin
-      if Compare(Posi.Name, PName) = 0 then
+      if Compare(Package.Name, PName) = 0 then
       begin
-        Result := Posi as TUnitPackage;
+        Result := Package as TUnitPackage;
         Exit;
       end;
     end;
@@ -602,12 +604,12 @@ var
     while Ite.HasNext do
     begin
       var
-      Posi := Ite.Next;
-      if Posi is TLogicPackage then
-        InAddNested(Posi as TLogicPackage)
+      Package := Ite.Next;
+      if Package is TLogicPackage then
+        InAddNested(Package as TLogicPackage)
       else // Not logicpackage, must be unitpackage.
-        if (Posi.Name <> UNKNOWNPACKAGE_NAME) then
-          List.Add(Posi);
+        if (Package.Name <> UNKNOWNPACKAGE_NAME) then
+          List.Add(Package);
     end;
   end;
 
@@ -674,7 +676,7 @@ begin
     Cent := TClassifier(CIte.Next);
     Inc(Int);
     StringList.Add('#' + IntToStr(Int) + ' ' + Cent.Name + ' - ' + Cent.Importname +
-      ' - ' + Cent.Pathname);
+      ' - ' + Cent.FPathname);
     if (Cent is TClass) and Assigned((Cent as TClass).Ancestor) then
       StringList.Add('Ancestor: ' + (Cent as TClass).Ancestor.Name);
     StringList.Add('--- Attributes ---');
@@ -733,7 +735,7 @@ begin
     AClass.Name := NewName; // sets package too
     AddClass(AClass as TClass);
   end;
-  AClass.Pathname := Filename;
+  AClass.FPathname := Filename;
   Result := (AClass as TClass);
 end;
 
@@ -757,7 +759,7 @@ function TUnitPackage.MakeInterface(const NewName, Filename: string)
 begin
   Result := TInterface.Create(Self);
   Result.FName := NewName;
-  Result.Pathname := Filename;
+  Result.FPathname := Filename;
 end;
 
 procedure TUnitPackage.AddInterface(const AInterface: TInterface);
@@ -918,10 +920,10 @@ function TUnitPackage.FindClassifier(const CName: string;
 var
   Classi: TClassifier;
   MIte: IModelIterator;
-  Posi: TUnitPackage;
+  Package: TUnitPackage;
   Compare: TStrCompare;
 
-  function InFind(Posi: TUnitPackage): TClassifier;
+  function InFind(Package: TUnitPackage): TClassifier;
   var
     MIte: IModelIterator;
     Str: string;
@@ -929,16 +931,16 @@ var
     Result := nil;
     // Search in this unit
     if Assigned(TheClass) then
-      MIte := TModelIterator.Create(Posi.GetClassifiers, TheClass)
-    else if Assigned(Posi) then
+      MIte := TModelIterator.Create(Package.GetClassifiers, TheClass)
+    else if Assigned(Package) then
     begin
       try
-        MIte := Posi.GetClassifiers;
+        MIte := Package.GetClassifiers;
       except
         on e: Exception do
         begin
-          if Assigned(Posi) then
-            Str := Posi.ClassName
+          if Assigned(Package) then
+            Str := Package.ClassName
           else
             Str := 'p = nil';
           FConfiguration.Log('InFind(P : TUnitPackage): ' + Str, e);
@@ -971,8 +973,8 @@ begin
       MIte := GetUnitDependencies;
       while MIte.HasNext do
       begin
-        Posi := (MIte.Next as TUnitDependency).MyPackage;
-        Result := InFind(Posi);
+        Package := (MIte.Next as TUnitDependency).MyPackage;
+        Result := InFind(Package);
         if Assigned(Result) then
           Break;
       end;
@@ -983,7 +985,7 @@ begin
   end;
 end;
 
-function TUnitPackage.FindClass(const Pathname: string): TClassifier;
+function TUnitPackage.FindClass(const FPathname: string): TClassifier;
 begin
   Result := nil;
   var
@@ -992,7 +994,7 @@ begin
   begin
     var
     Classi := MIte.Next as TClassifier;
-    if Classi.Pathname = Pathname then
+    if Classi.FPathname = FPathname then
     begin
       Result := Classi;
       Break;
@@ -1041,7 +1043,7 @@ begin
   begin
     Cent := TClassifier(CIte.Next);
     StringList.Add(Cent.Name + ' - ' + Cent.Importname + ' - ' +
-      Cent.Pathname);
+      Cent.FPathname);
     StringList.Add('--- Attributes ---');
     AIte := Cent.GetAllAttributes;
     while AIte.HasNext do
@@ -1285,7 +1287,7 @@ end;
 
 function TClass.GetTyp: string;
 begin
-  if Pathname <> '' then
+  if FPathname <> '' then
     Result := Name
   else
     Result := Importname;

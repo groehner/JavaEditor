@@ -202,7 +202,7 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 629
         Height = 424
-        ActivePage = PGeneralOptions
+        ActivePage = PSequencediagram
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2

@@ -3,7 +3,10 @@ unit UAComponents;
 interface
 
 uses
-  Windows, Classes, Graphics, Controls,
+  Windows,
+  Classes,
+  Graphics,
+  Controls,
   UJEComponents;
 
 const

@@ -78,7 +78,8 @@ type
     property Number: Integer read FNumber write FNumber;
     property Pathname: string read FPathname;
     property PCaption: TPanel read FPCaption write FPCaption;
-    property WithColoredLines: Boolean read FWithColoredLines write FWithColoredLines;
+    property WithColoredLines: Boolean read FWithColoredLines
+      write FWithColoredLines;
   end;
 
 implementation
@@ -527,8 +528,8 @@ function TSynEditExDiff.CopyToClipboardFT(From, Till: Integer): Boolean;
 begin
   SelStart := RowColToCharIndex(BufferCoord(1, From + 1));
   if Till + 2 > Lines.Count then
-    SelEnd := RowColToCharIndex(BufferCoord(Length(Lines[Lines.Count - 1]) +
-      1, Till + 1))
+    SelEnd := RowColToCharIndex(BufferCoord(Length(Lines[Lines.Count - 1]) + 1,
+      Till + 1))
   else
     SelEnd := RowColToCharIndex(BufferCoord(1, Till + 2)) - 2;
   Result := (SelLength = 0);
@@ -545,8 +546,8 @@ begin
   DeleteObjects(From, Till);
   SelStart := RowColToCharIndex(BufferCoord(1, From + 1));
   if Till + 2 > Lines.Count then
-    SelEnd := RowColToCharIndex(BufferCoord(Length(Lines[Lines.Count - 1]) +
-      1, Till + 1))
+    SelEnd := RowColToCharIndex(BufferCoord(Length(Lines[Lines.Count - 1]) + 1,
+      Till + 1))
   else
     SelEnd := RowColToCharIndex(BufferCoord(1, Till + 2)) - 2;
   try
@@ -557,8 +558,9 @@ begin
     end
     else
       PasteFromClipboard;
-  except on e: Exception do
-    ErrorMsg(e.Message);
+  except
+    on e: Exception do
+      ErrorMsg(e.Message);
   end;
   CreateObjects(From, Till, ANr);
   SetModified(True);

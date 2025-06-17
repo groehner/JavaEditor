@@ -26,13 +26,6 @@ var
 type
 
   TStringListReader = class
-    constructor Create(Filename: string);
-    function hasOldFormat: Boolean;
-    function nextLineIndent: Integer;
-    procedure ReadLine;
-    procedure LineBack;
-    function GetKind(Kind: string): Byte;
-    destructor Destroy; override;
   private
     FARect: TRect;
     FIndentAsInt: Integer;
@@ -43,7 +36,15 @@ type
     FStringList: TStringList;
     FText: string;
     FVal: string;
+    destructor Destroy; override;
+    function NextLineIndent: Integer;
+    function GetKind(Kind: string): Byte;
   public
+    constructor Create(Filename: string);
+    function HasOldFormat: Boolean;
+    procedure LineBack;
+    procedure ReadLine;
+
     property ARect: TRect read FARect;
     property IndentAsInt: Integer read FIndentAsInt;
     property Key: string read FKey;
@@ -121,6 +122,7 @@ type
     procedure Debug1;
     procedure Collapse; virtual;
     procedure CollapseCase; virtual;
+
     property Kind: Byte read FKind;
     property List: TStrList read FList;
     property Next: TStrElement read FNext write FNext;
@@ -361,7 +363,7 @@ type
     property ListImage: TListImage read FListImage;
     property LoadError: Boolean read FLoadError;
     property PuzzleMode: Integer read FPuzzleMode;
-    property RctList: TRect read FRctList;
+    property RctList: TRect read FRctList write FRctList;
     property SwitchWithCaseLine: Boolean read FSwitchWithCaseLine
       write FSwitchWithCaseLine;
   end;
@@ -421,12 +423,12 @@ begin
   end;
 end;
 
-function TStringListReader.hasOldFormat: Boolean;
+function TStringListReader.HasOldFormat: Boolean;
 begin
   Result := (FStringList.Count > 0) and (FStringList[0] <> 'JSG: true');
 end;
 
-function TStringListReader.nextLineIndent: Integer;
+function TStringListReader.NextLineIndent: Integer;
 var
   Str: string;
   Posi: Integer;
@@ -1421,7 +1423,7 @@ begin
   FThenElem.LoadFromReader(Reader);
   FreeAndNil(FThenElem.FNext); // don't use empty statement
   Current := FThenElem;
-  while Reader.nextLineIndent = MyIndent do
+  while Reader.NextLineIndent = MyIndent do
   begin
     Reader.ReadLine;
     Elem := GetStatementFromReader(Reader, FList, Self);
@@ -1433,7 +1435,7 @@ begin
   FElseElem.LoadFromReader(Reader);
   FreeAndNil(FElseElem.FNext); // don't use empty statement
   Current := FElseElem;
-  while Reader.nextLineIndent = MyIndent do
+  while Reader.NextLineIndent = MyIndent do
   begin
     Reader.ReadLine;
     Elem := GetStatementFromReader(Reader, FList, Self);
@@ -1730,7 +1732,7 @@ begin
   FreeAndNil(FDoElem.FNext); // don't use empty statement
   Current := FDoElem;
   MyIndent := Reader.FIndentAsInt;
-  while Reader.nextLineIndent = MyIndent do
+  while Reader.NextLineIndent = MyIndent do
   begin
     Reader.ReadLine;
     Elem := GetStatementFromReader(Reader, FList, Self);
@@ -2352,7 +2354,7 @@ begin
   IPos := 0;
   inherited LoadFromReader(Reader);
   MyIndent := Reader.FIndentAsInt;
-  while Reader.nextLineIndent = MyIndent do
+  while Reader.NextLineIndent = MyIndent do
   begin
     Reader.ReadLine;
     if IPos > High(FCaseElems) then
@@ -2365,7 +2367,7 @@ begin
     FCaseElems[IPos].FNext.LoadFromReader(Reader);
     Current := FCaseElems[IPos].FNext;
 
-    while Reader.nextLineIndent = MyIndent + 2 do
+    while Reader.NextLineIndent = MyIndent + 2 do
     begin
       Reader.ReadLine;
       Elem := GetStatementFromReader(Reader, FList, Self);
@@ -2883,7 +2885,7 @@ begin
   FTextPos := Reader.FPoint;
   Current := Self;
 
-  while Reader.nextLineIndent = 4 do
+  while Reader.NextLineIndent = 4 do
   begin
     Reader.ReadLine;
     Elem := GetStatementFromReader(Reader, Self, Self);

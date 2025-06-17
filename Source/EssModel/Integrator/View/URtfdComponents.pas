@@ -83,33 +83,33 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure OnChildMouseDblClick(Sender: TObject);
     procedure OnEditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure PaintShadow(Rounded: Boolean; Shadow: Integer; Canvas: TCanvas;
+      ARect: TRect);
+    function GetTopH: Integer;
+    function MyGetClientRect: TRect;
   protected
     procedure Notification(AComponent: TComponent;
       Operation: Classes.TOperation); override;
-  public
-    constructor Create(Owner: TComponent; Entity: TModelEntity;
-      Frame: TAFrameDiagram; MinVisibility: TVisibility); reintroduce; virtual;
-    destructor Destroy; override;
-    procedure PaintShadow(Rounded: Boolean; Shadow: Integer; Canvas: TCanvas;
-      ARect: TRect);
-    procedure RefreshEntities; virtual;
-    function GetPathname: string; virtual; abstract;
-    function GetBoundsRect: TRect; virtual;
-    function MyGetClientRect: TRect;
-    procedure Paint; override;
     procedure Change(Sender: TModelEntity); virtual;
     procedure AddChild(Sender: TModelEntity; NewChild: TModelEntity); virtual;
     procedure Remove(Sender: TModelEntity); virtual;
     procedure EntityChange(Sender: TModelEntity); virtual;
+  public
+    constructor Create(Owner: TComponent; Entity: TModelEntity;
+      Frame: TAFrameDiagram; MinVisibility: TVisibility); reintroduce; virtual;
+    destructor Destroy; override;
+    procedure RefreshEntities; virtual;
+    function GetPathname: string; virtual; abstract;
+    function GetBoundsRect: TRect; virtual;
+    procedure Paint; override;
     procedure SetParameters(ShowParameter, SortOrder, ShowIcons,
-      ShadowWidth: Integer; AFont: TFont; const TypeBinding: string);
+      ShadowWidth: Integer; Font: TFont; const TypeBinding: string);
     function IsJUnitTestclass: Boolean;
     procedure CloseEdit;
     procedure Lock(ALock: Boolean);
     procedure MakeBitmap;
     procedure ChangeStyle(BlackAndWhite: Boolean = False);
     function GetSVG: string; virtual;
-    function GetTopH: Integer;
 
     property MinVisibility: TVisibility read FMinVisibility
       write SetMinVisibility;
@@ -174,7 +174,7 @@ type
     function GetPanelRect(Int: Integer): TRect;
     function GetPanelNr(Posi: TPoint): Integer;
   public
-    constructor Create(Owner: TComponent; const Str: string;
+    constructor Create(Owner: TComponent; const Name: string;
       Frame: TAFrameDiagram; MinVisibility: TVisibility; HandleSize: Integer);
       reintroduce;
     destructor Destroy; override;
@@ -438,12 +438,12 @@ constructor TRtfdBox.Create(Owner: TComponent; Entity: TModelEntity;
 begin
   inherited Create(Owner);
   BorderWidth := 3;
-  Self.FFrame := Frame;
-  Self.FEntity := Entity;
-  Self.FMinVisibility := MinVisibility;
+  FFrame := Frame;
+  FEntity := Entity;
+  FMinVisibility := MinVisibility;
   Font.Assign(Frame.Diagram.Font);
-  Top := (Frame.ClientHeight - Self.Width) div 2 + Random(50) - 25;
-  Left := (Frame.ClientWidth - Self.Width) div 2 + Random(50) - 25;
+  Top := (Frame.ClientHeight - Width) div 2 + Random(50) - 25;
+  Left := (Frame.ClientWidth - Width) div 2 + Random(50) - 25;
   ParentBackground := True;
   DoubleBuffered := False; // bad for debugging
   FShadowWidth := FConfiguration.ShadowWidth;
@@ -878,15 +878,15 @@ begin
 end;
 
 procedure TRtfdBox.SetParameters(ShowParameter, SortOrder, ShowIcons,
-  ShadowWidth: Integer; AFont: TFont; const TypeBinding: string);
+  ShadowWidth: Integer; Font: TFont; const TypeBinding: string);
 begin
-  Self.Font.Assign(AFont);
-  Canvas.Font.Assign(AFont);
-  Self.FShowParameter := ShowParameter;
-  Self.FSortOrder := SortOrder;
-  Self.FShowIcons := ShowIcons;
-  Self.FTypeBinding := TypeBinding;
-  Self.FShadowWidth := ShadowWidth;
+  Self.Font.Assign(Font);
+  Canvas.Font.Assign(Font);
+  FShowParameter := ShowParameter;
+  FSortOrder := SortOrder;
+  FShowIcons := ShowIcons;
+  FTypeBinding := TypeBinding;
+  FShadowWidth := ShadowWidth;
   RefreshEntities;
 end;
 
@@ -1023,7 +1023,7 @@ constructor TRtfdClass.Create(Owner: TComponent; Entity: TModelEntity;
   Frame: TAFrameDiagram; MinVisibility: TVisibility);
 begin
   inherited Create(Owner, Entity, Frame, MinVisibility);
-  Self.FShowStatic := True;
+  FShowStatic := True;
   FPathname := (Entity as TClass).Pathname;
   PopupMenu := Frame.PopMenuClass;
   Entity.AddListener(IAfterClassListener(Self));
@@ -1215,7 +1215,7 @@ constructor TRtfdObject.Create(Owner: TComponent; Entity: TModelEntity;
   Frame: TAFrameDiagram; MinVisibility: TVisibility);
 begin
   inherited Create(Owner, Entity, Frame, MinVisibility);
-  Self.FShowStatic := False;
+  FShowStatic := False;
   PopupMenu := Frame.PopMenuObject;
   Entity.AddListener(IAfterObjektListener(Self));
   FSortOrder := FConfiguration.DiSortOrder;
@@ -1230,7 +1230,7 @@ end;
 destructor TRtfdObject.Destroy;
 begin
   FEntity.RemoveListener(IAfterObjektListener(Self));
-  // FreeAndNil(FEntity); this is wrong
+  // FreeAndNil(FEntity) this is wrong
   inherited;
 end;
 
@@ -1338,14 +1338,14 @@ end;
 type
   TMoveCracker = class(TControl);
 
-constructor TRtfdCommentBox.Create(Owner: TComponent; const Str: string;
+constructor TRtfdCommentBox.Create(Owner: TComponent; const Name: string;
   Frame: TAFrameDiagram; MinVisibility: TVisibility; HandleSize: Integer);
 var
-  E: TModelEntity;
+  ModelEntity: TModelEntity;
 begin
-  E := TModelEntity.Create(nil);
-  E.Name := Str;
-  inherited Create(Owner, E, Frame, MinVisibility);
+  ModelEntity := TModelEntity.Create(nil);
+  ModelEntity.Name := Name;
+  inherited Create(Owner, ModelEntity, Frame, MinVisibility);
   Self.FHandleSize := HandleSize;
   FTrMemo := TStyledMemo.Create(Owner);
   FTrMemo.Brush.Color := FConfiguration.CommentColor;
@@ -1603,7 +1603,7 @@ const
 procedure TVisibilityLabel.Paint;
 var
   ARect: TRect;
-  Str: string;
+  Visibi: string;
   PictureNr, Distance: Integer;
   Style: TFontStyles;
   Vil: TVirtualImageList;
@@ -1650,18 +1650,18 @@ begin
         Canvas.Font.Style := [];
         case FEntity.Visibility of
           viPrivate:
-            Str := '- ';
+            Visibi := '- ';
           viPackage:
-            Str := '~ ';
+            Visibi := '~ ';
           viProtected:
-            Str := '# ';
+            Visibi := '# ';
           viPublic:
-            Str := '+ ';
+            Visibi := '+ ';
         end;
         if PictureNr = 8 then
-          Str := 'c ';
+          Visibi := 'c ';
         Canvas.Font.Pitch := fpFixed;
-        Canvas.TextOut(ARect.Left + 4, ARect.Top, Str);
+        Canvas.TextOut(ARect.Left + 4, ARect.Top, Visibi);
         Distance := Canvas.TextWidth('+ ');
         Canvas.Font.Style := Style;
         Canvas.TextOut(ARect.Left + 4 + Distance, ARect.Top, Caption);
@@ -1680,10 +1680,9 @@ end;
 function TVisibilityLabel.GetSVG(OwnerRect: TRect): string;
 var
   PictureNr: Integer;
-  Str, Fontstyle, Icon, Attribut, Span: string;
+  Visibi, Fontstyle, Icon, Attribut, Span: string;
   Chr: Char;
   BaseX, BaseY: Real;
-
 begin
   Fontstyle := '';
   if FConfiguration.RelationshipAttributesBold and (FEntity is TAttribute) and
@@ -1730,7 +1729,7 @@ begin
         // SVG start output at left/baseline of text
         BaseY := Top + Round(0.65 * Height);
         case Chr of
-          'C':
+          'c':
             begin
               BaseX := BaseX + 1.5;
               BaseY := BaseY + 0.5;
@@ -1775,23 +1774,23 @@ begin
         case FEntity.Visibility of
           viPrivate:
             begin
-              Str := '-';
+              Visibi := '-';
               BaseX := Left + 1;
             end;
           viPackage:
-            Str := '~';
+            Visibi := '~';
           viProtected:
-            Str := '#';
+            Visibi := '#';
           viPublic:
-            Str := '+';
+            Visibi := '+';
         end;
         if PictureNr = 8 then
-          Str := 'c';
+          Visibi := 'c';
 
-        Result := GetSVGText(BaseX, BaseY, '', Str);
+        Result := GetSVGText(BaseX, BaseY, '', Visibi);
         Span := '<tspan x=' + IntToVal(Left + Font.Size + 4) + Fontstyle + '>' +
           ConvertLtGt(Text) + '</tspan>';
-        Insert(span, Result, Pos('>' + Str, Result) + 2);
+        Insert(span, Result, Pos('>' + Visibi, Result) + 2);
       end;
     2:
       Result := GetSVGText(Left, Top + Round(0.65 * Height) + 1,
@@ -1815,7 +1814,7 @@ end;
 constructor TRtfdClassName.Create(Owner: TComponent; Entity: TModelEntity);
 var
   DeviceContext: THandle;
-  Str, TypeBinding: string;
+  Name, TypeBinding: string;
 begin
   inherited Create(Owner, Entity);
 
@@ -1828,8 +1827,8 @@ begin
   Caption := Entity.Name;
   FSingleLineHeight := Height;
 
-  Str := GetShortTypeWith(Entity.Name);
-  FTypeParameter := GenericOf(Str); // class<Parameter>
+  Name := GetShortTypeWith(Entity.Name);
+  FTypeParameter := GenericOf(Name); // class<Parameter>
   if (FTypeParameter <> '') and FConfiguration.ShowClassparameterSeparately then
   begin
     // parameterized class
@@ -1845,7 +1844,7 @@ begin
     FTextWidthParameter := Canvas.TextWidth(FTypeAndBinding) + 12;
     FExtentX := FTextWidthParameter div 2 + 1;
     FExtentY := Abs(Font.Height);
-    Caption := WithoutGeneric(Str);
+    Caption := WithoutGeneric(Name);
     Canvas.Font.Style := [fsBold];
     Canvas.Handle := 0;
     ReleaseDC(0, DeviceContext);
@@ -1870,20 +1869,20 @@ end;
 
 procedure TRtfdClassName.EntityChange(Sender: TModelEntity);
 var
-  Str: string;
+  Name: string;
 begin
   if (Owner as TRtfdBox).FFrame.Diagram.Package <> FEntity.Owner
   then
-    Str := FEntity.Fullname
+    Name := FEntity.Fullname
   else
-    Str := FEntity.Name;
-  Caption := ReplaceStr(Str, '$', '.');
+    Name := FEntity.Name;
+  Caption := ReplaceStr(Name, '$', '.');
 end;
 
 procedure TRtfdClassName.Paint;
 var
   ARect: TRect;
-  Str: string;
+  Name: string;
   Posi: Integer;
   HeadColor: TColor;
 
@@ -1918,16 +1917,16 @@ begin
     ARect.Right := ARect.Right - FExtentX - FConfiguration.ShadowWidth;
     Posi := Pos(#13#10'{abstract}', Caption);
     if Posi > 0 then
-      Str := Copy(Caption, 1, Posi - 1)
+      Name := Copy(Caption, 1, Posi - 1)
     else
-      Str := Caption;
-    DrawText(Canvas.Handle, PChar(Str), Length(Str), ARect, DT_CENTER);
+      Name := Caption;
+    DrawText(Canvas.Handle, PChar(Name), Length(Name), ARect, DT_CENTER);
     if Posi > 0 then
     begin
       Canvas.Font.Style := [fsItalic];
       ARect.Top := ARect.Top + FSingleLineHeight;
-      Str := '{abstract}';
-      DrawText(Canvas.Handle, PChar(Str), Length(Str), ARect, DT_CENTER);
+      Name := '{abstract}';
+      DrawText(Canvas.Handle, PChar(Name), Length(Name), ARect, DT_CENTER);
     end;
 
     // draw parameter
@@ -1950,25 +1949,25 @@ end;
 
 function TRtfdClassName.GetSVG(OwnerRect: TRect): string;
 var
-  X, Y, Posi: Integer;
-  Str, Attribut: string;
+  XPos, YPos, Posi: Integer;
+  Name, Attribut: string;
 begin
   Attribut := ' font-weight="bold" text-anchor="middle"';
   if FEntity.IsAbstract then
     Attribut := Attribut + ' font-style="italic"';
-  X := OwnerRect.Width div 2;
-  Y := Top + 2 * FExtentY + Round(0.65 * FSingleLineHeight) + 1;
+  XPos := OwnerRect.Width div 2;
+  YPos := Top + 2 * FExtentY + Round(0.65 * FSingleLineHeight) + 1;
   Posi := Pos(#13#10'{abstract}', Caption);
   if Posi > 0 then
-    Str := Copy(Caption, 1, Posi - 1)
+    Name := Copy(Caption, 1, Posi - 1)
   else
-    Str := Caption;
-  Result := GetSVGText(X, Y, Attribut, Str);
+    Name := Caption;
+  Result := GetSVGText(XPos, YPos, Attribut, Name);
   if Posi > 0 then
   begin
     Attribut := ' text-anchor="middle" font-style="italic"';
-    Y := Y + FSingleLineHeight;
-    Result := Result + GetSVGText(X, Y, Attribut, '{abstract}');
+    YPos := YPos + FSingleLineHeight;
+    Result := Result + GetSVGText(XPos, YPos, Attribut, '{abstract}');
   end;
 end;
 
@@ -2024,14 +2023,6 @@ var
   Alig: Integer;
   ARect: TRect;
   HeadColor: TColor;
-
-  function isDark(Color: TColor): Boolean;
-  begin
-    var
-    Val := Max(GetRValue(Color), Max(GetGValue(Color), GetBValue(Color)));
-    Result := (Val <= 128);
-  end;
-
 begin
   SetColors;
   if FTransparent then
@@ -2049,9 +2040,9 @@ begin
   end;
 
   HeadColor := (Owner as TRtfdBox).Canvas.Brush.Color;
-  if isDark(HeadColor) and isDark(FForegroundColor) then
+  if IsColorDark(HeadColor) and IsColorDark(FForegroundColor) then
     Canvas.Font.Color := FForegroundColor
-  else if not isDark(HeadColor) and not isDark(FForegroundColor) then
+  else if not IsColorDark(HeadColor) and not IsColorDark(FForegroundColor) then
     Canvas.Font.Color := FBackgroundColor;
 
   ARect := ClientRect;
@@ -2061,14 +2052,14 @@ end;
 
 function TRtfdObjectName.GetSVG(OwnerRect: TRect): string;
 var
-  X: Integer;
+  XPos: Integer;
   Attribut: string;
 begin
   Attribut := ' font-weight="bold" text-anchor="middle"';
   if fsUnderline in Font.Style then
     Attribut := Attribut + ' text-decoration="underline"';
-  X := OwnerRect.Width div 2;
-  Result := GetSVGText(X, Top + Height - 4, Attribut, Text);
+  XPos := OwnerRect.Width div 2;
+  Result := GetSVGText(XPos, Top + Height - 4, Attribut, Text);
 end;
 
 { TRtfdInterfaceName }
@@ -2101,16 +2092,16 @@ end;
 
 function TRtfdInterfaceName.GetSVG(OwnerRect: TRect): string;
 var
-  X, Y: Integer;
+  XPos, YPos: Integer;
   Attribut: string;
 begin
   Attribut := ' text-anchor="middle"';
-  X := OwnerRect.Width div 2;
-  Y := Top + Round(0.65 * FSingleLineHeight) + 1 - FSingleLineHeight;
-  Result := GetSVGText(X, Y, Attribut, '<<interface>>');
+  XPos := OwnerRect.Width div 2;
+  YPos := Top + Round(0.65 * FSingleLineHeight) + 1 - FSingleLineHeight;
+  Result := GetSVGText(XPos, YPos, Attribut, '<<interface>>');
   Attribut := ' font-weight="bold" text-anchor="middle"';
-  Y := Y + FSingleLineHeight;
-  Result := Result + GetSVGText(X, Y, Attribut, Text);
+  YPos := YPos + FSingleLineHeight;
+  Result := Result + GetSVGText(XPos, YPos, Attribut, Text);
 end;
 
 { TRtfdSeparator }
@@ -2202,7 +2193,7 @@ const
     clGray, clRed);
   // otConstructor, otProcedure, otFunction, otDestructor,);
 var
-  Str: string;
+  Name: string;
   Ite: IModelIterator;
   Parameter: TParameter;
   ParameterCount: Integer;
@@ -2212,11 +2203,11 @@ begin
   // visibility name ( parameter-list ) : return-type-expression { property-string }
   ParameterCount := 0;
   ShowParameter := (Owner as TRtfdBox).ShowParameter;
-  Str := FOperation.Name;
+  Name := FOperation.Name;
 
   if ShowParameter > 1 then
   begin
-    Str := Str + '(';
+    Name := Name + '(';
     Ite := FOperation.GetParameters;
     while Ite.HasNext do
     begin
@@ -2226,42 +2217,42 @@ begin
           2:
             Inc(ParameterCount);
           3:
-            Str := Str + IntegerInsteadOfInt
+            Name := Name + IntegerInsteadOfInt
               (Parameter.TypeClassifier.GetShortType) + ', ';
           4:
             if FConfiguration.StartWithDatatype then
-              Str := Str + IntegerInsteadOfInt
+              Name := Name + IntegerInsteadOfInt
                 (Parameter.TypeClassifier.GetShortType) + ' ' +
                 Parameter.Name + ', '
             else
-              Str := Str + Parameter.Name + ': ' + IntegerInsteadOfInt
+              Name := Name + Parameter.Name + ': ' + IntegerInsteadOfInt
                 (Parameter.TypeClassifier.GetShortType) + ', ';
         end;
     end;
     if (ShowParameter = 2) and (ParameterCount > 0) then
-      Str := Str + '...';
-    if Copy(Str, Length(Str) - 1, 2) = ', ' then
-      Delete(Str, Length(Str) - 1, 2); // delete last comma
-    Str := Str + ')';
+      Name := Name + '...';
+    if Copy(Name, Length(Name) - 1, 2) = ', ' then
+      Delete(Name, Length(Name) - 1, 2); // delete last comma
+    Name := Name + ')';
   end;
 
   if ShowParameter > 0 then
   begin
     if Assigned(FOperation.ReturnValue) then
       if FConfiguration.StartWithDatatype then
-        Str := IntegerInsteadOfInt(FOperation.ReturnValue.GetShortType) +
-          ' ' + Str
+        Name := IntegerInsteadOfInt(FOperation.ReturnValue.GetShortType) +
+          ' ' + Name
       else
-        Str := Str + ': ' + IntegerInsteadOfInt
+        Name := Name + ': ' + IntegerInsteadOfInt
           (FOperation.ReturnValue.GetShortType)
     else if (FOperation.OperationType <> otConstructor) and FConfiguration.UseVoid
     then
       if FConfiguration.StartWithDatatype then
-        Str := 'void ' + Str
+        Name := 'void ' + Name
       else
-        Str := Str + ': void';
+        Name := Name + ': void';
   end;
-  Caption := Str;
+  Caption := Name;
   Font.Style := [];
   Font.Color := FForegroundColor;
   if FOperation.IsAbstract then

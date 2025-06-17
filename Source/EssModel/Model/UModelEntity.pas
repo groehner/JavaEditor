@@ -152,6 +152,7 @@ begin
   FreeAndNil(FDocumentation);
   Dec(DocN);
   try
+    FListeners.Clear;
     FreeAndNil(FListeners);   // here we get a memory leak
   except
     on E: Exception do

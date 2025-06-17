@@ -149,9 +149,9 @@ begin
 
             Result := not FCancel;
           except
-            on e: Exception do
+            on E: Exception do
               EFile.Text := Format(_(LNGCanNotCreateFile),
-                [AFileName, e.Message]);
+                [AFileName, E.Message]);
           end;
         finally
           InternetCloseHandle(HURL);

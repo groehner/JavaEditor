@@ -109,6 +109,11 @@ const
   LNGDoesNotExist = 'doesn''t exist!';
   LNGCanNotCreateFile = 'Can not create file %s! Error: %s';
   LNGCanNotCreateDirectory = 'Can not create directory %s!';
+  LNGCanNotRead = 'Can not read file %s!';
+  LNGCanNotOpen = 'Can not open file %s!';
+  LNGCanNotWrite = 'Can not write file %s!';
+  LNGCanNotReadRegistry = 'Can not read registry %s';
+  LNGCanNotWriteRegistry = 'Can not write registry %s';
   LNGProject = 'Project';
   LNGStructogram = 'Structogram';
   LNGSequenceDiagram = 'Sequence diagram';

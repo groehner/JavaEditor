@@ -431,7 +431,7 @@ begin
   // comparing whole lines of text, we'll build an array of hashes for each line
   // in the source files. Each line is represented by a (virtually) unique
   // hash that is based on the contents of that line. Also, since the
-  // likelihood of 2 Different lines generating the same hash is so small,
+  // likelihood of 2 different lines generating the same hash is so small,
   // we can safely ignore that possibility.
 
   try

@@ -70,26 +70,26 @@ uses
 
 constructor TSearchOptions.Create;
 begin
-  FSearchText:= FConfiguration.ReadStringU('SearchReplace', 'FSearchText', '');
-  FSearchTextHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FSearchTextHistory', ''));
-  FReplaceText:= FConfiguration.ReadStringU('SearchReplace', 'FReplaceText', '');
-  FReplaceTextHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FReplaceTextHistory', ''));
+  FSearchText:= FConfiguration.ReadStringU('SearchReplace', 'SearchText', '');
+  FSearchTextHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'SearchTextHistory', ''));
+  FReplaceText:= FConfiguration.ReadStringU('SearchReplace', 'ReplaceText', '');
+  FReplaceTextHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'ReplaceTextHistory', ''));
 
-  FReplace:= FConfiguration.ReadBoolU('SearchReplace', 'FReplace', False);
-  FCaseSensitive:= FConfiguration.ReadBoolU('SearchReplace', 'FCaseSensitive', False);
-  FWholeWords:= FConfiguration.ReadBoolU('SearchReplace', 'FWholeWords', False);
-  FFromCursor:= FConfiguration.ReadBoolU('SearchReplace', 'FFromCursor', False);
-  FSelectionOnly:= FConfiguration.ReadBoolU('SearchReplace', 'FSelectionOnly', False);
-  FExcludeCommentsAndStrings:= FConfiguration.ReadBoolU('SearchReplace', 'FExcludeCommentsAndStrings', False);
-  FRegEx:= FConfiguration.ReadBoolU('SearchReplace', 'FRegEx', False);
+  FReplace:= FConfiguration.ReadBoolU('SearchReplace', 'Replace', False);
+  FCaseSensitive:= FConfiguration.ReadBoolU('SearchReplace', 'CaseSensitive', False);
+  FWholeWords:= FConfiguration.ReadBoolU('SearchReplace', 'WholeWords', False);
+  FFromCursor:= FConfiguration.ReadBoolU('SearchReplace', 'FromCursor', False);
+  FSelectionOnly:= FConfiguration.ReadBoolU('SearchReplace', 'SelectionOnly', False);
+  FExcludeCommentsAndStrings:= FConfiguration.ReadBoolU('SearchReplace', 'ExcludeCommentsAndStrings', False);
+  FRegEx:= FConfiguration.ReadBoolU('SearchReplace', 'RegEx', False);
   FBackwards:= False;
 
   FGrepAction:= FConfiguration.ReadIntegerU('SearchReplace', 'Where', 1);
-  FDirectory:= FConfiguration.ReadStringU('SearchReplace', 'FDirectory', '');
-  FDirectoryHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FDirectoryHistory', ''));
-  FFilemask:= FConfiguration.ReadStringU('SearchReplace', 'FFilemask', '*.java');
-  FFilemaskHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FFilemaskHistory', ''));
-  FIncludeSubdirs:= FConfiguration.ReadBoolU('SearchReplace', 'FIncludeSubdirs', True);
+  FDirectory:= FConfiguration.ReadStringU('SearchReplace', 'Directory', '');
+  FDirectoryHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'DirectoryHistory', ''));
+  FFilemask:= FConfiguration.ReadStringU('SearchReplace', 'Filemask', '*.java');
+  FFilemaskHistory:= LoadComboBoxItems(FConfiguration.ReadStringU('SearchReplace', 'FilemaskHistory', ''));
+  FIncludeSubdirs:= FConfiguration.ReadBoolU('SearchReplace', 'IncludeSubdirs', True);
 end;
 
 procedure TSearchOptions.LoadToForm(Form: TForm);
@@ -177,25 +177,25 @@ end;
 
 procedure TSearchOptions.SaveSearchOptions;
 begin
-  FConfiguration.WriteStringU('SearchReplace', 'FSearchText', FSearchText);
-  FConfiguration.WriteStringU('SearchReplace', 'FSearchTextHistory', SaveComboBoxItems(FSearchTextHistory));
-  FConfiguration.WriteStringU('SearchReplace', 'FReplaceText', FReplaceText);
-  FConfiguration.WriteStringU('SearchReplace', 'FReplaceTextHistory', SaveComboBoxItems(FReplaceTextHistory));
+  FConfiguration.WriteStringU('SearchReplace', 'SearchText', FSearchText);
+  FConfiguration.WriteStringU('SearchReplace', 'SearchTextHistory', SaveComboBoxItems(FSearchTextHistory));
+  FConfiguration.WriteStringU('SearchReplace', 'ReplaceText', FReplaceText);
+  FConfiguration.WriteStringU('SearchReplace', 'ReplaceTextHistory', SaveComboBoxItems(FReplaceTextHistory));
 
-  FConfiguration.WriteBoolU('SearchReplace', 'FReplace', FReplace);
-  FConfiguration.WriteBoolU('SearchReplace', 'FCaseSensitive', FCaseSensitive);
-  FConfiguration.WriteBoolU('SearchReplace', 'FWholeWords', FWholeWords);
-  FConfiguration.WriteBoolU('SearchReplace', 'FFromCursor', FFromCursor);
-  FConfiguration.WriteBoolU('SearchReplace', 'FSelectionOnly', FSelectionOnly);
-  FConfiguration.WriteBoolU('SearchReplace', 'FExcludeCommentsAndStrings', FExcludeCommentsAndStrings);
-  FConfiguration.WriteBoolU('SearchReplace', 'FRegEx', FRegEx);
+  FConfiguration.WriteBoolU('SearchReplace', 'Replace', FReplace);
+  FConfiguration.WriteBoolU('SearchReplace', 'CaseSensitive', FCaseSensitive);
+  FConfiguration.WriteBoolU('SearchReplace', 'WholeWords', FWholeWords);
+  FConfiguration.WriteBoolU('SearchReplace', 'FromCursor', FFromCursor);
+  FConfiguration.WriteBoolU('SearchReplace', 'SelectionOnly', FSelectionOnly);
+  FConfiguration.WriteBoolU('SearchReplace', 'ExcludeCommentsAndStrings', FExcludeCommentsAndStrings);
+  FConfiguration.WriteBoolU('SearchReplace', 'RegEx', FRegEx);
 
   FConfiguration.WriteIntegerU('SearchReplace', 'Where', FGrepAction);
-  FConfiguration.WriteStringU('SearchReplace', 'FDirectory', FDirectory);
-  FConfiguration.WriteStringU('SearchReplace', 'FDirectoryHistory', SaveComboBoxItems(FDirectoryHistory));
-  FConfiguration.WriteStringU('SearchReplace', 'FFilemask', FFilemask);
-  FConfiguration.WriteStringU('SearchReplace', 'FFilemaskHistory', SaveComboBoxItems(FFilemaskHistory));
-  FConfiguration.WriteBoolU('SearchReplace', 'FIncludeSubdirs', FIncludeSubdirs);
+  FConfiguration.WriteStringU('SearchReplace', 'Directory', FDirectory);
+  FConfiguration.WriteStringU('SearchReplace', 'DirectoryHistory', SaveComboBoxItems(FDirectoryHistory));
+  FConfiguration.WriteStringU('SearchReplace', 'Filemask', FFilemask);
+  FConfiguration.WriteStringU('SearchReplace', 'FilemaskHistory', SaveComboBoxItems(FFilemaskHistory));
+  FConfiguration.WriteBoolU('SearchReplace', 'IncludeSubdirs', FIncludeSubdirs);
 end;
 
 procedure TSearchOptions.ShowRegSearchHelp;

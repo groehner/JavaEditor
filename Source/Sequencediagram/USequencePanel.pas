@@ -37,9 +37,14 @@ type
   TArrowStyle = (casSynchron, casAsynchron, casReturn, casNew, casClose);
 
   TConnectionAttributes = class
-    ConnectStyle: TConnectStyle;
-    ArrowStyle: TArrowStyle;
+  private
+    FConnectStyle: TConnectStyle;
+    FArrowStyle: TArrowStyle;
     FMessage: string;
+  public
+    property ArrowStyle: TArrowStyle read FArrowStyle write FArrowStyle;
+    property AMessage: string read FMessage write FMessage;
+    property ConnectStyle: TConnectStyle read FConnectStyle;
   end;
 
   TConnectionChanged = procedure(Sender: TObject;
@@ -57,6 +62,7 @@ type
     FDistX: Integer;
     FDistY: Integer;
     FFromActivation: Integer;
+    FToActivation: Integer;
     FStartControl: TControl;
     FEndControl: TControl;
     FStartPoint: TPoint;
@@ -67,7 +73,6 @@ type
     FPolyline: TPolylineArray;
     FSelected: Boolean;
     FTextRect: TRect;
-    FToActivation: Integer;
     FYPosition: Integer;
   public
     constructor Create(Src, Dst: TControl; Attributes: TConnectionAttributes;
@@ -83,7 +88,7 @@ type
     procedure SetAttributes(Attributes: TConnectionAttributes);
     procedure SetArrow(ArrowStyle: TArrowStyle);
     procedure Turn;
-    function IsClicked(Posi: TPoint): Boolean;
+    function IsClicked(Point: TPoint): Boolean;
     function GetQuadrant(XPos, YPos: Integer; Rect: TRect): Integer;
     function CalcRect(Canvas: TCanvas; AMaxWidth: Integer;
       const AString: string): TRect;
@@ -215,8 +220,8 @@ type
     function GetConnections: TList;
     function Get2NdLastConnection: TConnection;
     function GetLastConnection: TConnection;
-    procedure SetConnection(I: Integer; Arrow: TArrowStyle); overload;
-    procedure SetConnection(I: Integer;
+    procedure SetConnection(Num: Integer; Arrow: TArrowStyle); overload;
+    procedure SetConnection(Num: Integer;
       Attributes: TConnectionAttributes); overload;
     procedure SetSelectedConnection(Attributes: TConnectionAttributes);
     function HaveConnection(Src, Dest: TControl): Integer; overload;
@@ -233,10 +238,10 @@ type
     function ConnectObjects(Src, Dst: TControl;
       Attributes: TConnectionAttributes): TConnection;
     function ConnectObjectsAt(Src, Dst: TControl;
-      Attributes: TConnectionAttributes; I: Integer): TConnection;
+      Attributes: TConnectionAttributes; Pos: Integer): TConnection;
     procedure DoConnection(Item: Integer);
-    procedure TurnConnection(I: Integer);
-    procedure SetRecursiv(Posi: TPoint; Pos: Integer);
+    procedure TurnConnection(Num: Integer);
+    procedure SetRecursiv(Point: TPoint; Pos: Integer);
     procedure ClearManagedObjects;
     procedure ClearSelection(WithShowAll: Boolean = True);
     function SelectionChangedOnClear: Boolean;
@@ -349,7 +354,7 @@ type
 
 procedure TConnection.SetPenBrushArrow(Canvas: TCanvas);
 begin
-  case ConnectStyle of
+  case FConnectStyle of
     csThin:
       begin
         Canvas.Pen.Width := 1;
@@ -361,7 +366,7 @@ begin
         Canvas.Pen.Style := psDash;
       end;
   end;
-  if ArrowStyle = casReturn then
+  if FArrowStyle = casReturn then
     Canvas.Pen.Style := psDot;
 end;
 
@@ -431,7 +436,7 @@ begin // of draw
   X1Pos := StartPoint.X;
   Y1Pos := StartPoint.Y;
 
-  if ArrowStyle = casNew then
+  if FArrowStyle = casNew then
     FEndPoint.X := EndControl.Left
   else
     FEndPoint.X := EndControl.Left + EndControl.Width div 2;
@@ -467,7 +472,7 @@ begin // of draw
 
   SetPenBrushArrow(Canvas);
 
-  if ArrowStyle = casClose then
+  if FArrowStyle = casClose then
     X2Pos := X2Pos - ActivationWidth
   else if StartControl.Left > EndControl.Left then
   begin
@@ -490,7 +495,7 @@ begin // of draw
   // draw the arrow
   XBase := X2Pos - Round(FHeadLength * XLineUnitDelta);
   YBase := Y2Pos - Round(FHeadLength * YLineUnitDelta);
-  case ArrowStyle of
+  case FArrowStyle of
     casSynchron, casNew, casClose:
       begin
         Canvas.Brush.Color := Canvas.Pen.Color;
@@ -506,7 +511,7 @@ begin // of draw
   end;
 
   // close message
-  if ArrowStyle = casClose then
+  if FArrowStyle = casClose then
   begin
     Canvas.MoveTo(X2Pos, Y2Pos - FHeadLength);
     Canvas.LineTo(X2Pos + 2 * ActivationWidth, Y2Pos + FHeadLength);
@@ -527,24 +532,24 @@ end;
 
 procedure TConnection.DrawRecursiv(Canvas: TCanvas);
 
-  procedure DrawArrowHead(Posi1, Posi2: TPoint);
+  procedure DrawArrowHead(Point1, Point2: TPoint);
   var
-    Posi3, Posi4: TPoint;
+    Point3, Point4: TPoint;
     DeltaX: Integer;
   begin
-    DeltaX := Posi2.X - Posi1.X;
-    Posi3.X := Posi1.X + Round(FHeadLength) * Sign(DeltaX);
-    Posi3.Y := Posi1.Y - Round(FHeadLength * 0.4);
-    Posi4.X := Posi3.X;
-    Posi4.Y := Posi1.Y + Round(FHeadLength * 0.4);
+    DeltaX := Point2.X - Point1.X;
+    Point3.X := Point1.X + Round(FHeadLength) * Sign(DeltaX);
+    Point3.Y := Point1.Y - Round(FHeadLength * 0.4);
+    Point4.X := Point3.X;
+    Point4.Y := Point1.Y + Round(FHeadLength * 0.4);
 
-    case ArrowStyle of
+    case FArrowStyle of
       casAsynchron, casReturn:
-        Canvas.Polyline([Posi3, Posi1, Posi4]);
+        Canvas.Polyline([Point3, Point1, Point4]);
       casSynchron:
         begin
           Canvas.Brush.Color := Canvas.Pen.Color;
-          Canvas.Polygon([Posi3, Posi1, Posi4]);
+          Canvas.Polygon([Point3, Point1, Point4]);
         end;
     end;
     Canvas.Brush.Color := FBackgroundColor;
@@ -568,7 +573,7 @@ begin
   // Relationname
   Flags := DT_EXPANDTABS or DT_WORDBREAK or DT_NOPREFIX;
   FTextRect := CalcRect(Canvas, MaxInt, FMessage);
-  if ArrowStyle = casReturn then
+  if FArrowStyle = casReturn then
     X1Pos := FPolyline[1].X + 5 + ActivationWidth
   else
     X1Pos := FPolyline[1].X + 5;
@@ -607,7 +612,7 @@ begin
   FPolyline[3] := Point(X1Pos + DistX, Y1Pos + DistY div 2);
   FPolyline[4] := FEndPoint;
 
-  if ArrowStyle = casReturn then
+  if FArrowStyle = casReturn then
   begin
     Dec(FPolyline[2].X, ActivationWidth);
     Dec(FPolyline[3].X, ActivationWidth);
@@ -724,9 +729,9 @@ begin
   FStartControl := Src;
   FEndControl := Dst;
   FSelected := False;
-  ArrowStyle := Attributes.ArrowStyle;
-  ConnectStyle := csThin;
-  FMessage := Attributes.FMessage;
+  FArrowStyle := Attributes.ArrowStyle;
+  FConnectStyle := csThin;
+  FMessage := Attributes.AMessage;
   FIsRecursiv := (StartControl = EndControl);
   FYPosition := 0;
   FStartPoint := Point(StartControl.Left + StartControl.Width div 2,
@@ -741,7 +746,7 @@ end;
 
 procedure TConnection.SetAttributes(Attributes: TConnectionAttributes);
 begin
-  FMessage := Attributes.FMessage;
+  FMessage := Attributes.AMessage;
   if FIsRecursiv and (Attributes.ArrowStyle <= casReturn) or not FIsRecursiv
   then
     SetArrow(Attributes.ArrowStyle);
@@ -749,13 +754,13 @@ end;
 
 procedure TConnection.SetArrow(ArrowStyle: TArrowStyle);
 begin
-  ConnectStyle := csThin;
-  if Self.ArrowStyle <> ArrowStyle then
+  FConnectStyle := csThin;
+  if Self.FArrowStyle <> ArrowStyle then
   begin
-    FOnConnectionChanged(Self, Self.ArrowStyle, ArrowStyle);
-    if (Self.ArrowStyle = casReturn) or (ArrowStyle = casReturn) then
+    FOnConnectionChanged(Self, Self.FArrowStyle, ArrowStyle);
+    if (Self.FArrowStyle = casReturn) or (ArrowStyle = casReturn) then
       Turn;
-    Self.ArrowStyle := ArrowStyle;
+    Self.FArrowStyle := ArrowStyle;
   end;
 end;
 
@@ -777,27 +782,27 @@ begin
   end;
 end;
 
-function TConnection.IsClicked(Posi: TPoint): Boolean;
+function TConnection.IsClicked(Point: TPoint): Boolean;
 var
   ARect: TRect;
   X1Pos, X2Pos, Y1Pos, Y2Pos, Help: Integer;
 
-  function makeRect(Posi1, Posi2: TPoint): TRect;
+  function makeRect(Point1, Point2: TPoint): TRect;
   var
     DeltaX, DeltaY: Integer;
   begin
-    DeltaX := Posi2.X - Posi1.X;
-    DeltaY := Posi2.Y - Posi1.Y;
+    DeltaX := Point2.X - Point1.X;
+    DeltaY := Point2.Y - Point1.Y;
     if DeltaY = 0 then
       if DeltaX > 0 then
-        Result := Rect(Posi1.X, Posi1.Y - 10, Posi2.X + 10, Posi2.Y + 10)
+        Result := Rect(Point1.X, Point1.Y - 10, Point2.X + 10, Point2.Y + 10)
       else
-        Result := Rect(Posi2.X - 10, Posi2.Y - 10, Posi1.X, Posi1.Y + 10)
+        Result := Rect(Point2.X - 10, Point2.Y - 10, Point1.X, Point1.Y + 10)
     else // DeltaX = 0
       if DeltaY > 0 then
-        Result := Rect(Posi1.X - 10, Posi1.Y, Posi2.X + 10, Posi2.Y + 10)
+        Result := Rect(Point1.X - 10, Point1.Y, Point2.X + 10, Point2.Y + 10)
       else
-        Result := Rect(Posi2.X - 10, Posi2.Y - 10, Posi1.X + 10, Posi1.Y);
+        Result := Rect(Point2.X - 10, Point2.Y - 10, Point1.X + 10, Point1.Y);
   end;
 
 begin
@@ -807,11 +812,11 @@ begin
     for var I := 1 to 3 do
     begin
       ARect := makeRect(FPolyline[I], FPolyline[I + 1]);
-      if PtInRect(ARect, Posi) then
+      if PtInRect(ARect, Point) then
         Exit;
     end;
     ARect := makeRect(FPolyline[4], FPolyline[3]);
-    if PtInRect(ARect, Posi) then
+    if PtInRect(ARect, Point) then
       Exit;
   end
   else
@@ -836,8 +841,8 @@ begin
       X2Pos := X1Pos;
       X1Pos := Help;
     end;
-    if (X1Pos <= Posi.X) and (Posi.X <= X2Pos) and (Y1Pos - 10 <= Posi.Y) and
-      (Posi.Y <= Y2Pos + 10) then
+    if (X1Pos <= Point.X) and (Point.X <= X2Pos) and (Y1Pos - 10 <= Point.Y) and
+      (Point.Y <= Y2Pos + 10) then
       Exit;
   end;
   Result := False;
@@ -845,13 +850,13 @@ end;
 
 function TConnection.HasRect: TRect;
 begin
-  Result := ConRect;
+  Result := FConRect;
 end;
 
 function TConnection.GetArrowStyleAsString: string;
 begin
   Result := '';
-  case ArrowStyle of
+  case FArrowStyle of
     casSynchron:
       Result := ' -> ';
     casAsynchron:
@@ -903,7 +908,7 @@ begin
 
   AObject.Parent := Self;
   AObject.Visible := True;
-  if FindManagedControl(AObject) = nil then
+  if not Assigned(FindManagedControl(AObject)) then
   begin
     NewObj := TManagedObject.Create;
     NewObj.FControl := AObject;
@@ -938,8 +943,8 @@ begin
       FreeAndNil(AManagedObject);
     end;
   except
-    on e: Exception do
-      ErrorMsg(e.Message);
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
   FManagedObjects.Clear;
   SetBounds(0, 0, 0, 0);
@@ -1036,7 +1041,7 @@ function TSequencePanel.ConnectObjects(Src, Dst: TControl;
   Attributes: TConnectionAttributes): TConnection;
 begin
   Result := nil;
-  if (FindManagedControl(Src) <> nil) and (FindManagedControl(Dst) <> nil) then
+  if Assigned(FindManagedControl(Src)) and Assigned(FindManagedControl(Dst)) then
   begin
     Result := TConnection.Create(Src, Dst, Attributes, OnConnectionChanged);
     Result.SetFont(Font);
@@ -1046,17 +1051,17 @@ begin
 end;
 
 function TSequencePanel.ConnectObjectsAt(Src, Dst: TControl;
-  Attributes: TConnectionAttributes; I: Integer): TConnection;
+  Attributes: TConnectionAttributes; Pos: Integer): TConnection;
 begin
   Result := nil;
-  if (FindManagedControl(Src) <> nil) and (FindManagedControl(Dst) <> nil) then
+  if Assigned(FindManagedControl(Src)) and Assigned(FindManagedControl(Dst)) then
   begin
     Result := TConnection.Create(Src, Dst, Attributes, OnConnectionChanged);
     Result.SetFont(Font);
-    if I = -1 then
+    if Pos = -1 then
       FConnections.Add(Result)
     else
-      FConnections.Insert(I, Result);
+      FConnections.Insert(Pos, Result);
   end;
   OnConnectionSet(Result);
 end;
@@ -1064,13 +1069,13 @@ end;
 function TSequencePanel.GetClickedConnectionNr: Integer;
 begin
   var
-  Posi := Self.ScreenToClient(Mouse.CursorPos);
+  Point := Self.ScreenToClient(Mouse.CursorPos);
   Result := 0;
   while Result < FConnections.Count do
   begin
     var
     Conn := TConnection(FConnections[Result]);
-    if Conn.IsClicked(Posi) then
+    if Conn.IsClicked(Point) then
     begin
       Conn.FSelected := True;
       Exit;
@@ -1121,22 +1126,22 @@ end;
 
 function TSequencePanel.GetConnectionOfClickedTextRect: TConnection;
 var
-  I: Integer;
-  Posi: TPoint;
+  Int: Integer;
+  Point: TPoint;
   Conn: TConnection;
 begin
   Result := nil;
-  Posi := Self.ScreenToClient(Mouse.CursorPos);
-  I := 0;
-  while I < FConnections.Count do
+  Point := Self.ScreenToClient(Mouse.CursorPos);
+  Int := 0;
+  while Int < FConnections.Count do
   begin
-    Conn := TConnection(FConnections[I]);
-    if PtInRect(Conn.FTextRect, Posi) then
+    Conn := TConnection(FConnections[Int]);
+    if PtInRect(Conn.FTextRect, Point) then
     begin
       Result := Conn;
-      I := FConnections.Count;
+      Int := FConnections.Count;
     end;
-    Inc(I);
+    Inc(Int);
   end;
 end;
 
@@ -1150,21 +1155,21 @@ begin
     Result := nil;
 end;
 
-procedure TSequencePanel.TurnConnection(I: Integer);
+procedure TSequencePanel.TurnConnection(Num: Integer);
 begin
-  TConnection(FConnections[I]).Turn;
+  TConnection(FConnections[Num]).Turn;
 end;
 
-procedure TSequencePanel.SetRecursiv(Posi: TPoint; Pos: Integer);
+procedure TSequencePanel.SetRecursiv(Point: TPoint; Pos: Integer);
 begin
-  Posi := Self.ScreenToClient(Posi);
+  Point := Self.ScreenToClient(Point);
   var
   I := 0;
   while I < FConnections.Count do
   begin
     var
     Conn := TConnection(FConnections[I]);
-    if Conn.IsClicked(Posi) then
+    if Conn.IsClicked(Point) then
       Break;
     Inc(I);
   end;
@@ -1243,7 +1248,7 @@ procedure TSequencePanel.ConnectBoxesAt(Src, Dest: TControl;
   AtPosition: Integer);
 var
   Attributes: TConnectionAttributes;
-  SelectedControls, I, Pos: Integer;
+  SelectedControls, Int, Pos: Integer;
 begin
   with TFConnectDialog.Create(Self) do
   begin
@@ -1259,13 +1264,13 @@ begin
     if ShowModal = mrOk then
     begin
       Attributes := GetConnectionAttributes;
-      I := 0;
+      Int := 0;
       Pos := -1;
-      while (I < FConnections.Count) and (Pos = -1) do
+      while (Int < FConnections.Count) and (Pos = -1) do
       begin
-        if TConnection(FConnections[I]).FYPosition >= AtPosition then
-          Pos := I;
-        Inc(I);
+        if TConnection(FConnections[Int]).FYPosition >= AtPosition then
+          Pos := Int;
+        Inc(Int);
       end;
 
       case SelectedControls of
@@ -1366,17 +1371,17 @@ begin
     Result := nil;
 end;
 
-procedure TSequencePanel.SetConnection(I: Integer;
+procedure TSequencePanel.SetConnection(Num: Integer;
   Attributes: TConnectionAttributes);
 begin
-  if (0 <= I) and (I < FConnections.Count) then
-    TConnection(FConnections[I]).SetAttributes(Attributes);
+  if (0 <= Num) and (Num < FConnections.Count) then
+    TConnection(FConnections[Num]).SetAttributes(Attributes);
 end;
 
-procedure TSequencePanel.SetConnection(I: Integer; Arrow: TArrowStyle);
+procedure TSequencePanel.SetConnection(Num: Integer; Arrow: TArrowStyle);
 begin
-  if (0 <= I) and (I < FConnections.Count) then
-    TConnection(FConnections[I]).SetArrow(Arrow);
+  if (0 <= Num) and (Num < FConnections.Count) then
+    TConnection(FConnections[Num]).SetArrow(Arrow);
 end;
 
 procedure TSequencePanel.SetSelectedConnection
@@ -1466,10 +1471,8 @@ begin
 end;
 
 function TSequencePanel.CountSelectedControls: Integer;
-var
-  Num: Integer;
 begin
-  Num := 0;
+  var Num := 0;
   for var I := 0 to FManagedObjects.Count - 1 do
     if TManagedObject(FManagedObjects[I]).FSelected then
       Inc(Num);
@@ -1956,7 +1959,7 @@ begin
 end;
 
 procedure TSequencePanel.Paint;
-begin    
+begin
   Canvas.Pen.Mode := pmCopy;
   Canvas.Pen.Color:= FForegroundColor;
   Canvas.Brush.Color:= FBackgroundColor;

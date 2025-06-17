@@ -1,3 +1,10 @@
+{-------------------------------------------------------------------------------
+ Unit:     UGenerateStructogram
+ Author:   Gerhard Röhner
+ Date:     March 2011
+ Purpose:  generate a structogram from java code
+-------------------------------------------------------------------------------}
+
 unit UGenerateStructogram;
 
 interface
@@ -13,8 +20,6 @@ type
     FCurrent: TStrElement;
     function GetBetweenPair(const Open, Close: string): string;
     function IsModifier(const Modifier: string): Boolean;
-  public
-    procedure GenerateStructogram(const Str: string; AStructogram: TStrList);
     procedure GenerateMethod(Method: string);
     procedure GenerateMethodCall(const Method: string);
     procedure GenerateStatement;
@@ -34,6 +39,8 @@ type
     procedure GenerateVariableCreation(const Ident: string);
     procedure GenerateDummyStatement(const Typename, Ident: string);
     procedure GenerateVariableDeclaration(Typename: string);
+  public
+    procedure GenerateStructogram(const Str: string; AStructogram: TStrList);
   end;
 
 implementation

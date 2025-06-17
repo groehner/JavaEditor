@@ -312,7 +312,7 @@ end;
 function TCodeCompletion.GetTooltipClass(AClassifier: TClassifier;
   var Description: string): string;
 var
-  Str, AClassname: string;
+  Str, AClassname, Pathname: string;
   E: TFEditForm;
 begin
   if not Assigned(AClassifier) or IsSimpleType(AClassifier.Name) then
@@ -326,9 +326,11 @@ begin
       Str := '<code><img src="' + FConfiguration.EditorFolder +
         'img\interface.png"> ';
     AClassname := AClassifier.GetShortType;
+    Pathname:= AClassifier.Pathname;
     if (AClassifier.Pathname <> '') or IsSelfDefinedClassOrInterface(AClassname,
-      AClassifier.Pathname, E) then
+      Pathname, E) then
     begin
+      AClassifier.Pathname:= Pathname;
       Str := Str + AClassifier.Name;
       Description := AClassifier.Documentation.Description;
       FTooltip.SetFile(AClassifier.Pathname, IntToStr(AClassifier.LineS));

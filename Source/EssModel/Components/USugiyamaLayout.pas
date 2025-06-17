@@ -93,7 +93,7 @@ type
     procedure ExtractNodes;
     procedure ApplyNodes;
     procedure DoPhases;
-    procedure AddEdge(const FFromNode, FToNode: TNode);
+    procedure AddEdge(const FromNode, ToNode: TNode);
 
     // First phase
     procedure LayeringPhase;
@@ -157,7 +157,7 @@ var
   Posi: Integer;
   Control: TControl;
   Con: TConnection;
-  Node, FFromNode, FToNode: TNode;
+  Node, FromNode, ToNode: TNode;
 begin
   FNodes := TNodeList.Create(True);
 
@@ -215,15 +215,15 @@ begin
       // we want all arrows to point upwards (descendants pointing up to their baseclass).
       if (Con.ConnectStyle = csNormal) or (Con.ArrowStyle = asInstanceOf) then
       begin // Reverse Inheritance-connections
-        FFromNode := FNodes[Con.ToControl.Tag];
-        FToNode := FNodes[Con.FromControl.Tag];
+        FromNode := FNodes[Con.ToControl.Tag];
+        ToNode := FNodes[Con.FromControl.Tag];
       end
       else
       begin // Do not reverse Unit-Associations and Implements-interface
-        FFromNode := FNodes[Con.FromControl.Tag];
-        FToNode := FNodes[Con.ToControl.Tag];
+        FromNode := FNodes[Con.FromControl.Tag];
+        ToNode := FNodes[Con.ToControl.Tag];
       end;
-      AddEdge(FFromNode, FToNode);
+      AddEdge(FromNode, ToNode);
     end;
   finally
     FreeAndNil(List);
@@ -317,10 +317,10 @@ begin
   inherited;
 end;
 
-procedure TSugiyamaLayout.AddEdge(const FFromNode, FToNode: TNode);
+procedure TSugiyamaLayout.AddEdge(const FromNode, ToNode: TNode);
 begin
-  FFromNode.FOutEdges.Add(TEdge.Create(FFromNode, FToNode));
-  FToNode.FInEdges.Add(TEdge.Create(FFromNode, FToNode));
+  FromNode.FOutEdges.Add(TEdge.Create(FromNode, ToNode));
+  ToNode.FInEdges.Add(TEdge.Create(FromNode, ToNode));
 end;
 
 procedure TSugiyamaLayout.MakeAcyclic;
@@ -599,7 +599,7 @@ procedure TSugiyamaLayout.SetXPositions;
 const
   MaxIter = 20;
 var
-  JPos, X, SumOfDiff, OldZ, BailOut, RegStart, RegCount, MaxAmount,
+  JPos, X, SumOfDiff, OldSumOfDiff, BailOut, RegStart, RegCount, MaxAmount,
     Amount: Integer;
   Force, LastForce, RegForce: Single;
   Layer: TNodeList;
@@ -647,7 +647,7 @@ begin
   end;
 
   BailOut := 0;
-  OldZ := High(Integer);
+  OldSumOfDiff := High(Integer);
   repeat
     Inc(BailOut);
     // SumOfDiff is the sum of differences between all node.x and node.desired_X
@@ -718,9 +718,9 @@ begin
     end; // FLayers
 
     // Stop if no more improvment
-    if SumOfDiff >= OldZ then
+    if SumOfDiff >= OldSumOfDiff then
       Break;
-    OldZ := SumOfDiff;
+    OldSumOfDiff := SumOfDiff;
 
   until (BailOut = MaxIter) or (SumOfDiff = 0);
 
@@ -992,7 +992,7 @@ end;
 function TSugiyamaLayout.CalcCrossingsTwoLayers(const Layer1,
   Layer2: TNodeList): Integer;
 var
-  FCOrder, K: Integer;
+  FCOrder, KPos: Integer;
   Count1, Count2, Count3: Integer;
   CNodes, UList, LList: TNodeList;
   Node: TNode;
@@ -1048,13 +1048,13 @@ begin
       if Odd(I) then
       begin
         // Odd, upper layer
-        K := UList.LastIndexOf(Node);
-        if K <> -1 then
+        KPos := UList.LastIndexOf(Node);
+        if KPos <> -1 then
         begin
           Count1 := 0;
           Count2 := 0;
           Count3 := 0;
-          for var J := 0 to K do
+          for var J := 0 to KPos do
           begin
             // Loop all active endpoints in upperlayer
             if UList[J] = Node then
@@ -1081,13 +1081,13 @@ begin
       else
       begin
         // Even, lower layer
-        K := LList.LastIndexOf(Node);
-        if K <> -1 then
+        KPos := LList.LastIndexOf(Node);
+        if KPos <> -1 then
         begin
           Count1 := 0;
           Count2 := 0;
           Count3 := 0;
-          for var J := 0 to K do
+          for var J := 0 to KPos do
           begin
             // Loop all active endpoints in upperlayer
             if LList[J] = Node then
