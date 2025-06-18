@@ -1710,7 +1710,7 @@ begin
       FInteractiveUMLForm.Close;
   except
     on E: Exception do
-      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
+      FConfiguration.Log('Exception in FormCloseQuery', E);
   end;
 
   Application.ProcessMessages;
@@ -2600,8 +2600,7 @@ begin
         end;
       except
         on E: Exception do
-          OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
-            E.Message));
+          FConfiguration.Log('Exception in PreparePrint', E);
       end;
     end;
   end
@@ -3158,18 +3157,12 @@ begin
     if (Str <> '') and FileExists(Str) then
     begin
       Inc(Number);
-      try
-        NewItem := TSpTBXItem.Create(Self);
-        NewItem.Caption := '&' + Number.ToString + ' ' + Str;
-        NewItem.OnClick := MIMenuOpenClick;
-        MIReopen.Add(NewItem);
-        FConfiguration.WriteStringU('History', 'File' + Number.ToString,
-          FConfiguration.RemovePortableDrive(Str));
-      except
-        on E: Exception do
-          OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
-            E.Message));
-      end;
+      NewItem := TSpTBXItem.Create(Self);
+      NewItem.Caption := '&' + Number.ToString + ' ' + Str;
+      NewItem.OnClick := MIMenuOpenClick;
+      MIReopen.Add(NewItem);
+      FConfiguration.WriteStringU('History', 'File' + Number.ToString,
+        FConfiguration.RemovePortableDrive(Str));
     end;
   end;
   FConfiguration.WriteIntegerU('History', 'Files', Number);
@@ -3834,7 +3827,7 @@ begin
       Editform.Partner.Repaint;
     except
       on E: Exception do
-        FConfiguration.Log('TFJava.MIRunClick repaint', E);
+        FConfiguration.Log('TFJava.MIRunClick Repaint', E);
     end;
 end;
 

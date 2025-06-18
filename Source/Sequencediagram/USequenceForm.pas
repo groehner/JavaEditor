@@ -315,9 +315,9 @@ begin
       Font.Size := PPIScale(Ini.ReadInteger('Diagram', 'FontSize', 12));
       SetFont(Font);
     except
-      on e: Exception do
+      on E: Exception do
       begin
-        ErrorMsg(e.Message);
+        ErrorMsg(E.Message);
         Result := False;
       end;
     end;
@@ -379,8 +379,8 @@ begin
   try
     StringList.SaveToFile(FileName, TEncoding.UTF8);
   except
-    on e: Exception do
-      ErrorMsg(e.Message);
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
   FreeAndNil(StringList);
 end;
@@ -409,8 +409,8 @@ begin
     SaveToFile(Pathname);
     Modified := False;
   except
-    on e: Exception do
-      ErrorMsg(e.Message);
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
 end;
 {$WARNINGS ON}

@@ -883,7 +883,7 @@ begin
     end;
   except
     on E: Exception do
-      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
+     FConfiguration.Log('TUnitPackage.GetAllObjects', E);
   end;
 end;
 
@@ -937,13 +937,13 @@ var
       try
         MIte := Package.GetClassifiers;
       except
-        on e: Exception do
+        on E: Exception do
         begin
           if Assigned(Package) then
             Str := Package.ClassName
           else
             Str := 'p = nil';
-          FConfiguration.Log('InFind(P : TUnitPackage): ' + Str, e);
+          FConfiguration.Log('InFind(P : TUnitPackage): ' + Str, E);
           Exit;
         end;
       end;
@@ -980,8 +980,8 @@ begin
       end;
     end;
   except
-    on e: Exception do
-      FConfiguration.Log(' TUnitPackage.FindClassifier', e);
+    on E: Exception do
+      FConfiguration.Log(' TUnitPackage.FindClassifier', E);
   end;
 end;
 
@@ -1786,7 +1786,7 @@ begin
     Result := ShortName;
   except
     on E: Exception do
-      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
+      FConfiguration.Log('TClassifier.GetShortType', E);
   end;
 end;
 

@@ -450,9 +450,9 @@ begin
       FreeAndNil(Reader);
     end;
   except
-    on e: Exception do
+    on E: Exception do
     begin
-      ErrorMsg(e.Message);
+      ErrorMsg(E.Message);
       Result := False;
     end;
   end;
@@ -566,9 +566,9 @@ begin
       FreeAndNil(Stream);
     end;
   except
-    on e: Exception do
+    on E: Exception do
     begin
-      ErrorMsg(e.Message);
+      ErrorMsg(E.Message);
       Result := False;
     end;
   end;
@@ -613,8 +613,8 @@ begin
       CloseFile(JSGFile);
     end;
   except
-    on e: Exception do
-      ErrorMsg(e.Message);
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
 end;
 
@@ -1518,9 +1518,9 @@ begin
     end;
     Modified := False;
   except
-    on e: Exception do
+    on E: Exception do
     begin
-      ErrorMsg(e.Message);
+      ErrorMsg(E.Message);
     end;
   end;
 

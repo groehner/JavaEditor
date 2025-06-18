@@ -144,8 +144,8 @@ begin
       LVFiles.SortType := stText;
       LVFiles.ItemIndex := 0;
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
   finally
     Screen.Cursor := crDefault;
@@ -216,9 +216,9 @@ begin
     try
       Open(ODClassInsert.FileName);
     except
-      on e: Exception do
+      on E: Exception do
       begin
-        ErrorMsg(e.Message);
+        ErrorMsg(E.Message);
         CBArchivSelect(Self);
       end;
     end;
@@ -415,9 +415,9 @@ begin
       FJavaSrcZip := TZipFile.Create;
       FJavaSrcZip.Open(FConfiguration.JDKFolder + '\src.zip', zmRead);
     except
-      on e: Exception do
+      on E: Exception do
       begin
-        ErrorMsg(e.Message);
+        ErrorMsg(E.Message);
         FJavaSrcZip := nil;
       end;
     end;
@@ -436,9 +436,9 @@ begin
       // FJavaClassJar.OverwriteAction:= oaOverwriteAll;
       FJavaClassJar.Open(FConfiguration.JDKFolder + '\jre\lib\rt.jar', zmRead);
     except
-      on e: Exception do
+      on E: Exception do
       begin
-        ErrorMsg(e.Message);
+        ErrorMsg(E.Message);
         FJavaClassJar := nil;
       end;
     end;

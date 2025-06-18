@@ -3109,7 +3109,8 @@ begin
     if Assigned(OnFilterProp) then
       OnFilterProp(Self, AInstance, APropInfo, AIncludeProp);
   except
-
+    on E: Exception do
+      FConfiguration.Log('TELCustomPropertyInspector.FilterProp ', E);
   end;
 end;
 
@@ -3770,19 +3771,21 @@ begin
 end;
 
 procedure TELFloatPropEditor.SetValue(const Value: string);
-  var Posi: Integer; Str: string; f: Extended;
+  var Posi: Integer; Str: string; AExtended: Extended;
 begin
   Formatsettings.DecimalSeparator:= '.';
   Str:= Value;
   Posi:= Pos(',', Str);
   if Posi > 0 then
     Str[Posi]:= '.';
-  f:= 0;
+  AExtended:= 0;
   try
-    f:= StrToFloat(Str);
+    AExtended:= StrToFloat(Str);
   except
+    on E: Exception do
+      FConfiguration.Log('TELFloatPropEditor.SetValue ' + Value, E);
   end;
-  SetFloatValue(f);
+  SetFloatValue(AExtended);
 end;
 
 { TELStringPropEditor }

@@ -346,7 +346,8 @@ uses
   UITypes,
   UUtils,
   UDlgConnect,
-  ULifeline;
+  ULifeline,
+  UConfiguration;
 
 type
   TCrackControl = class(TControl)
@@ -944,7 +945,7 @@ begin
     end;
   except
     on E: Exception do
-      ErrorMsg(E.Message);
+      FConfiguration.Log('TSequencePanel.ClearManagedObjects ', E);
   end;
   FManagedObjects.Clear;
   SetBounds(0, 0, 0, 0);

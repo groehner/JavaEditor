@@ -807,11 +807,8 @@ begin
     FEditor.ScrollBars := ssNone;
     FEditor.ScrollBars := ssBoth;
   except
-    on e: Exception do
-    begin
-      ErrorMsg(e.Message);
-      FConfiguration.Log('TFEditForm.Open: ' + FileName, e);
-    end;
+    on E: Exception do
+      ErrorMsg(Format(_(LNGCanNotOpen), [FileName]));
   end;
 end;
 
@@ -1239,8 +1236,8 @@ begin
     if Assigned(Form) then
       (Form as TFSequenceForm).RefreshFromFile;
   except
-    on e: Exception do
-      ShowMessage(e.Message);
+    on E: Exception do
+      ErrorMsg(Format(_(LNGCanNotWrite), [Pathname]));
   end;
   SetModified(false);
   Statusline(1, '');
@@ -2150,8 +2147,8 @@ begin
     try
       FEditor.CopyToClipboard;
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        FConfiguration.Log('TFEditForm.CopyToClipboard ', E);
     end;
   end;
 end;
@@ -2172,7 +2169,7 @@ begin
       Modified := True;
     except
       on e: Exception do
-        ErrorMsg(e.Message);
+        FConfiguration.Log('TFEditForm.PasteFromClipboard ', E);
     end;
     ParseSourceCode(True);
   end;
@@ -2393,8 +2390,8 @@ begin
       FEditor.LineText := Str;
       FEditor.CaretX := FEditor.CaretX - Posi1 + 1;
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        FConfiguration.Log('TFEditForm.EditorKeyUp ', E);
     end;
     Key := 0;
   end;
@@ -2953,7 +2950,7 @@ begin
       SaveToFile(FileName);
     except
       on e: Exception do
-        ErrorMsg(e.Message);
+        ErrorMsg(Format(_(LNGCanNotWrite), [FileName]));
     end;
   end;
 end;
@@ -5353,8 +5350,8 @@ begin
           Lines.LoadFromFile(Pathname);
           FEditor.ReplaceTabs(FConfiguration.TabWidth);
         except
-          on e: Exception do
-            FConfiguration.Log('TFEditForm.CheckAge: ' + Pathname, e);
+          on E: Exception do
+            FConfiguration.Log('TFEditForm.CheckAge: ' + Pathname, E);
         end;
     FileAge(Pathname, FEditorAge);
   end;
@@ -5562,8 +5559,8 @@ begin
       Result := '';
     JavaScanner.Destroy;
   except
-    on e: Exception do
-      FConfiguration.Log('TFEditForm.getPackage', e);
+    on E: Exception do
+      FConfiguration.Log('TFEditForm.getPackage', E);
   end;
 end;
 
@@ -5645,8 +5642,8 @@ begin
       try
         StringList.SaveToFile(FConfiguration.TempDir + 'Tooltip.html');
       except
-        on e: Exception do
-          ErrorMsg(e.Message);
+        on E: Exception do
+          FConfiguration.Log('TFEditForm.CreateTooltip ', E);
       end;
     finally
       FreeAndNil(StringList);
@@ -5973,8 +5970,8 @@ begin
     try
       FEditor.Keystrokes[I].ShortCut := ShortCut2;
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        FConfiguration.Log('TFEditForm.ReplaceShortCutFromEditor ', E);
     end;
 end;
 

@@ -304,8 +304,8 @@ begin
   try
     Lines12.LoadFromFile(APathname);
   except
-    on e: Exception do
-      FConfiguration.Log('TSynEditExDiff.Load: ' + APathname, e);
+    on E: Exception do
+      FConfiguration.Log('TSynEditExDiff.Load: ' + APathname, E);
   end;
   Lines.BeginUpdate;
   LinesClearAll;
@@ -362,8 +362,8 @@ begin
       Lines.SaveToFile(FPathname);
       SetModified(False);
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        ErrorMsg(Format(_(LNGCanNotWrite), [FPathname]));
     end;
 end;
 
@@ -559,8 +559,8 @@ begin
     else
       PasteFromClipboard;
   except
-    on e: Exception do
-      ErrorMsg(e.Message);
+    on E: Exception do
+      FConfiguration.Log('TSynEditExDiff.PasteFromClipboardFT ', E);
   end;
   CreateObjects(From, Till, ANr);
   SetModified(True);

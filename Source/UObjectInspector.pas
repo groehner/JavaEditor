@@ -322,8 +322,9 @@ begin
       (FGUIDesigner.ELDesigner.SelectedControls[0]);
     try
       SetSelectedObject(FGUIDesigner.ELDesigner.SelectedControls[0]);
-    except on E: Exception do
-        OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
+    except
+      on E: Exception do
+        FConfiguration.Log('TFObjectInspector.RefreshCBObjects ', E);
     end;
   end;
 end;
@@ -795,8 +796,9 @@ begin
   try
     ELPropertyInspector.Clear;
     ELEventInspector.Clear;
-  except on E: Exception do
-      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
+  except
+    on E: Exception do
+      FConfiguration.Log('TFObjectInspector.ChangeSelection ', E);
   end;
   if SelectedControls.Count <> 1 then
     CBObjects.ItemIndex := -1

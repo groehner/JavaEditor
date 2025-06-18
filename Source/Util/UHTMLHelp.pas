@@ -99,8 +99,8 @@ begin
     until HRes <> S_OK;
     Result := '\' + Result;
   except
-    on e: Exception do
-      ErrorMsg('Exception: ' + e.Message + ' - Cannot read CHM root: ' + Str);
+    on E: Exception do
+      ErrorMsg('Exception: ' + E.Message + ' - Cannot read CHM root: ' + Str);
   end;
 end;
 
@@ -149,8 +149,8 @@ begin
     Str := string(PAnsiChar(GDumpBuffer));
     Result := Str;
   except
-    on e: Exception do
-      ErrorMsg('Exception: ' + e.Message + ' - Cannot load from CHM: ' + AFile);
+    on E: Exception do
+      ErrorMsg('Exception: ' + E.Message + ' - Cannot load from CHM: ' + AFile);
   end;
 end;
 

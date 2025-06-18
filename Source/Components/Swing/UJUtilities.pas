@@ -70,8 +70,10 @@ implementation
 
 uses
   Controls,
+  SysUtils,
   UJava,
-  UGUIDesigner;
+  UGUIDesigner,
+  UConfiguration;
 
 { --- TJPlayground -------------------------------------------------------------- }
 
@@ -164,6 +166,8 @@ begin
     try
       Foreground := Colors[AColor];
     except
+      on E: Exception do
+        FConfiguration.Log('TJTurtle.Paint ', E);
     end;
   end
   else

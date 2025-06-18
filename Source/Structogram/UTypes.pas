@@ -418,7 +418,7 @@ begin
   try
     FStringList.LoadFromFile(Filename);
   except
-    on e: Exception do
+    on E: Exception do
       ErrorMsg(e.Message);
   end;
 end;

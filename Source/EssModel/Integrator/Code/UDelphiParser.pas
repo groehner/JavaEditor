@@ -137,7 +137,7 @@ type
 
 implementation
 
-uses Dialogs, SysUtils;
+uses Dialogs, SysUtils, UConfiguration;
 
 { TDelphiParser }
 
@@ -880,7 +880,7 @@ begin
                 FGlobalDefines, '');
             except
               on E: Exception do
-                ShowMessage(E.Message);
+                FConfiguration.Log('TDelphiParser.ParseUses ', E);
             end;
             { TODO : Keep the parsed list somewhere to be able to implement
               a twoway integrator }

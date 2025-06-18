@@ -657,8 +657,8 @@ begin
       Result.Add(Str);
     end;
   except
-    on e: Exception do
-      FConfiguration.Log('TComJavaObject.getAttributeValues', e);
+    on E: Exception do
+      FConfiguration.Log('TComJavaObject.getAttributeValues', E);
   end;
 end;
 

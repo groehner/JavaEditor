@@ -888,7 +888,6 @@ type
     FUseRegistry: Boolean;
     FUserIniFile: TIniFile;
     FWindowStateMaximized: Boolean;
-    FWriteProtection: Boolean;
     FIndent1: string;
     FIndent2: string;
     FIndent3: string;
@@ -1231,7 +1230,6 @@ type
     FVisTabs: TBoolArray;
     FVisToolbars: TBoolArray;
 
-    function GetWriteProtection: Boolean;
     function GetCheckColor(Str: string; EmptyAllowed: Boolean): TColor;
     function DirectoryFilesExists(Str: string): Boolean;
     procedure CheckFile(WinControl: TWinControl; EmptyAllowed: Boolean);
@@ -1281,8 +1279,8 @@ type
     procedure MakeJavaCache(Str: string);
     procedure SaveInis;
 
-    procedure SaveStrings(const Key, AName: string; Values: TStrings);
-    procedure ReadStrings(const Key, AName: string; Values: TStrings);
+    procedure SaveFiles(const Key, Name: string; Values: TStrings);
+    procedure ReadFiles(const Key, Name: string; Values: TStrings);
     procedure SaveFavorites(Favorites: TStringList);
     procedure ReadFavorites(var Favorites: TStringList);
     procedure SaveUserColors;
@@ -1389,7 +1387,7 @@ type
     function IsInClasspath(const AClassname: string; ActPath: string): Boolean;
     procedure MakeClassAndPackageList(const Classfile, Packagefile: string);
     procedure MakeClassAndPackageListFromDocumentation(const Classfile,
-      InterfaceFile, Packagefile: string);
+      Interfacefile, Packagefile: string);
     procedure MakeSystemClasses;
     procedure MakeClasspathClasses;
     function ToStringListClass(const AClassname: string): string;
@@ -1410,7 +1408,7 @@ type
 
     function GetJarsFromClasspath: string;
     function UpdatePossible(const Source, Target: string): Boolean;
-    function RunAsAdmin(Wnd: HWND; const AFile, AParameters: string): THandle;
+    function RunAsAdmin(Wnd: HWND; const AFile, AParameters: string): Boolean;
     procedure SetMindstormsVersion;
     procedure CheckMindstorms;
     function GetFrameType(JavaProgram: string;
@@ -3718,6 +3716,7 @@ begin
   // tab Applet
   FAppletStart := ReadIntegerU('Program', 'AppletStart', 0);
   FShowHTMLforApplet := ReadBoolU('Program', 'ShowHTMLforApplet', True);
+
   if FPortableApplication then
     FTempDirWithUsername := ReadStringU('Program', 'TempDir',
       FEditorFolder + 'App\Temp')
@@ -3725,33 +3724,25 @@ begin
     FTempDirWithUsername := ReadStringU('Program', 'TempDir', GetTempDir);
   FTempDirWithUsername := IncludeTrailingPathDelimiter
     (AddPortableDrive(FTempDirWithUsername));
+
   FTempDir := ExpandFileName(DissolveUsername(FTempDirWithUsername));
   if (FTempDir = '') or not SysUtils.ForceDirectories(FTempDir) then
     FTempDir := IncludeTrailingPathDelimiter(GetEnvironmentVariable('TEMP'));
 
-  if FPortableApplication then
+  if FPortableApplication and not HasWriteAccess(FTempDir) then
   begin
-    IniFile := TIniFile.Create(FTempDir + 'test.ini');
-    try
-      try
-        IniFile.WriteString('test', 'test', 'test');
-      except
-        FTempDirWithUsername := IncludeTrailingPathDelimiter
-          (AddPortableDrive(ReadStringU('Program', 'TempDir', GetTempDir)));
-        FTempDir := FTempDirWithUsername;
-      end;
-    finally
-      FreeAndNil(IniFile);
-    end;
+    FTempDirWithUsername := IncludeTrailingPathDelimiter
+      (AddPortableDrive(ReadStringU('Program', 'TempDir', GetTempDir)));
+    FTempDir := FTempDirWithUsername;
   end;
 
-  // tab FCheckstyle
+  // tab Checkstyle
   FCheckstyle := ReadStringFile('Checkstyle', 'Checkstyle', '');
   FCheckConfiguration := ReadStringFile('Checkstyle', 'Configurationfile', '');
   FCheckParameter := ReadStringU('Checkstyle', 'CheckParameter', '');
   FCheckstyleOK := FileExists(FCheckstyle);
 
-  // tab FJalopy
+  // tab Jalopy
   FJalopy := ReadStringFile('Jalopy', 'Jalopy', '');
   FJalopyConfiguration := ReadStringFile('Jalopy', 'JalopyConfiguration', '');
   FJalopyParameter := ReadStringU('Jalopy', 'JalopyParameter', '');
@@ -4433,14 +4424,13 @@ begin
     FPortableApplication := FMachineIniFile.ReadBool('Java',
       'PortableApplication', False);
   end;
-  FWriteProtection := GetWriteProtection;
 end;
 
 procedure TFConfiguration.RegistryForUser;
 var
-  Str: string;
   AFile: TFileStream;
 begin
+  FUserIniFile := nil;
   FFirstStartAfterInstallation := False;
   if FUseRegistry then
   begin
@@ -4456,69 +4446,44 @@ begin
         FHTMLHighlighter.SaveToRegistry(HKEY_CURRENT_USER,
           GetRegPath + '\HTML');
       end;
-      Str := TPath.GetHomePath + '\JavaEditor\';
-      if not SysUtils.DirectoryExists(Str) then
-        SysUtils.ForceDirectories(Str);
-      FHomeDir := Str;
+      FHomeDir := TPath.GetHomePath + '\JavaEditor\';
+      if not SysUtils.DirectoryExists(FHomeDir) then
+        SysUtils.ForceDirectories(FHomeDir);
     end;
-    FUserIniFile := nil;
   end
   else
   begin
-    Str := FMachineIniFile.ReadString('User', 'HomeDir', '<nix>');
-    if Str = '<nix>' then
+    var
+    HomeDir := FMachineIniFile.ReadString('User', 'HomeDir', '<nix>');
+    if HomeDir = '<nix>' then
     begin
       ErrorMsg(Format
         (_('In section [user] of the configuration file "%s" the value'),
         [FMachineIniFile.Filename]) + #13#10 +
         _('of the key "HomeDir" for the home directory of the user is not set.')
         );
-      FUserIniFile := nil;
       Exit;
     end;
-    Str := WithTrailingSlash(AddPortableDrive(DissolveUsername(Str)));
-    if not SysUtils.DirectoryExists(Str) then
-      SysUtils.ForceDirectories(Str);
-    FHomeDir := Str;
-    Str := Str + 'JEUser.ini';
-    if not FileExists(Str) then
+    FHomeDir := WithTrailingSlash(AddPortableDrive(DissolveUsername(HomeDir)));
+    if not SysUtils.DirectoryExists(FHomeDir) then
+      SysUtils.ForceDirectories(FHomeDir);
+    if not FileExists(FHomeDir + 'JEUser.ini') then
     begin
       FFirstStartAfterInstallation := True;
-      try
-        AFile := TFileStream.Create(Str, fmCreate or fmOpenWrite);
-        FJavaHighlighter.SaveToFile(ExtractFilePath(Str) + '\JEJavaCol.ini');
-        FHTMLHighlighter.SaveToFile(ExtractFilePath(Str) + '\JEHTMLCol.ini');
-        FUserIniFile := TIniFile.Create(Str);
-        FreeAndNil(AFile);
-      except
-        on E: exception do
-          Log('FFirstStartAfterInstallation', E);
+      if HasWriteAccess(FHomeDir) then
+      begin
+        FJavaHighlighter.SaveToFile(FHomeDir + 'JEJavaCol.ini');
+        FHTMLHighlighter.SaveToFile(FHomeDir + 'JEHTMLCol.ini');
+      end
+      else
+      begin
+        ErrorMsg(Format(_('Error: user directory %s has no write access!'),
+          [FHomeDir]));
+        Exit;
       end;
     end;
-    try
-      FUserIniFile:= TIniFile.Create(Str);
-    except
-      on E: exception do begin
-        ErrorMsg(Format(_('Could not open the preferencesfile %s!'), [Str]) + ' ' + E.Message);
-        FUserIniFile:= nil;
-      end;
-    end;
-    
+    FUserIniFile := TIniFile.Create(FHomeDir + 'JEUser.ini');
   end;
-end;
-
-function TFConfiguration.GetWriteProtection: Boolean;
-begin
-  Result := False;
-  if FUseRegistry then
-    Result := not IsAdministrator
-  else
-    try
-      FMachineIniFile.WriteString('Java', 'WriteProtection', 'ok');
-      FMachineIniFile.UpdateFile;
-    except
-      Result := True;
-    end;
 end;
 
 function TFConfiguration.JavaDevelopmentKit: string;
@@ -6024,35 +5989,23 @@ begin
   FJava.SaveBounds;
 end;
 
-procedure TFConfiguration.SaveStrings(const Key, AName: string;
-  Values: TStrings);
+procedure TFConfiguration.SaveFiles(const Key, Name: string; Values: TStrings);
 begin
   var
-  Str := '';
-  for var I := 0 to Values.Count - 1 do
-    Str := Str + Values[I] + ' |';
-  WriteStringU(Key, AName, RemovePortableDrive(Str));
+  Files := '';
+  for var Filepath in Values do
+    Files := Files + RemovePortableDrive(Filepath) + '|';
+  WriteStringU(Key, Name, Files);
 end;
 
-procedure TFConfiguration.ReadStrings(const Key, AName: string;
-  Values: TStrings);
-var
-  Str: string;
-  Posi: Integer;
+procedure TFConfiguration.ReadFiles(const Key, Name: string; Values: TStrings);
 begin
-  try
-    Str := ReadStringU(Key, AName, '');
-  except
-    Str := '';
-  end;
   Values.Clear;
-  Posi := Pos(' |', Str);
-  while Posi > 1 do
-  begin
-    Values.Add(AddPortableDrive(Copy(Str, 1, Posi - 1)));
-    Delete(Str, 1, Posi + 1);
-    Posi := Pos(' |', Str);
-  end;
+  var
+  Files := Split('|', ReadStringU(Key, Name, ''));
+  for var Filepath in Files do
+    Values.Add(AddPortableDrive(Filepath));
+  FreeAndNil(Files);
 end;
 
 procedure TFConfiguration.SaveFavorites(Favorites: TStringList);
@@ -6292,12 +6245,12 @@ begin
           CloseKey;
         end;
       end
-    else if (Dest = 0) and Assigned(FMachineIniFile) then
+    else if Dest = 0 then
       FMachineIniFile.WriteString(Key, AName, Value)
     else if Assigned(FUserIniFile) then
       FUserIniFile.WriteString(Key, AName, Value);
   except
-    // no logging
+    // no logging, Dest = 0 throws exception for normal users
   end;
 end;
 
@@ -6390,9 +6343,9 @@ begin
           CloseKey;
         end;
       end
-    else if (Dest = 0) and Assigned(FMachineIniFile) then
+    else if Dest = 0 then
       Result := FMachineIniFile.ReadString(Key, AName, Default)
-    else if Assigned(FUserIniFile) and Assigned(FMachineIniFile) then
+    else if Assigned(FUserIniFile) then
       if FMachineIniFile.ValueExists(Key, AName) then
         Result := FMachineIniFile.ReadString(Key, AName, Default)
       else
@@ -6439,15 +6392,15 @@ begin
       begin
         RootKey := HKEY_CURRENT_USER;
         Access := KEY_READ;
-        if OpenKey('\Software\JavaEditor\' + Key, False) then begin
-          if ValueExists(AName) then 
+        if OpenKey('\Software\JavaEditor\' + Key, False) then
+        begin
+          if ValueExists(AName) then
             Result := ReadInteger(AName);
           CloseKey;
         end;
       end
     else if Assigned(FUserIniFile) then
-      if Assigned(FMachineIniFile) and FMachineIniFile.ValueExists(Key, AName)
-      then
+      if FMachineIniFile.ValueExists(Key, AName) then
         Result := FMachineIniFile.ReadInteger(Key, AName, Default)
       else
         Result := FUserIniFile.ReadInteger(Key, AName, Default)
@@ -6486,16 +6439,16 @@ begin
         else
           RootKey := HKEY_CURRENT_USER;
         Access := KEY_WRITE;
-        if OpenKey('\Software\JavaEditor\' + Key, True) then begin
+        if OpenKey('\Software\JavaEditor\' + Key, True) then
+        begin
           WriteBool(AName, Value);
           CloseKey;
         end;
       end
-    else
-      if Machine and Assigned(FMachineIniFile) then
-        FMachineIniFile.WriteBool(Key, AName, Value)
-      else if Assigned(FUserIniFile) then
-        FUserIniFile.WriteBool(Key, AName, Value);
+    else if Machine then
+      FMachineIniFile.WriteBool(Key, AName, Value)
+    else if Assigned(FUserIniFile) then
+      FUserIniFile.WriteBool(Key, AName, Value);
   except
     // no logging
   end;
@@ -6526,21 +6479,19 @@ begin
         else
           RootKey := HKEY_CURRENT_USER;
         Access := KEY_READ;
-        if OpenKey('\Software\JavaEditor\' + Key, False) then begin
+        if OpenKey('\Software\JavaEditor\' + Key, False) then
+        begin
           if ValueExists(AName) then
             Result := ReadBool(AName);
           CloseKey;
         end;
       end
-    else
-      if Machine and Assigned(FMachineIniFile) then
-        Result := FMachineIniFile.ReadBool(Key, AName, Default)
-      else if Assigned(FUserIniFile) then
-        if Assigned(FMachineIniFile) and FMachineIniFile.ValueExists(Key, AName)
-        then
-          Result := FMachineIniFile.ReadBool(Key, AName, Default)
-        else
-          Result := FUserIniFile.ReadBool(Key, AName, Default);
+    else if Machine then
+      Result := FMachineIniFile.ReadBool(Key, AName, Default)
+    else if FMachineIniFile.ValueExists(Key, AName) then
+      Result := FMachineIniFile.ReadBool(Key, AName, Default)
+    else if Assigned(FUserIniFile) then
+      Result := FUserIniFile.ReadBool(Key, AName, Default);
   except
     // no logging
   end;
@@ -6567,18 +6518,18 @@ begin
         else
           RootKey := HKEY_CURRENT_USER;
         Access := KEY_WRITE;
-        if OpenKey('\Software\JavaEditor\' + Key, True) then begin
+        if OpenKey('\Software\JavaEditor\' + Key, True) then
+        begin
           WriteBinaryData(AName, Pointer(PByte(Stream.Memory) + Stream.Position)
             ^, Stream.Size - Stream.Position);
           CloseKey;
         end;
       end
-    else
-      if Machine and Assigned(FMachineIniFile) then
-        FMachineIniFile.WriteBinaryStream(Key, AName, Stream)
-      else if Assigned(FUserIniFile) then
-        FUserIniFile.WriteBinaryStream(Key, AName, Stream);
-  except 
+    else if Machine then
+      FMachineIniFile.WriteBinaryStream(Key, AName, Stream)
+    else if Assigned(FUserIniFile) then
+      FUserIniFile.WriteBinaryStream(Key, AName, Stream);
+  except
     // no logging
   end;
 end;
@@ -6618,7 +6569,8 @@ begin
               begin
                 Stream.Size := Stream.Position + Info.DataSize;
                 Result := ReadBinaryData(AName,
-                  Pointer(PByte(Stream.Memory) + Stream.Position)^, Stream.Size);
+                  Pointer(PByte(Stream.Memory) + Stream.Position)^,
+                  Stream.Size);
                 if Stream <> Value then
                   Value.CopyFrom(Stream, Stream.Size - Stream.Position);
               end;
@@ -6633,14 +6585,12 @@ begin
           CloseKey;
         end;
       end
-    else if Machine and Assigned(FMachineIniFile) then
+    else if Machine then
+      Result := FMachineIniFile.ReadBinaryStream(Key, AName, Value)
+    else if FMachineIniFile.ValueExists(Key, AName) then
       Result := FMachineIniFile.ReadBinaryStream(Key, AName, Value)
     else if Assigned(FUserIniFile) then
-      if Assigned(FMachineIniFile) and FMachineIniFile.ValueExists(Key, AName)
-      then
-        Result := FMachineIniFile.ReadBinaryStream(Key, AName, Value)
-      else
-        Result := FUserIniFile.ReadBinaryStream(Key, AName, Value);
+      Result := FUserIniFile.ReadBinaryStream(Key, AName, Value);
   except
     // no logging
   end;
@@ -6688,8 +6638,9 @@ var
         CloseKey;
       except
         on E: Exception do
-          ErrorMsg('Error in EditAssociation! ' + Format(LNGCanNotWriteRegistry,
-            ['SOFTWARE\Classes\']) + ' Error: ' + E.Message);
+          ErrorMsg('Error in creating/deleting an association! ' +
+            Format(LNGCanNotWriteRegistry, ['SOFTWARE\Classes\' + Extension]) +
+            ' Error: ' + E.Message);
       end;
     end;
   end;
@@ -6738,27 +6689,31 @@ var
 
   procedure WriteToRegistry(const Key: string);
   begin
-    with Reg do
-    begin
-      OpenKey(Key, True);
-      WriteString('', 'Java-Editor');
-      CloseKey;
-      OpenKey(Key + '\DefaultIcon', True);
-      WriteString('', JavaEditor + ',0');
-      CloseKey;
-      OpenKey(Key + '\Shell\Open\command', True);
-      WriteString('', JavaEditor);
-      CloseKey;
-      OpenKey(Key + '\Shell\Open\ddeexec', True);
-      WriteString('', '[FileOpen("%1")]');
-      OpenKey('Application', True);
-      Filename := ExtractFileName(ParamStr(0));
-      Filename := Copy(Filename, 1, Length(Filename) - 4);
-      WriteString('', Filename);
-      CloseKey;
-      OpenKey(Key + '\Shell\Open\ddeexec\topic', True);
-      WriteString('', 'System');
-      CloseKey;
+    try
+      with Reg do
+      begin
+        OpenKey(Key, True);
+        WriteString('', 'Java-Editor');
+        CloseKey;
+        OpenKey(Key + '\DefaultIcon', True);
+        WriteString('', JavaEditor + ',0');
+        CloseKey;
+        OpenKey(Key + '\Shell\Open\command', True);
+        WriteString('', JavaEditor);
+        CloseKey;
+        OpenKey(Key + '\Shell\Open\ddeexec', True);
+        WriteString('', '[FileOpen("%1")]');
+        OpenKey('Application', True);
+        Filename := ExtractFileName(ParamStr(0));
+        Filename := Copy(Filename, 1, Length(Filename) - 4);
+        WriteString('', Filename);
+        CloseKey;
+        OpenKey(Key + '\Shell\Open\ddeexec\topic', True);
+        WriteString('', 'System');
+        CloseKey;
+      end;
+    except
+      // no logging
     end;
   end;
 
@@ -7448,7 +7403,7 @@ end;
 function TFConfiguration.GetDumpText: string;
 var
   Pathname1, Pathname2, Pathname3, Str: string;
-  StringList, SL1: TStringList;
+  StringList: TStringList;
   Editor: TFEditForm;
 begin
   Result := '';
@@ -7487,7 +7442,6 @@ begin
     Str := Str + '  Windows-Version: ' + TOSVersion.ToString + CrLf;
     Str := Str + '  CmdLine: ' + CmdLine + CrLf;
     StringList := TStringList.Create;
-    SL1 := TStringList.Create;
     if FUseRegistry then
     begin
       Str := Str + CrLf;
@@ -7515,22 +7469,21 @@ begin
       Str := Str + CrLf;
       Str := Str + StringOfChar('-', 80) + CrLf;
       Str := Str + '--- ' + FMachineIniFile.Filename + CrLf + CrLf;
-      SL1.LoadFromFile(FMachineIniFile.Filename);
-      Str := Str + SL1.Text + CrLf;
+      StringList.LoadFromFile(FMachineIniFile.Filename);
+      Str := Str + StringList.Text + CrLf;
       Str := Str + StringOfChar('-', 80) + CrLf;
       if Assigned(FUserIniFile) then
       begin
         Str := Str + '--- ' + FUserIniFile.Filename + CrLf + CrLf;
-        SL1.Clear;
-        SL1.LoadFromFile(FUserIniFile.Filename);
-        Str := Str + SL1.Text;
+        StringList.Clear;
+        StringList.LoadFromFile(FUserIniFile.Filename);
+        Str := Str + StringList.Text;
         Str := Str + StringOfChar('-', 80) + CrLf;
       end
       else
         Str := Str + 'missing ' + FUserIniFile.Filename + CrLf;
     end;
     FreeAndNil(StringList);
-    FreeAndNil(SL1);
     Result := Str + CrLf;
 
     FreeAndNil(FDumpIniFileHKCU);
@@ -7751,26 +7704,22 @@ end;
 procedure TFConfiguration.CallUpdater(const Target, Source1: string;
   Source2: string);
 begin
-  if Source2 = '' then
-    Source2 := 'xxx';
-
   var
   Updater := FEditorFolder + 'setup.exe';
+  if not FileExists(Updater) then
+  begin
+    ErrorMsg(Format(_(LNGFileNotFound), [Updater]));
+    Exit;
+  end;
+  if Source2 = '' then
+    Source2 := 'xxx';
   var
-  Str := '-Update ' + HideBlanks(Target) + ' ' + HideBlanks(Source1) + ' ' +
+  Params := '-Update ' + HideBlanks(Target) + ' ' + HideBlanks(Source1) + ' ' +
     HideBlanks(Source2);
   if not FUseRegistry then
-    Str := Str + ' -INI ' + HideBlanks(FMachineIniFile.Filename);
-  if FileExists(Updater) then
-    try
-      RunAsAdmin(Handle, Updater, Str);
-    except
-      on E: Exception do
-        ErrorMsg(_('Can not execute file ') + Updater + '! Error: ' +
-          E.Message);
-    end
-  else
-    ErrorMsg(Format(_(LNGFileNotFound), [Updater]));
+    Params := Params + ' -INI ' + HideBlanks(FMachineIniFile.Filename);
+  if not RunAsAdmin(Handle, Updater, Params) then
+    ErrorMsg(_('Can not execute file ') + Updater);
 end;
 
 function TFConfiguration.GetConfigurationAddress(const Str: string): string;
@@ -7818,8 +7767,7 @@ begin
         FWithProxy := AEnabled and (FProxyIP <> '') and (FProxyPort <> 0);
       end;
     except
-      on E: Exception do
-        Log('Registry error!', E);
+      // no logging
     end;
   end;
 end;
@@ -8166,22 +8114,17 @@ end;
 procedure TFConfiguration.SaveInis;
 begin
   if not FUseRegistry then
-    if not FWriteProtection and Assigned(FMachineIniFile) then
-      try
-        FMachineIniFile.UpdateFile;
-      except
-        on E: Exception do
-          ErrorMsg(Format(_(LNGCanNotCreateFile), [FMachineIniFile.Filename,
-            E.Message]));
-      end;
-  if Assigned(FUserIniFile) then
-    try
-      FUserIniFile.UpdateFile;
-    except
-      on E: Exception do
-        ErrorMsg(Format(_(LNGCanNotCreateFile), [FUserIniFile.Filename,
-          E.Message]));
-    end;
+  begin
+    if not IsWriteProtected(FMachineIniFile.Filename) then
+      FMachineIniFile.UpdateFile
+    else
+      ErrorMsg(Format('%s is write protected!', [FMachineIniFile.Filename]));
+    if Assigned(FUserIniFile) and not IsWriteProtected(FUserIniFile.Filename)
+    then
+      FUserIniFile.UpdateFile
+    else
+      ErrorMsg(Format('%s is write protected!', [FUserIniFile.Filename]));
+  end;
 end;
 
 procedure TFConfiguration.BSVNClick(Sender: TObject);
@@ -8555,8 +8498,8 @@ begin
     Result := EditForm.Editor.Lines.Encoding
   else if FileExists(Pathname) then
     try
-      Stream := TFileStream.Create(Pathname, fmOpenRead or fmShareDenyWrite);
       try
+        Stream := TFileStream.Create(Pathname, fmOpenRead or fmShareDenyWrite);
         Result := SynUnicode.GetEncoding(Stream, WithBOM);
       finally
         FreeAndNil(Stream);
@@ -8836,7 +8779,8 @@ begin
       PackageList.SaveToFile(Packagefile);
     except
       on E: Exception do
-        ErrorMsg('Error in MakeClassAndPackageList: ' + E.Message);
+        ErrorMsg('Can not write files ' + Classfile + ' and ' + Packagefile +
+          'Error: ' + E.Message);
     end;
   finally
     FreeAndNil(JarFile);
@@ -8994,7 +8938,7 @@ var
         end;
       except
         on E: Exception do
-          Log('Error in CollectInJarFile: ', E);
+          ErrorMsg(Format(_(LNGCanNotRead), [JarFilename]));
       end;
     finally
       FreeAndNil(JarFile);
@@ -9062,12 +9006,13 @@ begin
       (FJavaCache + '\classes\classpathclasses.txt');
   except
     on E: Exception do
-      ErrorMsg('Error in MakeClasspathClasses: ' + E.Message);
+      ErrorMsg(Format(_(LNGCanNotWrite),
+        [FJavaCache + '\classes\classpathclasses.txt']) + E.Message);
   end;
 end;
 
 procedure TFConfiguration.MakeClassAndPackageListFromDocumentation
-  (const Classfile, InterfaceFile, Packagefile: string);
+  (const Classfile, Interfacefile, Packagefile: string);
 var
   StringList, ClassList, InterfaceList, PackageList: TStringList;
   Str, AClassname: string;
@@ -9162,7 +9107,7 @@ begin
       end;
     end;
     ClassList.SaveToFile(Classfile);
-    InterfaceList.SaveToFile(InterfaceFile);
+    InterfaceList.SaveToFile(Interfacefile);
     PackageList.SaveToFile(Packagefile);
     FreeAndNil(StringList);
     FreeAndNil(ClassList);
@@ -9170,8 +9115,8 @@ begin
     FreeAndNil(InterfaceList);
   except
     on E: Exception do
-      ErrorMsg('Error in MakeClassAndPackageListFromDocumentation: ' +
-        E.Message);
+      ErrorMsg('Error: can not save files: ' + Classfile + ', ' + Interfacefile
+        + ', ' + Packagefile + ' Error: ' + E.Message);
   end;
 end;
 
@@ -9317,7 +9262,7 @@ begin
 end;
 
 function TFConfiguration.RunAsAdmin(Wnd: HWND;
-  const AFile, AParameters: string): THandle;
+  const AFile, AParameters: string): Boolean;
 var
   Sei: TShellExecuteInfoA;
 begin
@@ -9330,19 +9275,13 @@ begin
   Sei.lpFile := PAnsiChar(AnsiString(AFile));
   Sei.lpParameters := PAnsiChar(AnsiString(AParameters));
   Sei.nShow := SW_SHOWNORMAL;
-  if ShellExecuteExA(@Sei) then
-    Result := 33
-  else
-  begin
-    ErrorMsg(SysErrorMessage(GetLastError));
-    Result := 0;
-  end;
+  Result := ShellExecuteExA(@Sei);
 end;
 
 function TFConfiguration.GetFrameType(JavaProgram: string;
   Startclass: Boolean = False): Integer;
 var
-  AForm: TFEditForm;
+  EditForm: TFEditForm;
   JavaScanner: TJavaScanner;
 begin
   Result := 1;
@@ -9353,9 +9292,9 @@ begin
   if Startclass and (FJavaStartClass <> '') and FileExists(FJavaStartClass) then
     JavaProgram := FJavaStartClass;
 
-  AForm := TFEditForm(FJava.GetTDIWindowType(JavaProgram, '%E%'));
-  if Assigned(AForm) then
-    Str := AForm.Editor.Text
+  EditForm := TFEditForm(FJava.GetTDIWindowType(JavaProgram, '%E%'));
+  if Assigned(EditForm) then
+    Str := EditForm.Editor.Text
   else if FileExists(JavaProgram) then
   begin
     var
@@ -9366,8 +9305,7 @@ begin
         Str := StringList.Text;
       except
         on E: Exception do
-          ErrorMsg('Error in GetFrameType: ' + Format(LNGCanNotRead,
-            [JavaProgram]) + ' ' + E.Message);
+          ErrorMsg(Format(LNGCanNotRead, [JavaProgram]));
       end;
     finally
       FreeAndNil(StringList);
@@ -9410,8 +9348,7 @@ begin
         Str := StringList.Text;
       except
         on E: Exception do
-          ErrorMsg('Error in GetPackage!' + Format(LNGCanNotRead, [JavaProgram])
-            + ' Error: ' + E.Message);
+          ErrorMsg(Format(LNGCanNotRead, [JavaProgram]));
       end;
     finally
       FreeAndNil(StringList);
@@ -9475,8 +9412,7 @@ begin
         Str := StringList.Text;
       except
         on E: Exception do
-          ErrorMsg('Error in GetJavaCompilerParameter! ' + Format(LNGCanNotRead,
-            [Pathname]) + ' Error: ' + E.Message);
+          ErrorMsg(Format(LNGCanNotRead, [Pathname]));
       end;
     finally
       FreeAndNil(StringList);
@@ -9665,8 +9601,7 @@ begin
       FControlStructureTemplates[7].Text := Str;
     except
       on E: Exception do
-        ErrorMsg('Error in MakeControlStructureTemplates! ' +
-          Format(LNGCanNotRead, [FTemplates[9]]) + ' Error: ' + E.Message);
+        ErrorMsg(Format(LNGCanNotRead, [FTemplates[9]]));
     end;
   finally
     FreeAndNil(StringList);
@@ -9793,8 +9728,8 @@ var
         end;
       except
         on E: Exception do
-          ErrorMsg('Error in InJarFile! ' + Format(LNGCanNotOpen, [JarFilename])
-            + ' Error: ' + E.Message);
+          ErrorMsg(Format(LNGCanNotOpen, [JarFilename]) + ' Error: ' +
+            E.Message);
       end;
     finally
       FreeAndNil(JarFile);
@@ -10135,8 +10070,7 @@ begin
           end;
         except
           on E: Exception do
-            ErrorMsg('Error in TFConfiguration.SetGUIStyle! ' +
-              Format(LNGCanNotRead, [Str]) + ' Error: ' + E.Message);
+            ErrorMsg(Format(LNGCanNotRead, [Str]));
         end;
       finally
         FreeAndNil(FMachineIniFile);
@@ -10472,8 +10406,7 @@ begin
     end;
   except
     on E: Exception do
-      ErrorMsg('Error in ExtractZipToDir! ' + Format(LNGCanNotOpen, [Filename])
-        + ' Error: ' + E.Message);
+      ErrorMsg(Format(LNGCanNotOpen, [Filename]));
   end;
 end;
 

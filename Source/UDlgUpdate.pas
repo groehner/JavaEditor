@@ -117,20 +117,21 @@ end;
 
 procedure TFUpdateDialog.MakeUpdate;
 var
-  Updater, Params, FSVersion: string;
+  Updater, Params, Version: string;
 begin
   FConfiguration.ModelToRegistry;
   // do it in advance, because in 32 bit it takes very long
   FJava.MakeUpdate := True;
   Updater := TPath.Combine(FSourceDir, 'setup.exe');
-  FSVersion := Copy(UDlgAbout.Version, 1, Pos(',', UDlgAbout.Version) - 1);
+  Version := Copy(UDlgAbout.Version, 1, Pos(',', UDlgAbout.Version) - 1);
   Params := '-Update ' + HideBlanks(FDestDir) + ' ' + HideBlanks(FSourceDir) +
-    ' ' + FSVersion;
-  if FConfiguration.RunAsAdmin(Handle, Updater, Params) = 33 then
+    ' ' + Version;
+  if FConfiguration.RunAsAdmin(Handle, Updater, Params) then
   begin
     Close;
     FJava.Close;
-  end;
+  end else
+    ErrorMsg(_('Can not execute file ') + Updater);
 end;
 
 function TFUpdateDialog.NewVersion: Boolean;

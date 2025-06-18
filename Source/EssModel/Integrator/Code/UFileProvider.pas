@@ -109,8 +109,8 @@ begin
                 TEncoding.Unicode, True);
               Result := SStream;
             except
-              on e: Exception do
-                ErrorMsg(e.Message);
+              on E: Exception do
+                ErrorMsg(E.Message);
             end;
           finally
             FreeAndNil(FStream);
@@ -126,9 +126,9 @@ begin
       AddSearchPath(ExtractFilePath(AName));
     end;
   except
-    on e: Exception do
+    on E: Exception do
     begin
-      ErrorMsg(e.Message);
+      ErrorMsg(E.Message);
       Result := nil;
     end;
   end;
@@ -144,8 +144,8 @@ begin
     try
       FileStream.CopyFrom(AStream, 0);
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
   finally
     FreeAndNil(FileStream);

@@ -306,7 +306,8 @@ uses
   RegularExpressionsCore,
   RegularExpressionsAPI,
   Winapi.SHFolder,
-  Winapi.ShLwApi;
+  Winapi.ShLwApi,
+  UConfiguration;
 
 function IsAscii(const Str: string): Boolean;
 begin
@@ -522,12 +523,14 @@ end;
 function HasWriteAccess(const Directory: string): Boolean;
 begin
   var
-  Str := WithTrailingSlash(Directory) + 'wa_test.$$$';
+  Testfile := WithTrailingSlash(Directory) + 'wa_test.$$$';
   try
-    var
-    FileStream := TFileStream.Create(Str, fmCreate or fmShareExclusive);
-    FreeAndNil(FileStream);
-    Result := DeleteFile(PChar(Str));
+    var FileStream := TFileStream.Create(Testfile, fmCreate or fmShareExclusive);
+    try
+    finally
+      FreeAndNil(FileStream);
+      Result := DeleteFile(PChar(Testfile));
+    end;
   except
     Result := False;
   end;
@@ -1109,8 +1112,9 @@ begin
       Device := Dest;
       GlobalUnlock(DeviceMode);
     end;
-  except on E: Exception do
-      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
+  except
+    on E: Exception do
+      FConfiguration.Log('SetPrinterIndex ', E);
   end;
 end;
 
@@ -1553,8 +1557,8 @@ begin
       FreeAndNil(FStream);
     end;
   except
-    on e: Exception do
-      ErrorMsg(e.Message);
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
 end;
 
@@ -2006,8 +2010,8 @@ begin
         SysUtils.ForceDirectories(ExtractFilePath(Path));
         StringList.SaveToFile(Path);
       except
-        on e: Exception do
-          ErrorMsg(e.Message);
+        on E: Exception do
+          ErrorMsg(E.Message);
       end;
     finally
       FreeAndNil(StringList);
@@ -2484,10 +2488,9 @@ begin
       Result.AddRawOptions(PCRE_UCP);
     Result.Study([preJIT]);
   except
-    on e: ERegularExpressionError do
+    on E: ERegularExpressionError do
     begin
-      MessageDlg(Format('Invalid Regular Expression: %s', [e.Message]), mtError,
-        [mbOK], 0);
+      ErrorMsg(Format('Invalid Regular Expression: %s', [E.Message]));
       Abort;
     end;
     else
@@ -2548,7 +2551,7 @@ begin
   try
     Result := StrToFloat(Str, FormatSetting);
   except
-    on e: EConvertError do
+    on E: EConvertError do
       Result := 0.0;
   end;
 end;

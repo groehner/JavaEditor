@@ -1082,9 +1082,7 @@ begin
       Ini.UpdateFile;
     except
       on E: Exception do
-      begin
         ErrorMsg(E.Message);
-      end;
     end;
   finally
     FreeAndNil(Ini);

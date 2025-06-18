@@ -398,8 +398,8 @@ begin
     FMessages.OutputToTerminal(FConsoleReceived);
     Application.ProcessMessages;
   except
-    on e: Exception do
-      FConfiguration.Log('TComJava1.receiveConsoleMessage', e);
+    on E: Exception do
+      FConfiguration.Log('TComJava1.receiveConsoleMessage', E);
   end;
 end;
 

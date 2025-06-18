@@ -410,8 +410,8 @@ begin
       Writeln(TeFile, Str);
       CloseFile(TeFile);
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
   end;
 end;
@@ -503,8 +503,8 @@ begin
         FreeAndNil(SLCompiled);
         FStringList.SaveToFile(FPathname);
       except
-        on e: Exception do
-          ErrorMsg(e.Message);
+        on E: Exception do
+          ErrorMsg(E.Message);
       end;
     end
     else
@@ -524,8 +524,8 @@ begin
   try
     FStringList.SaveToFile(FPathname);
   except
-    on e: Exception do
-      ErrorMsg(e.Message);
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
   var
   Compiled := DoCompile;
@@ -1037,6 +1037,8 @@ begin
         FVariableList.Clear;
     end;
   except
+    on E: Exception do
+      FConfiguration.Log('TInteractiveExecuter.Clear ', E);
   end;
 end;
 

@@ -34,20 +34,21 @@ type
     procedure SaveDiagramActionExecute(Sender: TObject);
     function OpenFolderActionExecute(Sender: TObject): Boolean;
   private
-    FModel  : TObjectModel;
-    FDiagram: TDiagramIntegrator;  // TRtfdDiagram is descendent of TDiagramIntegrator
+    FModel: TObjectModel;
+    FDiagram: TDiagramIntegrator;
+    // TRtfdDiagram is descendent of TDiagramIntegrator
     FOpendFolder: string;
   public
     constructor Create(AOwner: TComponent; Panel: TPanel); reintroduce;
-    procedure LoadProject(Filenames : TStrings); overload;
-    procedure LoadProject(const Filename : string); overload;
+    procedure LoadProject(Filenames: TStrings); overload;
+    procedure LoadProject(const Filename: string); overload;
     procedure AddToProject(const Filename: string); overload;
     procedure AddToProject(Filenames: TStrings); overload;
     procedure ShowAllOpenedFiles;
     procedure SaveUML(const Pathname: string);
     procedure LoadUML(const Pathname: string);
-    function  GetUMLFilename: string;
-    function  GetClasses: TStringList;
+    function GetUMLFilename: string;
+    function GetClasses: TStringList;
     procedure InitShowParameter(Num: Integer);
     procedure SetShowIcons(Num: Integer);
     procedure RefreshDiagram;
@@ -55,7 +56,7 @@ type
     procedure EditSelectedElement;
     procedure UnSelectAllElements;
     procedure SelectAssociation;
-    function  HasEditableClass: Boolean;
+    function HasEditableClass: Boolean;
     procedure Print;
 
     property Diagram: TDiagramIntegrator read FDiagram;
@@ -86,7 +87,7 @@ constructor TDMUMLModule.Create(AOwner: TComponent; Panel: TPanel);
 begin
   inherited Create(AOwner);
   FModel := TObjectModel.Create;
-  FDiagram:= TRtfdDiagram.Create(FModel, Panel);
+  FDiagram := TRtfdDiagram.Create(FModel, Panel);
 end;
 
 procedure TDMUMLModule.DataModuleDestroy(Sender: TObject);
@@ -95,43 +96,48 @@ begin
   FreeAndNil(FModel);
 end;
 
-procedure TDMUMLModule.LoadProject(Filenames : TStrings);
+procedure TDMUMLModule.LoadProject(Filenames: TStrings);
 var
-  Ext : string;
-  Imp : TImportIntegrator;
-  Ints : TClassList;
-  Exts : TStringList;
-  JPos : Integer;
+  Ext: string;
+  Imp: TImportIntegrator;
+  Ints: TClassList;
+  Exts: TStringList;
+  JPos: Integer;
   SikCursor: TCursor;
   OtherFiles: TStringList;
 begin
   // Examine fileextension and call the correct integrator
-  SikCursor:= Screen.Cursor;
+  SikCursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;
-  Ext:= '';
-  for var I:= 0 to Filenames.Count - 1 do
+  Ext := '';
+  for var I := 0 to Filenames.Count - 1 do
     if LowerCase(ExtractFileExt(Filenames[I])) = '.java' then
-      Ext:= '.java';
+      Ext := '.java';
   if (Ext = '') and (Filenames.Count > 0) then
-    Ext:= LowerCase(ExtractFileExt(Filenames[0]));
+    Ext := LowerCase(ExtractFileExt(Filenames[0]));
 
   Imp := nil;
   Ints := Integrators.Get(TImportIntegrator);
-  OtherFiles:= TStringList.Create;
+  OtherFiles := TStringList.Create;
   try
-    for var I := 0 to Ints.Count - 1 do begin
+    for var I := 0 to Ints.Count - 1 do
+    begin
       Exts := TImportIntegratorClass(Ints[I]).GetFileExtensions;
       try
-        if Exts.IndexOfName(Ext)>-1 then begin
-          Imp := TImportIntegratorClass(Ints[I]).Create(Model, TFileProvider.Create);
+        if Exts.IndexOfName(Ext) > -1 then
+        begin
+          Imp := TImportIntegratorClass(Ints[I])
+            .Create(Model, TFileProvider.Create);
           JPos := 0;
           while JPos < Filenames.Count do
             if Exts.IndexOfName(LowerCase(ExtractFileExt(Filenames[JPos]))) = -1
-              then begin
-                OtherFiles.Add(Filenames[JPos]);
-                Filenames.Delete(JPos);
-              end
-              else Inc(JPos);
+            then
+            begin
+              OtherFiles.Add(Filenames[JPos]);
+              Filenames.Delete(JPos);
+            end
+            else
+              Inc(JPos);
           Break;
         end;
       finally
@@ -154,7 +160,8 @@ end;
 
 procedure TDMUMLModule.LoadProject(const Filename: string);
 begin
-  var StringList:= TStringList.Create;
+  var
+  StringList := TStringList.Create;
   StringList.Add(Filename);
   LoadProject(StringList);
   FreeAndNil(StringList);
@@ -162,14 +169,16 @@ end;
 
 procedure TDMUMLModule.AddToProject(const Filename: string);
 var
-  Ext : string;
-  Imp : TImportIntegrator;
-  Ints : TClassList;
-  Exts : TStringList;
+  Ext: string;
+  Imp: TImportIntegrator;
+  Ints: TClassList;
+  Exts: TStringList;
 begin
   try
     if Assigned(FModel) and Assigned(FModel.ModelRoot) and
-       Assigned(FModel.ModelRoot.Files) and (FModel.ModelRoot.Files.Text = '') then begin
+      Assigned(FModel.ModelRoot.Files) and (FModel.ModelRoot.Files.Text = '')
+    then
+    begin
       LoadProject(Filename);
       FDiagram.ResolveAssociations;
       FDiagram.ResolveObjectAssociations;
@@ -179,15 +188,17 @@ begin
     on e: Exception do
       FConfiguration.Log('TDMUMLModule.AddToProject ', e);
   end;
-  Ext:= LowerCase(ExtractFileExt(Filename));
+  Ext := LowerCase(ExtractFileExt(Filename));
   Imp := nil;
   Ints := Integrators.Get(TImportIntegrator);
   try
-    for var I := 0 to Ints.Count - 1 do begin
+    for var I := 0 to Ints.Count - 1 do
+    begin
       Exts := TImportIntegratorClass(Ints[I]).GetFileExtensions;
       try
-        if Exts.IndexOfName(Ext)>-1 then
-          Imp := TImportIntegratorClass(Ints[I]).Create(Model, TFileProvider.Create);
+        if Exts.IndexOfName(Ext) > -1 then
+          Imp := TImportIntegratorClass(Ints[I])
+            .Create(Model, TFileProvider.Create);
       finally
         FreeAndNil(Exts);
       end;
@@ -208,29 +219,32 @@ end;
 
 procedure TDMUMLModule.AddToProject(Filenames: TStrings);
 begin
-  for var I:= 0 to Filenames.Count - 1 do
+  for var I := 0 to Filenames.Count - 1 do
     AddToProject(Filenames[I]);
 end;
 
 procedure TDMUMLModule.FileOpenActionExecute(Sender: TObject);
 var
-  Ints : TClassList;
-  Exts : TStringList;
-  AnyFilter, AFilter : string;
+  Ints: TClassList;
+  Exts: TStringList;
+  AnyFilter, AFilter: string;
 begin
   AFilter := '';
   Ints := Integrators.Get(TImportIntegrator);
   try
-    for var I := 0 to Ints.Count - 1 do begin
+    for var I := 0 to Ints.Count - 1 do
+    begin
       Exts := TImportIntegratorClass(Ints[I]).GetFileExtensions;
       try
-        for var J := 0 to Exts.Count - 1 do begin
+        for var J := 0 to Exts.Count - 1 do
+        begin
           if AFilter <> '' then
             AFilter := AFilter + '|';
-          AFilter := AFilter + Exts.Values[Exts.Names[J]] + ' (*' + Exts.Names[J] + ')|*' + Exts.Names[J];
+          AFilter := AFilter + Exts.Values[Exts.Names[J]] + ' (*' +
+            Exts.Names[J] + ')|*' + Exts.Names[J];
           if AnyFilter <> '' then
-            AnyFilter:= AnyFilter + ';';
-          AnyFilter:= AnyFilter + '*' + Exts.Names[J];
+            AnyFilter := AnyFilter + ';';
+          AnyFilter := AnyFilter + '*' + Exts.Names[J];
         end;
       finally
         FreeAndNil(Exts);
@@ -240,9 +254,10 @@ begin
     FreeAndNil(Ints);
   end;
   AFilter := 'All types (' + AnyFilter + ')|' + AnyFilter + '|' + AFilter;
-  with TOpenDialog.Create(Self) do begin
-    Filter:= AFilter;
-    Options:= Options + [ofAllowMultiSelect];
+  with TOpenDialog.Create(Self) do
+  begin
+    Filter := AFilter;
+    Options := Options + [ofAllowMultiSelect];
     if Execute then
       LoadProject(Files);
     Free;
@@ -251,29 +266,36 @@ end;
 
 procedure TDMUMLModule.SaveDiagramActionExecute(Sender: TObject);
 begin
-  with TSaveDialog.Create(Self) do begin
-    InitialDir:= ExtractFilePath(Model.ModelRoot.GetConfigFile);
-    Filter:= 'SVG files (*.svg)|*.svg|PNG files (*.png)|*.png|All files (*.*)|*.*';
-    Options:= Options + [ofOverwritePrompt];
-    if Execute then begin
-      if ExtractFileExt(FileName) = '' then begin
-        if FilterIndex = 2
-          then FileName:= ChangeFileExt(FileName, '.png')
-          else FileName:= ChangeFileExt(FileName, '.svg');
+  with TSaveDialog.Create(Self) do
+  begin
+    InitialDir := ExtractFilePath(Model.ModelRoot.GetConfigFile);
+    Filter := 'SVG files (*.svg)|*.svg|PNG files (*.png)|*.png|All files (*.*)|*.*';
+    Options := Options + [ofOverwritePrompt];
+    if Execute then
+    begin
+      if ExtractFileExt(Filename) = '' then
+      begin
+        if FilterIndex = 2 then
+          Filename := ChangeFileExt(Filename, '.png')
+        else
+          Filename := ChangeFileExt(Filename, '.svg');
       end;
-      Diagram.SaveAsPicture(FileName);
+      Diagram.SaveAsPicture(Filename);
     end;
     Free;
   end;
 end;
 
 procedure TDMUMLModule.ShowAllOpenedFiles;
-  var Files: TStringList; Str: string;
+var
+  Files: TStringList;
+  Str: string;
 begin
-  Files:= TStringList.Create;
+  Files := TStringList.Create;
   with FJava do
-    for var I := 0 to FJava.TDIEditFormCount -1 do begin
-      Str:= TDIEditFormGet(I).Pathname;
+    for var I := 0 to FJava.TDIEditFormCount - 1 do
+    begin
+      Str := TDIEditFormGet(I).Pathname;
       if HasJavaExtension(Str) or HasPascalExtension(Str) then
         Files.Add(Str);
     end;
@@ -293,9 +315,10 @@ end;
 
 function TDMUMLModule.GetUMLFilename: string;
 begin
-  if Assigned(Diagram.Package)
-    then Result:= Diagram.Package.GetConfigFile
-    else Result:= '';
+  if Assigned(Diagram.Package) then
+    Result := Diagram.Package.GetConfigFile
+  else
+    Result := '';
 end;
 
 procedure TDMUMLModule.InitShowParameter(Num: Integer);
@@ -305,53 +328,64 @@ end;
 
 procedure TDMUMLModule.SetShowIcons(Num: Integer);
 begin
-  Diagram.ShowIcons:= Num;
+  Diagram.ShowIcons := Num;
 end;
 
 function TDMUMLModule.OpenFolderActionExecute(Sender: TObject): Boolean;
 
-  procedure _AddFileNames(Files: TStringList; const Path, Ext: string; Recursive: Boolean);
-    var SearchRec: TSearchRec;
+  procedure _AddFileNames(Files: TStringList; const Path, Ext: string;
+    Recursive: Boolean);
+  var
+    SearchRec: TSearchRec;
   begin
-    if FindFirst(Path + '\*.*', faReadOnly or faDirectory, SearchRec) = 0 then begin
+    if FindFirst(Path + '\*.*', faReadOnly or faDirectory, SearchRec) = 0 then
+    begin
       repeat
         if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
           if ((SearchRec.Attr and faDirectory) = faDirectory) and Recursive then
             _AddFileNames(Files, Path + '\' + SearchRec.Name, Ext, Recursive)
-          else
-            if CompareText(ExtractFileExt(SearchRec.Name), Ext) = 0 then
-              Files.Add(Path + '\' + SearchRec.Name);
+          else if CompareText(ExtractFileExt(SearchRec.Name), Ext) = 0 then
+            Files.Add(Path + '\' + SearchRec.Name);
       until FindNext(SearchRec) <> 0;
       FindClose(SearchRec);
     end;
   end;
 
 begin
-  Result:= False;
-  var StringList:= TStringList.Create;
-  var Ints := Integrators.Get(TImportIntegrator);
-  var OpenFolderForm:= TFOpenFolderDialog.Create(nil);
+  Result := False;
+  var
+  StringList := TStringList.Create;
+  var
+  Ints := Integrators.Get(TImportIntegrator);
+  var
+  OpenFolderForm := TFOpenFolderDialog.Create(nil);
   try
-    for var I:= 0 to Ints.Count - 1 do begin
-      var Exts:= TImportIntegratorClass(Ints[I]).GetFileExtensions;
+    for var I := 0 to Ints.Count - 1 do
+    begin
+      var
+      Exts := TImportIntegratorClass(Ints[I]).GetFileExtensions;
       try
-        OpenFolderForm.CBFiletype.Items.Add( '*' + Exts.Names[0]);
+        OpenFolderForm.CBFiletype.Items.Add('*' + Exts.Names[0]);
       finally
         FreeAndNil(Exts);
       end;
     end;
-    OpenFolderForm.CBFiletype.ItemIndex:= 0;
-    if OpenFolderForm.ShowModal = mrOk then begin
-      Result:= True;
+    OpenFolderForm.CBFiletype.ItemIndex := 0;
+    if OpenFolderForm.ShowModal = mrOk then
+    begin
+      Result := True;
       _AddFileNames(StringList, OpenFolderForm.PathTreeView.Path,
-                    Copy(OpenFolderForm.CBFiletype.Items[OpenFolderForm.CBFiletype.ItemIndex], 2, 10),
-                    OpenFolderForm.CBWithSubFolder.Checked);
-      if StringList.Count > 0
-        then LoadProject(StringList)
-        else ShowMessage('No files found.');
-      FOpendFolder:= OpenFolderForm.PathTreeView.Path;
-    end else
-      FOpendFolder:= '';
+        Copy(OpenFolderForm.CBFiletype.Items
+        [OpenFolderForm.CBFiletype.ItemIndex], 2, 10),
+        OpenFolderForm.CBWithSubFolder.Checked);
+      if StringList.Count > 0 then
+        LoadProject(StringList)
+      else
+        ShowMessage('No files found.');
+      FOpendFolder := OpenFolderForm.PathTreeView.Path;
+    end
+    else
+      FOpendFolder := '';
   finally
     FreeAndNil(StringList);
     FreeAndNil(Ints);
@@ -385,30 +419,36 @@ begin
 end;
 
 function TDMUMLModule.HasEditableClass: Boolean;
-  var Str: string;
+var
+  Str: string;
 begin
-  Result:= False;
+  Result := False;
   try
-    if Assigned(Diagram)
-      then Result:= Diagram.hasEditableClass
-      else Result:= False;
-  except on e: Exception do begin
-    if Assigned(Diagram)
-       then Str:= 'TDMUMLModule.hasEditableClass Diagram assigned'
-       else Str:= 'TDMUMLModule.hasEditableClass Diagram = nil';
-    FConfiguration.Log(Str, e);
+    if Assigned(Diagram) then
+      Result := Diagram.HasEditableClass
+    else
+      Result := False;
+  except
+    on e: Exception do
+    begin
+      if Assigned(Diagram) then
+        Str := 'TDMUMLModule.hasEditableClass Diagram assigned'
+      else
+        Str := 'TDMUMLModule.hasEditableClass Diagram = nil';
+      FConfiguration.Log(Str, e);
     end;
   end;
 end;
 
 procedure TDMUMLModule.Print;
-  var DBX, DBY: Integer;
-      FormBitmap: TBitmap;
+var
+  DBX, DBY: Integer;
+  FormBitmap: TBitmap;
 begin
-  FormBitmap:= TBitmap.Create;
+  FormBitmap := TBitmap.Create;
   Diagram.GetDiagramSize(DBX, DBY);
-  FormBitmap.Width:= DBX - 1;
-  FormBitmap.Height:= DBY - 1;
+  FormBitmap.Width := DBX - 1;
+  FormBitmap.Height := DBY - 1;
   try
     Diagram.PaintTo(FormBitmap.Canvas, 0, 0, False);
     PrintBitmap(FormBitmap, (Owner as TForm).PixelsPerInch);
@@ -418,15 +458,19 @@ begin
 end;
 
 function TDMUMLModule.GetClasses: TStringList;
-  var Dir, Filename: string;
+var
+  Dir, Filename: string;
 begin
-  Result:= Diagram.getClasses;
-  if FModel.ModelRoot.Files.Count > 0 then begin
-    Dir:= ExtractFilePath(FModel.ModelRoot.Files[0]);
-    for var I := 0 to Result.Count - 1 do begin
-      Filename:= Dir + Result[I] + '.java';
+  Result := Diagram.GetClasses;
+  if FModel.ModelRoot.Files.Count > 0 then
+  begin
+    Dir := ExtractFilePath(FModel.ModelRoot.Files[0]);
+    for var I := 0 to Result.Count - 1 do
+    begin
+      Filename := Dir + Result[I] + '.java';
       if (FModel.ModelRoot.Files.IndexOf(Filename) = -1) and FileExists(Filename)
-      then begin
+      then
+      begin
         AddToProject(Filename);
         FModel.ModelRoot.Files.Add(Filename);
       end;

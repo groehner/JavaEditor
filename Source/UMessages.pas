@@ -843,7 +843,7 @@ begin
     OutputTo(OutputNr, Messages);
   except
     on E: Exception do
-      ErrorMsg(E.Message);
+      ErrorMsg(Format(_(LNGCanNotRead), [AFile]));
   end;
   ChangeTab(OutputNr);
   FreeAndNil(Messages);
@@ -1310,8 +1310,7 @@ begin
       end;
     except
       on E: Exception do
-        OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
-          E.Message));
+        FConfiguration.Log('LBStackDblClick', E);
     end;
   end;
 end;
@@ -2155,7 +2154,7 @@ begin
       TabControlMessages.Tabs[I + 5] := ExtractFileNameEx(ToPath);
     except
       on E: Exception do
-        ErrorMsg(E.Message);
+        FConfiguration.Log('RenameInteractive', E);
     end;
   end;
 end;

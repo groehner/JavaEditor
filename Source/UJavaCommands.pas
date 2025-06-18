@@ -194,8 +194,8 @@ begin
         Writeln(AFile, FCompiler + ' ' + FCompileParameter + ' ' + FCompileFilename);
         Writeln(AFile, FCompileList.Text);
       except
-        on e: Exception do
-          ErrorMsg(e.Message);
+        on E: Exception do
+          ErrorMsg(E.Message);
       end;
     finally
       CloseFile(AFile);
@@ -240,8 +240,8 @@ begin
       end else
         ErrorMsg(SysErrorMessage(GetLastError));
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        ErrorMsg(Format(_(LNGCanNotWrite), [BatFile]) + E.Message);
     end;
   finally
     FreeAndNil(CompileJava);
@@ -479,8 +479,9 @@ begin
     end;
     try
       RunJava.SaveToFile(Path, TEncoding.ANSI);
-    except on E: Exception do
-      ErrorMsg(Format(_(LNGCanNotCreateFile), [Path, E.Message]));
+    except
+      on E: Exception do
+        ErrorMsg(Format(_(LNGCanNotCreateFile), [Path, E.Message]));
     end;
   finally
     FreeAndNil(RunJava);

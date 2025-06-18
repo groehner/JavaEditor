@@ -301,8 +301,9 @@ begin
         SetAnimation(True);
       BringToFront;
       Enter(Self);
-    except on e: Exception do
-      FConfiguration.Log('OpenWindow: ' + Pathname, e);
+    except
+      on E: Exception do
+        FConfiguration.Log('OpenWindow: ' + Pathname, E);
     end;
   finally
     UnlockWindow;

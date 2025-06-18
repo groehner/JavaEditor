@@ -677,8 +677,8 @@ begin
       StreamWriteln(FLogFile, Debugger);
       StreamWriteln(FLogFile, '');
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
 end;
 
@@ -762,8 +762,8 @@ begin
         StringList.Add(GrantPermission);
       StringList.SaveToFile(FPolicyFile);
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
   finally
     FreeAndNil(StringList);
@@ -787,8 +787,8 @@ begin
           StringList.Delete(Int);
         StringList.SaveToFile(FPolicyFile);
       except
-        on e: Exception do
-          ErrorMsg(e.Message);
+        on E: Exception do
+          ErrorMsg(E.Message);
       end;
     finally
       FreeAndNil(StringList);

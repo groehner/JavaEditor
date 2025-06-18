@@ -1143,7 +1143,7 @@ begin
     AEditForm := nil;
   except
     on E: Exception do
-      ErrorMsg(E.Message);
+      FConfiguration.Log('TCodeCompletion.GetMClassifier ', E);
   end;
 end;
 

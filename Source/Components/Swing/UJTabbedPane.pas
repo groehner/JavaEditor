@@ -187,11 +187,8 @@ begin
             FPartner.ReplaceComponentname(OldName, NewName,
               GetUpperEvents(3) + '|');
           except
-            on e: Exception do
-            begin
-              ErrorMsg(e.Message);
+            on E: Exception do
               Tabs[I] := OldTab;
-            end;
           end;
       end;
     end;
@@ -239,10 +236,7 @@ begin
               GetUpperEvents(3) + '|');
           except
             on e: Exception do
-            begin
-              ErrorMsg(e.Message);
               Tabs[I] := OldTab;
-            end;
           end;
       end;
     end;

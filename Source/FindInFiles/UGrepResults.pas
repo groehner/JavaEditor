@@ -257,9 +257,8 @@ var
               try
                 MyEditor.Lines.LoadFromFile(Pathname);
               except
-                on e: Exception do
-                  ErrorMsg(e.Message + #13#10 + _('File') + ' ' + Pathname + ' '
-                    + _('cannot be opened'));
+                on E: Exception do
+                  ErrorMsg(Format(_(LNGCanNotOpen), [Pathname]));
               end;
               if MySearchOptions.ExcludeCommentsAndStrings then
                 MyEditor.Highlighter := FConfiguration.GetHighlighter(Pathname);
