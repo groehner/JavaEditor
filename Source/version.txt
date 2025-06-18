@@ -1,3 +1,8 @@
+23.08, 2025.06.17
+some bugfixes due to last major intern linking
+reactivating JEUser.INI
+reducing exceptions messages
+
 23.07, 2025.06.05
 major intern linting 
 improvements for "copy to picture" for structograms and sequence diagrams

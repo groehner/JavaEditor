@@ -95,20 +95,20 @@ msgstr ""
 
 #  Doesn't have any letters
 #: Structogram/UStructogramform.pas:610
-#: Structogram/UTypes.pas:1472
-#: Structogram/UTypes.pas:1477
-#: Structogram/UTypes.pas:1484
-#: Structogram/UTypes.pas:1761
-#: Structogram/UTypes.pas:1766
-#: Structogram/UTypes.pas:2406
-#: Structogram/UTypes.pas:2567
-#: Structogram/UTypes.pas:2626
-#: Structogram/UTypes.pas:2920
+#: Structogram/UTypes.pas:1474
+#: Structogram/UTypes.pas:1479
+#: Structogram/UTypes.pas:1486
+#: Structogram/UTypes.pas:1763
+#: Structogram/UTypes.pas:1768
+#: Structogram/UTypes.pas:2408
+#: Structogram/UTypes.pas:2569
+#: Structogram/UTypes.pas:2628
+#: Structogram/UTypes.pas:2922
 msgid "  "
 msgstr ""
 
 #  Doesn't have any letters
-#: Structogram/UTypes.pas:2413
+#: Structogram/UTypes.pas:2415
 msgid "    "
 msgstr ""
 
@@ -560,7 +560,7 @@ msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Caption
 #: UConfiguration.dfm:3857
-#: UConfiguration.pas:10348
+#: UConfiguration.pas:10387
 msgid "Android"
 msgstr ""
 
@@ -603,7 +603,7 @@ msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PApplets..Caption
 #: UConfiguration.dfm:739
-#: UConfiguration.pas:10331
+#: UConfiguration.pas:10370
 msgid "Applets"
 msgstr ""
 
@@ -863,7 +863,7 @@ msgstr ""
 #: UDlgMindstorms.dfm:93
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIBrowser..Caption
 #: UJava.dfm:3702
-#: UConfiguration.pas:10344
+#: UConfiguration.pas:10383
 msgid "Browser"
 msgstr ""
 
@@ -962,7 +962,7 @@ msgstr ""
 #: UConfiguration.dfm:5669
 #. FJava..TBXDockTop..MainMenu..MITools..MICheckStyle..Caption
 #: UJava.dfm:3029
-#: UConfiguration.pas:10363
+#: UConfiguration.pas:10402
 msgid "Checkstyle"
 msgstr ""
 
@@ -1053,7 +1053,7 @@ msgstr ""
 #: UConfiguration.dfm:3673
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfileCompiler..Caption
 #: UConfiguration.dfm:5309
-#: UConfiguration.pas:10329
+#: UConfiguration.pas:10368
 msgid "Compiler"
 msgstr ""
 
@@ -1136,7 +1136,7 @@ msgstr ""
 #: UConfiguration.dfm:808
 #. FJava..TBXDockTop..MainMenu..MIStart..MIDissasembler..Caption
 #: UJava.dfm:2844
-#: UConfiguration.pas:10332
+#: UConfiguration.pas:10371
 msgid "Disassembler"
 msgstr ""
 
@@ -1350,7 +1350,7 @@ msgstr ""
 #: UEditorForm.dfm:2420
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..Caption
 #: UJava.dfm:3082
-#: UConfiguration.pas:10361
+#: UConfiguration.pas:10400
 msgid "Git"
 msgstr ""
 
@@ -1494,7 +1494,7 @@ msgstr ""
 #: UConfiguration.dfm:213
 #. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..LJavaInterpreter..Caption
 #: UConfiguration.dfm:219
-#: UConfiguration.pas:10328
+#: UConfiguration.pas:10367
 msgid "Interpreter"
 msgstr ""
 
@@ -1509,7 +1509,7 @@ msgstr ""
 #: UConfiguration.dfm:5783
 #. FJava..TBXDockTop..MainMenu..MITools..MIJalopy..Caption
 #: UJava.dfm:3035
-#: UConfiguration.pas:10364
+#: UConfiguration.pas:10403
 msgid "Jalopy"
 msgstr ""
 
@@ -1528,7 +1528,7 @@ msgstr ""
 #: UConfiguration.dfm:896
 #. FConfiguration..PMain..PPanelRight..PageList..PJar..LJar..Caption
 #: UConfiguration.dfm:923
-#: UConfiguration.pas:10333
+#: UConfiguration.pas:10372
 msgid "Jar"
 msgstr ""
 
@@ -1543,7 +1543,7 @@ msgstr ""
 #: UConfiguration.dfm:1617
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJava..Caption
 #: UJava.dfm:2459
-#: UConfiguration.pas:10327
+#: UConfiguration.pas:10366
 msgid "Java"
 msgstr ""
 
@@ -1922,7 +1922,7 @@ msgstr ""
 #: UJava.dfm:3770
 #. FJUnitTests..Caption
 #: UJUnitTest.dfm:5
-#: UConfiguration.pas:10362
+#: UConfiguration.pas:10401
 msgid "JUnit"
 msgstr ""
 
@@ -2031,7 +2031,7 @@ msgstr ""
 #: UDlgMindstorms.dfm:4
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIMindstormsHelp..Caption
 #: UJava.dfm:3790
-#: UConfiguration.pas:10347
+#: UConfiguration.pas:10386
 msgid "Mindstorms"
 msgstr ""
 
@@ -2735,7 +2735,7 @@ msgstr ""
 #: UConfiguration.dfm:5878
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..Caption
 #: UJava.dfm:3047
-#: UConfiguration.pas:10365
+#: UConfiguration.pas:10404
 msgid "Subversion"
 msgstr ""
 
@@ -2952,7 +2952,7 @@ msgstr ""
 #: UConfiguration.dfm:4450
 #. FUMLForm..Caption
 #: EssModel/System/UUMLForm.dfm:5
-#: UConfiguration.pas:10354
+#: UConfiguration.pas:10393
 msgid "UML"
 msgstr ""
 

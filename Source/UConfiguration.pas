@@ -7766,8 +7766,8 @@ begin
       RunAsAdmin(Handle, Updater, Str);
     except
       on E: Exception do
-        ErrorMsg(_('Can not execute file ' + Updater + '! Error: ' +
-          E.Message));
+        ErrorMsg(_('Can not execute file ') + Updater + '! Error: ' +
+          E.Message);
     end
   else
     ErrorMsg(Format(_(LNGFileNotFound), [Updater]));
@@ -8299,7 +8299,7 @@ begin
           FJavaVersion := 6;
       except
         on E: Exception do
-          Log(_('Get java version'), E);
+          Log('Get java version', E);
       end;
     finally
       FreeAndNil(StringList);
