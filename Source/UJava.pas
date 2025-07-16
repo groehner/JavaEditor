@@ -818,7 +818,6 @@ type
     procedure WMCOPYDATA(var Msg: TWMCopyData); message WM_COPYDATA;
     function HasJavaFiles: Boolean;
     function HasPascalFiles: Boolean;
-    function HasSomethingToSave: Boolean;
     function GetActiveUML: TFUMLForm;
     function GetActiveForm: TFForm;
     function GetEditorWithMain: TFEditForm;
@@ -867,6 +866,7 @@ type
     function GetTDIWindow(const Pathname: string): TFForm; overload;
     function GetTDIWindow(Number: Integer): TFForm; overload;
     function GetTDIWindowType(const Pathname, Typ: string): TFForm;
+    function GetTDIWindowTypeFilename(const Filename, Typ: string): TFForm;
     function GetGuiForm(Pathname: string): TFGUIForm;
     procedure SwitchToWindow(const Path: string); overload;
     procedure SwitchToWindow(Num: Integer); overload;
@@ -1710,7 +1710,7 @@ begin
       FInteractiveUMLForm.Close;
   except
     on E: Exception do
-      FConfiguration.Log('Exception in FormCloseQuery', E);
+      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
   end;
 
   Application.ProcessMessages;
@@ -2600,7 +2600,8 @@ begin
         end;
       except
         on E: Exception do
-          FConfiguration.Log('Exception in PreparePrint', E);
+          OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
+            E.Message));
       end;
     end;
   end
@@ -2729,10 +2730,20 @@ begin
     AForm := FTDIFormsList[I]; // AccessViolation removed
     if (AForm.GetFormType = Typ) and (CompareText(AForm.Pathname, Pathname) = 0)
     then
-    begin
-      Result := AForm;
-      Break;
-    end;
+      Exit(AForm);
+  end;
+end;
+
+function TFJava.GetTDIWindowTypeFilename(const Filename, Typ: string): TFForm;
+begin
+  Result := nil;
+  for var I := 0 to FTDIFormsList.Count - 1 do
+  begin
+    var
+    AForm := FTDIFormsList[I]; // AccessViolation removed
+    if (AForm.GetFormType = Typ) and AForm.Pathname.EndsWith('\' + Filename)
+    then
+      Exit(AForm);
   end;
 end;
 
@@ -2744,10 +2755,7 @@ begin
     var
     AForm := TDIEditFormGet(I).Partner;
     if Assigned(AForm) and (CompareText(AForm.Pathname, Pathname) = 0) then
-    begin
-      Result := TFGUIForm(AForm);
-      Break;
-    end;
+      Exit(TFGUIForm(AForm));
   end;
 end;
 
@@ -2759,10 +2767,7 @@ begin
     var
     AForm := FTDIFormsList[I]; // AccessViolation
     if CompareText(AForm.Pathname, Pathname) = 0 then
-    begin
-      Result := AForm;
-      Break;
-    end;
+      Exit(AForm);
   end;
 end;
 
@@ -3116,6 +3121,7 @@ begin
     AHeight := AHeight + 57
   else if FConfiguration.VisToolbars[0] or FConfiguration.VisToolbars[1] then
     AHeight := AHeight + 28;
+  // if in the future the find toolbar is activated
   ATopFindToolbar := AHeight;
 
   // if FindToolbar.Visible then
@@ -3157,12 +3163,18 @@ begin
     if (Str <> '') and FileExists(Str) then
     begin
       Inc(Number);
-      NewItem := TSpTBXItem.Create(Self);
-      NewItem.Caption := '&' + Number.ToString + ' ' + Str;
-      NewItem.OnClick := MIMenuOpenClick;
-      MIReopen.Add(NewItem);
-      FConfiguration.WriteStringU('History', 'File' + Number.ToString,
-        FConfiguration.RemovePortableDrive(Str));
+      try
+        NewItem := TSpTBXItem.Create(Self);
+        NewItem.Caption := '&' + Number.ToString + ' ' + Str;
+        NewItem.OnClick := MIMenuOpenClick;
+        MIReopen.Add(NewItem);
+        FConfiguration.WriteStringU('History', 'File' + Number.ToString,
+          FConfiguration.RemovePortableDrive(Str));
+      except
+        on E: Exception do
+          OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
+            E.Message));
+      end;
     end;
   end;
   FConfiguration.WriteIntegerU('History', 'Files', Number);
@@ -3827,7 +3839,7 @@ begin
       Editform.Partner.Repaint;
     except
       on E: Exception do
-        FConfiguration.Log('TFJava.MIRunClick Repaint', E);
+        FConfiguration.Log('TFJava.MIRunClick repaint', E);
     end;
 end;
 
@@ -7279,7 +7291,7 @@ procedure TFJava.ShowCompileErrors;
 var
   StringList: TStrings;
   Delta1, Delta2, Delta3, Posi, LineNum, Column: Integer;
-  ACompile, Path, CompilePath, Line, Str2, Pre, Post, Mid1, Mid2, Err: string;
+  ACompile, Path, Filename, Line, Str2, Pre, Post, Mid1, Mid2, Err: string;
   Edit1, Edit2: TFEditForm;
   StringList1: TStringList;
 
@@ -7383,16 +7395,15 @@ begin
     Line := StringList[I];
     if Pos(ACompile, Line) = 1 then
     begin
-      if Assigned(Edit1) then
-        Edit1.ShowCompileErrors;
       Delete(Line, 1, Length(ACompile) + 1);
       Posi := Pos('.java', Line);
       Delete(Line, Posi + 5, Length(Line));
-      CompilePath := Line;
-      Edit1 := TFEditForm(GetTDIWindowType(CompilePath, '%Edit1%'));
-      if Assigned(Edit1) then
+      Filename := Line;
+      Edit1 := TFEditForm(GetTDIWindowTypeFilename(Filename, '%E%'));
+      if Assigned(Edit1) then begin
         Edit1.InitShowCompileErrors;
-      Break;
+        Break;
+      end;
     end;
   end;
 
@@ -7434,13 +7445,13 @@ begin
         end;
         Line := Line + Pre + Err + Post;
         FMessages.LBCompiler.Items[I] := Line;
-        if Assigned(Edit1) and (ExtractFileName(CompilePath) = Path) then
+        if Assigned(Edit1) and (Filename = Path) then
           Edit1.SetErrorMark(LineNum, Column, Pre + Err + Post)
         else if Assigned(Edit2) and (Edit2.Pathname = Path) then
           Edit2.SetErrorMark(LineNum, Column, Pre + Err + Post)
         else
         begin
-          Edit2 := TFEditForm(GetTDIWindowType(Path, '%Edit1%'));
+          Edit2 := TFEditForm(GetTDIWindowType(Path, '%E%'));
           if Assigned(Edit2) then
           begin
             Edit2.InitShowCompileErrors;
@@ -7450,8 +7461,6 @@ begin
       end;
     end;
   end;
-  if Assigned(Edit1) then
-    Edit1.ShowCompileErrors;
 end;
 
 procedure TFJava.DisableUpdateMenuItems;
@@ -7464,14 +7473,6 @@ begin
   Dec(FUpdateMenuItemsCount);
   if FUpdateMenuItemsCount = 0 then
     UpdateMenuItems(nil);
-end;
-
-function TFJava.HasSomethingToSave: Boolean;
-begin
-  Result := False;
-  for var I := 0 to FTDIFormsList.Count - 1 do
-    if FTDIFormsList[I].Visible and FTDIFormsList[I].Modified then
-      Exit(True);
 end;
 
 function TFJava.GetActiveEditor: TFEditForm;
@@ -8109,6 +8110,7 @@ begin
 
 end;
 
+// for debugging purpose
 procedure TFJava.ShowActive;
 var
   Str: string;

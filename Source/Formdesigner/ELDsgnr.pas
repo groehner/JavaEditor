@@ -1393,7 +1393,7 @@ begin
             FHint.Hide
           else if FHintControl <> Sender then
           begin
-            if htControl in FDesigner.ShowingHints then
+            if (htControl in FDesigner.ShowingHints) and (Sender is TJEComponent) then
             begin
               LS := Sender.Name + ': ' + (Sender as TJEComponent).JavaType + #13#10;
               LS := LS + _('Position') + ': ' + IntToStr(Sender.PPIUnScale(Sender.Left)) +

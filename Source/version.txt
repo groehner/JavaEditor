@@ -1,3 +1,10 @@
+23.09, 2025.07.16
+improved SynEdit component
+compact line numbers
+control flow symbols
+ligatures for font Cascadia Code
+some smalller bug fixes
+
 23.08, 2025.06.17
 some bugfixes due to last major intern linking
 reactivating JEUser.INI

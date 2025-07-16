@@ -171,7 +171,6 @@ type
     function GetStructogramAsBitmap: TBitmap;
     function GetName(StrList: TStrList): string;
     procedure PaintAll;
-    procedure Debug(const Str: string);
     function FitsIn(ACurList: TStrList; ACurElement: TStrElement): Boolean;
     procedure SetPuzzleMode(Mode: Integer);
     procedure MakeVeryHard;
@@ -2568,11 +2567,6 @@ begin
       AList.Paint;
     AList.Dirty := False;
   end;
-end;
-
-procedure TFStructogram.Debug(const Str: string);
-begin
-  FMessages.OutputToTerminal(Str);
 end;
 
 function TFStructogram.FitsIn(ACurList: TStrList;

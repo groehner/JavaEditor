@@ -202,7 +202,7 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 629
         Height = 424
-        ActivePage = PSequencediagram
+        ActivePage = PEditorOptions
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
@@ -1264,6 +1264,30 @@ object FConfiguration: TFConfiguration
             Caption = 'Font'
             TabOrder = 20
             OnClick = BEditorFontClick
+          end
+          object CBShowControlFlowSymbols: TCheckBox
+            Left = 16
+            Top = 136
+            Width = 225
+            Height = 17
+            Caption = 'Show control flow symbols'
+            TabOrder = 21
+          end
+          object CBShowLigatures: TCheckBox
+            Left = 16
+            Top = 159
+            Width = 161
+            Height = 17
+            Caption = 'Show ligatures'
+            TabOrder = 22
+          end
+          object CBCompactLineNumbers: TCheckBox
+            Left = 16
+            Top = 184
+            Width = 201
+            Height = 17
+            Caption = 'Compact line numbers'
+            TabOrder = 23
           end
         end
         object PCode: TTabSheet

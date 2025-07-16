@@ -139,7 +139,7 @@ begin
   WebBrowser.Silent := True;
   OnMouseActivate := FormMouseActivate;
   FHistoryList := TStringList.Create;
-  FConfiguration.ReadFiles('Browser', 'Urls', CBUrls.Items);
+  FConfiguration.ReadStrings('Browser', 'Urls', CBUrls.Items);
   ChangeStyle;
 end;
 
@@ -387,13 +387,13 @@ end;
 procedure TFBrowser.TBFavoritesAddClick(Sender: TObject);
 begin
   ComboBoxAdd(CBUrls);
-  FConfiguration.SaveFiles('Browser', 'Urls', CBUrls.Items);
+  FConfiguration.SaveStrings('Browser', 'Urls', CBUrls.Items);
 end;
 
 procedure TFBrowser.TBFavoritesDeleteClick(Sender: TObject);
 begin
   ComboBoxDelete2(CBUrls, CBUrls.Text);
-  FConfiguration.SaveFiles('Browser', 'Urls', CBUrls.Items);
+  FConfiguration.SaveStrings('Browser', 'Urls', CBUrls.Items);
   CBUrls.Text := '';
 end;
 
@@ -422,13 +422,15 @@ begin
       MICo := ((OLECMDF_ENABLED and CMDF) <> 0);
     except
       on E: Exception do
-        FConfiguration.Log('TFBrowser.UpdateState 1', E);
+        OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
+          E.Message));
     end;
     try
       WebBrowser.QueryStatusWB($FFFFFFFF { -1 } );
     except
       on E: Exception do
-        FConfiguration.Log('TFBrowser.UpdateState 2 ', E);
+        OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
+          E.Message));
     end;
     MICu := False;
     MIPa := False;
@@ -460,7 +462,8 @@ begin
           end;
       except
         on E: Exception do
-          FConfiguration.Log('TFBrowser.InvokeOleCMD ', E);
+          OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
+            E.Message));
       end;
   end;
 end;

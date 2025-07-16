@@ -1375,7 +1375,7 @@ begin
   EditForm.Editor.EndUpdate;
 
   // otherwise the source code isn't shown
-  EditForm.Editor.ExecuteCommand(CecRight, #0, nil);
+  EditForm.Editor.ExecuteCommand(cecRight, #0, nil);
 end;
 
 procedure TFGUIDesigner.InsertComponent(Control: TControl);
@@ -1383,7 +1383,7 @@ begin
   var
   Partner := GetEditForm;
   Partner.Editor.BeginUpdate;
-  Partner.Editor.LockBuildStructure := True;
+  Partner.Editor.LockBuildStructure := True;  // ToDo
   Partner.EnsureStartEnd;
   if Control is TJEComponent then
     (Control as TJEComponent).NewControl;

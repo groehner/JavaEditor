@@ -74,7 +74,7 @@ begin
       BorderColor:= clWindow;
       CodeFolding.CollapsedLineColor:= clGrayText;
       CodeFolding.FolderBarLinesColor:= clGrayText;
-      CodeFolding.IndentGuidesColor:= clGray;
+      //CodeFolding.IndentGuidesColor:= clGray;
     end;
   end else begin
     // background color of SynEdit
@@ -91,7 +91,7 @@ begin
       BorderColor:= LStyle.GetStyleColor(scSplitter);
       CodeFolding.CollapsedLineColor:= Font.Color;
       CodeFolding.FolderBarLinesColor:= Font.Color;
-      CodeFolding.IndentGuidesColor:= Font.Color;
+      //CodeFolding.IndentGuidesColor:= Font.Color;
     end;
   end;
 end;

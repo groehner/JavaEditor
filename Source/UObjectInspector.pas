@@ -688,28 +688,30 @@ begin
 
   if Control is TFXGUIForm then
   begin
+    // abstract methods are not called
     JEComponent := TFXNode.Create(Control);
     JEComponent.Name := 'primaryStage';
-    setListener(JEComponent);
+    SetListener(JEComponent);
     Partner.InsertImport('javafx.scene.input.*');
     Partner.InsertImport('javafx.event.*');
     FreeAndNil(JEComponent);
   end
   else if Control is TFGUIForm then
   begin
+    // abstract methods are not called
     JEComponent := TJGuiForm.Create(Control);
     JEComponent.Name := 'cp';
-    setListener(JEComponent);
+    SetListener(JEComponent);
     FreeAndNil(JEComponent);
   end
   else if Control is TFXNode then
   begin
-    setListener(Control as TFXNode);
+    SetListener(Control as TFXNode);
     Partner.InsertImport('javafx.scene.input.*');
     Partner.InsertImport('javafx.event.*');
   end
   else if Control is TAWTComponent then
-    setListener(Control as TAWTComponent);
+    SetListener(Control as TAWTComponent);
   Partner.Editor.EndUpdate;
   ELEventInspector.UpdateItems;
   SetBNewDeleteCaption;
@@ -793,17 +795,14 @@ begin
     Str := ELPropertyInspector.ActiveItem.Caption
   else
     Str := '';
-  try
+  if SelectedControls.Count > 0 then begin
     ELPropertyInspector.Clear;
     ELEventInspector.Clear;
-  except
-    on E: Exception do
-      FConfiguration.Log('TFObjectInspector.ChangeSelection ', E);
   end;
-  if SelectedControls.Count <> 1 then
-    CBObjects.ItemIndex := -1
-  else
-    CBObjects.ItemIndex := CBObjects.Items.IndexOfObject(SelectedControls[0]);
+  if SelectedControls.Count = 1 then
+    CBObjects.ItemIndex := CBObjects.Items.IndexOfObject(SelectedControls[0])
+  else if SelectedControls.Count > 1 then
+    CBObjects.ItemIndex := -1;
   if SelectedControls.Count > 0 then
     Add(SelectedControls[0]);
   for var I := 0 to SelectedControls.Count - 1 do
@@ -813,7 +812,8 @@ begin
   end;
   if Str <> '' then
     ELPropertyInspector.SelectByCaption(Str);
-  SetBNewDeleteCaption;
+  if SelectedControls.Count > 0 then
+    SetBNewDeleteCaption;
 end;
 
 procedure TFObjectInspector.SetFont(AFont: TFont);

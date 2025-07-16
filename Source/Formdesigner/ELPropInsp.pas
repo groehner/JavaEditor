@@ -3109,8 +3109,6 @@ begin
     if Assigned(OnFilterProp) then
       OnFilterProp(Self, AInstance, APropInfo, AIncludeProp);
   except
-    on E: Exception do
-      FConfiguration.Log('TELCustomPropertyInspector.FilterProp ', E);
   end;
 end;
 
@@ -3782,8 +3780,6 @@ begin
   try
     AExtended:= StrToFloat(Str);
   except
-    on E: Exception do
-      FConfiguration.Log('TELFloatPropEditor.SetValue ' + Value, E);
   end;
   SetFloatValue(AExtended);
 end;

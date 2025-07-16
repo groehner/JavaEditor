@@ -392,11 +392,11 @@ begin
   AddKeyUpHandler(aKeyUpHandler);
   Lines.Add('');
   Gutter.Visible := False;
-  // Font.Assign(FMessages.MInterpreter.Font);  ToDO
+  Font.Assign(FMessages.MInterpreter.Font);
   var
-  Opt := Options;
+  Opt := ScrollOptions;
   Exclude(Opt, eoScrollPastEol);
-  Options := Opt;
+  ScrollOptions := Opt;
   Align := alClient;
   RightEdge := 0;
   Tag := 8;
@@ -767,11 +767,11 @@ end;
 procedure TFMessages.TBDeleteClick(Sender: TObject);
 begin
   var
-  IEdit := GetInteractive(TabControlMessages.TabIndex);
-  if IEdit.SelAvail then
-    IEdit.ClearSelection
+  InteractiveEdit := GetInteractive(TabControlMessages.TabIndex);
+  if InteractiveEdit.SelAvail then
+    InteractiveEdit.DeleteSelections
   else
-    IEdit.Clear;
+    InteractiveEdit.Clear;
 end;
 
 procedure TFMessages.ShowTab(Tab: Integer);
@@ -843,7 +843,7 @@ begin
     OutputTo(OutputNr, Messages);
   except
     on E: Exception do
-      ErrorMsg(Format(_(LNGCanNotRead), [AFile]));
+      ErrorMsg(E.Message);
   end;
   ChangeTab(OutputNr);
   FreeAndNil(Messages);
@@ -1310,7 +1310,8 @@ begin
       end;
     except
       on E: Exception do
-        FConfiguration.Log('LBStackDblClick', E);
+        OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
+          E.Message));
     end;
   end;
 end;
@@ -1351,7 +1352,7 @@ begin
       LBMessages.DeleteSelected;
     8:
       begin
-        GetInteractive(TabControlMessages.TabIndex).ClearSelection;
+        GetInteractive(TabControlMessages.TabIndex).DeleteSelections;
         SetModifiedUMLForm(TabControlMessages.TabIndex);
       end;
     10:
@@ -1391,7 +1392,7 @@ end;
 procedure TFMessages.TBExecuteClick(Sender: TObject);
 var
   Form: TFEditForm;
-  IEdit: TSynEdit;
+  SynEdit: TSynEdit;
   Executer: TInteractiveExecuter;
   Code: string;
 begin
@@ -1404,16 +1405,16 @@ begin
     begin
       Form := FJava.GetActiveEditor;
       if TSynEdit(FInteractiveEditors.Objects[I]).SelAvail then
-        IEdit := TSynEdit(FInteractiveEditors.Objects[I])
+        SynEdit := TSynEdit(FInteractiveEditors.Objects[I])
       else if Assigned(Form) and Form.Editor.SelAvail then
-        IEdit := Form.Editor
+        SynEdit := Form.Editor
       else
-        IEdit := TSynEdit(FInteractiveEditors.Objects[I]);
-      if IEdit.SelAvail then
-        Code := IEdit.GetLinesWithSelection
+        SynEdit := TSynEdit(FInteractiveEditors.Objects[I]);
+      if SynEdit.SelAvail then
+        Code := SynEdit.GetLinesWithSelection
       else
-        Code := IEdit.LineText;
-      IEdit.SelStart := IEdit.SelEnd;
+        Code := SynEdit.LineText;
+      SynEdit.SelStart := SynEdit.SelEnd;
       Executer := TInteractiveExecuter(FInteractiveExecuters[I]);
       Executer.Execute(Code);
     end;
@@ -2154,7 +2155,7 @@ begin
       TabControlMessages.Tabs[I + 5] := ExtractFileNameEx(ToPath);
     except
       on E: Exception do
-        FConfiguration.Log('RenameInteractive', E);
+        ErrorMsg(E.Message);
     end;
   end;
 end;

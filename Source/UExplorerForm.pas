@@ -136,7 +136,7 @@ begin
   TranslateComponent(Self);
   ToMainPanel;
   PLeft.Width := FConfiguration.ReadIntegerU('Explorer', 'PLeft.Width', 200);
-  FConfiguration.ReadFiles('Explorer', 'Favorites', CBFavorites.Items);
+  FConfiguration.ReadStrings('Explorer', 'Favorites', CBFavorites.Items);
   PTreeView.Width := Max(FConfiguration.ReadIntegerU('Explorer',
     'PTreeView.Width', 200), 50);
   if FConfiguration.ReadBoolU('Explorer', 'PTreeView.Visible', True) then
@@ -188,8 +188,7 @@ begin
     if Assigned(FStShellListView) then
       FStShellListView.RootFolder := FileName;
   except
-    on E: Exception do
-      FConfiguration.Log('TFExplorer.New', E);
+    FConfiguration.Log('TFExplorer.New');
   end;
   SetState(State);
 end;
@@ -277,7 +276,7 @@ begin
   if Int = -1 then
   begin
     CBFavorites.Items.Insert(0, CBFavorites.Text);
-    FConfiguration.SaveFiles('Explorer', 'Favorites', CBFavorites.Items);
+    FConfiguration.SaveStrings('Explorer', 'Favorites', CBFavorites.Items);
   end;
 end;
 
@@ -288,7 +287,7 @@ begin
   if Int >= 0 then
   begin
     CBFavorites.Items.Delete(Int);
-    FConfiguration.SaveFiles('Explorer', 'Favorites', CBFavorites.Items);
+    FConfiguration.SaveStrings('Explorer', 'Favorites', CBFavorites.Items);
   end;
   CBFavorites.Text := '';
 end;
@@ -306,8 +305,7 @@ begin
       try
         FStShellTreeView.SelectFolder(FStShellListView.RootFolder);
       except
-        on E: Exception do
-          FConfiguration.Log('TFExplorer.FormPaint', E);
+        FConfiguration.Log('TFExplorer.FormPaint');
       end;
     CBFilter.SelLength := 0;
     CBFavorites.SelLength := 0;

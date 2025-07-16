@@ -188,7 +188,10 @@ begin
               GetUpperEvents(3) + '|');
           except
             on E: Exception do
+            begin
+              ErrorMsg(E.Message);
               Tabs[I] := OldTab;
+            end;
           end;
       end;
     end;
@@ -218,8 +221,8 @@ begin
           APanel.Name := NewName;
           Inc(Inserted);
         except
-          on e: Exception do
-            ErrorMsg(e.Message);
+          on E: Exception do
+            ErrorMsg(E.Message);
         end;
       end
       else
@@ -235,8 +238,11 @@ begin
             FPartner.ReplaceComponentname(OldName, NewName,
               GetUpperEvents(3) + '|');
           except
-            on e: Exception do
+            on E: Exception do
+            begin
+              ErrorMsg(E.Message);
               Tabs[I] := OldTab;
+            end;
           end;
       end;
     end;

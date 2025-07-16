@@ -8,7 +8,7 @@
 // Target:          Win32, Delphi 7                                            .
 // Author:          Angus Johnson - angusj-AT-myrealbox-DOT-com                .
 // Copyright:       © 2003-2004 Angus Johnson                                  .
-//                  © 2006-2025 Gerhard Röhner                                 .
+// © 2006-2025 Gerhard Röhner                                  .
 // -----------------------------------------------------------------------------
 
 interface
@@ -141,14 +141,9 @@ type
     procedure New(EditForm1, EditForm2: TFEditForm);
     procedure Open(const FileName: string); overload;
     procedure Open(const Filename1, Filename2: string); overload;
+    procedure Save(WithBackup: Boolean); override;
     procedure ShowDiffState;
     procedure SyncScroll(Sender: TObject; ScrollBar: TScrollBarKind);
-    procedure Save(WithBackup: Boolean); override;
-    function GetFont: TFont; override;
-    procedure ChangeStyle; override;
-    function GetFormType: string; override;
-    procedure SetFont(AFont: TFont); override;
-    procedure SetFontSize(Delta: Integer); override;
     procedure CutToClipboard; override;
     procedure CopyToClipboard; override;
     procedure PasteFromClipboard; override;
@@ -157,7 +152,12 @@ type
     procedure Replace; override;
     procedure Undo; override;
     procedure Redo; override;
+    procedure SetFontSize(Delta: Integer); override;
+    procedure SetFont(AFont: TFont); override;
+    function GetFont: TFont; override;
+    function GetFormType: string; override;
     procedure DPIChanged; override;
+    procedure ChangeStyle; override;
 
     property FilesCompared: Boolean read FFilesCompared;
     property Number: Integer read FNumber write FNumber;
@@ -166,6 +166,7 @@ type
 implementation
 
 uses
+  Winapi.Messages,
   SysUtils,
   Themes,
   Dialogs,
@@ -506,8 +507,10 @@ begin
         end
         else if not FOnlyDifferences then
         begin
-          AddAndFormat(FCodeEdit1, FLines1[OldIndex1], FDefaultClr, OldIndex1 + 1);
-          AddAndFormat(FCodeEdit2, FLines2[OldIndex2], FDefaultClr, OldIndex2 + 1);
+          AddAndFormat(FCodeEdit1, FLines1[OldIndex1], FDefaultClr,
+            OldIndex1 + 1);
+          AddAndFormat(FCodeEdit2, FLines2[OldIndex2], FDefaultClr,
+            OldIndex2 + 1);
         end;
     FCodeEdit1.SetModified(False);
     FCodeEdit2.SetModified(False);
@@ -550,8 +553,8 @@ var
 
 procedure TFTextDiff.SyncScroll(Sender: TObject; ScrollBar: TScrollBarKind);
 begin
-  if IsSyncing or not(FCodeEdit1.WithColoredLines and FCodeEdit2.WithColoredLines)
-  then
+  if IsSyncing or not(FCodeEdit1.WithColoredLines and
+    FCodeEdit2.WithColoredLines) then
     Exit;
   IsSyncing := True; // stops recursion
   try
@@ -559,6 +562,13 @@ begin
       FCodeEdit2.TopLine := FCodeEdit1.TopLine
     else
       FCodeEdit1.TopLine := FCodeEdit2.TopLine;
+    // Workaround to force the scroll bars to show their actual position
+    var CurrMouse := Mouse.CursorPos;
+    SendMessage(FCodeEdit1.Handle, WM_MOUSEMOVE, 0,
+      MakeLParam(FCodeEdit1.Width - 10, FCodeEdit1.Height div 2));
+    SendMessage(FCodeEdit2.Handle, WM_MOUSEMOVE, 0,
+      MakeLParam(FCodeEdit2.Width - 10, FCodeEdit2.Height div 2));
+    Mouse.CursorPos := CurrMouse;
   finally
     IsSyncing := False;
   end;
@@ -672,7 +682,8 @@ var
   Clr: TColor;
   LinObj: TLineObj;
 begin
-  if (MyActiveControl <> FCodeEdit1) or FOnlyDifferences or not FilesCompared then
+  if (MyActiveControl <> FCodeEdit1) or FOnlyDifferences or not FilesCompared
+  then
     Exit;
   with FCodeEdit1 do
   begin
@@ -707,7 +718,8 @@ var
   Clr: TColor;
   LinObj: TLineObj;
 begin
-  if (MyActiveControl <> FCodeEdit2) or FOnlyDifferences or not FilesCompared then
+  if (MyActiveControl <> FCodeEdit2) or FOnlyDifferences or not FilesCompared
+  then
     Exit;
   with FCodeEdit2 do
   begin
@@ -833,8 +845,8 @@ begin
   FCodeEdit2.Font.Size := Size;
   FCodeEdit1.Gutter.Font.Size := Size;
   FCodeEdit2.Gutter.Font.Size := Size;
-  FCodeEdit1.Gutter.Width := FCodeEdit1.CharWidth * (Log10(FLines1.Count) + 1);
-  FCodeEdit2.Gutter.Width := FCodeEdit2.CharWidth * (Log10(FLines2.Count) + 1);
+  //FCodeEdit1.Gutter.Width := FCodeEdit1.CharWidth * (Log10(FLines1.Count) + 1);
+  //FCodeEdit2.Gutter.Width := FCodeEdit2.CharWidth * (Log10(FLines2.Count) + 1);
   ShowFileNames;
 end;
 
@@ -959,20 +971,16 @@ end;
 
 procedure TFTextDiff.TBParagraphClick(Sender: TObject);
 begin
-  var
-  Options := FCodeEdit1.Options;
-  if eoShowSpecialChars in Options then
-    Exclude(Options, eoShowSpecialChars)
+  if FCodeEdit1.VisibleSpecialChars = [scWhitespace, scControlChars, scEOL] then
+    FCodeEdit1.VisibleSpecialChars := []
   else
-    Include(Options, eoShowSpecialChars);
-  FCodeEdit1.Options := Options;
-  Options := FCodeEdit2.Options;
-  if eoShowSpecialChars in Options then
-    Exclude(Options, eoShowSpecialChars)
+    FCodeEdit1.VisibleSpecialChars := [scWhitespace, scControlChars, scEOL];
+
+  if FCodeEdit2.VisibleSpecialChars = [scWhitespace, scControlChars, scEOL] then
+    FCodeEdit2.VisibleSpecialChars := []
   else
-    Include(Options, eoShowSpecialChars);
-  FCodeEdit2.Options := Options;
-  TBParagraph.Down := (eoShowSpecialChars in Options);
+    FCodeEdit2.VisibleSpecialChars := [scWhitespace, scControlChars, scEOL];
+  TBParagraph.Down := (FCodeEdit1.VisibleSpecialChars <> []);
 end;
 
 procedure TFTextDiff.ChangeStyle;
@@ -1058,9 +1066,9 @@ end;
 procedure TFTextDiff.PopupEditorPopup(Sender: TObject);
 begin
   if PopupEditor.PopupComponent = FCodeEdit1 then
-    FNumber:= 1;
+    FNumber := 1;
   if PopupEditor.PopupComponent = FCodeEdit2 then
-    FNumber:= 2;
+    FNumber := 2;
 end;
 
 end.

@@ -4,7 +4,8 @@ interface
 
 uses
   Windows,
-  Messages,
+  Winapi.Messages,
+  Winapi.D2D1,
   SynEditPrint,
   SysUtils,
   Classes,
@@ -27,6 +28,7 @@ uses
   SynEdit,
   SynEditExport,
   SynEditHighlighter,
+  SynEditMiscClasses,
   USynEditEx,
   UModel,
   UBaseForm,
@@ -142,7 +144,6 @@ type
     MIFont: TSpTBXItem;
     MIConfiguration: TSpTBXItem;
     MIClose: TSpTBXItem;
-    icBookmarks: TSVGIconImageCollection;
     vilBookmarksLight: TVirtualImageList;
     vilBookmarksDark: TVirtualImageList;
     MIAssistant: TSpTBXSubmenuItem;
@@ -153,14 +154,15 @@ type
     mnAssistanSuggest: TSpTBXItem;
     SpTBXSeparatorItem1: TSpTBXSeparatorItem;
     ActivityIndicator: TActivityIndicator;
+    icBookmarks: TSVGIconImageCollection;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormClose(Sender: TObject; var AAction: TCloseAction); override;
     procedure EditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure Enter(Sender: TObject); override;
     procedure UpdateState; override;
-    procedure EditorGutterClick(Sender: TObject; Button: TMouseButton;
-      X, Y, Line: Integer; Mark: TSynEditMark);
+    procedure BreakpointGutterClick(Sender: TObject; Button: TMouseButton;
+      X, Y, Row, Line: Integer);
     procedure MICutClick(Sender: TObject);
     procedure MICopyClick(Sender: TObject);
     procedure MIInsertClick(Sender: TObject);
@@ -232,6 +234,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure MIConfigurationClick(Sender: TObject);
     procedure DesignButtonClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
     procedure mnAssistanSuggestClick(Sender: TObject);
     procedure mnAssistantExplainClick(Sender: TObject);
     procedure mnAssistantFixBugsClick(Sender: TObject);
@@ -274,11 +277,21 @@ type
     function GetJavaCodeAt(Caret: TPoint): string;
     procedure CreateTooltip(Caret, Posi: TPoint; const Token: string);
     function GetFrameType: Integer;
+    procedure SynEditDebugInfoPaintLines(RenderTarget: ID2D1RenderTarget;
+      ClipR: TRect; const FirstRow, LastRow: Integer;
+      var DoDefaultPainting: Boolean);
+    procedure SynEditGutterDebugInfoMouseCursor(Sender: TObject;
+      X, Y, Row, Line: Integer; var Cursor: TCursor);
+    procedure SynEditBookmarkPaintLines(RenderTarget: ID2D1RenderTarget;
+      ClipR: TRect; const FirstRow, LastRow: Integer;
+      var DoDefaultPainting: Boolean);
+    procedure BookmarkGutterClick(Sender: TObject; Button: TMouseButton;
+      X, Y, Row, Line: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     procedure New(const FileName: string);
     procedure Open(const FileName: string; State: string;
-      Hidden: Boolean = false);
+      Hidden: Boolean = False);
     procedure Save(WithBackup: Boolean); override;
     procedure SaveIn(const Dir: string); override;
     procedure SaveAs(const FileName: string);
@@ -321,13 +334,19 @@ type
     procedure ClearBreakpoints;
     procedure SetBreakpoints;
     function HasBreakpoints: Boolean;
-    function HasBreakpoint(Line: Integer; var Mark: TSynEditMark): Boolean;
+    function HasBreakpoint(Line: Integer): Boolean;
     function IsExecutableLine(Line: Integer): Boolean;
     procedure SetDebuglineMark(Line: Integer);
     procedure DeleteDebuglineMark;
     procedure DeleteBreakpoint(Str: string);
-    procedure ResetGutterOffset;
+    function GetBreakpointMark(Line: Integer): TSynEditMark;
 
+    function GetMarksBreakpoints: string;
+    procedure SetMarksBreakpoints(MarkBreakpoint: string);
+    procedure InsertBreakpointMark(Line: Integer);
+    procedure DeleteBreakpointAtLine(Line: Integer);
+    procedure InsertGotoCursorBreakpoint;
+    procedure InsertBreakpoint;
     procedure HTMLforApplet(const AWidth, AHeight, CharSet, Path,
       AClass: string; WithJEApplets, Debug: Boolean);
     function CurrentCol: Integer;
@@ -341,14 +360,10 @@ type
       const ASearch, AReplace: string; Line, Column: Integer;
       var AAction: TSynReplaceAction);
     procedure SynEditorSpecialLineColors(Sender: TObject; Line: Integer;
-      var Special: Boolean; var ForeGround, BackGround: TColor);
+      var Special: Boolean; var Foreground, Background: TColor);
+    procedure SynEditGutterGetText(Sender: TObject; ALine: Integer;
+      var AText: string);
     function GetLineInfos(ALine: Integer): TLineInfos;
-    function GetMarksBreakpoints: string;
-    procedure SetMarksBreakpoints(MarkBreakpoint: string);
-    procedure InsertBreakpointMark(Line: Integer);
-    procedure DeleteBreakpointMark(Mark: TSynEditMark);
-    procedure InsertGotoCursorBreakpoint;
-    procedure InsertBreakpoint;
     procedure ParseSourcecodeWithThread(HasChanged: Boolean);
     procedure ParseSourceCode(HasChanged: Boolean);
     procedure CreateTVFileStructure;
@@ -481,7 +496,7 @@ type
     function ClassnameDifferentFromAncestors(const AClassname: string): Boolean;
     procedure InitShowCompileErrors;
     procedure SetErrorMark(Line, Column: Integer; const Error: string);
-    procedure ShowCompileErrors;
+    procedure UnderlineCompileErrors;
     procedure ClearCompilerErrorMarks;
     procedure ClearMarks;
     procedure TerminateThread(Sender: TObject);
@@ -527,7 +542,6 @@ implementation
 {$R *.dfm}
 
 uses
-  Contnrs,
   Printers,
   Dialogs,
   IOUtils,
@@ -543,6 +557,7 @@ uses
   SynEditPrintTypes,
   SynEditTypes,
   SynHighlighterJava,
+  SynDWrite,
   UJava,
   UGUIDesigner,
   UJavaCommands,
@@ -613,28 +628,62 @@ begin
     PopupMenu := PopUpEditor;
     BookMarkOptions.BookmarkImages := vilBookmarksLight;
     Font.Assign(FConfiguration.EditFont);
-    Options := [eoAutoIndent, eoDragDropEditing, eoScrollPastEol,
-      eoShowScrollHint, eoSmartTabs, eoTabIndent, eoTabsToSpaces,
-    { eoTrimTrailingSpaces, }
-    eoSmartTabDelete, eoGroupUndo, eoKeepCaretX, eoEnhanceHomeKey];
-    Gutter.DigitCount := 1;
-    Gutter.LeftOffset := 15;
-    Gutter.Gradient := True;
+    Font.Quality:= fqClearTypeNatural;
+    if not FConfiguration.ShowControlFlowSymbols then
+      DisplayFlowControl.Enabled := False;
+
+    Options := [eoAutoIndent, eoDragDropEditing, eoSmartTabs, eoTabIndent,
+      eoTabsToSpaces, eoSmartTabDelete, eoGroupUndo, eoDropFiles, eoKeepCaretX,
+      eoBracketsHighlight, eoAccessibility, eoCompleteBrackets,
+      eoCompleteQuotes, eoEnhanceHomeKey];
+    if FConfiguration.ShowLigatures then
+      Options:= Options + [eoShowLigatures];
+    ScrollOptions := [eoDisableScrollArrows, eoScrollPastEol, eoShowScrollHint];
+
     Gutter.AutoSize := True;
+    Gutter.BorderStyle := gbsNone;
+    Gutter.DigitCount := 1;
+    Gutter.Font.Assign(FConfiguration.Font);
+    Gutter.Font.Height := FEditor.Font.Height + 2;
+    Gutter.Font.Quality := fqClearTypeNatural;
+    Gutter.BorderStyle := gbsNone;
+    Gutter.Gradient := True;
+    Gutter.GradientSteps := 30;
+    Gutter.ShowLineNumbers := FConfiguration.LineNumbering;
+    Gutter.TrackChanges.Width := 2;
+    Gutter.TrackChanges.Visible := True;
+
+    var
+    Band := TSynGutterBand(Gutter.Bands.Insert(1));
+    Band.Kind := gbkCustom;
+    Band.Width := 17;
+    Band.OnPaintLines := SynEditDebugInfoPaintLines;
+    Band.OnClick := BreakpointGutterClick;
+    Band.OnMouseCursor := SynEditGutterDebugInfoMouseCursor;
+
+    Band := Gutter.Bands[0];
+    Band.Width := 16;
+    Band.OnPaintLines := SynEditBookmarkPaintLines;
+    Band.OnClick := BookmarkGutterClick;
+    Band.OnMouseCursor := SynEditGutterDebugInfoMouseCursor;
+
+    IndentGuides.Style := igsDotted;
+    SelectedColor.Background := clSkyBlue;
     UseCodeFolding := True;
-    CodeFolding.IndentGuides := True;
+    WantTabs := True;
+    WordWrapGlyph.Visible := True;
     SearchEngine := FJava.SynEditSearch;
     Indent := FConfiguration.Indent;
     StructureColorIntensity := FConfiguration.StructureColorIntensity;
-    OnBuildStructure := DoOnBuildStructure;
     SetCaretBlinkTime(CInsertBlink);
-    Gutter.Font.Assign(FConfiguration.Font);
-    Gutter.Font.Height := FEditor.Font.Height + 2;
-    Gutter.ShowLineNumbers := FConfiguration.LineNumbering;
-    OnGutterClick := EditorGutterClick;
+    ScrollbarAnnotations.SetDefaultAnnotations;
+
+    OnBuildStructure := DoOnBuildStructure;
+    OnGutterGetText := SynEditGutterGetText;
     OnSpecialLineColors := SynEditorSpecialLineColors;
     OnKeyUp := EditorKeyUp;
     OnKeyPress := EditorKeyPress;
+    // OnChange := SynEditChange;
     OnStatusChange := EditorStatusChange;
     OnReplaceText := SynEditorReplaceText;
     OnMouseOverToken := DoOnMouseOverToken;
@@ -652,7 +701,7 @@ begin
   EditformToolbar.Visible := FConfiguration.VisToolbars[2];
   FEncoding := FConfiguration.GetEncoding;
   FCheckAgeEnabled := FConfiguration.CheckAge;
-  FNeedsParsing := false;
+  FNeedsParsing := False;
   FBookmark := 0;
   FBreakPointCount := 0;
   FEditorAge := 0;
@@ -701,6 +750,19 @@ begin
   Translate;
 end;
 
+procedure TFEditForm.SynEditGutterGetText(Sender: TObject; ALine: Integer;
+  var AText: string);
+begin
+  if ALine = TSynEdit(Sender).CaretY then
+    Exit;
+
+  if ALine mod 10 <> 0 then
+    if ALine mod 5 <> 0 then
+      AText := '·'
+    else
+      AText := '-';
+end;
+
 procedure TFEditForm.AddShortcutsToHints;
 begin
   var
@@ -742,9 +804,9 @@ begin
   LNGs[5] := _(LNGStartEventMethods);
   LNGs[6] := _(LNGEndEventMethods);
 
-  FModifiedStrs[false] := '';
+  FModifiedStrs[False] := '';
   FModifiedStrs[True] := _(LNGModified);
-  FInsertModeStrs[false] := _(LNGModusOverwrite);
+  FInsertModeStrs[False] := _(LNGModusOverwrite);
   FInsertModeStrs[True] := _(LNGModusInsert);
   CalculateStatusline;
   if UUtils.Left(MIExecuteWithoutConsole.Caption, 4) <> '  ' then
@@ -762,7 +824,8 @@ begin
   DesignButton.Visible := FileExists(ChangeFileExt(FileName, '.jfm'));
   SetHighlighter;
   SetToolButtons;
-  if not FHidden then begin
+  if not FHidden then
+  begin
     FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
     FJava.TabModified(Number, Modified);
     Enter(Self); // must stay!
@@ -772,24 +835,29 @@ begin
 end;
 
 procedure TFEditForm.Open(const FileName: string; State: string;
-  Hidden: Boolean = false);
+  Hidden: Boolean = False);
 begin
-  FHidden:= Hidden;
-  SetModified(false);
+  FHidden := Hidden;
   try
-    FEditor.Lines.LoadFromFile(FileName);
-    // set UTF8 as default FEncoding
-    if FEditor.Lines.Encoding <> TEncoding.UTF8 then
-    begin
-      var
-      WriteTime := TFile.GetLastWriteTime(FileName);
-      FEditor.Lines.SaveToFile(FileName, TEncoding.UTF8);
-      TFile.SetLastWriteTime(FileName, WriteTime);
-      FEditor.Lines.LoadFromFile(FileName, TEncoding.UTF8);
+    FEditor.LockUndo;
+    try
+      FEditor.Lines.LoadFromFile(FileName);
+      // set UTF8 as default FEncoding
+      if (FEditor.Lines.Encoding <> TEncoding.UTF8) and
+        not IsWriteProtected(FileName) then
+      begin
+        var
+        WriteTime := TFile.GetLastWriteTime(FileName);
+        FEditor.Lines.SaveToFile(FileName, TEncoding.UTF8);
+        TFile.SetLastWriteTime(FileName, WriteTime);
+        FEditor.Lines.LoadFromFile(FileName, TEncoding.UTF8);
+      end;
+      FEncoding := EncodingAsString(FEditor.Lines.Encoding.EncodingName);
+      FLineBreak := FEditor.Lines.LineBreak;
+      FEditor.ReplaceTabs(FConfiguration.TabWidth);
+    finally
+      FEditor.UnlockUndo;
     end;
-    FEncoding := EncodingAsString(FEditor.Lines.Encoding.EncodingName);
-    FLineBreak := FEditor.Lines.LineBreak;
-    FEditor.ReplaceTabs(FConfiguration.TabWidth);
     if FEditor.NeedsWordWrap then
       SBWordWrapClick(Self);
     FileAge(FileName, FEditorAge);
@@ -804,11 +872,13 @@ begin
       ParseSourceCode(True);
     SetState(State);
     // ensure vertical scrollbar is visible
-    FEditor.ScrollBars := ssNone;
-    FEditor.ScrollBars := ssBoth;
+    FEditor.UpdateScrollBars;
   except
-    on E: Exception do
-      ErrorMsg(Format(_(LNGCanNotOpen), [FileName]));
+    on e: Exception do
+    begin
+      ErrorMsg(e.Message);
+      FConfiguration.Log('TFEditForm.Open: ' + FileName, e);
+    end;
   end;
 end;
 
@@ -848,7 +918,7 @@ begin
   if FNeedToSyncFileStructure and IsJava then
   begin
     FFileStructure.ShowEditorCodeElement;
-    FNeedToSyncFileStructure := false;
+    FNeedToSyncFileStructure := False;
   end;
 end;
 
@@ -910,7 +980,7 @@ begin
     FEditor.Highlighter := FConfiguration.GetHighlighter(FFileExtension);
 
   if FEditor.Highlighter = nil then
-    FEditor.StructureColoring := false
+    FEditor.StructureColoring := False
   else
   begin
     FEditor.StructureColoring := FConfiguration.StructureColoring;
@@ -926,26 +996,26 @@ begin
     FToolButtons[I].Visible := True;
   if not IsJava then
   begin
-    TBDesignform.Visible := false;
-    TBStructure.Visible := false;
-    TBClassOpen.Visible := false;
-    TBSystemOutPrintln.Visible := false;
-    TBBreakpoint.Visible := false;
-    TBBreakpointsClear.Visible := false;
+    TBDesignform.Visible := False;
+    TBStructure.Visible := False;
+    TBClassOpen.Visible := False;
+    TBSystemOutPrintln.Visible := False;
+    TBBreakpoint.Visible := False;
+    TBBreakpointsClear.Visible := False;
     TBStructureIndent.Visible := Pos('{', FEditor.Text) > 0;
-    TBIfStatement.Visible := false;
-    TBIfElseStatement.Visible := false;
-    TBWhileStatement.Visible := false;
-    TBForStatement.Visible := false;
-    TBDoWhileStatement.Visible := false;
-    TBSwitchStatement.Visible := false;
-    TBTryStatement.Visible := false;
-    TBBlockStatement.Visible := false;
+    TBIfStatement.Visible := False;
+    TBIfElseStatement.Visible := False;
+    TBWhileStatement.Visible := False;
+    TBForStatement.Visible := False;
+    TBDoWhileStatement.Visible := False;
+    TBSwitchStatement.Visible := False;
+    TBTryStatement.Visible := False;
+    TBBlockStatement.Visible := False;
   end;
   if IsPascal then
   begin
     TBClassOpen.Visible := True;
-    TBStructureIndent.Visible := false;
+    TBStructureIndent.Visible := False;
   end;
   TBBrowser.Visible := IsHTML;
   TBValidate.Visible := IsHTML or IsCSS;
@@ -953,15 +1023,15 @@ end;
 
 procedure TFEditForm.Print;
 begin
-  if hasDefaultPrinter then
-    PrintAll(false)
+  if HasDefaultPrinter then
+    PrintAll(False)
   else
     ErrorMsg(_(LNGNoDefaultPrinter));
 end;
 
 procedure TFEditForm.PrintAll(AllPages: Boolean);
 begin
-  if hasDefaultPrinter then
+  if HasDefaultPrinter then
   begin
     if FEditor.Font.Size >= 13 then
       if MessageDlg(Format(_('Font size is %3d pt. Print anyhow?'),
@@ -1077,7 +1147,7 @@ begin
     SelectedOnly := (FJava.PrintDialog.PrintRange = prSelection);
     Highlight := Assigned(FEditor.Highlighter);
     Highlighter := FEditor.Highlighter;
-    Colors := false;
+    Colors := False;
     LineNumbers := FConfiguration.WithLinenumbers;
     LineNumbersInMargin := FConfiguration.LineNumbersInMargin;
 
@@ -1165,11 +1235,17 @@ begin
     Include(Options, eoSmartTabs)
   else
     Exclude(Options, eoSmartTabs);
-  if FConfiguration.CursorBehindLine then
-    Include(Options, eoScrollPastEol)
+  if FConfiguration.ShowLigatures then
+    Include(Options, eoShowLigatures)
   else
-    Exclude(Options, eoScrollPastEol);
-  Include(Options, eoAltSetsColumnMode);
+    Exclude(Options, eoShowLigatures);
+  var
+  ScrollOptions := FEditor.ScrollOptions;
+  if FConfiguration.CursorBehindLine then
+    Include(ScrollOptions, eoScrollPastEol)
+  else
+    Exclude(ScrollOptions, eoScrollPastEol);
+  FEditor.ScrollOptions := ScrollOptions;
   if FConfiguration.ShowBracketPair then
     FEditor.OnPaintTransient := EditorPaintTransient
   else
@@ -1178,7 +1254,12 @@ begin
     FEditor.RightEdge := 80
   else
     FEditor.RightEdge := 0;
+  if FConfiguration.CompactLineNumbers then
+    FEditor.OnGutterGetText := SynEditGutterGetText
+  else
+    FEditor.OnGutterGetText := nil;
 
+  FEditor.DisplayFlowControl.Enabled := FConfiguration.ShowControlFlowSymbols;
   FEditor.ActiveLineColor := FConfiguration.ActiveLineColor;
   FEditor.StructureColorIntensity := FConfiguration.StructureColorIntensity;
   FEditor.PaintStructurePlane := FConfiguration.StructureColoringPlane;
@@ -1205,7 +1286,7 @@ begin
   if ExtractFilePath(Pathname) = '' then
     Pathname := FConfiguration.Sourcepath + Pathname;
   if UpperCase(ExtractFileExt(Pathname)) = '.XML' then // due to Android Mode
-    WithBackup := false;
+    WithBackup := False;
   if WithBackup then
   begin
     BackupName := Pathname;
@@ -1224,10 +1305,11 @@ begin
     FEditor.Lines.LineBreak := FLineBreak;
     AEncoding := GetEncodingAsType;
     if AEncoding = TEncoding.UTF8 then
-      FEditor.Lines.WriteBOM := false
+      FEditor.Lines.WriteBOM := False
     else if AEncoding = TEncoding.Unicode then
       FEditor.Lines.WriteBOM := True;
     FEditor.Lines.SaveToFile(Pathname, AEncoding);
+    FEditor.MarkSaved;
 
     FileAge(Pathname, FEditorAge);
     if Assigned(Partner) then
@@ -1236,10 +1318,10 @@ begin
     if Assigned(Form) then
       (Form as TFSequenceForm).RefreshFromFile;
   except
-    on E: Exception do
-      ErrorMsg(Format(_(LNGCanNotWrite), [Pathname]));
+    on e: Exception do
+      ShowMessage(e.Message);
   end;
-  SetModified(false);
+  SetModified(False);
   Statusline(1, '');
   FMessages.StatusMessage(Pathname + ' ' + _(LNGSaved));
   EditorStatusChange(Self, []);
@@ -1272,28 +1354,28 @@ begin
   if FConfiguration.RenameWhenSave and IsJava then
     with FEditor do
     begin
-      ReplaceWord('public class ' + OldName, 'public class ' + NewName, false);
+      ReplaceWord('public class ' + OldName, 'public class ' + NewName, False);
       ReplaceWord('public interface ' + OldName, 'public interface ' +
-        NewName, false);
+        NewName, False);
       ReplaceWord('public ' + OldName, 'public ' + NewName, True);
       ReplaceText('new ' + OldName + '();', 'new ' + NewName + '();', True);
       ReplaceText('new ' + OldName + '("' + OldName + '");',
         'new ' + NewName + '("' + NewName + '");', True); // Old files
       if FFrameType = 8 then
         ReplaceText('primaryStage.setTitle("' + OldName + '");',
-          'primaryStage.setTitle("' + NewName + '");', false)
+          'primaryStage.setTitle("' + NewName + '");', False)
       else
         ReplaceText('setTitle("' + OldName + '");', 'setTitle("' + NewName +
-          '");', false);
+          '");', False);
       ReplaceWord('// end of class ' + OldName, '// end of class ' +
-        NewName, false);
+        NewName, False);
     end;
   if OldName <> '' then // new file?
     FJava.RenameTabAndWindow(Number, FileName);
   if FileExists(FileName) then
     DeleteFile(PChar(FileName));
   Pathname := FileName;
-  FEditor.ReadOnly := false;
+  FEditor.ReadOnly := False;
   Save(WithoutBackup);
   FEditor.Lines.LoadFromFile(FileName);
   // due to possible change of FEncoding or FLineBreak
@@ -1353,7 +1435,7 @@ var
 begin
   Posi := Pos('|', Str);
   if Posi = 0 then
-    WithCursor := false;
+    WithCursor := False;
   if WithCursor then
   begin
     OffY := 0;
@@ -1462,22 +1544,21 @@ var
 begin
   for var I := Editor.Marks.Count - 1 downto 0 do
   begin
-    Mark := TSynEditMark(FEditor.Marks.Items[I]);
+    Mark := FEditor.Marks[I];
     if (Mark.ImageIndex = BreakpointImageIndex) or
       (Mark.ImageIndex = NoBreakpointImageIndex) then
     begin
-      if myDebugger.Running then
+      if MyDebugger.Running then
       begin
         Str := CBSearchClassOrMethod(not StopInAt, Mark.Line);
         if Str <> '' then
-          myDebugger.NewCommand(2, Str);
+          MyDebugger.NewCommand(2, Str);
       end;
       FEditor.InvalidateLine(Mark.Line);
       FEditor.Marks.Remove(Mark);
     end;
   end;
   FBreakPointCount := 0;
-  ResetGutterOffset;
 end;
 
 procedure TFEditForm.ClearCompilerErrorMarks;
@@ -1485,14 +1566,13 @@ begin
   for var I := FEditor.Marks.Count - 1 downto 0 do
   begin
     var
-    Mark := TSynEditMark(FEditor.Marks[I]);
+    Mark := FEditor.Marks[I];
     if Mark.ImageIndex = ErrorMarkIndex then
     begin
       FEditor.InvalidateLine(Mark.Line);
       FEditor.Marks.Remove(Mark);
     end;
   end;
-  ResetGutterOffset;
 end;
 
 procedure TFEditForm.ClearMarks;
@@ -1500,11 +1580,10 @@ begin
   for var I := FEditor.Marks.Count - 1 downto 0 do
   begin
     var
-    Mark := TSynEditMark(FEditor.Marks[I]);
+    Mark := FEditor.Marks[I];
     FEditor.InvalidateLine(Mark.Line);
     FEditor.Marks.Remove(Mark);
   end;
-  ResetGutterOffset;
 end;
 
 procedure TFEditForm.SetBreakpoints;
@@ -1514,16 +1593,16 @@ begin
     for var I := 0 to Marks.Count - 1 do
     begin
       var
-      Mark := TSynEditMark(Marks[I]);
+      Mark := Marks[I];
       if Mark.ImageIndex = BreakpointImageIndex then
       begin
-        ParseSourceCode(false);
+        ParseSourceCode(False);
         var
         Str := CBSearchClassOrMethod(StopInAt, Mark.Line);
         if Str = '' then
           Mark.ImageIndex := NoBreakpointImageIndex
         else
-          myDebugger.NewCommand(1, Str);
+          MyDebugger.NewCommand(1, Str);
       end;
     end;
   end;
@@ -1531,12 +1610,12 @@ end;
 
 function TFEditForm.HasBreakpoints: Boolean;
 begin
-  Result := false;
+  Result := False;
   if Assigned(FEditor) and Assigned(FEditor.Marks) then
     for var I := 0 to FEditor.Marks.Count - 1 do
     begin
       var
-      Mark := TSynEditMark(FEditor.Marks[I]);
+      Mark := FEditor.Marks[I];
       if Mark.ImageIndex = BreakpointImageIndex then
         Exit(True);
     end;
@@ -1564,7 +1643,6 @@ begin
   FEditor.InvalidateLine(Line);
   FEditor.CaretY := Line;
   FEditor.EnsureCursorPosVisibleEx(True);
-  FEditor.Gutter.LeftOffset := 30;
 end;
 
 procedure TFEditForm.DeleteDebuglineMark;
@@ -1586,7 +1664,6 @@ begin
       else
         LineMarks[I].Visible := True;
     FEditor.InvalidateLine(Line);
-    ResetGutterOffset;
   end;
 end;
 
@@ -1605,18 +1682,10 @@ begin
   if TryStrToInt(Str, Posi) then
     for var I := 0 to FEditor.Marks.Count - 1 do
     begin
-      Mark := TSynEditMark(FEditor.Marks[I]);
+      Mark := FEditor.Marks[I];
       if (Mark.ImageIndex = BreakpointImageIndex) and (Mark.Line = Posi) then
-        TSynEditMark(FEditor.Marks[I]).ImageIndex := NoBreakpointImageIndex;
+        FEditor.Marks[I].ImageIndex := NoBreakpointImageIndex;
     end;
-end;
-
-procedure TFEditForm.ResetGutterOffset;
-begin
-  if (FBreakPointCount = 0) and Assigned(FEditor.Gutter) and
-    Assigned(myDebugger) and not myDebugger.Running then
-    if FEditor.Gutter.ShowLineNumbers then
-      FEditor.Gutter.LeftOffset := 15;
 end;
 
 procedure TFEditForm.HTMLforApplet(const AWidth, AHeight, CharSet, Path,
@@ -1657,7 +1726,7 @@ begin
   Result := Pathname;
   if IsJava then
   begin
-    ParseSourceCode(false);
+    ParseSourceCode(False);
     var
     ClassIt := FModel.ModelRoot.GetAllClassifiers;
     while ClassIt.HasNext do
@@ -1756,16 +1825,21 @@ begin
   Result := FEditor.CaretY;
 end;
 
-function TFEditForm.HasBreakpoint(Line: Integer;
-var Mark: TSynEditMark): Boolean;
+function TFEditForm.HasBreakpoint(Line: Integer): Boolean;
 begin
-  Result := false;
+  Result := Assigned(GetBreakpointMark(Line));
+end;
+
+function TFEditForm.GetBreakpointMark(Line: Integer): TSynEditMark;
+begin
+  Result := nil;
   for var I := 0 to FEditor.Marks.Count - 1 do
   begin
-    Mark := TSynEditMark(FEditor.Marks[I]);
+    var
+    Mark := FEditor.Marks[I];
     if ((Mark.ImageIndex = BreakpointImageIndex) or
       (Mark.ImageIndex = NoBreakpointImageIndex)) and (Mark.Line = Line) then
-      Exit(True);
+      Exit(Mark);
   end;
 end;
 
@@ -1775,9 +1849,9 @@ begin
   for var I := 0 to FEditor.Marks.Count - 1 do
   begin
     var
-    Mark := TSynEditMark(FEditor.Marks[I]);
+    Mark := FEditor.Marks[I];
     if (Mark.ImageIndex = NoBreakpointImageIndex) and (Mark.Line = Line) then
-      Exit(false);
+      Exit(False);
   end;
 end;
 
@@ -1791,7 +1865,7 @@ begin
   FEditor.Marks.GetMarksForLine(Line, Marks);
   Int := 1;
   while Assigned(Marks[Int]) and (Int <= MAX_MARKS) do
-    if (Marks[Int].ImageIndex in [BreakpointImageIndex, NoBreakpointImageIndex])
+    if Marks[Int].ImageIndex in [BreakpointImageIndex, NoBreakpointImageIndex]
     then
       Exit
     else
@@ -1802,126 +1876,122 @@ begin
   Mark.Char := 1;
   Mark.ImageIndex := BreakpointImageIndex;
   Mark.Visible := True;
-  Mark.InternalImage := false;
+  Mark.InternalImage := False;
 
-  ParseSourceCode(false);
+  ParseSourceCode(False);
   Str := CBSearchClassOrMethod(StopInAt, Line);
   if Str = '' then
     Mark.ImageIndex := NoBreakpointImageIndex
-  else if myDebugger.Running then
-    myDebugger.NewCommand(1, Str);
+  else if MyDebugger.Running then
+    MyDebugger.NewCommand(1, Str);
   FEditor.Marks.Add(Mark);
   Inc(FBreakPointCount);
-  FEditor.Gutter.LeftOffset := 24;
   FEditor.InvalidateLine(Line);
 end;
 
-procedure TFEditForm.DeleteBreakpointMark(Mark: TSynEditMark);
+procedure TFEditForm.DeleteBreakpointAtLine(Line: Integer);
 begin
   var
-  Str := CBSearchClassOrMethod(not StopInAt, Mark.Line);
-  if myDebugger.Running and (Str <> '') then
-    myDebugger.NewCommand(2, Str);
-  FEditor.InvalidateLine(Mark.Line);
-  FEditor.Marks.Remove(Mark);
-  Dec(FBreakPointCount);
-  ResetGutterOffset;
+  Mark := GetBreakpointMark(Line);
+  if Assigned(Mark) then
+  begin
+    var
+    Str := CBSearchClassOrMethod(not StopInAt, Line);
+    if MyDebugger.Running and (Str <> '') then
+      MyDebugger.NewCommand(2, Str);
+    FEditor.Marks.Remove(Mark);
+    Dec(FBreakPointCount);
+    FEditor.InvalidateLine(Line);
+  end;
 end;
 
 procedure TFEditForm.InsertGotoCursorBreakpoint;
 var
   Str: string;
   Line: Integer;
-  Mark: TSynEditMark;
 begin
   Line := FEditor.CaretY;
-  if not HasBreakpoint(Line, Mark) then
+  if not HasBreakpoint(Line) then
   begin
     Str := CBSearchClassOrMethod(StopInAt, Line);
-    myDebugger.RunToCursorBreakpoint(Str);
+    MyDebugger.RunToCursorBreakpoint(Str);
   end;
 end;
 
 procedure TFEditForm.InsertBreakpoint;
 begin
-  EditorGutterClick(Self, mbLeft, FEditor.BookMarkOptions.Xoffset, 0,
-    FEditor.CaretY, nil);
+  BreakpointGutterClick(Self, mbLeft, FEditor.BookMarkOptions.Xoffset, 0,
+    FEditor.CaretY, 0); // ToDo
 end;
 
-procedure TFEditForm.EditorGutterClick(Sender: TObject; Button: TMouseButton;
-X, Y, Line: Integer; Mark: TSynEditMark);
+procedure TFEditForm.BreakpointGutterClick(Sender: TObject;
+Button: TMouseButton; X, Y, Row, Line: Integer);
 begin
   if Line > FEditor.Lines.Count then
     Exit;
-  if X > FEditor.Gutter.RealGutterWidth(FEditor.Gutter.Font.Size) -
-    FEditor.CodeFolding.GutterShapeSize - 2 * FEditor.Gutter.RightMargin then
+  if not FJava.MIBreakpoint.Enabled or FEditor.SelAvail then
     Exit;
-  if X < FEditor.BookMarkOptions.Xoffset then // Bookmark
-    SetDeleteBookmark(1, Line)
+  if HasBreakpoint(Line) then
+    DeleteBreakpointAtLine(Line)
   else
-  begin
-    if not FJava.MIBreakpoint.Enabled or FEditor.SelAvail then
-      Exit;
-    with FEditor do
-      if HasBreakpoint(Line, Mark) then
-        DeleteBreakpointMark(Mark)
-      else
-      begin
-        FEditor.CaretY := Line;
-        InsertBreakpointMark(Line);
-      end;
-  end;
+    InsertBreakpointMark(Line);
+end;
+
+procedure TFEditForm.BookmarkGutterClick(Sender: TObject; Button: TMouseButton;
+X, Y, Row, Line: Integer);
+begin
+  if (Line > FEditor.Lines.Count) or FEditor.SelAvail then
+    Exit;
+  SetDeleteBookmark(FEditor.CaretX, FEditor.CaretY);
 end;
 
 function TFEditForm.GetLineInfos(ALine: Integer): TLineInfos;
-var
-  Mark: TSynEditMark;
 begin
   Result := [];
   if ALine > 0 then
   begin
-    if Assigned(MyJavaCommands) and myDebugger.Running and
+    if Assigned(MyJavaCommands) and MyDebugger.Running and
       Assigned(FDebuglineMark) and (ALine = FDebuglineMark.Line) then
       Include(Result, dlCurrentDebuggerLine);
-    if Assigned(MyJavaCommands) and myDebugger.Running and Assigned(FMessages)
+    if Assigned(MyJavaCommands) and MyDebugger.Running and Assigned(FMessages)
       and (ALine = FMessages.SearchGoalLine) and
       (FMessages.SearchGoalPath = Pathname) then
       Include(Result, dlSearchLine);
     if IsExecutableLine(ALine) then
       Include(Result, dlExecutableLine);
-    if HasBreakpoint(ALine, Mark) then
+    if HasBreakpoint(ALine) then
       Include(Result, dlBreakpointLine);
   end;
 end;
 
 procedure TFEditForm.SynEditorSpecialLineColors(Sender: TObject; Line: Integer;
-var Special: Boolean; var ForeGround, BackGround: TColor);
+var Special: Boolean; var Foreground, Background: TColor);
 begin
   Special := True;
   var
   LineInfos := GetLineInfos(Line);
   if dlCurrentDebuggerLine in LineInfos then
   begin
-    ForeGround := clWhite;
-    BackGround := clBlue;
+    Foreground := clWhite;
+    Background := clBlue;
     Exit;
   end;
   if dlSearchLine in LineInfos then
   begin
-    ForeGround := clWhite;
-    BackGround := clMaroon;
+    Foreground := clWhite;
+    Background := clMaroon;
     Exit;
   end;
   if dlBreakpointLine in LineInfos then
   begin
-    ForeGround := clWhite;
+    Foreground := clWhite;
     if dlExecutableLine in LineInfos then
-      BackGround := clRed
+      Background := clRed
     else
-      BackGround := clGray;
+      Background := clGray;
     Exit;
   end;
-  Special := false;
+  Special := False;
 end;
 
 procedure TFEditForm.SetDeleteBookmark(Xpos, YPos: Integer);
@@ -1944,9 +2014,7 @@ begin
     while (Int < 10) and IsBookmark(Int) do
       Inc(Int);
     if Int < 10 then
-    begin
-      SetBookMark(Int, Xpos, YPos);
-    end
+      SetBookMark(Int, Xpos, YPos)
     else
       Windows.Beep(600, 200);
   end;
@@ -2147,8 +2215,8 @@ begin
     try
       FEditor.CopyToClipboard;
     except
-      on E: Exception do
-        FConfiguration.Log('TFEditForm.CopyToClipboard ', E);
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
   end;
 end;
@@ -2169,7 +2237,7 @@ begin
       Modified := True;
     except
       on e: Exception do
-        FConfiguration.Log('TFEditForm.PasteFromClipboard ', E);
+        ErrorMsg(e.Message);
     end;
     ParseSourceCode(True);
   end;
@@ -2221,8 +2289,8 @@ begin
   EditForm := FJava.GetActiveEditor;
   if Assigned(EditForm) then
   begin
-    FJava.scpJava.CancelCompletion;
-    FJava.scpParams.CancelCompletion;
+    FJava.ScpJava.CancelCompletion;
+    FJava.ScpParams.CancelCompletion;
     LLMAssistant.Suggest;
   end;
 end;
@@ -2306,8 +2374,8 @@ begin
   if Key = #27 then
   begin
     FTooltip.Hide;
-    FJava.scpJava.Form.Hide;
-    FJava.scpParams.Form.Hide;
+    FJava.ScpJava.Form.Hide;
+    FJava.ScpParams.Form.Hide;
   end;
   if Assigned(FParseThread) and (FParseThread.State > 0) and
     (FParseThread.State < 3) then
@@ -2335,7 +2403,7 @@ const
 var
   Kuerzel: TNode;
   Str, Str1, Hex: string;
-  Posi, Posi1, HexInt, Int, Tokentyp, Start: Integer;
+  Posi, Posi1, Int, Tokentyp, Start: Integer;
   Posi2: TPoint;
   Attri: TSynHighlighterAttributes;
 begin
@@ -2347,7 +2415,7 @@ begin
   if ((VK_F1 <= Key) and (Key <= VK_F12)) or (ssCtrl in Shift) or
     (ssShift in Shift) or (ssAlt in Shift) then
   begin
-    Kuerzel := FConfiguration.KeyboardShortcutsTree.getNode
+    Kuerzel := FConfiguration.KeyboardShortcutsTree.GetNode
       (ShortCut(Key, Shift));
     if Assigned(Kuerzel) then
       PutText(Kuerzel.Data);
@@ -2384,14 +2452,13 @@ begin
     end;
     Posi1 := Length(Hex);
     try
-      HexInt := StrToInt('$' + Hex);
-      Insert(Char(HexInt), Str, Posi);
+      Insert(Char(StrToInt('$' + Hex)), Str, Posi);
       Delete(Str, Posi - Posi1, Posi1);
       FEditor.LineText := Str;
       FEditor.CaretX := FEditor.CaretX - Posi1 + 1;
     except
-      on E: Exception do
-        FConfiguration.Log('TFEditForm.EditorKeyUp ', E);
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
     Key := 0;
   end;
@@ -2480,7 +2547,7 @@ begin
       if (Cent is TClass) then
         FIsJUnitTestClass := (Cent as TClass).IsJUnitTestClass
       else
-        FIsJUnitTestClass := false;
+        FIsJUnitTestClass := False;
 
       CName := Cent.ShortName;
       IndentedOld := Indented;
@@ -2526,7 +2593,7 @@ begin
           Attribute.ToTypeName, TInteger.Create(Attribute.Lines));
         Node.ImageIndex := ImageNr;
         Node.SelectedIndex := ImageNr;
-        Node.HasChildren := false;
+        Node.HasChildren := False;
       end;
       Ite := Cent.GetOperations;
       while Ite.HasNext do
@@ -2540,7 +2607,7 @@ begin
           Method.ToTypeName, TInteger.Create(Method.Lines));
         Node.ImageIndex := ImageNr;
         Node.SelectedIndex := ImageNr;
-        Node.HasChildren := false;
+        Node.HasChildren := False;
       end;
     end;
   finally
@@ -2629,7 +2696,7 @@ var
               Lines[4] := Line + 1;
             end;
             Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
-              'setResizable(false)');
+              'setResizable(False)');
             if (-1 < Line) and (Line < Method.LineE) then
               Lines[4] := Line;
           end;
@@ -2665,7 +2732,7 @@ var
               Lines[4] := Line + 1;
             end;
             Line := GetLineNumberWithFromTill(Method.Lines, Method.LineE,
-              'setResizable(false)');
+              'setResizable(False)');
             if (-1 < Line) and (Line < Method.LineE) then
               Lines[4] := Line;
           end;
@@ -2706,7 +2773,7 @@ begin
       DeleteLine(Line);
   end;
 
-  ParseSourceCode(false);
+  ParseSourceCode(False);
   ClassIt := FModel.ModelRoot.GetAllClassifiers;
   CaretXY := FEditor.CaretXY;
   ClassNumber := -1;
@@ -2807,7 +2874,7 @@ begin
   begin
     if IsApplet then // Applets have "public void init()"
       Exit;
-    ParseSourceCode(false);
+    ParseSourceCode(False);
     ClassIt := FModel.ModelRoot.GetAllClassifiers;
     while ClassIt.HasNext do
     begin
@@ -2821,14 +2888,14 @@ begin
       end;
     end;
   end;
-  Result := false;
+  Result := False;
 end;
 
 procedure TFEditForm.CollectClasses(StringList: TStringList);
 begin
   if IsJava then
   begin
-    ParseSourceCode(false);
+    ParseSourceCode(False);
     var
     ClassIt := FModel.ModelRoot.GetAllClassifiers;
     while ClassIt.HasNext do
@@ -2855,7 +2922,7 @@ begin
   if Trim(FEditor.Lines[Line - 1]) = '' then
     Exit('');
 
-  Found := false;
+  Found := False;
   ClassInLine := -1;
   ClassIt := FModel.ModelRoot.GetAllClassifiers;
   while ClassIt.HasNext and not Found do
@@ -2902,7 +2969,7 @@ end;
 
 function TFEditForm.SourceContainsClass(const AClassname: string): Boolean;
 begin
-  Result := false;
+  Result := False;
   if not Assigned(FModel) then
     ParseSourceCode(True);
 
@@ -2950,7 +3017,7 @@ begin
       SaveToFile(FileName);
     except
       on e: Exception do
-        ErrorMsg(Format(_(LNGCanNotWrite), [FileName]));
+        ErrorMsg(e.Message);
     end;
   end;
 end;
@@ -3010,7 +3077,7 @@ begin
   begin
     Highlighter := FEditor.Highlighter;
     Font.Assign(FEditor.Font);
-    ExportAsText := false;
+    ExportAsText := False;
     ExportAll(Lines);
     Exporter.CopyToClipboard;
   end;
@@ -3132,20 +3199,20 @@ begin
 
         if (TransientType = ttAfter) then
         begin
-          FEditor.Canvas.Font.Color := FConfiguration.AttrBrackets.ForeGround;
+          FEditor.Canvas.Font.Color := FConfiguration.AttrBrackets.Foreground;
           FEditor.Canvas.Font.Style := FConfiguration.AttrBrackets.Style;
-          FEditor.Canvas.Brush.Color := FConfiguration.AttrBrackets.BackGround;
+          FEditor.Canvas.Brush.Color := FConfiguration.AttrBrackets.Background;
         end
         else
         begin
-          if Attri.ForeGround <> clNone then
-            FEditor.Canvas.Font.Color := Attri.ForeGround
+          if Attri.Foreground <> clNone then
+            FEditor.Canvas.Font.Color := Attri.Foreground
           else
             FEditor.Canvas.Font.Color := FEditor.Font.Color;
           VStructure := FEditor.GetStructureIndex(FEditor.CaretY);
           if VStructure = -1 then
-            if Attri.BackGround <> clNone then
-              FEditor.Canvas.Brush.Color := Attri.BackGround
+            if Attri.Background <> clNone then
+              FEditor.Canvas.Brush.Color := Attri.Background
             else
               FEditor.Canvas.Brush.Color := FEditor.Color
           else
@@ -3168,16 +3235,17 @@ begin
 end;
 
 procedure TFEditForm.SBParagraphClick(Sender: TObject);
-// only works in comments in Lazarus
 begin
-  var
-  Options := FEditor.Options;
-  if eoShowSpecialChars in Options then
-    Exclude(Options, eoShowSpecialChars)
+  if FEditor.VisibleSpecialChars = [] then
+  begin
+    FEditor.VisibleSpecialChars := [scWhitespace, scControlChars, scEOL];
+    TBParagraph.Down := True;
+  end
   else
-    Include(Options, eoShowSpecialChars);
-  FEditor.Options := Options;
-  TBParagraph.Down := (eoShowSpecialChars in Options);
+  begin
+    FEditor.VisibleSpecialChars := [];
+    TBParagraph.Down := False;
+  end;
 end;
 
 procedure TFEditForm.SBNumbersClick(Sender: TObject);
@@ -3235,12 +3303,12 @@ procedure TFEditForm.SBWordWrapClick(Sender: TObject);
 begin
   if FEditor.WordWrap then
   begin
-    FEditor.WordWrap := false;
+    FEditor.WordWrap := False;
     FEditor.UseCodeFolding := True;
   end
   else
   begin
-    FEditor.UseCodeFolding := false;
+    FEditor.UseCodeFolding := False;
     FEditor.WordWrap := True;
   end;
   TBParagraph.Down := FEditor.WordWrap;
@@ -3352,7 +3420,7 @@ var
 
 begin
   Screen.Cursor := crHourGlass;
-  AChanged := false;
+  AChanged := False;
   with FEditor do
   begin
     BeginUpdate;
@@ -3378,7 +3446,7 @@ begin
           IndentLine(I);
       end;
     end;
-    LockBuildStructure := false;
+    LockBuildStructure := False;
     EndUpdate;
     Invalidate;
   end;
@@ -3394,7 +3462,7 @@ begin
     for var I := 0 to Marks.Count - 1 do
     begin
       var
-      Mark := TSynEditMark(Marks[I]);
+      Mark := Marks[I];
       if Mark.Visible then
         if Mark.IsBookmark then
           Str := Str + 'M' + IntToStr(Mark.Line)
@@ -3438,7 +3506,7 @@ begin
   Str := Str + 'P' + Trim(FParameter) + '%P%' + 'O' + IntToStr(FStartOption) +
     'T' + IntToStr(FEditor.TopLine) + ')' + 'X' + IntToStr(FEditor.CaretX) + ')'
     + 'Y' + IntToStr(FEditor.CaretY) + ')' + GetMarksBreakpoints + ')';
-  if eoShowSpecialChars in FEditor.Options then
+  if FEditor.VisibleSpecialChars <> [] then
     Str := Str + 'P';
   if FEditor.Gutter.ShowLineNumbers then
     Str := Str + '#';
@@ -3899,6 +3967,78 @@ begin
   end;
 end;
 
+procedure TFEditForm.SynEditDebugInfoPaintLines(RenderTarget: ID2D1RenderTarget;
+ClipR: TRect; const FirstRow, LastRow: Integer; var DoDefaultPainting: Boolean);
+var
+  LineHeight, YPos, Row, Line: Integer;
+begin
+  DoDefaultPainting := False;
+  if not(FEditor.Highlighter = FConfiguration.JavaHighlighter) or
+    not FEditor.Gutter.Visible then
+    Exit;
+
+  LineHeight := FEditor.LineHeight;
+  for Row := FirstRow to LastRow do
+  begin
+    Line := FEditor.RowToLine(Row);
+    if Row <> FEditor.LineToRow(Line) then
+      Continue; // Wrapped Line
+    for var I := 0 to FEditor.Marks.Count - 1 do
+    begin
+      var
+      Mark := FEditor.Marks[I];
+      if Mark.Line <> Line then
+        Continue;
+      if Mark.ImageIndex in [BreakpointImageIndex, NoBreakpointImageIndex,
+        ErrorMarkIndex] then
+      begin
+        YPos := (LineHeight - vilBookmarksLight.Height) div 2 + LineHeight *
+          (Row - FEditor.TopLine);
+        ImageListDraw(RenderTarget, vilBookmarksLight,
+          ClipR.Left + MulDiv(TSynGutterBand.MarginX, FCurrentPPI, 96), YPos,
+          Mark.ImageIndex);
+      end;
+    end;
+  end;
+end;
+
+procedure TFEditForm.SynEditBookmarkPaintLines(RenderTarget: ID2D1RenderTarget;
+ClipR: TRect; const FirstRow, LastRow: Integer; var DoDefaultPainting: Boolean);
+var
+  YPos, Row, Line: Integer;
+begin
+  DoDefaultPainting := False;
+  if not FEditor.Gutter.Visible then
+    Exit;
+  for Row := FirstRow to LastRow do
+  begin
+    Line := FEditor.RowToLine(Row);
+    if Row <> FEditor.LineToRow(Line) then
+      Continue; // Wrapped Line
+    for var I := 0 to FEditor.Marks.Count - 1 do
+    begin
+      var
+      Mark := FEditor.Marks[I];
+      if Mark.Line <> Line then
+        Continue;
+      if Mark.ImageIndex < 10 then
+      begin
+        YPos := (FEditor.LineHeight - vilBookmarksLight.Height) div 2 +
+          FEditor.LineHeight * (Row - FEditor.TopLine);
+        ImageListDraw(RenderTarget, vilBookmarksLight,
+          ClipR.Left + MulDiv(TSynGutterBand.MarginX, FCurrentPPI, 96), YPos,
+          Mark.ImageIndex);
+      end;
+    end;
+  end;
+end;
+
+procedure TFEditForm.SynEditGutterDebugInfoMouseCursor(Sender: TObject;
+X, Y, Row, Line: Integer; var Cursor: TCursor);
+begin
+  Cursor := crHandPoint;
+end;
+
 procedure TFEditForm.InsertLinesAt(Line: Integer; Str: string);
 var
   CarX, CarY, TopL, Num: Integer;
@@ -3916,7 +4056,7 @@ begin
     TopL := TopLine;
     CaretY := Line + 1;
     CaretX := 1;
-    PutText(Str, false);
+    PutText(Str, False);
     if CarY > Line + 1 then
     begin
       Num := CountChar(#13, Str);
@@ -4135,7 +4275,7 @@ end;
 
 function TFEditForm.DeleteAttributeValue(const Str: string): Boolean;
 begin
-  Result := false;
+  Result := False;
   var
   AEnd := GetLNGEndComponents;
   var
@@ -4338,7 +4478,7 @@ begin
   while Int < FEditor.Marks.Count do
   begin
     if FEditor.Marks[Int].Line = Line then
-      DeleteBreakpointMark(FEditor.Marks[Int]);
+      DeleteBreakpointAtLine(Line);
     Inc(Int);
   end;
   var
@@ -4415,7 +4555,8 @@ var
   Start, From, Till: Integer;
   Container: string;
 begin
-  if Control is TJEComponent then begin
+  if Control is TJEComponent then
+  begin
     Container := (Control as TJEComponent).GetContainerAdd;
     Start := GetLNGStartComponents;
     From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
@@ -4433,7 +4574,8 @@ var
   Start, From, Till: Integer;
   Container: string;
 begin
-  if Control is TJEComponent then begin
+  if Control is TJEComponent then
+  begin
     Container := (Control as TJEComponent).GetContainerAdd;
     Start := GetLineNumberWith(_(LNGStartComponents));
     From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
@@ -4506,7 +4648,7 @@ var
   SText: string;
   Line, Posi: Integer;
 begin
-  Result := false;
+  Result := False;
   with FEditor do
   begin
     Line := 0;
@@ -4660,7 +4802,7 @@ var
   Cent: TModelEntity;
   Method: TOperation;
 begin
-  Result := false;
+  Result := False;
   // ParseSourcecode; caller has to do
   ClassIt := FModel.ModelRoot.GetAllClassifiers;
   while ClassIt.HasNext and not Result do
@@ -4727,7 +4869,7 @@ var
 begin
   From := 0;
   Till := 0;
-  Found := false;
+  Found := False;
   Operation := nil;
   ParseSourceCode(True);
   ClassIt := FModel.ModelRoot.GetAllClassifiers;
@@ -4849,16 +4991,14 @@ end;
 
 procedure TFEditForm.DeleteFXListener(Listener: string);
 var
-  Str1, Str2: string;
+  Str: string;
   Posi, Line: Integer;
 begin
   Posi := Pos(#13#10, Listener);
-  Str1 := Trim(Copy(Listener, 1, Posi - 1));
   Delete(Listener, 1, Posi + 1);
   Posi := Pos(#13#10, Listener);
-  Str2 := Trim(Copy(Listener, 1, Posi - 1));
-
-  Line := GetLineNumberWith(Str2);
+  Str := Trim(Copy(Listener, 1, Posi - 1));
+  Line := GetLineNumberWith(Str);
   if Line > -1 then
   begin
     Dec(Line, 1);
@@ -5100,7 +5240,7 @@ begin
   if IsJava then
   begin
     if Modified then
-      FJava.DoSave(Self, false);
+      FJava.DoSave(Self, False);
     if not MyJavaCommands.HasValidClass(Pathname) then
       MyJavaCommands.CompileForm(Self);
     FJava.PrepareClassEdit(Pathname, 'Edit', nil);
@@ -5136,7 +5276,7 @@ begin
   if IsJava or IsPascal then
   begin
     if Modified then
-      FJava.DoSave(Self, false);
+      FJava.DoSave(Self, False);
     LockWindow(FJava.Handle);
     var
     StringList := TStringList.Create;
@@ -5153,12 +5293,12 @@ begin
       else
       begin
         UMLForm := FJava.MakeNewUMLWindow(Str, '');
-        FConfiguration.ShowAlways := false;
+        FConfiguration.ShowAlways := False;
         UMLForm.MainModul.AddToProject(Pathname);
         UMLForm.CreateTVFileStructure;
         UMLForm.MainModul.DoLayout;
         FConfiguration.ShowAlways := True;
-        FJava.DoSave(UMLForm, false);
+        FJava.DoSave(UMLForm, False);
       end;
       FJava.RearrangeFileHistory(Str);
     finally
@@ -5176,7 +5316,7 @@ end;
 procedure TFEditForm.SBBrowserClick(Sender: TObject);
 begin
   if Modified then
-    Save(false);
+    Save(False);
   FJava.CallApplet(Pathname);
 end;
 
@@ -5214,7 +5354,7 @@ end;
 procedure TFEditForm.MIGitAddClick(Sender: TObject);
 begin
   if Modified then
-    Save(false);
+    Save(False);
   FGit.GitCall('add ' + ExtractFileName(Pathname), ExtractFilePath(Pathname));
 end;
 
@@ -5350,8 +5490,8 @@ begin
           Lines.LoadFromFile(Pathname);
           FEditor.ReplaceTabs(FConfiguration.TabWidth);
         except
-          on E: Exception do
-            FConfiguration.Log('TFEditForm.CheckAge: ' + Pathname, E);
+          on e: Exception do
+            FConfiguration.Log('TFEditForm.CheckAge: ' + Pathname, e);
         end;
     FileAge(Pathname, FEditorAge);
   end;
@@ -5379,12 +5519,12 @@ end;
 
 procedure TFEditForm.Search;
 begin
-  FJava.ShowSearchReplaceDialog(FEditor, false);
+  FJava.ShowSearchReplaceDialog(FEditor, False);
 end;
 
 procedure TFEditForm.SearchAgain;
 begin
-  FJava.DoSearchReplaceText(FEditor, false);
+  FJava.DoSearchReplaceText(FEditor, False);
 end;
 
 procedure TFEditForm.Replace;
@@ -5559,8 +5699,8 @@ begin
       Result := '';
     JavaScanner.Destroy;
   except
-    on E: Exception do
-      FConfiguration.Log('TFEditForm.getPackage', E);
+    on e: Exception do
+      FConfiguration.Log('TFEditForm.getPackage', e);
   end;
 end;
 
@@ -5576,7 +5716,7 @@ begin
   Result := TStringList.Create;
   if IsJava then
   begin
-    ParseSourceCode(false);
+    ParseSourceCode(False);
     var
     ClassIt := FModel.ModelRoot.GetAllClassifiers;
     while ClassIt.HasNext do
@@ -5610,8 +5750,8 @@ end;
 procedure TFEditForm.DoOnMouseDown(Sender: TObject; Button: TMouseButton;
 Shift: TShiftState; X, Y: Integer);
 begin
-  if FJava.scpJava.Form.Visible then
-    FJava.scpJava.CancelCompletion;
+  if FJava.ScpJava.Form.Visible then
+    FJava.ScpJava.CancelCompletion;
 end;
 
 procedure TFEditForm.CreateTooltip(Caret, Posi: TPoint; const Token: string);
@@ -5642,8 +5782,8 @@ begin
       try
         StringList.SaveToFile(FConfiguration.TempDir + 'Tooltip.html');
       except
-        on E: Exception do
-          FConfiguration.Log('TFEditForm.CreateTooltip ', E);
+        on e: Exception do
+          ErrorMsg(e.Message);
       end;
     finally
       FreeAndNil(StringList);
@@ -5672,7 +5812,7 @@ begin
     if Code = '' then
       Exit;
 
-    MyCodeCompletion.GetTypeOfCode(Code, FMousePosition.Line, 0, false);
+    MyCodeCompletion.GetTypeOfCode(Code, FMousePosition.Line, 0, False);
     Classifier := MyCodeCompletion.CCClassifier;
     Attribute := MyCodeCompletion.CCAttribute;
     Operation := MyCodeCompletion.CCOperation;
@@ -5682,16 +5822,16 @@ begin
     begin
       if Assigned(Attribute) then
         FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname),
-          Attribute.Spalte, Attribute.Lines, false)
+          Attribute.Spalte, Attribute.Lines, False)
       else if Assigned(Operation) then
         FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname),
-          Operation.Spalte, Operation.Lines, false)
+          Operation.Spalte, Operation.Lines, False)
       else if Assigned(AParameter) then
         FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname),
-          AParameter.Spalte, AParameter.Lines, false)
+          AParameter.Spalte, AParameter.Lines, False)
       else
         FJava.ChangeWindowWithPositioning(ToWindows(Classifier.Pathname),
-          Classifier.Spalte, Classifier.Lines, false);
+          Classifier.Spalte, Classifier.Lines, False);
     end;
   end;
 end;
@@ -5703,7 +5843,7 @@ begin
     if Value and Assigned(FEditor) and not FEditor.LockBuildStructure then
       FNeedsParsing := True
     else
-      FNeedsParsing := false;
+      FNeedsParsing := False;
   end;
 end;
 
@@ -5791,12 +5931,6 @@ end;
 procedure TFEditForm.ParseSourcecodeWithThread(HasChanged: Boolean);
 begin
   FNeedsParsing := FNeedsParsing or HasChanged;
-
-  { // debugging
-    inc(Count);
-    FMessages.OutputToTerminal('Thread Count: ' + IntTostr(Count));
-  }
-
   if Assigned(FParseThread) then
   begin
     if (FParseThread.State > 0) and (FParseThread.State < 3) then
@@ -5806,11 +5940,8 @@ begin
     end;
     FreeAndNil(FParseThread);
   end;
-
   if FNeedsParsing then
-  begin
     FParseThread := TParseThread.Create(Self, True);
-  end;
 end;
 
 procedure TFEditForm.ParseSourceCode(HasChanged: Boolean);
@@ -5842,7 +5973,7 @@ begin
         FParser := TJavaParser.Create(True);
         FParser.NeedPackage := Importer.NeedPackageHandler;
         FParser.ParseStream(Str, FModel.ModelRoot, FModel, Pathname,
-          false, false);
+          False, False);
         FEditor.Structures := FParser.Structures.Clone;
       end;
     finally
@@ -5856,12 +5987,12 @@ begin
     end
     else
     begin
-      FNeedsParsing := false;
+      FNeedsParsing := False;
       if not FHidden then
         CreateTVFileStructure;
     end;
   end;
-  FConfiguration.FixImports := false;
+  FConfiguration.FixImports := False;
 end;
 
 function TFEditForm.ClassnameDifferentFromAncestors(const AClassname
@@ -5875,7 +6006,7 @@ begin
     var
     AAncestor := ExtractClassName(MClassifier.GetAncestorName);
     if AAncestor = AClassname then
-      Result := false
+      Result := False
     else
       MClassifier := MyCodeCompletion.GetMClassifier(AAncestor, Self);
   end;
@@ -5893,43 +6024,25 @@ begin
 end;
 
 procedure TFEditForm.SetErrorMark(Line, Column: Integer; const Error: string);
-var
-  Mark: TSynEditMark;
-  Num: Integer;
-  MyHint: string;
 begin
-  FEditor.setCompileError(Point(Column, Line + 1));
-  Num := -1;
+  FEditor.SetCompileError(Point(Column, Line + 1));
   for var I := FEditor.Marks.Count - 1 downto 0 do
-    if (TSynEditMark(FEditor.Marks[I]).ImageIndex = ErrorMarkIndex) and
-      (TSynEditMark(FEditor.Marks[I]).Line = Line) then
-    begin
-      Num := I;
-      Break;
-    end;
+    if (FEditor.Marks[I].ImageIndex = ErrorMarkIndex) and
+      (FEditor.Marks[I].Line = Line) then
+      Exit;
 
-  if Num > -1 then
-  begin
-    MyHint := TSynEditMark(FEditor.Marks[Num]).Hint;
-    if MyHint = '' then
-      FEditor.Marks[Num].Hint := Error;
-  end
-  else
-    with FEditor do
-    begin
-      Mark := TSynEditMark.Create(FEditor);
-      Mark.Line := Line;
-      Mark.Char := Column;
-      Mark.ImageIndex := ErrorMarkIndex;
-      Mark.Visible := True;
-      Mark.Hint := Error;
-      Marks.Add(Mark);
-    end;
+  var
+  Mark := TSynEditMark.Create(FEditor);
+  Mark.Line := Line;
+  Mark.Char := Column;
+  Mark.ImageIndex := ErrorMarkIndex;
+  Mark.Visible := True;
+  FEditor.Marks.Add(Mark);
 end;
 
-procedure TFEditForm.ShowCompileErrors;
+procedure TFEditForm.UnderlineCompileErrors;
 begin
-  FEditor.ShowCompileErrors;
+  FEditor.UnderlineCompileErrors;
 end;
 
 procedure TFEditForm.TerminateThread(Sender: TObject);
@@ -5970,8 +6083,8 @@ begin
     try
       FEditor.Keystrokes[I].ShortCut := ShortCut2;
     except
-      on E: Exception do
-        FConfiguration.Log('TFEditForm.ReplaceShortCutFromEditor ', E);
+      on e: Exception do
+        ErrorMsg(e.Message);
     end;
 end;
 
@@ -6094,6 +6207,11 @@ end;
 
 type
   TCrackActivityIndicator = class(TActivityIndicator);
+
+procedure TFEditForm.FormResize(Sender: TObject);
+begin
+  FEditor.Invalidate;
+end;
 
 procedure TFEditForm.SetActivityIndicator(TurnOn: Boolean; Hint: string;
 OnClick: TNotifyEvent);

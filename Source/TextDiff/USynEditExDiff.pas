@@ -116,15 +116,15 @@ begin
   SearchEngine := FJava.SynEditSearch;
   Gutter.ShowLineNumbers := True;
   Gutter.DigitCount := 0;
-  Gutter.LeftOffset := 4;
   Gutter.AutoSize := True;
   MaxUndo := 300;
   TabWidth := 2;
   WantTabs := True;
-  Options := [eoAutoIndent, eoDragDropEditing, eoScrollPastEol,
-    eoShowScrollHint, eoSmartTabs, eoTabIndent, eoTabsToSpaces,
+  Options := [eoAutoIndent, eoDragDropEditing,
+    eoSmartTabs, eoTabIndent, eoTabsToSpaces,
     eoTrimTrailingSpaces, eoSmartTabDelete, eoGroupUndo, eoKeepCaretX,
     eoEnhanceHomeKey];
+  ScrollOptions := [eoScrollPastEol, eoShowScrollHint];
   Font.Assign(FConfiguration.EditFont);
   Gutter.Font.Assign(FConfiguration.Font);
   Gutter.Font.Height := Font.Height + 2;
@@ -560,7 +560,7 @@ begin
       PasteFromClipboard;
   except
     on E: Exception do
-      FConfiguration.Log('TSynEditExDiff.PasteFromClipboardFT ', E);
+      ErrorMsg(E.Message);
   end;
   CreateObjects(From, Till, ANr);
   SetModified(True);

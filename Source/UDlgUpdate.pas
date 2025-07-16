@@ -130,8 +130,7 @@ begin
   begin
     Close;
     FJava.Close;
-  end else
-    ErrorMsg(_('Can not execute file ') + Updater);
+  end;
 end;
 
 function TFUpdateDialog.NewVersion: Boolean;

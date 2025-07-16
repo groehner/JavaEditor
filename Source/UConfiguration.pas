@@ -696,6 +696,9 @@ type
     ELLMTemperature: TEdit;
     BLLMChatDefault: TButton;
     BLLMAssistantDefault: TButton;
+    CBShowControlFlowSymbols: TCheckBox;
+    CBShowLigatures: TCheckBox;
+    CBCompactLineNumbers: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BJDKFolderSelectClick(Sender: TObject);
@@ -888,6 +891,7 @@ type
     FUseRegistry: Boolean;
     FUserIniFile: TIniFile;
     FWindowStateMaximized: Boolean;
+    FWriteProtection: Boolean;
     FIndent1: string;
     FIndent2: string;
     FIndent3: string;
@@ -1085,6 +1089,9 @@ type
     FStructureColoringPlane: Boolean;
     FStructureColorIntensity: Integer;
     FTabWidth: Integer;
+    FShowControlFlowSymbols: Boolean;
+    FShowLigatures: Boolean;
+    FCompactLineNumbers: Boolean;
 
     // tab code
     FCodeCompletionAlways: Boolean;
@@ -1230,6 +1237,7 @@ type
     FVisTabs: TBoolArray;
     FVisToolbars: TBoolArray;
 
+    function GetWriteProtection: Boolean;
     function GetCheckColor(Str: string; EmptyAllowed: Boolean): TColor;
     function DirectoryFilesExists(Str: string): Boolean;
     procedure CheckFile(WinControl: TWinControl; EmptyAllowed: Boolean);
@@ -1279,8 +1287,8 @@ type
     procedure MakeJavaCache(Str: string);
     procedure SaveInis;
 
-    procedure SaveFiles(const Key, Name: string; Values: TStrings);
-    procedure ReadFiles(const Key, Name: string; Values: TStrings);
+    procedure SaveStrings(const Key, AName: string; Values: TStrings);
+    procedure ReadStrings(const Key, AName: string; Values: TStrings);
     procedure SaveFavorites(Favorites: TStringList);
     procedure ReadFavorites(var Favorites: TStringList);
     procedure SaveUserColors;
@@ -1387,7 +1395,7 @@ type
     function IsInClasspath(const AClassname: string; ActPath: string): Boolean;
     procedure MakeClassAndPackageList(const Classfile, Packagefile: string);
     procedure MakeClassAndPackageListFromDocumentation(const Classfile,
-      Interfacefile, Packagefile: string);
+      InterfaceFile, Packagefile: string);
     procedure MakeSystemClasses;
     procedure MakeClasspathClasses;
     function ToStringListClass(const AClassname: string): string;
@@ -1408,7 +1416,7 @@ type
 
     function GetJarsFromClasspath: string;
     function UpdatePossible(const Source, Target: string): Boolean;
-    function RunAsAdmin(Wnd: HWND; const AFile, AParameters: string): Boolean;
+    function RunAsAdmin(Wnd: HWND; const AFile, Parameters: string): Boolean;
     procedure SetMindstormsVersion;
     procedure CheckMindstorms;
     function GetFrameType(JavaProgram: string;
@@ -1671,6 +1679,9 @@ type
     property StructureColoringPlane: Boolean read FStructureColoringPlane;
     property StructureColorIntensity: Integer read FStructureColorIntensity;
     property TabWidth: Integer read FTabWidth;
+    property ShowControlFlowSymbols: Boolean read FShowControlFlowSymbols;
+    property ShowLigatures: Boolean read FShowLigatures;
+    property CompactLineNumbers: Boolean read FCompactLineNumbers;
 
     // tab code
     property CodeCompletionAlways: Boolean read FCodeCompletionAlways;
@@ -3642,7 +3653,7 @@ begin
   FWindowStateMaximized := ReadBoolU('Program', 'WindowStateMaximized', True);
 
   // Font
-  FEditFont.Name := ReadStringU('Font', 'Name', 'Consolas');
+  FEditFont.Name := ReadStringU('Font', 'Name', DefaultCodeFontName);
   FEditFont.Size := Max(ReadIntegerU('Font', 'Size', 12), 4);
   FUMLFont.Name := ReadStringU('UML', 'Name', 'Segoe UI');
   FUMLFont.Size := Max(ReadIntegerU('UML', 'Size', 12), 4);
@@ -3716,7 +3727,6 @@ begin
   // tab Applet
   FAppletStart := ReadIntegerU('Program', 'AppletStart', 0);
   FShowHTMLforApplet := ReadBoolU('Program', 'ShowHTMLforApplet', True);
-
   if FPortableApplication then
     FTempDirWithUsername := ReadStringU('Program', 'TempDir',
       FEditorFolder + 'App\Temp')
@@ -3724,31 +3734,39 @@ begin
     FTempDirWithUsername := ReadStringU('Program', 'TempDir', GetTempDir);
   FTempDirWithUsername := IncludeTrailingPathDelimiter
     (AddPortableDrive(FTempDirWithUsername));
-
   FTempDir := ExpandFileName(DissolveUsername(FTempDirWithUsername));
   if (FTempDir = '') or not SysUtils.ForceDirectories(FTempDir) then
     FTempDir := IncludeTrailingPathDelimiter(GetEnvironmentVariable('TEMP'));
 
-  if FPortableApplication and not HasWriteAccess(FTempDir) then
+  if FPortableApplication then
   begin
-    FTempDirWithUsername := IncludeTrailingPathDelimiter
-      (AddPortableDrive(ReadStringU('Program', 'TempDir', GetTempDir)));
-    FTempDir := FTempDirWithUsername;
+    IniFile := TIniFile.Create(FTempDir + 'test.ini');
+    try
+      try
+        IniFile.WriteString('test', 'test', 'test');
+      except
+        FTempDirWithUsername := IncludeTrailingPathDelimiter
+          (AddPortableDrive(ReadStringU('Program', 'TempDir', GetTempDir)));
+        FTempDir := FTempDirWithUsername;
+      end;
+    finally
+      FreeAndNil(IniFile);
+    end;
   end;
 
-  // tab Checkstyle
+  // tab checkstyle
   FCheckstyle := ReadStringFile('Checkstyle', 'Checkstyle', '');
   FCheckConfiguration := ReadStringFile('Checkstyle', 'Configurationfile', '');
   FCheckParameter := ReadStringU('Checkstyle', 'CheckParameter', '');
   FCheckstyleOK := FileExists(FCheckstyle);
 
-  // tab Jalopy
+  // tab jalopy
   FJalopy := ReadStringFile('Jalopy', 'Jalopy', '');
   FJalopyConfiguration := ReadStringFile('Jalopy', 'JalopyConfiguration', '');
   FJalopyParameter := ReadStringU('Jalopy', 'JalopyParameter', '');
   FJalopyOK := FileExists(FJalopy);
 
-  // tab Programs
+  // tab programs
   FJavaDebugger := ReadStringFile('Java', 'Debugger',
     FJDKFolder + '\bin\jdb.exe');
   FJavaDebuggerOK := FileExists(FJavaDebugger);
@@ -3758,7 +3776,7 @@ begin
   FJavaDocParameter := ReadStringU('Program', 'DocParameter',
     '-author -version');
 
-  // tab Applets
+  // tab applets
   FJavaAppletviewer := ReadStringFile('Java', 'Appletviewer',
     FJDKFolder + '\bin\appletviewer.exe');
   FJavaAppletviewerOK := FileExists(FJavaAppletviewer);
@@ -3769,7 +3787,7 @@ begin
     // till java 1.6.x
     FJava.MIHTMLforJavaPlugIn.Visible := False;
 
-  // tab Disasssembler
+  // tab disasssembler
   FJavaDisassembler := ReadStringFile('Java', 'Disassembler',
     FJDKFolder + '\bin\javap.exe');
   FJavaDisassemblerItems := LoadComboBoxItems
@@ -3777,7 +3795,7 @@ begin
   FJavaDisassemblerParameter := ReadStringU('Program', 'DisassemblerParameter',
     '-l -c -verbose');
 
-  // tab Jar
+  // tab jar
   FJavaJar := ReadStringFile('Java', 'Jar', FJDKFolder + '\bin\jar.exe');
   FJavaJarOK := FileExists(FJavaJar);
   FJavaJarParameter := ReadStringU('Jar', 'JarParameter', '-cfv');
@@ -3787,7 +3805,7 @@ begin
   FJarPackFiles := ReadStringU('Jar', 'JarPack', '*.java *.jfm *.uml');
   FJarClassPath := ReadStringU('Jar', 'JarClassPath', 'JEClasses.jar');
 
-  // tab Mindstorms
+  // tab mindstorms
   FMindstormsParameter := ReadStringU('Mindstorms', 'Parameter', '');
   FMindstormsPort := ReadIntegerU('Mindstorms', 'Port', 0);
   FMindstormsIP := ReadStringU('Mindstorms', 'IP', '10.0.1.1');
@@ -3844,7 +3862,7 @@ begin
         end;
     end;
 
-  // tab Android-Mode
+  // tab android mode
   FAndroidMode := ReadBoolU('Android', 'Mode', False);
   FAndroidSDKFolder := ReadStringDirectory('Android', 'AndroidSDKFolder');
   if FAndroidMode and FMindstormsMode then
@@ -3915,7 +3933,7 @@ begin
     FJavaDemos := '';
   end;
 
-  // tab Editor
+  // tab editor
   FTabWidth := ReadIntegerU('Editor', 'TabWidth', 2);
   FIndent := ReadIntegerU('Editor', 'Indent', 2);
   FIndent1 := StringOfChar(' ', 1 * FIndent);
@@ -3941,8 +3959,11 @@ begin
   FAddClosingBracket := ReadBoolU('Editor', 'CompleteBracket', False);
   FIndentAfterBracket := ReadBoolU('Editor', 'IndentAfterBracket', True);
   FKeyboardFile := ReadStringFile('Editor', 'KeyboardFile', '');
+  FShowControlFlowSymbols := ReadBoolU('Editor', 'ShowControlFlowSymbols', True);
+  FShowLigatures := ReadBoolU('Editor', 'ShowLigatures', True);
+  FCompactLineNumbers := ReadBoolU('Editor', 'CompactLineNumbers', True);
 
-  // tab FTemplates
+  // tab templates
   FTemplates[1] := ReadStringFile('Templates', 'Program', '');
   FTemplates[2] := ReadStringFile('Templates', 'Frame', '');
   FTemplates[3] := ReadStringFile('Templates', 'Dialog', '');
@@ -3957,7 +3978,7 @@ begin
   FTemplates[12] := ReadStringFile('Templates', 'TestClass', '');
   MakeControlStructureTemplates;
 
-  // tab Code
+  // tab code
   FCodeCompletionAlways := ReadBoolU('Code', 'Code-Completion-Always', True);
   FCodeCompletionCtrlSpace := ReadBoolU('Code', 'Code-Completion', True);
   FParameterHints := ReadBoolU('Code', 'Parameter-Hints', True);
@@ -3974,7 +3995,7 @@ begin
   FTooltipHeight := ReadIntegerU('Code', 'TooltipHeight', 150);
   FTooltipFontSize := ReadIntegerU('Code', 'TooltipFontSize', 12);
 
-  // tab Browser
+  // tab browser
   FUseIEinternForDocuments := ReadBoolU('Browser',
     'UseIEinternForDocuments', True);
   FOnlyOneBrowserWindow := ReadBoolU('Browser', 'OnlyOneBrowserWindow', False);
@@ -4066,7 +4087,7 @@ begin
   FLockedPaths := ReadBoolM('Java', 'LockedPaths', False);
   FLockedStructogram := ReadBoolM('Java', 'LockedStructogram', False);
 
-  // tab Associations
+  // tab associations
   FAdditionalAssociations := ReadStringU('Associations', 'Additional', '');
 
   // tab UML
@@ -4125,7 +4146,7 @@ begin
   if FSubversionOK and not Assigned(FSubversion) then
     FSubversion := TFSubversion.Create(FJava);
 
-  // tab Git
+  // tab git
   FGitFolder := ReadStringDirectory('Git', 'GitFolder');
   FGitLocalRepository := ReadStringDirectory('Git', 'GitLocalRepository');
   FGitRemoteRepository := ReadStringDirectory('Git', 'GitRemoteRepository');
@@ -4143,12 +4164,12 @@ begin
   FJUnitAfterEach := ReadBoolU('JUnit', 'JUnitAfterEach', True);
   FJUnitOk := (FJUnitJarFile <> '') and FileExists(FJUnitJarFile);
 
-  // tab Visibility  Reg2Mod
+  // tab Visibility
   LoadVisibility;
   SetVisibility;
   MakeSystemClasses;
 
-  // tab Logfiles
+  // tab log files
   FLogfileCompilerWithUserName := ReadStringFile('Logfiles',
     'LogfileCompiler', '');
   FLogfileCompiler := DissolveUsername(FLogfileCompilerWithUserName);
@@ -4190,7 +4211,7 @@ begin
   CreateMyFile(FLogfileExceptions);
   FLogfileExceptionsOK := FileExists(FLogfileExceptions);
 
-  // tab Language
+  // tab language
   FLanguageCode := ReadStringU('Options', 'Language', 'XXX');
   if FLanguageCode = 'XXX' then
   begin
@@ -4204,7 +4225,7 @@ begin
   FRightDockPanelWidth := ReadIntegerU('Panel', 'RightDockPanelWidth', 150);
   FBottomDockPanelHeight := ReadIntegerU('Panel', 'BottomDockPanelHeight', 150);
 
-  // tab FStructogramS after reading language
+  // tab structogramS after reading language
   FStructogramS := 'Structogram.' + FLanguageCode;
   FAlgorithm := ReadStringU(FStructogramS, 'Algorithm', _('Algorithm'));
   FInput := ReadStringU(FStructogramS, 'Input', _('Input:'));
@@ -4228,7 +4249,7 @@ begin
   FStructogramShadowIntensity := ReadIntegerU('Structogram',
     'ShadowIntensity', 8);
 
-  // tab Sequence diagram
+  // tab sequence diagram
   FSequencediagramS := 'Sequencediagram.' + FLanguageCode;
   FSDObject := ReadStringU(FSequencediagramS, 'Object', _('Object'));
   FSDNew := ReadStringU(FSequencediagramS, 'New', _('new'));
@@ -4424,13 +4445,14 @@ begin
     FPortableApplication := FMachineIniFile.ReadBool('Java',
       'PortableApplication', False);
   end;
+  FWriteProtection := GetWriteProtection;
 end;
 
 procedure TFConfiguration.RegistryForUser;
 var
+  Str: string;
   AFile: TFileStream;
 begin
-  FUserIniFile := nil;
   FFirstStartAfterInstallation := False;
   if FUseRegistry then
   begin
@@ -4446,44 +4468,69 @@ begin
         FHTMLHighlighter.SaveToRegistry(HKEY_CURRENT_USER,
           GetRegPath + '\HTML');
       end;
-      FHomeDir := TPath.GetHomePath + '\JavaEditor\';
-      if not SysUtils.DirectoryExists(FHomeDir) then
-        SysUtils.ForceDirectories(FHomeDir);
+      Str := TPath.GetHomePath + '\JavaEditor\';
+      if not SysUtils.DirectoryExists(Str) then
+        SysUtils.ForceDirectories(Str);
+      FHomeDir := Str;
     end;
+    FUserIniFile := nil;
   end
   else
   begin
-    var
-    HomeDir := FMachineIniFile.ReadString('User', 'HomeDir', '<nix>');
-    if HomeDir = '<nix>' then
+    Str := FMachineIniFile.ReadString('User', 'HomeDir', '<nix>');
+    if Str = '<nix>' then
     begin
       ErrorMsg(Format
         (_('In section [user] of the configuration file "%s" the value'),
         [FMachineIniFile.Filename]) + #13#10 +
         _('of the key "HomeDir" for the home directory of the user is not set.')
         );
+      FUserIniFile := nil;
       Exit;
     end;
-    FHomeDir := WithTrailingSlash(AddPortableDrive(DissolveUsername(HomeDir)));
-    if not SysUtils.DirectoryExists(FHomeDir) then
-      SysUtils.ForceDirectories(FHomeDir);
-    if not FileExists(FHomeDir + 'JEUser.ini') then
+    Str := WithTrailingSlash(AddPortableDrive(DissolveUsername(Str)));
+    if not SysUtils.DirectoryExists(Str) then
+      SysUtils.ForceDirectories(Str);
+    FHomeDir := Str;
+    Str := Str + 'JEUser.ini';
+    if not FileExists(Str) then
     begin
       FFirstStartAfterInstallation := True;
-      if HasWriteAccess(FHomeDir) then
-      begin
-        FJavaHighlighter.SaveToFile(FHomeDir + 'JEJavaCol.ini');
-        FHTMLHighlighter.SaveToFile(FHomeDir + 'JEHTMLCol.ini');
-      end
-      else
-      begin
-        ErrorMsg(Format(_('Error: user directory %s has no write access!'),
-          [FHomeDir]));
-        Exit;
+      try
+        AFile := TFileStream.Create(Str, fmCreate or fmOpenWrite);
+        FJavaHighlighter.SaveToFile(ExtractFilePath(Str) + '\JEJavaCol.ini');
+        FHTMLHighlighter.SaveToFile(ExtractFilePath(Str) + '\JEHTMLCol.ini');
+        FUserIniFile := TIniFile.Create(Str);
+        FreeAndNil(AFile);
+      except
+        on E: exception do
+          Log('FFirstStartAfterInstallation', E);
       end;
     end;
-    FUserIniFile := TIniFile.Create(FHomeDir + 'JEUser.ini');
+    try
+      FUserIniFile:= TIniFile.Create(Str);
+    except
+      on E: exception do begin
+        ErrorMsg(Format(_('Could not open the preferencesfile %s!'), [Str]) + ' ' + E.Message);
+        FUserIniFile:= nil;
+      end;
+    end;
+    
   end;
+end;
+
+function TFConfiguration.GetWriteProtection: Boolean;
+begin
+  Result := False;
+  if FUseRegistry then
+    Result := not IsAdministrator
+  else
+    try
+      FMachineIniFile.WriteString('Java', 'WriteProtection', 'ok');
+      FMachineIniFile.UpdateFile;
+    except
+      Result := True;
+    end;
 end;
 
 function TFConfiguration.JavaDevelopmentKit: string;
@@ -4531,7 +4578,7 @@ procedure TFConfiguration.ModelToView;
 begin
   with FJava do
   begin
-    // tab Interpreter
+    // tab interpreter
     ShortenPath(CBJDKFolder, FJDKFolder);
     CBJDKFolder.Items.Text := FJDKFolderItems;
     ShortenPath(EInterpreter, FJavaInterpreter);
@@ -4545,39 +4592,39 @@ begin
     CBFileEncoding.Text := FFileEncoding;
     CBCodepage.Text := FCodepage;
 
-    // tab Compiler
+    // tab compiler
     ShortenPath(EJavaCompiler, FJavaCompiler);
     EJavaCompilerParameter.Text := FJavaCompilerParameter;
     CBUseJavaCompilerInternally.Checked := FCompileInternally;
     CBShowCompilerCall.Checked := FShowCompilerCall;
     CBCompilerEncoding.Text := FCompilerEncoding;
 
-    // tab Programme
+    // tab programs
     ShortenPath(EDebugger, FJavaDebugger);
     ShortenPath(EJavaDoc, FJavaDoc);
     EDocParameter.Text := FJavaDocParameter;
 
-    // tab Applets
+    // tab applets
     ShortenPath(EAppletviewer, FJavaAppletviewer);
     RGApplet.ItemIndex := FAppletStart;
     CBShowHTMLforApplet.Checked := FShowHTMLforApplet;
 
-    // tab Disassembler
+    // tab disassembler
     ShortenPath(CBDisassembler, FJavaDisassembler);
     CBDisassembler.Items.Text := FJavaDisassemblerItems;
     EDisassemblerParameter.Text := FJavaDisassemblerParameter;
 
-    // tab FCheckstyle
+    // tab checkstyle
     ShortenPath(ECheckstyle, FCheckstyle);
     ShortenPath(ECheckstyleConfiguration, FCheckConfiguration);
     ECheckstyleParameter.Text := FCheckParameter;
 
-    // tab FJalopy
+    // tab jalopy
     ShortenPath(EJalopy, FJalopy);
     ShortenPath(EJalopyConfiguration, FJalopyConfiguration);
     EJalopyParameter.Text := FJalopyParameter;
 
-    // tab Jar
+    // tab jar
     ShortenPath(EJar, FJavaJar);
     EJarParameter.Text := FJavaJarParameter;
     EJarManifest.Text := FJavaJarManifest;
@@ -4585,7 +4632,7 @@ begin
     CBJarPack.Text := FJarPackFiles;
     EJarClasspath.Text := FJarClassPath;
 
-    // tab FTemplates
+    // tab templates
     ShortenPath(ETemplateConsole, FTemplates[1]);
     ShortenPath(ETemplateFrame, FTemplates[2]);
     ShortenPath(ETemplateDialog, FTemplates[3]);
@@ -4609,7 +4656,7 @@ begin
     ShortenPath(ECache, FJavaCacheWithUsername);
     UDMaxSearch.Position := FMaxSearch;
 
-    // tab Editor
+    // tab editor
     UDTabWidth.Position := FTabWidth;
     UDIndent.Position := FIndent;
     CBIndentHelp.Checked := FIndentHelp;
@@ -4629,6 +4676,9 @@ begin
     UDIntensity.Position := FStructureColorIntensity;
     CBInsertControlStructures.Checked := FInsertControlStructures;
     CBInsertSemicolons.Checked := FInsertSemicolons;
+    CBShowControlFlowSymbols.Checked := FShowControlFlowSymbols;
+    CBShowLigatures.Checked := FShowLigatures;
+    CBCompactLineNumbers.Checked := FCompactLineNumbers;
 
     // tab code
     RBCodeCompletionCtrlSpace.Checked := FCodeCompletionCtrlSpace;
@@ -4650,7 +4700,7 @@ begin
     ReadEditorStyleNames;
     CBEditorStyles.Text := FEditorStyle;
 
-    // tab Browser
+    // tab browser
     CBUseIEinternForDocuments.Checked := FUseIEinternForDocuments;
     CBOnlyOneBrowserWindow.Checked := FOnlyOneBrowserWindow;
     EBrowserTitle.Text := FBrowserTitle;
@@ -4680,7 +4730,7 @@ begin
     // tab keyboard
     ShortenPath(EKeyboardFile, FKeyboardFile);
 
-    // tab Mindstorms
+    // tab mindstorms
     case FMindstormsVersion of
       0:
         begin
@@ -4716,7 +4766,7 @@ begin
     EMindstormsIP.Text := FMindstormsIP;
     RGMindstormsVersion.ItemIndex := FMindstormsVersion;
 
-    // tab Android
+    // tab android
     CBAndroidMode.Checked := FAndroidMode;
     EAndroidSDKFolder.Text := FAndroidSDKFolder;
 
@@ -4759,7 +4809,7 @@ begin
       CBLockedStructogram.Enabled := False;
     end;
 
-    // tab Associations
+    // tab associations
     CBAssociationJava.Checked := HasAssociationWithJavaeditor('.java');
     CBAssociationJfm.Checked := HasAssociationWithJavaeditor('.jfm');
     CBAssociationUml.Checked := HasAssociationWithJavaeditor('.uml');
@@ -4818,7 +4868,7 @@ begin
     CBRoleHidesAttribute.Checked := FRoleHidesAttribute;
     CBUseAbstract.Checked := FUseAbstract;
 
-    // tab Visibility
+    // tab visibility
     VisibilityModelToView;
 
     // tab LLM Assistant
@@ -4834,7 +4884,7 @@ begin
     ShortenPath(ESVNFolder, FSVNFolder);
     ShortenPath(CBRepository, FSVNRepository);
 
-    // tab Git
+    // tab git
     ShortenPath(EGitFolder, FGitFolder);
     ShortenPath(CBLocalRepository, FGitLocalRepository);
     ShortenPath(CBRemoteRepository, FGitRemoteRepository);
@@ -4848,12 +4898,12 @@ begin
     CBJUnitBeforeEach.Checked := FJUnitBeforeEach;
     CBJUnitAfterEach.Checked := FJUnitAfterEach;
 
-    // tab Logfiles
+    // tab og files
     ShortenPath(ELogfileCompiler, FLogfileCompilerWithUserName);
     ShortenPath(ELogfileInteractive, FLogfileInteractiveWithUsername);
     ShortenPath(ELogfileExceptions, FLogfileExceptionsWithUsername);
 
-    // tab FStructogramS
+    // tab structogramS
     EAlgorithm.Text := FAlgorithm;
     EInput.Text := FInput;
     EOutput.Text := FOutput;
@@ -4870,7 +4920,7 @@ begin
     UDStructogramShadowWidth.Position := FStructogramShadowWidth;
     UDStructogramShadowIntensity.Position := FStructogramShadowIntensity;
 
-    // tab Sequence diagram
+    // tab sequence diagram
     ESDObject.Text := FSDObject;
     ESDNew.Text := FSDNew;
     ESDClose.Text := FSDClose;
@@ -4880,7 +4930,7 @@ begin
     CBSDShowParameter.Checked := FSDShowParameter;
     CBSDShowReturn.Checked := FSDShowReturn;
 
-    // tab Styles
+    // tab styles
     ECurrentStyle.Text := TStyleManager.ActiveStyle.Name;
     ECurrentStyle.Hint := ECurrentStyle.Text;
     StyleSelectorShow;
@@ -4896,7 +4946,7 @@ begin
   // Sonstiges
   WriteStringU('Program', 'StartClass', RemovePortableDrive(FJavaStartClass));
 
-  // tab Interpreter
+  // tab interpreter
   WriteStringDirectory('Java', 'JDK-Folder', FJDKFolder);
   WriteStringU('Java', 'JDK-FolderItems',
     RemovePortableDrives(SaveComboBoxItems(FJDKFolderItems)));
@@ -4921,25 +4971,25 @@ begin
   WriteStringU('Editor', 'Codepage', FCodepage);
   WriteBoolU('Program', 'ShowInterpreterCall', FShowInterpreterCall);
 
-  // tab Compiler
+  // tab compiler
   WriteStringFile('Java', 'JavaCompiler', FJavaCompiler);
   WriteStringU('Program', 'JavaCompilerParameter', FJavaCompilerParameter);
   WriteBoolU('Program', 'CompileInternally', FCompileInternally);
   WriteBoolU('Program', 'ShowCompilerCall', FShowCompilerCall);
   WriteStringU('Program', 'CompilerEncoding', FCompilerEncoding);
 
-  // tab Programme
+  // tab programs
   WriteStringFile('Java', 'Debugger', FJavaDebugger);
   WriteStringFile('Java', 'JavaDoc', FJavaDoc);
   WriteStringU('Program', 'DocParameter', FJavaDocParameter);
 
-  // tab Applets
+  // tab applets
   WriteStringFile('Java', 'Appletviewer', FJavaAppletviewer);
   WriteIntegerU('Program', 'AppletStart', FAppletStart);
   WriteBoolU('Program', 'ShowHTMLforApplet', FShowHTMLforApplet);
   WriteStringU('Program', 'TempDir', RemovePortableDrive(FTempDirWithUsername));
 
-  // tab Jar
+  // tab jar
   WriteStringFile('Java', 'Jar', FJavaJar);
   WriteStringU('Jar', 'JarParameter', FJavaJarParameter);
   WriteStringU('Jar', 'JarManifest', FJavaJarManifest);
@@ -4948,13 +4998,13 @@ begin
   WriteStringU('Jar', 'JarPack', FJarPackFiles);
   WriteStringU('Jar', 'JarClassPath', FJarClassPath);
 
-  // tab Disassembler
+  // tab disassembler
   WriteStringFile('Java', 'Disassembler', FJavaDisassembler);
   WriteStringU('Program', 'DisassemblerParameter', FJavaDisassemblerParameter);
   WriteStringU('Program', 'DisassemblerItems',
     RemovePortableDrives(SaveComboBoxItems(CBDisassembler.Items.Text)));
 
-  // tab FTemplates
+  // tab templates
   WriteStringFile('Templates', 'Program', FTemplates[1]);
   WriteStringFile('Templates', 'Frame', FTemplates[2]);
   WriteStringFile('Templates', 'Dialog', FTemplates[3]);
@@ -4984,7 +5034,7 @@ begin
   WriteIntegerU('Program', 'MaxSearch', FMaxSearch);
   WriteIntegerU('Program', 'Update', ReadIntegerU('Program', 'Update', 0));
 
-  // tab Editor
+  // tab editor
   WriteIntegerU('Editor', 'TabWidth', FTabWidth);
   WriteIntegerU('Editor', 'Indent', FIndent);
   WriteBoolU('Editor', 'IndentHelp', FIndentHelp);
@@ -5002,8 +5052,11 @@ begin
   WriteBoolU('Editor', '80ColumnLine', FEightyColumnLine);
   WriteBoolU('Editor', 'InsertControlStructures', FInsertControlStructures);
   WriteBoolU('Editor', 'InsertSemicolons', FInsertSemicolons);
+  WriteBoolU('Editor', 'ShowControlFlowSymbols', FShowControlFlowSymbols);
+  WriteBoolU('Editor', 'ShowLigatures', FShowLigatures);
+  WriteBoolU('Editor', 'CompactLineNumbers', FCompactLineNumbers);
 
-  // tab Code
+  // tab code
   WriteBoolU('Code', 'Code-Completion-Always', FCodeCompletionAlways);
   WriteBoolU('Code', 'Code-Completion', FCodeCompletionCtrlSpace);
   WriteBoolU('Code', 'Parameter-Hints', FParameterHints);
@@ -5029,7 +5082,7 @@ begin
   WriteStringU('Colors', 'GUIStyle', GUIStyle);
   WriteStringU('Colors', 'EditorStyle', FEditorStyle);
 
-  // tab Browser
+  // tab browser
   WriteBoolU('Browser', 'UseIEinternForDocuments', FUseIEinternForDocuments);
   WriteBoolU('Browser', 'OnlyOneBrowserWindow', FOnlyOneBrowserWindow);
   WriteStringU('Browser', 'BrowserOpenKeys', FBrowserOpenKeys);
@@ -5061,7 +5114,7 @@ begin
   WriteStringU('Comment', 'Author', FJavaAuthor);
   WriteStringU('Comment', 'Method', SaveComboBoxItems(FMethodComment));
 
-  // tab Mindstorms
+  // tab mindstorms
   WriteStringDirectory('Mindstorms', 'LejosFolder', FLejosVerzeichnis);
   WriteStringFile('Mindstorms', 'LejosCompiler', FLejosCompiler);
   WriteStringFile('Mindstorms', 'LejosUploader', FLejosUploader);
@@ -5126,7 +5179,7 @@ begin
   WriteBoolM('Java', 'LockedPaths', FLockedPaths);
   WriteBoolM('Java', 'LockedStructogram', FLockedStructogram);
 
-  // tab Associations
+  // tab associations
   WriteStringU('Associations', 'Additional', FAdditionalAssociations);
 
   // tab UML
@@ -5172,12 +5225,12 @@ begin
   WriteBoolU('UML', 'RoleHidesAttribute', FRoleHidesAttribute);
   WriteBoolU('UML', 'UseAbstract', FUseAbstract);
 
-  // tab FCheckstyle
+  // tab checkstyle
   WriteStringFile('Checkstyle', 'Checkstyle', FCheckstyle);
   WriteStringFile('Checkstyle', 'Configurationfile', FCheckConfiguration);
   WriteStringU('Checkstyle', 'CheckParameter', FCheckParameter);
 
-  // tab FJalopy
+  // tab jalopy
   WriteStringFile('Jalopy', 'Jalopy', FJalopy);
   WriteStringFile('Jalopy', 'JalopyConfiguration', FJalopyConfiguration);
   WriteStringU('Jalopy', 'JalopyParameter', FJalopyParameter);
@@ -5186,7 +5239,7 @@ begin
   WriteStringDirectory('SVN', 'SVNFolder', FSVNFolder);
   WriteStringDirectory('SVN', 'SVNRepository', FSVNRepository);
 
-  // tab Git
+  // tab git
   WriteStringDirectory('Git', 'GitFolder', FGitFolder);
   WriteStringDirectory('Git', 'GitLocalRepository', FGitLocalRepository);
   WriteStringDirectory('Git', 'GitRemoteRepository', FGitRemoteRepository);
@@ -5200,14 +5253,14 @@ begin
   WriteBoolU('JUnit', 'JUnitBeforeEach', FJUnitBeforeEach);
   WriteBoolU('JUnit', 'JUnitAfterEach', FJUnitAfterEach);
 
-  // tab Logfiles
+  // tab log files
   WriteStringFile('Logfiles', 'LogfileCompiler', FLogfileCompilerWithUserName);
   WriteStringFile('Logfiles', 'LogfileInteractive',
     FLogfileInteractiveWithUsername);
   WriteStringFile('Logfiles', 'LogfileExceptions',
     FLogfileExceptionsWithUsername);
 
-  // tab FStructogramS
+  // tab structogramS
   // write for old Language
   FStructogramS := 'Structogram.' + FLanguageCode;
   WriteStringU(FStructogramS, 'Algorithm', FAlgorithm);
@@ -5226,7 +5279,7 @@ begin
   WriteIntegerU('Structogram', 'ShadowWidth', FStructogramShadowWidth);
   WriteIntegerU('Structogram', 'ShadowIntensity', FStructogramShadowIntensity);
 
-  // tab Sequence diagram
+  // tab sequence diagram
   FSequencediagramS := 'Sequencediagram.' + FLanguageCode;
   WriteStringU(FSequencediagramS, 'Object', FSDObject);
   WriteStringU(FSequencediagramS, 'New', FSDNew);
@@ -5237,7 +5290,7 @@ begin
   WriteBoolU(FSequencediagramS, 'ShowParameter', FSDShowParameter);
   WriteBoolU(FSequencediagramS, 'ShowReturn', FSDShowReturn);
 
-  // no change languageCode
+  // no change language code
   if RGLanguages.ItemIndex = -1 then
     FLanguageCode := 'en_GB'
   else
@@ -5262,7 +5315,7 @@ var
 begin
   with FJava do
   begin
-    // tab Interpreter
+    // tab interpreter
     FJDKFolder := ExtendPath(CBJDKFolder);
     FJDKFolderItems := CBJDKFolder.Items.Text;
     FJavaInterpreter := ExtendPath(EInterpreter);
@@ -5275,20 +5328,20 @@ begin
     FCodepage := CBCodepage.Text;
     FShowInterpreterCall := CBShowInterpreterCall.Checked;
 
-    // tab Compiler
+    // tab compiler
     FJavaCompiler := ExtendPath(EJavaCompiler);
     FJavaCompilerParameter := EJavaCompilerParameter.Text;
     FCompileInternally := CBUseJavaCompilerInternally.Checked;
     FShowCompilerCall := CBShowCompilerCall.Checked;
     FCompilerEncoding := CBCompilerEncoding.Text;
 
-    // tab Programme
+    // tab programs
     FJavaAppletviewer := ExtendPath(EAppletviewer);
     FJavaDebugger := ExtendPath(EDebugger);
     FJavaDoc := ExtendPath(EJavaDoc);
     FJavaDocParameter := EDocParameter.Text;
 
-    // tab Disassembler
+    // tab disassembler
     Str := ReadStringU('Program', 'DisassemblerItems', '');
     if Str <> '' then
     begin
@@ -5299,28 +5352,28 @@ begin
     FJavaDisassemblerItems := LoadComboBoxItems(Str);
     FJavaDisassemblerParameter := EDisassemblerParameter.Text;
 
-    // tab FCheckstyle
+    // tab checkstyle
     FCheckstyle := ExtendPath(ECheckstyle);
     FCheckConfiguration := ExtendPath(ECheckstyleConfiguration);
     FCheckParameter := ECheckstyleParameter.Text;
 
-    // tab FJalopy
+    // tab jalopy
     FJalopy := ExtendPath(EJalopy);
     FJalopyConfiguration := ExtendPath(EJalopyConfiguration);
     FJalopyParameter := EJalopyParameter.Text;
 
-    // tab Jar
+    // tab jar
     FJavaJar := ExtendPath(EJar);
     FJavaJarParameter := EJarParameter.Text;
     FJavaJarManifest := EJarManifest.Text;
     FJarPackFiles := CBJarPack.Text;
     FJarClassPath := ReplaceStr(EJarClasspath.Text, ';', ' ');
 
-    // tab Applet
+    // tab applet
     FAppletStart := RGApplet.ItemIndex;
     FShowHTMLforApplet := CBShowHTMLforApplet.Checked;
 
-    // tab FTemplates
+    // tab templates
     FTemplates[1] := ExtendPath(ETemplateConsole);
     FTemplates[2] := ExtendPath(ETemplateFrame);
     FTemplates[3] := ExtendPath(ETemplateDialog);
@@ -5345,7 +5398,7 @@ begin
     MakeJavaCache(FJavaCache);
     FMaxSearch := UDMaxSearch.Position;
 
-    // tab Editor
+    // tab editor
     FTabWidth := UDTabWidth.Position;
     FIndent := UDIndent.Position;
     FIndentHelp := CBIndentHelp.Checked;
@@ -5366,7 +5419,11 @@ begin
     FInsertControlStructures := CBInsertControlStructures.Checked;
     FInsertSemicolons := CBInsertSemicolons.Checked;
 
-    // tab Code
+    FShowControlFlowSymbols := CBShowControlFlowSymbols.Checked;
+    FShowLigatures := CBShowLigatures.Checked;
+    FCompactLineNumbers := CBCompactLineNumbers.Checked;
+
+    // tab code
     FCodeCompletionAlways := RBCodeCompletionAlways.Checked;
     FCodeCompletionCtrlSpace := RBCodeCompletionCtrlSpace.Checked;
     if Assigned(FJava.EditorForm) then
@@ -5382,7 +5439,7 @@ begin
     FTooltipAutomatic := CBTooltipAutomatic.Checked;
     FTooltipDelay := TBTooltipDelay.Position;
 
-    // tab Browser
+    // tab browser
     FUseIEinternForDocuments := CBUseIEinternForDocuments.Checked;
     FOnlyOneBrowserWindow := CBOnlyOneBrowserWindow.Checked;
     FBrowserTitle := EBrowserTitle.Text;
@@ -5411,7 +5468,7 @@ begin
     // tab keyboard
     FKeyboardFile := ExtendPath(EKeyboardFile);
 
-    // tab Mindstorms
+    // tab mindstorms
     FMindstormsParameter := EMindstormsParameter.Text;
     FMindstormsPort := CBMindstormsPort.ItemIndex;
     FMindstormsIP := EMindstormsIP.Text;
@@ -5465,7 +5522,7 @@ begin
         end;
     end;
 
-    // tab Android
+    // tab android
     FAndroidMode := CBAndroidMode.Checked;
     FAndroidSDKFolder := EAndroidSDKFolder.Text;
 
@@ -5505,7 +5562,7 @@ begin
     FLockedPaths := CBLockedPaths.Checked;
     FLockedStructogram := CBLockedStructogram.Checked;
 
-    // tab Associations
+    // tab associations
     FAdditionalAssociations := EAdditionalAssociations.Text;
 
     // tab UML
@@ -5560,11 +5617,11 @@ begin
     FNoSyntaxHighlighting := CBNoSyntaxHighlighting.Checked;
     FEditorStyle := CBEditorStyles.Text;
 
-    // tab SVN
+    // tab svn
     FSVNFolder := ExtendPath(ESVNFolder);
     FSVNRepository := ExtendPath(CBRepository);
 
-    // tab Git
+    // tab git
     FGitFolder := ExtendPath(EGitFolder);
     FGitLocalRepository := ExtendPath(CBLocalRepository);
     FGitRemoteRepository := ExtendPath(CBRemoteRepository);
@@ -5586,7 +5643,7 @@ begin
     FJUnitBeforeEach := CBJUnitBeforeEach.Checked;
     FJUnitAfterEach := CBJUnitAfterEach.Checked;
 
-    // tab Logfiles
+    // tab log files
     FLogfileCompilerWithUserName := ExtendPath(ELogfileCompiler);
     FLogfileCompiler := DissolveUsername(FLogfileCompilerWithUserName);
     FLogfileInteractiveWithUsername := ExtendPath(ELogfileInteractive);
@@ -5594,7 +5651,7 @@ begin
     FLogfileExceptionsWithUsername := ExtendPath(ELogfileExceptions);
     FLogfileExceptions := DissolveUsername(FLogfileExceptionsWithUsername);
 
-    // tab FStructogramS
+    // tab structogramS
     FAlgorithm := EAlgorithm.Text;
     FInput := EInput.Text;
     FOutput := EOutput.Text;
@@ -5611,7 +5668,7 @@ begin
     FStructogramShadowWidth := UDStructogramShadowWidth.Position;
     FStructogramShadowIntensity := UDStructogramShadowIntensity.Position;
 
-    // tab Sequence diagram
+    // tab sequence diagram
     FSDObject := ESDObject.Text;
     FSDNew := ESDNew.Text;
     FSDClose := ESDClose.Text;
@@ -5989,23 +6046,35 @@ begin
   FJava.SaveBounds;
 end;
 
-procedure TFConfiguration.SaveFiles(const Key, Name: string; Values: TStrings);
+procedure TFConfiguration.SaveStrings(const Key, AName: string;
+  Values: TStrings);
 begin
   var
-  Files := '';
-  for var Filepath in Values do
-    Files := Files + RemovePortableDrive(Filepath) + '|';
-  WriteStringU(Key, Name, Files);
+  Str := '';
+  for var I := 0 to Values.Count - 1 do
+    Str := Str + Values[I] + ' |';
+  WriteStringU(Key, AName, RemovePortableDrive(Str));
 end;
 
-procedure TFConfiguration.ReadFiles(const Key, Name: string; Values: TStrings);
+procedure TFConfiguration.ReadStrings(const Key, AName: string;
+  Values: TStrings);
+var
+  Str: string;
+  Posi: Integer;
 begin
+  try
+    Str := ReadStringU(Key, AName, '');
+  except
+    Str := '';
+  end;
   Values.Clear;
-  var
-  Files := Split('|', ReadStringU(Key, Name, ''));
-  for var Filepath in Files do
-    Values.Add(AddPortableDrive(Filepath));
-  FreeAndNil(Files);
+  Posi := Pos(' |', Str);
+  while Posi > 1 do
+  begin
+    Values.Add(AddPortableDrive(Copy(Str, 1, Posi - 1)));
+    Delete(Str, 1, Posi + 1);
+    Posi := Pos(' |', Str);
+  end;
 end;
 
 procedure TFConfiguration.SaveFavorites(Favorites: TStringList);
@@ -6245,12 +6314,12 @@ begin
           CloseKey;
         end;
       end
-    else if Dest = 0 then
+    else if (Dest = 0) and Assigned(FMachineIniFile) then
       FMachineIniFile.WriteString(Key, AName, Value)
     else if Assigned(FUserIniFile) then
       FUserIniFile.WriteString(Key, AName, Value);
   except
-    // no logging, Dest = 0 throws exception for normal users
+    // no logging
   end;
 end;
 
@@ -6343,9 +6412,9 @@ begin
           CloseKey;
         end;
       end
-    else if Dest = 0 then
+    else if (Dest = 0) and Assigned(FMachineIniFile) then
       Result := FMachineIniFile.ReadString(Key, AName, Default)
-    else if Assigned(FUserIniFile) then
+    else if Assigned(FUserIniFile) and Assigned(FMachineIniFile) then
       if FMachineIniFile.ValueExists(Key, AName) then
         Result := FMachineIniFile.ReadString(Key, AName, Default)
       else
@@ -6392,15 +6461,15 @@ begin
       begin
         RootKey := HKEY_CURRENT_USER;
         Access := KEY_READ;
-        if OpenKey('\Software\JavaEditor\' + Key, False) then
-        begin
-          if ValueExists(AName) then
+        if OpenKey('\Software\JavaEditor\' + Key, False) then begin
+          if ValueExists(AName) then 
             Result := ReadInteger(AName);
           CloseKey;
         end;
       end
     else if Assigned(FUserIniFile) then
-      if FMachineIniFile.ValueExists(Key, AName) then
+      if Assigned(FMachineIniFile) and FMachineIniFile.ValueExists(Key, AName)
+      then
         Result := FMachineIniFile.ReadInteger(Key, AName, Default)
       else
         Result := FUserIniFile.ReadInteger(Key, AName, Default)
@@ -6439,16 +6508,16 @@ begin
         else
           RootKey := HKEY_CURRENT_USER;
         Access := KEY_WRITE;
-        if OpenKey('\Software\JavaEditor\' + Key, True) then
-        begin
+        if OpenKey('\Software\JavaEditor\' + Key, True) then begin
           WriteBool(AName, Value);
           CloseKey;
         end;
       end
-    else if Machine then
-      FMachineIniFile.WriteBool(Key, AName, Value)
-    else if Assigned(FUserIniFile) then
-      FUserIniFile.WriteBool(Key, AName, Value);
+    else
+      if Machine and Assigned(FMachineIniFile) then
+        FMachineIniFile.WriteBool(Key, AName, Value)
+      else if Assigned(FUserIniFile) then
+        FUserIniFile.WriteBool(Key, AName, Value);
   except
     // no logging
   end;
@@ -6479,19 +6548,21 @@ begin
         else
           RootKey := HKEY_CURRENT_USER;
         Access := KEY_READ;
-        if OpenKey('\Software\JavaEditor\' + Key, False) then
-        begin
+        if OpenKey('\Software\JavaEditor\' + Key, False) then begin
           if ValueExists(AName) then
             Result := ReadBool(AName);
           CloseKey;
         end;
       end
-    else if Machine then
-      Result := FMachineIniFile.ReadBool(Key, AName, Default)
-    else if FMachineIniFile.ValueExists(Key, AName) then
-      Result := FMachineIniFile.ReadBool(Key, AName, Default)
-    else if Assigned(FUserIniFile) then
-      Result := FUserIniFile.ReadBool(Key, AName, Default);
+    else
+      if Machine and Assigned(FMachineIniFile) then
+        Result := FMachineIniFile.ReadBool(Key, AName, Default)
+      else if Assigned(FUserIniFile) then
+        if Assigned(FMachineIniFile) and FMachineIniFile.ValueExists(Key, AName)
+        then
+          Result := FMachineIniFile.ReadBool(Key, AName, Default)
+        else
+          Result := FUserIniFile.ReadBool(Key, AName, Default);
   except
     // no logging
   end;
@@ -6518,18 +6589,18 @@ begin
         else
           RootKey := HKEY_CURRENT_USER;
         Access := KEY_WRITE;
-        if OpenKey('\Software\JavaEditor\' + Key, True) then
-        begin
+        if OpenKey('\Software\JavaEditor\' + Key, True) then begin
           WriteBinaryData(AName, Pointer(PByte(Stream.Memory) + Stream.Position)
             ^, Stream.Size - Stream.Position);
           CloseKey;
         end;
       end
-    else if Machine then
-      FMachineIniFile.WriteBinaryStream(Key, AName, Stream)
-    else if Assigned(FUserIniFile) then
-      FUserIniFile.WriteBinaryStream(Key, AName, Stream);
-  except
+    else
+      if Machine and Assigned(FMachineIniFile) then
+        FMachineIniFile.WriteBinaryStream(Key, AName, Stream)
+      else if Assigned(FUserIniFile) then
+        FUserIniFile.WriteBinaryStream(Key, AName, Stream);
+  except 
     // no logging
   end;
 end;
@@ -6569,8 +6640,7 @@ begin
               begin
                 Stream.Size := Stream.Position + Info.DataSize;
                 Result := ReadBinaryData(AName,
-                  Pointer(PByte(Stream.Memory) + Stream.Position)^,
-                  Stream.Size);
+                  Pointer(PByte(Stream.Memory) + Stream.Position)^, Stream.Size);
                 if Stream <> Value then
                   Value.CopyFrom(Stream, Stream.Size - Stream.Position);
               end;
@@ -6585,12 +6655,14 @@ begin
           CloseKey;
         end;
       end
-    else if Machine then
-      Result := FMachineIniFile.ReadBinaryStream(Key, AName, Value)
-    else if FMachineIniFile.ValueExists(Key, AName) then
+    else if Machine and Assigned(FMachineIniFile) then
       Result := FMachineIniFile.ReadBinaryStream(Key, AName, Value)
     else if Assigned(FUserIniFile) then
-      Result := FUserIniFile.ReadBinaryStream(Key, AName, Value);
+      if Assigned(FMachineIniFile) and FMachineIniFile.ValueExists(Key, AName)
+      then
+        Result := FMachineIniFile.ReadBinaryStream(Key, AName, Value)
+      else
+        Result := FUserIniFile.ReadBinaryStream(Key, AName, Value);
   except
     // no logging
   end;
@@ -6638,9 +6710,8 @@ var
         CloseKey;
       except
         on E: Exception do
-          ErrorMsg('Error in creating/deleting an association! ' +
-            Format(LNGCanNotWriteRegistry, ['SOFTWARE\Classes\' + Extension]) +
-            ' Error: ' + E.Message);
+          ErrorMsg('Error in EditAssociation! ' + Format(LNGCanNotWriteRegistry,
+            ['SOFTWARE\Classes\']) + ' Error: ' + E.Message);
       end;
     end;
   end;
@@ -6689,31 +6760,27 @@ var
 
   procedure WriteToRegistry(const Key: string);
   begin
-    try
-      with Reg do
-      begin
-        OpenKey(Key, True);
-        WriteString('', 'Java-Editor');
-        CloseKey;
-        OpenKey(Key + '\DefaultIcon', True);
-        WriteString('', JavaEditor + ',0');
-        CloseKey;
-        OpenKey(Key + '\Shell\Open\command', True);
-        WriteString('', JavaEditor);
-        CloseKey;
-        OpenKey(Key + '\Shell\Open\ddeexec', True);
-        WriteString('', '[FileOpen("%1")]');
-        OpenKey('Application', True);
-        Filename := ExtractFileName(ParamStr(0));
-        Filename := Copy(Filename, 1, Length(Filename) - 4);
-        WriteString('', Filename);
-        CloseKey;
-        OpenKey(Key + '\Shell\Open\ddeexec\topic', True);
-        WriteString('', 'System');
-        CloseKey;
-      end;
-    except
-      // no logging
+    with Reg do
+    begin
+      OpenKey(Key, True);
+      WriteString('', 'Java-Editor');
+      CloseKey;
+      OpenKey(Key + '\DefaultIcon', True);
+      WriteString('', JavaEditor + ',0');
+      CloseKey;
+      OpenKey(Key + '\Shell\Open\command', True);
+      WriteString('', JavaEditor);
+      CloseKey;
+      OpenKey(Key + '\Shell\Open\ddeexec', True);
+      WriteString('', '[FileOpen("%1")]');
+      OpenKey('Application', True);
+      Filename := ExtractFileName(ParamStr(0));
+      Filename := Copy(Filename, 1, Length(Filename) - 4);
+      WriteString('', Filename);
+      CloseKey;
+      OpenKey(Key + '\Shell\Open\ddeexec\topic', True);
+      WriteString('', 'System');
+      CloseKey;
     end;
   end;
 
@@ -7403,7 +7470,7 @@ end;
 function TFConfiguration.GetDumpText: string;
 var
   Pathname1, Pathname2, Pathname3, Str: string;
-  StringList: TStringList;
+  StringList, SL1: TStringList;
   Editor: TFEditForm;
 begin
   Result := '';
@@ -7442,6 +7509,7 @@ begin
     Str := Str + '  Windows-Version: ' + TOSVersion.ToString + CrLf;
     Str := Str + '  CmdLine: ' + CmdLine + CrLf;
     StringList := TStringList.Create;
+    SL1 := TStringList.Create;
     if FUseRegistry then
     begin
       Str := Str + CrLf;
@@ -7469,21 +7537,22 @@ begin
       Str := Str + CrLf;
       Str := Str + StringOfChar('-', 80) + CrLf;
       Str := Str + '--- ' + FMachineIniFile.Filename + CrLf + CrLf;
-      StringList.LoadFromFile(FMachineIniFile.Filename);
-      Str := Str + StringList.Text + CrLf;
+      SL1.LoadFromFile(FMachineIniFile.Filename);
+      Str := Str + SL1.Text + CrLf;
       Str := Str + StringOfChar('-', 80) + CrLf;
       if Assigned(FUserIniFile) then
       begin
         Str := Str + '--- ' + FUserIniFile.Filename + CrLf + CrLf;
-        StringList.Clear;
-        StringList.LoadFromFile(FUserIniFile.Filename);
-        Str := Str + StringList.Text;
+        SL1.Clear;
+        SL1.LoadFromFile(FUserIniFile.Filename);
+        Str := Str + SL1.Text;
         Str := Str + StringOfChar('-', 80) + CrLf;
       end
       else
         Str := Str + 'missing ' + FUserIniFile.Filename + CrLf;
     end;
     FreeAndNil(StringList);
+    FreeAndNil(SL1);
     Result := Str + CrLf;
 
     FreeAndNil(FDumpIniFileHKCU);
@@ -7704,22 +7773,26 @@ end;
 procedure TFConfiguration.CallUpdater(const Target, Source1: string;
   Source2: string);
 begin
-  var
-  Updater := FEditorFolder + 'setup.exe';
-  if not FileExists(Updater) then
-  begin
-    ErrorMsg(Format(_(LNGFileNotFound), [Updater]));
-    Exit;
-  end;
   if Source2 = '' then
     Source2 := 'xxx';
+
   var
-  Params := '-Update ' + HideBlanks(Target) + ' ' + HideBlanks(Source1) + ' ' +
+  Updater := FEditorFolder + 'setup.exe';
+  var
+  Str := '-Update ' + HideBlanks(Target) + ' ' + HideBlanks(Source1) + ' ' +
     HideBlanks(Source2);
   if not FUseRegistry then
-    Params := Params + ' -INI ' + HideBlanks(FMachineIniFile.Filename);
-  if not RunAsAdmin(Handle, Updater, Params) then
-    ErrorMsg(_('Can not execute file ') + Updater);
+    Str := Str + ' -INI ' + HideBlanks(FMachineIniFile.Filename);
+  if FileExists(Updater) then
+    try
+      RunAsAdmin(Handle, Updater, Str);
+    except
+      on E: Exception do
+        ErrorMsg(_('Can not execute file ') + Updater + '! Error: ' +
+          E.Message);
+    end
+  else
+    ErrorMsg(Format(_(LNGFileNotFound), [Updater]));
 end;
 
 function TFConfiguration.GetConfigurationAddress(const Str: string): string;
@@ -7767,7 +7840,8 @@ begin
         FWithProxy := AEnabled and (FProxyIP <> '') and (FProxyPort <> 0);
       end;
     except
-      // no logging
+      on E: Exception do
+        Log('Registry error!', E);
     end;
   end;
 end;
@@ -8114,17 +8188,22 @@ end;
 procedure TFConfiguration.SaveInis;
 begin
   if not FUseRegistry then
-  begin
-    if not IsWriteProtected(FMachineIniFile.Filename) then
-      FMachineIniFile.UpdateFile
-    else
-      ErrorMsg(Format('%s is write protected!', [FMachineIniFile.Filename]));
-    if Assigned(FUserIniFile) and not IsWriteProtected(FUserIniFile.Filename)
-    then
-      FUserIniFile.UpdateFile
-    else
-      ErrorMsg(Format('%s is write protected!', [FUserIniFile.Filename]));
-  end;
+    if not FWriteProtection and Assigned(FMachineIniFile) then
+      try
+        FMachineIniFile.UpdateFile;
+      except
+        on E: Exception do
+          ErrorMsg(Format(_(LNGCanNotCreateFile), [FMachineIniFile.Filename,
+            E.Message]));
+      end;
+  if Assigned(FUserIniFile) then
+    try
+      FUserIniFile.UpdateFile;
+    except
+      on E: Exception do
+        ErrorMsg(Format(_(LNGCanNotCreateFile), [FUserIniFile.Filename,
+          E.Message]));
+    end;
 end;
 
 procedure TFConfiguration.BSVNClick(Sender: TObject);
@@ -8498,8 +8577,8 @@ begin
     Result := EditForm.Editor.Lines.Encoding
   else if FileExists(Pathname) then
     try
+      Stream := TFileStream.Create(Pathname, fmOpenRead or fmShareDenyWrite);
       try
-        Stream := TFileStream.Create(Pathname, fmOpenRead or fmShareDenyWrite);
         Result := SynUnicode.GetEncoding(Stream, WithBOM);
       finally
         FreeAndNil(Stream);
@@ -8779,8 +8858,7 @@ begin
       PackageList.SaveToFile(Packagefile);
     except
       on E: Exception do
-        ErrorMsg('Can not write files ' + Classfile + ' and ' + Packagefile +
-          'Error: ' + E.Message);
+        ErrorMsg('Error in MakeClassAndPackageList: ' + E.Message);
     end;
   finally
     FreeAndNil(JarFile);
@@ -8938,7 +9016,7 @@ var
         end;
       except
         on E: Exception do
-          ErrorMsg(Format(_(LNGCanNotRead), [JarFilename]));
+          Log('Error in CollectInJarFile: ', E);
       end;
     finally
       FreeAndNil(JarFile);
@@ -9006,13 +9084,12 @@ begin
       (FJavaCache + '\classes\classpathclasses.txt');
   except
     on E: Exception do
-      ErrorMsg(Format(_(LNGCanNotWrite),
-        [FJavaCache + '\classes\classpathclasses.txt']) + E.Message);
+      ErrorMsg('Error in MakeClasspathClasses: ' + E.Message);
   end;
 end;
 
 procedure TFConfiguration.MakeClassAndPackageListFromDocumentation
-  (const Classfile, Interfacefile, Packagefile: string);
+  (const Classfile, InterfaceFile, Packagefile: string);
 var
   StringList, ClassList, InterfaceList, PackageList: TStringList;
   Str, AClassname: string;
@@ -9107,7 +9184,7 @@ begin
       end;
     end;
     ClassList.SaveToFile(Classfile);
-    InterfaceList.SaveToFile(Interfacefile);
+    InterfaceList.SaveToFile(InterfaceFile);
     PackageList.SaveToFile(Packagefile);
     FreeAndNil(StringList);
     FreeAndNil(ClassList);
@@ -9115,8 +9192,8 @@ begin
     FreeAndNil(InterfaceList);
   except
     on E: Exception do
-      ErrorMsg('Error: can not save files: ' + Classfile + ', ' + Interfacefile
-        + ', ' + Packagefile + ' Error: ' + E.Message);
+      ErrorMsg('Error in MakeClassAndPackageListFromDocumentation: ' +
+        E.Message);
   end;
 end;
 
@@ -9262,7 +9339,7 @@ begin
 end;
 
 function TFConfiguration.RunAsAdmin(Wnd: HWND;
-  const AFile, AParameters: string): Boolean;
+const AFile, Parameters: string): Boolean;
 var
   Sei: TShellExecuteInfoA;
 begin
@@ -9273,7 +9350,7 @@ begin
   // left side is pAnsiChar
   Sei.lpVerb := 'runas';
   Sei.lpFile := PAnsiChar(AnsiString(AFile));
-  Sei.lpParameters := PAnsiChar(AnsiString(AParameters));
+  Sei.lpParameters := PAnsiChar(AnsiString(Parameters));
   Sei.nShow := SW_SHOWNORMAL;
   Result := ShellExecuteExA(@Sei);
 end;
@@ -9281,7 +9358,7 @@ end;
 function TFConfiguration.GetFrameType(JavaProgram: string;
   Startclass: Boolean = False): Integer;
 var
-  EditForm: TFEditForm;
+  AForm: TFEditForm;
   JavaScanner: TJavaScanner;
 begin
   Result := 1;
@@ -9292,9 +9369,9 @@ begin
   if Startclass and (FJavaStartClass <> '') and FileExists(FJavaStartClass) then
     JavaProgram := FJavaStartClass;
 
-  EditForm := TFEditForm(FJava.GetTDIWindowType(JavaProgram, '%E%'));
-  if Assigned(EditForm) then
-    Str := EditForm.Editor.Text
+  AForm := TFEditForm(FJava.GetTDIWindowType(JavaProgram, '%E%'));
+  if Assigned(AForm) then
+    Str := AForm.Editor.Text
   else if FileExists(JavaProgram) then
   begin
     var
@@ -9305,7 +9382,8 @@ begin
         Str := StringList.Text;
       except
         on E: Exception do
-          ErrorMsg(Format(LNGCanNotRead, [JavaProgram]));
+          ErrorMsg('Error in GetFrameType: ' + Format(LNGCanNotRead,
+            [JavaProgram]) + ' ' + E.Message);
       end;
     finally
       FreeAndNil(StringList);
@@ -9348,7 +9426,8 @@ begin
         Str := StringList.Text;
       except
         on E: Exception do
-          ErrorMsg(Format(LNGCanNotRead, [JavaProgram]));
+          ErrorMsg('Error in GetPackage!' + Format(LNGCanNotRead, [JavaProgram])
+            + ' Error: ' + E.Message);
       end;
     finally
       FreeAndNil(StringList);
@@ -9412,7 +9491,8 @@ begin
         Str := StringList.Text;
       except
         on E: Exception do
-          ErrorMsg(Format(LNGCanNotRead, [Pathname]));
+          ErrorMsg('Error in GetJavaCompilerParameter! ' + Format(LNGCanNotRead,
+            [Pathname]) + ' Error: ' + E.Message);
       end;
     finally
       FreeAndNil(StringList);
@@ -9601,7 +9681,8 @@ begin
       FControlStructureTemplates[7].Text := Str;
     except
       on E: Exception do
-        ErrorMsg(Format(LNGCanNotRead, [FTemplates[9]]));
+        ErrorMsg('Error in MakeControlStructureTemplates! ' +
+          Format(LNGCanNotRead, [FTemplates[9]]) + ' Error: ' + E.Message);
     end;
   finally
     FreeAndNil(StringList);
@@ -9728,8 +9809,8 @@ var
         end;
       except
         on E: Exception do
-          ErrorMsg(Format(LNGCanNotOpen, [JarFilename]) + ' Error: ' +
-            E.Message);
+          ErrorMsg('Error in InJarFile! ' + Format(LNGCanNotOpen, [JarFilename])
+            + ' Error: ' + E.Message);
       end;
     finally
       FreeAndNil(JarFile);
@@ -10070,7 +10151,8 @@ begin
           end;
         except
           on E: Exception do
-            ErrorMsg(Format(LNGCanNotRead, [Str]));
+            ErrorMsg('Error in TFConfiguration.SetGUIStyle! ' +
+              Format(LNGCanNotRead, [Str]) + ' Error: ' + E.Message);
         end;
       finally
         FreeAndNil(FMachineIniFile);
@@ -10406,7 +10488,8 @@ begin
     end;
   except
     on E: Exception do
-      ErrorMsg(Format(LNGCanNotOpen, [Filename]));
+      ErrorMsg('Error in ExtractZipToDir! ' + Format(LNGCanNotOpen, [Filename])
+        + ' Error: ' + E.Message);
   end;
 end;
 

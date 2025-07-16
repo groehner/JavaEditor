@@ -287,6 +287,7 @@ function ColorToHTML(Color: TColor): string;
 function IsColorDark(AColor: TColor): Boolean;
 function LightenColor(Color: TColor; Percentage: Integer): TColor;
 function DarkenColor(Color: TColor; Percentage: Integer): TColor;
+function DefaultCodeFontName: string;
 
 implementation
 
@@ -306,8 +307,7 @@ uses
   RegularExpressionsCore,
   RegularExpressionsAPI,
   Winapi.SHFolder,
-  Winapi.ShLwApi,
-  UConfiguration;
+  Winapi.ShLwApi;
 
 function IsAscii(const Str: string): Boolean;
 begin
@@ -510,6 +510,7 @@ begin
   SysUtils.FindClose(SearchRec);
 end;
 
+{$WARNINGS OFF}
 function IsWriteProtected(const Filename: string): Boolean;
 var
   Attributes: TFileAttributes;
@@ -519,18 +520,17 @@ begin
   Attributes := TFile.GetAttributes(Filename);
   Result := TFileAttribute.faReadOnly in Attributes;
 end;
+{$WARNINGS ON}
 
 function HasWriteAccess(const Directory: string): Boolean;
 begin
   var
-  Testfile := WithTrailingSlash(Directory) + 'wa_test.$$$';
+  Str := WithTrailingSlash(Directory) + 'wa_test.$$$';
   try
-    var FileStream := TFileStream.Create(Testfile, fmCreate or fmShareExclusive);
-    try
-    finally
-      FreeAndNil(FileStream);
-      Result := DeleteFile(PChar(Testfile));
-    end;
+    var
+    FileStream := TFileStream.Create(Str, fmCreate or fmShareExclusive);
+    FreeAndNil(FileStream);
+    Result := DeleteFile(PChar(Str));
   except
     Result := False;
   end;
@@ -1112,9 +1112,8 @@ begin
       Device := Dest;
       GlobalUnlock(DeviceMode);
     end;
-  except
-    on E: Exception do
-      FConfiguration.Log('SetPrinterIndex ', E);
+  except on E: Exception do
+      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
   end;
 end;
 
@@ -1557,8 +1556,8 @@ begin
       FreeAndNil(FStream);
     end;
   except
-    on E: Exception do
-      ErrorMsg(E.Message);
+    on e: Exception do
+      ErrorMsg(e.Message);
   end;
 end;
 
@@ -2010,8 +2009,8 @@ begin
         SysUtils.ForceDirectories(ExtractFilePath(Path));
         StringList.SaveToFile(Path);
       except
-        on E: Exception do
-          ErrorMsg(E.Message);
+        on e: Exception do
+          ErrorMsg(e.Message);
       end;
     finally
       FreeAndNil(StringList);
@@ -2488,9 +2487,10 @@ begin
       Result.AddRawOptions(PCRE_UCP);
     Result.Study([preJIT]);
   except
-    on E: ERegularExpressionError do
+    on e: ERegularExpressionError do
     begin
-      ErrorMsg(Format('Invalid Regular Expression: %s', [E.Message]));
+      MessageDlg(Format('Invalid Regular Expression: %s', [e.Message]), mtError,
+        [mbOK], 0);
       Abort;
     end;
     else
@@ -2551,7 +2551,7 @@ begin
   try
     Result := StrToFloat(Str, FormatSetting);
   except
-    on E: EConvertError do
+    on e: EConvertError do
       Result := 0.0;
   end;
 end;
@@ -2632,6 +2632,19 @@ function DarkenColor(Color: TColor; Percentage: Integer): TColor;
 begin
   Result := Winapi.ShLwApi.ColorAdjustLuma(ColorToRGB(Color),
     -Percentage * 10, True);
+end;
+
+function DefaultCodeFontName: string;
+begin
+    if CheckWin32Version(6) then
+    begin
+      if Screen.Fonts.IndexOf('Cascadia Code') >= 0 then
+        Result := 'Cascadia Code'
+      else
+        Result := 'Consolas';
+    end
+    else
+      Result := 'Courier New';
 end;
 
 { TInteger }

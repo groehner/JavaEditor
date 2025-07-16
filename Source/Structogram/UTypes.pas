@@ -36,11 +36,11 @@ type
     FStringList: TStringList;
     FText: string;
     FVal: string;
-    destructor Destroy; override;
     function NextLineIndent: Integer;
     function GetKind(Kind: string): Byte;
   public
     constructor Create(Filename: string);
+    destructor Destroy; override;
     function HasOldFormat: Boolean;
     procedure LineBack;
     procedure ReadLine;
@@ -419,7 +419,7 @@ begin
     FStringList.LoadFromFile(Filename);
   except
     on E: Exception do
-      ErrorMsg(e.Message);
+      ErrorMsg(E.Message);
   end;
 end;
 

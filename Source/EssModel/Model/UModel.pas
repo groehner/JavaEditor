@@ -883,7 +883,7 @@ begin
     end;
   except
     on E: Exception do
-     FConfiguration.Log('TUnitPackage.GetAllObjects', E);
+      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
   end;
 end;
 
@@ -1487,8 +1487,8 @@ begin
     Fire(mtBeforeAddChild, Result);
     Fire(mtAfterAddChild, Result);
   except
-    on e: Exception do
-      FConfiguration.Log('TOperation.AddAttribute', e);
+    on E: Exception do
+      FConfiguration.Log('TOperation.AddAttribute', E);
   end;
 end;
 
@@ -1786,7 +1786,7 @@ begin
     Result := ShortName;
   except
     on E: Exception do
-      FConfiguration.Log('TClassifier.GetShortType', E);
+      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
   end;
 end;
 

@@ -62,6 +62,7 @@ type
     constructor Create(const FromNode, ToNode: TNode);
   end;
 
+  {$HINTS OFF}
   TEdgeList = class(TObjectList)
   private
     function GetEdge(Index: Integer): TEdge;

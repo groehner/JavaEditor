@@ -561,10 +561,8 @@ end;
 function TJEComponent.IsNumeric(const Str: string): Boolean;
 var
   ADouble: Double;
-  AInt: Integer;
 begin
-  Val(Str, ADouble, AInt);
-  Result := (AInt = 0);
+  Result := TryStrToFloat(Str, ADouble);
   if not Result and ((Str = '-') or (Str = '.') or (Str = '')) then
     Result := True;
 end;

@@ -273,7 +273,7 @@ begin
     MyOnChange := scpJava.OnChange;
     MyOnShow := scpJava.OnShow;
     MyOnClose := scpJava.OnClose;
-    scpJava.Form := TSynBaseCompletionProposalFormEx.Create(scpJava);
+    //scpJava.Form := TSynBaseCompletionProposalFormEx.Create(scpJava);
     TSynBaseCompletionProposalFormEx(scpJava.Form).SetOnResize(OnResize);
     TSynBaseCompletionProposalFormEx(scpJava.Form).FHintForm := FScpHint;
     scpJava.OnCancel := MyOnCancel;
@@ -1143,7 +1143,7 @@ begin
     AEditForm := nil;
   except
     on E: Exception do
-      FConfiguration.Log('TCodeCompletion.GetMClassifier ', E);
+      ErrorMsg(E.Message);
   end;
 end;
 

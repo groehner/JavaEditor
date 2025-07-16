@@ -44,8 +44,8 @@ TStructureEx = class
     property FoldedTextRect: TRect read FFoldedTextRect write FFoldedTextRect;
     property Hidden: Boolean read FHidden write FHidden;
     property SingleStatement: Boolean read FSingleStatement write FSingleStatement;
-    procedure decTopBottom;
-    procedure decBottom;
+    procedure DecTopBottom;
+    procedure DecBottom;
 end;
 
 TStructures = class

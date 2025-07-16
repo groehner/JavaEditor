@@ -2449,7 +2449,8 @@ var
         end;
       except
         on E: Exception do
-          FConfiguration.Log(' TJavaParser.CollectClassesForImport#CollectInJarFile ', E);
+          OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' +
+            E.Message));
       end;
     finally
       FreeAndNil(JarFile);

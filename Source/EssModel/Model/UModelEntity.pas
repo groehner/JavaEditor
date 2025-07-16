@@ -129,8 +129,7 @@ uses
   SysUtils,
   Windows,
   StrUtils,
-  UListeners,
-  UConfiguration;
+  UListeners;
 
 { TModelEntity }
 
@@ -157,7 +156,7 @@ begin
     FreeAndNil(FListeners);   // here we get a memory leak
   except
     on E: Exception do
-      FConfiguration.Log('TModelEntity.Destroy', E);
+      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
   end;
   inherited;
 end;
@@ -227,7 +226,7 @@ begin
     FListeners.Remove(Listener);
   except
     on E: Exception do
-      FConfiguration.Log('TModelEntity.RemoveListener', E);
+      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
   end;
 end;
 

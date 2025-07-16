@@ -358,8 +358,8 @@ begin
       else
         ErrorMsg(SysErrorMessage(GetLastError));
     except
-      on e: Exception do
-        ErrorMsg(e.Message);
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
   finally
     TThread.Synchronize(nil,
@@ -640,8 +640,9 @@ begin
     Delete(Str, Length(Str), 1);
   if EndsWith(Str, #13) then
     Delete(Str, Length(Str), 1);
-  if Pos('beliebige Taste', Str) > 0 then
-    var Int := 5; // ToDo Umlaut problem
+  // ToDo Umlaut problem
+  if Pos('any key', Str) > 0 then
+    var Int := 5;
   Result := Str;
 end;
 
@@ -926,7 +927,7 @@ begin
       Exit;
     end;
 
-    // intern class, e.g. StackCalculator$3.actionPerformed
+    // intern class, E.g. StackCalculator$3.actionPerformed
     // don't use inner classes to open editor with classname
     Posi3 := Pos('$', AClassname);
     if Posi3 > 0 then

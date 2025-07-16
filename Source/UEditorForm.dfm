@@ -18,6 +18,7 @@ object FEditForm: TFEditForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnResize = FormResize
   DesignSize = (
     687
     546)
@@ -685,7 +686,7 @@ object FEditForm: TFEditForm
           'M6 5h1M8 5h1M10 5h1M5 6h1M7 6h1M9 6h1M4 7h1M6 7h1M8 7h1M10 7h1M5' +
           ' 8h1M7 8h1M9 8h1M4 9h1M6 9h1M8 9h1M10 9h1M5 10h1M7 10h1M9 10h1M4' +
           ' 11h1M6 11h1M8 11h1M10 11h1M5 12h1M7 12h1M9 12h1M4 13h1M6 13h1M8' +
-          ' 13h1M10 13h1" />'#13#10'</svg>'#13#10
+          ' 13h1M10 13h1" />'#13#10'</svg>'
       end
       item
         IconName = 'GotoBookmark'
@@ -706,7 +707,7 @@ object FEditForm: TFEditForm
           '1M10 11h1M5 12h1M9 12h1M4 13h1M6 13h1M8 13h1M10 13h1" />'#13#10'<path ' +
           'stroke="#000000" d="M6 5h3M6 6h1M8 6h1M6 7h1M8 7h1M6 8h1M8 8h1M6' +
           ' 9h1M8 9h1M5 10h2M8 10h2M6 11h3M7 12h1" />'#13#10'<path stroke="#fffff' +
-          'f" d="M7 6h1M7 7h1M7 8h1M7 9h1M7 10h1" />'#13#10'</svg>'#13#10
+          'f" d="M7 6h1M7 7h1M7 8h1M7 9h1M7 10h1" />'#13#10'</svg>'
       end
       item
         IconName = 'Paragraph'
@@ -2561,6 +2562,168 @@ object FEditForm: TFEditForm
       OnClick = MICloseClick
     end
   end
+  object vilBookmarksLight: TVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 0
+        CollectionName = 'Bookmark0'
+        Name = 'Bookmark0'
+      end
+      item
+        CollectionIndex = 1
+        CollectionName = 'Bookmark1'
+        Name = 'Bookmark1'
+      end
+      item
+        CollectionIndex = 2
+        CollectionName = 'Bookmark2'
+        Name = 'Bookmark2'
+      end
+      item
+        CollectionIndex = 3
+        CollectionName = 'Bookmark3'
+        Name = 'Bookmark3'
+      end
+      item
+        CollectionIndex = 4
+        CollectionName = 'Bookmark4'
+        Name = 'Bookmark4'
+      end
+      item
+        CollectionIndex = 5
+        CollectionName = 'Bookmark5'
+        Name = 'Bookmark5'
+      end
+      item
+        CollectionIndex = 6
+        CollectionName = 'Bookmark6'
+        Name = 'Bookmark6'
+      end
+      item
+        CollectionIndex = 7
+        CollectionName = 'Bookmark7'
+        Name = 'Bookmark7'
+      end
+      item
+        CollectionIndex = 8
+        CollectionName = 'Bookmark8'
+        Name = 'Bookmark8'
+      end
+      item
+        CollectionIndex = 9
+        CollectionName = 'Bookmark9'
+        Name = 'Bookmark9'
+      end
+      item
+        CollectionIndex = 10
+        CollectionName = 'Warning'
+        Name = 'Warning'
+      end
+      item
+        CollectionIndex = 11
+        CollectionName = 'Question'
+        Name = 'Question'
+      end
+      item
+        CollectionIndex = 12
+        CollectionName = 'Debugline'
+        Name = 'Debugline'
+      end
+      item
+        CollectionIndex = 13
+        CollectionName = 'Breakpoint'
+        Name = 'Breakpoint'
+      end
+      item
+        CollectionIndex = 14
+        CollectionName = 'BreakpointsDelete'
+        Name = 'BreakpointsDelete'
+      end>
+    ImageCollection = icBookmarks
+    Left = 72
+    Top = 287
+  end
+  object vilBookmarksDark: TVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 15
+        CollectionName = 'Bookmark0'
+        Name = 'Bookmark0'
+      end
+      item
+        CollectionIndex = 16
+        CollectionName = 'Bookmark1'
+        Name = 'Bookmark1'
+      end
+      item
+        CollectionIndex = 17
+        CollectionName = 'Bookmark2'
+        Name = 'Bookmark2'
+      end
+      item
+        CollectionIndex = 18
+        CollectionName = 'Bookmark3'
+        Name = 'Bookmark3'
+      end
+      item
+        CollectionIndex = 19
+        CollectionName = 'Bookmark4'
+        Name = 'Bookmark4'
+      end
+      item
+        CollectionIndex = 20
+        CollectionName = 'Bookmark5'
+        Name = 'Bookmark5'
+      end
+      item
+        CollectionIndex = 21
+        CollectionName = 'Bookmark6'
+        Name = 'Bookmark6'
+      end
+      item
+        CollectionIndex = 22
+        CollectionName = 'Bookmark7'
+        Name = 'Bookmark7'
+      end
+      item
+        CollectionIndex = 23
+        CollectionName = 'Bookmark8'
+        Name = 'Bookmark8'
+      end
+      item
+        CollectionIndex = 24
+        CollectionName = 'Bookmark9'
+        Name = 'Bookmark9'
+      end
+      item
+        CollectionIndex = 25
+        CollectionName = 'Warning'
+        Name = 'Warning'
+      end
+      item
+        CollectionIndex = 26
+        CollectionName = 'Question'
+        Name = 'Question'
+      end
+      item
+        CollectionIndex = 27
+        CollectionName = 'Debugline'
+        Name = 'Debugline'
+      end
+      item
+        CollectionIndex = 28
+        CollectionName = 'Breakpoint'
+        Name = 'Breakpoint'
+      end
+      item
+        CollectionIndex = 29
+        CollectionName = 'BreakpointsDelete'
+        Name = 'BreakpointsDelete'
+      end>
+    ImageCollection = icBookmarks
+    Left = 224
+    Top = 287
+  end
   object icBookmarks: TSVGIconImageCollection
     SVGIconItems = <
       item
@@ -3113,168 +3276,6 @@ object FEditForm: TFEditForm
           #10
       end>
     Left = 376
-    Top = 287
-  end
-  object vilBookmarksLight: TVirtualImageList
-    Images = <
-      item
-        CollectionIndex = 0
-        CollectionName = 'Bookmark0'
-        Name = 'Bookmark0'
-      end
-      item
-        CollectionIndex = 1
-        CollectionName = 'Bookmark1'
-        Name = 'Bookmark1'
-      end
-      item
-        CollectionIndex = 2
-        CollectionName = 'Bookmark2'
-        Name = 'Bookmark2'
-      end
-      item
-        CollectionIndex = 3
-        CollectionName = 'Bookmark3'
-        Name = 'Bookmark3'
-      end
-      item
-        CollectionIndex = 4
-        CollectionName = 'Bookmark4'
-        Name = 'Bookmark4'
-      end
-      item
-        CollectionIndex = 5
-        CollectionName = 'Bookmark5'
-        Name = 'Bookmark5'
-      end
-      item
-        CollectionIndex = 6
-        CollectionName = 'Bookmark6'
-        Name = 'Bookmark6'
-      end
-      item
-        CollectionIndex = 7
-        CollectionName = 'Bookmark7'
-        Name = 'Bookmark7'
-      end
-      item
-        CollectionIndex = 8
-        CollectionName = 'Bookmark8'
-        Name = 'Bookmark8'
-      end
-      item
-        CollectionIndex = 9
-        CollectionName = 'Bookmark9'
-        Name = 'Bookmark9'
-      end
-      item
-        CollectionIndex = 10
-        CollectionName = 'Warning'
-        Name = 'Warning'
-      end
-      item
-        CollectionIndex = 11
-        CollectionName = 'Question'
-        Name = 'Question'
-      end
-      item
-        CollectionIndex = 12
-        CollectionName = 'Debugline'
-        Name = 'Debugline'
-      end
-      item
-        CollectionIndex = 13
-        CollectionName = 'Breakpoint'
-        Name = 'Breakpoint'
-      end
-      item
-        CollectionIndex = 14
-        CollectionName = 'BreakpointsDelete'
-        Name = 'BreakpointsDelete'
-      end>
-    ImageCollection = icBookmarks
-    Left = 72
-    Top = 287
-  end
-  object vilBookmarksDark: TVirtualImageList
-    Images = <
-      item
-        CollectionIndex = 15
-        CollectionName = 'Bookmark0'
-        Name = 'Bookmark0'
-      end
-      item
-        CollectionIndex = 16
-        CollectionName = 'Bookmark1'
-        Name = 'Bookmark1'
-      end
-      item
-        CollectionIndex = 17
-        CollectionName = 'Bookmark2'
-        Name = 'Bookmark2'
-      end
-      item
-        CollectionIndex = 18
-        CollectionName = 'Bookmark3'
-        Name = 'Bookmark3'
-      end
-      item
-        CollectionIndex = 19
-        CollectionName = 'Bookmark4'
-        Name = 'Bookmark4'
-      end
-      item
-        CollectionIndex = 20
-        CollectionName = 'Bookmark5'
-        Name = 'Bookmark5'
-      end
-      item
-        CollectionIndex = 21
-        CollectionName = 'Bookmark6'
-        Name = 'Bookmark6'
-      end
-      item
-        CollectionIndex = 22
-        CollectionName = 'Bookmark7'
-        Name = 'Bookmark7'
-      end
-      item
-        CollectionIndex = 23
-        CollectionName = 'Bookmark8'
-        Name = 'Bookmark8'
-      end
-      item
-        CollectionIndex = 24
-        CollectionName = 'Bookmark9'
-        Name = 'Bookmark9'
-      end
-      item
-        CollectionIndex = 25
-        CollectionName = 'Warning'
-        Name = 'Warning'
-      end
-      item
-        CollectionIndex = 26
-        CollectionName = 'Question'
-        Name = 'Question'
-      end
-      item
-        CollectionIndex = 27
-        CollectionName = 'Debugline'
-        Name = 'Debugline'
-      end
-      item
-        CollectionIndex = 28
-        CollectionName = 'Breakpoint'
-        Name = 'Breakpoint'
-      end
-      item
-        CollectionIndex = 29
-        CollectionName = 'BreakpointsDelete'
-        Name = 'BreakpointsDelete'
-      end>
-    ImageCollection = icBookmarks
-    Left = 224
     Top = 287
   end
 end

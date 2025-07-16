@@ -399,7 +399,7 @@ begin
       StringList.SaveToFile(Pathname);
     except
       on E: Exception do
-        FConfiguration.Log('TFUMLForm.Exchange ', E);
+        ErrorMsg(E.Message);
     end;
   finally
     FreeAndNil(StringList);

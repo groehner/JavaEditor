@@ -113,12 +113,12 @@ msgid "    "
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..EFooter..Text
-#: UConfiguration.dfm:3374
+#: UConfiguration.dfm:3398
 msgid "##- %PAGENUM% -"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..EHeader..Text
-#: UConfiguration.dfm:3363
+#: UConfiguration.dfm:3387
 msgid "#%PATH%#%DATE%"
 msgstr ""
 
@@ -128,44 +128,44 @@ msgid "%ACTIVEWINDOW%"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
-#: UConfiguration.dfm:3321
+#: UConfiguration.dfm:3345
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
-#: UConfiguration.dfm:3336
+#: UConfiguration.dfm:3360
 msgid "%DATE%"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
-#: UConfiguration.dfm:3319
+#: UConfiguration.dfm:3343
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
-#: UConfiguration.dfm:3334
+#: UConfiguration.dfm:3358
 msgid "%FILE%"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
-#: UConfiguration.dfm:3324
+#: UConfiguration.dfm:3348
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
-#: UConfiguration.dfm:3339
+#: UConfiguration.dfm:3363
 msgid "%PAGECOUNT%"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
-#: UConfiguration.dfm:3323
+#: UConfiguration.dfm:3347
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
-#: UConfiguration.dfm:3338
+#: UConfiguration.dfm:3362
 msgid "%PAGENUM%"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
-#: UConfiguration.dfm:3320
+#: UConfiguration.dfm:3344
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
-#: UConfiguration.dfm:3335
+#: UConfiguration.dfm:3359
 msgid "%PATH%"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBFooter....Items.Strings
-#: UConfiguration.dfm:3322
+#: UConfiguration.dfm:3346
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..CBHeader....Items.Strings
-#: UConfiguration.dfm:3337
+#: UConfiguration.dfm:3361
 msgid "%TIME%"
 msgstr ""
 
@@ -231,19 +231,19 @@ msgid "*.java *.jfm *.uml"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..LAssociationsExample..Caption
-#: UConfiguration.dfm:4308
+#: UConfiguration.dfm:4332
 msgid "*.pas;*.class"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..EAdditionalAssociations..Hint
-#: UConfiguration.dfm:4394
+#: UConfiguration.dfm:4418
 msgid "*.pas;*.jar"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGeneralOptions..LFileFilterExample..Caption
-#: UConfiguration.dfm:4033
+#: UConfiguration.dfm:4057
 #. FConfiguration..PMain..PPanelRight..PageList..PGeneralOptions..EFileFilter..Hint
-#: UConfiguration.dfm:4120
+#: UConfiguration.dfm:4144
 msgid "*.php;*.css"
 msgstr ""
 
@@ -264,23 +264,23 @@ msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationCss..Caption
-#: UConfiguration.dfm:4386
+#: UConfiguration.dfm:4410
 msgid ".css"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationHtml..Caption
-#: UConfiguration.dfm:4338
+#: UConfiguration.dfm:4362
 msgid ".html"
 msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationInc..Caption
-#: UConfiguration.dfm:4404
+#: UConfiguration.dfm:4428
 msgid ".inc"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJava..Caption
-#: UConfiguration.dfm:4322
+#: UConfiguration.dfm:4346
 #. FJava..ODOpen..DefaultExt
 #: UJava.dfm:3823
 #. FJava..SDSaveAs..DefaultExt
@@ -290,64 +290,64 @@ msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJep..Caption
-#: UConfiguration.dfm:4346
+#: UConfiguration.dfm:4370
 msgid ".jep"
 msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJfm..Caption
-#: UConfiguration.dfm:4330
+#: UConfiguration.dfm:4354
 msgid ".jfm"
 msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJSD..Caption
-#: UConfiguration.dfm:4445
+#: UConfiguration.dfm:4469
 msgid ".jsd"
 msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJsg..Caption
-#: UConfiguration.dfm:4437
+#: UConfiguration.dfm:4461
 msgid ".jsg"
 msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationJsp..Caption
-#: UConfiguration.dfm:4370
+#: UConfiguration.dfm:4394
 msgid ".jsp"
 msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationPhp..Caption
-#: UConfiguration.dfm:4378
+#: UConfiguration.dfm:4402
 msgid ".php"
 msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationTxt..Caption
-#: UConfiguration.dfm:4362
+#: UConfiguration.dfm:4386
 msgid ".txt"
 msgstr ""
 
 #  Looks like a file extension or file mask
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..CBAssociationUml..Caption
-#: UConfiguration.dfm:4354
+#: UConfiguration.dfm:4378
 msgid ".uml"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUML..RGObjectCaption....Items.Strings
-#: UConfiguration.dfm:4551
+#: UConfiguration.dfm:4575
 msgid ": class"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManual....Items.Strings
-#: UConfiguration.dfm:3128
+#: UConfiguration.dfm:3152
 msgid "\\chm"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManual....Items.Strings
-#: UConfiguration.dfm:3127
+#: UConfiguration.dfm:3151
 msgid "\\docs"
 msgstr ""
 
@@ -412,9 +412,9 @@ msgstr ""
 
 #  Doesn't have any letters
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..ELLMTemperature..Text
-#: UConfiguration.dfm:5038
+#: UConfiguration.dfm:5062
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..EChatTemperature..Text
-#: UConfiguration.dfm:5177
+#: UConfiguration.dfm:5201
 msgid "1.0"
 msgstr ""
 
@@ -425,7 +425,7 @@ msgid "10.0.1.1"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PCode..GBCodeCompletion..LCompletionMax..Caption
-#: UConfiguration.dfm:1323
+#: UConfiguration.dfm:1347
 msgid "1000 ms"
 msgstr ""
 
@@ -442,7 +442,7 @@ msgid "192.168.0.100"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PCode..GBTooltips..LToolTipMax..Caption
-#: UConfiguration.dfm:1466
+#: UConfiguration.dfm:1490
 msgid "2000 ms"
 msgstr ""
 
@@ -452,9 +452,9 @@ msgid "437 USA"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PCode..GBCodeCompletion..LCompletionMin..Caption
-#: UConfiguration.dfm:1316
+#: UConfiguration.dfm:1340
 #. FConfiguration..PMain..PPanelRight..PageList..PCode..GBTooltips..LToolTipMin..Caption
-#: UConfiguration.dfm:1459
+#: UConfiguration.dfm:1483
 msgid "50 ms"
 msgstr ""
 
@@ -549,7 +549,7 @@ msgid "ADSP21xx"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..CBJUnitAfterEach..Caption
-#: UConfiguration.dfm:5635
+#: UConfiguration.dfm:5659
 msgid "AfterEach"
 msgstr ""
 
@@ -559,18 +559,18 @@ msgid "allclasses-index.html"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Caption
-#: UConfiguration.dfm:3857
-#: UConfiguration.pas:10387
+#: UConfiguration.dfm:3881
+#: UConfiguration.pas:10403
 msgid "Android"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..CBAndroidMode..Caption
-#: UConfiguration.dfm:3924
+#: UConfiguration.dfm:3948
 msgid "Android mode"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..LAndroidSDK..Caption
-#: UConfiguration.dfm:3863
+#: UConfiguration.dfm:3887
 msgid "Android SDK folder"
 msgstr ""
 
@@ -591,7 +591,7 @@ msgid "API"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateApplet..Caption
-#: UConfiguration.dfm:1806
+#: UConfiguration.dfm:1830
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBApplet..Hint
 #: UJava.dfm:2318
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewApplet..Caption
@@ -603,7 +603,7 @@ msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PApplets..Caption
 #: UConfiguration.dfm:739
-#: UConfiguration.pas:10370
+#: UConfiguration.pas:10386
 msgid "Applets"
 msgstr ""
 
@@ -615,7 +615,7 @@ msgid "Appletviewer"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateapplication..Caption
-#: UConfiguration.dfm:1855
+#: UConfiguration.dfm:1879
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBApplication..Hint
 #: UJava.dfm:2362
 msgid "Application"
@@ -633,7 +633,7 @@ msgid "Arial"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..BAndroidAssemble..Caption
-#: UConfiguration.dfm:3932
+#: UConfiguration.dfm:3956
 msgid "Assemble.BAT"
 msgstr ""
 
@@ -654,7 +654,7 @@ msgid "AWT"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..CBJUnitBeforeEach..Caption
-#: UConfiguration.dfm:5627
+#: UConfiguration.dfm:5651
 msgid "BeforeEach"
 msgstr ""
 
@@ -829,7 +829,7 @@ msgid "Bookmark9"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
-#: UConfiguration.dfm:2549
+#: UConfiguration.dfm:2573
 #. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
 #: UDlgClassEditor.dfm:217
 #. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
@@ -858,12 +858,12 @@ msgstr ""
 #. FBrowser..Caption
 #: UBrowserForm.dfm:6
 #. FConfiguration..PMain..PPanelRight..PageList..PBrowser..Caption
-#: UConfiguration.dfm:2721
+#: UConfiguration.dfm:2745
 #. FMindstormsDialog..BBrowser..Caption
 #: UDlgMindstorms.dfm:93
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIBrowser..Caption
 #: UJava.dfm:3702
-#: UConfiguration.pas:10383
+#: UConfiguration.pas:10399
 msgid "Browser"
 msgstr ""
 
@@ -913,7 +913,7 @@ msgid "-cfv"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
-#: UConfiguration.dfm:2550
+#: UConfiguration.dfm:2574
 #. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
 #: UDlgClassEditor.dfm:218
 #. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
@@ -950,19 +950,19 @@ msgid "CheckBoxGroup"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitCheckout..Caption
-#: UEditorForm.dfm:2446
+#: UEditorForm.dfm:2447
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitCheckout..Caption
 #: UJava.dfm:3114
 msgid "Checkout"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..Caption
-#: UConfiguration.dfm:5649
+#: UConfiguration.dfm:5673
 #. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..LCheckstyle..Caption
-#: UConfiguration.dfm:5669
+#: UConfiguration.dfm:5693
 #. FJava..TBXDockTop..MainMenu..MITools..MICheckStyle..Caption
 #: UJava.dfm:3029
-#: UConfiguration.pas:10402
+#: UConfiguration.pas:10418
 msgid "Checkstyle"
 msgstr ""
 
@@ -999,7 +999,7 @@ msgid "Classpath user"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..BGitClone..Caption
-#: UConfiguration.dfm:5481
+#: UConfiguration.dfm:5505
 msgid "Clone"
 msgstr ""
 
@@ -1015,25 +1015,25 @@ msgstr ""
 
 #  Doesn't look like text
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
-#: UConfiguration.dfm:3806
+#: UConfiguration.dfm:3830
 msgid "COM1"
 msgstr ""
 
 #  Doesn't look like text
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
-#: UConfiguration.dfm:3807
+#: UConfiguration.dfm:3831
 msgid "COM2"
 msgstr ""
 
 #  Doesn't look like text
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
-#: UConfiguration.dfm:3808
+#: UConfiguration.dfm:3832
 msgid "COM3"
 msgstr ""
 
 #  Doesn't look like text
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
-#: UConfiguration.dfm:3809
+#: UConfiguration.dfm:3833
 msgid "COM4"
 msgstr ""
 
@@ -1050,10 +1050,10 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PCompiler..Caption
 #: UConfiguration.dfm:545
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LLejosCompiler..Caption
-#: UConfiguration.dfm:3673
+#: UConfiguration.dfm:3697
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfileCompiler..Caption
-#: UConfiguration.dfm:5309
-#: UConfiguration.pas:10368
+#: UConfiguration.dfm:5333
+#: UConfiguration.pas:10384
 msgid "Compiler"
 msgstr ""
 
@@ -1076,11 +1076,11 @@ msgstr ""
 
 #  Seems like a Font.Name extract
 #. FConfiguration..PMain..PPanelRight..PageList..PComment..MComment..Font.Name
-#: UConfiguration.dfm:1743
+#: UConfiguration.dfm:1767
 #. FConfiguration..PMain..PPanelRight..PageList..PComment..MMethodComment..Font.Name
-#: UConfiguration.dfm:1757
+#: UConfiguration.dfm:1781
 #. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..MKeyboard..Font.Name
-#: UConfiguration.dfm:2147
+#: UConfiguration.dfm:2171
 #. ELStringsEditorDlg..memMain..Font.Name
 #: Formdesigner/ELDlgStringsEdit.dfm:62
 msgid "Courier New"
@@ -1103,9 +1103,9 @@ msgid "Debug"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
-#: UConfiguration.dfm:4983
+#: UConfiguration.dfm:5007
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
-#: UConfiguration.dfm:5122
+#: UConfiguration.dfm:5146
 msgid "DeepSeek"
 msgstr ""
 
@@ -1136,12 +1136,12 @@ msgstr ""
 #: UConfiguration.dfm:808
 #. FJava..TBXDockTop..MainMenu..MIStart..MIDissasembler..Caption
 #: UJava.dfm:2844
-#: UConfiguration.pas:10371
+#: UConfiguration.pas:10387
 msgid "Disassembler"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..LDoWhile..Caption
-#: UConfiguration.dfm:2389
+#: UConfiguration.dfm:2413
 #. FStructogram..PanelLeft..ToolBarStructogram..TBDoWhile..Hint
 #: Structogram/UStructogramform.dfm:136
 msgid "do while"
@@ -1158,7 +1158,7 @@ msgid "DockableForm"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
-#: UConfiguration.dfm:2551
+#: UConfiguration.dfm:2575
 #. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
 #: UDlgClassEditor.dfm:219
 #. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
@@ -1210,7 +1210,7 @@ msgstr ""
 
 #  Doesn't look like text
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..RGMindstormsVersion....Items.Strings
-#: UConfiguration.dfm:3731
+#: UConfiguration.dfm:3755
 msgid "EV3"
 msgstr ""
 
@@ -1220,18 +1220,18 @@ msgid "Extension Library designer components"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
-#: UConfiguration.dfm:3948
+#: UConfiguration.dfm:3972
 msgid "Fachbereich Elektrotechnik und Informationstechnik"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
-#: UConfiguration.dfm:3947
+#: UConfiguration.dfm:3971
 msgid "Fachgebiet Echtzeitsysteme / Real-Time "
 "Systems"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitFetch..Caption
-#: UEditorForm.dfm:2460
+#: UEditorForm.dfm:2461
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitFetch..Caption
 #: UJava.dfm:3131
 msgid "Fetch"
@@ -1269,12 +1269,12 @@ msgid "Flash"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LFlasher..Caption
-#: UConfiguration.dfm:3628
+#: UConfiguration.dfm:3652
 msgid "Flasher"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
-#: UConfiguration.dfm:2552
+#: UConfiguration.dfm:2576
 #. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
 #: UDlgClassEditor.dfm:220
 #. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
@@ -1296,13 +1296,13 @@ msgid "FlowLayout"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..LFor..Caption
-#: UConfiguration.dfm:2396
+#: UConfiguration.dfm:2420
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..MIfor..Caption
 #: UJava.dfm:3251
 #. FStructogram..PanelLeft..ToolBarStructogram..TBFor..Hint
 #: Structogram/UStructogramform.dfm:148
-#: UJava.pas:5670
-#: UJava.pas:5728
+#: UJava.pas:5674
+#: UJava.pas:5732
 msgid "for"
 msgstr ""
 
@@ -1338,19 +1338,19 @@ msgid "FXLine"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
-#: UConfiguration.dfm:4981
+#: UConfiguration.dfm:5005
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
-#: UConfiguration.dfm:5120
+#: UConfiguration.dfm:5144
 msgid "Gemini"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..Caption
-#: UConfiguration.dfm:5378
+#: UConfiguration.dfm:5402
 #. FEditForm..PopUpEditor..MIGit..Caption
-#: UEditorForm.dfm:2420
+#: UEditorForm.dfm:2421
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..Caption
 #: UJava.dfm:3082
-#: UConfiguration.pas:10400
+#: UConfiguration.pas:10416
 msgid "Git"
 msgstr ""
 
@@ -1369,14 +1369,14 @@ msgid "GridLayout"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
-#: UConfiguration.dfm:4984
+#: UConfiguration.dfm:5008
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
-#: UConfiguration.dfm:5123
+#: UConfiguration.dfm:5147
 msgid "Grok"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitGui..Caption
-#: UEditorForm.dfm:2470
+#: UEditorForm.dfm:2471
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitGUI..Caption
 #: UJava.dfm:3143
 msgid "GUI"
@@ -1395,7 +1395,7 @@ msgid "HP48"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..rgcolors....Items.Strings
-#: UConfiguration.dfm:1618
+#: UConfiguration.dfm:1642
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewHtml..Caption
 #: UJava.dfm:2472
 #. FJava..TBXDockTop..MainMenu..MIEdit..MICopy..MICopyHTML..Caption
@@ -1431,7 +1431,7 @@ msgstr ""
 
 #  Doesn't look like text
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..CBManual....Items.Strings
-#: UConfiguration.dfm:3129
+#: UConfiguration.dfm:3153
 msgid "https://java.sun.com/javase/6/docs/index.html"
 msgstr ""
 
@@ -1471,7 +1471,7 @@ msgid "inner"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
-#: UConfiguration.dfm:2553
+#: UConfiguration.dfm:2577
 #. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
 #: UDlgClassEditor.dfm:221
 #. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
@@ -1494,7 +1494,7 @@ msgstr ""
 #: UConfiguration.dfm:213
 #. FConfiguration..PMain..PPanelRight..PageList..PInterpreter..LJavaInterpreter..Caption
 #: UConfiguration.dfm:219
-#: UConfiguration.pas:10367
+#: UConfiguration.pas:10383
 msgid "Interpreter"
 msgstr ""
 
@@ -1504,17 +1504,17 @@ msgid "jad.exe"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJalopy..Caption
-#: UConfiguration.dfm:5763
+#: UConfiguration.dfm:5787
 #. FConfiguration..PMain..PPanelRight..PageList..PJalopy..LJalopy..Caption
-#: UConfiguration.dfm:5783
+#: UConfiguration.dfm:5807
 #. FJava..TBXDockTop..MainMenu..MITools..MIJalopy..Caption
 #: UJava.dfm:3035
-#: UConfiguration.pas:10403
+#: UConfiguration.pas:10419
 msgid "Jalopy"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateJApplet..Caption
-#: UConfiguration.dfm:1771
+#: UConfiguration.dfm:1795
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBJApplet..Hint
 #: UJava.dfm:2351
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJApplet..Caption
@@ -1528,7 +1528,7 @@ msgstr ""
 #: UConfiguration.dfm:896
 #. FConfiguration..PMain..PPanelRight..PageList..PJar..LJar..Caption
 #: UConfiguration.dfm:923
-#: UConfiguration.pas:10372
+#: UConfiguration.pas:10388
 msgid "Jar"
 msgstr ""
 
@@ -1540,10 +1540,10 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PJava..Caption
 #: UConfiguration.dfm:210
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..rgcolors....Items.Strings
-#: UConfiguration.dfm:1617
+#: UConfiguration.dfm:1641
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJava..Caption
 #: UJava.dfm:2459
-#: UConfiguration.pas:10366
+#: UConfiguration.pas:10382
 msgid "Java"
 msgstr ""
 
@@ -1566,7 +1566,7 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PPrograms..LJavaDoc..Caption
 #: UConfiguration.dfm:661
 #. FConfiguration..PMain..PPanelRight..PageList..PComment..RGComment....Items.Strings
-#: UConfiguration.dfm:1729
+#: UConfiguration.dfm:1753
 #. FJava..TBXDockTop..MainMenu..MIStart..MIJavaDoc..Caption
 #: UJava.dfm:2848
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIJavaDoc1..Caption
@@ -1646,7 +1646,7 @@ msgid "JDesktopPane"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateJDialog..Caption
-#: UConfiguration.dfm:1841
+#: UConfiguration.dfm:1865
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBJDialog..Hint
 #: UJava.dfm:2340
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJDialog..Caption
@@ -1697,7 +1697,7 @@ msgid "JFormattedTextField"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateJFrame..Caption
-#: UConfiguration.dfm:1813
+#: UConfiguration.dfm:1837
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBJFrame..Hint
 #: UJava.dfm:2329
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewJFrame..Caption
@@ -1913,16 +1913,16 @@ msgid "JTree"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..Caption
-#: UConfiguration.dfm:5487
+#: UConfiguration.dfm:5511
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..LJUnit..Caption
-#: UConfiguration.dfm:5493
+#: UConfiguration.dfm:5517
 #. FJava..TBXDockTop..MainMenu..MITools..MIJUnit..Caption
 #: UJava.dfm:3158
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIJunitManual..Caption
 #: UJava.dfm:3770
 #. FJUnitTests..Caption
 #: UJUnitTest.dfm:5
-#: UConfiguration.pas:10401
+#: UConfiguration.pas:10417
 msgid "JUnit"
 msgstr ""
 
@@ -1962,7 +1962,7 @@ msgid "LMessage"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitLog..Caption
-#: UEditorForm.dfm:2436
+#: UEditorForm.dfm:2437
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitLog..Caption
 #: UJava.dfm:3102
 msgid "Log"
@@ -2001,7 +2001,7 @@ msgid "MediaView"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..RGKeyboard....Items.Strings
-#: UConfiguration.dfm:2163
+#: UConfiguration.dfm:2187
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBMenu..Hint
 #: UJava.dfm:564
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXMenu..Hint
@@ -2026,12 +2026,12 @@ msgid "MenuButton"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..Caption
-#: UConfiguration.dfm:3418
+#: UConfiguration.dfm:3442
 #. FMindstormsDialog..Caption
 #: UDlgMindstorms.dfm:4
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIMindstormsHelp..Caption
 #: UJava.dfm:3790
-#: UConfiguration.pas:10386
+#: UConfiguration.pas:10402
 msgid "Mindstorms"
 msgstr ""
 
@@ -2068,31 +2068,31 @@ msgstr ""
 #. FConfiguration..PMain..PPanelRight..PageList..PJar..LJar..Font.Name
 #: UConfiguration.dfm:927
 #. FConfiguration..PMain..PPanelRight..PageList..PCode..GBCodeCompletion..LCompletionHint1..Font.Name
-#: UConfiguration.dfm:1294
+#: UConfiguration.dfm:1318
 #. FConfiguration..PMain..PPanelRight..PageList..PCode..GBCodeCompletion..LCompletionHint2..Font.Name
-#: UConfiguration.dfm:1307
+#: UConfiguration.dfm:1331
 #. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..LCollision..Font.Name
-#: UConfiguration.dfm:2109
+#: UConfiguration.dfm:2133
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LCache..Font.Name
-#: UConfiguration.dfm:2856
+#: UConfiguration.dfm:2880
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LJavabook..Font.Name
-#: UConfiguration.dfm:2886
+#: UConfiguration.dfm:2910
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LTutorial..Font.Name
-#: UConfiguration.dfm:2902
+#: UConfiguration.dfm:2926
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LLejos..Font.Name
-#: UConfiguration.dfm:3456
+#: UConfiguration.dfm:3480
 #. FConfiguration..PMain..PPanelRight..PageList..PRestrictions..LRestrictions..Font.Name
-#: UConfiguration.dfm:4250
+#: UConfiguration.dfm:4274
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LGitFolder..Font.Name
-#: UConfiguration.dfm:5388
+#: UConfiguration.dfm:5412
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..LJUnit..Font.Name
-#: UConfiguration.dfm:5497
+#: UConfiguration.dfm:5521
 #. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..LCheckstyle..Font.Name
-#: UConfiguration.dfm:5673
+#: UConfiguration.dfm:5697
 #. FConfiguration..PMain..PPanelRight..PageList..PJalopy..LJalopy..Font.Name
-#: UConfiguration.dfm:5787
+#: UConfiguration.dfm:5811
 #. FConfiguration..PMain..PPanelRight..PageList..PSubversion..LSVN..Font.Name
-#: UConfiguration.dfm:5895
+#: UConfiguration.dfm:5919
 #. FAbout..Font.Name
 #: UDlgAbout.dfm:13
 #. FClassEditor..TreeView..Font.Name
@@ -2129,26 +2129,26 @@ msgid "NumberField"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..RGMindstormsVersion....Items.Strings
-#: UConfiguration.dfm:3730
+#: UConfiguration.dfm:3754
 msgid "NXT"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
-#: UConfiguration.dfm:4982
+#: UConfiguration.dfm:5006
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
-#: UConfiguration.dfm:5121
+#: UConfiguration.dfm:5145
 msgid "Ollama"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..CBProvider....Items.Strings
-#: UConfiguration.dfm:4980
+#: UConfiguration.dfm:5004
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..CBChatProvider....Items.Strings
-#: UConfiguration.dfm:5119
+#: UConfiguration.dfm:5143
 msgid "OpenAI"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUML..RGAttributsMethodsDisplay....Items.Strings
-#: UConfiguration.dfm:4657
+#: UConfiguration.dfm:4681
 #. FClassEditor..PageControl..TSAttributes..RGAttributeAccess....Items.Strings
 #: UDlgClassEditor.dfm:196
 #. FClassEditor..PageControl..TSMethods..RGMethodAccess....Items.Strings
@@ -2351,7 +2351,7 @@ msgid "private"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
-#: UConfiguration.dfm:3946
+#: UConfiguration.dfm:3970
 msgid "Prof. Dr. Andy Schürr"
 msgstr ""
 
@@ -2374,7 +2374,7 @@ msgid "Project (*.jep)"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUML..RGAttributsMethodsDisplay....Items.Strings
-#: UConfiguration.dfm:4656
+#: UConfiguration.dfm:4680
 #. FClassEditor..PageControl..TSAttributes..RGAttributeAccess....Items.Strings
 #: UDlgClassEditor.dfm:197
 #. FClassEditor..PageControl..TSMethods..RGMethodAccess....Items.Strings
@@ -2389,7 +2389,7 @@ msgid "protected"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PBrowser..GBProxy..Caption
-#: UConfiguration.dfm:2805
+#: UConfiguration.dfm:2829
 msgid "Proxy"
 msgstr ""
 
@@ -2424,7 +2424,7 @@ msgid "PTools"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUML..RGAttributsMethodsDisplay....Items.Strings
-#: UConfiguration.dfm:4655
+#: UConfiguration.dfm:4679
 #. FClassEditor..PageControl..TSAttributes..RGAttributeAccess....Items.Strings
 #: UDlgClassEditor.dfm:198
 #. FClassEditor..PageControl..TSMethods..RGMethodAccess....Items.Strings
@@ -2450,7 +2450,7 @@ msgid "PUML2"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitPush..Caption
-#: UEditorForm.dfm:2464
+#: UEditorForm.dfm:2465
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitPush..Caption
 #: UJava.dfm:3136
 msgid "Push"
@@ -2479,7 +2479,7 @@ msgid "Raised"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..RGMindstormsVersion....Items.Strings
-#: UConfiguration.dfm:3729
+#: UConfiguration.dfm:3753
 msgid "RCX"
 msgstr ""
 
@@ -2497,31 +2497,31 @@ msgid "Release Window"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitRemote..Caption
-#: UEditorForm.dfm:2456
+#: UEditorForm.dfm:2457
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitRemote..Caption
 #: UJava.dfm:3126
 msgid "Remote"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitRemove..Caption
-#: UEditorForm.dfm:2450
+#: UEditorForm.dfm:2451
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitRemove..Caption
 #: UJava.dfm:3119
 msgid "Remove"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LLocalRepository..Caption
-#: UConfiguration.dfm:5400
+#: UConfiguration.dfm:5424
 msgid "Repository local"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LRemoteRepository..Caption
-#: UConfiguration.dfm:5414
+#: UConfiguration.dfm:5438
 msgid "Repository remote"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MGitReset..Caption
-#: UEditorForm.dfm:2442
+#: UEditorForm.dfm:2443
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitReset..Caption
 #: UJava.dfm:3109
 msgid "Reset"
@@ -2710,14 +2710,14 @@ msgid "static"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitStatus..Caption
-#: UEditorForm.dfm:2424
+#: UEditorForm.dfm:2425
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitStatus..Caption
 #: UJava.dfm:3087
 msgid "Status"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..CBDataType....Items.Strings
-#: UConfiguration.dfm:2554
+#: UConfiguration.dfm:2578
 #. FClassEditor..PageControl..TSAttributes..CBAttributeType....Items.Strings
 #: UDlgClassEditor.dfm:222
 #. FClassEditor..PageControl..TSMethods..CBMethodType....Items.Strings
@@ -2732,10 +2732,10 @@ msgid "String"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PSubversion..Caption
-#: UConfiguration.dfm:5878
+#: UConfiguration.dfm:5902
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..Caption
 #: UJava.dfm:3047
-#: UConfiguration.pas:10404
+#: UConfiguration.pas:10420
 msgid "Subversion"
 msgstr ""
 
@@ -2819,14 +2819,14 @@ msgid "TBExecute"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
-#: UConfiguration.dfm:3949
+#: UConfiguration.dfm:3973
 msgid "Technische Universität Darmstadt"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..LTextColor..Caption
-#: UConfiguration.dfm:1531
+#: UConfiguration.dfm:1555
 #. FConfiguration..PMain..PPanelRight..PageList..PUML..RGVisibilityDisplay....Items.Strings
-#: UConfiguration.dfm:4695
+#: UConfiguration.dfm:4719
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXText..Hint
 #: UJava.dfm:722
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewText..Caption
@@ -2949,10 +2949,10 @@ msgid "U+"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUML..Caption
-#: UConfiguration.dfm:4450
+#: UConfiguration.dfm:4474
 #. FUMLForm..Caption
 #: EssModel/System/UUMLForm.dfm:5
-#: UConfiguration.pas:10393
+#: UConfiguration.pas:10409
 msgid "UML"
 msgstr ""
 
@@ -2967,7 +2967,7 @@ msgid "Unicode"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LUploader..Caption
-#: UConfiguration.dfm:3621
+#: UConfiguration.dfm:3645
 msgid "Uploader"
 msgstr ""
 
@@ -2982,19 +2982,19 @@ msgid "URL"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort..Text
-#: UConfiguration.dfm:3803
+#: UConfiguration.dfm:3827
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..CBMindstormsPort....Items.Strings
-#: UConfiguration.dfm:3805
+#: UConfiguration.dfm:3829
 msgid "USB"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LUserEMail..Caption
-#: UConfiguration.dfm:5421
+#: UConfiguration.dfm:5445
 msgid "user.email"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LUserName..Caption
-#: UConfiguration.dfm:5407
+#: UConfiguration.dfm:5431
 msgid "user.name"
 msgstr ""
 
@@ -3028,7 +3028,7 @@ msgid "Utilities"
 msgstr ""
 
 #. FEditForm..PopUpEditor..MIGit..MIGitViewer..Caption
-#: UEditorForm.dfm:2474
+#: UEditorForm.dfm:2475
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitViewer..Caption
 #: UJava.dfm:3148
 msgid "Viewer"
@@ -3051,7 +3051,7 @@ msgid "WebView"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..LWhile..Caption
-#: UConfiguration.dfm:2382
+#: UConfiguration.dfm:2406
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..MIwhile..Caption
 #: UJava.dfm:3241
 #. FStructogram..PanelLeft..ToolBarStructogram..TBwhile..Hint
@@ -3060,7 +3060,7 @@ msgid "while"
 msgstr ""
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAndroid..Memo1....Lines.Strings
-#: UConfiguration.dfm:3950
+#: UConfiguration.dfm:3974
 msgid "www.es.tu-darmstadt.de"
 msgstr ""
 

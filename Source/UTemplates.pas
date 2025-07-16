@@ -49,7 +49,7 @@ begin
     Save(False);
     ParseSourceCode(True);
     Modified := False;
-    Editor.UndoList.Clear;
+    Editor.UndoRedo.Clear;
   end;
 end;
 

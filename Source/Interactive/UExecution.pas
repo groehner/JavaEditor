@@ -852,7 +852,7 @@ begin
         else
           Update := False;
       except
-        on e: Exception do
+        on E: Exception do
           Continue;
       end;
     end;
@@ -1020,8 +1020,8 @@ begin
       FConfiguration.Log('AddVarToGrid FSGVariables.ColCount = ' +
         IntToStr(FSGVariables.ColCount));
   except
-    on e: Exception do
-      FConfiguration.Log('TInteractiveExecuter.AddVarToGrid ', e);
+    on E: Exception do
+      FConfiguration.Log('TInteractiveExecuter.AddVarToGrid ', E);
   end;
 end;
 
@@ -1037,8 +1037,6 @@ begin
         FVariableList.Clear;
     end;
   except
-    on E: Exception do
-      FConfiguration.Log('TInteractiveExecuter.Clear ', E);
   end;
 end;
 

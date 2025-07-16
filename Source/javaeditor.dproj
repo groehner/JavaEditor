@@ -8,7 +8,7 @@
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
         <ProjectVersion>20.1</ProjectVersion>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">javaeditor</ProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -166,11 +166,11 @@
         <VerInfo_MajorVer>23</VerInfo_MajorVer>
         <VerInfo_Build>0</VerInfo_Build>
         <DCC_Define>SYN_DELPHI_XE;madExcept;$(DCC_Define)</DCC_Define>
-        <VerInfo_Keys>CompanyName=;FileVersion=23.8.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileVersion=23.9.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <BT_BuildType>Debug</BT_BuildType>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <DCC_ImportedDataReferences>false</DCC_ImportedDataReferences>
-        <VerInfo_MinorVer>8</VerInfo_MinorVer>
+        <VerInfo_MinorVer>9</VerInfo_MinorVer>
         <DCC_UnitSearchPath>D:\Sicherung\DelphiPipes\src;D:\GitProjekte\SpTBXLib\Source;D:\GitProjekte\jcl\jcl\source\include;D:\GitProjekte\jvcl\jvcl\run;D:\GitProjekte\jvcl\jvcl\common;D:\GitProjekte\jcl\jcl\source\common;D:\GitProjekte\jcl\jcl\source\windows;D:\GitProjekte\SVGIconImageList\Source;D:\GitProjekte\SVGIconImageList\Image32\source;D:\GitProjekte\MustangPeak\VirtualShellTools\Source;D:\GitProjekte\MustangPeak\CommonLib\Source;D:\GitProjekte\jvcl\jvcl\resources;D:\GitProjekte\delphi-markdown\source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
     </PropertyGroup>
@@ -180,7 +180,7 @@
         <VerInfo_MajorVer>23</VerInfo_MajorVer>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_Keys>CompanyName=;FileVersion=23.8.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileVersion=23.9.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <BT_BuildType>Debug</BT_BuildType>
         <DCC_UnitSearchPath>D:\Sicherung\DelphiPipes\src;D:\GitProjekte\SpTBXLib\Source;D:\GitProjekte\jcl\jcl\source\include;D:\GitProjekte\jvcl\jvcl\run;D:\GitProjekte\jvcl\jvcl\common;D:\GitProjekte\jcl\jcl\source\common;D:\GitProjekte\jcl\jcl\source\windows;D:\GitProjekte\SVGIconImageList\Source;D:\GitProjekte\SVGIconImageList\Image32\source;D:\GitProjekte\MustangPeak\VirtualShellTools\Source;D:\GitProjekte\MustangPeak\CommonLib\Source;D:\GitProjekte\jvcl\jvcl\resources;D:\GitProjekte\delphi-markdown\source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
@@ -190,7 +190,7 @@
         <DCC_WriteableConstants>false</DCC_WriteableConstants>
         <DCC_GenerateStackFrames>false</DCC_GenerateStackFrames>
         <DCC_OutputDRCFile>false</DCC_OutputDRCFile>
-        <VerInfo_MinorVer>8</VerInfo_MinorVer>
+        <VerInfo_MinorVer>9</VerInfo_MinorVer>
         <VerInfo_Build>0</VerInfo_Build>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
@@ -424,42 +424,9 @@
         <DCCReference Include="UJUnitTest.pas">
             <Form>FJUnitTests</Form>
         </DCCReference>
-        <DCCReference Include="SynEdit\SynCompletionProposal.pas"/>
         <DCCReference Include="SynEdit\SynEdit.pas"/>
-        <DCCReference Include="SynEdit\SynEditExport.pas"/>
         <DCCReference Include="SynEdit\SynEditHighlighter.pas"/>
-        <DCCReference Include="SynEdit\SynEditKbdHandler.pas"/>
-        <DCCReference Include="SynEdit\SynEditKeyCmds.pas"/>
-        <DCCReference Include="SynEdit\SynEditKeyConst.pas"/>
-        <DCCReference Include="SynEdit\SynEditMiscClasses.pas"/>
-        <DCCReference Include="SynEdit\SynEditMiscProcs.pas"/>
-        <DCCReference Include="SynEdit\SynEditPrint.pas"/>
-        <DCCReference Include="SynEdit\SynEditPrinterInfo.pas"/>
-        <DCCReference Include="SynEdit\SynEditPrintMargins.pas"/>
-        <DCCReference Include="SynEdit\SynEditPrintTypes.pas"/>
-        <DCCReference Include="SynEdit\SynEditRegexSearch.pas"/>
-        <DCCReference Include="SynEdit\SynEditSearch.pas"/>
-        <DCCReference Include="SynEdit\SynEditStrConst.pas"/>
-        <DCCReference Include="SynEdit\SynEditTextBuffer.pas"/>
-        <DCCReference Include="SynEdit\SynEditTypes.pas"/>
-        <DCCReference Include="SynEdit\SynEditWildcardSearch.pas"/>
-        <DCCReference Include="SynEdit\SynEditWordWrap.pas"/>
-        <DCCReference Include="SynEdit\SynEditCodeFolding.pas"/>
-        <DCCReference Include="SynEdit\SynEditPrintHeaderFooter.pas"/>
         <DCCReference Include="SynEdit\USynEditEx.pas"/>
-        <DCCReference Include="SynEdit\SynExportHTML.pas"/>
-        <DCCReference Include="SynEdit\SynExportRTF.pas"/>
-        <DCCReference Include="SynEdit\SynHighlighterCss.pas"/>
-        <DCCReference Include="SynEdit\SynHighlighterGeneral.pas"/>
-        <DCCReference Include="SynEdit\SynHighlighterHashEntries.pas"/>
-        <DCCReference Include="SynEdit\SynHighlighterHtml.pas"/>
-        <DCCReference Include="SynEdit\SynHighlighterJava.pas"/>
-        <DCCReference Include="SynEdit\SynHighlighterMulti.pas"/>
-        <DCCReference Include="SynEdit\SynHighlighterPas.pas"/>
-        <DCCReference Include="SynEdit\SynHighlighterPHP.pas"/>
-        <DCCReference Include="SynEdit\SynTextDrawer.pas"/>
-        <DCCReference Include="SynEdit\SynUnicode.pas"/>
-        <DCCReference Include="SynEdit\SynUsp10.pas"/>
         <DCCReference Include="Dockable\uDockForm.pas">
             <Form>DockableForm</Form>
         </DCCReference>
@@ -495,9 +462,6 @@
         <DCCReference Include="EssModel\System\UClassInsert.pas">
             <Form>FClassInsert</Form>
         </DCCReference>
-        <DCCReference Include="SynEdit\SynEditHighlighterOptions.pas"/>
-        <DCCReference Include="SynEdit\SynEditDataObject.pas"/>
-        <DCCReference Include="SynEdit\SynEditDragDrop.pas"/>
         <DCCReference Include="Components\UFXComponents.pas"/>
         <DCCReference Include="Components\AWT\UAButton.pas"/>
         <DCCReference Include="Components\AWT\UACheckboxRadio.pas"/>
@@ -571,7 +535,6 @@
         </DCCReference>
         <DCCReference Include="Util\UZOrderControl.pas"/>
         <DCCReference Include="EssModel\Components\UConnection.pas"/>
-        <DCCReference Include="SynEdit\SynDWrite.pas"/>
         <DCCReference Include="ULLMSupport.pas"/>
         <DCCReference Include="ULLMSuggestForm.pas">
             <Form>SuggestWindow</Form>
