@@ -895,6 +895,7 @@ type
     function GetStructureLineColor(Line, Structure: Integer): TColor;
     function MouseInBorderOfStructure(var j: Integer): Boolean;
     procedure SelStructure(Int: Integer);
+    function GetSearchText(const Str: string): string;
 
     property Indent: Integer read FIndent write SetIndent;
     property StructureColorIntensity: Integer read FStructureColorIntensity write FStructureColorIntensity default 5;
@@ -1674,7 +1675,6 @@ begin
   if (fChainedEditor <> nil) or (fLines <> fOrigLines) then
     RemoveLinesPointer;
   UnregisterCommandHandler(InternalCommandHook);
-
   inherited Destroy;
   // free listeners while other fields are still valid
   // do not use FreeAndNil, it first nils and then freey causing problems with
@@ -9204,10 +9204,8 @@ begin
     Inc(FPaintTransientLock)
   else
     Dec(FPaintTransientLock);
-
   DoTransient := (FPaintTransientLock = 0) or (fPaintLock = 0) and
     (FPaintTransientPlugins or Assigned(fOnPaintTransient));
-
   if DoTransient then
   begin
     FCarets.HideCarets;
@@ -10569,6 +10567,16 @@ begin
     Result:= 1;
 end;
 
+
+function TCustomSynEdit.GetSearchText(const Str: string): string;
+begin
+  if SelAvail and (BlockBegin.Line = BlockEnd.Line) then
+    Result := SelText
+  else if WordAtCursor <> '' then
+    Result := WordAtCursor
+  else
+    Result := Str;
+end;
 { TSynEditMark }
 
 function TSynEditMark.GetEdit: TCustomSynEdit;

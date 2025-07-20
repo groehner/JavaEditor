@@ -38,6 +38,7 @@ uses
   SpTBXTabs,
   SpTBXDkPanels,
   SpTBXControls,
+  SynEditMiscClasses,
   USynEditEx,
   UDockForm,
   UEditorForm,
@@ -908,8 +909,8 @@ type
     function GetFilename(const Extension: string; Path: string = ''): string;
     procedure RearrangeFileHistory(const NewFile: string);
     procedure OpenFiles;
-    procedure ShowSearchReplaceDialog(Editor: TSynEditEx; AReplace: Boolean);
-    procedure DoSearchReplaceText(Editor: TSynEditEx; AReplace: Boolean);
+    procedure ShowSearchReplaceDialog(Editor: TSynEdit; AReplace: Boolean);
+    procedure DoSearchReplaceText(Editor: TSynEdit; AReplace: Boolean);
     procedure NotFound(Editor: TSynEdit; Backwards: Boolean); // Ex
     function IsAValidClass(const Pathname: string): Boolean;
     procedure CompileOneWith(const Pathname: string);
@@ -941,6 +942,7 @@ type
     procedure SetDockTopPanel;
     procedure ShowAWTSwingOrFX(FrameType: Integer);
     procedure SetOptions;
+    procedure ThemeEditorGutter(Gutter: TSynGutter);
 
     property ActiveTDIChild: TFForm read FActiveTDIChild write FActiveTDIChild;
     property ActiveTool: Integer read FActiveTool write FActiveTool;
@@ -1885,7 +1887,7 @@ end;
 
 // FSearch and replace is needed for Notepad and TextDiff
 
-procedure TFJava.ShowSearchReplaceDialog(Editor: TSynEditEx; AReplace: Boolean);
+procedure TFJava.ShowSearchReplaceDialog(Editor: TSynEdit; AReplace: Boolean);
 begin
   if AReplace then
     with TFReplace.Create(Self) do
@@ -1910,7 +1912,7 @@ begin
   end;
 end;
 
-procedure TFJava.DoSearchReplaceText(Editor: TSynEditEx; AReplace: Boolean);
+procedure TFJava.DoSearchReplaceText(Editor: TSynEdit; AReplace: Boolean);
 var
   Options: TSynSearchOptions;
 begin
@@ -3189,7 +3191,6 @@ var
   Editform: TFEditForm;
 begin
   FMyTabBar.Invalidate;
-  Application.ProcessMessages;
   Screen.OnActiveFormChange := UpdateMenuItems;
   try
     LockFormUpdate(Self);
@@ -3215,7 +3216,6 @@ begin
           RearrangeFileHistory(ParamStr(I));
         Cur := ParamStr(I);
       end;
-
   finally
     OpenFileWithState(Cur);
     HSplitterMoved(Self);
@@ -7943,6 +7943,26 @@ begin
   ChangeLanguage(FConfiguration.LanguageCode);
   ODOpen.Filter := FConfiguration.GetFileFilters;
   FMessages.SetOptions;
+end;
+
+procedure TFJava.ThemeEditorGutter(Gutter: TSynGutter);
+var
+  GradColor: TColor;
+begin
+  // Delphi Styles
+  if not StyleServices.GetElementColor
+    (StyleServices.GetElementDetails(ttTabItemNormal), ecFillColor, GradColor)
+    or (GradColor = clNone) then
+    GradColor := StyleServices.GetSystemColor(clBtnFace);
+  Gutter.Font.Color := StyleServices.GetSystemColor(clGrayText);
+
+  with Gutter do
+  begin
+    BorderStyle := gbsNone;
+    GradientStartColor := LightenColor(GradColor, 40);
+    GradientEndColor := DarkenColor(GradColor, 20);
+    Color := DarkenColor(GradColor, 4);
+  end;
 end;
 
 { --- Debugging ---------------------------------------------------------------- }

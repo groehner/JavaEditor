@@ -114,10 +114,10 @@ type
     MIGit: TSpTBXSubmenuItem;
     MIGitStatus: TSpTBXItem;
     MIGitAdd: TSpTBXItem;
-    MICommit: TSpTBXItem;
+    MIGitCommit: TSpTBXItem;
     MIGitLog: TSpTBXItem;
-    MIGItLin1: TSpTBXSeparatorItem;
-    MGitReset: TSpTBXItem;
+    MIGitLine1: TSpTBXSeparatorItem;
+    MIGitReset: TSpTBXItem;
     MIGitCheckout: TSpTBXItem;
     MIGitRemove: TSpTBXItem;
     MIGitLine2: TSpTBXSeparatorItem;
@@ -220,11 +220,11 @@ type
     procedure MISearchDeclarationClick(Sender: TObject);
     procedure MIGitStatusClick(Sender: TObject);
     procedure MIGitAddClick(Sender: TObject);
-    procedure MICommitClick(Sender: TObject);
+    procedure MIGitCommitClick(Sender: TObject);
     procedure MIGitGuiClick(Sender: TObject);
     procedure MIGitRemoveClick(Sender: TObject);
     procedure MIGitLogClick(Sender: TObject);
-    procedure MGitResetClick(Sender: TObject);
+    procedure MIGitResetClick(Sender: TObject);
     procedure MIGitCheckoutClick(Sender: TObject);
     procedure MIGitRemoteClick(Sender: TObject);
     procedure MIGitFetchClick(Sender: TObject);
@@ -287,6 +287,7 @@ type
       var DoDefaultPainting: Boolean);
     procedure BookmarkGutterClick(Sender: TObject; Button: TMouseButton;
       X, Y, Row, Line: Integer);
+    procedure SynEditChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     procedure New(const FileName: string);
@@ -632,7 +633,7 @@ begin
     if not FConfiguration.ShowControlFlowSymbols then
       DisplayFlowControl.Enabled := False;
 
-    Options := [eoAutoIndent, eoDragDropEditing, eoSmartTabs, eoTabIndent,
+    Options := [eoAutoIndent,  eoSmartTabs, eoTabIndent,
       eoTabsToSpaces, eoSmartTabDelete, eoGroupUndo, eoDropFiles, eoKeepCaretX,
       eoBracketsHighlight, eoAccessibility, eoCompleteBrackets,
       eoCompleteQuotes, eoEnhanceHomeKey];
@@ -647,11 +648,12 @@ begin
     Gutter.Font.Height := FEditor.Font.Height + 2;
     Gutter.Font.Quality := fqClearTypeNatural;
     Gutter.BorderStyle := gbsNone;
-    Gutter.Gradient := True;
-    Gutter.GradientSteps := 30;
+    //Gutter.Gradient := True;         // ToDo as option
+    //Gutter.GradientSteps := 30;
     Gutter.ShowLineNumbers := FConfiguration.LineNumbering;
     Gutter.TrackChanges.Width := 2;
     Gutter.TrackChanges.Visible := True;
+    FJava.ThemeEditorGutter(Gutter);
 
     var
     Band := TSynGutterBand(Gutter.Bands.Insert(1));
@@ -683,7 +685,7 @@ begin
     OnSpecialLineColors := SynEditorSpecialLineColors;
     OnKeyUp := EditorKeyUp;
     OnKeyPress := EditorKeyPress;
-    // OnChange := SynEditChange;
+    OnChange := SynEditChange;
     OnStatusChange := EditorStatusChange;
     OnReplaceText := SynEditorReplaceText;
     OnMouseOverToken := DoOnMouseOverToken;
@@ -1921,7 +1923,7 @@ end;
 procedure TFEditForm.InsertBreakpoint;
 begin
   BreakpointGutterClick(Self, mbLeft, FEditor.BookMarkOptions.Xoffset, 0,
-    FEditor.CaretY, 0); // ToDo
+    FEditor.CaretY, 0);
 end;
 
 procedure TFEditForm.BreakpointGutterClick(Sender: TObject;
@@ -2153,7 +2155,7 @@ begin
   end;
 end;
 
-procedure TFEditForm.MICommitClick(Sender: TObject);
+procedure TFEditForm.MIGitCommitClick(Sender: TObject);
 var
   AMessage: string;
 begin
@@ -3799,7 +3801,7 @@ begin
     Delete(Events, 1, 1);
   while (Length(Events) > 0) and (Events[Length(Events)] = '|') do
     Delete(Events, Length(Events), 1);
-  Events := Events + '|Action'; // dubious todo
+  Events := Events + '|Action';
   Events := MakeUpperEvents(Events);
 
   // '(' + s1 + ')' is Groups[1]
@@ -5395,7 +5397,7 @@ begin
   FGit.GitCall('push origin master', ExtractFilePath(Pathname));
 end;
 
-procedure TFEditForm.MGitResetClick(Sender: TObject);
+procedure TFEditForm.MIGitResetClick(Sender: TObject);
 begin
   FGit.GitCall('reset HEAD ' + ExtractFileName(Pathname),
     ExtractFilePath(Pathname));
@@ -6259,6 +6261,11 @@ begin
   else
     Result := '';
   end;
+end;
+
+procedure TFEditForm.SynEditChange(Sender: TObject);
+begin
+  FNeedsParsing:= True; // at every change of the source code
 end;
 
 end.

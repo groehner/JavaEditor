@@ -105,7 +105,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetSearchText(const Str: string): string;
     function NeedsWordWrap: Boolean;
     procedure ReplaceTabs(TabWidth: Integer);
     procedure InitShowCompileErrors;
@@ -180,10 +179,10 @@ end;
 
 destructor TSynEditEx.Destroy;
 begin
-  FreeAndNil(FErrors);
-  FreeAndNil(FErrorPlugin);
+  FErrors.Free;
+  FErrorPlugin.Free;
+  FTokenInfo.Free;
   inherited;
-  FreeAndNil(FTokenInfo);
 end;
 
 procedure TSynEditEx.CMMouseEnter(var Msg: TMessage);
@@ -350,16 +349,6 @@ procedure TSynEditEx.Paint;
 begin
   inherited;
   UnderlineCompileErrors;
-end;
-
-function TSynEditEx.GetSearchText(const Str: string): string;
-begin
-  if SelAvail and (BlockBegin.Line = BlockEnd.Line) then
-    Result := SelText
-  else if WordAtCursor <> '' then
-    Result := WordAtCursor
-  else
-    Result := Str;
 end;
 
 procedure TSynEditEx.ReplaceTabs(TabWidth: Integer);

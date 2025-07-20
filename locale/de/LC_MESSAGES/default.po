@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2025-07-16 13:18\n"
-"PO-Revision-Date: 2025-07-16 13:19+0200\n"
+"PO-Revision-Date: 2025-07-16 19:19+0200\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -534,7 +534,7 @@ msgstr "Kontrollstrukturen einfügen"
 #. FConfiguration..PMain..PPanelRight..PageList..PEditorOptions..CBInsertSemicolons..Caption
 #: UConfiguration.dfm:1182
 msgid "Add missing semicolons"
-msgstr "Fehlende Semikol ergänzen"
+msgstr "Fehlende Semikola ergänzen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PEditorOptions..CBCompleteBracket..Caption
 #: UConfiguration.dfm:1210

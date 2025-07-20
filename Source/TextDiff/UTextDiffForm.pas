@@ -35,7 +35,7 @@ uses
   UBaseForm,
   UEditorForm,
   UDiff,
-  USynEditExDiff;
+  USynEditDiff;
 
 type
 
@@ -118,13 +118,13 @@ type
     FDiff: TDiff;
     FLines1, FLines2: TSynEditStringList;
     FAddClr, FDelClr, FModClr, FDefaultClr: TColor;
-    FCodeEdit1: TSynEditExDiff;
-    FCodeEdit2: TSynEditExDiff;
+    FCodeEdit1: TSynEditDiff;
+    FCodeEdit2: TSynEditDiff;
     FFilesCompared: Boolean;
     FOnlyDifferences: Boolean;
     FIgnoreBlanks: Boolean;
     FIgnoreCase: Boolean;
-    FNumber: Integer;
+    FCodeEditNumber: Integer;
     procedure LinkScroll(IsLinked: Boolean);
     procedure DoCompare;
     procedure DoSaveFile(Num: Integer; WithBackup: Boolean);
@@ -134,7 +134,7 @@ type
     procedure SynEditEnter(Sender: TObject);
     procedure DoSaveBoth;
     procedure ShowFileNames;
-    function GetCodeEdit: TSynEditExDiff;
+    function GetCodeEdit: TSynEditDiff;
     procedure SetFilesCompared(Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
@@ -160,7 +160,7 @@ type
     procedure ChangeStyle; override;
 
     property FilesCompared: Boolean read FFilesCompared;
-    property Number: Integer read FNumber write FNumber;
+    property CodeEditNumber: Integer read FCodeEditNumber write FCodeEditNumber;
   end;
 
 implementation
@@ -172,6 +172,7 @@ uses
   Dialogs,
   SynEdit,
   JvGnugettext,
+  SynEditScrollBars,
   UStringRessources,
   UJava,
   UConfiguration,
@@ -206,7 +207,7 @@ begin
   FLines2 := TSynEditStringList.Create(nil);
 
   // edit windows where color highlighing of Diffs and changes are displayed ...
-  FCodeEdit1 := TSynEditExDiff.Create(Self);
+  FCodeEdit1 := TSynEditDiff.Create(Self);
   with FCodeEdit1 do
   begin
     Number := 1;
@@ -216,7 +217,8 @@ begin
     PopupMenu := PopupEditor;
     OnEnter := SynEditEnter;
   end;
-  FCodeEdit2 := TSynEditExDiff.Create(Self);
+
+  FCodeEdit2 := TSynEditDiff.Create(Self);
   with FCodeEdit2 do
   begin
     Number := 2;
@@ -226,7 +228,7 @@ begin
     PopupMenu := PopupEditor;
     OnEnter := SynEditEnter;
   end;
-  FNumber := 1;
+  FCodeEditNumber := 1;
   SetFont(FConfiguration.EditFont);
   FOnlyDifferences := False;
   OnClose := FormClose;
@@ -277,13 +279,14 @@ end;
 
 procedure TFTextDiff.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  inherited;
-  FreeAndNil(FDiff);
-  FreeAndNil(FCodeEdit1);
-  FreeAndNil(FCodeEdit2);
-  FreeAndNil(FLines1);
-  FreeAndNil(FLines2);
+  FJava.DeleteTabAndWindow(Number);
+  FDiff.Free;
+  FCodeEdit2.Free;
+  FCodeEdit1.Free;
+  FLines2.Free;
+  FLines1.Free;
   Action := caFree;
+  inherited;
 end;
 
 procedure TFTextDiff.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -300,7 +303,7 @@ end;
 
 procedure TFTextDiff.TBDiffsOnlyClick(Sender: TObject);
 var
-  CodeEdit: TSynEditExDiff;
+  CodeEdit: TSynEditDiff;
   Caret: TBufferCoord;
 begin
   if FOnlyDifferences then
@@ -351,7 +354,7 @@ end;
 
 procedure TFTextDiff.Open(const FileName: string);
 begin
-  DoLoadFile(FileName, FNumber);
+  DoLoadFile(FileName, FCodeEditNumber);
 end;
 
 procedure TFTextDiff.DoLoadFile(const FileName: string; Num: Integer);
@@ -411,7 +414,7 @@ end;
 procedure TFTextDiff.DoCompare;
 var
   HashArray1, HashArray2: TArrOfInteger;
-  CodeEdit: TSynEditExDiff;
+  CodeEdit: TSynEditDiff;
   Caret: TBufferCoord;
 begin
   if (FLines1.Count = 0) or (FLines2.Count = 0) then
@@ -450,7 +453,6 @@ begin
     SetFilesCompared(True);
     DisplayDiffs;
     LinkScroll(True);
-    SetActiveControl(CodeEdit);
     CodeEdit.CaretXY := Caret;
     SyncScroll(GetCodeEdit, sbVertical);
   finally
@@ -462,7 +464,7 @@ end;
 
 procedure TFTextDiff.DisplayDiffs;
 
-  procedure AddAndFormat(CodeEdit: TSynEditExDiff; const Text: string;
+  procedure AddAndFormat(CodeEdit: TSynEditDiff; const Text: string;
     Color: TColor; Num: LongInt);
   begin
     var
@@ -558,17 +560,12 @@ begin
     Exit;
   IsSyncing := True; // stops recursion
   try
-    if (Sender as TSynEditExDiff) = FCodeEdit1 then
+    if Sender = FCodeEdit1 then
       FCodeEdit2.TopLine := FCodeEdit1.TopLine
     else
       FCodeEdit1.TopLine := FCodeEdit2.TopLine;
-    // Workaround to force the scroll bars to show their actual position
-    var CurrMouse := Mouse.CursorPos;
-    SendMessage(FCodeEdit1.Handle, WM_MOUSEMOVE, 0,
-      MakeLParam(FCodeEdit1.Width - 10, FCodeEdit1.Height div 2));
-    SendMessage(FCodeEdit2.Handle, WM_MOUSEMOVE, 0,
-      MakeLParam(FCodeEdit2.Width - 10, FCodeEdit2.Height div 2));
-    Mouse.CursorPos := CurrMouse;
+    FCodeEdit1.UpdateScrollBars;
+    FCodeEdit2.UpdateScrollBars;
   finally
     IsSyncing := False;
   end;
@@ -584,8 +581,8 @@ procedure TFTextDiff.LinkScroll(IsLinked: Boolean);
 begin
   if IsLinked then
   begin
-    FCodeEdit1.OnScroll := SyncScroll;
-    FCodeEdit2.OnScroll := SyncScroll;
+    FCodeEdit1.OnScroll := FCodeEdit1.SyncScroll;
+    FCodeEdit2.OnScroll := FCodeEdit2.SyncScroll;
     SyncScroll(GetCodeEdit, sbVertical);
   end
   else
@@ -892,7 +889,7 @@ end;
 
 procedure TFTextDiff.DoSaveFile(Num: Integer; WithBackup: Boolean);
 var
-  CodeEdit: TSynEditExDiff;
+  CodeEdit: TSynEditDiff;
 begin
   if Num = 1 then
     CodeEdit := FCodeEdit1
@@ -916,7 +913,7 @@ end;
 
 procedure TFTextDiff.TBSourcecodeClick(Sender: TObject);
 var
-  CodeEdit: TSynEditExDiff;
+  CodeEdit: TSynEditDiff;
   Caret: TBufferCoord;
 begin
   if FOnlyDifferences then
@@ -926,7 +923,6 @@ begin
   DoSaveFile(1, False);
   DoSaveFile(2, False);
   CodeEdit.CaretXY := Caret;
-  SetActiveControl(CodeEdit);
   SyncScroll(GetCodeEdit, sbVertical);
 end;
 
@@ -940,7 +936,7 @@ begin
   Close;
 end;
 
-function TFTextDiff.GetCodeEdit: TSynEditExDiff;
+function TFTextDiff.GetCodeEdit: TSynEditDiff;
 begin
   if MyActiveControl = FCodeEdit1 then
     Result := FCodeEdit1
@@ -1001,7 +997,15 @@ begin
     FDefaultClr := clWindow;
     TBTextDiff.Images := vilTextDiffLight;
   end;
-  DisplayDiffs;
+  FJava.ThemeEditorGutter(FCodeEdit1.Gutter);
+  FCodeEdit1.InvalidateGutter;
+  FCodeEdit1.CodeFolding.FolderBarLinesColor := FCodeEdit1.Gutter.Font.Color;
+  FJava.ThemeEditorGutter(FCodeEdit2.Gutter);
+  FCodeEdit2.CodeFolding.FolderBarLinesColor := FCodeEdit2.Gutter.Font.Color;
+  FCodeEdit2.InvalidateGutter;
+  FCodeEdit1.ChangeStyle;
+  FCodeEdit2.ChangeStyle;
+  Invalidate;
 end;
 
 procedure TFTextDiff.ChooseFiles(EditForm: TFEditForm);
@@ -1024,12 +1028,12 @@ begin
       InitialDir := ExtractFilePath(EditForm.Pathname);
       if InitialDir + '\' = FConfiguration.TempDir then
         InitDir;
-      FNumber := 2;
+      FCodeEditNumber := 2;
     end
     else
     begin
       InitDir;
-      FNumber := 1;
+      FCodeEditNumber := 1;
     end;
     FileName := '';
     var
@@ -1055,7 +1059,7 @@ end;
 
 procedure TFTextDiff.SynEditEnter(Sender: TObject);
 begin
-  FNumber := (Sender as TSynEditExDiff).Number;
+  FCodeEditNumber := (Sender as TSynEditDiff).Number;
 end;
 
 procedure TFTextDiff.DPIChanged;
@@ -1066,9 +1070,9 @@ end;
 procedure TFTextDiff.PopupEditorPopup(Sender: TObject);
 begin
   if PopupEditor.PopupComponent = FCodeEdit1 then
-    FNumber := 1;
+    FCodeEditNumber := 1;
   if PopupEditor.PopupComponent = FCodeEdit2 then
-    FNumber := 2;
+    FCodeEditNumber := 2;
 end;
 
 end.

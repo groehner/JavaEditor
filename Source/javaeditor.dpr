@@ -57,7 +57,6 @@ uses
   USubversion in 'USubversion.pas' {FSubversion},
   UDiff in 'TextDiff\UDiff.pas',
   UHashUnit in 'TextDiff\UHashUnit.pas',
-  USynEditExDiff in 'TextDiff\USynEditExDiff.pas',
   UTextDiffForm in 'TextDiff\UTextDiffForm.pas' {FTextDiff},
   UDlgAbout in 'UDlgAbout.pas',
   UDlgClassEditor in 'UDlgClassEditor.pas' {FClassEditor},
@@ -238,7 +237,8 @@ uses
   ULLMSuggestForm in 'ULLMSuggestForm.pas' {SuggestWindow},
   ULLMChatForm in 'ULLMChatForm.pas' {LLMChatForm},
   ULifeline in 'Sequencediagram\ULifeline.pas',
-  Vcl.Menus in 'VclSystem\Vcl.Menus.pas';
+  Vcl.Menus in 'VclSystem\Vcl.Menus.pas',
+  USynEditDiff in 'TextDiff\USynEditDiff.pas';
 
 {$R *.RES}
 

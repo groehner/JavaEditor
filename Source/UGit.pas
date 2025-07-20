@@ -108,23 +108,22 @@ end;
 
 procedure TFGit.Execute(Tag: Integer; AEditor: TFEditForm);
 var
-  AMessage, Posi, AFile: string;
+  AMessage, AFile: string;
 begin
-  if not Assigned(AEditor) and (Tag in [1, 2, 5, 6, 7]) then
+  if (Tag in [2, 5, 6, 7]) and not Assigned(AEditor) then
     Exit;
 
   if Assigned(AEditor) then begin
     if AEditor.Modified then
       AEditor.Save(False);
     AFile := ExtractFileName(AEditor.Pathname);
-    Posi := ExtractFilePath(AEditor.Pathname);
   end;
 
   case Tag of
     1:
-      GitCall('status', Posi);
+      GitCall('status', FConfiguration.GitLocalRepository);
     2:
-      GitCall('add ' + AFile, Posi);
+      GitCall('add ' + AFile, FConfiguration.GitLocalRepository);
     3:
       if InputQuery('Commit', 'Message', AMessage) then
         FGit.GitCall('commit -Message "' + AMessage + '"',
@@ -132,11 +131,11 @@ begin
     4:
       GitCall('log --stat', FConfiguration.GitLocalRepository);
     5:
-      GitCall('reset HEAD ' + AFile, Posi);
+      GitCall('reset HEAD ' + AFile, FConfiguration.GitLocalRepository);
     6:
-      GitCall('checkout -- ' + AFile, Posi);
+      GitCall('checkout -- ' + AFile, FConfiguration.GitLocalRepository);
     7:
-      GitCall('rm ' + AFile, Posi);
+      GitCall('rm ' + AFile, FConfiguration.GitLocalRepository);
     8:
       GitCall('remote -v', FConfiguration.GitLocalRepository);
     9:

@@ -8,7 +8,7 @@ uses
   Forms,
   Controls,
   System.Classes,
-  USynEditEx;
+  SynEdit;
 
 type
   TFSearch = class(TForm)
@@ -29,7 +29,7 @@ type
     procedure LSearchRegSearchMouseLeave(Sender: TObject);
     procedure LSearchRegSearchClick(Sender: TObject);
   public
-    procedure ShowSearchDialog(Editor: TSynEditEx);
+    procedure ShowSearchDialog(Editor: TSynEdit);
   end;
 
 implementation
@@ -48,7 +48,7 @@ begin
   TranslateComponent(Self);
 end;
 
-procedure TFSearch.ShowSearchDialog(Editor: TSynEditEx);
+procedure TFSearch.ShowSearchDialog(Editor: TSynEdit);
 begin
   MySearchOptions.LoadToForm(Self);
   if not MySearchOptions.RegEx then

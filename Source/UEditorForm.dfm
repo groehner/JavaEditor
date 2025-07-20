@@ -2429,19 +2429,19 @@ object FEditForm: TFEditForm
         Caption = 'Add'
         OnClick = MIGitAddClick
       end
-      object MICommit: TSpTBXItem
+      object MIGitCommit: TSpTBXItem
         Caption = 'Commit'
-        OnClick = MICommitClick
+        OnClick = MIGitCommitClick
       end
       object MIGitLog: TSpTBXItem
         Caption = 'Log'
         OnClick = MIGitLogClick
       end
-      object MIGItLin1: TSpTBXSeparatorItem
+      object MIGitLine1: TSpTBXSeparatorItem
       end
-      object MGitReset: TSpTBXItem
+      object MIGitReset: TSpTBXItem
         Caption = 'Reset'
-        OnClick = MGitResetClick
+        OnClick = MIGitResetClick
       end
       object MIGitCheckout: TSpTBXItem
         Caption = 'Checkout'

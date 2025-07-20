@@ -8,7 +8,7 @@ uses
   Forms,
   Vcl.Controls,
   System.Classes,
-  USynEditEx;
+  SynEdit;
 
 type
   TFReplace = class(TForm)
@@ -31,7 +31,7 @@ type
     procedure LSearchRegSearchMouseLeave(Sender: TObject);
     procedure LSearchRegSearchClick(Sender: TObject);
   public
-    procedure ShowReplaceDialog(Editor: TSynEditEx);
+    procedure ShowReplaceDialog(Editor: TSynEdit);
   end;
 
 implementation
@@ -50,7 +50,7 @@ begin
   TranslateComponent(Self);
 end;
 
-procedure TFReplace.ShowReplaceDialog(Editor: TSynEditEx);
+procedure TFReplace.ShowReplaceDialog(Editor: TSynEdit);
 begin
   MySearchOptions.LoadToForm(Self);
   if not MySearchOptions.RegEx then
