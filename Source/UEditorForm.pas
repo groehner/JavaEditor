@@ -1283,8 +1283,10 @@ var
   AEncoding: TEncoding;
   Form: TFForm;
 begin
-  if FEditor.ReadOnly then
+  if FEditor.ReadOnly and FEditor.Modified then begin
+    ErrorMsg(Pathname + ' ' + _(LNGWriteProtected));
     Exit;
+  end;
   if ExtractFilePath(Pathname) = '' then
     Pathname := FConfiguration.Sourcepath + Pathname;
   if UpperCase(ExtractFileExt(Pathname)) = '.XML' then // due to Android Mode

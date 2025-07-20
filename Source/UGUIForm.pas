@@ -187,6 +187,7 @@ uses
 constructor TFGUIForm.Create(AOwner: TComponent);
 begin
   inherited;
+  OnResize := nil;
   FormTag := 3;
   Resizable := True;
   // don't theme this window
@@ -196,6 +197,7 @@ end;
 
 procedure TFGUIForm.Open(const FileName: string; State: string);
 begin
+  OnResize := FormResize;
   var
   Animation := GetAnimation;
   if Animation then
@@ -218,6 +220,8 @@ begin
     Caption := '';
   if FontSize = 0 then
     GetFontSize;
+  if (Partner as TFEditForm).Editor.ReadOnly then
+    OnResize:= nil;
 end;
 
 procedure TFGUIForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);

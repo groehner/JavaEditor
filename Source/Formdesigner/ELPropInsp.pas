@@ -2657,9 +2657,13 @@ procedure TELPropertyInspectorItem.UpdateParams;
   begin
     // self.owner is a TELPropertyInspector, not the actual widget
     // so gui form and object inspector must have same dpi
-    if Assigned(TELCustomPropertyInspector(Owner).Objects[0]) then
-      Result:= MulDiv(ASize, 96, TControl(TELCustomPropertyInspector(Owner).Objects[0]).CurrentPPI)
-    else
+
+    // due to problems with write protected jfm files
+    //    if (TELPropertyInspector(Owner).ObjectCount > 0)
+    //    and   (TELPropertyInspector(Owner).Objects[0].ClassName <> '')
+    //    then
+    //      Result:= MulDiv(ASize, 96, TControl(TELPropertyInspector(Owner).Objects[0]).CurrentPPI)
+    //    else
       Result := MulDiv(ASize, 96, Self.Owner.CurrentPPI);
   end;
 

@@ -1525,8 +1525,20 @@ begin
             FreeAndNil(GUIForm);
           end
           else if FileExists(OldPartner) and
-            (ExtractFileExt(OldPartner) = '.jfm') then
-            CopyFile(PChar(OldPartner), PChar(NewPartner), False);
+            (ExtractFileExt(OldPartner) = '.jfm') then begin
+            var StringList:= TStringList.Create;
+            try
+              try
+                StringList.LoadFromFile(OldPartner);
+                StringList.SaveToFile(NewPartner);
+              except
+                on E: Exception do
+                  ErrorMsg(Format(_(LNGCanNotCreateFile), [NewPartner, E.Message]));
+              end;
+            finally
+              StringList.Free;
+            end;
+          end;
           Editform.SaveAs(FileName);
           if OpenGuiForm then
             Open(NewPartner);
