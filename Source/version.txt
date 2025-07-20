@@ -1,3 +1,7 @@
+23.10, 2025.07.20
+improved handling of write protected files
+bugfix for text diff tool
+
 23.09, 2025.07.16
 improved SynEdit component
 compact line numbers
