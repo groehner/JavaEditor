@@ -884,7 +884,17 @@ begin
         if Posi = 0 then
         begin
           StringList.Delete(I);
-          StringList.SaveToFile(FileName);
+          var WriteProtected:= IsWriteProtected(FileName);
+          if WriteProtected then
+            RemoveReadOnlyAttribute(FileName);
+          try
+            StringList.SaveToFile(FileName);
+            if WriteProtected then
+              SetReadOnlyAttribute(FileName);
+          except
+            ErrorMsg(Format(_('File %s contains invalid "PixelsPerInch = 0", ' +
+                    'but cannot delete due to write protection.'), [FileName]));
+          end;
           Break;
         end;
       end
@@ -911,7 +921,17 @@ begin
       if Posi > 0 then
       begin
         StringList.Delete(I);
-        StringList.SaveToFile(FileName);
+        var WriteProtected:= IsWriteProtected(FileName);
+        if WriteProtected then
+          RemoveReadOnlyAttribute(FileName);
+        try
+          StringList.SaveToFile(FileName);
+          if WriteProtected then
+            SetReadOnlyAttribute(FileName);
+        except
+          ErrorMsg(Format(_('File %s contains invalid "FormStyle = fsMDIChild", ' +
+                  'but cannot delete due to write protection.'), [FileName]));
+        end;
         Break;
       end
       else if Pos('  object', Str) > 0 then
@@ -937,7 +957,17 @@ begin
       if Posi > 0 then
       begin
         StringList.Delete(I);
-        StringList.SaveToFile(FileName);
+        var WriteProtected:= IsWriteProtected(FileName);
+        if WriteProtected then
+          RemoveReadOnlyAttribute(FileName);
+        try
+          StringList.SaveToFile(FileName);
+          if WriteProtected then
+            SetReadOnlyAttribute(FileName);
+        except
+          ErrorMsg(Format(_('File %s contains invalid "FrameType =", ' +
+                  'but cannot delete due to write protection.'), [FileName]));
+        end;
         Break;
       end
       else if Pos('  object', Str) > 0 then
@@ -984,7 +1014,7 @@ var
   PPI: Integer;
   NewName: string;
 
-  function getName: string;
+  function GetName: string;
   var
     StringList: TStringList;
     Index, Num: Integer;

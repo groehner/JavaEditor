@@ -116,6 +116,8 @@ function ExtractFilePathEx(const Str: string): string;
 function StripHttpParams(const Str: string): string;
 function GetFileSize(const Filename: string): LongInt;
 function IsWriteProtected(const Filename: string): Boolean;
+function RemoveReadOnlyAttribute(const FileName: string): Boolean;
+function SetReadOnlyAttribute(const FileName: string): Boolean;
 function HasWriteAccess(const Directory: string): Boolean;
 function AddFileExt(const Filename, AFilter, Ext: string;
   Filterindex: Integer): string;
@@ -519,6 +521,30 @@ begin
     Exit(False);
   Attributes := TFile.GetAttributes(Filename);
   Result := TFileAttribute.faReadOnly in Attributes;
+end;
+
+function RemoveReadOnlyAttribute(const FileName: string): Boolean;
+var
+  Attr: Integer;
+begin
+  Result := False;
+  Attr := FileGetAttr(FileName);
+  if Attr <> -1 then // -1 bedeutet, dass die Datei nicht existiert
+  begin
+    Result := FileSetAttr(FileName, Attr and not faReadOnly) = 0;
+  end;
+end;
+
+function SetReadOnlyAttribute(const FileName: string): Boolean;
+var
+  Attr: Integer;
+begin
+  Result := False;
+  Attr := FileGetAttr(FileName);
+  if Attr <> -1 then
+  begin
+    Result := FileSetAttr(FileName, Attr or faReadOnly) = 0;
+  end;
 end;
 {$WARNINGS ON}
 

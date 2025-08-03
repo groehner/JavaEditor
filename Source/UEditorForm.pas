@@ -869,9 +869,10 @@ begin
     if FEditor.ReadOnly then
       Caption := Caption + ' (' + _(LNGWriteProtected) + ')';
     CalculateStatusline;
-    CollapseGUICreation;
-    if IsJava then
+    if IsJava then begin
+      CollapseGUICreation;
       ParseSourceCode(True);
+    end;
     SetState(State);
     // ensure vertical scrollbar is visible
     FEditor.UpdateScrollBars;
@@ -2864,8 +2865,8 @@ begin
   StringList.Clear;
   FreeAndNil(StringList);
   FEditor.CaretXY := CaretXY;
-  FEditor.UnlockUndo;
   FEditor.EndUpdate;
+  FEditor.UnlockUndo;
 end;
 
 function TFEditForm.HasMainInModel: Boolean;
