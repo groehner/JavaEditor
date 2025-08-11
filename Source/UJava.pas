@@ -867,7 +867,8 @@ type
     function GetTDIWindow(const Pathname: string): TFForm; overload;
     function GetTDIWindow(Number: Integer): TFForm; overload;
     function GetTDIWindowType(const Pathname, Typ: string): TFForm;
-    function GetTDIWindowTypeFilename(const Filename, Typ: string): TFForm;
+    function GetTDIWindowTypeFilename(const FileName, Typ: string): TFForm;
+    function GetEditForm(Pathname: string): TFEditForm;
     function GetGuiForm(Pathname: string): TFGUIForm;
     procedure SwitchToWindow(const Path: string); overload;
     procedure SwitchToWindow(Num: Integer); overload;
@@ -1525,15 +1526,18 @@ begin
             FreeAndNil(GUIForm);
           end
           else if FileExists(OldPartner) and
-            (ExtractFileExt(OldPartner) = '.jfm') then begin
-            var StringList:= TStringList.Create;
+            (ExtractFileExt(OldPartner) = '.jfm') then
+          begin
+            var
+            StringList := TStringList.Create;
             try
               try
                 StringList.LoadFromFile(OldPartner);
                 StringList.SaveToFile(NewPartner);
               except
                 on E: Exception do
-                  ErrorMsg(Format(_(LNGCanNotCreateFile), [NewPartner, E.Message]));
+                  ErrorMsg(Format(_(LNGCanNotCreateFile),
+                    [NewPartner, E.Message]));
               end;
             finally
               StringList.Free;
@@ -1699,7 +1703,7 @@ begin
 end;
 
 procedure TFJava.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-  // var freq, startTime, endTime: Int64;
+// var freq, startTime, endTime: Int64;
 begin
   Inc(Counter);
   DisableUpdateMenuItems;
@@ -2360,7 +2364,7 @@ begin
   IsGUIForm := False;
   IsTextDiff := False;
   IsStructogram := False;
-  IsSequenceDiagram:= False;
+  IsSequenceDiagram := False;
   IsMessagesAndCompilable := False;
   IsMessagesAndRunnable := False;
   EditorIsJava := False;
@@ -2473,7 +2477,8 @@ begin
   SetEnabledMI(MIClose, VisibleTDIs > 0);
   SetEnabledMI(MICloseAllFiles, (VisibleTDIs > 0) and (FProjectFilename = ''));
   SetEnabledMI(MIExport, IsEditorForm and
-    Assigned(FEditorForm.Editor.Highlighter) or IsStructogram or IsSequenceDiagram);
+    Assigned(FEditorForm.Editor.Highlighter) or IsStructogram or
+    IsSequenceDiagram);
   SetEnabledMI(MIPrint, VisibleTDIs > 0);
   SetEnabledMI(MIPrintAll, VisibleTDIs > 0);
   // Edit menu
@@ -2748,16 +2753,28 @@ begin
   end;
 end;
 
-function TFJava.GetTDIWindowTypeFilename(const Filename, Typ: string): TFForm;
+function TFJava.GetTDIWindowTypeFilename(const FileName, Typ: string): TFForm;
 begin
   Result := nil;
   for var I := 0 to FTDIFormsList.Count - 1 do
   begin
     var
     AForm := FTDIFormsList[I]; // AccessViolation removed
-    if (AForm.GetFormType = Typ) and AForm.Pathname.EndsWith('\' + Filename)
+    if (AForm.GetFormType = Typ) and AForm.Pathname.EndsWith('\' + FileName)
     then
       Exit(AForm);
+  end;
+end;
+
+function TFJava.GetEditForm(Pathname: string): TFEditForm;
+begin
+  Result := nil;
+  for var I := 0 to FTDIFormsList.Count - 1 do
+  begin
+    var
+    AForm := FTDIFormsList[I];
+    if (AForm.FormTag = 1) and (AForm.Pathname = Pathname) then
+      Exit(TFEditForm(AForm));
   end;
 end;
 
@@ -4063,7 +4080,7 @@ begin
       if MyJavaCommands.ExecAndWait(FConfiguration.JavaInterpreter, Call,
         ExtractFilePath(Applet), ErrFile, SW_HIDE) then
         Child.Editor.Lines.LoadFromFile(Applet);
-      if GetFileSize(ErrFile) > 0 then
+      if TFile.GetSize(ErrFile) > 0 then
       begin
         FMessages.ShowTab(K_Messages);
         FMessages.ShowMessages(ErrFile);
@@ -4532,14 +4549,14 @@ procedure TFJava.MIJarClick(Sender: TObject);
 begin
   DisableUpdateMenuItems;
   var
-  i := (Sender as TSpTBXItem).Tag;
+  I := (Sender as TSpTBXItem).Tag;
   with ODOpen do
   begin
     if Assigned(ActiveTDIChild) then
       InitialDir := ExtractFilePath(ActiveTDIChild.Pathname)
     else
       InitialDir := FConfiguration.Sourcepath;
-    case i of
+    case I of
       1:
         Title := _('Show content of jar file');
       2:
@@ -4554,7 +4571,7 @@ begin
     if Execute then
     begin
       FConfiguration.Sourcepath := ExtractFilePath(FileName);
-      JarShowUnpackOpen(i, FileName);
+      JarShowUnpackOpen(I, FileName);
     end;
     FilterIndex := Tmp;
   end;
@@ -5543,11 +5560,11 @@ end;
 procedure TFJava.AddToTabBar(Num: Integer; Form: TFForm);
 begin
   var
-  Filename := ExtractFileNameEx(Form.Pathname);
+  FileName := ExtractFileNameEx(Form.Pathname);
   if FileExists(Form.Pathname) and IsWriteProtected(Form.Pathname) then
-    Filename := Filename + ' (' + _(LNGWriteProtected) + ')';
+    FileName := FileName + ' (' + _(LNGWriteProtected) + ')';
   var
-  ATabBarItem := FMyTabBar.AddTab(Filename);
+  ATabBarItem := FMyTabBar.AddTab(FileName);
   ATabBarItem.Data := TTabObject.Create(Form.Pathname, Num, Form);
   ATabBarItem.Selected := True;
 end;
@@ -5688,7 +5705,7 @@ begin
       FEditorForm.Pathname);
     if MyJavaCommands.ExecAndWait(FConfiguration.JavaInterpreter, Call, Dir,
       ErrFile, SW_HIDE) then
-      if GetFileSize(ErrFile) = 0 then
+      if TFile.GetSize(ErrFile) = 0 then
         FMessages.OutputLineTo(K_Messages,
           'Checkstyle ' + _(LNGSuccessfullyTerminated))
       else
@@ -5705,18 +5722,10 @@ var
   AgeEnabled: Boolean;
 
   function ExpandJalopyJar(const Str: string): string;
-  var
-    Str1, Str2: string;
-    SearchRec: TSearchRec;
   begin
-    Str2 := '';
-    Str1 := ExtractFilePath(Str);
-    FindFirst(Str1 + '*.jar', 0, SearchRec);
-    repeat
-      Str2 := Str2 + ';' + Str1 + SearchRec.Name;
-    until FindNext(SearchRec) <> 0;
-    FindClose(SearchRec);
-    Result := Copy(Str2, 2, Length(Str2));
+    var
+    Filenames := TDirectory.GetFiles(ExtractFilePath(Str), '*.jar');
+    Result := String.Join(';', Filenames);
   end;
 
 begin
@@ -5890,7 +5899,8 @@ begin
       Path := FConfiguration.Sourcepath;
   end;
   Path := WithTrailingSlash(Path);
-  var Int := 1;
+  var
+  Int := 1;
   Str := Path + _(LNGFile) + IntToStr(Int) + Extension;
   while WindowOpened(Str, AForm) or FileExists(Str) do
   begin
@@ -6257,7 +6267,8 @@ begin
             OpenFileWithState(WinName);
           end;
         end;
-        var Idx := StringList.Count - 1;
+        var
+        Idx := StringList.Count - 1;
         if Idx >= 0 then
         begin
           Current := FConfiguration.AddPortableDrive(StringList[Idx]);
@@ -6852,7 +6863,7 @@ begin
     FScpState := 1;
   if FMessages.InteractiveEditActive or Assigned(FEditorForm) and FEditorForm.IsJava
   then
-     CanExecute := MyCodeCompletion.DoScpJavaExecute(FScpState, '', CurrentInput,
+    CanExecute := MyCodeCompletion.DoScpJavaExecute(FScpState, '', CurrentInput,
       FEditorForm)
   else
     CanExecute := False;
@@ -7077,8 +7088,8 @@ begin
   Result := -1;
   if Assigned(FMyTabBar) then
     for var I := 0 to FMyTabBar.Tabs.Count - 1 do
-      if Assigned(FMyTabBar.Tabs[I]) and Assigned(FMyTabBar.Tabs[I].Data)
-        and (TTabObject(FMyTabBar.Tabs[I].Data).Num = Num) then
+      if Assigned(FMyTabBar.Tabs[I]) and Assigned(FMyTabBar.Tabs[I].Data) and
+        (TTabObject(FMyTabBar.Tabs[I].Data).Num = Num) then
         Exit(I);
 end;
 
@@ -7303,11 +7314,11 @@ procedure TFJava.ShowCompileErrors;
 var
   StringList: TStrings;
   Delta1, Delta2, Delta3, Posi, LineNum, Column: Integer;
-  ACompile, Path, Filename, Line, Str2, Pre, Post, Mid1, Mid2, Err: string;
+  ACompile, Path, FileName, Line, Str2, Pre, Post, Mid1, Mid2, Err: string;
   Edit1, Edit2: TFEditForm;
   StringList1: TStringList;
 
-  procedure DeterminePrePost(Idx: integer);
+  procedure DeterminePrePost(Idx: Integer);
   var
     Jidx: Integer;
   begin
@@ -7410,9 +7421,10 @@ begin
       Delete(Line, 1, Length(ACompile) + 1);
       Posi := Pos('.java', Line);
       Delete(Line, Posi + 5, Length(Line));
-      Filename := Line;
-      Edit1 := TFEditForm(GetTDIWindowTypeFilename(Filename, '%E%'));
-      if Assigned(Edit1) then begin
+      FileName := Line;
+      Edit1 := TFEditForm(GetTDIWindowTypeFilename(FileName, '%E%'));
+      if Assigned(Edit1) then
+      begin
         Edit1.InitShowCompileErrors;
         Break;
       end;
@@ -7457,7 +7469,7 @@ begin
         end;
         Line := Line + Pre + Err + Post;
         FMessages.LBCompiler.Items[I] := Line;
-        if Assigned(Edit1) and (Filename = Path) then
+        if Assigned(Edit1) and (FileName = Path) then
           Edit1.SetErrorMark(LineNum, Column, Pre + Err + Post)
         else if Assigned(Edit2) and (Edit2.Pathname = Path) then
           Edit2.SetErrorMark(LineNum, Column, Pre + Err + Post)

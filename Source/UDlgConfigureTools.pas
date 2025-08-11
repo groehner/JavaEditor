@@ -62,8 +62,9 @@ implementation
 
 uses
   Windows,
-  SysUtils,
-  StrUtils,
+  System.IOUtils,
+  System.SysUtils,
+  System.StrUtils,
   JvGnugettext,
   SpTBXItem,
   UJava,
@@ -275,7 +276,7 @@ begin
   else
   begin
     Param := ReplaceStr(Param, '%ACTIVEWINDOW%', '');
-    AktDir := GetTempDir;
+    AktDir := TPath.GetTempPath;
   end;
   DoToolsCommand(FTitles[Int], FPrograms[Int], AktDir, Param, FWaits[Int]);
 end;

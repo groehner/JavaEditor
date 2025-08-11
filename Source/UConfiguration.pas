@@ -1370,7 +1370,7 @@ type
     procedure FileSelectWithoutShortenPath(Edit: TEdit;
       const Filter, Filename, Dir: string);
     procedure FileSelect2(Edit: TEdit; const Filter, Filename, Dir: string);
-    procedure FolderSelect(Edit: TEdit; const Foldername: string);
+    function FolderSelect(Edit: TEdit; const Foldername: string): string;
     function GetFileFilters: string;
     function IsGerman: Boolean;
     function GetConfigurationAddress(const Str: string): string;
@@ -1813,8 +1813,9 @@ implementation
 {$R *.DFM}
 
 uses
+  System.IOUtils,
+  System.StrUtils,
   Zip,
-  StrUtils,
   Printers,
   ShlObj,
   Menus,
@@ -1822,7 +1823,6 @@ uses
   Themes,
   SHDocVw,
   ShellAPI,
-  IOUtils,
   UITypes,
   JvGnugettext,
   SynUnicode,
@@ -2507,11 +2507,14 @@ begin
   CheckFile(EJavaCompiler, False);
 end;
 
-procedure TFConfiguration.FolderSelect(Edit: TEdit; const Foldername: string);
+function TFConfiguration.FolderSelect(Edit: TEdit; const Foldername: string): string;
 begin
+  Result:= Foldername;
   FolderDialog.DefaultFolder := Foldername;
-  if FolderDialog.Execute then
-    ShortenPath(Edit, ExcludeTrailingPathDelimiter(FolderDialog.Filename));
+  if FolderDialog.Execute then begin
+    Result:= ExcludeTrailingPathDelimiter(FolderDialog.Filename);
+    ShortenPath(Edit, Result);
+  end;
 end;
 
 procedure TFConfiguration.BInterpreterClick(Sender: TObject);
@@ -3731,7 +3734,7 @@ begin
     FTempDirWithUsername := ReadStringU('Program', 'TempDir',
       FEditorFolder + 'App\Temp')
   else
-    FTempDirWithUsername := ReadStringU('Program', 'TempDir', GetTempDir);
+    FTempDirWithUsername := ReadStringU('Program', 'TempDir', TPath.GetTempPath);
   FTempDirWithUsername := IncludeTrailingPathDelimiter
     (AddPortableDrive(FTempDirWithUsername));
   FTempDir := ExpandFileName(DissolveUsername(FTempDirWithUsername));
@@ -3746,7 +3749,7 @@ begin
         IniFile.WriteString('test', 'test', 'test');
       except
         FTempDirWithUsername := IncludeTrailingPathDelimiter
-          (AddPortableDrive(ReadStringU('Program', 'TempDir', GetTempDir)));
+          (AddPortableDrive(ReadStringU('Program', 'TempDir', TPath.GetTempPath)));
         FTempDir := FTempDirWithUsername;
       end;
     finally
@@ -7131,33 +7134,27 @@ end;
 
 procedure TFConfiguration.BTempFolderClick(Sender: TObject);
 var
-  Str: string;
+  Path: string;
 begin
   if FPortableApplication then
-    Str := FEditorFolder + 'App\Temp'
+    Path := FEditorFolder + 'App\Temp\'
   else
-    Str := GetTempDir;
-  { $WARN SYMBOL_PLATFORM OFF }
-  Str := IncludeTrailingPathDelimiter(GetLongPathName(Str));
-  { $WARN SYMBOL_PLATFORM ON }
-  SysUtils.ForceDirectories(Str);
-  ShortenPath(ETempFolder, Str);
+    Path := TPath.GetTempPath;
+  ForceDirectories(Path);
+  ShortenPath(ETempFolder, Path);
 end;
 
 procedure TFConfiguration.SBTempSelectClick(Sender: TObject);
 var
-  Str: string;
+  Path: string;
 begin
   if FPortableApplication then
-    Str := FEditorFolder + 'App\Temp'
+    Path := FEditorFolder + 'App\Temp\'
   else
-    Str := GetTempDir;
-  { $WARN SYMBOL_PLATFORM OFF }
-  Str := IncludeTrailingPathDelimiter(GetLongPathName(Str));
-  { $WARN SYMBOL_PLATFORM ON }
-  FolderSelect(ETempFolder, Str);
-  SysUtils.ForceDirectories(Str);
-  ShortenPath(ETempFolder, Str);
+    Path := TPath.GetTempPath;
+  Path:= FolderSelect(ETempFolder, Path);
+  ForceDirectories(Path);
+  ShortenPath(ETempFolder, Path);
 end;
 
 procedure TFConfiguration.BJavaDocParameterClick(Sender: TObject);
@@ -7760,14 +7757,14 @@ end;
 
 procedure TFConfiguration.SBCacheSelectClick(Sender: TObject);
 var
-  Dir: string;
+  Path: string;
 begin
   if FPortableApplication then
-    Dir := FEditorFolder + 'App\Cache'
+    Path := FEditorFolder + 'App\Cache'
   else
-    Dir := TPath.GetHomePath + '\JavaEditor\Cache';
-  SysUtils.ForceDirectories(Dir);
-  FolderSelect(ECache, Dir);
+    Path := TPath.GetHomePath + '\JavaEditor\Cache';
+  Path := FolderSelect(ECache, Path);
+  ForceDirectories(Path);
 end;
 
 procedure TFConfiguration.CallUpdater(const Target, Source1: string;
@@ -8658,13 +8655,9 @@ begin
     if EndsWith(Cp2, '*') then
     begin
       Delete(Cp2, Length(Cp2), 1);
-      if FindFirst(Cp2 + '*.jar', 0, SearchRec) = 0 then
-      begin
-        repeat
-          Result := Result + ';' + Cp2 + SearchRec.Name;
-        until FindNext(SearchRec) <> 0;
-      end;
-      FindClose(SearchRec);
+      var Filenames := TDirectory.GetFiles(Cp2, '*.jar');
+      for var Filename in Filenames do
+        Result := Result + ';' + Filename;
     end
     else
       Result := Result + ';' + Cp2;
@@ -8956,7 +8949,7 @@ begin
     end
     else
     begin
-      // from jar-file, not from d-ocumentation
+      // from jar-file, not from documentation
       Str := FJavaCache + '\classes\' + IntToStr(GetJavaVersion);
       if not SysUtils.ForceDirectories(Str) then
       begin
@@ -9024,34 +9017,20 @@ var
   end;
 
   procedure CollectInDirectory(const Cp2, Ext: string);
-  var
-    Filename, Path, SearchRecName: string;
-    SearchRec: TSearchRec;
   begin
-    Path := Cp2;
-    Filename := Path + Ext;
-    if FindFirst(Filename, 0, SearchRec) = 0 then
-    begin
-      repeat
-        SearchRecName := ChangeFileExt(SearchRec.Name, '');
-        if Pos('$', SearchRecName) = 0 then // TODO s not initialized
-          FAllClasspathClasses.Add(SearchRecName + '=' + SearchRecName);
-      until FindNext(SearchRec) <> 0;
+    var Filenames := TDirectory.GetFiles(Cp2, Ext);
+    for var Filename in Filenames do begin
+      var AFilename := ChangeFileExt(ExtractFileName(Filename), '');
+      if Pos('$', AFilename) = 0 then
+        FAllClasspathClasses.Add(AFilename + '=' + AFilename);
     end;
-    FindClose(SearchRec);
   end;
 
   procedure CollectJarsInDirectory(const Cp2: string);
-  var
-    SearchRec: TSearchRec;
   begin
-    if FindFirst(Cp2 + '*.jar', 0, SearchRec) = 0 then
-    begin
-      repeat
-        CollectInJarFile(Cp2 + SearchRec.Name);
-      until FindNext(SearchRec) <> 0;
-    end;
-    FindClose(SearchRec);
+    var Filenames := TDirectory.GetFiles(Cp2, '*.jar');
+    for var Filepath in Filenames do
+      CollectInJarFile(Filepath);
   end;
 
 begin
@@ -9298,16 +9277,10 @@ var
   Cp1, Str1, Jar: string;
 
   procedure CollectJarsInDirectory(const Cp2: string);
-  var
-    SearchRec: TSearchRec;
   begin
-    if FindFirst(Cp2 + '*.Jar', 0, SearchRec) = 0 then
-    begin
-      repeat
-        Cp1 := Cp2 + SearchRec.Name + ';' + Cp1;
-      until FindNext(SearchRec) <> 0;
-    end;
-    FindClose(SearchRec);
+    var Filenames := TDirectory.GetFiles(Cp2, '*.jar');
+    for var Filepath in Filenames do
+      Cp1 := Filepath + ';' + Cp1;
   end;
 
 begin
@@ -9818,27 +9791,21 @@ var
   end;
 
   function SearchFile(const Dir, Fname: string): string;
-  var
-    SearchRec: TSearchRec;
   begin
     Result := '';
-    if FileExists(Dir + Fname) then
-      Result := Dir + Fname
-    else
+    var Filepath := Tpath.Combine(Dir, Fname);
+    if FileExists(Filepath) then
+      Exit(Filepath)
+    else if DirectoryExists(Dir) then
     begin
-      if FindFirst(Dir + '*' + Fname, faDirectory, SearchRec) = 0 then
-        repeat
-          if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') and
-            (SearchRec.Attr and faDirectory = faDirectory) then
-            Result := SearchFile(Dir + SearchRec.Name + '\', Fname);
-        until (FindNext(SearchRec) <> 0) or (Result <> '');
-      FindClose(SearchRec);
+      var Filenames := TDirectory.GetFiles(Dir, FName, TSearchOption.soAllDirectories);
+      if Length(Filenames) > 0 then
+        Result := Filenames[0];
     end;
   end;
 
   function InDirectory(Directory: string; const AClassname: string): string;
   begin
-    Directory := IncludeTrailingPathDelimiter(Directory);
     Result := SearchFile(Directory, AClassname + '.java');
     if Result = '' then
       Result := SearchFile(Directory, AClassname + '.class');
@@ -9888,14 +9855,11 @@ begin
   if not FileExists(Pathname) then
     Exit;
   JavaScanner := TJavaScanner.Create;
-  var
-  StringList := TStringList.Create;
   try
-    StringList.LoadFromFile(Pathname);
-    Result := JavaScanner.IsInterface(StringList.Text);
+    var Text:= TFile.ReadAllText(Pathname);
+    Result := JavaScanner.IsInterface(Text);
   finally
     FreeAndNil(JavaScanner);
-    FreeAndNil(StringList);
   end;
 end;
 
@@ -10059,28 +10023,22 @@ end;
 
 class procedure TFConfiguration.LoadGUIStyle(Style: string);
 var
-  SearchResults: TSearchRec;
-  SearchDir, Filename: string;
   StyleInfo: TStyleInfo;
 begin
   if not TStyleManager.TrySetStyle(Style, False) then
   begin
-    SearchDir := ExtractFilePath(ParamStr(0)) + 'styles' + PathDelim;
+    var SearchDir := ExtractFilePath(ParamStr(0)) + 'styles';
     if DirectoryExists(SearchDir) then
     begin
-      if FindFirst(SearchDir + '*.*', faAnyFile - faDirectory, SearchResults) = 0
-      then
-        repeat
-          Filename := SearchDir + SearchResults.Name;
-          if TStyleManager.IsValidStyle(Filename, StyleInfo) and
-            (StyleInfo.Name = Style) then
-          begin
-            TStyleManager.LoadFromFile(Filename);
-            TStyleManager.TrySetStyle(Style, False);
-            Break;
-          end;
-        until (FindNext(SearchResults) <> 0);
-      FindClose(SearchResults);
+      var Filenames := TDirectory.GetFiles(SearchDir, '*.vsf');
+      for var Filename in Filenames do
+        if TStyleManager.IsValidStyle(Filename, StyleInfo) and
+          (StyleInfo.Name = Style) then
+        begin
+          TStyleManager.LoadFromFile(Filename);
+          TStyleManager.TrySetStyle(Style, False);
+          Break;
+        end;
     end;
   end;
 end;
@@ -10577,7 +10535,7 @@ begin
   ESystemPrompt.Text := Settings.SystemPrompt;
   EMaxTokens.Text := Settings.MaxTokens.ToString;
   ELLMTimeout.Text := (Settings.TimeOut div 1000).ToString;
-  ELLMTemperature.Text := StrUtils.LeftStr(Settings.Temperature.ToString, 5);
+  ELLMTemperature.Text := LeftStr(Settings.Temperature.ToString, 5);
 end;
 
 procedure TFConfiguration.LLMAssistantViewToModel;

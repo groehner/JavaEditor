@@ -1,7 +1,7 @@
 object FHelpDialog: TFHelpDialog
   Left = 541
   Top = 42
-  ActiveControl = TVToolsTree
+  ActiveControl = TVAPITree
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'JDK help'
@@ -25,7 +25,7 @@ object FHelpDialog: TFHelpDialog
     Top = 0
     Width = 377
     Height = 417
-    ActivePage = TSTools
+    ActivePage = TSAPI
     TabOrder = 0
     OnChange = PCJDKHelpChange
     object TSFavorites: TTabSheet
@@ -149,14 +149,11 @@ object FHelpDialog: TFHelpDialog
         Width = 217
         Height = 89
         Caption = 'Options'
-        Columns = 2
         ItemIndex = 0
         Items.Strings = (
           'API'
-          'Java book'
-          'Documentation'
           'All'
-          'Tools')
+          'Java book')
         TabOrder = 2
         OnClick = RGSearchOptionsClick
       end
@@ -173,42 +170,6 @@ object FHelpDialog: TFHelpDialog
         Indent = 19
         ReadOnly = True
         SortType = stBoth
-        TabOrder = 0
-        OnCollapsing = TVTreeCollapsing
-        OnDblClick = TVTreeDblClick
-        OnExpanding = TVTreeExpanding
-        OnGetSelectedIndex = TVTreeGetSelectedIndex
-      end
-    end
-    object TSDocu: TTabSheet
-      Caption = 'Documentation'
-      ImageIndex = 1
-      object TVGuideTree: TTreeView
-        Left = 0
-        Top = 0
-        Width = 369
-        Height = 387
-        Align = alClient
-        Images = vilJDKHelpLight
-        Indent = 19
-        TabOrder = 0
-        OnCollapsing = TVTreeCollapsing
-        OnDblClick = TVTreeDblClick
-        OnExpanding = TVTreeExpanding
-        OnGetSelectedIndex = TVTreeGetSelectedIndex
-      end
-    end
-    object TSTools: TTabSheet
-      Caption = 'Tools'
-      ImageIndex = 2
-      object TVToolsTree: TTreeView
-        Left = 0
-        Top = 0
-        Width = 369
-        Height = 387
-        Align = alClient
-        Images = vilJDKHelpLight
-        Indent = 19
         TabOrder = 0
         OnCollapsing = TVTreeCollapsing
         OnDblClick = TVTreeDblClick

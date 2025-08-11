@@ -261,7 +261,7 @@ begin
       CompileJava.SaveToFile(BatFile, TEncoding.ANSI);
       if ExecAndWait(BatFile, '', FCompileDirectory, FErrFile, SW_HIDE) then
       begin
-        FSuccessfullCompiled := (GetFileSize(FErrFile) = 0);
+        FSuccessfullCompiled := (TFile.GetSize(FErrFile) = 0);
         if not FSuccessfullCompiled then
           FCompileList.LoadFromFile(FErrFile);
       end

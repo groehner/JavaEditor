@@ -114,7 +114,6 @@ function GetClass(const Classpath, CompilerParameter, Pathname: string): string;
 function ExtractFileNameEx(Str: string): string;
 function ExtractFilePathEx(const Str: string): string;
 function StripHttpParams(const Str: string): string;
-function GetFileSize(const Filename: string): LongInt;
 function IsWriteProtected(const Filename: string): Boolean;
 function RemoveReadOnlyAttribute(const FileName: string): Boolean;
 function SetReadOnlyAttribute(const FileName: string): Boolean;
@@ -136,7 +135,6 @@ procedure RotateBitmap(Bmp: TBitmap; Rads: Single; AdjustSize: Boolean;
   BkColor: TColor = clNone);
 
 procedure TidyPath(const Dir: string);
-function GetTempDir: string;
 function GetExeForExtension(const Ext: string): string;
 function GetRegisteredJavaEditor: string;
 function HasAssociationWithJavaeditor(const Extension: string): Boolean;
@@ -248,8 +246,7 @@ function IsVisibility(const Str: string): Boolean;
 function Visibility2ImageNumber(Vis: TVisibility): Integer;
 function IsModifier(const Str: string): Boolean;
 function GetFilterIndex(Filter: string; const Filename: string): Integer;
-function GetLongPathName(const Pathname: string): string;
-function FileExistsCaseSensitive(const Filename: TFileName): Boolean;
+function FileExistsCaseSensitive(const Filepath: string): Boolean;
 function IsMouseOverControl(const Control: TControl): Boolean;
 function SameText(const Str1, Str2: string): Boolean;
 function AddWithSpace(Str: string): string;
@@ -501,17 +498,6 @@ begin
   Result := ExcludeTrailingPathDelimiter(Result);
 end;
 
-function GetFileSize(const Filename: string): LongInt;
-var
-  SearchRec: TSearchRec;
-begin
-  if FindFirst(ExpandFileName(Filename), faAnyFile, SearchRec) = 0 then
-    Result := SearchRec.Size
-  else
-    Result := -1;
-  SysUtils.FindClose(SearchRec);
-end;
-
 {$WARNINGS OFF}
 function IsWriteProtected(const Filename: string): Boolean;
 var
@@ -691,16 +677,6 @@ begin
   finally
     FreeAndNil(StringList);
   end;
-end;
-
-function GetTempDir: string;
-var
-  Posi: PChar;
-begin
-  Posi := StrAlloc(255);
-  GetTempPath(255, Posi);
-  Result := string(Posi);
-  StrDispose(Posi);
 end;
 
 function GetRegisteredJavaEditor: string;
@@ -2176,35 +2152,6 @@ begin
   Result := 0;
 end;
 
-function GetLongPathName(const Pathname: string): string;
-var
-  Drive: string;
-  Path: string;
-  SearchRec: TSearchRec;
-begin
-  if Pathname = '' then
-    Exit;
-  Drive := ExtractFileDrive(Pathname);
-  Path := Copy(Pathname, Length(Drive) + 1, Length(Pathname));
-  if (Path = '') or (Path = '\') then
-  begin
-    Result := Pathname;
-    if Result[Length(Result)] = '\' then
-      Delete(Result, Length(Result), 1);
-  end
-  else
-  begin
-    Path := GetLongPathName(ExtractFileDir(Pathname));
-    if FindFirst(Pathname, faAnyFile, SearchRec) = 0 then
-    begin
-      Result := Path + '\' + SearchRec.FindData.cFileName;
-      SysUtils.FindClose(SearchRec);
-    end
-    else
-      Result := Path + '\' + ExtractFileName(Pathname);
-  end;
-end;
-
 function EndsWith(const Str, Substr: string): Boolean;
 begin
   var
@@ -2231,15 +2178,13 @@ begin
     Result := False;
 end;
 
-function FileExistsCaseSensitive(const Filename: TFileName): Boolean;
-var
-  SearchRec: TSearchRec;
+function FileExistsCaseSensitive(const Filepath: string): Boolean;
 begin
-  Result := FindFirst(Filename, faAnyFile, SearchRec) = 0;
-  if Result then
-    SysUtils.FindClose(SearchRec);
-  Result := Result and (SearchRec.Attr and faDirectory = 0) and
-    (SearchRec.Name = ExtractFileName(Filename));
+  if not FileExists(Filepath) then
+    Exit(False);
+  var Filename := ExtractFileName(Filepath);
+  var FileNames := TDirectory.GetFiles(ExtractFilePath(Filepath), Filename);
+  Result:= (ExtractFilename(FileNames[0]) = Filename);
 end;
 
 function IsMouseOverControl(const Control: TControl): Boolean;

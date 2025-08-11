@@ -181,10 +181,12 @@ implementation
 uses
   Windows,
   Types,
-  SysUtils,
-  StrUtils,
+  System.IOUtils,
+  System.SysUtils,
+  System.StrUtils,
   Character,
   Zip,
+
   UConfiguration;
 
 { TJavaImporter }
@@ -2457,26 +2459,18 @@ var
     end;
   end;
 
-  procedure CollectInDirectory(const Cp2, Importname, Ext: string);
+  procedure CollectInDirectory(const Cp2, Ext: string);
   var
-    FileName, Path, Str, SearchRecName: string;
-    SearchRec: TSearchRec;
+    Filename, Filepath, PackageFilename: string;
   begin
-    Path := Cp2 + Importname;
-    FileName := Path + Ext;
-    if FindFirst(FileName, 0, SearchRec) = 0 then
-    begin
-      Found := True;
-      Delete(Path, 1, Length(PackageDir));
-      Path := ReplaceStr(Path, '\', '.');
-      repeat
-        SearchRecName := ChangeFileExt(SearchRec.Name, '');
-        Str := Path + '.' + SearchRecName;
-        if Pos('$', Str) = 0 then
-          UserImports.Add(SearchRecName + '=' + Str);
-      until ThreadAbort or (FindNext(SearchRec) <> 0);
+    var FileNames := TDirectory.GetFiles(Cp2, Ext);
+    Found:= (Length(FileNames) > 0);
+    for Filepath in FileNames do begin
+      Filename := ChangeFileExt(ExtractFileName(Filepath), '');
+      PackageFilename := Package + '.' + Filename;
+      if Pos('$', PackageFilename) = 0 then
+        UserImports.Add(Filename + '=' + PackageFilename);
     end;
-    FindClose(SearchRec);
   end;
 
 begin
@@ -2495,9 +2489,9 @@ begin
       CollectInJarFile(Cp2, ReplaceStr(Import, '.', '\'))
     else
     begin
-      Cp2 := WithTrailingSlash(Cp2);
-      CollectInDirectory(Cp2, ReplaceStr(Import, '.', '\'), '\*.class');
-      CollectInDirectory(Cp2, ReplaceStr(Import, '.', '\'), '\*.java');
+      Cp2 := TPath.Combine(Cp2, ReplaceStr(Import, '.', '\'));
+      CollectInDirectory(Cp2, '\*.class');
+      CollectInDirectory(Cp2, '\*.java');
     end;
     Posi := Pos(';', Cp1);
   end;
@@ -2510,26 +2504,18 @@ var
   Posi: Integer;
   Found: Boolean;
 
-  procedure CollectInDirectory(const Cp2, Importname, Ext: string);
+  procedure CollectInDirectory(const Cp2, Ext: string);
   var
-    FileName, Path, Str, SerachRecName: string;
-    SearchRec: TSearchRec;
+    Filename, Filepath, PackageFilename: string;
   begin
-    Path := Cp2 + Importname;
-    FileName := Path + Ext;
-    if FindFirst(FileName, 0, SearchRec) = 0 then
-    begin
-      Found := True;
-      Delete(Path, 1, Length(PackageDir));
-      Path := ReplaceStr(Path, '\', '.');
-      repeat
-        SerachRecName := ChangeFileExt(SearchRec.Name, '');
-        Str := Path + '.' + SerachRecName;
-        if Pos('$', Str) = 0 then
-          UserImports.Add(SerachRecName + '=' + Str);
-      until ThreadAbort or (FindNext(SearchRec) <> 0);
+    var FileNames := TDirectory.GetFiles(Cp2, Ext);
+    Found:= (Length(FileNames) > 0);
+    for Filepath in FileNames do begin
+      Filename := ChangeFileExt(ExtractFileName(Filepath), '');
+      PackageFilename := Package + '.' + Filename;
+      if Pos('$', PackageFilename) = 0 then
+        UserImports.Add(Filename + '=' + PackageFilename);
     end;
-    FindClose(SearchRec);
   end;
 
 begin
@@ -2544,9 +2530,9 @@ begin
     Delete(Cp1, 1, Posi);
     if not(ExtractFileExt(Cp2) = '.jar') and not EndsWith(Cp2, '*') then
     begin
-      Cp2 := WithTrailingSlash(Cp2);
-      CollectInDirectory(Cp2, ReplaceStr(Import, '.', '\'), '\*.class');
-      CollectInDirectory(Cp2, ReplaceStr(Import, '.', '\'), '\*.java');
+      Cp2 := TPath.Combine(Cp2, ReplaceStr(Import, '.', '\'));
+      CollectInDirectory(Cp2, '*.class');
+      CollectInDirectory(Cp2, '*.java');
     end;
     Posi := Pos(';', Cp1);
   end;

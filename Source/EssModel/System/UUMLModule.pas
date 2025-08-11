@@ -67,19 +67,20 @@ type
 implementation
 
 uses
+  System.IOUtils,
   Dialogs,
   SysUtils,
   Graphics,
   Controls,
   Forms,
   Contnrs,
+  UUtils,
   UFileProvider,
-  UJava,
   UDlgOpenFolder,
   UIntegrator,
-  UUtils,
   UConfiguration,
-  URtfdDiagram;
+  URtfdDiagram,
+  UJava;
 
 {$R *.DFM}
 
@@ -336,19 +337,13 @@ function TDMUMLModule.OpenFolderActionExecute(Sender: TObject): Boolean;
   procedure _AddFileNames(Files: TStringList; const Path, Ext: string;
     Recursive: Boolean);
   var
-    SearchRec: TSearchRec;
+    SearchOption: TSearchOption;
   begin
-    if FindFirst(Path + '\*.*', faReadOnly or faDirectory, SearchRec) = 0 then
-    begin
-      repeat
-        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-          if ((SearchRec.Attr and faDirectory) = faDirectory) and Recursive then
-            _AddFileNames(Files, Path + '\' + SearchRec.Name, Ext, Recursive)
-          else if CompareText(ExtractFileExt(SearchRec.Name), Ext) = 0 then
-            Files.Add(Path + '\' + SearchRec.Name);
-      until FindNext(SearchRec) <> 0;
-      FindClose(SearchRec);
-    end;
+    if Recursive
+      then SearchOption := TSearchOption.soAllDirectories
+      else SearchOption := TSearchOption.soTopDirectoryOnly;
+    var Filenames := TDirectory.GetFiles(Path, '*' + Ext, SearchOption);
+    Files.AddStrings(Filenames);
   end;
 
 begin

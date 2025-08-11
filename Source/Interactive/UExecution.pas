@@ -124,9 +124,10 @@ type
 implementation
 
 uses
-  SysUtils,
+  System.IOUtils,
+  System.SysUtils,
+  System.StrUtils,
   Forms,
-  StrUtils,
   jni, {needed}
   URtfdDiagram,
   UDlgAbout,
@@ -300,19 +301,10 @@ begin
 end;
 
 procedure TInteractiveExecuter.DeleteFiles(const Pathname: string);
-var
-  Path, Mask: string;
-  SearchRec: TSearchRec;
 begin
-  Path := ExtractFilePath(Pathname);
-  Mask := Path + 'Class*.*';
-  if FindFirst(Mask, 0, SearchRec) = 0 then
-  begin
-    DeleteFile(Path + SearchRec.Name);
-    while FindNext(SearchRec) = 0 do
-      DeleteFile(Path + SearchRec.Name);
-    FindClose(SearchRec);
-  end;
+  var Filenames := TDirectory.GetFiles(ExtractFilePath(Pathname), 'Class*.*');
+  for var Filename in Filenames do
+    DeleteFile(Filename);
 end;
 
 procedure TInteractiveExecuter.MakePathname;

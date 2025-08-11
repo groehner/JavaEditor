@@ -44,8 +44,17 @@ type
     FFileName: string;
     FFileCount: Integer;
     FTheNode: TTreeNode;
+    FMyCaretXY: TBufferCoord;
+    FMyTopLine: Integer;
+    FOnFoundEvent: TReplaceTextEvent;
     procedure Statistic;
+    procedure BeginSearch(MyEditor: TSynEdit; const Pathname: string);
+    procedure EndSearch;
+    procedure DoSearchInFile(Pathname: string);
+    procedure DoSearch(Editor: TSynEdit; Pathname: string);
     procedure DoSearchReplace(const SearchText, ReplaceText: string);
+    function IsWholeWord(Line: string; ScanPos, Len: Integer): Boolean;
+    function IsCommentOrString(ScanPos, LineNo: Integer): Boolean;
   public
     constructor Create(TreeView: TTreeView);
     procedure Execute;
@@ -62,7 +71,8 @@ var
 implementation
 
 uses
-  SysUtils,
+  System.IOUtils,
+  System.SysUtils,
   Forms,
   JvGnugettext,
   SynEditTypes,
@@ -150,34 +160,63 @@ begin
   FTheNode.Expand(False);
 end;
 
+procedure TFGrepResults.DoSearchInFile(Pathname: string);
+begin
+  var
+  MyEditor := TSynEditEx.Create(nil);
+  try
+    MyEditor.Parent := FConfiguration;
+    MyEditor.SearchEngine := FJava.SynEditSearch;
+    try
+      MyEditor.Lines.LoadFromFile(Pathname);
+    except
+      on E: Exception do
+        ErrorMsg(Format(_(LNGCanNotOpen), [Pathname]));
+    end;
+    if MySearchOptions.ExcludeCommentsAndStrings then
+      MyEditor.Highlighter := FConfiguration.GetHighlighter(Pathname);
+    DoSearch(MyEditor, Pathname);
+    if MySearchOptions.Replace and MyEditor.Modified then
+      MyEditor.Lines.SaveToFile(Pathname, MyEditor.Lines.Encoding);
+  finally
+    FreeAndNil(MyEditor);
+  end;
+end;
+
+procedure TFGrepResults.DoSearch(Editor: TSynEdit; Pathname: string);
+begin
+  BeginSearch(Editor, Pathname);
+  if MySearchOptions.RegEx then
+    MyRegExSearch.DoGrepRegSearchReplace(FEditor)
+  else
+    DoSearchReplace(MySearchOptions.SearchText, MySearchOptions.ReplaceText);
+  EndSearch;
+end;
+
+procedure TFGrepResults.BeginSearch(MyEditor: TSynEdit; const Pathname: string);
+begin
+  FFileName := Pathname;
+  FMessages.StatusMessage(_('Search for') + ' "' + MySearchOptions.SearchText +
+    '" in ' + FFileName);
+  FEditor := MyEditor;
+  FMyTopLine := FEditor.TopLine;
+  FMyCaretXY := FEditor.CaretXY;
+  FOnFoundEvent := FEditor.OnReplaceText;
+  FEditor.OnReplaceText := FoundIt;
+  LockWindow(FJava.Handle);
+end;
+
+procedure TFGrepResults.EndSearch;
+begin
+  FEditor.OnReplaceText := FOnFoundEvent;
+  FEditor.TopLine := FMyTopLine;
+  FEditor.CaretXY := FMyCaretXY;
+  FEditor.EnsureCursorPosVisible;
+  UnlockWindow;
+  FJava.Invalidate;
+end;
+
 procedure TFGrepResults.Execute;
-var
-  OnFoundEvent: TReplaceTextEvent;
-  MyCaretXY: TBufferCoord;
-  MyTopLine: Integer;
-
-  procedure BeginSearch(MyEditor: TSynEdit; const Pathname: string);
-  begin
-    FFileName := Pathname;
-    FMessages.StatusMessage(_('Search for') + ' "' + MySearchOptions.SearchText
-      + '" in ' + FFileName);
-    FEditor := MyEditor;
-    MyTopLine := FEditor.TopLine;
-    MyCaretXY := FEditor.CaretXY;
-    OnFoundEvent := FEditor.OnReplaceText;
-    FEditor.OnReplaceText := FoundIt;
-    LockWindow(FJava.Handle);
-  end;
-
-  procedure EndSearch;
-  begin
-    FEditor.OnReplaceText := OnFoundEvent;
-    FEditor.TopLine := MyTopLine;
-    FEditor.CaretXY := MyCaretXY;
-    FEditor.EnsureCursorPosVisible;
-    UnlockWindow;
-    FJava.Invalidate;
-  end;
 
   procedure CurrentOnlyGrep;
   begin
@@ -215,73 +254,22 @@ var
 
   procedure DirGrep(const Dir, Mask: string);
   var
-    Search: TSearchRec;
-    Result: Integer;
-    MyEditor: TSynEditEx;
-    Pathname: string;
     EditForm: TFEditForm;
   begin
-    { First do sub-directories if option is selected }
-    Result := FindFirst(Dir + '*.*', faDirectory, Search);
-    try
-      while (Result = 0) and not FAborting do
-      begin
-        if (Search.Attr and faDirectory) <> 0 then
-        begin
-          if MySearchOptions.IncludeSubdirs then
-            if (Search.Name <> '.') and (Search.Name <> '..') then
-              DirGrep(Dir + Search.Name + '\', UpperCase(Mask));
-        end
-        else if ((Pos(UpperCase(ExtractFileExt(Search.Name)), Mask) > 0) or
-          (Mask = '*.*')) and ((Search.Attr and faReadOnly) = 0) then
-        begin
-          FResults := nil;
-          Pathname := Dir + Search.Name;
-          EditForm := TFEditForm(FJava.GetTDIWindowType(Pathname, '%E%'));
-          if Assigned(EditForm) then
-          begin
-            BeginSearch(EditForm.Editor, Pathname);
-            if MySearchOptions.RegEx then
-              MyRegExSearch.DoGrepRegSearchReplace(FEditor)
-            else
-              DoSearchReplace(MySearchOptions.SearchText,
-                MySearchOptions.ReplaceText);
-            EndSearch;
-          end
-          else
-          begin
-            MyEditor := TSynEditEx.Create(nil);
-            try
-              MyEditor.Parent := FConfiguration;
-              MyEditor.SearchEngine := FJava.SynEditSearch;
-              try
-                MyEditor.Lines.LoadFromFile(Pathname);
-              except
-                on E: Exception do
-                  ErrorMsg(Format(_(LNGCanNotOpen), [Pathname]));
-              end;
-              if MySearchOptions.ExcludeCommentsAndStrings then
-                MyEditor.Highlighter := FConfiguration.GetHighlighter(Pathname);
-              BeginSearch(MyEditor, Pathname);
-              if MySearchOptions.RegEx then
-                MyRegExSearch.DoGrepRegSearchReplace(FEditor)
-              else
-                DoSearchReplace(MySearchOptions.SearchText,
-                  MySearchOptions.ReplaceText);
-              EndSearch;
-              if MySearchOptions.Replace and MyEditor.Modified then
-                MyEditor.Lines.SaveToFile(Pathname, MyEditor.Lines.Encoding);
-            finally
-              FreeAndNil(MyEditor);
-            end;
-          end;
-          Inc(FFileCount);
-          Application.ProcessMessages;
-        end;
-        Result := FindNext(Search);
-      end;
-    finally
-      FindClose(Search);
+    var
+    Filenames := TDirectory.GetFiles(Dir, Mask, TSearchOption.soAllDirectories);
+    for var Pathname in Filenames do
+    begin
+      FResults := nil;
+      EditForm := FJava.GetEditForm(Pathname);
+      if Assigned(EditForm) then
+        DoSearch(EditForm.Editor, Pathname)
+      else
+        DoSearchInFile(Pathname);
+      Inc(FFileCount);
+      Application.ProcessMessages;
+      if Aborting then
+        Break;
     end;
   end;
 
@@ -316,7 +304,7 @@ begin
           ShowWith(MySearchOptions.SearchText);
           Application.ProcessMessages;
           if MySearchOptions.Filemask = '' then
-            DirGrep(MySearchOptions.Directory, '*.JAVA')
+            DirGrep(MySearchOptions.Directory, '*.java')
           else
             DirGrep(MySearchOptions.Directory,
               UpperCase(MySearchOptions.Filemask));
@@ -401,39 +389,38 @@ begin
   FJava.EditorForm.Editor.BlockEnd := BufferCoord;
 end;
 
+function TFGrepResults.IsWholeWord(Line: string; ScanPos, Len: Integer)
+  : Boolean;
+begin
+  var
+  Pos1 := ScanPos;
+  var
+  Pos2 := ScanPos + Len;
+  Result := (((Pos1 - 1 = 0) or IsWordBreakChar(Line[Pos1 - 1])) and
+    ((Pos2 + 1 > Length(Line)) or IsWordBreakChar(Line[Pos2 + 1])));
+end;
+
+function TFGrepResults.IsCommentOrString(ScanPos, LineNo: Integer): Boolean;
+var
+  Token: string;
+  Attr: TSynHighlighterAttributes;
+begin
+  FEditor.GetHighlighterAttriAtRowCol(BufferCoord(ScanPos, LineNo + 1),
+    Token, Attr);
+  Result := (Attr = FEditor.Highlighter.CommentAttribute) or
+    (Attr = FEditor.Highlighter.StringAttribute) or
+    (Attr.Name = 'Preprocessor'); // compiler directives
+end;
+
 procedure TFGrepResults.DoSearchReplace(const SearchText, ReplaceText: string);
 var
-  Action: TSynReplaceAction;
-  UsedSearchLine, ReplaceLine, UsedSearchText: string;
   Positions: array of Integer;
-  StackPos, ScanPos: Integer;
+  StackPos: Integer;
 
-  function IsWholeWord(ScanPos: Integer): Boolean;
-  begin
-    var
-    Posi := ScanPos;
-    var
-    QPos := ScanPos + Length(SearchText) - 1;
-    Result := (((Posi - 1 = 0) or IsWordBreakChar(UsedSearchLine[Posi - 1])) and
-      ((QPos + 1 > Length(UsedSearchLine)) or
-      IsWordBreakChar(UsedSearchLine[QPos + 1])));
-  end;
-
-  function IsCommentOrString(ScanPos, LineNo: Integer): Boolean;
+  procedure Search(LineNo: Integer);
   var
-    Token: string;
-    Attr: TSynHighlighterAttributes;
-  begin
-    FEditor.GetHighlighterAttriAtRowCol(BufferCoord(ScanPos, LineNo + 1),
-      Token, Attr);
-    Result := (Attr = FEditor.Highlighter.CommentAttribute) or
-      (Attr = FEditor.Highlighter.StringAttribute) or
-      (Attr.Name = 'Preprocessor'); // compiler directives
-  end;
-
-begin
-  SetLength(Positions, 100);
-  for var LineNo := 0 to FEditor.Lines.Count - 1 do
+    UsedSearchLine, UsedSearchText: string;
+    Action: TSynReplaceAction;
   begin
     StackPos := 0;
     UsedSearchLine := FEditor.Lines[LineNo];
@@ -443,14 +430,16 @@ begin
       UsedSearchLine := WideUpperCase(UsedSearchLine);
       UsedSearchText := WideUpperCase(SearchText);
     end;
+    var
     ScanPos := 1;
     repeat
       ScanPos := Pos(UsedSearchText, UsedSearchLine, ScanPos);
       if ScanPos > 0 then
       begin
-        if not(MySearchOptions.WholeWords and not IsWholeWord(ScanPos)) and
+        if not(MySearchOptions.WholeWords and not IsWholeWord(UsedSearchLine,
+          ScanPos, Length(SearchText)) and
           not(MySearchOptions.ExcludeCommentsAndStrings and
-          IsCommentOrString(ScanPos, LineNo)) then
+          IsCommentOrString(ScanPos, LineNo))) then
         begin
           FoundIt(Self, SearchText, ReplaceText, LineNo + 1, ScanPos, Action);
           if MySearchOptions.Replace then
@@ -462,9 +451,14 @@ begin
         Inc(ScanPos, Length(SearchText));
       end;
     until ScanPos = 0;
+  end;
+
+  procedure Replace(LineNo: Integer);
+  begin
     if MySearchOptions.Replace and (StackPos > 0) then
     begin
       FEditor.BeginUpdate;
+      var
       ReplaceLine := FEditor.Lines[LineNo];
       while StackPos > 0 do
       begin
@@ -476,6 +470,14 @@ begin
       FEditor.Modified := True;
       FEditor.EndUpdate;
     end;
+  end;
+
+begin
+  SetLength(Positions, 100);
+  for var LineNo := 0 to FEditor.Lines.Count - 1 do
+  begin
+    Search(LineNo);
+    Replace(LineNo);
   end;
 end;
 
