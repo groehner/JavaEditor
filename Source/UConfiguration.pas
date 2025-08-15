@@ -8640,7 +8640,6 @@ function TFConfiguration.GetClassPathJarExpanded(const Pathname,
 var
   Cp1, Cp2: string;
   Posi: Integer;
-  SearchRec: TSearchRec;
 begin
   Result := GetClassPath(Pathname, Package);
   if Pos('*', Result) = 0 then

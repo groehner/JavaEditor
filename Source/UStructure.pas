@@ -95,13 +95,13 @@ begin
   Result.Hidden:= FHidden;
 end;
 
-procedure TStructureEx.decTopBottom;
+procedure TStructureEx.DecTopBottom;
 begin
   Dec(FFoldedTextRect.Top);
   Dec(FFoldedTextRect.Bottom);
 end;
 
-procedure TStructureEx.decBottom;
+procedure TStructureEx.DecBottom;
 begin
   Dec(FFoldedTextRect.Bottom);
 end;

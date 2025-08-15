@@ -64,7 +64,7 @@ type
     procedure NavigateToNodeElement(Node: TTreeNode;
       ForceToMiddle: Boolean = True; Activate: Boolean = True);
     procedure ShowSelected;
-    property myForm: TFForm read FMyForm write FMyForm;
+    property MyForm: TFForm read FMyForm write FMyForm;
   end;
 
 var
@@ -103,7 +103,7 @@ begin
   Visible := False;
   FLocked := False;
   FLockShowSelected := False;
-  myForm := nil;
+  MyForm := nil;
   FWindowOpened := False;
 end;
 
@@ -142,7 +142,7 @@ end;
 
 procedure TFFileStructure.InitWithItems(Items: TTreeNodes; Form: TFForm);
 begin
-  myForm := Form;
+  MyForm := Form;
   if DifferentItems(Items) then
   begin
     FJava.Lock.Acquire;
@@ -288,25 +288,28 @@ end;
 procedure TFFileStructure.ShowEditorCodeElement;
 var
   Line, Num: Integer;
-  AInteger: TInteger;
-begin
-  if Assigned(myForm) and (myForm is TFEditForm) and
-    Assigned((myForm as TFEditForm).Editor) then
+
+  function GetNum(Line: Integer): Integer;
   begin
-    Line := (myForm as TFEditForm).Editor.CaretY;
-    Num := -1;
     for var I := 0 to TVFileStructure.Items.Count - 1 do
     begin
-      AInteger := TInteger(TVFileStructure.Items[I].Data);
+      var AInteger := TInteger(TVFileStructure.Items[I].Data);
       if AInteger.Int = Line then
-        Num := I
-      else if (AInteger.Int > Line) and (I > 0) then
-        Num := I - 1;
-      if Num > -1 then
-        Break;
+        Exit(I);
+      if (AInteger.Int > Line) and (I > 0) then
+        Exit(I - 1);
     end;
-    if Num = -1 then
-      Num := TVFileStructure.Items.Count - 1;
+    Result := TVFileStructure.Items.Count - 1;
+  end;
+
+begin
+  if not Assigned(MyForm) then
+    Exit;
+
+  if (MyForm.FormTag = 1) and Assigned((MyForm as TFEditForm).Editor) then
+  begin
+    Line := (MyForm as TFEditForm).Editor.CaretY;
+    Num := GetNum(Line);
     if (Num > -1) and not TVFileStructure.Items[Num].Selected then
       TVFileStructure.Items[Num].Selected := True;
     ShowSelected;
@@ -316,49 +319,49 @@ end;
 procedure TFFileStructure.NavigateToNodeElement(Node: TTreeNode;
   ForceToMiddle: Boolean = True; Activate: Boolean = True);
 var
-  Int, ANodeLine: Integer;
+  ANodeLine: Integer;
   Line, AClassname, ANodeText: string;
   EditForm: TFEditForm;
   AForm: TFForm;
   IsWrapping: Boolean;
   Files: TStringList;
   CNode: TTreeNode;
+
+
+function GetEditForm(AClassname: string): TFEditForm;
 begin
-  EditForm := nil;
-  if Assigned(Node) then
-  begin
-    ANodeLine := TInteger(Node.Data).Int;
-    ANodeText := Node.Text;
-  end
-  else
+  for var I := 0 to Files.Count - 1 do
+    if Pos(AClassname, Files[I]) > 0 then
+    begin
+      FJava.SwitchWindowWithSearch(Files[I]);
+      if FJava.WindowOpened(Files[I], AForm) then
+        Exit(AForm as TFEditForm);
+    end;
+  Result := nil;
+end;
+
+begin
+  if not Assigned(Node) then
     Exit;
 
-  if myForm.FormTag = 1 then
-    EditForm := myForm as TFEditForm
-  else if myForm.FormTag = 2 then
-  begin // UML window
+  ANodeLine := TInteger(Node.Data).Int;
+  ANodeText := Node.Text;
+  if MyForm.FormTag = 1 then
+    EditForm := MyForm as TFEditForm
+  else
+    EditForm := nil;
+
+  if MyForm.FormTag = 2 then  // UML window
+  begin
     FLocked := True;
-    Files := (myForm as TFUMLForm).MainModul.Model.ModelRoot.Files;
+    Files := (MyForm as TFUMLForm).MainModul.Model.ModelRoot.Files;
     CNode := Node;
     while CNode.Parent <> nil do
       CNode := CNode.Parent;
     AClassname := WithoutGeneric(CNode.Text);
     Delete(AClassname, 1, LastDelimiter('.', AClassname));
     AClassname := '\' + AClassname + '.java';
-    Int := 0;
-    while Int < Files.Count do
-    begin
-      if Pos(AClassname, Files[Int]) > 0 then
-      begin
-        FJava.SwitchWindowWithSearch(Files[Int]);
-        if FJava.WindowOpened(Files[Int], AForm) then
-        begin
-          EditForm := AForm as TFEditForm;
-          Break;
-        end;
-      end;
-      Inc(Int);
-    end;
+    EditForm := GetEditForm(AClassname);
     if not Assigned(EditForm) then
       Exit;
   end;
@@ -366,14 +369,11 @@ begin
   IsWrapping := EditForm.Editor.WordWrap;
   if IsWrapping then
     EditForm.SBWordWrapClick(nil);
-  with EditForm.Editor do
-  begin
-    Line := Lines[ANodeLine - 1];
-    FLockShowSelected := True;
-    TopLine := ANodeLine;
-    FLockShowSelected := False;
-    CaretXY := BufferCoord(Max(1, Pos(ANodeText, Line)), ANodeLine);
-  end;
+  Line := EditForm.Editor.Lines[ANodeLine - 1];
+  FLockShowSelected := True;
+  EditForm.Editor.TopLine := ANodeLine;
+  FLockShowSelected := False;
+  EditForm.Editor.CaretXY := BufferCoord(Max(1, Pos(ANodeText, Line)), ANodeLine);
   if Activate and CanActuallyFocus(EditForm.Editor) then
     EditForm.Editor.SetFocus;
   if IsWrapping then
