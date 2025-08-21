@@ -88,7 +88,7 @@ type
     procedure OnRequestError(const Sender: TObject; const AError: string);
     procedure OnRequestCompleted(const Sender: TObject; const AResponse: IHTTPResponse);
     function GetIsBusy: Boolean;
-    function GetLLMSettings: TLLMSettings;
+    function GetSettings: TLLMSettings;
   protected
     FSerializer: TJsonSerializer;
     procedure DoResponseCompleted(const AResponse: IHTTPResponse); virtual;
@@ -109,7 +109,7 @@ type
     procedure CancelRequest;
     property ActiveTopicIndex: Integer read FActiveTopicIndex;
     property ChatTopics: TArray<TChatTopic> read FChatTopics;
-    property Settings: TLLMSettings read GetLLMSettings;
+    property Settings: TLLMSettings read GetSettings;
     property IsBusy: Boolean read GetIsBusy;
     property OnLLMResponse: TOnLLMResponseEvent read FOnLLMResponse write FOnLLMResponse;
     property OnLLMError: TOnLLMErrorEvent read FOnLLMError write FOnLLMError;
@@ -419,7 +419,7 @@ begin
   Result := Assigned(FHttpResponse);
 end;
 
-function TLLMBase.GetLLMSettings: TLLMSettings;
+function TLLMBase.GetSettings: TLLMSettings;
 begin
   case Providers.Provider of
     llmProviderOpenAI: Result := Providers.OpenAI;

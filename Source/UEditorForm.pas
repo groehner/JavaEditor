@@ -348,8 +348,7 @@ type
     procedure DeleteBreakpointAtLine(Line: Integer);
     procedure InsertGotoCursorBreakpoint;
     procedure InsertBreakpoint;
-    procedure HTMLforApplet(const AWidth, AHeight, CharSet, Path,
-      AClass: string; WithJEApplets, Debug: Boolean);
+    procedure HTMLforApplet(const AWidth, AHeight, CharSet, AClass: string);
     function CurrentCol: Integer;
     function CurrentRow: Integer;
     procedure ExportToFile(const FileName: string;
@@ -438,7 +437,7 @@ type
 
     procedure DeleteAttribute(const Str: string);
     function DeleteAttributeValue(const Str: string): Boolean;
-    procedure DeleteComponentValue(Str: string);
+    procedure DeleteComponentValue(const Str: string);
     procedure DeleteAttributeValues(const Str: string);
     procedure DeleteEmptyLines(Line: Integer);
     procedure DeleteLine(Line: Integer);
@@ -451,7 +450,7 @@ type
       SourcecodeCheck: Boolean = True); overload;
     procedure DeleteMethod(Method: TOperation); overload;
     procedure DeleteEventMethod(Method: string);
-    procedure DeleteListener(Listener: string);
+    procedure DeleteListener(const Listener: string);
     procedure DeleteFXListener(Listener: string);
     procedure DeleteLambdaListener(Listener: string);
     procedure DeleteOldAddNewMethods(OldMethods, NewMethods: TStringList);
@@ -496,7 +495,7 @@ type
     function GetAllClassnames: TStringList; override;
     function ClassnameDifferentFromAncestors(const AClassname: string): Boolean;
     procedure InitShowCompileErrors;
-    procedure SetErrorMark(Line, Column: Integer; const Error: string);
+    procedure SetErrorMark(Line, Column: Integer);
     procedure UnderlineCompileErrors;
     procedure ClearCompilerErrorMarks;
     procedure ClearMarks;
@@ -512,9 +511,9 @@ type
     procedure SetFXBackgroundAsString(const Container, AName, AColor: string);
     procedure DPIChanged; override;
     function CountClassOrInterface: Integer;
-    procedure SetActivityIndicator(TurnOn: Boolean; Hint: string = '';
+    procedure SetActivityIndicator(TurnOn: Boolean; const Hint: string = '';
       OnClick: TNotifyEvent = nil);
-    procedure ShowAssistantError(Msg: string);
+    procedure ShowAssistantError(const Msg: string);
     function IsApplet: Boolean;
     function IsAWT: Boolean;
     function FrameTypToString: string;
@@ -1693,8 +1692,8 @@ begin
     end;
 end;
 
-procedure TFEditForm.HTMLforApplet(const AWidth, AHeight, CharSet, Path,
-  AClass: string; WithJEApplets, Debug: Boolean);
+procedure TFEditForm.HTMLforApplet(const AWidth, AHeight, CharSet,
+  AClass: string);
 begin
   var
   Archive := FConfiguration.GetAppletArchiv;
@@ -4284,16 +4283,16 @@ begin
   var
   AEnd := GetLNGEndComponents;
   var
-  Search := GetLineNumberWith(Str);
-  if (0 <= Search) and (Search < AEnd) then
+  ASearch := GetLineNumberWith(Str);
+  if (0 <= ASearch) and (ASearch < AEnd) then
   begin
-    DeleteLine(Search);
+    DeleteLine(ASearch);
     Result := True;
     Modified := True;
   end;
 end;
 
-procedure TFEditForm.DeleteComponentValue(Str: string);
+procedure TFEditForm.DeleteComponentValue(const Str: string);
 var
   From, Till, Line: Integer;
 begin
@@ -4966,7 +4965,7 @@ begin
   FreeAndNil(StringList);
 end;
 
-procedure TFEditForm.DeleteListener(Listener: string);
+procedure TFEditForm.DeleteListener(const Listener: string);
 var
   From, Till, Line: Integer;
   StringList: TStringList;
@@ -6028,7 +6027,7 @@ begin
   end;
 end;
 
-procedure TFEditForm.SetErrorMark(Line, Column: Integer; const Error: string);
+procedure TFEditForm.SetErrorMark(Line, Column: Integer);
 begin
   FEditor.SetCompileError(Point(Column, Line + 1));
   for var I := FEditor.Marks.Count - 1 downto 0 do
@@ -6218,7 +6217,7 @@ begin
   FEditor.Invalidate;
 end;
 
-procedure TFEditForm.SetActivityIndicator(TurnOn: Boolean; Hint: string;
+procedure TFEditForm.SetActivityIndicator(TurnOn: Boolean; const Hint: string;
 OnClick: TNotifyEvent);
 begin
   ActivityIndicator.Left := Width div 2;
@@ -6229,7 +6228,7 @@ begin
   TCrackActivityIndicator(ActivityIndicator).OnClick := OnClick;
 end;
 
-procedure TFEditForm.ShowAssistantError(Msg: string);
+procedure TFEditForm.ShowAssistantError(const Msg: string);
 begin
   ShowMessage(Msg);
 end;

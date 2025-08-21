@@ -32,14 +32,13 @@ type
     procedure SetRowHeight(AValue: Integer);
     procedure SetRootVisible(AValue: Boolean);
     procedure SetShowsRootHandles(AValue: Boolean);
-    procedure SetItems(AValue: TStrings);
+    procedure SetModel(AValue: TStrings);
     procedure SetHorizontalScrollBarPolicy(Value: TScrollBarPolicy);
     procedure SetVerticalScrollBarPolicy(Value: TScrollBarPolicy);
     function NodeName(Num: Integer): string;
     procedure MakeTree;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ATreeView: TTreeView);
     destructor Destroy; override;
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
@@ -53,7 +52,7 @@ type
   published
     property RowHeight: Integer read FRowHeight write SetRowHeight;
     property RootVisible: Boolean read FRootVisible write SetRootVisible;
-    property Model: TStrings read FModel write SetItems;
+    property Model: TStrings read FModel write SetModel;
     property ShowsRootHandles: Boolean read FShowsRootHandles
       write SetShowsRootHandles;
     property HorizontalScrollBarPolicy: TScrollBarPolicy
@@ -106,15 +105,6 @@ begin
   FVerticalScrollBarPolicy := AS_NEEDED;
   Font.Style := []; // not bold;
   JavaType := 'JTree';
-end;
-
-constructor TJTree.CreateFrom(ATreeView: TTreeView);
-begin
-  Create(ATreeView.Owner);
-  CreateFromJ(ATreeView);
-  Background := ATreeView.Color;
-  RowHeight := ATreeView.Indent;
-  RootVisible := ATreeView.ShowRoot;
 end;
 
 destructor TJTree.Destroy;
@@ -546,7 +536,7 @@ begin
   end;
 end;
 
-procedure TJTree.SetItems(AValue: TStrings);
+procedure TJTree.SetModel(AValue: TStrings);
 begin
   if FModel.Text <> AValue.Text then
   begin

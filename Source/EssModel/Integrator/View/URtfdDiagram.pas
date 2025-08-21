@@ -122,7 +122,7 @@ type
 
     procedure RefreshDiagram; override;
     procedure RecalcPanelSize; override;
-    procedure SetConnections(const Value: Integer); override;
+    procedure SetShowConnections(const Value: Integer); override;
 
     procedure SelectAssociation; override;
     procedure DeleteSelectedControls(Sender: TObject);
@@ -1906,12 +1906,12 @@ begin
   FPanel.RecalcSize;
 end;
 
-procedure TRtfdDiagram.SetConnections(const Value: Integer);
+procedure TRtfdDiagram.SetShowConnections(const Value: Integer);
 begin
   if Value <> ShowConnections then
   begin
     FPanel.IsModified := True;
-    inherited SetConnections(Value);
+    inherited SetShowConnections(Value);
     FPanel.SetConnections(Value);
   end;
   inherited;
@@ -3328,16 +3328,6 @@ begin
     Str2 := Copy(Str, 1, Posi - 1);
     Delete(Str, 1, Posi);
     Str2 := GetShortTypeWith(Str2);
-    if Pos('<?', Str2) > 0 then
-    begin
-      Str2 := Str2;
-    end
-    else
-    begin
-      Posi := Pos(' ', Str2);
-      if (Posi = 0) and (Str2 <> '') then
-        Str2 := Str2;
-    end;
     Posi := Pos(',', Str);
     if Posi > 0 then
       Str1 := Str1 + Str2 + ', '
@@ -5275,7 +5265,7 @@ end;
 
 procedure TRtfdDiagram.SetModified(const Value: Boolean);
 begin
-  FPanel.SetModified(Value);
+  FPanel.SetIsModified(Value);
 end;
 
 procedure TRtfdDiagram.SetOnModified(OnBoolEvent: TBoolEvent);

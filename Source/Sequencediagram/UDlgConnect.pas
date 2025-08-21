@@ -37,8 +37,7 @@ type
     FIsTurned: Boolean;
     FILConnections: TVirtualImageList;
   public
-    procedure Init(IsConnecting: Boolean; Conn: TConnection;
-      SelectedControls: Integer);
+    procedure Init(IsConnecting: Boolean; Conn: TConnection);
     function GetConnectionAttributes: TConnectionAttributes;
     property IsTurned: Boolean read FIsTurned;
   end;
@@ -103,8 +102,7 @@ begin
   ModalResult := mrOk;
 end;
 
-procedure TFConnectDialog.Init(IsConnecting: Boolean; Conn: TConnection;
-  SelectedControls: Integer);
+procedure TFConnectDialog.Init(IsConnecting: Boolean; Conn: TConnection);
 begin
   if IsConnecting then
   begin

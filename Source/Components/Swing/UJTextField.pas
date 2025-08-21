@@ -20,24 +20,23 @@ type
   TJTextField = class(TSwingComponent)
   private
     FText: string;
-    FHorizontalAlignment: THorzAlignment;
+    FHorizontalAlignment: THorizontalAlignment;
     FCaretPosition: Integer;
     FEditable: Boolean;
     FSelectionEnd: Integer;
     FSelectionStart: Integer;
-    procedure SetHorizontalAlignment(AValue: THorzAlignment);
+    procedure SetHorizontalAlignment(AValue: THorizontalAlignment);
     procedure SetText(const AValue: string);
     procedure SetEditable(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AEdit: TEdit);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
     procedure Paint; override;
   published
-    property HorizontalAlignment: THorzAlignment read FHorizontalAlignment
+    property HorizontalAlignment: THorizontalAlignment read FHorizontalAlignment
       write SetHorizontalAlignment;
     property Text: string read FText write SetText;
     property CaretPosition: Integer read FCaretPosition write FCaretPosition
@@ -111,19 +110,6 @@ begin
   FHorizontalAlignment := UAComponents.Left;
   Font.Style := [];
   JavaType := 'JTextField';
-end;
-
-constructor TJTextField.CreateFrom(AEdit: TEdit);
-begin
-  Create(AEdit.Owner);
-  CreateFromJ(AEdit);
-  Text := AEdit.Text;
-  Font := AEdit.Font;
-  Foreground := Font.Color;
-  Background := AEdit.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
-  CaretPosition := AEdit.MaxLength;
 end;
 
 function TJTextField.GetAttributes(ShowAttributes: Integer): string;
@@ -210,7 +196,7 @@ begin
   Canvas.TextRect(Rect(2, 2, Width - 2, Height - 2), XPos, YPos, Str);
 end;
 
-procedure TJTextField.SetHorizontalAlignment(AValue: THorzAlignment);
+procedure TJTextField.SetHorizontalAlignment(AValue: THorizontalAlignment);
 begin
   if AValue <> FHorizontalAlignment then
   begin

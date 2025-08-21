@@ -1250,7 +1250,7 @@ type
     procedure CheckUserFolders(Edit: TEdit);
     procedure CheckCBManual;
     procedure CheckCBManualFX;
-    procedure SetJDKFolder(Dir: string);
+    procedure SetJDKFolder(const Dir: string);
     function JavaDevelopmentKit: string;
     procedure SetStartDir(const Dir, AFile, Filter: string);
     procedure RegisterJavaeditor;
@@ -1264,13 +1264,13 @@ type
     procedure StyleSelectorShow;
     procedure FillVclStylesList;
     procedure DecideProxy;
-    function JavaDocComment(FIndent: string = ''): string;
-    function ShortComment(FIndent: string = ''): string;
+    function JavaDocComment(const Indent: string = ''): string;
+    function ShortComment(const Indent: string = ''): string;
     function GetFileInCHM(Str: string): string;
     function GetJavaManualFX: string;
     procedure UpdateHeaderFooter;
-    procedure ReadProviders(Name: string; var Providers: TLLMProviders);
-    procedure WriteProviders(Name: string; Providers: TLLMProviders);
+    procedure ReadProviders(const Name: string; var Providers: TLLMProviders);
+    procedure WriteProviders(const Name: string; Providers: TLLMProviders);
     procedure CopyProviders(From: TLLMProviders; var Toward: TLLMProviders);
     procedure LLMAssistantModelToView(Settings: TLLMSettings);
     procedure LLMChatModelToView(Settings: TLLMSettings);
@@ -1344,10 +1344,10 @@ type
       Value: TStream): Integer;
 
     procedure MakeAssociations;
-    function HeadText(FIndent: string = ''): string;
+    function HeadText(const Indent: string = ''): string;
     function RemovePortableDrive(const Str: string;
-      Folder: string = ''): string;
-    function AddPortableDrive(const Str: string; Folder: string = ''): string;
+      const Folder: string = ''): string;
+    function AddPortableDrive(const Str: string; const Folder: string = ''): string;
     function AddPortableDrives(Str: string): string;
     function RemovePortableDrives(Str: string): string;
     function GetCHMJavaManual(const Str: string): string;
@@ -1362,7 +1362,7 @@ type
     procedure ReplaceClNone;
     procedure LoadUserColors;
     procedure LoadDefaultColors(Typ: Integer);
-    function GetTVConfigurationItem(Text: string): TTreeNode;
+    function GetTVConfigurationItem(const Text: string): TTreeNode;
     procedure ShowPage(Page: Integer);
     procedure PrepareShow;
     function GetTargetDir(const Target: string): string;
@@ -1450,7 +1450,7 @@ type
     function GetJavaTools(const Tool: string): string;
     procedure ReadEditorStyleNames;
     function ExplorerTest: Boolean;
-    procedure OpenAndShowPage(Page: string);
+    procedure OpenAndShowPage(const Page: string);
     procedure Log(const Str: string; E: Exception = nil);
     procedure SetupLanguages;
     procedure InitTreeView;
@@ -1459,7 +1459,7 @@ type
     function ExtractZipToDir(const Filename, Dir: string): Boolean;
 
     class procedure SetGUIStyle;
-    class procedure LoadGUIStyle(Style: string);
+    class procedure LoadGUIStyle(const Style: string);
     class function IsDark: Boolean;
 
     property Sourcepath: string read FSourcepath write FSourcepath;
@@ -2144,7 +2144,7 @@ begin
   BRepository.Enabled := not FLockedPaths;
 end;
 
-procedure TFConfiguration.SetJDKFolder(Dir: string);
+procedure TFConfiguration.SetJDKFolder(const Dir: string);
 begin
   ShortenPath(CBJDKFolder, Dir);
   ComboBoxAdd(CBJDKFolder);
@@ -2507,12 +2507,14 @@ begin
   CheckFile(EJavaCompiler, False);
 end;
 
-function TFConfiguration.FolderSelect(Edit: TEdit; const Foldername: string): string;
+function TFConfiguration.FolderSelect(Edit: TEdit;
+  const Foldername: string): string;
 begin
-  Result:= Foldername;
+  Result := Foldername;
   FolderDialog.DefaultFolder := Foldername;
-  if FolderDialog.Execute then begin
-    Result:= ExcludeTrailingPathDelimiter(FolderDialog.Filename);
+  if FolderDialog.Execute then
+  begin
+    Result := ExcludeTrailingPathDelimiter(FolderDialog.Filename);
     ShortenPath(Edit, Result);
   end;
 end;
@@ -3549,13 +3551,10 @@ begin
       DefaultLanguageName := 'JSP';
       var
       Scheme := TScheme(Schemes.Add);
-      with Scheme do
-      begin
-        StartExpr := '<%';
-        EndExpr := '%>';
-        Highlighter := FJavaHighlighter;
-        SchemeName := 'Java';
-      end;
+      Scheme.StartExpr := '<%';
+      Scheme.EndExpr := '%>';
+      Scheme.Highlighter := FJavaHighlighter;
+      Scheme.SchemeName := 'Java';
     end;
   end;
   Result := FMultiSynHighlighter;
@@ -3573,13 +3572,10 @@ begin
       DefaultLanguageName := 'PHP';
       var
       Scheme := TScheme(Schemes.Add);
-      with Scheme do
-      begin
-        StartExpr := '(<\?){1}(php){0,1}';
-        EndExpr := '\?>';
-        Highlighter := GetPHPInternHighlighter;
-        SchemeName := 'PHP';
-      end;
+      Scheme.StartExpr := '(<\?){1}(php){0,1}';
+      Scheme.EndExpr := '\?>';
+      Scheme.Highlighter := GetPHPInternHighlighter;
+      Scheme.SchemeName := 'PHP';
     end;
   end;
   Result := FPHPHighlighter;
@@ -3734,7 +3730,8 @@ begin
     FTempDirWithUsername := ReadStringU('Program', 'TempDir',
       FEditorFolder + 'App\Temp')
   else
-    FTempDirWithUsername := ReadStringU('Program', 'TempDir', TPath.GetTempPath);
+    FTempDirWithUsername := ReadStringU('Program', 'TempDir',
+      TPath.GetTempPath);
   FTempDirWithUsername := IncludeTrailingPathDelimiter
     (AddPortableDrive(FTempDirWithUsername));
   FTempDir := ExpandFileName(DissolveUsername(FTempDirWithUsername));
@@ -3749,7 +3746,8 @@ begin
         IniFile.WriteString('test', 'test', 'test');
       except
         FTempDirWithUsername := IncludeTrailingPathDelimiter
-          (AddPortableDrive(ReadStringU('Program', 'TempDir', TPath.GetTempPath)));
+          (AddPortableDrive(ReadStringU('Program', 'TempDir',
+          TPath.GetTempPath)));
         FTempDir := FTempDirWithUsername;
       end;
     finally
@@ -3962,7 +3960,8 @@ begin
   FAddClosingBracket := ReadBoolU('Editor', 'CompleteBracket', False);
   FIndentAfterBracket := ReadBoolU('Editor', 'IndentAfterBracket', True);
   FKeyboardFile := ReadStringFile('Editor', 'KeyboardFile', '');
-  FShowControlFlowSymbols := ReadBoolU('Editor', 'ShowControlFlowSymbols', True);
+  FShowControlFlowSymbols := ReadBoolU('Editor',
+    'ShowControlFlowSymbols', True);
   FShowLigatures := ReadBoolU('Editor', 'ShowLigatures', True);
   FCompactLineNumbers := ReadBoolU('Editor', 'CompactLineNumbers', True);
 
@@ -4506,19 +4505,21 @@ begin
         FUserIniFile := TIniFile.Create(Str);
         FreeAndNil(AFile);
       except
-        on E: exception do
+        on E: Exception do
           Log('FFirstStartAfterInstallation', E);
       end;
     end;
     try
-      FUserIniFile:= TIniFile.Create(Str);
+      FUserIniFile := TIniFile.Create(Str);
     except
-      on E: exception do begin
-        ErrorMsg(Format(_('Could not open the preferencesfile %s!'), [Str]) + ' ' + E.Message);
-        FUserIniFile:= nil;
+      on E: Exception do
+      begin
+        ErrorMsg(Format(_('Could not open the preferencesfile %s!'), [Str]) +
+          ' ' + E.Message);
+        FUserIniFile := nil;
       end;
     end;
-    
+
   end;
 end;
 
@@ -6464,8 +6465,9 @@ begin
       begin
         RootKey := HKEY_CURRENT_USER;
         Access := KEY_READ;
-        if OpenKey('\Software\JavaEditor\' + Key, False) then begin
-          if ValueExists(AName) then 
+        if OpenKey('\Software\JavaEditor\' + Key, False) then
+        begin
+          if ValueExists(AName) then
             Result := ReadInteger(AName);
           CloseKey;
         end;
@@ -6511,16 +6513,16 @@ begin
         else
           RootKey := HKEY_CURRENT_USER;
         Access := KEY_WRITE;
-        if OpenKey('\Software\JavaEditor\' + Key, True) then begin
+        if OpenKey('\Software\JavaEditor\' + Key, True) then
+        begin
           WriteBool(AName, Value);
           CloseKey;
         end;
       end
-    else
-      if Machine and Assigned(FMachineIniFile) then
-        FMachineIniFile.WriteBool(Key, AName, Value)
-      else if Assigned(FUserIniFile) then
-        FUserIniFile.WriteBool(Key, AName, Value);
+    else if Machine and Assigned(FMachineIniFile) then
+      FMachineIniFile.WriteBool(Key, AName, Value)
+    else if Assigned(FUserIniFile) then
+      FUserIniFile.WriteBool(Key, AName, Value);
   except
     // no logging
   end;
@@ -6551,21 +6553,21 @@ begin
         else
           RootKey := HKEY_CURRENT_USER;
         Access := KEY_READ;
-        if OpenKey('\Software\JavaEditor\' + Key, False) then begin
+        if OpenKey('\Software\JavaEditor\' + Key, False) then
+        begin
           if ValueExists(AName) then
             Result := ReadBool(AName);
           CloseKey;
         end;
       end
-    else
-      if Machine and Assigned(FMachineIniFile) then
+    else if Machine and Assigned(FMachineIniFile) then
+      Result := FMachineIniFile.ReadBool(Key, AName, Default)
+    else if Assigned(FUserIniFile) then
+      if Assigned(FMachineIniFile) and FMachineIniFile.ValueExists(Key, AName)
+      then
         Result := FMachineIniFile.ReadBool(Key, AName, Default)
-      else if Assigned(FUserIniFile) then
-        if Assigned(FMachineIniFile) and FMachineIniFile.ValueExists(Key, AName)
-        then
-          Result := FMachineIniFile.ReadBool(Key, AName, Default)
-        else
-          Result := FUserIniFile.ReadBool(Key, AName, Default);
+      else
+        Result := FUserIniFile.ReadBool(Key, AName, Default);
   except
     // no logging
   end;
@@ -6592,18 +6594,18 @@ begin
         else
           RootKey := HKEY_CURRENT_USER;
         Access := KEY_WRITE;
-        if OpenKey('\Software\JavaEditor\' + Key, True) then begin
+        if OpenKey('\Software\JavaEditor\' + Key, True) then
+        begin
           WriteBinaryData(AName, Pointer(PByte(Stream.Memory) + Stream.Position)
             ^, Stream.Size - Stream.Position);
           CloseKey;
         end;
       end
-    else
-      if Machine and Assigned(FMachineIniFile) then
-        FMachineIniFile.WriteBinaryStream(Key, AName, Stream)
-      else if Assigned(FUserIniFile) then
-        FUserIniFile.WriteBinaryStream(Key, AName, Stream);
-  except 
+    else if Machine and Assigned(FMachineIniFile) then
+      FMachineIniFile.WriteBinaryStream(Key, AName, Stream)
+    else if Assigned(FUserIniFile) then
+      FUserIniFile.WriteBinaryStream(Key, AName, Stream);
+  except
     // no logging
   end;
 end;
@@ -6643,7 +6645,8 @@ begin
               begin
                 Stream.Size := Stream.Position + Info.DataSize;
                 Result := ReadBinaryData(AName,
-                  Pointer(PByte(Stream.Memory) + Stream.Position)^, Stream.Size);
+                  Pointer(PByte(Stream.Memory) + Stream.Position)^,
+                  Stream.Size);
                 if Stream <> Value then
                   Value.CopyFrom(Stream, Stream.Size - Stream.Position);
               end;
@@ -7152,7 +7155,7 @@ begin
     Path := FEditorFolder + 'App\Temp\'
   else
     Path := TPath.GetTempPath;
-  Path:= FolderSelect(ETempFolder, Path);
+  Path := FolderSelect(ETempFolder, Path);
   ForceDirectories(Path);
   ShortenPath(ETempFolder, Path);
 end;
@@ -7843,29 +7846,29 @@ begin
   end;
 end;
 
-function TFConfiguration.JavaDocComment(FIndent: string = ''): string;
+function TFConfiguration.JavaDocComment(const Indent: string = ''): string;
 begin
-  Result := FIndent + '/**' + CrLf + FIndent + ' *' + CrLf + FIndent + ' * ' +
-    _('Description') + CrLf + FIndent + ' *' + CrLf + FIndent +
-    ' * @version 1.0 ' + _('from') + ' %DATE%' + CrLf + FIndent +
-    ' * @author %AUTHOR%' + CrLf + FIndent + ' */' + CrLf;
+  Result := Indent + '/**' + CrLf + Indent + ' *' + CrLf + Indent + ' * ' +
+    _('Description') + CrLf + Indent + ' *' + CrLf + Indent +
+    ' * @version 1.0 ' + _('from') + ' %DATE%' + CrLf + Indent +
+    ' * @author %AUTHOR%' + CrLf + Indent + ' */' + CrLf;
 end;
 
-function TFConfiguration.ShortComment(FIndent: string = ''): string;
+function TFConfiguration.ShortComment(const Indent: string = ''): string;
 begin
-  Result := FIndent + '// Author: %AUTHOR%' + CrLf + '// Date: %DATE%' + CrLf;
+  Result := Indent + '// Author: %AUTHOR%' + CrLf + '// Date: %DATE%' + CrLf;
 end;
 
-function TFConfiguration.HeadText(FIndent: string = ''): string;
+function TFConfiguration.HeadText(const Indent: string = ''): string;
 var
   Str: string;
   Posi: Integer;
 begin
   case FCommentKind of
     0:
-      Str := JavaDocComment(FIndent);
+      Str := JavaDocComment(Indent);
     1:
-      Str := ShortComment(FIndent);
+      Str := ShortComment(Indent);
     2:
       Str := FFreeComment;
   end;
@@ -7980,7 +7983,7 @@ begin
 end;
 
 function TFConfiguration.RemovePortableDrive(const Str: string;
-  Folder: string = ''): string;
+  const Folder: string = ''): string;
 // if Folder is set then switch to relative paths, used in Store/FetchDiagram
 var
   SL1, SL2: TStringList;
@@ -8021,7 +8024,7 @@ begin
 end;
 
 function TFConfiguration.AddPortableDrive(const Str: string;
-  Folder: string = ''): string;
+  const Folder: string = ''): string;
 // if Folder is set then switch to relative paths, used in Store/FetchDiagram
 var
   SL1, SL2: TStringList;
@@ -8517,7 +8520,7 @@ begin
     SetMindstormsVersion;
 end;
 
-function TFConfiguration.GetTVConfigurationItem(Text: string): TTreeNode;
+function TFConfiguration.GetTVConfigurationItem(const Text: string): TTreeNode;
 begin
   for var I := 0 to FLNGTVItems.Count - 1 do
     if FLNGTVItems[I] = Text then
@@ -8654,7 +8657,8 @@ begin
     if EndsWith(Cp2, '*') then
     begin
       Delete(Cp2, Length(Cp2), 1);
-      var Filenames := TDirectory.GetFiles(Cp2, '*.jar');
+      var
+      Filenames := TDirectory.GetFiles(Cp2, '*.jar');
       for var Filename in Filenames do
         Result := Result + ';' + Filename;
     end
@@ -8991,7 +8995,7 @@ var
         JarFile.Open(JarFilename, zmRead);
         for var I := 0 to JarFile.FileCount - 1 do
         begin
-          Str := JarFile.FileNames[I];
+          Str := JarFile.Filenames[I];
           Ext := ExtractFileExt(Str);
           if Ext = '.class' then
           begin
@@ -9017,9 +9021,12 @@ var
 
   procedure CollectInDirectory(const Cp2, Ext: string);
   begin
-    var Filenames := TDirectory.GetFiles(Cp2, Ext);
-    for var Filename in Filenames do begin
-      var AFilename := ChangeFileExt(ExtractFileName(Filename), '');
+    var
+    Filenames := TDirectory.GetFiles(Cp2, Ext);
+    for var Filename in Filenames do
+    begin
+      var
+      AFilename := ChangeFileExt(ExtractFileName(Filename), '');
       if Pos('$', AFilename) = 0 then
         FAllClasspathClasses.Add(AFilename + '=' + AFilename);
     end;
@@ -9027,7 +9034,8 @@ var
 
   procedure CollectJarsInDirectory(const Cp2: string);
   begin
-    var Filenames := TDirectory.GetFiles(Cp2, '*.jar');
+    var
+    Filenames := TDirectory.GetFiles(Cp2, '*.jar');
     for var Filepath in Filenames do
       CollectInJarFile(Filepath);
   end;
@@ -9277,7 +9285,8 @@ var
 
   procedure CollectJarsInDirectory(const Cp2: string);
   begin
-    var Filenames := TDirectory.GetFiles(Cp2, '*.jar');
+    var
+    Filenames := TDirectory.GetFiles(Cp2, '*.jar');
     for var Filepath in Filenames do
       Cp1 := Filepath + ';' + Cp1;
   end;
@@ -9311,7 +9320,7 @@ begin
 end;
 
 function TFConfiguration.RunAsAdmin(Wnd: HWND;
-const AFile, Parameters: string): Boolean;
+  const AFile, Parameters: string): Boolean;
 var
   Sei: TShellExecuteInfoA;
 begin
@@ -9525,7 +9534,7 @@ var
   FDT1, FDT2: TDateTime;
 begin
   var
-  ClassDatei := GetClass(GetClassPath, FJavaCompilerParameter, Pathname);
+  ClassDatei := GetClass(GetClassPath, Pathname);
   if (ClassDatei <> '') and FileAge(ClassDatei, FDT1) and FileAge(Pathname, FDT2)
   then
     Result := (FDT1 >= FDT2)
@@ -9536,7 +9545,7 @@ end;
 function TFConfiguration.HasClass(const Pathname: string): Boolean;
 begin
   var
-  ClassDatei := GetClass(GetClassPath, FJavaCompilerParameter, Pathname);
+  ClassDatei := GetClass(GetClassPath, Pathname);
   Result := (ClassDatei <> '');
 end;
 
@@ -9753,21 +9762,21 @@ var
   Cp1, Cp2: string;
   Posi: Integer;
 
-  function InJarFile(const JarFilename, AClassname: string): string;
+  function InJarFile(const JarFilename: string; AClassname: string): string;
   var
     JarFile: TZipFile;
-    Classname, AFilename: string;
+    AFilename: string;
   begin
     Result := '';
-    Classname := AClassname + '.class';
+    AClassname := AClassname + '.class';
     JarFile := TZipFile.Create;
     try
       try
         JarFile.Open(JarFilename, zmRead);
         for var I := 0 to JarFile.FileCount - 1 do
         begin
-          AFilename := JarFile.FileNames[I];
-          if (AFilename = Classname) or EndsWith(AFilename, '\' + Classname)
+          AFilename := JarFile.Filenames[I];
+          if (AFilename = AClassname) or EndsWith(AFilename, '\' + AClassname)
           then
           begin
             Result := FJavaCache + '\' + AFilename;
@@ -9792,12 +9801,15 @@ var
   function SearchFile(const Dir, Fname: string): string;
   begin
     Result := '';
-    var Filepath := Tpath.Combine(Dir, Fname);
+    var
+    Filepath := TPath.Combine(Dir, Fname);
     if FileExists(Filepath) then
       Exit(Filepath)
     else if DirectoryExists(Dir) then
     begin
-      var Filenames := TDirectory.GetFiles(Dir, FName, TSearchOption.soAllDirectories);
+      var
+      Filenames := TDirectory.GetFiles(Dir, Fname,
+        TSearchOption.soAllDirectories);
       if Length(Filenames) > 0 then
         Result := Filenames[0];
     end;
@@ -9855,7 +9867,8 @@ begin
     Exit;
   JavaScanner := TJavaScanner.Create;
   try
-    var Text:= TFile.ReadAllText(Pathname);
+    var
+    Text := TFile.ReadAllText(Pathname);
     Result := JavaScanner.IsInterface(Text);
   finally
     FreeAndNil(JavaScanner);
@@ -10020,16 +10033,18 @@ end;
 // https://stackoverflow.com/questions/9130945/delphi-xe2-disabling-vcl-style-on-a-component
 // https://theroadtodelphi.com/2012/02/06/changing-the-color-of-edit-controls-with-vcl-styles-enabled/
 
-class procedure TFConfiguration.LoadGUIStyle(Style: string);
+class procedure TFConfiguration.LoadGUIStyle(const Style: string);
 var
   StyleInfo: TStyleInfo;
 begin
   if not TStyleManager.TrySetStyle(Style, False) then
   begin
-    var SearchDir := ExtractFilePath(ParamStr(0)) + 'styles';
+    var
+    SearchDir := ExtractFilePath(ParamStr(0)) + 'styles';
     if DirectoryExists(SearchDir) then
     begin
-      var Filenames := TDirectory.GetFiles(SearchDir, '*.vsf');
+      var
+      Filenames := TDirectory.GetFiles(SearchDir, '*.vsf');
       for var Filename in Filenames do
         if TStyleManager.IsValidStyle(Filename, StyleInfo) and
           (StyleInfo.Name = Style) then
@@ -10044,23 +10059,23 @@ end;
 
 class procedure TFConfiguration.SetGUIStyle;
 var
-  Str, FEditorFolder, FPortAppDrive, Style: string;
+  Str, AEditorFolder, APortAppDrive, Style: string;
   MyReg: TRegistry;
-  FMachineIniFile: TMemIniFile;
-  FUserIniFile: TIniFile;
+  AMachineIniFile: TMemIniFile;
+  AUserIniFile: TIniFile;
 begin
   Style := 'Windows';
-  FEditorFolder := ExtractFilePath(ParamStr(0));
-  ChDir(FEditorFolder);
+  AEditorFolder := ExtractFilePath(ParamStr(0));
+  ChDir(AEditorFolder);
   Str := ParamStr(1);
   if (Str = '') or (UpperCase(ExtractFileExt(Str)) <> '.INI') then
-    Str := FEditorFolder + 'JEMachine.ini'
+    Str := AEditorFolder + 'JEMachine.ini'
   else
     Str := ExpandUNCFileName(Str);
 
-  FPortAppDrive := ExtractFileDrive(Str); // with UNC we get \\Server\Freigabe
-  if Pos(':', FPortAppDrive) > 0 then
-    FPortAppDrive := Copy(FPortAppDrive, 1, 1);
+  APortAppDrive := ExtractFileDrive(Str); // with UNC we get \\Server\Freigabe
+  if Pos(':', APortAppDrive) > 0 then
+    APortAppDrive := Copy(APortAppDrive, 1, 1);
 
   if not FileExists(Str) then
   begin
@@ -10082,29 +10097,29 @@ begin
   else
   begin
     try
-      FMachineIniFile := TMemIniFile.Create(Str);
+      AMachineIniFile := TMemIniFile.Create(Str);
       try
-        Str := FMachineIniFile.ReadString('User', 'HomeDir', '<nix>');
+        Str := AMachineIniFile.ReadString('User', 'HomeDir', '<nix>');
         if Str = '<nix>' then
           Exit;
         Str := DissolveUsername(Str);
         if Copy(Str, 1, 2) = ':\' then
-          Str := FPortAppDrive + Str;
+          Str := APortAppDrive + Str;
         Str := WithTrailingSlash(Str);
         Str := Str + 'JEUser.ini';
         try
-          FUserIniFile := TIniFile.Create(Str);
+          AUserIniFile := TIniFile.Create(Str);
           try
-            if Assigned(FUserIniFile) then
-              if Assigned(FMachineIniFile) and FMachineIniFile.ValueExists
+            if Assigned(AUserIniFile) then
+              if Assigned(AMachineIniFile) and AMachineIniFile.ValueExists
                 ('Colors', 'GUIStyle') then
-                Style := FMachineIniFile.ReadString('Colors', 'GUIStyle',
+                Style := AMachineIniFile.ReadString('Colors', 'GUIStyle',
                   'Windows')
               else
-                Style := FUserIniFile.ReadString('Colors', 'GUIStyle',
+                Style := AUserIniFile.ReadString('Colors', 'GUIStyle',
                   'Windows');
           finally
-            FreeAndNil(FUserIniFile);
+            FreeAndNil(AUserIniFile);
           end;
         except
           on E: Exception do
@@ -10112,7 +10127,7 @@ begin
               Format(LNGCanNotRead, [Str]) + ' Error: ' + E.Message);
         end;
       finally
-        FreeAndNil(FMachineIniFile);
+        FreeAndNil(AMachineIniFile);
       end;
     except
       on E: Exception do
@@ -10174,7 +10189,7 @@ begin
   end;
 end;
 
-procedure TFConfiguration.OpenAndShowPage(Page: string);
+procedure TFConfiguration.OpenAndShowPage(const Page: string);
 begin
   // due to visible/modal-exception
   if not Visible then
@@ -10450,7 +10465,7 @@ begin
   end;
 end;
 
-procedure TFConfiguration.ReadProviders(Name: string;
+procedure TFConfiguration.ReadProviders(const Name: string;
 var Providers: TLLMProviders);
 
   procedure ReadProvider(ID: string; var Provider: TLLMSettings);
@@ -10478,7 +10493,7 @@ begin
   ReadProvider('Grok', Providers.Grok);
 end;
 
-procedure TFConfiguration.WriteProviders(Name: string;
+procedure TFConfiguration.WriteProviders(const Name: string;
 Providers: TLLMProviders);
 
   procedure WriteProvider(ID: string; Provider: TLLMSettings);

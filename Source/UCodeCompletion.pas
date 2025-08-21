@@ -69,7 +69,7 @@ type
       Line: Integer; const StartWith: string; StaticOnly: Boolean);
     procedure CalculateJavaAPIAttributesAndMethods(const Objekt, Typ,
       StartWith: string);
-    function ClassInDocFile(AClass, AFile: string;
+    function ClassInDocFile(const AClass: string; AFile: string;
       var FullClass: string): Boolean;
     procedure CalculateClassesAndInterfaces(const StartWith: string);
     function GetMethod(var Str: string): string;
@@ -78,7 +78,7 @@ type
       var CountParams: Integer): string;
     function TypeWithoutDecoration(Str: string): string;
     function GetAttribute(var Str: string): string;
-    procedure SplitAttributeComment(AttributeComment: string;
+    procedure SplitAttributeComment(const AttributeComment: string;
       var Attribute, Comment: string);
     procedure SplitMethodComment(MethodComment: string;
       var Method, Comment: string);
@@ -1177,6 +1177,7 @@ var
 
   function IsPackage: string;
   begin
+    Result := '';
     if Assigned(FJava.EditorForm) and Assigned(FJava.EditorForm.Model) and
       Assigned(FJava.EditorForm.Model.ModelRoot) then
     begin // package
@@ -1693,7 +1694,7 @@ begin
   Result := IsJavaAPIClass(AClass, Dummy);
 end;
 
-function TCodeCompletion.ClassInDocFile(AClass, AFile: string;
+function TCodeCompletion.ClassInDocFile(const AClass: string; AFile: string;
   var FullClass: string): Boolean;
 var
   Posi: Integer;
@@ -1977,8 +1978,8 @@ var
   Scanner: TJavaScanner;
 begin
   CountParams := 0;
+  Scanner := TJavaScanner.Create;
   try
-    Scanner := TJavaScanner.Create;
     Scanner.Init(Str);
     Token := Scanner.GetNextToken;
     Result := Token;
@@ -2023,7 +2024,7 @@ begin
   Delete(Str, 1, Posi);
 end;
 
-procedure TCodeCompletion.SplitAttributeComment(AttributeComment: string;
+procedure TCodeCompletion.SplitAttributeComment(const AttributeComment: string;
   var Attribute, Comment: string);
 begin
   var
@@ -2779,6 +2780,7 @@ var
       else
         Result := TypeWithoutDecoration(Typ);
     end;
+    Result:= '';
   end;
 
   function MakeMethod: string;

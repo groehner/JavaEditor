@@ -12,7 +12,6 @@ type
   TJPanel = class(TSwingComponent)
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(APanel: TPanel);
     function GetAttributes(ShowAttributes: Integer): string; override;
     function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
@@ -30,7 +29,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure NewControl; override;
     procedure DeleteComponent; override;
-    procedure MakeUniqueName(FromText: string = ''); override;
+    procedure MakeUniqueName(const FromText: string = ''); override;
   published
     property SubType: string read FSubType write FSubType;
   end;
@@ -55,13 +54,6 @@ begin
   ShowFont := False;
   Opaque := False;
   JavaType := 'JPanel';
-end;
-
-constructor TJPanel.CreateFrom(APanel: TPanel);
-begin
-  Create(APanel.Owner);
-  CreateFromJ(APanel);
-  Background := APanel.Color;
 end;
 
 function TJPanel.GetAttributes(ShowAttributes: Integer): string;
@@ -132,7 +124,7 @@ begin
     SubType + '();');
 end;
 
-procedure TJSubPanel.MakeUniqueName(FromText: string = '');
+procedure TJSubPanel.MakeUniqueName(const FromText: string = '');
 begin
   inherited MakeUniqueName(SubType);
 end;

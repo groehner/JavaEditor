@@ -24,7 +24,6 @@ type
     procedure SetText(const AValue: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ACheckBox: TCheckBox);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -42,7 +41,6 @@ type
     FCheckboxGroup: string;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ARadioButton: TRadioButton); overload;
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
   published
@@ -124,19 +122,6 @@ begin
   Background := clBtnFace;
   Text := 'Checkbox';
   JavaType := 'Checkbox';
-end;
-
-constructor TACheckBox.CreateFrom(ACheckBox: TCheckBox);
-begin
-  Create(ACheckBox.Owner);
-  CreateFromA(ACheckBox);
-  Text := ACheckBox.Caption; // Label
-  Font := ACheckBox.Font;
-  Foreground := Font.Color;
-  Background := ACheckBox.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
-  State := ACheckBox.Checked;
 end;
 
 function TACheckBox.GetAttributes(ShowAttributes: Integer): string;
@@ -246,20 +231,6 @@ begin
   Tag := -6;
   Width := 80;
   JavaType := 'Checkbox';
-end;
-
-constructor TARadioButton.CreateFrom(ARadioButton: TRadioButton);
-begin
-  Create(ARadioButton.Owner);
-  CreateFromA(ARadioButton);
-  Text := ARadioButton.Caption;
-  Font := ARadioButton.Font;
-  Foreground := Font.Color;
-  Background := ARadioButton.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
-  CheckboxGroup := ARadioButton.HelpKeyword;
-  State := ARadioButton.Checked;
 end;
 
 function TARadioButton.GetAttributes(ShowAttributes: Integer): string;

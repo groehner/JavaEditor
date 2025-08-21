@@ -161,10 +161,8 @@ begin
   if Foreground = $00333333 then
   begin
     AColor := Parent.ControlCount - 1;
-    try
+    if AColor in [0..10] then
       Foreground := Colors[AColor];
-    except
-    end;
   end
   else
   begin

@@ -15,10 +15,9 @@ type
     FDisplayPolicy: TScrollBarPolicy;
     FWheelScrollingEnabled: Boolean;
     procedure SetDisplayPolicy(Value: TScrollBarPolicy);
-    procedure MakeScrollbars(const Attr, Value: string);
+    procedure MakeScrollbars(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AScrollBox: TScrollBox);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -54,15 +53,6 @@ begin
   JavaType := 'ScrollPane';
 end;
 
-constructor TAScrollPane.CreateFrom(AScrollBox: TScrollBox);
-begin
-  Create(AScrollBox.Owner);
-  CreateFromA(AScrollBox);
-  Background := AScrollBox.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
-end;
-
 function TAScrollPane.GetAttributes(ShowAttributes: Integer): string;
 begin
   Result := '|DisplayPolicy|WheelScrollingEnabled' + inherited;
@@ -71,12 +61,12 @@ end;
 procedure TAScrollPane.SetAttribute(Attr, Value, Typ: string);
 begin
   if Attr = 'DisplayPolicy' then
-    MakeScrollbars(Attr, Value)
+    MakeScrollbars(Value)
   else
     inherited;
 end;
 
-procedure TAScrollPane.MakeScrollbars(const Attr, Value: string);
+procedure TAScrollPane.MakeScrollbars(const Value: string);
 var
   Str1, Str2: string;
 begin

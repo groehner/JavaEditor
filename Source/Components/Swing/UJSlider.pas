@@ -54,7 +54,6 @@ type
     procedure UpdateThumb;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ATrackBar: TTrackBar);
     function GetAttributes(ShowAttributes: Integer): string; override;
     function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
@@ -113,24 +112,6 @@ begin
 
   UpdateThumbData;
   UpdateTrackData;
-end;
-
-constructor TJSlider.CreateFrom(ATrackBar: TTrackBar);
-begin
-  Create(ATrackBar.Owner);
-  CreateFromJ(ATrackBar);
-  Color := ATrackBar.Brush.Color;
-  Minimum := ATrackBar.Min;
-  Maximum := ATrackBar.Max;
-  Value := ATrackBar.Position;
-  MajorTickSpacing := ATrackBar.LineSize;
-  MinorTickSpacing := ATrackBar.Frequency;
-  if ATrackBar.Orientation = trHorizontal then
-    Orientation := HORIZONTAL
-  else
-    Orientation := VERTICAL;
-  PaintTicks := ATrackBar.ShowHint;
-  PaintLabels := ATrackBar.Ctl3D;
 end;
 
 function TJSlider.GetAttributes(ShowAttributes: Integer): string;

@@ -25,7 +25,6 @@ type
     procedure SetEditable(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AComboBox: TComboBox);
     destructor Destroy; override;
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
@@ -70,16 +69,6 @@ begin
   FSelectedIndex := 0;
   FMaximumRowCount := 8;
   JavaType := 'JComboBox';
-end;
-
-constructor TJComboBox.CreateFrom(AComboBox: TComboBox);
-begin
-  Create(AComboBox.Owner);
-  CreateFromJ(AComboBox);
-  Font := AComboBox.Font;
-  Background := AComboBox.Color;
-  Items.AddStrings(AComboBox.Items);
-  FSelectedIndex := AComboBox.MaxLength;
 end;
 
 function TJComboBox.GetAttributes(ShowAttributes: Integer): string;

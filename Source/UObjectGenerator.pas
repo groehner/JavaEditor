@@ -16,15 +16,8 @@ uses
   Vcl.Controls,
   UEditorForm;
 
-const
-  TagNormal = 0;
-  TagText = 1;
-  TagBoolean = 3;
-  TagFont = 5;
-  TagNumber = 6;
-  TagChar = 7;
-  TagLines = 8;
-  TagIcon = 16;
+const TagNormal = 0; TagText = 1; TagBoolean = 3; TagFont = 5; TagNumber = 6;
+  TagChar = 7; TagLines = 8; TagIcon = 16;
 
 type
 
@@ -65,8 +58,7 @@ type
     property Tags: TIntArray read FTags;
   end;
 
-var
-  FObjectGenerator: TFObjectGenerator = nil;
+var FObjectGenerator: TFObjectGenerator = nil;
 
 implementation
 
@@ -116,8 +108,7 @@ begin
 end;
 
 procedure TFObjectGenerator.OpenWindow;
-var
-  Left, Top, Width, Height, Col: Integer;
+var Left, Top, Width, Height, Col: Integer;
 begin
   // Execution after form has been scaled
   Left := PPIScale(FConfiguration.ReadIntegerU('ObjectGenerator', 'Left', 300));
@@ -204,9 +195,7 @@ begin
 end;
 
 procedure TFObjectGenerator.SetWidthAndHeight;
-var
-  Max1, Max2: Integer;
-  Content: string;
+var Max1, Max2: Integer; Content: string;
 begin
   Max1 := 0;
   Max2 := 0;
@@ -257,16 +246,14 @@ begin
           Free;
         end;
       TagFont:
-        with FontDialog do
-          if Execute then
-            Cells[1, Row] := Font.Name + ' ' + IntToStr(Font.Size) + ' ' +
-              StyleToStr(Font.Style);
+        if FontDialog.Execute then
+          Cells[1, Row] := FontDialog.Font.Name + ' ' +
+            IntToStr(FontDialog.Font.Size) + ' ' + StyleToStr(Font.Style);
       TagIcon:
-        with PictureDialog do
         begin
-          InitialDir := FConfiguration.Sourcepath;
-          if Execute then
-            Cells[1, Row] := ExtractFileName(FileName);
+          PictureDialog.InitialDir := FConfiguration.Sourcepath;
+          if PictureDialog.Execute then
+            Cells[1, Row] := ExtractFileName(PictureDialog.FileName);
         end;
     end;
 end;
@@ -300,8 +287,7 @@ end;
 
 function TFObjectGenerator.Edit(Control: TControl; Attributes: TStringList;
   Row: Integer): Boolean;
-const
-  PickBoolean = 'true'#13#10'false';
+const PickBoolean = 'true'#13#10'false';
 begin
   for var I := 0 to Attributes.Count - 1 do
   begin

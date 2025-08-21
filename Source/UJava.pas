@@ -833,7 +833,7 @@ type
     procedure AppOnIdle(Sender: TObject; var Done: Boolean);
     function GetActiveFormTag: Integer;
     procedure DoHTMLForApplet(Editform: TFEditForm;
-      ForceCreate, PlugIn, AShow, Debug: Boolean; var Applet: string);
+      ForceCreate, PlugIn, AShow: Boolean; var Applet: string);
     procedure DoJarCreate(FileName, Package: string);
     procedure CompileList(StringList: TStringList);
     procedure RefreshUMLWindows;
@@ -868,8 +868,8 @@ type
     function GetTDIWindow(Number: Integer): TFForm; overload;
     function GetTDIWindowType(const Pathname, Typ: string): TFForm;
     function GetTDIWindowTypeFilename(const FileName, Typ: string): TFForm;
-    function GetEditForm(Pathname: string): TFEditForm;
-    function GetGuiForm(Pathname: string): TFGUIForm;
+    function GetEditForm(const Pathname: string): TFEditForm;
+    function GetGuiForm(const Pathname: string): TFGUIForm;
     procedure SwitchToWindow(const Path: string); overload;
     procedure SwitchToWindow(Num: Integer); overload;
     procedure SwitchToWindow(Form: TFForm); overload;
@@ -925,21 +925,21 @@ type
     procedure Restart;
     procedure Run(const Pathname: string);
     function HasBreakpoints: Boolean;
-    procedure StructogramFromText(Sourcecode, Pathname: string);
+    procedure StructogramFromText(const Sourcecode: string; Pathname: string);
     procedure ShowCompileErrors;
     procedure ResetToolbars;
-    procedure UpdateLayoutRightDockPanel(SetWidthHeight: Boolean = False);
+    procedure UpdateLayoutRightDockPanel;
     procedure ImperativeUpdateMenuItems;
     procedure DisableUpdateMenuItems;
     procedure EnableUpdateMenuItems;
     function GetActiveEditor: TFEditForm;
     function TDIEditFormCount: Integer;
     function TDIEditFormGet(Index: Integer): TFEditForm;
-    procedure ChangeStyle(Style: string);
-    procedure SetStyle(StyleName: string);
+    procedure ChangeStyle(const Style: string);
+    procedure SetStyle(const StyleName: string);
     function FormFactory(FormKind: TFormKind): TFForm;
-    procedure DoExport(Pathname: string; Bitmap: TBitmap);
-    procedure ChangeLanguage(LangCode: string);
+    procedure DoExport(const Pathname: string; Bitmap: TBitmap);
+    procedure ChangeLanguage(const LangCode: string);
     procedure SetDockTopPanel;
     procedure ShowAWTSwingOrFX(FrameType: Integer);
     procedure SetOptions;
@@ -2668,7 +2668,7 @@ procedure TFJava.MIFileStructureClick(Sender: TObject);
 begin
   FFileStructure.ChangeHideShow;
   if FFileStructure.Visible then
-    UpdateLayoutRightDockPanel(True);
+    UpdateLayoutRightDockPanel;
 end;
 
 procedure TFJava.MIFontClick(Sender: TObject);
@@ -2766,7 +2766,7 @@ begin
   end;
 end;
 
-function TFJava.GetEditForm(Pathname: string): TFEditForm;
+function TFJava.GetEditForm(const Pathname: string): TFEditForm;
 begin
   Result := nil;
   for var I := 0 to FTDIFormsList.Count - 1 do
@@ -2778,7 +2778,7 @@ begin
   end;
 end;
 
-function TFJava.GetGuiForm(Pathname: string): TFGUIForm;
+function TFJava.GetGuiForm(const Pathname: string): TFGUIForm;
 begin
   Result := nil;
   for var I := 0 to TDIEditFormCount - 1 do
@@ -2902,7 +2902,7 @@ begin
       Gutter.ShowLineNumbers := True;
     end;
     if Error then
-      FEditorForm.SetErrorMark(YPos, XPos, 'ERROR');
+      FEditorForm.SetErrorMark(YPos, XPos);
   end;
 end;
 
@@ -3606,7 +3606,7 @@ begin
       ErrorMsg('no Appletviewer for debugging') // ToDo
     else
     begin
-      DoHTMLForApplet(Editform, False, False, False, Debugging, Applet);
+      DoHTMLForApplet(Editform, False, False, False, Applet);
       if Debugging then
         MyDebugger.DebugApplet(JavaProgramm)
       else if (FConfiguration.AppletStart in [0, 1]) and FConfiguration.JavaAppletviewerOK
@@ -3938,7 +3938,7 @@ begin
   UnlockFormUpdate(Self);
 end;
 
-procedure TFJava.UpdateLayoutRightDockPanel(SetWidthHeight: Boolean = False);
+procedure TFJava.UpdateLayoutRightDockPanel;
 begin
   if RightDockPanel.Width > 0 then
   begin
@@ -4021,20 +4021,18 @@ begin
       AForm.Close;
       Application.ProcessMessages;
     end;
-    DoHTMLForApplet(Editform, True, Sender = MIHTMLforJavaPlugIn, True,
-      False, Applet);
+    DoHTMLForApplet(Editform, True, Sender = MIHTMLforJavaPlugIn, True, Applet);
   end;
   EnableUpdateMenuItems;
 end;
 
 procedure TFJava.DoHTMLForApplet(Editform: TFEditForm;
-ForceCreate, PlugIn, AShow, Debug: Boolean; var Applet: string);
+ForceCreate, PlugIn, AShow: Boolean; var Applet: string);
 var
   Child: TFEditForm;
   AForm: TFForm;
   Call, HTMLConverter, ErrFile, Package, AClass, Dir, AppletArchive, AppletCode,
     Width, Height: string;
-  WithJEApplets: Boolean;
   Point: TPoint;
   Num: Integer;
 begin
@@ -4056,8 +4054,6 @@ begin
     end;
     Applet := Dir + AClass + '.html';
     Point := GetWidthAndHeight;
-    WithJEApplets := HasWord('NumberField') or HasWord('JNumberField') or
-      HasWord('Turtle');
   end;
   Width := IntToStr(Point.X - 8);
   Height := IntToStr(Point.Y - 34);
@@ -4068,8 +4064,7 @@ begin
 
     Child := TFEditForm(FormFactory(fkEditor));
     Child.New(Applet);
-    Child.HTMLforApplet(Width, Height, FConfiguration.GetCharset, Dir, AClass,
-      WithJEApplets, Debug);
+    Child.HTMLforApplet(Width, Height, FConfiguration.GetCharset, AClass);
     Child.CheckAgeEnabled := False;
     Child.Save(WithoutBackup);
     ErrFile := FConfiguration.TempDir + 'error.txt';
@@ -4133,7 +4128,7 @@ begin
   if FEditorForm.IsHTMLApplet then
     Applet := FEditorForm.Pathname
   else
-    DoHTMLForApplet(FEditorForm, False, False, False, False, Applet);
+    DoHTMLForApplet(FEditorForm, False, False, False, Applet);
   MyJavaCommands.AppletViewer(Applet);
 end;
 
@@ -5658,7 +5653,7 @@ begin
       if (AForm.FormTag = 2) and Assigned((AForm as TFUMLForm).MainModul) then
         (AForm as TFUMLForm).MainModul.Diagram.RecalcPanelSize;
     end;
-  UpdateLayoutRightDockPanel(False);
+  UpdateLayoutRightDockPanel;
 end;
 
 procedure TFJava.MICommentOnOffClick(Sender: TObject);
@@ -6604,7 +6599,7 @@ begin
     FEditorForm.SBStructureIndentClick(Self);
 end;
 
-procedure TFJava.StructogramFromText(Sourcecode, Pathname: string);
+procedure TFJava.StructogramFromText(const Sourcecode: string; Pathname: string);
 begin
   var
   Structogram := TFStructogram(GetTDIWindowType(Pathname, '%S%'));
@@ -7352,8 +7347,6 @@ var
       Str2 := 'array required, but found';
       FreeAndNil(StringList1);
     end
-    else if Str2 = 'incompatible types: missing return value' then
-    else if Str2 = 'incompatible types: unexpected return value' then
     else if Pos('incompatible types: possible lossy conversion from', Str2) = 1
     then
     begin
@@ -7470,16 +7463,16 @@ begin
         Line := Line + Pre + Err + Post;
         FMessages.LBCompiler.Items[I] := Line;
         if Assigned(Edit1) and (FileName = Path) then
-          Edit1.SetErrorMark(LineNum, Column, Pre + Err + Post)
+          Edit1.SetErrorMark(LineNum, Column)
         else if Assigned(Edit2) and (Edit2.Pathname = Path) then
-          Edit2.SetErrorMark(LineNum, Column, Pre + Err + Post)
+          Edit2.SetErrorMark(LineNum, Column)
         else
         begin
           Edit2 := TFEditForm(GetTDIWindowType(Path, '%E%'));
           if Assigned(Edit2) then
           begin
             Edit2.InitShowCompileErrors;
-            Edit2.SetErrorMark(LineNum, Column, Pre + Err + Post);
+            Edit2.SetErrorMark(LineNum, Column);
           end;
         end;
       end;
@@ -7602,7 +7595,7 @@ begin
   FreeAndNil(StringList);
 end;
 
-procedure TFJava.SetStyle(StyleName: string);
+procedure TFJava.SetStyle(const StyleName: string);
 begin
   if StyleName <> TStyleManager.ActiveStyle.Name then
   begin
@@ -7614,7 +7607,7 @@ begin
   end;
 end;
 
-procedure TFJava.ChangeStyle(Style: string);
+procedure TFJava.ChangeStyle(const Style: string);
 var
   AColor: TColor;
   Details: TThemedElementDetails;
@@ -7760,7 +7753,7 @@ begin
   Result := AForm;
 end;
 
-procedure TFJava.DoExport(Pathname: string; Bitmap: TBitmap);
+procedure TFJava.DoExport(const Pathname: string; Bitmap: TBitmap);
 var
   Folder, Ext: string;
 
@@ -7863,7 +7856,7 @@ begin
   Close;
 end;
 
-procedure TFJava.ChangeLanguage(LangCode: string);
+procedure TFJava.ChangeLanguage(const LangCode: string);
 begin
   if CompareText(GetCurrentLanguage, LangCode) <> 0 then
   begin

@@ -124,7 +124,7 @@ procedure TRegExSearch.DoRegSearchReplace(Replace: Boolean);
 var
   EditRect: TRect;
   Match: TMatch;
-  SearchText, ReplaceText: string;
+  SearchText, AReplaceText: string;
   Str1, Str2: string;
   AAction: TSynReplaceAction;
   From, To_: TBufferCoord;
@@ -158,7 +158,7 @@ begin
       if not Replace then
         Exit;
       SearchText := FAEditor.SelText;
-      ReplaceText := FMyRegExpr.Replace(MySearchOptions.SearchText,
+      AReplaceText := FMyRegExpr.Replace(MySearchOptions.SearchText,
         MySearchOptions.ReplaceText);
       if AAction = raReplace then
       begin
@@ -187,9 +187,9 @@ begin
       end;
       case AAction of
         raReplace:
-          FAEditor.SelText := ReplaceText;
+          FAEditor.SelText := AReplaceText;
         raReplaceAll:
-          FAEditor.SelText := ReplaceText;
+          FAEditor.SelText := AReplaceText;
         raSkip:
           AAction := raReplace;
         raCancel:
@@ -198,7 +198,7 @@ begin
             Exit;
           end;
       end;
-      if Pos(#13#10, ReplaceText) > 0 then
+      if Pos(#13#10, AReplaceText) > 0 then
       begin
         Inc(FEndLine);
         Break;

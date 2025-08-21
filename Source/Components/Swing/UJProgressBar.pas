@@ -29,11 +29,10 @@ type
     procedure SetMaximum(Value: Integer);
     procedure SetOrientation(AValue: TOrientation);
     procedure SetStringPainted(AValue: Boolean);
-    procedure SetString(const AValue: string);
+    procedure SetProgressString(const AValue: string);
     procedure SetBorderPainted(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AProgressBar: TProgressBar);
     function GetAttributes(ShowAttributes: Integer): string; override;
     function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
@@ -45,7 +44,7 @@ type
     property Minimum: Integer read FMinimum write SetMinimum;
     property Value: Integer read FValue write SetValue;
     property Orientation: TOrientation read FOrientation write SetOrientation;
-    property ProgressString: string read FString write SetString;
+    property ProgressString: string read FString write SetProgressString;
     property StringPainted: Boolean read FStringPainted write SetStringPainted;
     property BorderPainted: Boolean read FBorderPainted write SetBorderPainted;
     property Indeterminate: Boolean read FIndeterminate write FIndeterminate;
@@ -76,20 +75,6 @@ begin
   FBorderPainted := True;
   FString := '0 %';
   JavaType := 'JProgressBar';
-end;
-
-constructor TJProgressBar.CreateFrom(AProgressBar: TProgressBar);
-begin
-  Create(AProgressBar.Owner);
-  CreateFromJ(AProgressBar);
-  Background := AProgressBar.Brush.Color;
-  Maximum := AProgressBar.Max;
-  Minimum := AProgressBar.Min;
-  Value := AProgressBar.Position;
-  if AProgressBar.Orientation = pbVertical then
-    Orientation := VERTICAL
-  else
-    Orientation := HORIZONTAL;
 end;
 
 function TJProgressBar.GetAttributes(ShowAttributes: Integer): string;
@@ -328,7 +313,7 @@ begin
   end;
 end;
 
-procedure TJProgressBar.SetString(const AValue: string);
+procedure TJProgressBar.SetProgressString(const AValue: string);
 begin
   if AValue <> FString then
   begin

@@ -11,13 +11,10 @@ uses
   UComJava1,
   UUtils;
 
-const
-  BufSize = $4000; // of ReadBuf
+const BufSize = $4000; // of ReadBuf
 
   // constants for sub-windows
-  K_Interpreter = 0;
-  K_Compiler = 1;
-  K_Messages = 4;
+  K_Interpreter = 0; K_Compiler = 1; K_Messages = 4;
 
 type
 
@@ -65,8 +62,8 @@ type
     function AcceptableError(const Pathname: string): Boolean;
     procedure AdjustCarets(StringList: TStringList);
 
-    procedure MakeRunJavaBat(Directory, ApplicationName, CommandLine: string;
-      WithPause: Boolean = True);
+    procedure MakeRunJavaBat(const Directory, ApplicationName,
+      CommandLine: string; WithPause: Boolean = True);
     procedure Run(const CallParameter, JavaProgram, Package: string;
       Gui, JavaFX: Boolean);
     procedure Upload(const JavaProgram: string);
@@ -102,8 +99,7 @@ type
     property ProcessRunning: Boolean read FProcessRunning write FProcessRunning;
   end;
 
-var
-  MyJavaCommands: TJavaCommands;
+var MyJavaCommands: TJavaCommands;
 
 implementation
 
@@ -142,8 +138,7 @@ begin
 end;
 
 procedure TJavaCommands.OutputCompileInfos(CompilerNr: Integer);
-var
-  Compiler: string;
+var Compiler: string;
 begin
   case CompilerNr of
     1:
@@ -165,9 +160,7 @@ begin
 end;
 
 procedure TJavaCommands.AdjustCarets(StringList: TStringList);
-var
-  Posi, Int1, Int2: Integer;
-  Str, Str1, Str2: string;
+var Posi, Int1, Int2: Integer; Str, Str1, Str2: string;
 begin
   FMessages.Canvas.Font.Assign(FMessages.MInterpreter.Font);
   for var I := 0 to StringList.Count - 1 do
@@ -199,8 +192,7 @@ begin
 end;
 
 procedure TJavaCommands.LogCompile;
-var
-  AFile: TextFile;
+var AFile: TextFile;
 begin
   if FConfiguration.LogfileCompilerOK then
   begin
@@ -226,8 +218,7 @@ end;
 // the bat method gives better error messages than the ExecAndWait method
 // but the bat method starts a cmd.exe which cannot use UNC paths
 procedure TJavaCommands.CompileWithProcess;
-var
-  BatFile, Call, WinCodepage: string;
+var BatFile, Call, WinCodepage: string;
 begin
   FSuccessfullCompiled := False;
   WinCodepage := GetACP.ToString; // Codepage of Windows
@@ -362,7 +353,7 @@ begin
     ComJava := GetComJava;
     if Assigned(ComJava) and Assigned(ComJava.ClassList) and
       (ComJava.ClassList.IndexOf(ChangeFileExt(FCompileFilename, '')) > -1) then
-    // TODO check
+      // TODO check
       FReload := True;
     var
     CompilerNum := GetCompilerNumber;
@@ -446,9 +437,7 @@ begin
 end;
 
 procedure TJavaCommands.CompileAll;
-var
-  FileList: TStringList;
-  EForm: TFEditForm;
+var FileList: TStringList; EForm: TFEditForm;
 begin
   FMessages.ChangeTab(K_Compiler);
   FMessages.DeleteTab(K_Compiler);
@@ -486,14 +475,11 @@ begin
 end;
 
 function TJavaCommands.HasValidClass(const Programm: string): Boolean;
-var
-  Age1, Age2: TDateTime;
-  Path: string;
+var Age1, Age2: TDateTime; Path: string;
 begin
   Result := False;
   FileAge(Programm, Age1);
-  Path := GetClass(FConfiguration.GetClassPath,
-    FConfiguration.JavaCompilerParameter, Programm);
+  Path := GetClass(FConfiguration.GetClassPath, Programm);
   if Path <> '' then
   begin
     FileAge(Path, Age2);
@@ -508,10 +494,9 @@ begin
   Result := (Pos('1 error', Str) > 0) and (Pos(': constructor ', Str) > 0);
 end;
 
-procedure TJavaCommands.MakeRunJavaBat(Directory, ApplicationName,
+procedure TJavaCommands.MakeRunJavaBat(const Directory, ApplicationName,
   CommandLine: string; WithPause: Boolean = True);
-var
-  Path, Codepage, WinCodepage: string;
+var Path, Codepage, WinCodepage: string;
 begin
   WinCodepage := GetACP.ToString; // Codepage of Windows
   Path := FConfiguration.TempDir + 'RunJava.bat';
@@ -561,9 +546,8 @@ end;
 
 procedure TJavaCommands.Run(const CallParameter, JavaProgram, Package: string;
   Gui, JavaFX: Boolean);
-var
-  Path, Dir, ApplicationName, CommandLine, Classpath, CodePa, MyProgram: string;
-  Chars: Integer;
+var Path, Dir, ApplicationName, CommandLine, Classpath, CodePa,
+    MyProgram: string; Chars: Integer;
 begin
   Path := ExpandFileName(JavaProgram);
   FMessages.ShowTab(K_Interpreter);
@@ -616,10 +600,10 @@ begin
         end).Start;
     2:
       FMessages.Run(Classpath, MyProgram, CallParameter);
-      // with interpreter window as console
+    // with interpreter window as console
     3:
       ExecWithConsoleBat(FConfiguration.TempDir + 'RunJava.bat');
-      // with cmd console
+    // with cmd console
   end;
   FConsoleMode := 0;
 end;
@@ -640,8 +624,7 @@ begin
 end;
 
 procedure TJavaCommands.UploadRCX(const JavaProgram: string);
-var
-  Str: string;
+var Str: string;
 begin
   var
   Filepath := ExpandFileName(JavaProgram);
@@ -675,8 +658,7 @@ begin
 end;
 
 procedure TJavaCommands.UploadNXT(const JavaProgram: string);
-var
-  Path, Line, Parameter: string;
+var Path, Line, Parameter: string;
 begin
   Path := ExpandFileName(JavaProgram);
   Parameter := '';
@@ -706,8 +688,7 @@ begin
 end;
 
 procedure TJavaCommands.UploadEV3(const JavaProgram: string);
-var
-  Path, Parameter: string;
+var Path, Parameter: string;
 begin
   Path := ExpandFileName(JavaProgram);
   FJava.DoJarCreateEV3(Path);
@@ -743,9 +724,7 @@ begin
 end;
 
 procedure TJavaCommands.EditBuffer(const Buffer: string);
-var
-  LengthS, LengthSMinus1, Line: Integer;
-  Str, Percent: string;
+var LengthS, LengthSMinus1, Line: Integer; Str, Percent: string;
 begin
   Str := Buffer;
   LengthS := Length(Str);
@@ -770,12 +749,8 @@ end;
 // calls a program, waits until ready and collects the output to a file
 function TJavaCommands.ExecAndWait(const ApplicationName, CommandLine, Dir,
   Output: string; WindowState: Word; ProcessMessage: Boolean = True): Boolean;
-var
-  StartupInfo: TStartupInfo;
-  SecAttr: TSecurityAttributes;
-  ErrorHandle: THandle;
-  Cmd, CurrentDir: string;
-  WaitObject: Word;
+var StartupInfo: TStartupInfo; SecAttr: TSecurityAttributes;
+  ErrorHandle: THandle; Cmd, CurrentDir: string; WaitObject: Word;
 begin
   if FProcessRunning then
   begin
@@ -851,9 +826,7 @@ end;
 // runs an external program, no need to wait for or close external program
 function TJavaCommands.ExecWithoutWait(const ApplicationName, CommandLine,
   Dir: string; WindowState: Word): Boolean;
-var
-  StartupInfo: TStartupInfo;
-  LocalProcessInformation: TProcessInformation;
+var StartupInfo: TStartupInfo; LocalProcessInformation: TProcessInformation;
   CmdLine, CurrentDir: string;
 begin
   // doesn't start chm-files
@@ -885,17 +858,9 @@ end;
 
 procedure TJavaCommands.ExecWithPipe(const ApplicationName, CommandLine,
   Dir: string; JavaFX: Boolean = False);
-var
-  SecAttr: TSecurityAttributes;
-  StartupInfo: TStartupInfo;
-  DWExitCode: DWORD;
-  UBuffer: RawByteString;
-  Buffer: string;
-  Read: Cardinal;
-  AndroidList: TStringList;
-  HWnd: THandle;
-  Max: Integer;
-  CreateOK: Boolean;
+var SecAttr: TSecurityAttributes; StartupInfo: TStartupInfo; DWExitCode: DWORD;
+  UBuffer: RawByteString; Buffer: string; Read: Cardinal;
+  AndroidList: TStringList; HWnd: THandle; Max: Integer; CreateOK: Boolean;
   CurrentDir, Cmd: string;
 begin
   if FProcessRunning then
@@ -1021,9 +986,7 @@ begin
 end;
 
 procedure TJavaCommands.ExecWithConsoleBat(const Batchfile: string);
-var
-  StartupInfo: TStartupInfo;
-  DWExitCode: DWORD;
+var StartupInfo: TStartupInfo; DWExitCode: DWORD;
 begin
   if FProcessRunning then
   begin
@@ -1082,8 +1045,7 @@ begin
 end;
 
 procedure TJavaCommands.AppletViewer(Pathname: string);
-var
-  FileName, Params: string;
+var FileName, Params: string;
 begin
   FMessages.ShowTab(K_Interpreter);
   FMessages.DeleteTab(K_Interpreter);
@@ -1107,12 +1069,8 @@ begin
 end;
 
 procedure TJavaCommands.RunTests(AClass: TClass; const Method: string);
-var
-  PictureNr, Idx, Posi: Integer;
-  Call, AClassname, Classpath, Output: string;
-  Ite: IModelIterator;
-  AMethod: TOperation;
-  Node: TTreeNode;
+var PictureNr, Idx, Posi: Integer; Call, AClassname, Classpath, Output: string;
+  Ite: IModelIterator; AMethod: TOperation; Node: TTreeNode;
   StringList: TStringList;
 begin
   AClassname := ChangeFileExt(ExtractFileName(AClass.Pathname), '');

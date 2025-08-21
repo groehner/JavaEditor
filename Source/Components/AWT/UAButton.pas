@@ -15,7 +15,6 @@ type
     procedure SetText(const AValue: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AButton: TButton);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -47,15 +46,6 @@ begin
   Background := DefaultBackground;
   FText := 'Button';
   JavaType := 'Button';
-end;
-
-constructor TAButton.CreateFrom(AButton: TButton);
-begin
-  Create(AButton.Owner);
-  CreateFromA(AButton);
-  Text := AButton.Caption;
-  Font := AButton.Font;
-  Foreground := Font.Color;
 end;
 
 function TAButton.GetAttributes(ShowAttributes: Integer): string;

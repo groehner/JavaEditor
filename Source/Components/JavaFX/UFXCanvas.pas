@@ -24,7 +24,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure NewControl; override;
-    procedure MakeUniqueName(FromText: string = ''); override;
+    procedure MakeUniqueName(const FromText: string = ''); override;
   published
     property SubType: string read FSubType write FSubType;
   end;
@@ -100,7 +100,7 @@ begin
   InsertImport('javafx.scene.canvas.*');
 end;
 
-procedure TFXSubCanvas.MakeUniqueName(FromText: string = '');
+procedure TFXSubCanvas.MakeUniqueName(const FromText: string = '');
 begin
   inherited MakeUniqueName(SubType);
 end;

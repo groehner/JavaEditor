@@ -109,7 +109,7 @@ function StripHttp(const Pathname: string): string;
 function IsUNC(const Pathname: string): Boolean;
 function IsCHM(const Pathname: string): Boolean;
 function HasClassExtension(const Pathname: string): Boolean;
-function GetClass(const Classpath, CompilerParameter, Pathname: string): string;
+function GetClass(const Classpath, Pathname: string): string;
 
 function ExtractFileNameEx(Str: string): string;
 function ExtractFilePathEx(const Str: string): string;
@@ -223,7 +223,7 @@ procedure Color2RGB(const Color: TColor; var Red, Green, Blue: Integer);
 function ChangeColor(Color: TColor; Percent: Real): TColor;
 function IsWordBreakChar(Chr: Char): Boolean; overload;
 function IsAlpha(Chr: Char): Boolean;
-function IsWordInLine(Word, Line: string): Boolean;
+function IsWordInLine(const Word, Line: string): Boolean;
 
 function IsDigit(Chr: Char): Boolean;
 function GetFirstWord(Str: string): string;
@@ -258,8 +258,8 @@ procedure CloseProcessinformationHandle(var ProcessInformation
   : TProcessInformation);
 procedure TerminateTask(var ProcessInformation: TProcessInformation);
 procedure ClosePipeHandles(var Pipe: TPipeHandles);
-function LeftSpaces(Str: string; TabW: Integer): Integer;
-function ConvertLtGt(Str: string): string;
+function LeftSpaces(const Str: string; TabW: Integer): Integer;
+function ConvertLtGt(const Str: string): string;
 function IntToVal(IntX: Integer): string;
 function FloatToVal(RealX: Real): string;
 function MyColorToRGB(Color: TColor): string;
@@ -267,11 +267,11 @@ function PointToVal(Posi: TPoint): string;
 function XYToVal(XPos, YPos: Integer): string;
 function CanActuallyFocus(WinControl: TWinControl): Boolean;
 procedure SetDefaultUIFont(const AFont: TFont);
-procedure Log(Str: string);
-function CompiledRegEx(Expr: string; Options: TRegExOptions = [roNotEmpty];
+procedure Log(const Str: string);
+function CompiledRegEx(const Expr: string; Options: TRegExOptions = [roNotEmpty];
   UCP: Boolean = True): TRegEx;
 function MyMulDiv(NNumber, NNumerator, NDenominator: Integer): Integer;
-function StringTimesN(Str: string; Num: Integer): string;
+function StringTimesN(const Str: string; Num: Integer): string;
 function GetUsersWindowsLanguage: string;
 function Obfuscate(const Str: string): string;
 function StringZuSingle(Str: string): Single;
@@ -384,7 +384,7 @@ begin
   Result := (Pos('.class', Pathname) > 0);
 end;
 
-function GetClass(const Classpath, CompilerParameter, Pathname: string): string;
+function GetClass(const Classpath, Pathname: string): string;
 var
   Str, AClasspath, DStr, AClassname: string;
   Posi, Int: Integer;
@@ -1144,11 +1144,8 @@ begin
           Image := AllocMem(ImageSize);
           try
             GetDIB(Bits, 0, Info^, Image^);
-            with Info.bmiHeader do
-            begin
-              DIBWidth := biWidth;
-              DIBHeight := biHeight;
-            end;
+            DIBWidth := Info.bmiHeader.biWidth;
+            DIBHeight := Info.bmiHeader.biHeight;
             case PrintScale of
               poProportional:
                 begin
@@ -1203,6 +1200,7 @@ const
 var
   LStr: array [0 .. MAX_PATH] of Char;
 begin
+  Result := '';
   SetLastError(ERROR_SUCCESS);
   if SHGetFolderPath(0, CSIDL_PERSONAL, 0, 0, @LStr) = S_OK then
     Result := LStr;
@@ -1872,7 +1870,7 @@ begin
   Result := Chr.IsLetter or (Chr = '_');
 end;
 
-function IsWordInLine(Word, Line: string): Boolean;
+function IsWordInLine(const Word, Line: string): Boolean;
 var
   Posi, QPos: Integer;
 begin
@@ -2223,7 +2221,7 @@ begin
   Result := Min(Int1, Min(Int2, Int3));
 end;
 
-function getProtocol(Url: string): string;
+function getProtocol(const Url: string): string;
 begin
   var
   Posi := Pos('://', Url);
@@ -2353,7 +2351,7 @@ begin
   end;
 end;
 
-function LeftSpaces(Str: string; TabW: Integer): Integer;
+function LeftSpaces(const Str: string; TabW: Integer): Integer;
 begin
   var
   Posi := PWideChar(Str);
@@ -2373,7 +2371,7 @@ begin
     Result := 0;
 end;
 
-function ConvertLtGt(Str: string): string;
+function ConvertLtGt(const Str: string): string;
 begin
   Result := ReplaceStr(ReplaceStr(Str, '<', '&lt;'), '>', '&gt;');
 end;
@@ -2439,7 +2437,7 @@ begin
   end;
 end;
 
-procedure Log(Str: string);
+procedure Log(const Str: string);
 begin
   var
   StringList := TStringList.Create;
@@ -2449,7 +2447,7 @@ begin
   FreeAndNil(StringList);
 end;
 
-function CompiledRegEx(Expr: string; Options: TRegExOptions = [roNotEmpty];
+function CompiledRegEx(const Expr: string; Options: TRegExOptions = [roNotEmpty];
 UCP: Boolean = True): TRegEx;
 begin
   try
@@ -2474,7 +2472,7 @@ begin
   Result := MulDiv(NNumber, NNumerator, NDenominator);
 end;
 
-function StringTimesN(Str: string; Num: Integer): string;
+function StringTimesN(const Str: string; Num: Integer): string;
 begin
   Result := '';
   for var I := 1 to Num do

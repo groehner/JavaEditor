@@ -69,14 +69,14 @@ type
 
     function GetBackground: TColor;
     procedure SetBackground(AValue: TColor);
-    function ToJavaColor(Col: string): string;
+    function ToJavaColor(const Col: string): string;
     procedure SetGridOptions;
     procedure GetFontSize;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetAttributes(ShowAttributes: Integer): string;
+    function GetAttributes: string;
     function GetEvents(ShowEvents: Integer): string;
-    procedure SetAttribute(Attr, Value, Typ: string); virtual;
+    procedure SetAttribute(const Attr, Value, Typ: string); virtual;
     procedure Open(const FileName: string; State: string); virtual;
     procedure Enter(Sender: TObject); override;
     procedure Save(WithBackup: Boolean); override;
@@ -506,7 +506,7 @@ begin
   Canvas.FillRect(ClientRect);
 end;
 
-function TFGUIForm.GetAttributes(ShowAttributes: Integer): string;
+function TFGUIForm.GetAttributes: string;
 begin
   Result := '|Background|Height|Resizable|Title|Undecorated|Width|';
 end;
@@ -528,7 +528,7 @@ begin
   Result := Result + '|';
 end;
 
-procedure TFGUIForm.SetAttribute(Attr, Value, Typ: string);
+procedure TFGUIForm.SetAttribute(const Attr, Value, Typ: string);
 begin
   if Attr = 'Title' then
     Caption := Value;
@@ -555,7 +555,7 @@ begin
       Str1, Str2, 0);
 end;
 
-function TFGUIForm.ToJavaColor(Col: string): string;
+function TFGUIForm.ToJavaColor(const Col: string): string;
 begin
   if Copy(Col, 1, 2) = '0x' then
     Result := 'new Color(' + Col + ')'

@@ -20,8 +20,8 @@ type
     FTabPlacement: TTabPlacement;
     FTabLayoutPolicy: TTabLayoutPolicy;
     FTabsOld: TStrings;
-    function GetStrings: TStrings;
-    procedure SetStrings(Strings: TStrings);
+    function GetTabs: TStrings;
+    procedure SetTabs(Strings: TStrings);
     procedure SetTabPlacement(AValue: TTabPlacement);
     procedure SetTabLayoutPolicy(AValue: TTabLayoutPolicy);
     procedure SetSelectedIndex(AValue: Integer);
@@ -32,7 +32,6 @@ type
     procedure ResizePane(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ATabControl: TTabControl);
     destructor Destroy; override;
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
@@ -45,7 +44,7 @@ type
     procedure PlaceTabs;
   published
     property SelectedIndex: Integer read FSelectedIndex write SetSelectedIndex;
-    property Tabs: TStrings read GetStrings write SetStrings;
+    property Tabs: TStrings read GetTabs write SetTabs;
     property TabPlacement: TTabPlacement read FTabPlacement
       write SetTabPlacement;
     property TabLayoutPolicy: TTabLayoutPolicy read FTabLayoutPolicy
@@ -84,14 +83,6 @@ begin
   FSelectedIndex := -1;
   JavaType := 'JTabbedPane';
   OnResize := ResizePane;
-end;
-
-constructor TJTabbedPane.CreateFrom(ATabControl: TTabControl);
-begin
-  Create(ATabControl.Owner);
-  CreateFromJ(ATabControl);
-  Tabs := ATabControl.Tabs;
-  SelectedIndex := ATabControl.TabIndex;
 end;
 
 destructor TJTabbedPane.Destroy;
@@ -412,7 +403,7 @@ begin
   end;
 end;
 
-function TJTabbedPane.GetStrings: TStrings;
+function TJTabbedPane.GetTabs: TStrings;
 begin
   Result := FTabs;
 end;
@@ -444,7 +435,7 @@ begin
     APanel := (Controls[I] as TJPanel);
     APanel.SetBounds(2, 3, Width - 4, Height - 3);
     case FTabPlacement of
-      UJTabbedPane.Top:
+      UJTabbedPane.TOP:
         begin
           APanel.Top := TextHeight;
           APanel.Height := APanel.Height - TextHeight;
@@ -470,7 +461,7 @@ begin
   SetSelectedIndex(FSelectedIndex);
 end;
 
-procedure TJTabbedPane.SetStrings(Strings: TStrings);
+procedure TJTabbedPane.SetTabs(Strings: TStrings);
 begin
   FTabsOld.Text := FTabs.Text;
   if FTabs.Text <> Strings.Text then
@@ -539,7 +530,7 @@ begin
   if (0 <= Int) and (Int < StringList.Count) then
   begin
     StringList.Delete(Int);
-    SetStrings(StringList);
+    SetTabs(StringList);
   end;
   FreeAndNil(StringList);
 end;

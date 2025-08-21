@@ -153,11 +153,11 @@ type
     function GetParentElement(Element: TStrElement): TStrElement;
     function GetToken(var Str: string; var Token: string): Integer;
     procedure CalculateInsertionShape(DestList, InsertList: TStrList;
-      XPos, YPos: Integer);
+      YPos: Integer);
     procedure InsertElement(DestList, InsertList: TStrList;
       ACurElement: TStrElement);
     procedure SetEvents(Image: TListImage);
-    procedure DoEdit(StrElement: TStrElement; Str: string);
+    procedure DoEdit(StrElement: TStrElement; const Str: string);
     procedure CloseEdit;
     procedure SetLeftBorderForEditMemo;
     function GetAlgorithmParameter(ParamList: TStringList): string;
@@ -178,7 +178,7 @@ type
     function IntegerFromStream(Stream: TStream): Integer;
   protected
     function LoadFromFile(const FileName: string): Boolean;
-    function LoadFromFileOld(FileName: string): Boolean;
+    function LoadFromFileOld(const FileName: string): Boolean;
     procedure SaveToFile(const FileName: string);
     procedure UpdateState; override;
   public
@@ -458,7 +458,7 @@ begin
   FVersion := $0F;
 end;
 
-function TFStructogram.LoadFromFileOld(FileName: string): Boolean;
+function TFStructogram.LoadFromFileOld(const FileName: string): Boolean;
 var
   SigName: ShortString;
   FontName: ShortString;
@@ -605,7 +605,7 @@ begin
         Writeln(JSGFile, '- Kind: ' + AList.GetKind);
         Writeln(JSGFile, '  SwitchWithCaseLine: ' +
           BoolToStr(AList.SwitchWithCaseLine, True));
-        Writeln(JSGFile, '  RectPos' + AList.GetRectPos('  '));
+        Writeln(JSGFile, '  RectPos' + AList.GetRectPos);
         Write(JSGFile, AList.GetText('  '));
       end;
     finally
@@ -633,69 +633,60 @@ end;
 
 procedure TFStructogram.ShowShape;
 begin
-  with FOldCanvas, FOldShape do
-  begin
-    Pen.Color := clRed;
-    if Top = Bottom then
-    begin
-      MoveTo(Left + 1, Top - 2);
-      LineTo(Right, Top - 2);
-      MoveTo(Left + 1, Top - 1);
-      LineTo(Right, Top - 1);
-      MoveTo(Left + 1, Top + 1);
-      LineTo(Right, Top + 1);
-      MoveTo(Left + 1, Top + 2);
-      LineTo(Right, Top + 2);
-    end
-    else
-    begin
-      MoveTo(Left, Top);
-      LineTo(Right, Top);
-      LineTo(Right, Bottom);
-      LineTo(Left, Bottom);
-      LineTo(Left, Top);
-      MoveTo(Left + 1, Top + 1);
-      LineTo(Right - 1, Top + 1);
-      LineTo(Right - 1, Bottom - 1);
-      LineTo(Left + 1, Bottom - 1);
-      LineTo(Left + 1, Top + 1);
+  with FOldShape do begin
+    FOldCanvas.Pen.Color:= clRed;
+    if Top = Bottom then begin
+      FOldCanvas.MoveTo(Left+1, Top-2);
+      FOldCanvas.LineTo(Right, Top-2);
+      FOldCanvas.MoveTo(Left+1, Top-1);
+      FOldCanvas.LineTo(Right, Top-1);
+      FOldCanvas.MoveTo(Left+1, Top+1);
+      FOldCanvas.LineTo(Right, Top+1);
+      FOldCanvas.MoveTo(Left+1, Top+2);
+      FOldCanvas.LineTo(Right, Top+2);
+    end else begin
+      FOldCanvas.MoveTo(Left, Top);
+      FOldCanvas.LineTo(Right, Top);
+      FOldCanvas.LineTo(Right, Bottom);
+      FOldCanvas.LineTo(Left,  Bottom);
+      FOldCanvas.LineTo(Left, Top);
+      FOldCanvas.MoveTo(Left+1, Top+1);
+      FOldCanvas.LineTo(Right-1, Top+1);
+      FOldCanvas.LineTo(Right-1, Bottom-1);
+      FOldCanvas.LineTo(Left+1,  Bottom-1);
+      FOldCanvas.LineTo(Left+1, Top+1);
     end;
   end;
 end;
 
 procedure TFStructogram.HideShape;
 begin
-  if FOldShape.Top > -1 then
-  begin
-    with FOldCanvas, FOldShape do
-    begin
-      Pen.Color := StyleServices.GetStyleColor(scPanel);
-      if Top = Bottom then
-      begin
-        MoveTo(Left + 1, Top - 2);
-        LineTo(Right, Top - 2);
-        MoveTo(Left + 1, Top - 1);
-        LineTo(Right, Top - 1);
-        MoveTo(Left + 1, Top + 1);
-        LineTo(Right, Top + 1);
-        MoveTo(Left + 1, Top + 2);
-        LineTo(Right, Top + 2);
-      end
-      else
-      begin
-        MoveTo(Left, Top);
-        LineTo(Right, Top);
-        LineTo(Right, Bottom);
-        LineTo(Left, Bottom);
-        LineTo(Left, Top);
-        MoveTo(Left + 1, Top + 1);
-        LineTo(Right - 1, Top + 1);
-        LineTo(Right - 1, Bottom - 1);
-        LineTo(Left + 1, Bottom - 1);
-        LineTo(Left + 1, Top + 1);
+  if FOldShape.Top > -1 then begin
+    with FOldShape do begin
+      FOldCanvas.Pen.Color:= StyleServices.GetStyleColor(scPanel);
+      if Top = Bottom then begin
+        FOldCanvas.MoveTo(Left+1, Top-2);
+        FOldCanvas.LineTo(Right, Top-2);
+        FOldCanvas.MoveTo(Left+1, Top-1);
+        FOldCanvas.LineTo(Right, Top-1);
+        FOldCanvas.MoveTo(Left+1, Top+1);
+        FOldCanvas.LineTo(Right, Top+1);
+        FOldCanvas.MoveTo(Left+1, Top+2);
+        FOldCanvas.LineTo(Right, Top+2);
+      end else begin
+        FOldCanvas.MoveTo(Left, Top);
+        FOldCanvas.LineTo(Right, Top);
+        FOldCanvas.LineTo(Right, Bottom);
+        FOldCanvas.LineTo(Left,  Bottom);
+        FOldCanvas.LineTo(Left, Top);
+        FOldCanvas.MoveTo(Left+1, Top+1);
+        FOldCanvas.LineTo(Right-1, Top+1);
+        FOldCanvas.LineTo(Right-1, Bottom-1);
+        FOldCanvas.LineTo(Left+1,  Bottom-1);
+        FOldCanvas.LineTo(Left+1, Top+1);
       end;
     end;
-    FOldShape := Rect(-1, -1, -1, -1);
+    FOldShape:= Rect(-1, -1, -1, -1);
     PaintAll;
   end;
 end;
@@ -918,8 +909,7 @@ begin
                 Image2Pt := Image2.ScreenToClient(ScreenPt);
                 FCurElement := FindElement(Image2.StrList, Image2Pt.X,
                   Image2Pt.Y);
-                CalculateInsertionShape(Image2.StrList, FCurList, Image2Pt.X,
-                  Image2Pt.Y);
+                CalculateInsertionShape(Image2.StrList, FCurList, Image2Pt.Y);
               end;
             end;
           end;
@@ -930,7 +920,7 @@ begin
 end;
 
 procedure TFStructogram.CalculateInsertionShape(DestList, InsertList: TStrList;
-  XPos, YPos: Integer);
+  YPos: Integer);
 begin
   // FCurElement.debug()
   if not Assigned(FCurElement) then
@@ -1260,7 +1250,7 @@ begin
   FJava.MIFontClick(Sender);
 end;
 
-procedure TFStructogram.DoEdit(StrElement: TStrElement; Str: string);
+procedure TFStructogram.DoEdit(StrElement: TStrElement; const Str: string);
 var
   Left, Top, Width, Height: Integer;
   Image: TListImage;
@@ -1385,6 +1375,7 @@ end;
 
 function TFStructogram.GetName(StrList: TStrList): string;
 begin
+  Result := '';
   if StrList is TStrAlgorithm then
     Result := (StrList as TStrAlgorithm).GetAlgorithmName;
   if Result = '' then

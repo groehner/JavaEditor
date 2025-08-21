@@ -57,7 +57,7 @@ type
   public
     constructor Create(UMLForm: TForm; Number: Integer);
     destructor Destroy; override;
-    function NewClass(AClassname, Pathname: string): Boolean;
+    function NewClass(AClassname: string; const Pathname: string): Boolean;
     function NewAPIClass(AClassname: string): Boolean;
     function GetClass(AClassname: string): TComJavaClass;
     function GetSignature(const Typ: string): string;
@@ -499,7 +499,7 @@ begin
   Result := ExecuteCommand('getNewObjectName'#4 + Typ);
 end;
 
-function TComJava1.NewClass(AClassname, Pathname: string): Boolean;
+function TComJava1.NewClass(AClassname: string; const Pathname: string): Boolean;
 begin
   Result := True;
   AClassname := WithoutGeneric(AClassname);

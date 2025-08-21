@@ -100,10 +100,10 @@ type
     FtouchReleased: string;
     FtouchStationary: string;
 
-    procedure SetX(AValue: Integer);
-    function GetX: Integer;
-    procedure SetY(AValue: Integer);
-    function GetY: Integer;
+    procedure SetLayoutX(AValue: Integer);
+    function GetLayoutX: Integer;
+    procedure SetLayoutY(AValue: Integer);
+    function GetLayoutY: Integer;
     procedure MakeOrientation(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
@@ -141,8 +141,8 @@ type
     function GetListener(const Event: string): string; override;
     procedure DeleteListener(const Event: string); override;
     procedure Rename(const OldName, NewName, Events: string); override;
-    function SurroundFix(Str: string): string;
-    function SurroundFix2(Str: string): string;
+    function SurroundFix(const Str: string): string;
+    function SurroundFix2(const Str: string): string;
     function MakeEventProcedure(const Event: string): string; override;
     function EventToEventtype(const Event: string): string;
     procedure InsertImport(const Str: string);
@@ -155,8 +155,8 @@ type
     property BlueColor: TColor read FBlueColor;
 
   published
-    property LayoutX: Integer read GetX write SetX;
-    property LayoutY: Integer read GetY write SetY;
+    property LayoutX: Integer read GetLayoutX write SetLayoutX;
+    property LayoutY: Integer read GetLayoutY write SetLayoutY;
     property Disable: Boolean read FDisable write FDisable;
     property Cache: Boolean read FCache write FCache;
     property Style: string read FStyle write FStyle;
@@ -292,7 +292,7 @@ begin
   SetBounds(Control.Left, Control.Top, Control.Width, Control.Height);
 end;
 
-procedure TFXNode.SetX(AValue: Integer);
+procedure TFXNode.SetLayoutX(AValue: Integer);
 begin
   if AValue <> Top then
   begin
@@ -301,12 +301,12 @@ begin
   end;
 end;
 
-function TFXNode.GetX: Integer;
+function TFXNode.GetLayoutX: Integer;
 begin
   Result := Left;
 end;
 
-procedure TFXNode.SetY(AValue: Integer);
+procedure TFXNode.SetLayoutY(AValue: Integer);
 begin
   if AValue <> Top then
   begin
@@ -315,7 +315,7 @@ begin
   end;
 end;
 
-function TFXNode.GetY: Integer;
+function TFXNode.GetLayoutY: Integer;
 begin
   Result := Top;
 end;
@@ -871,12 +871,12 @@ begin
   Rename(FtouchStationary);
 end;
 
-function TFXNode.SurroundFix(Str: string): string;
+function TFXNode.SurroundFix(const Str: string): string;
 begin
   Result := Indent1 + Str + #13#10;
 end;
 
-function TFXNode.SurroundFix2(Str: string): string;
+function TFXNode.SurroundFix2(const Str: string): string;
 begin
   Result := Indent2 + Str + #13#10;
 end;

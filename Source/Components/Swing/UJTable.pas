@@ -27,8 +27,8 @@ type
     FDragEnabled: Boolean;
     FHorizontalScrollBarPolicy: TScrollBarPolicy;
     FVerticalScrollBarPolicy: TScrollBarPolicy;
-    function GetStrings: TStrings;
-    procedure SetStrings(Strings: TStrings);
+    function GetColumns: TStrings;
+    procedure SetColumns(Strings: TStrings);
     procedure SetRowHeight(AValue: Integer);
     procedure SetShowHorizontalLines(AValue: Boolean);
     procedure SetShowVerticalLines(AValue: Boolean);
@@ -41,7 +41,6 @@ type
     procedure MakeTable;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AStringGrid: TStringGrid);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
@@ -52,7 +51,7 @@ type
     destructor Destroy; override;
     procedure Paint; override;
   published
-    property Columns: TStrings read GetStrings write SetStrings;
+    property Columns: TStrings read GetColumns write SetColumns;
     property ColCount: Integer read FColCount write SetColCount;
     property RowCount: Integer read FRowCount write SetRowCount;
     property HorizontalScrollBarPolicy: TScrollBarPolicy
@@ -115,19 +114,6 @@ begin
   FVerticalScrollBarPolicy := AS_NEEDED;
   Font.Style := [];
   JavaType := 'JTable';
-end;
-
-constructor TJTable.CreateFrom(AStringGrid: TStringGrid);
-begin
-  Create(AStringGrid.Owner);
-  CreateFromJ(AStringGrid);
-  ColCount := AStringGrid.ColCount;
-  RowCount := AStringGrid.RowCount;
-  RowHeight := 16;
-  Background := AStringGrid.Color;
-  ShowGrid := AStringGrid.Ctl3D;
-  ShowHorizontalLines := AStringGrid.DefaultDrawing;
-  ShowVerticalLines := AStringGrid.ParentShowHint;
 end;
 
 destructor TJTable.Destroy;
@@ -341,12 +327,12 @@ begin
   end;
 end;
 
-function TJTable.GetStrings: TStrings;
+function TJTable.GetColumns: TStrings;
 begin
   Result := FColumns;
 end;
 
-procedure TJTable.SetStrings(Strings: TStrings);
+procedure TJTable.SetColumns(Strings: TStrings);
 begin
   FColumns.Assign(Strings);
   FColCount := Max(FColumns.Count, 1);

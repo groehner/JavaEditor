@@ -89,7 +89,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure RefreshCB(NewName: string = '');
+    procedure RefreshCB(const NewName: string = '');
     procedure RefreshCBObjects;
     procedure MyOnGetComponentNames(Sender: TObject; AClass: TComponentClass;
       AResult: TStrings);
@@ -277,7 +277,7 @@ begin
   UpdateState;
 end;
 
-procedure TFObjectInspector.RefreshCB(NewName: string = '');
+procedure TFObjectInspector.RefreshCB(const NewName: string = '');
 var
   Index: Integer;
   Typ, Nam, NamTyp: string;
@@ -456,7 +456,7 @@ procedure TFObjectInspector.ELPropertyInspectorModified(Sender: TObject);
 var
   IValue: Integer;
   Partner: TFEditForm;
-  OldName, NewName, Caption, Events: string;
+  OldName, NewName, Caption, AEvents: string;
   PropertyItem: TELPropertyInspectorItem;
   Control: TControl;
   JEControl: TJEComponent;
@@ -483,7 +483,7 @@ begin
     Delete(OldName, Pos(':', OldName), Length(OldName));
     Control := Designer.SelectedControls[0];
     NewName := Control.Name;
-    (Control as TJEComponent).Rename(OldName, NewName, Events);
+    (Control as TJEComponent).Rename(OldName, NewName, AEvents);
     RefreshCB(NewName);
   end
   else
@@ -522,7 +522,7 @@ begin
             OldName := JEControl.Name;
             JEControl.NameFromText;
             NewName := JEControl.Name;
-            (Control as TJEComponent).Rename(OldName, NewName, Events);
+            (Control as TJEComponent).Rename(OldName, NewName, AEvents);
             RefreshCB(JEControl.Name);
             UpdatePropertyInspector;
           end;
@@ -888,13 +888,13 @@ begin
   end
   else if AObject is TFXGUIForm then
   begin
-    FEvents := (AObject as TFXGUIForm).GetEvents(ShowEvents);
+    FEvents := (AObject as TFXGUIForm).GetEvents;
     FAttributes := (AObject as TFXGUIForm).GetAttributes(ShowAttributes);
   end
   else if AObject is TFGUIForm then
   begin
     FEvents := (AObject as TFGUIForm).GetEvents(ShowEvents);
-    FAttributes := (AObject as TFGUIForm).GetAttributes(ShowAttributes);
+    FAttributes := (AObject as TFGUIForm).GetAttributes;
   end;
 end;
 

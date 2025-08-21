@@ -917,11 +917,7 @@ begin
           AClass := FComJava.GetClass(FClassname);
           if not Assigned(AClass) then
           begin
-{$IFDEF WIN32}
             AClass := TComJavaClass.CreateWithHandle(FClassname, FComJava);
-{$ELSE}
-            AClass := TComJavaClass.CreateWithHandle(FClassname, FComJava, True);
-{$ENDIF}
             FComJava.ClassList.AddObject(FClassname, AClass);
           end;
           FComJava.AddObject(Variables, AClass);

@@ -22,7 +22,6 @@ type
     procedure SetEditable(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AComboBox: TComboBox);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -58,18 +57,6 @@ begin
   FSelectedIndex := 0;
   FFocusable := True;
   JavaType := 'Choice';
-end;
-
-constructor TAComboBox.CreateFrom(AComboBox: TComboBox);
-begin
-  Create(AComboBox.Owner);
-  CreateFromA(AComboBox);
-  Font := AComboBox.Font;
-  Background := AComboBox.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
-  Items.AddStrings(AComboBox.Items);
-  FSelectedIndex := Math.Min(AComboBox.MaxLength, AComboBox.Items.Count - 1);
 end;
 
 function TAComboBox.GetAttributes(ShowAttributes: Integer): string;

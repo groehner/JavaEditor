@@ -50,10 +50,10 @@ type
     procedure Statistic;
     procedure BeginSearch(MyEditor: TSynEdit; const Pathname: string);
     procedure EndSearch;
-    procedure DoSearchInFile(Pathname: string);
-    procedure DoSearch(Editor: TSynEdit; Pathname: string);
+    procedure DoSearchInFile(const Pathname: string);
+    procedure DoSearch(Editor: TSynEdit; const Pathname: string);
     procedure DoSearchReplace(const SearchText, ReplaceText: string);
-    function IsWholeWord(Line: string; ScanPos, Len: Integer): Boolean;
+    function IsWholeWord(const Line: string; ScanPos, Len: Integer): Boolean;
     function IsCommentOrString(ScanPos, LineNo: Integer): Boolean;
   public
     constructor Create(TreeView: TTreeView);
@@ -160,7 +160,7 @@ begin
   FTheNode.Expand(False);
 end;
 
-procedure TFGrepResults.DoSearchInFile(Pathname: string);
+procedure TFGrepResults.DoSearchInFile(const Pathname: string);
 begin
   var
   MyEditor := TSynEditEx.Create(nil);
@@ -183,7 +183,7 @@ begin
   end;
 end;
 
-procedure TFGrepResults.DoSearch(Editor: TSynEdit; Pathname: string);
+procedure TFGrepResults.DoSearch(Editor: TSynEdit; const Pathname: string);
 begin
   BeginSearch(Editor, Pathname);
   if MySearchOptions.RegEx then
@@ -389,7 +389,7 @@ begin
   FJava.EditorForm.Editor.BlockEnd := BufferCoord;
 end;
 
-function TFGrepResults.IsWholeWord(Line: string; ScanPos, Len: Integer)
+function TFGrepResults.IsWholeWord(const Line: string; ScanPos, Len: Integer)
   : Boolean;
 begin
   var

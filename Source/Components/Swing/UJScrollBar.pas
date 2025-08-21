@@ -24,7 +24,6 @@ type
     procedure SetVisibleAmount(AValue: Integer);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AScrollBar: TScrollBar);
     function GetAttributes(ShowAttributes: Integer): string; override;
     function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
@@ -66,19 +65,6 @@ begin
   Orientation := HORIZONTAL;
   ShowFont := False;
   JavaType := 'JScrollBar';
-end;
-
-constructor TJScrollBar.CreateFrom(AScrollBar: TScrollBar);
-begin
-  Create(AScrollBar.Owner);
-  CreateFromJ(AScrollBar);
-  Maximum := AScrollBar.Max;
-  Minimum := AScrollBar.Min;
-  Value := AScrollBar.Position;
-  if AScrollBar.Kind = sbVertical then
-    Orientation := VERTICAL
-  else
-    Orientation := HORIZONTAL;
 end;
 
 function TJScrollBar.GetAttributes(ShowAttributes: Integer): string;

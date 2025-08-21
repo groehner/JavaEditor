@@ -40,7 +40,6 @@ type
     procedure MakeList;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AListBox: TListBox);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -103,17 +102,6 @@ begin
   FFixedCellHeight := -1;
   FFixedCellWidth := -1;
   JavaType := 'JList';
-end;
-
-constructor TJList.CreateFrom(AListBox: TListBox);
-begin
-  Create(AListBox.Owner);
-  CreateFromJ(AListBox);
-  Font := AListBox.Font;
-  Background := AListBox.Color;
-  Items.AddStrings(AListBox.Items);
-  FSelectedIndex := -1;
-  SelectedIndex := AListBox.Columns;
 end;
 
 function TJList.GetAttributes(ShowAttributes: Integer): string;

@@ -215,7 +215,7 @@ type
     procedure ViewExtends(Int: TInterface);
     function GetExtends: IModelIterator;
     function GetImplementingClasses: IModelIterator;
-    function FindAttribute(Name, AType: string): TAttribute;
+    function FindAttribute(const Name, AType: string): TAttribute;
     function FindOperation(Operation: TOperation): TOperation;
     function GetAncestorName: string; override;
     function AddOperationWithoutType(const NewName: string): TOperation;
@@ -259,7 +259,7 @@ type
     function GetImplements: IModelIterator;
     function GetDescendants: IModelIterator;
     function FindOperation(Operation: TOperation): TOperation;
-    function FindAttribute(Name, AType: string): TAttribute;
+    function FindAttribute(const Name, AType: string): TAttribute;
     function GetTyp: string;
     function GetAncestorName: string; override;
     property Ancestor: TClass read FAncestor write SetAncestor;
@@ -323,7 +323,7 @@ type
     procedure AddInterfaceWithoutShowing(const AInterface: TInterface);
     function AddDatatype(const NewName: string): TDataType;
     function AddObject(const NewName: string; AClass: TClass): TObjekt;
-    procedure DeleteObject(AName: string);
+    procedure DeleteObject(const AName: string);
     function GetObject(const AName: string): TObjekt;
     function AddUnitDependency(UnitPackage: TUnitPackage; Visibility: TVisibility)
       : TUnitDependency;
@@ -887,7 +887,7 @@ begin
   end;
 end;
 
-procedure TUnitPackage.DeleteObject(AName: string);
+procedure TUnitPackage.DeleteObject(const AName: string);
 begin
   var
   AObject := FindClassifier(AName, nil, True);
@@ -1270,7 +1270,7 @@ end;
 {
   Finds an attribute with same name and type.
 }
-function TClass.FindAttribute(Name, AType: string): TAttribute;
+function TClass.FindAttribute(const Name, AType: string): TAttribute;
 begin
   Result := nil;
   var
@@ -1926,7 +1926,7 @@ end;
 {
   Finds an attribute with same name and type.
 }
-function TInterface.FindAttribute(Name, AType: string): TAttribute;
+function TInterface.FindAttribute(const Name, AType: string): TAttribute;
 begin
   Result := nil;
   var

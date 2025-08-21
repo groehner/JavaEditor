@@ -825,7 +825,7 @@ function WeightSortProc(Item1, Item2: Pointer): Integer;
 begin
   if TNode(Item1).FWeight < TNode(Item2).FWeight then
     Result := -1
-  else if TNode(Item1).FWeight = TNode(Item2).FWeight then
+  else if Abs(TNode(Item1).FWeight - TNode(Item2).FWeight) < 0.000001 then
   begin
     if (TNode(Item1).FControl is TRtfdObject) and
       (TNode(Item2).FControl is TRtfdObject) then

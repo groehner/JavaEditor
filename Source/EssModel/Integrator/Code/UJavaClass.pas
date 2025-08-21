@@ -154,8 +154,7 @@ type
   private
     class procedure SkipData(FLen: Integer; Input: TStream);
   public
-    class function AllocAttr(Input: TStream; ConstPoolSec: TConstPool)
-      : TAttrInfo;
+    class function AllocAttr(Input: TStream): TAttrInfo;
   end;
 
   TClassFileHeader = class
@@ -240,7 +239,7 @@ type
   private
     FClassAttrTab: array of TAttrInfo;
   public
-    constructor Create(Input: TStream; ConstPoolSec: TConstPool);
+    constructor Create(Input: TStream);
   end;
 
   TClassFile = class
@@ -391,7 +390,7 @@ begin
   begin
     SetLength(FAttributes, AttrCnt);
     for var I := 0 to AttrCnt - 1 do
-      FAttributes[I] := TAttrFactory.AllocAttr(Input, ConstPoolSec);
+      FAttributes[I] := TAttrFactory.AllocAttr(Input);
   end;
 end;
 
@@ -433,7 +432,7 @@ begin
   begin
     SetLength(FAttributes, AttrCnt);
     for var I := 0 to AttrCnt - 1 do
-      FAttributes[I] := TAttrFactory.AllocAttr(Input, ConstPoolSec);
+      FAttributes[I] := TAttrFactory.AllocAttr(Input);
   end;
 end;
 
@@ -464,7 +463,7 @@ end;
 
 { TClassAttrsec }
 
-constructor TClassAttrsec.Create(Input: TStream; ConstPoolSec: TConstPool);
+constructor TClassAttrsec.Create(Input: TStream);
 var
   NumAttr: Integer;
 begin
@@ -473,7 +472,7 @@ begin
   begin
     SetLength(FClassAttrTab, NumAttr);
     for var I := 0 to NumAttr - 1 do
-      FClassAttrTab[I] := TAttrFactory.AllocAttr(Input, ConstPoolSec);
+      FClassAttrTab[I] := TAttrFactory.AllocAttr(Input);
   end;
 end;
 
@@ -490,7 +489,7 @@ begin
       FClassFields := TClassFieldsec.Create(Input, FClassConstPool);
       FClassname := FClassDecl.GetClassName;
       FClassMethods := TClassMethodsec.Create(Input, FClassConstPool);
-      FClassAttrs := TClassAttrsec.Create(Input, FClassConstPool);
+      FClassAttrs := TClassAttrsec.Create(Input);
     end
     else
       FreeAndNil(FHeader);
@@ -525,7 +524,7 @@ end;
 
 { TAttrFactory }
 
-class function TAttrFactory.AllocAttr(Input: TStream; ConstPoolSec: TConstPool)
+class function TAttrFactory.AllocAttr(Input: TStream)
   : TAttrInfo;
 var
   Length: Integer;

@@ -214,13 +214,13 @@ type
     function GetClipRect: TRect;
     procedure CloseEdit;
     procedure EditBox(Control: TControl);
-    procedure SetModified(const Value: Boolean);
+    procedure SetIsModified(const Value: Boolean);
     procedure ChangeStyle(BlackAndWhite: Boolean = False);
     function GetSVGConnections: string;
     procedure BeginUpdate;
     procedure EndUpdate;
 
-    property IsModified: Boolean read FIsModified write SetModified;
+    property IsModified: Boolean read FIsModified write SetIsModified;
     property IsMoving: Boolean read FIsMoving write FIsMoving;
     // Bitmap to be used as background for printing
     property BackBitmap: TBitmap read FBackBitmap write FBackBitmap;
@@ -1967,7 +1967,7 @@ begin
   end;
 end;
 
-procedure TEssConnectPanel.SetModified(const Value: Boolean);
+procedure TEssConnectPanel.SetIsModified(const Value: Boolean);
 begin
   if FIsModified <> Value then
   begin

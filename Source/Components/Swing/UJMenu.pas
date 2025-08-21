@@ -27,7 +27,7 @@ type
     FMenuItems: TStrings;
     FMenuItemsOld: TStrings;
   protected
-    procedure SetItems(AItems: TStrings);
+    procedure SetMenuItems(AItems: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -40,7 +40,7 @@ type
     procedure Paint; override;
   published
     property BorderPainted: Boolean read FBorderPainted write FBorderPainted;
-    property MenuItems: TStrings read FMenuItems write SetItems;
+    property MenuItems: TStrings read FMenuItems write SetMenuItems;
   end;
 
   TJMenu = class(TSwingComponent)
@@ -49,9 +49,9 @@ type
     FMenuBar: string;
     FMenuItems: TStrings;
     FMenuItemsOld: TStrings;
-    procedure MakeMenuBar(Value: string);
+    procedure MakeMenuBar(const Value: string);
   protected
-    procedure SetItems(AItems: TStrings);
+    procedure SetMenuItems(AItems: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     function GetAttributes(ShowAttributes: Integer): string; override;
@@ -64,7 +64,7 @@ type
   published
     property Text: string read FText write FText;
     property MenuBar: string read FMenuBar write FMenuBar;
-    property MenuItems: TStrings read FMenuItems write SetItems;
+    property MenuItems: TStrings read FMenuItems write SetMenuItems;
   end;
 
   TJPopupMenu = class(TSwingComponent)
@@ -74,7 +74,7 @@ type
     FMenuItems: TStrings;
     FMenuItemsOld: TStrings;
   protected
-    procedure SetItems(AItems: TStrings);
+    procedure SetMenuItems(AItems: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -88,7 +88,7 @@ type
   published
     property Text: string read FText write FText;
     property Listener: string read FListener write FListener;
-    property MenuItems: TStrings read FMenuItems write SetItems;
+    property MenuItems: TStrings read FMenuItems write SetMenuItems;
   end;
 
 implementation
@@ -239,7 +239,7 @@ begin
   Width := Parent.Width - 16;
 end;
 
-procedure TJMenuBarWithMenus.SetItems(AItems: TStrings);
+procedure TJMenuBarWithMenus.SetMenuItems(AItems: TStrings);
 begin
   FMenuItemsOld.Text := FMenuItems.Text;
   if AItems.Text <> FMenuItems.Text then
@@ -292,7 +292,7 @@ begin
   FPartner.DeleteAttribute('private JMenu ' + Name);
 end;
 
-procedure TJMenu.MakeMenuBar(Value: string);
+procedure TJMenu.MakeMenuBar(const Value: string);
 var
   Key, Str: string;
 begin
@@ -323,7 +323,7 @@ begin
   FJava.vilSwing1Light.Draw(Canvas, 5, 2, 16);
 end;
 
-procedure TJMenu.SetItems(AItems: TStrings);
+procedure TJMenu.SetMenuItems(AItems: TStrings);
 begin
   FMenuItemsOld.Text := FMenuItems.Text;
   if AItems.Text <> FMenuItems.Text then
@@ -408,7 +408,7 @@ begin
   FJava.vilSwing1Light.Draw(Canvas, 7, 4, 17);
 end;
 
-procedure TJPopupMenu.SetItems(AItems: TStrings);
+procedure TJPopupMenu.SetMenuItems(AItems: TStrings);
 begin
   FMenuItemsOld.Text := FMenuItems.Text;
   if AItems.Text <> FMenuItems.Text then

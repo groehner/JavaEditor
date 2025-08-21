@@ -51,6 +51,7 @@ type
     FWindowOpened: Boolean;
     procedure OpenWindow;
     function DifferentItems(Items: TTreeNodes): Boolean;
+    procedure NavigateToNodeElement(Node: TTreeNode);
   public
     procedure InitWithItems(Items: TTreeNodes; Form: TFForm);
     procedure SaveWindow;
@@ -61,8 +62,6 @@ type
     procedure SetFont(AFont: TFont);
     procedure ChangeStyle;
     procedure ShowEditorCodeElement;
-    procedure NavigateToNodeElement(Node: TTreeNode;
-      ForceToMiddle: Boolean = True; Activate: Boolean = True);
     procedure ShowSelected;
     property MyForm: TFForm read FMyForm write FMyForm;
   end;
@@ -316,8 +315,7 @@ begin
   end;
 end;
 
-procedure TFFileStructure.NavigateToNodeElement(Node: TTreeNode;
-  ForceToMiddle: Boolean = True; Activate: Boolean = True);
+procedure TFFileStructure.NavigateToNodeElement(Node: TTreeNode);
 var
   ANodeLine: Integer;
   Line, AClassname, ANodeText: string;
@@ -326,7 +324,6 @@ var
   IsWrapping: Boolean;
   Files: TStringList;
   CNode: TTreeNode;
-
 
 function GetEditForm(AClassname: string): TFEditForm;
 begin
@@ -374,7 +371,7 @@ begin
   EditForm.Editor.TopLine := ANodeLine;
   FLockShowSelected := False;
   EditForm.Editor.CaretXY := BufferCoord(Max(1, Pos(ANodeText, Line)), ANodeLine);
-  if Activate and CanActuallyFocus(EditForm.Editor) then
+  if CanActuallyFocus(EditForm.Editor) then
     EditForm.Editor.SetFocus;
   if IsWrapping then
     EditForm.SBWordWrapClick(nil);

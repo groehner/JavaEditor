@@ -107,10 +107,10 @@ type
     function GetParent(ATarget: TObject; XPos, YPos: Integer): TWinControl;
     procedure ComponentToBackground(APartner: TFEditForm; Control: TControl);
     procedure ComponentToForeground(APartner: TFEditForm; Control: TControl);
-    function GetPixelsPerInchOfFile(FileName: string): Integer;
-    procedure RemovePixelsPerInch0(FileName: string);
-    procedure RemoveMDIChild(FileName: string);
-    procedure RemoveFrameType(FileName: string);
+    function GetPixelsPerInchOfFile(const FileName: string): Integer;
+    procedure RemovePixelsPerInch0(const FileName: string);
+    procedure RemoveMDIChild(const FileName: string);
+    procedure RemoveFrameType(const FileName: string);
   public
     procedure Save(const FileName: string; AForm: TFGUIForm);
     function Open(const FileName, JavaFilename: string): TFGUIForm;
@@ -131,7 +131,7 @@ type
     function Tag2Class(Tag: Integer): TControlClass;
     procedure Zooming(Delta: Integer);
     procedure SetComponentValues(DesignForm: TFGUIForm; Control: TControl);
-    procedure SetAttributForComponent(Attr, Value, Typ: string;
+    procedure SetAttributForComponent(const Attr, Value, Typ: string;
       Control: TControl);
     procedure ScaleImages;
     procedure ChangeStyle;
@@ -864,7 +864,7 @@ begin
     TFForm(ELDesigner.DesignControl).Modified := False;
 end;
 
-procedure TFGUIDesigner.RemovePixelsPerInch0(FileName: string);
+procedure TFGUIDesigner.RemovePixelsPerInch0(const FileName: string);
 begin
   var
   StringList := TStringList.Create;
@@ -906,7 +906,7 @@ begin
   end;
 end;
 
-procedure TFGUIDesigner.RemoveMDIChild(FileName: string);
+procedure TFGUIDesigner.RemoveMDIChild(const FileName: string);
 begin
   var
   StringList := TStringList.Create;
@@ -942,7 +942,7 @@ begin
   end;
 end;
 
-procedure TFGUIDesigner.RemoveFrameType(FileName: string);
+procedure TFGUIDesigner.RemoveFrameType(const FileName: string);
 begin
   var
   StringList := TStringList.Create;
@@ -978,7 +978,7 @@ begin
   end;
 end;
 
-function TFGUIDesigner.GetPixelsPerInchOfFile(FileName: string): Integer;
+function TFGUIDesigner.GetPixelsPerInchOfFile(const FileName: string): Integer;
 begin
   Result := 96;
   var
@@ -1020,6 +1020,7 @@ var
     Index, Num: Integer;
     Str: string;
   begin
+    Result := '';
     StringList := TStringList.Create;
     try
       StringList.Sorted := True;
@@ -1212,10 +1213,10 @@ begin
   Count := GetPropList(NewComp.ClassInfo, tkAny, nil);
   GetMem(PropInfos1, Count * SizeOf(PPropInfo));
   GetMem(PropInfos2, Count * SizeOf(PPropInfo));
+  GetPropList(NewComp.ClassInfo, tkAny, PropInfos1);
+  GetPropList(Comp2.ClassInfo, tkAny, PropInfos2);
+  APropertyInspector := TELCustomPropertyInspector.Create(nil);
   try
-    GetPropList(NewComp.ClassInfo, tkAny, PropInfos1);
-    GetPropList(Comp2.ClassInfo, tkAny, PropInfos2);
-    APropertyInspector := TELCustomPropertyInspector.Create(nil);
     for var I := 0 to Count - 1 do
     begin
       Attr := string(PropInfos1[I].Name);
@@ -1293,16 +1294,16 @@ begin
   Partner.Editor.EndUpdate;
 end;
 
-procedure TFGUIDesigner.SetAttributForComponent(Attr, Value, Typ: string;
+procedure TFGUIDesigner.SetAttributForComponent(const Attr, Value, Typ: string;
   Control: TControl);
 begin
-  Value := Delphi2JavaValues(Value);
+  var AValue := Delphi2JavaValues(Value);
   if Control is TFGUIForm then
-    (Control as TFGUIForm).SetAttribute(Attr, Value, Typ)
+    (Control as TFGUIForm).SetAttribute(Attr, AValue, Typ)
   else if Control is TFXGUIForm then
-    (Control as TFXGUIForm).SetAttribute(Attr, Value, Typ)
+    (Control as TFXGUIForm).SetAttribute(Attr, AValue, Typ)
   else if Control is TJEComponent then
-    (Control as TJEComponent).SetAttribute(Attr, Value, Typ);
+    (Control as TJEComponent).SetAttribute(Attr, AValue, Typ);
 end;
 
 procedure TFGUIDesigner.MISnapToGridClick(Sender: TObject);

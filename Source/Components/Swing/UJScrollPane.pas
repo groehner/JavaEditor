@@ -20,7 +20,6 @@ type
     procedure MakeScrollbarDisplayPolicy(const Attr, Value: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AScrollBox: TScrollBox);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
@@ -55,14 +54,6 @@ begin
   WheelScrollingEnabled := True;
   ShowFont := False;
   JavaType := 'JScrollPane';
-end;
-
-constructor TJScrollPane.CreateFrom(AScrollBox: TScrollBox);
-begin
-  Create(AScrollBox.Owner);
-  CreateFromJ(AScrollBox);
-  Background := AScrollBox.Color;
-  ViewportView := AScrollBox.HelpKeyword;
 end;
 
 function TJScrollPane.GetAttributes(ShowAttributes: Integer): string;

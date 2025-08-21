@@ -44,7 +44,7 @@ type
     FMenuBar: string;
     FMenuItems: TStrings;
     FMenuItemsOld: TStrings;
-    procedure MakeMenuBar(Value: string);
+    procedure MakeMenuBar(const Value: string);
     procedure SetItems(AItems: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
@@ -297,7 +297,7 @@ begin
   FPartner.Editor.EndUpdate;
 end;
 
-procedure TAMenu.MakeMenuBar(Value: string);
+procedure TAMenu.MakeMenuBar(const Value: string);
 var
   Key, Str: string;
 begin

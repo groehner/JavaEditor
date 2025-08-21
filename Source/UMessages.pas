@@ -331,8 +331,7 @@ type
     property SearchGoalPath: string read FSearchGoalPath;
   end;
 
-var
-  FMessages: TFMessages = nil;
+var FMessages: TFMessages = nil;
 
 implementation
 
@@ -407,8 +406,7 @@ begin
 end;
 
 procedure TInteractiveEdit.SystemOutPrintln;
-var
-  XPos: Integer;
+var XPos: Integer;
 begin
   if SelText = '' then
     XPos := CaretX
@@ -449,8 +447,7 @@ begin
   FJava.scpSetEditor(Self);
 end;
 
-var
-  SKeyUp: string;
+var SKeyUp: string;
 
 procedure TInteractiveEdit.aKeyUpHandler(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -511,8 +508,7 @@ begin
 end;
 
 procedure TFMessages.FormDestroy(Sender: TObject);
-var
-  AObject: TObject;
+var AObject: TObject;
 begin
   if TVSearch.Items.Count > 0 then
     MyGrepResults.DeleteSearchResults;
@@ -559,7 +555,7 @@ end;
 
 procedure TFMessages.SetStatusBarAndTabs;
 begin
-  Font.Size:= FConfiguration.FontSize;
+  Font.Size := FConfiguration.FontSize;
   StatusBar.Font.Size := Font.Size;
   StatusBar.Canvas.Font.Size := Font.Size;
   var
@@ -592,9 +588,7 @@ begin
 end;
 
 procedure TFMessages.InitAndShow;
-var
-  MyVisible, Docked: Boolean;
-  Left, Top, Width, Height: Integer;
+var MyVisible, Docked: Boolean; Left, Top, Width, Height: Integer;
 begin
   LockFormUpdate(Self);
   MyVisible := FConfiguration.ReadBoolU('Messages', 'Visible', True);
@@ -627,8 +621,9 @@ begin
   if not MyVisible then
     HideIt;
 
-  Font.Size:= FConfiguration.FontSize;
-  FMessagesFont.Name := FConfiguration.ReadStringU('Messages', 'FontName', 'Segoe UI');
+  Font.Size := FConfiguration.FontSize;
+  FMessagesFont.Name := FConfiguration.ReadStringU('Messages', 'FontName',
+    'Segoe UI');
   FMessagesFont.Size := PPIScale(FConfiguration.ReadIntegerU('Messages',
     'FontSize', 10));
   SetFont(FMessagesFont);
@@ -698,8 +693,7 @@ begin
 end;
 
 procedure TFMessages.TabControlChange(NewTab: Integer);
-var
-  IEdit: TInteractiveEdit;
+var IEdit: TInteractiveEdit;
 begin
   PInterpreter.Visible := False;
   PCompiler.Visible := False;
@@ -923,8 +917,7 @@ end;
 
 function TFMessages.GetFileWithPath(LBox: TListBox;
   var LineNo: Integer): string;
-var
-  Str, Pathname, FileName, Path: string;
+var Str, Pathname, FileName, Path: string;
 begin
   Result := '';
   while LineNo >= 0 do
@@ -955,8 +948,7 @@ begin
 end;
 
 procedure TFMessages.LBCompilerDblClick(Sender: TObject);
-var
-  I, Pos1, Pos2, Line, Column: Integer;
+var I, Pos1, Pos2, Line, Column: Integer;
   Str, Str1, Str2, FileWithPath, Parameter: string;
 begin
   // activate double-clicked errorline in editor-window
@@ -1013,8 +1005,7 @@ begin
 end;
 
 procedure TFMessages.MInterpreterDblClick(Sender: TObject);
-var
-  Idx, Pos0, Pos1, Pos2, Pos3, Line: Integer;
+var Idx, Pos0, Pos1, Pos2, Pos3, Line: Integer;
   Str1, Str2, FileWithPath: string;
 begin
   // activate double-clicked errorline in editor-window
@@ -1075,9 +1066,7 @@ begin
 end;
 
 procedure TFMessages.LBMessagesDblClick(Sender: TObject);
-var
-  Idx, Pos1, Pos2, Line, Column: Integer;
-  ALine, FileWithPath: string;
+var Idx, Pos1, Pos2, Line, Column: Integer; ALine, FileWithPath: string;
 begin
   // Activate the double-clicked error line in the editor window
   Idx := LBMessages.ItemIndex;
@@ -1108,8 +1097,7 @@ begin
 end;
 
 procedure TFMessages.ScrollEnd(Tab: Integer);
-var
-  IEdit: TInteractiveEdit;
+var IEdit: TInteractiveEdit;
 
   procedure ScrollEndMemo(Memo: TMemo);
   begin
@@ -1153,7 +1141,7 @@ begin
   for var I := 0 to FInteractiveEditors.Count - 1 do
   begin
     GetMemo(I + 5).Font.Assign(Font);
-    GetInteractive(I + 5).Font.Size:= Font.Size;
+    GetInteractive(I + 5).Font.Size := Font.Size;
     TStringGrid(FInteractiveVariables.Objects[I]).Font.Assign(Font);
     TStringGrid(FInteractiveVariables.Objects[I]).DefaultRowHeight :=
       Round(Font.Size * 1.8);
@@ -1259,8 +1247,7 @@ end;
 
 procedure TFMessages.TVWatchedExpressionsKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-var
-  Node: TTreeNode;
+var Node: TTreeNode;
 begin
   if Key = VK_INSERT then
     FJava.MIWatchesClick(Self)
@@ -1283,9 +1270,7 @@ begin
 end;
 
 procedure TFMessages.LBStackDblClick(Sender: TObject);
-var
-  Str, AClass, Path: string;
-  Line, Pos1, Pos2, Pos3: Integer;
+var Str, AClass, Path: string; Line, Pos1, Pos2, Pos3: Integer;
 begin
   if (0 <= LBStack.ItemIndex) and (LBStack.ItemIndex < LBStack.Items.Count) then
   begin
@@ -1390,10 +1375,7 @@ begin
 end;
 
 procedure TFMessages.TBExecuteClick(Sender: TObject);
-var
-  Form: TFEditForm;
-  SynEdit: TSynEdit;
-  Executer: TInteractiveExecuter;
+var Form: TFEditForm; SynEdit: TSynEdit; Executer: TInteractiveExecuter;
   Code: string;
 begin
   TBExecute.Enabled := False;
@@ -1468,9 +1450,10 @@ begin
   for var I := 0 to TreeView.Items.Count - 1 do
     if All or TreeView.Items[I].Selected then
       if Assigned(TreeView.Items[I].Parent) then
+      begin
         if TreeView.Items[I].Text <> 'dummy' then
           Result := Result + '  ' + TreeView.Items[I].Text + #13#10
-        else
+      end
       else
         Result := Result + TreeView.Items[I].Text + #13#10;
 end;
@@ -1543,9 +1526,7 @@ begin
 end;
 
 function getFullName(Node: TTreeNode): string;
-var
-  AktNode: TTreeNode;
-  Str, Variable: string;
+var AktNode: TTreeNode; Str, Variable: string;
 
   function ExtractVariable(const Str: string): string;
   begin
@@ -1711,8 +1692,7 @@ begin
 end;
 
 procedure TFMessages.TVSearchDblClick(Sender: TObject);
-var
-  Node: TTreeNode;
+var Node: TTreeNode;
 begin
   Node := TVSearch.Selected;
   if Assigned(Node) then
@@ -1720,8 +1700,7 @@ begin
 end;
 
 procedure TFMessages.TreeViewDeleteSelected(TreeView: TTreeView);
-var
-  Node: TTreeNode;
+var Node: TTreeNode;
 begin
   with TreeView do
   begin
@@ -1748,9 +1727,7 @@ begin
 end;
 
 procedure TFMessages.TreeViewDelete(TreeView: TTreeView; All: Boolean);
-var
-  Node, LastNode, PrevNode: TTreeNode;
-  Results: TSearchResults;
+var Node, LastNode, PrevNode: TTreeNode; Results: TSearchResults;
 begin
   LastNode := nil;
   TreeView.Items.BeginUpdate;
@@ -1816,8 +1793,7 @@ begin
 end;
 
 procedure TFMessages.MISameWidthClick(Sender: TObject);
-var
-  AWidth: Integer;
+var AWidth: Integer;
 begin
   if Floating then
     AWidth := (Self.Width - DebuggerToolbar.Width) div 4
@@ -1837,12 +1813,9 @@ begin
   PInteractiveRight.Width := AWidth;
   for var I := 0 to FInteractiveVariables.Count - 1 do
   begin
-    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[0] :=
-      AWidth div 3;
-    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[1] :=
-      AWidth div 3;
-    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[2] :=
-      AWidth div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[0] := AWidth div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[1] := AWidth div 3;
+    TStringGrid(FInteractiveVariables.Objects[I]).ColWidths[2] := AWidth div 3;
   end;
 end;
 
@@ -1881,8 +1854,7 @@ begin
 end;
 
 procedure TFMessages.TBShowUMLClick(Sender: TObject);
-var
-  UMLForm: TFUMLForm;
+var UMLForm: TFUMLForm;
 begin
   var
   I := TabControlMessages.TabIndex;
@@ -1897,9 +1869,7 @@ begin
 end;
 
 procedure TFMessages.PMMessagesPopup(Sender: TObject);
-var
-  Selected, Error: Boolean;
-  WinControl: TWinControl;
+var Selected, Error: Boolean; WinControl: TWinControl;
 begin
   if not(Sender is TSpTBXPopupMenu) then
     Exit;
@@ -1968,13 +1938,8 @@ end;
 
 function TFMessages.AddInteractive(UMLForm: TForm; const Path: string)
   : TInteractive;
-var
-  IEdit: TInteractiveEdit;
-  Executer: TInteractiveExecuter;
-  Memo: TMemo;
-  SGVariables: TStringGrid;
-  Options: TGridOptions;
-  ComJava: TComJava1;
+var IEdit: TInteractiveEdit; Executer: TInteractiveExecuter; Memo: TMemo;
+  SGVariables: TStringGrid; Options: TGridOptions; ComJava: TComJava1;
 begin
   IEdit := TInteractiveEdit.Create(Self);
   IEdit.ReadOnly := False; // <---
@@ -2023,9 +1988,7 @@ begin
 end;
 
 procedure TFMessages.AdjustVariablesWidths(Tab: Integer);
-var
-  Width: Integer;
-  SGrid: TStringGrid;
+var Width: Integer; SGrid: TStringGrid;
 begin
   if (0 <= Tab - 5) and (Tab - 5 < FInteractiveVariables.Count) then
   begin
@@ -2093,8 +2056,7 @@ begin
 end;
 
 procedure TFMessages.Run(const Classpath, Programm, Callparameter: string);
-var
-  UMLForm: TFUMLForm;
+var UMLForm: TFUMLForm;
 begin
   Visible := True;
   if CanFocus then
@@ -2286,8 +2248,7 @@ begin
 end;
 
 procedure TFMessages.Execute(const Command: string);
-var
-  Executer: TInteractiveExecuter;
+var Executer: TInteractiveExecuter;
 begin
   if TabControlMessages.TabIndex < 5 then
     ShowTab(5);
@@ -2297,8 +2258,7 @@ begin
 end;
 
 function TFMessages.NeedsSemicolon(const Command: string): Boolean;
-var
-  Executer: TInteractiveExecuter;
+var Executer: TInteractiveExecuter;
 begin
   if FInteractiveExecuters.Count > 0 then
   begin
@@ -2310,9 +2270,7 @@ begin
 end;
 
 function TFMessages.GetCompileError(const Path: string): string;
-var
-  I, J: Integer;
-  FileWithPath: string;
+var I, J: Integer; FileWithPath: string;
 begin
   Result := '';
   I := LBCompiler.Items.Count - 1;
@@ -2393,8 +2351,7 @@ begin
 end;
 
 procedure TFMessages.ChangeStyle;
-var
-  Details: TThemedElementDetails;
+var Details: TThemedElementDetails;
 begin
   if FConfiguration.IsDark then
   begin

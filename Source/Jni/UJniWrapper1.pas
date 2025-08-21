@@ -21,8 +21,7 @@ type
   public
     constructor Create(Typ: string; ComJava: TObject); overload;
     // duplicate dummy due to '%s' with identical parameters; Cannot access from C++ (Delphi)
-    constructor CreateFromString(const Str: string; ComJava: TObject;
-      const Dummy: Boolean = True);
+    constructor CreateFromString(const Str: string; ComJava: TObject);
     constructor Create(const Value, Sig: string; ComJava: TObject); overload;
 
     function AsFormattedString: string;
@@ -82,8 +81,7 @@ type
     constructor CreateClass(const Name: string; ComJava: TObject);
     constructor CreateLoadClass(const Name, Path: string; ComJava: TObject);
     // duplicate dummy due to '%s' with identical parameters; Cannot access from C++ (Delphi)
-    constructor CreateWithHandle(const AClassname: string; ComJava: TObject;
-      const Dummy: Boolean = True);
+    constructor CreateWithHandle(const AClassname: string; ComJava: TObject);
     class function IsInterface(const Interfacename: string;
       ComJava: TObject): Boolean;
     class function FindClass(const AClassname: string;
@@ -328,7 +326,7 @@ begin
 end;
 
 constructor TComJavaClass.CreateWithHandle(const AClassname: string;
-  ComJava: TObject; const Dummy: Boolean = True);
+  ComJava: TObject);
 begin
   FPathname := '';
   FComJava := ComJava;
@@ -745,8 +743,7 @@ begin
   FValueAsString := Value;
 end;
 
-constructor TComJavaValue.CreateFromString(const Str: string; ComJava: TObject;
-  const Dummy: Boolean = True);
+constructor TComJavaValue.CreateFromString(const Str: string; ComJava: TObject);
 var
   Int: Integer;
   BigInt: Int64;

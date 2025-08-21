@@ -73,7 +73,7 @@ type
     FText: TStrings;
     FWrapText: Boolean;
 
-    procedure SetStrings(Strings: TStrings);
+    procedure SetText(Strings: TStrings);
     procedure SetWrapText(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
@@ -85,7 +85,7 @@ type
   published
     property ScrollLeft: Double read FScrollLeft write FScrollLeft;
     property ScrollTop: Double read FScrollTop write FScrollTop;
-    property Text: TStrings read FText write SetStrings;
+    property Text: TStrings read FText write SetText;
     property WrapText: Boolean read FWrapText write SetWrapText;
   end;
 
@@ -447,7 +447,7 @@ begin
 
 end;
 
-procedure TFXTextArea.SetStrings(Strings: TStrings);
+procedure TFXTextArea.SetText(Strings: TStrings);
 begin
   if Strings.Text <> FText.Text then
   begin

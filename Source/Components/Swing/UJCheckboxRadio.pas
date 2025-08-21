@@ -24,7 +24,6 @@ type
     procedure SetText(const AValue: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ACheckBox: TCheckBox);
     function GetAttributes(ShowAttributes: Integer): string; override;
     function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
@@ -41,7 +40,6 @@ type
     procedure MakeButtonGroup(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ARadioButton: TRadioButton); overload;
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
   published
@@ -68,7 +66,7 @@ type
     FItems: TStrings;
     FOldItems: TStrings;
     procedure SetColumns(Value: Integer);
-    procedure SetTitle(Value: string);
+    procedure SetTitle(const Value: string);
     procedure SetItems(Value: TStrings);
     procedure SetCheckboxes(Value: Boolean);
     procedure SetFrame(Value: Boolean);
@@ -131,17 +129,6 @@ begin
   Opaque := False;
   Text := 'Checkbox';
   JavaType := 'JCheckBox';
-end;
-
-constructor TJCheckBox.CreateFrom(ACheckBox: TCheckBox);
-begin
-  Create(ACheckBox.Owner);
-  CreateFromJ(ACheckBox);
-  Text := ACheckBox.Caption; // Label
-  Font := ACheckBox.Font;
-  Foreground := Font.Color;
-  Background := ACheckBox.Color;
-  Selected := ACheckBox.Checked;
 end;
 
 function TJCheckBox.GetAttributes(ShowAttributes: Integer): string;
@@ -244,18 +231,6 @@ begin
   Tag := +6;
   Width := 80;
   JavaType := 'JRadioButton';
-end;
-
-constructor TJRadioButton.CreateFrom(ARadioButton: TRadioButton);
-begin
-  Create(ARadioButton.Owner);
-  CreateFromJ(ARadioButton);
-  Text := ARadioButton.Caption;
-  Font := ARadioButton.Font;
-  Foreground := Font.Color;
-  Background := ARadioButton.Color;
-  Selected := ARadioButton.Checked;
-  ButtonGroup := ARadioButton.HelpKeyword;
 end;
 
 function TJRadioButton.GetAttributes(ShowAttributes: Integer): string;
@@ -756,7 +731,7 @@ begin
   end;
 end;
 
-procedure TJ2ButtonGroup.SetTitle(Value: string);
+procedure TJ2ButtonGroup.SetTitle(const Value: string);
 begin
   if FTitle <> Value then
   begin

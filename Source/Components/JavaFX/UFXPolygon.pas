@@ -14,7 +14,7 @@ type
     FPoints: TStrings;
     FPointsArray: array of TPoint;
     procedure SetPoints(APoints: TStrings);
-    procedure PointsToPointArray(Points: string);
+    procedure PointsToPointArray(const Points: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -96,7 +96,7 @@ begin
   end;
 end;
 
-procedure TFXPolygon.PointsToPointArray(Points: string);
+procedure TFXPolygon.PointsToPointArray(const Points: string);
 var
   Posi, XPos, YPos: Integer;
   Str, StrX, StrY: string;

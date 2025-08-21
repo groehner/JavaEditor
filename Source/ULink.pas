@@ -115,9 +115,7 @@ begin
   if Prefix = 'cr' then begin
     DCursor:= DelphiCursor;
     JCursor:= JavaCursor;
-  end else
-  // ToDo
-  ;
+  end;
 
   Result:= FromTo(JValue, JCursor, DCursor);
   if Result = '' then

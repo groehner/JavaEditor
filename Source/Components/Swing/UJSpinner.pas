@@ -22,12 +22,11 @@ type
     procedure SetMinimum(AValue: Integer);
     procedure SetStepSize(AValue: Integer);
     procedure SetValue(const AValue: string);
-    procedure SetStrings(TheStrings: TStrings);
+    procedure SetList(TheStrings: TStrings);
     procedure MakeSpinnerColor(const Attr, Value: string);
     procedure MakeSpinner(const Attr: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ASpinEdit: TSpinEdit);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure DeleteComponent; override;
@@ -41,7 +40,7 @@ type
     property Minimum: Integer read FMinimum write SetMinimum;
     property StepSize: Integer read FStepSize write SetStepSize;
     property Value: string read FValue write SetValue;
-    property List: TStrings read FList write SetStrings;
+    property List: TStrings read FList write SetList;
   end;
 
 implementation
@@ -66,14 +65,6 @@ begin
   FStepSize := 1;
   FValue := '0';
   FList := TStringList.Create;
-end;
-
-constructor TJSpinner.CreateFrom(ASpinEdit: TSpinEdit);
-begin
-  Create(ASpinEdit.Owner);
-  CreateFromJ(ASpinEdit);
-  Background := ASpinEdit.Color;
-  Font.Assign(ASpinEdit.Font);
 end;
 
 function TJSpinner.GetAttributes(ShowAttributes: Integer): string;
@@ -259,7 +250,7 @@ begin
   end;
 end;
 
-procedure TJSpinner.SetStrings(TheStrings: TStrings);
+procedure TJSpinner.SetList(TheStrings: TStrings);
 begin
   FList.Assign(TheStrings);
   if Trim(FList.Text) = '' then

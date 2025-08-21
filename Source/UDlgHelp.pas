@@ -602,6 +602,7 @@ var
   end;
 
 begin
+  Result := '';
   Posi := Pos('#', Url);
   if Posi > 0 then
   begin

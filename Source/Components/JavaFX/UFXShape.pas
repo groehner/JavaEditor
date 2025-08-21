@@ -24,8 +24,8 @@ type
     FStrokeMiterLimit: Double;
     FStrokeType: TStrokeType;
     FStrokeWidth: Double;
-    procedure SetAColor(AColor: TColor);
-    procedure SetStrokeColor(AColor: TColor);
+    procedure SetFill(AColor: TColor);
+    procedure SetStroke(AColor: TColor);
   public
     constructor Create(AOwner: TComponent); override;
     function GetAttributes(ShowAttributes: Integer): string; override;
@@ -37,9 +37,9 @@ type
     // procedure WmEraseBkgnd (var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     // procedure CreateParams (var Params: TCreateParams); override;
   published
-    property Fill: TColor read FFill write SetAColor;
+    property Fill: TColor read FFill write SetFill;
     property Smooth: Boolean read FSmooth write FSmooth;
-    property Stroke: TColor read FStroke write SetStrokeColor;
+    property Stroke: TColor read FStroke write SetStroke;
     property StrokeDashOffset: Double read FStrokeDashOffset
       write FStrokeDashOffset;
     property StrokeLineCap: TStrokeLineCap read FStrokeLineCap
@@ -113,7 +113,7 @@ begin
     inherited;
 end;
 
-procedure TFXShape.SetAColor(AColor: TColor);
+procedure TFXShape.SetFill(AColor: TColor);
 begin
   if AColor <> FFill then
   begin
@@ -122,7 +122,7 @@ begin
   end;
 end;
 
-procedure TFXShape.SetStrokeColor(AColor: TColor);
+procedure TFXShape.SetStroke(AColor: TColor);
 begin
   if AColor <> FStroke then
   begin

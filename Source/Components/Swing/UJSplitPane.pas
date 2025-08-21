@@ -26,7 +26,6 @@ type
     procedure SetOneTouchExpandable(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ASplitter: TSplitter);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
@@ -71,12 +70,6 @@ begin
   FDividerLocation := 80;
   FOrientation := VERTICAL;
   JavaType := 'JSplitPane';
-end;
-
-constructor TJSplitPane.CreateFrom(ASplitter: TSplitter);
-begin
-  Create(ASplitter.Owner);
-  CreateFromJ(ASplitter);
 end;
 
 function TJSplitPane.GetAttributes(ShowAttributes: Integer): string;

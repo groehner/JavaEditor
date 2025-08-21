@@ -57,7 +57,7 @@ type
     FSelected: Boolean;
     FToggleGroup: string; // deprecated
     procedure SetSelected(AValue: Boolean);
-    procedure MakeToggleGroup(Value: string);
+    procedure MakeToggleGroup(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
     procedure NewControl; override;
@@ -111,7 +111,7 @@ type
     FMenuItems: TStrings;
     FPopupSide: TSide;
     FMenuItemsOld: TStrings;
-    procedure SetItems(AItems: TStrings);
+    procedure SetMenuItems(AItems: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -122,7 +122,7 @@ type
     procedure DeleteComponent; override;
     procedure Rename(const OldName, NewName, Events: string); override;
   published
-    property MenuItems: TStrings read FMenuItems write SetItems;
+    property MenuItems: TStrings read FMenuItems write SetMenuItems;
     property PopupSide: TSide read FPopupSide write FPopupSide;
   end;
 
@@ -168,14 +168,14 @@ type
     FOldItems: TStrings;
     Faction: string;
     procedure SetColumns(Value: Integer);
-    procedure SetTitle(Value: string);
+    procedure SetTitle(const Value: string);
     procedure SetItems(Value: TStrings);
     procedure SetCheckboxes(Value: Boolean);
     procedure SetFrame(Value: Boolean);
     procedure MakeButtongroupItems;
-    procedure MakeTitle(Title: string);
-    function SurroundIndent(Str: string): string;
-    function SurroundFix(Str: string): string;
+    procedure MakeTitle(const Title: string);
+    function SurroundIndent(const Str: string): string;
+    function SurroundFix(const Str: string): string;
     function ItemsInColumn(Int: Integer): Integer;
     function RBName(Int: Integer): string;
     function FontChanged: Boolean;
@@ -385,7 +385,7 @@ begin
   inherited;
 end;
 
-procedure TFXToggleButton.MakeToggleGroup(Value: string);
+procedure TFXToggleButton.MakeToggleGroup(const Value: string);
 begin
   MakeAttribut('ToggleGroup', Value);
 end;
@@ -642,7 +642,7 @@ begin
   FPartner.Editor.EndUpdate;
 end;
 
-procedure TFXMenuButton.SetItems(AItems: TStrings);
+procedure TFXMenuButton.SetMenuItems(AItems: TStrings);
 begin
   FMenuItemsOld.Text := FMenuItems.Text;
   if AItems.Text <> FMenuItems.Text then
@@ -944,17 +944,17 @@ begin
   FPartner.Editor.EndUpdate;
 end;
 
-function TFXButtonGroup.SurroundIndent(Str: string): string;
+function TFXButtonGroup.SurroundIndent(const Str: string): string;
 begin
   Result := GetIndentation + Str + #13#10;
 end;
 
-function TFXButtonGroup.SurroundFix(Str: string): string;
+function TFXButtonGroup.SurroundFix(const Str: string): string;
 begin
   Result := Indent1 + Str + #13#10;
 end;
 
-procedure TFXButtonGroup.MakeTitle(Title: string);
+procedure TFXButtonGroup.MakeTitle(const Title: string);
 var
   XSPos, YSPos, Wid, Hei, Poly, Key: string;
 begin
@@ -1133,7 +1133,7 @@ begin
   end;
 end;
 
-procedure TFXButtonGroup.SetTitle(Value: string);
+procedure TFXButtonGroup.SetTitle(const Value: string);
 begin
   if FTitle <> Value then
   begin

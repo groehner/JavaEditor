@@ -30,8 +30,8 @@ type
     FSmooth: Boolean;
     FLineDashOffset: Double;
     FVisibleImage: Boolean;
-    procedure SetFillColor(AColor: TColor);
-    procedure SetStrokeColor(AColor: TColor);
+    procedure SetFill(AColor: TColor);
+    procedure SetStroke(AColor: TColor);
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
@@ -48,8 +48,8 @@ type
 
     property OriginX: Double read FOriginX write FOriginX;
     property OriginY: Double read FOriginY write FOriginY;
-    property Fill: TColor read FFill write SetFillColor;
-    property Stroke: TColor read FStroke write SetStrokeColor;
+    property Fill: TColor read FFill write SetFill;
+    property Stroke: TColor read FStroke write SetStroke;
     property LineCap: TLineCap read FLineCap write FLineCap;
     property LineJoin: TLineJoin read FLineJoin write FLineJoin;
     property LineWidth: Double read FLineWidth write FLineWidth;
@@ -148,7 +148,7 @@ begin
   FObjectInspector.UpdatePropertyInspector;
 end;
 
-procedure TFXTurtle.SetFillColor(AColor: TColor);
+procedure TFXTurtle.SetFill(AColor: TColor);
 begin
   if AColor <> FFill then
   begin
@@ -157,7 +157,7 @@ begin
   end;
 end;
 
-procedure TFXTurtle.SetStrokeColor(AColor: TColor);
+procedure TFXTurtle.SetStroke(AColor: TColor);
 begin
   if AColor <> FStroke then
   begin

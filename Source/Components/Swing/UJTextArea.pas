@@ -30,7 +30,7 @@ type
     FSelectionEnd: Integer;
     FSelectionStart: Integer;
     FText: TStrings;
-    procedure SetStrings(Strings: TStrings);
+    procedure SetText(Strings: TStrings);
     procedure SetLineWrap(AValue: Boolean);
     procedure SetHorizontalScrollBarPolicy(AValue: TScrollBarPolicy);
     procedure SetVerticalScrollBarPolicy(AValue: TScrollBarPolicy);
@@ -38,7 +38,6 @@ type
     procedure SetEditable(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AMemo: TMemo);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetContainerAdd: string; override;
@@ -56,7 +55,7 @@ type
       read FVerticalScrollBarPolicy write SetVerticalScrollBarPolicy;
     property WrapStyleWord: Boolean read FWrapStyleWord write SetWrapStyleWord;
     property TabSize: Integer read FTabSize write FTabSize;
-    property Text: TStrings read FText write SetStrings;
+    property Text: TStrings read FText write SetText;
     property CaretPosition: Integer read FCaretPosition write FCaretPosition
       default 0;
     property Editable: Boolean read FEditable write SetEditable;
@@ -74,7 +73,7 @@ type
     FPage: string;
     FText: TStrings;
     procedure SetText(Strings: TStrings);
-    procedure SetPage(Value: string);
+    procedure SetPage(const Value: string);
     procedure SetHorizontalScrollBarPolicy(AValue: TScrollBarPolicy);
     procedure SetVerticalScrollBarPolicy(AValue: TScrollBarPolicy);
     procedure MakePage(const Value: string);
@@ -132,21 +131,6 @@ begin
   FText := TStringList.Create;
   JavaType := 'JTextArea';
   Font.Style := [];
-end;
-
-constructor TJTextArea.CreateFrom(AMemo: TMemo);
-begin
-  Create(AMemo.Owner);
-  CreateFromJ(AMemo);
-  Font := AMemo.Font;
-  Foreground := Font.Color;
-  Background := AMemo.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
-  CaretPosition := AMemo.MaxLength;
-  Text.Text := AMemo.Lines.Text;
-  Editable := not AMemo.ReadOnly;
-  LineWrap := AMemo.WordWrap;
 end;
 
 function TJTextArea.GetAttributes(ShowAttributes: Integer): string;
@@ -405,7 +389,7 @@ begin
   end;
 end;
 
-procedure TJTextArea.SetStrings(Strings: TStrings);
+procedure TJTextArea.SetText(Strings: TStrings);
 begin
   if Strings.Text <> FText.Text then
   begin
@@ -641,7 +625,7 @@ begin
   end;
 end;
 
-procedure TJEditorPane.SetPage(Value: string);
+procedure TJEditorPane.SetPage(const Value: string);
 begin
   if FPage <> Value then
   begin

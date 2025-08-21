@@ -32,8 +32,8 @@ type
     procedure DeleteEvents;
     function MakeEventProcedure(const Event: string): string; virtual; abstract;
     function GetListener(const Event: string): string; virtual; abstract;
-    procedure MakeAttribut(Attr, Value: string);
-    procedure SetAttributValue(Key, Str: string); virtual;
+    procedure MakeAttribut(const Attr, Value: string);
+    procedure SetAttributValue(const Key: string; Str: string); virtual;
     procedure CanvasFontAssign;
     procedure SizeToText(const AText: string; Offset: Integer = 0); overload;
     procedure FormatItems(Items: TStrings);
@@ -48,10 +48,10 @@ type
     function GetAttributes(ShowAttributes: Integer): string; virtual; abstract;
     procedure SetAttribute(Attr, Value, Typ: string); virtual; abstract;
     procedure DeleteComponent; virtual;
-    function AsString(Str: string): string;
+    function AsString(const Str: string): string;
     procedure NewControl; virtual; abstract;
     procedure Rename(const OldName, NewName, Events: string); virtual;
-    procedure MakeUniqueName(FromText: string = ''); virtual;
+    procedure MakeUniqueName(const FromText: string = ''); virtual;
     procedure Zooming(InOut: Boolean);
     function GetIndentation: string;
     function IsNumeric(const Str: string): Boolean;
@@ -61,10 +61,10 @@ type
     function Indent1: string;
     function Indent2: string;
     function Indent3: string;
-    function SurroundIndent(Str: string): string;
-    function SurroundFix(Str: string): string;
-    function SurroundFix2(Str: string): string;
-    function SurroundFix3(Str: string): string;
+    function SurroundIndent(const Str: string): string;
+    function SurroundFix(const Str: string): string;
+    function SurroundFix2(const Str: string): string;
+    function SurroundFix3(const Str: string): string;
     function PPIScale(ASize: Integer): Integer;
     function PPIUnScale(ASize: Integer): Integer;
 
@@ -357,7 +357,7 @@ begin
   end;
 end;
 
-function TJEComponent.AsString(Str: string): string;
+function TJEComponent.AsString(const Str: string): string;
 begin
   Result := '"' + Str + '"';
 end;
@@ -368,7 +368,7 @@ begin
   FObjectInspector.UpdateEventInspector;
 end;
 
-procedure TJEComponent.MakeUniqueName(FromText: string = '');
+procedure TJEComponent.MakeUniqueName(const FromText: string = '');
 var
   Int: Integer;
   Basename, Testname: string;
@@ -435,7 +435,7 @@ begin
     end);
 end;
 
-procedure TJEComponent.MakeAttribut(Attr, Value: string);
+procedure TJEComponent.MakeAttribut(const Attr, Value: string);
 begin
   var
   Str := Name + '.set' + Attr;
@@ -445,7 +445,7 @@ begin
     SetAttributValue(Str, Str + '(' + Value + ');');
 end;
 
-procedure TJEComponent.SetAttributValue(Key, Str: string);
+procedure TJEComponent.SetAttributValue(const Key: string; Str: string);
 begin
   if Pos(Indent2, Str) = 0 then
     Str := Indent2 + Str;
@@ -608,22 +608,22 @@ begin
   Result := FConfiguration.Indent3;
 end;
 
-function TJEComponent.SurroundIndent(Str: string): string;
+function TJEComponent.SurroundIndent(const Str: string): string;
 begin
   Result := GetIndentation + Str + #13#10;
 end;
 
-function TJEComponent.SurroundFix(Str: string): string;
+function TJEComponent.SurroundFix(const Str: string): string;
 begin
   Result := Indent1 + Str + #13#10;
 end;
 
-function TJEComponent.SurroundFix2(Str: string): string;
+function TJEComponent.SurroundFix2(const Str: string): string;
 begin
   Result := Indent2 + Str + #13#10;
 end;
 
-function TJEComponent.SurroundFix3(Str: string): string;
+function TJEComponent.SurroundFix3(const Str: string): string;
 begin
   Result := Indent3 + Str + #13#10;
 end;

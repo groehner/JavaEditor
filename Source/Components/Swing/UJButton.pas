@@ -27,8 +27,8 @@ type
     FFocusPainted: Boolean;
     FContentAreaFilled: Boolean;
 
-    FVertAlignment: TVertAlignment;
-    FHorzAlignment: THorzAlignment;
+    FVerticalAlignment: TVerticalAlignment;
+    FHorizontalAlignment: THorizontalAlignment;
     FIcon: string;
     FDisabledIcon: string;
 
@@ -39,19 +39,19 @@ type
     FRolloverSelectedIcon: string;
 
     FRolloverEnabled: Boolean;
-    FHorizontalTextPosition: THorzAlignment;
-    FVerticalTextPosition: TVertAlignment;
+    FHorizontalTextPosition: THorizontalAlignment;
+    FVerticalTextPosition: TVerticalAlignment;
     FIconTextGap: Integer;
 
     procedure SetText(const AValue: string);
     procedure SetBorderPainted(AValue: Boolean);
     procedure SetContentAreaFilled(AValue: Boolean);
-    procedure SetHorzAlignment(AValue: THorzAlignment);
-    procedure SetVertAlignment(AValue: TVertAlignment);
+    procedure SetHorizontalAlignment(AValue: THorizontalAlignment);
+    procedure SetVerticalAlignment(AValue: TVerticalAlignment);
     procedure SetIcon(const AValue: string);
 
-    procedure SetHorizontalTextPosition(AValue: THorzAlignment);
-    procedure SetVerticalTextPosition(AValue: TVertAlignment);
+    procedure SetHorizontalTextPosition(AValue: THorizontalAlignment);
+    procedure SetVerticalTextPosition(AValue: TVerticalAlignment);
     procedure SetIconTextGap(AValue: Integer);
   public
     constructor Create(AOwner: TComponent); override;
@@ -84,13 +84,13 @@ type
     property RolloverSelectedIcon: string read FRolloverSelectedIcon
       write FRolloverSelectedIcon;
 
-    property HorizontalAlignment: THorzAlignment read FHorzAlignment
-      write SetHorzAlignment;
-    property VerticalAlignment: TVertAlignment read FVertAlignment
-      write SetVertAlignment;
-    property HorizontalTextPosition: THorzAlignment read FHorizontalTextPosition
+    property HorizontalAlignment: THorizontalAlignment read FHorizontalAlignment
+      write SetHorizontalAlignment;
+    property VerticalAlignment: TVerticalAlignment read FVerticalAlignment
+      write SetVerticalAlignment;
+    property HorizontalTextPosition: THorizontalAlignment read FHorizontalTextPosition
       write SetHorizontalTextPosition;
-    property VerticalTextPosition: TVertAlignment read FVerticalTextPosition
+    property VerticalTextPosition: TVerticalAlignment read FVerticalTextPosition
       write SetVerticalTextPosition;
     property IconTextGap: Integer read FIconTextGap write SetIconTextGap;
     property RolloverEnabled: Boolean read FRolloverEnabled
@@ -101,7 +101,6 @@ type
   TJButton = class(TAbstractButton)
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AButton: TButton);
     procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NameFromText; override;
     procedure NewControl; override;
@@ -271,8 +270,8 @@ begin
 
   TextWidth := Canvas.TextWidth(Str);
   TextX := 0;
-  case FHorzAlignment of
-    UAComponents.CENTER:
+  case FHorizontalAlignment of
+    UAComponents.Center:
       TextX := (BoWidth - TextWidth) div 2;
     UAComponents.Left:
       TextX := 0;
@@ -282,7 +281,7 @@ begin
   Inc(TextX, BoRect.Left);
   TextHeight := Canvas.TextHeight(Str);
   TextY := 0;
-  case FVertAlignment of
+  case FVerticalAlignment of
     CENTER:
       TextY := (BoHeight - 2 - TextHeight) div 2 + 2;
     UJLabel.Top:
@@ -326,7 +325,7 @@ begin
   end;
 
   IXPos := 0;
-  case FHorzAlignment of
+  case FHorizontalAlignment of
     UAComponents.CENTER:
       IXPos := (BoWidth - Bmp.Width) div 2;
     UAComponents.Left:
@@ -336,7 +335,7 @@ begin
   end;
   Inc(IXPos, BoRect.Left);
   IYPos := 0;
-  case FVertAlignment of
+  case FVerticalAlignment of
     CENTER:
       IYPos := (BoHeight - Bmp.Height) div 2;
     UJLabel.Top:
@@ -355,10 +354,10 @@ begin
   Canvas.Brush.Style := bsClear;
   Itg := FIconTextGap;
   case FHorizontalTextPosition of
-    UAComponents.CENTER:
-      TextX := IXPos + (Bmp.Width - TextWidth) div 2;
     UAComponents.Left:
       TextX := IXPos - Itg - TextWidth;
+    UAComponents.Center:
+      TextX := IXPos + (Bmp.Width - TextWidth) div 2;
     UAComponents.Right:
       TextX := IXPos + Bmp.Width + Itg;
   end;
@@ -379,8 +378,6 @@ begin
     end;
   end;
   case FVerticalTextPosition of
-    CENTER:
-      TextY := IYPos + (Bmp.Height - TextHeight) div 2;
     UJLabel.Top:
       if FHorizontalTextPosition = UAComponents.CENTER then
       begin
@@ -393,6 +390,8 @@ begin
       end
       else
         TextY := IYPos;
+    Center:
+      TextY := IYPos + (Bmp.Height - TextHeight) div 2;
     Bottom:
       if FHorizontalTextPosition = UAComponents.CENTER then
       begin
@@ -407,7 +406,7 @@ begin
       else
         TextY := IYPos + Bmp.Height - TextHeight;
   end;
-  if FHorzAlignment = UAComponents.CENTER then
+  if FHorizontalAlignment = UAComponents.CENTER then
   begin
     X1Pos := Min(TextX, IXPos);
     X2Pos := Max(TextX + TextWidth, IXPos + Bmp.Width);
@@ -415,7 +414,7 @@ begin
     Inc(TextX, DeltaX);
     Inc(IXPos, DeltaX);
   end;
-  if FVertAlignment = CENTER then
+  if FVerticalAlignment = CENTER then
   begin
     Y1Pos := Min(TextY, IYPos);
     Y2Pos := Max(TextY + TextHeight, IYPos + Bmp.Height);
@@ -470,20 +469,20 @@ begin
   end;
 end;
 
-procedure TAbstractButton.SetHorzAlignment(AValue: THorzAlignment);
+procedure TAbstractButton.SetHorizontalAlignment(AValue: THorizontalAlignment);
 begin
-  if AValue <> FHorzAlignment then
+  if AValue <> FHorizontalAlignment then
   begin
-    FHorzAlignment := AValue;
+    FHorizontalAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TAbstractButton.SetVertAlignment(AValue: TVertAlignment);
+procedure TAbstractButton.SetVerticalAlignment(AValue: TVerticalAlignment);
 begin
-  if AValue <> FVertAlignment then
+  if AValue <> FVerticalAlignment then
   begin
-    FVertAlignment := AValue;
+    FVerticalAlignment := AValue;
     Invalidate;
   end;
 end;
@@ -497,7 +496,7 @@ begin
   end;
 end;
 
-procedure TAbstractButton.SetHorizontalTextPosition(AValue: THorzAlignment);
+procedure TAbstractButton.SetHorizontalTextPosition(AValue: THorizontalAlignment);
 begin
   if AValue <> FHorizontalTextPosition then
   begin
@@ -506,7 +505,7 @@ begin
   end;
 end;
 
-procedure TAbstractButton.SetVerticalTextPosition(AValue: TVertAlignment);
+procedure TAbstractButton.SetVerticalTextPosition(AValue: TVerticalAlignment);
 begin
   if AValue <> FVerticalTextPosition then
   begin
@@ -541,15 +540,6 @@ begin
   Tag := +4;
   FText := 'Button';
   JavaType := 'JButton';
-end;
-
-constructor TJButton.CreateFrom(AButton: TButton);
-begin
-  Create(AButton.Owner);
-  CreateFromJ(AButton);
-  Text := AButton.Caption;
-  Font := AButton.Font;
-  Foreground := Font.Color;
 end;
 
 procedure TJButton.SetAttribute(Attr, Value, Typ: string);

@@ -113,6 +113,7 @@ var
   Handle: THandle;
   SZName: array [0 .. MAX_PATH - 1] of Char;
 begin
+  Result := '';
   Handle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ,
     False, PID);
   if Handle <> 0 then

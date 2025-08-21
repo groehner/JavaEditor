@@ -126,7 +126,7 @@ type
     function SnakeIntF(IntK, Offset1, Offset2, Len1, Len2: Integer): Boolean;
     function SnakeIntB(IntK, Offset1, Offset2, Len1, Len2: Integer): Boolean;
     procedure AddChangeInt(Offset1, Range: Integer; ChangeKind: TChangeKind);
-    function GetCompareCount: Integer;
+    function GetCount: Integer;
     function GetCompare(Index: Integer): TCompareRec;
   public
     constructor Create(AOwner: TComponent); override;
@@ -140,7 +140,7 @@ type
     procedure Cancel;
     procedure Clear;
     property Cancelled: Boolean read FCancelled;
-    property Count: Integer read GetCompareCount;
+    property Count: Integer read GetCount;
     property Compares[Index: Integer]: TCompareRec read GetCompare; default;
     property DiffStats: TDiffStats read FDiffStats;
   end;
@@ -549,7 +549,7 @@ begin
   FInts2 := nil;
 end;
 
-function TDiff.GetCompareCount: Integer;
+function TDiff.GetCount: Integer;
 begin
   Result := FCompareList.Count;
 end;

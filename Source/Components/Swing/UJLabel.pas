@@ -10,32 +10,31 @@ uses
 
 type
 
-  TVertAlignment = (TOP, CENTER, BOTTOM);
+  TVerticalAlignment = (TOP, CENTER, BOTTOM);
 
   TJLabel = class(TSwingComponent)
   private
     FText: string;
-    FVertAlignment: TVertAlignment;
-    FHorzAlignment: THorzAlignment;
+    FVerticalAlignment: TVerticalAlignment;
+    FHorizontalAlignment: THorizontalAlignment;
     FIcon: string;
     FDisabledIcon: string;
-    FHorizontalTextPosition: THorzAlignment;
-    FVerticalTextPosition: TVertAlignment;
+    FHorizontalTextPosition: THorizontalAlignment;
+    FVerticalTextPosition: TVerticalAlignment;
     FIconTextGap: Integer;
     FLabelFor: string;
     FDisplayedMnemonic: TShortCut;
     FDisplayedMnemonicIndex: Integer;
     procedure SetText(const AValue: string);
-    procedure SetHorzAlignment(AValue: THorzAlignment);
-    procedure SetVertAlignment(AValue: TVertAlignment);
+    procedure SetHorizontalAlignment(AValue: THorizontalAlignment);
+    procedure SetVerticalAlignment(AValue: TVerticalAlignment);
     procedure SetIcon(const AValue: string);
     procedure SetDisabledIcon(const AValue: string);
-    procedure SetHorizontalTextPosition(AValue: THorzAlignment);
-    procedure SetVerticalTextPosition(AValue: TVertAlignment);
+    procedure SetHorizontalTextPosition(AValue: THorizontalAlignment);
+    procedure SetVerticalTextPosition(AValue: TVerticalAlignment);
     procedure SetIconTextGap(AValue: Integer);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ALabel: TLabel);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure Rename(const OldName, NewName, Events: string); override;
@@ -48,13 +47,13 @@ type
     property Text: string read FText write SetText;
     property Icon: string read FIcon write SetIcon;
     property DisabledIcon: string read FDisabledIcon write SetDisabledIcon;
-    property HorizontalAlignment: THorzAlignment read FHorzAlignment
-      write SetHorzAlignment;
-    property VerticalAlignment: TVertAlignment read FVertAlignment
-      write SetVertAlignment;
-    property HorizontalTextPosition: THorzAlignment read FHorizontalTextPosition
+    property HorizontalAlignment: THorizontalAlignment read FHorizontalAlignment
+      write SetHorizontalAlignment;
+    property VerticalAlignment: TVerticalAlignment read FVerticalAlignment
+      write SetVerticalAlignment;
+    property HorizontalTextPosition: THorizontalAlignment read FHorizontalTextPosition
       write SetHorizontalTextPosition;
-    property VerticalTextPosition: TVertAlignment read FVerticalTextPosition
+    property VerticalTextPosition: TVerticalAlignment read FVerticalTextPosition
       write SetVerticalTextPosition;
     property IconTextGap: Integer read FIconTextGap write SetIconTextGap;
     property LabelFor: string read FLabelFor write FLabelFor;
@@ -94,24 +93,6 @@ begin
   IconTextGap := 4;
   Background := clBtnFace;
   JavaType := 'JLabel';
-end;
-
-constructor TJLabel.CreateFrom(ALabel: TLabel);
-begin
-  Create(ALabel.Owner);
-  CreateFromJ(ALabel);
-  Text := ALabel.Caption;
-  Font := ALabel.Font;
-  Foreground := Font.Color;
-  Background := ALabel.Color;
-  case ALabel.Alignment of
-    taLeftJustify:
-      FHorzAlignment := UAComponents.Left;
-    taRightJustify:
-      FHorzAlignment := UAComponents.Right;
-    taCenter:
-      FHorzAlignment := UAComponents.CENTER;
-  end;
 end;
 
 function TJLabel.GetAttributes(ShowAttributes: Integer): string;
@@ -206,7 +187,7 @@ begin
 
   TextWidth := Canvas.TextWidth(Str);
   TextX := 0;
-  case FHorzAlignment of
+  case FHorizontalAlignment of
     UAComponents.CENTER:
       TextX := (Width - TextWidth) div 2;
     UAComponents.Left:
@@ -216,7 +197,7 @@ begin
   end;
   TextHeight := Canvas.TextHeight(Str);
   TextY := 0;
-  case FVertAlignment of
+  case FVerticalAlignment of
     CENTER:
       TextY := (Height - 2 - TextHeight) div 2 + 2;
     UJLabel.TOP:
@@ -258,7 +239,7 @@ begin
   end;
 
   IXPos := 0;
-  case FHorzAlignment of
+  case FHorizontalAlignment of
     UAComponents.CENTER:
       IXPos := (Width - Bmp.Width) div 2;
     UAComponents.Left:
@@ -267,7 +248,7 @@ begin
       IXPos := Width - Bmp.Width;
   end;
   IYPos := 0;
-  case FVertAlignment of
+  case FVerticalAlignment of
     CENTER:
       IYPos := (Height - Bmp.Height) div 2;
     UJLabel.TOP:
@@ -339,7 +320,7 @@ begin
         TextY := IYPos + Bmp.Height - TextHeight;
   end;
 
-  if FHorzAlignment = UAComponents.CENTER then
+  if FHorizontalAlignment = UAComponents.CENTER then
   begin
     X1Pos := Min(TextX, IXPos);
     X2Pos := Max(TextX + TextWidth, IXPos + Bmp.Width);
@@ -347,7 +328,7 @@ begin
     Inc(TextX, DeltaX);
     Inc(IXPos, DeltaX);
   end;
-  if FVertAlignment = CENTER then
+  if FVerticalAlignment = CENTER then
   begin
     Y1Pos := Min(TextY, IYPos);
     Y2Pos := Max(TextY + TextHeight, IYPos + Bmp.Height);
@@ -360,20 +341,20 @@ begin
   FreeAndNil(Bmp);
 end;
 
-procedure TJLabel.SetHorzAlignment(AValue: THorzAlignment);
+procedure TJLabel.SetHorizontalAlignment(AValue: THorizontalAlignment);
 begin
-  if AValue <> FHorzAlignment then
+  if AValue <> FHorizontalAlignment then
   begin
-    FHorzAlignment := AValue;
+    FHorizontalAlignment := AValue;
     Invalidate;
   end;
 end;
 
-procedure TJLabel.SetVertAlignment(AValue: TVertAlignment);
+procedure TJLabel.SetVerticalAlignment(AValue: TVerticalAlignment);
 begin
-  if AValue <> FVertAlignment then
+  if AValue <> FVerticalAlignment then
   begin
-    FVertAlignment := AValue;
+    FVerticalAlignment := AValue;
     Invalidate;
   end;
 end;
@@ -396,7 +377,7 @@ begin
   end;
 end;
 
-procedure TJLabel.SetHorizontalTextPosition(AValue: THorzAlignment);
+procedure TJLabel.SetHorizontalTextPosition(AValue: THorizontalAlignment);
 begin
   if AValue <> FHorizontalTextPosition then
   begin
@@ -405,7 +386,7 @@ begin
   end;
 end;
 
-procedure TJLabel.SetVerticalTextPosition(AValue: TVertAlignment);
+procedure TJLabel.SetVerticalTextPosition(AValue: TVerticalAlignment);
 begin
   if AValue <> FVerticalTextPosition then
   begin

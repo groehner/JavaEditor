@@ -29,13 +29,13 @@ type
     Fhiding: string;
     Fshowing: string;
     Fshown: string;
-    function ToJavaFXColor(Col: string): string;
+    function ToJavaFXColor(const Col: string): string;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Open(const FileName: string; State: string); override;
     function GetAttributes(ShowAttributes: Integer): string;
-    function GetEvents(ShowEvents: Integer): string;
-    procedure SetAttribute(Attr, Value, Typ: string); override;
+    function GetEvents: string;
+    procedure SetAttribute(const Attr, Value, Typ: string); override;
   published
     property Opacity: Double read FOpacity write FOpacity;
     property X: Integer read FXPos write FXPos;
@@ -94,12 +94,12 @@ begin
   end;
 end;
 
-function TFXGUIForm.GetEvents(ShowEvents: Integer): string;
+function TFXGUIForm.GetEvents: string;
 begin
   Result := '|closeRequest|hidden|hiding|showing|shown|';
 end;
 
-procedure TFXGUIForm.SetAttribute(Attr, Value, Typ: string);
+procedure TFXGUIForm.SetAttribute(const Attr, Value, Typ: string);
 var
   Str1, Str2: string;
 begin
@@ -119,7 +119,7 @@ begin
       Str2, 1);
 end;
 
-function TFXGUIForm.ToJavaFXColor(Col: string): string;
+function TFXGUIForm.ToJavaFXColor(const Col: string): string;
 begin
   if Copy(Col, 1, 2) = '0x' then
     Result := 'Color.web("' + Col + '")'

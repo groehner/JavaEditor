@@ -11,13 +11,12 @@ type
 
   TALabel = class(TAWTComponent)
   private
-    FAlignment: THorzAlignment;
+    FAlignment: THorizontalAlignment;
     FText: string;
-    procedure SetHorzAlignment(AValue: THorzAlignment);
+    procedure SetHorizontalAlignment(AValue: THorizontalAlignment);
     procedure SetText(const AValue: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(ALabel: TLabel);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     procedure NewControl; override;
@@ -25,7 +24,7 @@ type
     procedure NameFromText; override;
     procedure Paint; override;
   published
-    property Alignment: THorzAlignment read FAlignment write SetHorzAlignment;
+    property Alignment: THorizontalAlignment read FAlignment write SetHorizontalAlignment;
     property Text: string read FText write SetText;
   end;
 
@@ -48,26 +47,6 @@ begin
   Alignment := UAComponents.LEFT;
   Background := clBtnFace;
   JavaType := 'Label';
-end;
-
-constructor TALabel.CreateFrom(ALabel: TLabel);
-begin
-  Create(ALabel.Owner);
-  CreateFromA(ALabel);
-  Text := ALabel.Caption;
-  Font := ALabel.Font;
-  Foreground := Font.Color;
-  Background := ALabel.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
-  case ALabel.Alignment of
-    taLeftJustify:
-      FAlignment := UAComponents.LEFT;
-    taRightJustify:
-      FAlignment := UAComponents.RIGHT;
-    taCenter:
-      FAlignment := UAComponents.CENTER;
-  end;
 end;
 
 function TALabel.GetAttributes(ShowAttributes: Integer): string;
@@ -128,7 +107,7 @@ begin
   Canvas.TextRect(Rect(0, 0, Width, Height), XPos, YPos, Str);
 end;
 
-procedure TALabel.SetHorzAlignment(AValue: THorzAlignment);
+procedure TALabel.SetHorizontalAlignment(AValue: THorizontalAlignment);
 begin
   if AValue <> FAlignment then
   begin

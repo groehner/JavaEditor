@@ -31,7 +31,7 @@ type
     FClasspathAll: string;
     FJavaDoc: Boolean;
   public
-    function HasIndexHTML(Str: string): Boolean;
+    function HasIndexHTML(const Index: string): Boolean;
     procedure Initialize(Str: string; JavaDoc: Boolean);
     property ClasspathAll: string read FClasspathAll;
     property ClasspathUser: string read FClasspathUser;
@@ -56,17 +56,14 @@ begin
   CBAllJarFiles.Enabled := False;
 end;
 
-function TFClasspath.HasIndexHTML(Str: string): Boolean;
+function TFClasspath.HasIndexHTML(const Index: string): Boolean;
 begin
-  Result := (Pos('\allclasses-frame.html', Str) + Pos('\allclasses-index.html',
-    Str) > 0);
+  Result := (Pos('\allclasses-frame.html', Index) +
+    Pos('\allclasses-index.html', Index) > 0);
 end;
 
 procedure TFClasspath.Initialize(Str: string; JavaDoc: Boolean);
-var
-  Dir: string;
-  Count, Posi: Integer;
-  DirOk: Boolean;
+var Dir: string; Count, Posi: Integer; DirOk: Boolean;
 begin
   Self.FJavaDoc := JavaDoc;
   CLBPfade.Clear;
@@ -126,9 +123,7 @@ begin
 end;
 
 procedure TFClasspath.BSaveClick(Sender: TObject);
-var
-  Posi: Integer;
-  Str: string;
+var Posi: Integer; Str: string;
 begin
   FClasspathUser := '';
   FClasspathAll := '';
@@ -153,10 +148,12 @@ end;
 
 procedure TFClasspath.CBAllJarFilesClick(Sender: TObject);
 begin
-  var Int := CLBPfade.ItemIndex;
+  var
+  Int := CLBPfade.ItemIndex;
   if Int > -1 then
   begin
-    var Str := CLBPfade.Items[Int];
+    var
+    Str := CLBPfade.Items[Int];
     if not(Pos('  <-- ', Str) > 0) or HasIndexHTML(Str) or FileExists(Str) then
     begin
       if EndsWith(Str, '\*') and not CBAllJarFiles.Checked then
@@ -171,10 +168,12 @@ end;
 
 procedure TFClasspath.CLBPfadeClick(Sender: TObject);
 begin
-  var Int := CLBPfade.ItemIndex;
+  var
+  Int := CLBPfade.ItemIndex;
   if Int > -1 then
   begin
-    var Str := CLBPfade.Items[Int];
+    var
+    Str := CLBPfade.Items[Int];
     if ((Pos('  <-- ', Str) > 0) or HasIndexHTML(Str) or FileExists(Str)) then
     begin
       CBAllJarFiles.Checked := False;

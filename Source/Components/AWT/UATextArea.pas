@@ -19,13 +19,12 @@ type
     FEditable: Boolean;
     FSelectionEnd: Integer;
     FSelectionStart: Integer;
-    procedure SetStrings(Strings: TStrings);
+    procedure SetText(Strings: TStrings);
     procedure SetScrollBars(AValue: TAWTScrollBars);
     procedure SetEditable(AValue: Boolean);
     procedure MakeScrollbars(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AMemo: TMemo);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -34,7 +33,7 @@ type
     procedure Paint; override;
   published
     property Scrollbars: TAWTScrollBars read FScrollbars write SetScrollBars;
-    property Text: TStrings read FText write SetStrings;
+    property Text: TStrings read FText write SetText;
     property CaretPosition: Integer read FCaretPosition write FCaretPosition
       default 0;
     property Editable: Boolean read FEditable write SetEditable;
@@ -67,30 +66,6 @@ begin
   FScrollbars := BOTH;
   FText := TStringList.Create;
   JavaType := 'TextArea';
-end;
-
-constructor TATextArea.CreateFrom(AMemo: TMemo);
-begin
-  Create(AMemo.Owner);
-  CreateFromA(AMemo);
-  Font := AMemo.Font;
-  Foreground := Font.Color;
-  Background := AMemo.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
-  CaretPosition := AMemo.MaxLength;
-  Text.Text := AMemo.Lines.Text;
-  Editable := not AMemo.ReadOnly;
-  case AMemo.Scrollbars of
-    ssNone:
-      Scrollbars := NONE;
-    ssHorizontal:
-      Scrollbars := HORIZONTAL_ONLY;
-    ssVertical:
-      Scrollbars := VERTICAL_ONLY;
-    ssBoth:
-      Scrollbars := BOTH;
-  end;
 end;
 
 function TATextArea.GetAttributes(ShowAttributes: Integer): string;
@@ -204,7 +179,7 @@ begin
   end;
 end;
 
-procedure TATextArea.SetStrings(Strings: TStrings);
+procedure TATextArea.SetText(Strings: TStrings);
 begin
   if Strings.Text <> FText.Text then
   begin

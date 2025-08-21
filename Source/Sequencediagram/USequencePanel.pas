@@ -180,8 +180,8 @@ type
     FPopupMenuConnection: TSpTBXPopupMenu;
     FPopupMenuLifelineAndSequencePanel: TSpTBXPopupMenu;
     procedure SetSelectedOnly(const Value: Boolean);
-    procedure SetModified(const Value: Boolean);
-    procedure SetLocked(const Value: Boolean);
+    procedure SetIsModified(const Value: Boolean);
+    procedure SetIsLocked(const Value: Boolean);
   protected
     procedure DblClick; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -241,7 +241,7 @@ type
       Attributes: TConnectionAttributes; Pos: Integer): TConnection;
     procedure DoConnection(Item: Integer);
     procedure TurnConnection(Num: Integer);
-    procedure SetRecursiv(Point: TPoint; Pos: Integer);
+
     procedure ClearManagedObjects;
     procedure ClearSelection(WithShowAll: Boolean = True);
     function SelectionChangedOnClear: Boolean;
@@ -259,8 +259,8 @@ type
     procedure ChangeStyle(BlackAndWhite: Boolean = False);
     function GetEnclosingRect: TRect;
 
-    property IsLocked: Boolean read FIsLocked write SetLocked;
-    property IsModified: Boolean read FIsModified write SetModified;
+    property IsLocked: Boolean read FIsLocked write SetIsLocked;
+    property IsModified: Boolean read FIsModified write SetIsModified;
     property IsMoving: Boolean read FIsMoving write FIsMoving;
     // Bitmap to be used as background for printing
     property BackBitmap: TBitmap read FBackBitmap write FBackBitmap;
@@ -1160,21 +1160,6 @@ begin
   TConnection(FConnections[Num]).Turn;
 end;
 
-procedure TSequencePanel.SetRecursiv(Point: TPoint; Pos: Integer);
-begin
-  Point := Self.ScreenToClient(Point);
-  var
-  I := 0;
-  while I < FConnections.Count do
-  begin
-    var
-    Conn := TConnection(FConnections[I]);
-    if Conn.IsClicked(Point) then
-      Break;
-    Inc(I);
-  end;
-end;
-
 procedure TSequencePanel.SelectConnection;
 var
   Tmp: TObjectList;
@@ -1187,16 +1172,12 @@ begin
     Conn := GetSelectedConnection;
     SelectedControls := CountSelectedControls;
     if not Assigned(Conn) then
-      case SelectedControls of
-        1:
-          Init(False, Conn, 1);
-        2:
-          Init(False, Conn, 2);
+      if SelectedControls in [1, 2] then
+        Init(False, Conn)
       else
-        Exit;
-      end
+        Exit
     else
-      Init(False, Conn, SelectedControls);
+      Init(False, Conn);
 
     case ShowModal of
       mrOk:
@@ -1253,14 +1234,10 @@ begin
   with TFConnectDialog.Create(Self) do
   begin
     SelectedControls := CountSelectedControls;
-    case SelectedControls of
-      1:
-        Init(False, nil, 1);
-      2:
-        Init(False, nil, 2);
+    if SelectedControls in [1, 2] then
+      Init(False, nil)
     else
       Exit;
-    end;
     if ShowModal = mrOk then
     begin
       Attributes := GetConnectionAttributes;
@@ -2075,7 +2052,7 @@ begin
   end;
 end;
 
-procedure TSequencePanel.SetModified(const Value: Boolean);
+procedure TSequencePanel.SetIsModified(const Value: Boolean);
 begin
   if FIsModified <> Value then
   begin
@@ -2085,7 +2062,7 @@ begin
   end;
 end;
 
-procedure TSequencePanel.SetLocked(const Value: Boolean);
+procedure TSequencePanel.SetIsLocked(const Value: Boolean);
 begin
   if FIsLocked <> Value then
   begin

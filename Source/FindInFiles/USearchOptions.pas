@@ -99,13 +99,13 @@ begin
     for var I:= 0 to ComponentCount -1 do begin
       Component:= Components[I];
       case Component.Tag of
-        1: with Component as TComboBox do begin
-             Text:= FSearchText;
-             Items.Text:= FSearchTextHistory;
+        1: begin
+             (Component as TComboBox).Text:= FSearchText;
+             (Component as TComboBox).Items.Text:= FSearchTextHistory;
            end;
-        2: with Component as TComboBox do begin
-             Text:= FReplaceText;
-             Items.Text:= FReplaceTextHistory;
+        2: begin
+             (Component as TComboBox).Text:= FReplaceText;
+             (Component as TComboBox).Items.Text:= FReplaceTextHistory;
            end;
         3: (Component as TCheckBox).Checked:= FReplace;
         4: (Component as TCheckBox).Checked:= FCaseSensitive;
@@ -120,14 +120,14 @@ begin
        10: (Component as TRadioButton).Checked:= (FGrepAction = 1);
        11: (Component as TRadioButton).Checked:= (FGrepAction = 2);
        12: (Component as TRadioButton).Checked:= (FGrepAction = 3);
-       13: with Component as TComboBox do begin
-             Text:= FDirectory;
-             Items.Text:= FDirectoryHistory;
+       13: begin
+             (Component as TComboBox).Text:= FDirectory;
+             (Component as TComboBox).Items.Text:= FDirectoryHistory;
              FConfiguration.ShortenPath(Component as TComboBox, FDirectory);
            end;
-       14: with Component as TComboBox do begin
-             Text:= FFilemask;
-             Items.Text:= FFilemaskHistory;
+       14: begin
+             (Component as TComboBox).Text:= FFilemask;
+             (Component as TComboBox).Items.Text:= FFilemaskHistory;
            end;
        15: (Component as TCheckBox).Checked:= FIncludeSubdirs;
     end;
@@ -141,13 +141,13 @@ begin
     for var I:= 0 to ComponentCount - 1 do begin
       Component:= Components[I];
       case Component.Tag of
-        1: with Component as TComboBox do begin
-             FSearchText:= Text;
-             FSearchTextHistory:= Items.Text;
+        1: begin
+             FSearchText:= (Component as TComboBox).Text;
+             FSearchTextHistory:= (Component as TComboBox).Items.Text;
            end;
-        2: with Component as TComboBox do begin
-             FReplaceText:= Text;
-             FReplaceTextHistory:= Items.Text;
+        2: begin
+             FReplaceText:= (Component as TComboBox).Text;
+             FReplaceTextHistory:= (Component as TComboBox).Items.Text;
            end;
         3: FReplace:= (Component as TCheckBox).Checked;
         4: FCaseSensitive:= (Component as TCheckBox).Checked;
@@ -160,13 +160,13 @@ begin
        10: if (Component as TRadioButton).Checked then FGrepAction:= 1;
        11: if (Component as TRadioButton).Checked then FGrepAction:= 2;
        12: if (Component as TRadioButton).Checked then FGrepAction:= 3;
-       13: with Component as TComboBox do begin
+       13: begin
              FDirectory:= FConfiguration.ExtendPath(Component as TComboBox);
-             FDirectoryHistory:= Items.Text;
+             FDirectoryHistory:= (Component as TComboBox).Items.Text;
            end;
-       14: with Component as TComboBox do begin
-             FFilemask:= Text;
-             FFilemaskHistory:= Items.Text;
+       14: begin
+             FFilemask:= (Component as TComboBox).Text;
+             FFilemaskHistory:= (Component as TComboBox).Items.Text;
            end;
        15: FIncludeSubdirs:= (Component as TCheckBox).Checked;
     end;

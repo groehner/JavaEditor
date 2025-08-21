@@ -98,11 +98,11 @@ begin
         else if FileExists(AName) and ValidFilename(AName) then
         begin
           // used by ClassInsert
+          Lines := TStringList.Create;
+          FStream := TFileStream.Create(AName, fmOpenRead or
+            fmShareDenyWrite);
           try
             try
-              Lines := TStringList.Create;
-              FStream := TFileStream.Create(AName, fmOpenRead or
-                fmShareDenyWrite);
               Encoding := SynUnicode.GetEncoding(FStream, WithBOM);
               Lines.LoadFromStream(FStream, Encoding);
               SStream := TStringStream.Create(Lines.Text + #0,

@@ -27,7 +27,6 @@ type
     procedure SetEditable(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AEdit: TEdit);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -72,19 +71,6 @@ begin
   Editable := True;
   Cursor := crIBeam;
   JavaType := 'TextField';
-end;
-
-constructor TATextField.CreateFrom(AEdit: TEdit);
-begin
-  Create(AEdit.Owner);
-  CreateFromA(AEdit);
-  Text := AEdit.Text;
-  Font := AEdit.Font;
-  Foreground := Font.Color;
-  Background := AEdit.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
-  CaretPosition := AEdit.MaxLength;
 end;
 
 function TATextField.GetAttributes(ShowAttributes: Integer): string;

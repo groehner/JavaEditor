@@ -34,7 +34,7 @@ type
     FMenuItems: TStrings;
     FMenuItemsOld: TStrings;
   protected
-    procedure SetItems(AItems: TStrings);
+    procedure SetMenuItems(AItems: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -46,7 +46,7 @@ type
     procedure SetPositionAndSize; override;
     procedure Paint; override;
   published
-    property MenuItems: TStrings read FMenuItems write SetItems;
+    property MenuItems: TStrings read FMenuItems write SetMenuItems;
   end;
 
   TFXMenuItem = class(TFXNode)
@@ -97,7 +97,7 @@ type
     Fshowing: string;
     Fshown: string;
     FMenuItemsOld: TStrings;
-    procedure SetItems(AItems: TStrings);
+    procedure SetMenuItems(AItems: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -109,7 +109,7 @@ type
     procedure DeleteComponent; override;
     procedure Rename(const OldName, NewName, Events: string); override;
   published
-    property MenuItems: TStrings read FMenuItems write SetItems;
+    property MenuItems: TStrings read FMenuItems write SetMenuItems;
 
     property hidden: string read Fhidden write Fhidden;
     property hiding: string read Fhiding write Fhiding;
@@ -130,9 +130,9 @@ type
     Fshowing: string;
     Fshown: string;
     FMenuItemsOld: TStrings;
-    procedure SetItems(AItems: TStrings);
-    procedure MakeListener(Value: string);
-    function GetContextMenuListener(Value: string): string;
+    procedure SetMenuItems(AItems: TStrings);
+    procedure MakeListener(const Value: string);
+    function GetContextMenuListener(const Value: string): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -144,7 +144,7 @@ type
     procedure Rename(const OldName, NewName, Events: string); override;
     procedure Paint; override;
   published
-    property MenuItems: TStrings read FMenuItems write SetItems;
+    property MenuItems: TStrings read FMenuItems write SetMenuItems;
     property Listener: string read FListener write FListener;
     property Id: string read FId write FId;
 
@@ -326,7 +326,7 @@ begin
   Width := Parent.Width - 16;
 end;
 
-procedure TFXMenuBarWithMenus.SetItems(AItems: TStrings);
+procedure TFXMenuBarWithMenus.SetMenuItems(AItems: TStrings);
 begin
   FMenuItemsOld.Text := FMenuItems.Text;
   if AItems.Text <> FMenuItems.Text then
@@ -443,7 +443,7 @@ begin
   FJava.vilSwing1Light.Draw(Canvas, 5, 2, 16);
 end;
 
-procedure TFXMenu.SetItems(AItems: TStrings);
+procedure TFXMenu.SetMenuItems(AItems: TStrings);
 begin
   FMenuItemsOld.Text := FMenuItems.Text;
   if AItems.Text <> FMenuItems.Text then
@@ -554,7 +554,7 @@ begin
   FJava.vilSwing1Light.Draw(Canvas, 7, 4, 17);
 end;
 
-procedure TFXContextMenu.SetItems(AItems: TStrings);
+procedure TFXContextMenu.SetMenuItems(AItems: TStrings);
 begin
   FMenuItemsOld.Text := FMenuItems.Text;
   if AItems.Text <> FMenuItems.Text then
@@ -623,7 +623,7 @@ begin
   FPartner.Editor.EndUpdate;
 end;
 
-function TFXContextMenu.GetContextMenuListener(Value: string): string;
+function TFXContextMenu.GetContextMenuListener(const Value: string): string;
 begin
   Result := SurroundFix2(Value + '.setOnMouseReleased(') +
     SurroundFix3('(event) -> {') +
@@ -634,7 +634,7 @@ begin
     SurroundFix2('}') + SurroundFix(');');
 end;
 
-procedure TFXContextMenu.MakeListener(Value: string);
+procedure TFXContextMenu.MakeListener(const Value: string);
 var
   Int: Integer;
 begin

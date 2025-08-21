@@ -197,8 +197,7 @@ begin
 end;
 
 procedure TFUMLForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-const
-  CInteractive = 1;
+const CInteractive = 1;
 begin
   if (Number <> CInteractive) and not AlreadySavedAs and Modified then
   begin
@@ -242,9 +241,9 @@ begin
     if Assigned(FMainModul) and Assigned(FMainModul.Diagram) then
     begin
       var
-      Panel := FMainModul.Diagram.GetPanel;
-      if Assigned(Panel) and Panel.CanFocus then
-        Panel.SetFocus;
+      APanel := FMainModul.Diagram.GetPanel;
+      if Assigned(APanel) and Panel.CanFocus then
+        APanel.SetFocus;
       var
       ComJava := (FMainModul.Diagram as TRtfdDiagram).GetComJava;
       ComJava.SetActiveComJava(ComJava);
@@ -276,9 +275,8 @@ procedure TFUMLForm.TBShowConnectionsClick(Sender: TObject);
 begin
   if Assigned(FMainModul) and Assigned(FMainModul.Diagram) then
   begin
-    var
-    Show := (FMainModul.Diagram.ShowConnections + 1) mod 3;
-    FMainModul.Diagram.ShowConnections := Show;
+    FMainModul.Diagram.ShowConnections :=
+      (FMainModul.Diagram.ShowConnections + 1) mod 3;
     Modified := True;
     FMainModul.Diagram.GetPanel.Invalidate;
   end;
@@ -288,9 +286,7 @@ procedure TFUMLForm.TBViewClick(Sender: TObject);
 begin
   if Assigned(FMainModul) and Assigned(FMainModul.Diagram) then
   begin
-    var
-    Show := (FMainModul.Diagram.ShowView + 1) mod 3;
-    FMainModul.Diagram.ShowView := Show;
+    FMainModul.Diagram.ShowView := (FMainModul.Diagram.ShowView + 1) mod 3;
     Modified := True;
     FMainModul.Diagram.GetPanel.Invalidate;
   end;
@@ -371,9 +367,7 @@ begin
 end;
 
 procedure TFUMLForm.Exchange(File1, File2: string);
-var
-  Str, Path, Class1, Class2: string;
-  Posi: Integer;
+var Str, Path, Class1, Class2: string; Posi: Integer;
 begin
   Pathname := FConfiguration.HomeDir + 'Default.uml';
   var
@@ -423,10 +417,10 @@ begin
   if Assigned(FMainModul) and Assigned(FMainModul.Diagram) then
   begin
     var
-    Show := not FMainModul.Diagram.ShowObjectDiagram;
-    FMainModul.Diagram.ShowObjectDiagram := Show;
+    AShow := not FMainModul.Diagram.ShowObjectDiagram;
+    FMainModul.Diagram.ShowObjectDiagram := AShow;
     Modified := True;
-    TBObjectDiagram.Down := Show;
+    TBObjectDiagram.Down := AShow;
   end;
 end;
 
@@ -660,16 +654,9 @@ begin
 end;
 
 procedure TFUMLForm.CreateTVFileStructure;
-var
-  ClassIte, Ite: IModelIterator;
-  Cent: TClassifier;
-  Attribute: TAttribute;
-  Method: TOperation;
-  PictureNr, Indented, IndentedOld: Integer;
-  CName: string;
-  Node, ClassNode: TTreeNode;
-  AInteger: TInteger;
-  Classes: TStringList;
+var ClassIte, Ite: IModelIterator; Cent: TClassifier; Attribute: TAttribute;
+  Method: TOperation; PictureNr, Indented, IndentedOld: Integer; CName: string;
+  Node, ClassNode: TTreeNode; AInteger: TInteger; Classes: TStringList;
 
   function CalculateIndentation(const Classname: string): Integer;
   begin

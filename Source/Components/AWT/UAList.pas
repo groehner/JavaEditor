@@ -19,7 +19,6 @@ type
     procedure MakeList;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(AListBox: TListBox);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -55,16 +54,6 @@ begin
   FItems.Text := defaultItems;
   FSelectedIndex := -1;
   JavaType := 'List';
-end;
-
-constructor TAList.CreateFrom(AListBox: TListBox);
-begin
-  Create(AListBox.Owner);
-  CreateFromA(AListBox);
-  Font := AListBox.Font;
-  Background := AListBox.Color;
-  Items.AddStrings(AListBox.Items);
-  FSelectedIndex := -1;
 end;
 
 function TAList.GetAttributes(ShowAttributes: Integer): string;

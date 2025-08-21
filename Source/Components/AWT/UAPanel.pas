@@ -20,7 +20,6 @@ type
   TAPanel = class(TAWTComponent)
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(APanel: TPanel);
     function GetAttributes(ShowAttributes: Integer): string; override;
     function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
@@ -38,7 +37,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure NewControl; override;
     procedure DeleteComponent; override;
-    procedure MakeUniqueName(FromText: string = ''); override;
+    procedure MakeUniqueName(const FromText: string = ''); override;
   published
     property SubType: string read FSubType write FSubType;
   end;
@@ -46,7 +45,6 @@ type
   TACanvas = class(TAWTComponent)
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(APanel: TPanel);
     function GetAttributes(ShowAttributes: Integer): string; override;
     function GetEvents(ShowEvents: Integer): string; override;
     procedure NewControl; override;
@@ -60,7 +58,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure NewControl; override;
     procedure DeleteComponent; override;
-    procedure MakeUniqueName(FromText: string = ''); override;
+    procedure MakeUniqueName(const FromText: string = ''); override;
   published
     property SubType: string read FSubType write FSubType;
   end;
@@ -76,7 +74,6 @@ type
     FTurtleW: Integer;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFrom(APanel: TPanel);
     function GetAttributes(ShowAttributes: Integer): string; override;
     procedure SetAttribute(Attr, Value, Typ: string); override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -113,15 +110,6 @@ begin
   Background := clBtnFace;
   ShowFont := False;
   JavaType := 'Panel';
-end;
-
-constructor TAPanel.CreateFrom(APanel: TPanel);
-begin
-  Create(APanel.Owner);
-  CreateFromA(APanel);
-  Background := APanel.Color;
-  if Background = clBtnFace then
-    Background := clWhite;
 end;
 
 function TAPanel.GetAttributes(ShowAttributes: Integer): string;
@@ -178,7 +166,7 @@ begin
     + SubType);
 end;
 
-procedure TASubPanel.MakeUniqueName(FromText: string = '');
+procedure TASubPanel.MakeUniqueName(const FromText: string = '');
 begin
   inherited MakeUniqueName(SubType);
 end;
@@ -194,13 +182,6 @@ begin
   Background := clBtnFace;
   ShowFont := False;
   JavaType := 'Canvas';
-end;
-
-constructor TACanvas.CreateFrom(APanel: TPanel);
-begin
-  Create(APanel.Owner);
-  CreateFromA(APanel);
-  Background := APanel.Color;
 end;
 
 function TACanvas.GetAttributes(ShowAttributes: Integer): string;
@@ -254,7 +235,7 @@ begin
     + SubType);
 end;
 
-procedure TASubCanvas.MakeUniqueName(FromText: string = '');
+procedure TASubCanvas.MakeUniqueName(const FromText: string = '');
 begin
   inherited MakeUniqueName(SubType);
 end;
@@ -268,13 +249,6 @@ begin
   ShowFont := False;
   Tag := -14;
   JavaType := 'Turtle';
-end;
-
-constructor TATurtle.CreateFrom(APanel: TPanel);
-begin
-  Create(APanel.Owner);
-  CreateFromA(APanel);
-  Background := APanel.Color;
 end;
 
 function TATurtle.GetAttributes(ShowAttributes: Integer): string;

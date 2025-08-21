@@ -37,7 +37,7 @@ const
 
 type
 
-  THorzAlignment = (Left, Center, Right { , LEADING, TRAILING } );
+  THorizontalAlignment = (Left, Center, Right { , LEADING, TRAILING } );
 
   TAWTComponent = class(TJEComponent)
   private
@@ -98,7 +98,7 @@ type
     procedure MakeEchoChar(const Value: string);
     procedure MakeText(StringList: TStrings);
     procedure CalculateMenus(MenuItems, Menu, ConstructMenu, Methods: TStrings;
-      J: string; NewMenuBar: Boolean = False);
+      const J: string; NewMenuBar: Boolean = False);
     procedure MakeMenuItems(OldItems, NewItems: TStrings;
       NewMenuBar: Boolean = False);
     procedure DeleteMenuItems(MenuItemsOld, MenuItems: TStrings);
@@ -107,7 +107,7 @@ type
     function AddVariable: string;
     function GetContainer: string;
     procedure SetAttribute(Attr, Value, Typ: string); override;
-    procedure SetAttributValueAfter(Key, Str: string);
+    procedure SetAttributValueAfter(const Key: string; Str: string);
     procedure InsertNewVariable(const Variable: string);
     function GetAttributes(ShowAttributes: Integer): string; override;
     function GetEvents(ShowEvents: Integer): string; override;
@@ -115,8 +115,8 @@ type
     procedure DeleteListener(const Event: string); override;
     procedure InsertImport(const Str: string);
     function GetListener(const Event: string): string; override;
-    procedure MakeListener(Value: string);
-    function GetContextMenuListener(Value: string): string;
+    procedure MakeListener(const Value: string);
+    function GetContextMenuListener(const Value: string): string;
     function GetContainerAdd: string; override;
     function MakeEventProcedure(const Event: string): string; override;
     procedure MakeSelectedIndex(const Value: string);
@@ -311,7 +311,7 @@ begin
     MakeAttribut(Attr, Value);
 end;
 
-procedure TAWTComponent.SetAttributValueAfter(Key, Str: string);
+procedure TAWTComponent.SetAttributValueAfter(const Key: string; Str: string);
 begin
   if Pos(Indent2, Str) = 0 then
     Str := Indent2 + Str;
@@ -631,7 +631,7 @@ begin
   Result := Indent2 + Result + Indent3 + '}' + CrLf + Indent2 + '});' + CrLf;
 end;
 
-function TAWTComponent.GetContextMenuListener(Value: string): string;
+function TAWTComponent.GetContextMenuListener(const Value: string): string;
 begin
   Result := SurroundFix2(Value + '.addMouseListener(new MouseAdapter() {') +
     SurroundFix3('public void mouseReleased(MouseEvent evt) {') +
@@ -895,7 +895,7 @@ begin
 end;
 
 procedure TAWTComponent.CalculateMenus(MenuItems, Menu, ConstructMenu,
-  Methods: TStrings; J: string; NewMenuBar: Boolean);
+  Methods: TStrings; const J: string; NewMenuBar: Boolean);
 var
   Posi, Indent: Integer;
   IndentAsString, TrimS, Str, ShortCut: string;
@@ -1053,7 +1053,7 @@ begin
   MakeMenuItems(MenuItemsOld, MenuItems);
 end;
 
-procedure TAWTComponent.MakeListener(Value: string);
+procedure TAWTComponent.MakeListener(const Value: string);
 var
   Int: Integer;
 begin

@@ -112,10 +112,10 @@ type
     FSequenceForm: TFSequenceForm;
 
     procedure ExecAndWaitPipeDebugger(const Applicationname, Commandline,
-      Debugger, DebuggerParameter, Dir: string; GUI, JavaFX: Boolean);
+      Debugger, DebuggerParameter, Dir: string; GUI: Boolean);
     procedure StartOfDebugging;
     function StartProcess(const Applicationname, Commandline, Dir: string;
-      JavaFX: Boolean; var SecAttr: TSecurityAttributes;
+      var SecAttr: TSecurityAttributes;
       var PipeInput, APipeOutput: TPipeHandles;
       var AProcessinformation: TProcessInformation;
       var StartupInfo: TStartupInfo): Boolean;
@@ -161,7 +161,7 @@ type
     procedure StartSetBreakpoints;
     function InstanceOfJava(const Str: string): Boolean;
     procedure ProcessDebuggerOutput(Lines: TStringList);
-    procedure ToDebugger(AStatus: Integer; Str: string);
+    procedure ToDebugger(AStatus: Integer; const Str: string);
     function NextCommand: string;
     procedure ShowAll;
     procedure Log(const Str: string);
@@ -254,7 +254,7 @@ begin
     begin
       GrantApplet;
       ExecAndWaitPipeDebugger('', '', FConfiguration.JavaAppletviewer,
-        ' -debug ' + Filename, Dir, True, False);
+        ' -debug ' + Filename, Dir, True);
       UnGrantApplet;
     end);
 end;
@@ -302,12 +302,12 @@ begin
     begin
       ExecAndWaitPipeDebugger(Applicationname, CallProgram,
         FConfiguration.JavaDebugger, ' -attach jdbconn' + IntAsString,
-        FDirectory, GUI, JavaFX);
+        FDirectory, GUI);
     end);
 end;
 
 procedure TDebugger.ExecAndWaitPipeDebugger(const Applicationname, Commandline,
-  Debugger, DebuggerParameter, Dir: string; GUI, JavaFX: Boolean);
+  Debugger, DebuggerParameter, Dir: string; GUI: Boolean);
 var
   SecAttr1, SecAttr2: TSecurityAttributes;
   StartupInfo1, StartupInfo2: TStartupInfo;
@@ -323,7 +323,7 @@ begin
       if Applicationname + Commandline <> '' then
       begin // Applets have Applicationname + Commandline = ''
         if GUI then
-          Error := not StartProcess(Applicationname, Commandline, Dir, JavaFX,
+          Error := not StartProcess(Applicationname, Commandline, Dir,
             SecAttr1, FPipeInput1, FPipeOutput1, FProcessInformation1,
             StartupInfo1)
         else
@@ -332,7 +332,7 @@ begin
         Sleep(400); // give program time to start
       end;
 
-      if not Error and StartProcess(Debugger, DebuggerParameter, Dir, False,
+      if not Error and StartProcess(Debugger, DebuggerParameter, Dir,
         SecAttr2, FPipeInput2, FPipeOutput2, FProcessInformation2, StartupInfo2)
       then
       begin
@@ -382,7 +382,7 @@ begin
   // debug externally: see function TComJava1.StartJava(...)
   // --- start debugger ------------------------------------------------------
   if StartProcess(FConfiguration.JavaDebugger, ' -attach jdbconn' + Number, '.',
-    False, SecAttr2, FPipeInput2, FPipeOutput2, FProcessInformation2,
+    SecAttr2, FPipeInput2, FPipeOutput2, FProcessInformation2,
     StartupInfo2) then
   begin
     FRunning := True;
@@ -402,7 +402,7 @@ begin
 end;
 
 function TDebugger.StartProcess(const Applicationname, Commandline, Dir: string;
-JavaFX: Boolean; var SecAttr: TSecurityAttributes;
+var SecAttr: TSecurityAttributes;
 var PipeInput, APipeOutput: TPipeHandles;
 var AProcessinformation: TProcessInformation;
 var StartupInfo: TStartupInfo): Boolean;
@@ -646,7 +646,7 @@ begin
   Result := Str;
 end;
 
-procedure TDebugger.ToDebugger(AStatus: Integer; Str: string);
+procedure TDebugger.ToDebugger(AStatus: Integer; const Str: string);
 var
   Count: DWORD;
   Enc: TEncoding;

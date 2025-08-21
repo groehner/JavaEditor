@@ -35,7 +35,7 @@ type
     procedure EatWhiteSpace;
     function GetNextToken: string;
     function LookAheadToken: string; overload;
-    function LookAheadToken(Tokens: string): string; overload;
+    function LookAheadToken(const Tokens: string): string; overload;
     function LookDoubleAheadToken: string;
     function GetPackage(const Str: string): string;
     function GetGeneric: string; overload;
@@ -56,7 +56,7 @@ type
     function IsIdentifier(const Str: string): Boolean;
     function GetFilename: string;
     function GetFrameType: Integer;
-    function NeedsJavaFX(Str: string): Boolean;
+    function NeedsJavaFX(const Str: string): Boolean;
 
     property Comment: string read FComment write FComment;
     property CommentLineE: Integer read FCommentLineE write FCommentLineE;
@@ -350,7 +350,7 @@ begin
   FLine := SaveLine;
 end;
 
-function TJavaScanner.LookAheadToken(Tokens: string): string;
+function TJavaScanner.LookAheadToken(const Tokens: string): string;
 var
   SaveCurrPos: PChar;
   SaveLastToken: string;
@@ -799,7 +799,7 @@ begin
     Result := 1;
 end;
 
-function TJavaScanner.NeedsJavaFX(Str: string): Boolean;
+function TJavaScanner.NeedsJavaFX(const Str: string): Boolean;
 begin
   Init(Str);
   Result := False;
