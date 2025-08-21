@@ -2463,6 +2463,9 @@ var
   var
     Filename, Filepath, PackageFilename: string;
   begin
+    if not DirectoryExists(Cp2) then
+      Exit;
+
     var FileNames := TDirectory.GetFiles(Cp2, Ext);
     Found:= (Length(FileNames) > 0);
     for Filepath in FileNames do begin
@@ -2508,6 +2511,9 @@ var
   var
     Filename, Filepath, PackageFilename: string;
   begin
+    if not DirectoryExists(Cp2) then
+      Exit;
+
     var FileNames := TDirectory.GetFiles(Cp2, Ext);
     Found:= (Length(FileNames) > 0);
     for Filepath in FileNames do begin

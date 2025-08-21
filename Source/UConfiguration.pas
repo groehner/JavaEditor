@@ -8657,10 +8657,12 @@ begin
     if EndsWith(Cp2, '*') then
     begin
       Delete(Cp2, Length(Cp2), 1);
-      var
-      Filenames := TDirectory.GetFiles(Cp2, '*.jar');
-      for var Filename in Filenames do
-        Result := Result + ';' + Filename;
+      if DirectoryExists(Cp2) then begin
+        var
+        Filenames := TDirectory.GetFiles(Cp2, '*.jar');
+        for var Filename in Filenames do
+          Result := Result + ';' + Filename;
+      end;
     end
     else
       Result := Result + ';' + Cp2;
@@ -9021,6 +9023,9 @@ var
 
   procedure CollectInDirectory(const Cp2, Ext: string);
   begin
+    if not DirectoryExists(Cp2) then
+      Exit;
+
     var
     Filenames := TDirectory.GetFiles(Cp2, Ext);
     for var Filename in Filenames do
@@ -9034,6 +9039,9 @@ var
 
   procedure CollectJarsInDirectory(const Cp2: string);
   begin
+    if not DirectoryExists(Cp2) then
+      Exit;
+
     var
     Filenames := TDirectory.GetFiles(Cp2, '*.jar');
     for var Filepath in Filenames do
@@ -9285,6 +9293,9 @@ var
 
   procedure CollectJarsInDirectory(const Cp2: string);
   begin
+    if not DirectoryExists(Cp2) then
+      Exit;
+
     var
     Filenames := TDirectory.GetFiles(Cp2, '*.jar');
     for var Filepath in Filenames do

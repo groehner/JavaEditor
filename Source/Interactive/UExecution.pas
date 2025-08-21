@@ -302,6 +302,9 @@ end;
 
 procedure TInteractiveExecuter.DeleteFiles(const Pathname: string);
 begin
+  if not DirectoryExists(Pathname) then
+    Exit;
+
   var Filenames := TDirectory.GetFiles(ExtractFilePath(Pathname), 'Class*.*');
   for var Filename in Filenames do
     DeleteFile(Filename);

@@ -2181,8 +2181,11 @@ begin
   if not FileExists(Filepath) then
     Exit(False);
   var Filename := ExtractFileName(Filepath);
-  var FileNames := TDirectory.GetFiles(ExtractFilePath(Filepath), Filename);
-  Result:= (ExtractFilename(FileNames[0]) = Filename);
+  if DirectoryExists(ExtractFilePath(Filepath)) then begin
+    var FileNames := TDirectory.GetFiles(ExtractFilePath(Filepath), Filename);
+    Result := (ExtractFilename(FileNames[0]) = Filename);
+  end else
+    Result := False;
 end;
 
 function IsMouseOverControl(const Control: TControl): Boolean;

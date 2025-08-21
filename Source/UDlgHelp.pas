@@ -348,12 +348,14 @@ begin
   Directory := HttpToCache(Directory);
   FoundFiles := TStringList.Create;
   FoundFiles.Sorted := True;
-  var
-  Filenames := TDirectory.GetFiles(Directory, '*.html',
-    TSearchOption.soAllDirectories);
-  for var Filename in Filenames do
-    FoundFiles.Add(Filename);
-  Investigate(FoundFiles, Sought);
+  if DirectoryExists(Directory) then begin
+    var
+    Filenames := TDirectory.GetFiles(Directory, '*.html',
+      TSearchOption.soAllDirectories);
+    for var Filename in Filenames do
+      FoundFiles.Add(Filename);
+    Investigate(FoundFiles, Sought);
+  end;
   FoundFiles.Free;
 end;
 

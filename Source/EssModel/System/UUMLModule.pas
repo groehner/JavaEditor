@@ -342,8 +342,10 @@ function TDMUMLModule.OpenFolderActionExecute(Sender: TObject): Boolean;
     if Recursive
       then SearchOption := TSearchOption.soAllDirectories
       else SearchOption := TSearchOption.soTopDirectoryOnly;
-    var Filenames := TDirectory.GetFiles(Path, '*' + Ext, SearchOption);
-    Files.AddStrings(Filenames);
+    if DirectoryExists(Path) then begin
+      var Filenames := TDirectory.GetFiles(Path, '*' + Ext, SearchOption);
+      Files.AddStrings(Filenames);
+    end;
   end;
 
 begin

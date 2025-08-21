@@ -5716,10 +5716,14 @@ var
   I: Integer;
   AgeEnabled: Boolean;
 
-  function ExpandJalopyJar(const Str: string): string;
+  function ExpandJalopyJar(Str: string): string;
   begin
+    Str := ExtractFilePath(Str);
+    if not DirectoryExists(Str) then
+      Exit;
+
     var
-    Filenames := TDirectory.GetFiles(ExtractFilePath(Str), '*.jar');
+    Filenames := TDirectory.GetFiles(Str, '*.jar');
     Result := String.Join(';', Filenames);
   end;
 

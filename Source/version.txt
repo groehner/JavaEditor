@@ -1,3 +1,6 @@
+23.13, 2025.08.21
+bugfix classpath collection
+
 23.12, 2025.08.15
 bugfix structure coloring in editor
 
