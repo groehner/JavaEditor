@@ -150,7 +150,7 @@ begin
     //be hidden
     if (HostDockSite is TPanel) and Visible and (HostDockSite.VisibleDockClientCount <= 1)
        or (HostDockSite.VisibleDockClientCount = 0) then
-      FJava.ShowDockPanel(HostDockSite as TPanel, False, nil);
+      FJava.ShowDockPanel(TPanel(HostDockSite), False, nil);
   end;
 
   AAction := caHide;

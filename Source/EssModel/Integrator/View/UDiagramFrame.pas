@@ -394,13 +394,13 @@ end;
 procedure TAFrameDiagram.MIClassPopupParameterDisplayClick(Sender: TObject);
 begin
   if Assigned(FDiagram) then
-    FDiagram.DoShowParameter(GetPopMenuClass, (Sender as TSpTBXItem).Tag);
+    FDiagram.DoShowParameter(GetPopMenuClass, TSpTBXItem(Sender).Tag);
 end;
 
 procedure TAFrameDiagram.MIClassPopupVisibilityClick(Sender: TObject);
 begin
   if Assigned(FDiagram) then
-    FDiagram.DoShowVisibility(GetPopMenuClass, (Sender as TSpTBXItem).Tag);
+    FDiagram.DoShowVisibility(GetPopMenuClass, TSpTBXItem(Sender).Tag);
 end;
 
 procedure TAFrameDiagram.MIClassPopupSelectAssociationClick(Sender: TObject);
@@ -432,7 +432,7 @@ end;
 procedure TAFrameDiagram.MIConnectionClick(Sender: TObject);
 begin
   if Assigned(FDiagram) then
-    FDiagram.DoConnection((Sender as TSpTBXItem).Tag);
+    FDiagram.DoConnection(TSpTBXItem(Sender).Tag);
 end;
 
 procedure TAFrameDiagram.MIClassPopupDeleteClick(Sender: TObject);
@@ -445,7 +445,7 @@ procedure TAFrameDiagram.MIClassPopupDisplayClick(Sender: TObject);
 begin
   if Assigned(FDiagram) then
     FDiagram.DoShowVisibilityFilter(GetPopMenuClass,
-      (Sender as TSpTBXItem).Tag);
+      TSpTBXItem(Sender).Tag);
 end;
 
 procedure TAFrameDiagram.MIClassPopupCopyAsPictureClick(Sender: TObject);
@@ -496,7 +496,7 @@ procedure TAFrameDiagram.MIObjectPopupDisplayClick(Sender: TObject);
 begin
   if Assigned(FDiagram) then
     FDiagram.DoShowVisibilityFilter(GetPopMenuObject,
-      (Sender as TSpTBXItem).Tag);
+      TSpTBXItem(Sender).Tag);
 end;
 
 procedure TAFrameDiagram.MIObjectPopupEditClick(Sender: TObject);
@@ -540,13 +540,13 @@ end;
 procedure TAFrameDiagram.MIObjectPopupVisibilityClick(Sender: TObject);
 begin
   if Assigned(FDiagram) then
-    FDiagram.DoShowVisibility(GetPopMenuObject, (Sender as TSpTBXItem).Tag);
+    FDiagram.DoShowVisibility(GetPopMenuObject, TSpTBXItem(Sender).Tag);
 end;
 
 procedure TAFrameDiagram.MIPopupAlignClick(Sender: TObject);
 begin
   if Assigned(FDiagram) then
-    FDiagram.DoAlign((Sender as TSpTBXItem).Tag);
+    FDiagram.DoAlign(TSpTBXItem(Sender).Tag);
 end;
 
 procedure TAFrameDiagram.MIWindowPopupCopyAsPictureClick(Sender: TObject);
@@ -559,7 +559,7 @@ procedure TAFrameDiagram.MISetRecursiv(Sender: TObject);
 begin
   if Assigned(FDiagram) then
     FDiagram.SetRecursiv(PopMenuConnection.PopupPoint,
-      (Sender as TSpTBXItem).Tag);
+      TSpTBXItem(Sender).Tag);
 end;
 
 procedure TAFrameDiagram.MIWindowPopupNewCommentClick(Sender: TObject);
@@ -600,7 +600,7 @@ end;
 
 procedure TAFrameDiagram.MIWindowPopupDisplayClick(Sender: TObject);
 begin
-  FConfiguration.DiVisibilityFilter := (Sender as TSpTBXItem).Tag;
+  FConfiguration.DiVisibilityFilter := TSpTBXItem(Sender).Tag;
   if Assigned(FDiagram) then
     FDiagram.VisibilityFilter := TVisibility(FConfiguration.DiVisibilityFilter);
 end;
@@ -613,14 +613,14 @@ end;
 
 procedure TAFrameDiagram.MIWindowPopupParameterDisplayClick(Sender: TObject);
 begin
-  FConfiguration.DiShowParameter := (Sender as TSpTBXItem).Tag;
+  FConfiguration.DiShowParameter := TSpTBXItem(Sender).Tag;
   if Assigned(FDiagram) then
     FDiagram.ShowParameter := FConfiguration.DiShowParameter;
 end;
 
 procedure TAFrameDiagram.MIWindowPopupVisibilityClick(Sender: TObject);
 begin
-  FConfiguration.DiShowIcons := (Sender as TSpTBXItem).Tag;
+  FConfiguration.DiShowIcons := TSpTBXItem(Sender).Tag;
   if Assigned(FDiagram) then
     FDiagram.ShowIcons := FConfiguration.DiShowIcons;
 end;

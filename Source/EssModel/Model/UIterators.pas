@@ -223,7 +223,7 @@ begin
   if FHasNext then
   begin
     if FItems[FNextI] is TModelEntity then
-      FNext := FItems[FNextI] as TModelEntity;
+      FNext := TModelEntity(FItems[FNextI]);
     Inc(FNextI);
   end;
 end;

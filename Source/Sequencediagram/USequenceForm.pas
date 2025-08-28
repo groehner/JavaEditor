@@ -295,35 +295,28 @@ var
   Ini: TMemIniFile;
   StringList: TStringList;
 begin
-  Result := True;
-  Ini := TMemIniFile.Create(FileName, TEncoding.UTF8);
-  StringList := TStringList.Create;
+  Result := False;
+  FLifelines.Clear;
   FSequencePanel.IsLocked := True;
   FSequencePanel.ClearManagedObjects;
-  FLifelines.Clear;
+  Ini := TMemIniFile.Create(FileName, TEncoding.UTF8);
+  StringList := TStringList.Create;
   try
-    try
-      FLifelinesTop :=
-        PPIScale(Min(Ini.ReadInteger('Diagram', 'Top', 30), 500));
-      Ini.ReadSectionValues('Participants', StringList);
-      for var I := 0 to StringList.Count - 1 do
-        AddLifeline(UnHideCrLf(StringList[I]));
-      Ini.ReadSectionValues('Messages', StringList);
-      for var I := 0 to StringList.Count - 1 do
-        AddConnection(StringList[I]);
-      Font.Name := Ini.ReadString('Diagram', 'FontName', 'Segoe UI');
-      Font.Size := PPIScale(Ini.ReadInteger('Diagram', 'FontSize', 12));
-      SetFont(Font);
-    except
-      on E: Exception do
-      begin
-        ErrorMsg(E.Message);
-        Result := False;
-      end;
-    end;
+    FLifelinesTop :=
+      PPIScale(Min(Ini.ReadInteger('Diagram', 'Top', 30), 500));
+    Ini.ReadSectionValues('Participants', StringList);
+    for var I := 0 to StringList.Count - 1 do
+      AddLifeline(UnHideCrLf(StringList[I]));
+    Ini.ReadSectionValues('Messages', StringList);
+    for var I := 0 to StringList.Count - 1 do
+      AddConnection(StringList[I]);
+    Font.Name := Ini.ReadString('Diagram', 'FontName', 'Segoe UI');
+    Font.Size := PPIScale(Ini.ReadInteger('Diagram', 'FontSize', 12));
+    SetFont(Font);
+    Result := True;
   finally
-    FreeAndNil(StringList);
-    FreeAndNil(Ini);
+    StringList.Free;
+    Ini.Free;
     FSequencePanel.IsLocked := False;
   end;
 end;
@@ -331,58 +324,57 @@ end;
 procedure TFSequenceForm.SaveToFile(const FileName: string);
 var
   Lifeline: TLifeline;
+  Conn: TConnection;
   ConnStr: string;
   Connections: TList;
-  Conn: TConnection;
   StringList: TStringList;
 begin
   StringList := TStringList.Create;
-  StringList.Add('[Participants]');
-  StringList.Add('# Object | x-position');
-  for var I := 0 to FLifelines.Count - 1 do
-  begin
-    Lifeline := TLifeline(FLifelines[I]);
-    StringList.Add(HideCrLf(Lifeline.Participant) + ' | ' +
-      IntToStr(PPIUnScale(Lifeline.Left)));
-  end;
-
-  StringList.Add('');
-  StringList.Add('[Messages]');
-  StringList.Add('# Object1 ->  Object2 | synchron message');
-  StringList.Add('# Object1 --> Object2 | return message');
-  StringList.Add('# Object1 ->> Object2 | asynchron message');
-  StringList.Add('# Object1 ->o Object2 | new message');
-  StringList.Add('# Object1 ->x Object2 | close message');
-  Connections := FSequencePanel.GetConnections;
   try
-    for var I := 0 to Connections.Count - 1 do
-    begin
-      Conn := TConnection(Connections[I]);
-      with Conn do
-        ConnStr := HideCrLf((StartControl as TLifeline).Participant) +
-          GetArrowStyleAsString + HideCrLf((EndControl as TLifeline)
+    StringList.Add('[Participants]');
+    StringList.Add('# Object | x-position');
+    for LifeLine in FLifelines do
+      StringList.Add(HideCrLf(Lifeline.Participant) + ' | ' +
+        IntToStr(PPIUnScale(Lifeline.Left)));
+
+    StringList.Add('');
+    StringList.Add('[Messages]');
+    StringList.Add('# Object1 ->  Object2 | synchron message');
+    StringList.Add('# Object1 --> Object2 | return message');
+    StringList.Add('# Object1 ->> Object2 | asynchron message');
+    StringList.Add('# Object1 ->o Object2 | new message');
+    StringList.Add('# Object1 ->x Object2 | close message');
+    Connections := FSequencePanel.GetConnections;
+    try
+      for Conn in Connections do begin
+        ConnStr :=
+          HideCrLf(TLifeline(Conn.StartControl).Participant) +
+          conn.GetArrowStyleAsString +
+          HideCrLf(TLifeline(Conn.EndControl)
           .Participant) + ' | ' + Conn.AMessage;
-      StringList.Add(ConnStr);
+        StringList.Add(ConnStr);
+      end;
+    finally
+      Connections.Free;
+    end;
+    StringList.Add('');
+    StringList.Add('[Diagram]');
+    if FLifelines.Count = 0 then
+      StringList.Add('Top=' + IntToStr(PPIUnScale(FLifelinesTop)))
+    else
+      StringList.Add('Top=' + IntToStr(PPIUnScale(TLifeline(FLifelines[0]).Top)));
+    StringList.Add('FontName=' + Font.Name);
+    StringList.Add('FontSize=' + IntToStr(PPIUnScale(Font.Size)));
+
+    try
+      StringList.SaveToFile(FileName, TEncoding.UTF8);
+    except
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
   finally
-    FreeAndNil(Connections);
+    StringList.Free;
   end;
-  StringList.Add('');
-  StringList.Add('[Diagram]');
-  if FLifelines.Count = 0 then
-    StringList.Add('Top=' + IntToStr(PPIUnScale(FLifelinesTop)))
-  else
-    StringList.Add('Top=' + IntToStr(PPIUnScale(TLifeline(FLifelines[0]).Top)));
-  StringList.Add('FontName=' + Font.Name);
-  StringList.Add('FontSize=' + IntToStr(PPIUnScale(Font.Size)));
-
-  try
-    StringList.SaveToFile(FileName, TEncoding.UTF8);
-  except
-    on E: Exception do
-      ErrorMsg(E.Message);
-  end;
-  FreeAndNil(StringList);
 end;
 
 procedure TFSequenceForm.Save(WithBackup: Boolean);
@@ -401,33 +393,27 @@ begin
       Ext := '.~';
     BackupName := ChangeFileExt(BackupName, Ext);
     if FileExists(BackupName) then
-      DeleteFile(PChar(BackupName));
+      DeleteFile(BackupName);
     if FileExists(Pathname) then
       RenameFile(Pathname, BackupName);
   end;
-  try
-    SaveToFile(Pathname);
-    Modified := False;
-  except
-    on E: Exception do
-      ErrorMsg(E.Message);
-  end;
+  SaveToFile(Pathname);
+  Modified := False;
 end;
-{$WARNINGS ON}
 
 procedure TFSequenceForm.ConnectLifelines(Sender: TObject);
 begin
   var
   Src := FSequencePanel.GetFirstSelected;
   var
-  Dest := TControl(FLifelines[(Sender as TSpTBXItem).Tag]);
+  Dest := TControl(FLifelines[TSpTBXItem(Sender).Tag]);
   FSequencePanel.FindManagedControl(Dest).Selected := True;
   FSequencePanel.ConnectBoxesAt(Src, Dest, FPopupAtYPos);
 end;
 
 procedure TFSequenceForm.MIConnectionClick(Sender: TObject);
 begin
-  FSequencePanel.DoConnection((Sender as TSpTBXItem).Tag);
+  FSequencePanel.DoConnection(TSpTBXItem(Sender).Tag);
 end;
 
 procedure TFSequenceForm.MIPopupFontClick(Sender: TObject);
@@ -469,7 +455,7 @@ begin
     Conn := TConnection(ConnList[I]);
     if Conn.IsRecursiv then
     begin
-      Lifeline := Conn.StartControl as TLifeline;
+      Lifeline := TLifeline(Conn.StartControl);
       Conn.FromActivation := Lifeline.Activation;
       if Conn.ArrowStyle = casReturn then
         Lifeline.Activation := Lifeline.Activation - 1
@@ -479,8 +465,8 @@ begin
     end
     else
     begin
-      Lifeline1 := Conn.StartControl as TLifeline;
-      Lifeline2 := Conn.EndControl as TLifeline;
+      Lifeline1 := TLifeline(Conn.StartControl);
+      Lifeline2 := TLifeline(Conn.EndControl);
       if Conn.ArrowStyle = casReturn then
       begin
         Conn.FromActivation := Lifeline1.Activation;
@@ -689,7 +675,7 @@ begin
   Point := FSequencePanel.ScreenToClient(Mouse.CursorPos);
   FPopupAtYPos := Point.Y;
   if Assigned(Sender) and (Sender is TLifeline) then
-    FPopupAtLifeline := (Sender as TLifeline)
+    FPopupAtLifeline := TLifeline(Sender)
   else
     FPopupAtLifeline := nil;
 end;
@@ -1195,9 +1181,9 @@ var
 begin
   if Sender is TLifeline then
   begin
-    Posi := (Sender as TLifeline).ScreenToClient(Mouse.CursorPos);
-    if Posi.Y <= (Sender as TLifeline).HeadHeight then
-      DoEdit(Sender as TLifeline)
+    Posi := TLifeline(Sender).ScreenToClient(Mouse.CursorPos);
+    if Posi.Y <= TLifeline(Sender).HeadHeight then
+      DoEdit(TLifeline(Sender))
     else
     begin
       Connection := FSequencePanel.GetConnectionOfClickedTextRect;
@@ -1233,7 +1219,7 @@ end;
 procedure TFSequenceForm.OnConnectionSet(Sender: TObject);
 begin
   var
-  Conn := (Sender as TConnection);
+  Conn := TConnection(Sender);
   if Conn.ArrowStyle = casClose then
     TLifeline(Conn.EndControl).Closed := True;
   if Conn.ArrowStyle = casNew then
@@ -1247,7 +1233,7 @@ var
   Lifeline: TLifeline;
   MinTop, MaxHeight: Integer;
 begin
-  Conn := Sender as TConnection;
+  Conn := TConnection(Sender);
   Lifeline := TLifeline(Conn.EndControl);
   Lifeline.Created := False;
   Lifeline.Closed := False;

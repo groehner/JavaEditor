@@ -228,8 +228,8 @@ end;
 
 destructor TImportIntegrator.Destroy;
 begin
-  FreeAndNil(FCodeProvider);
-  FreeAndNil(FFilesRead);
+  FCodeProvider.Free;
+  FFilesRead.Free;
   inherited;
 end;
 
@@ -242,7 +242,7 @@ end;
 
 destructor TIntegrators.Destroy;
 begin
-  FreeAndNil(FList);
+  FList.Free;
   inherited;
 end;
 
@@ -270,6 +270,6 @@ initialization
 
 finalization
 
-FreeAndNil(GIntegrators);
+GIntegrators.Free;
 
 end.

@@ -343,7 +343,7 @@ begin
     ExecutionLine.Value := ExecutionLine.Name + Str;
     ExecuteTerm(ExecutionLine);
   finally
-    FreeAndNil(Operation);
+    Operation.Free;
   end;
 end;
 

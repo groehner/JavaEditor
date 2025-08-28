@@ -4,20 +4,21 @@ interface
 
 uses UBaseForm;
 
-type TTabObject = class
-       path: string;
-       Num: Integer;
-       Form: TFForm;
-       constructor Create(const APath: string; ANum: Integer; AForm: TFForm);
-     end;
+type
+  TTabObject = class
+    Path: string;
+    Num: Integer;
+    Form: TFForm;
+    constructor Create(const Path: string; Num: Integer; Form: TFForm);
+  end;
 
 implementation
 
-constructor TTabObject.Create(const APath: string; ANum: Integer; AForm: TFForm);
+constructor TTabObject.Create(const Path: string; Num: Integer; Form: TFForm);
 begin
-  Self.path := APath;
-  Self.Num:= ANum;
-  Self.Form:= AForm;
+  Self.Path := Path;
+  Self.Num:= Num;
+  Self.Form:= Form;
 end;
 
 end.

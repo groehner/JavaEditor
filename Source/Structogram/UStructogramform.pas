@@ -224,7 +224,6 @@ uses
   UConfiguration,
   UUtils,
   UGenerateStructogram,
-  UMessages,
   UTemplates;
 
 constructor TFStructogram.Create(AOwner: TComponent);
@@ -280,9 +279,7 @@ begin
 end;
 
 procedure TFStructogram.New;
-var
-  Elem: TStrElement;
-  StrList: TStrAlgorithm;
+var Elem: TStrElement; StrList: TStrAlgorithm;
 begin
   if Pathname = '' then
     Pathname := FJava.GetFilename('.jsg');
@@ -303,9 +300,7 @@ begin
 end;
 
 procedure TFStructogram.GenerateFromText(const Text: string);
-var
-  Generator: TGenerateStructogram;
-  StrList: TStrAlgorithm;
+var Generator: TGenerateStructogram; StrList: TStrAlgorithm;
 begin
   if Pathname = '' then
     Pathname := FJava.GetFilename('.jsg');
@@ -326,10 +321,7 @@ begin
 end;
 
 procedure TFStructogram.RenewFromText(const Text: string);
-var
-  Generator: TGenerateStructogram;
-  StrList: TStrList;
-  Algorithm: string;
+var Generator: TGenerateStructogram; StrList: TStrList; Algorithm: string;
 begin
   for var I := ScrollBox.ControlCount - 1 downto 0 do
   begin
@@ -379,10 +371,7 @@ begin
 end;
 
 function TFStructogram.LoadFromFile(const FileName: string): Boolean;
-var
-  StrList: TStrList;
-  SwitchWithCaseLine: Boolean;
-  Reader: TStringListReader;
+var StrList: TStrList; SwitchWithCaseLine: Boolean; Reader: TStringListReader;
 
   procedure Init(List: TStrList);
   begin
@@ -396,12 +385,12 @@ var
   end;
 
 begin
-  Result := True;
+  Result := False;
+  Reader := TStringListReader.Create(FileName);
   try
-    Reader := TStringListReader.Create(FileName);
     try
-      if Reader.hasOldFormat then
-        LoadFromFileOld(FileName)
+      if Reader.HasOldFormat then
+        Result:= LoadFromFileOld(FileName)
       else
       begin
         repeat
@@ -444,31 +433,22 @@ begin
           Result := Result and not StrList.LoadError;
           Reader.ReadLine;
         end;
+        Result := True;
       end;
-    finally
-      FreeAndNil(Reader);
+    except
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
-  except
-    on E: Exception do
-    begin
-      ErrorMsg(E.Message);
-      Result := False;
-    end;
+  finally
+    FreeAndNil(Reader);
   end;
   FVersion := $0F;
 end;
 
 function TFStructogram.LoadFromFileOld(const FileName: string): Boolean;
-var
-  SigName: ShortString;
-  FontName: ShortString;
-  Style: Byte;
-  Stream: TFileStream;
-  LeftMargin, TopMargin, Zoomfactor: SmallInt;
-  Kind: Byte;
-  StrList: TStrList;
-  StructogramAligned: Boolean;
-  SwitchWithCaseLine: Boolean;
+var SigName: ShortString; FontName: ShortString; Style: Byte;
+  Stream: TFileStream; LeftMargin, TopMargin, Zoomfactor: SmallInt; Kind: Byte;
+  StrList: TStrList; StructogramAligned: Boolean; SwitchWithCaseLine: Boolean;
 
   procedure Init(List: TStrList);
   begin
@@ -484,9 +464,9 @@ var
   end;
 
 begin
-  Result := True;
+  Result := False;
+  Stream := TFileStream.Create(FileName, fmOpenRead);
   try
-    Stream := TFileStream.Create(FileName, fmOpenRead);
     try
       Stream.Read(SigName, 4); { read signature }
       if not((SigName = 'JSG') or (SigName = 'NSD')) then
@@ -560,66 +540,60 @@ begin
               Result := Result and not StrList.LoadError;
             end;
         end;
+        Result := True;
       end;
-    finally
-      FreeAndNil(Stream);
+    except
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
-  except
-    on E: Exception do
-    begin
-      ErrorMsg(E.Message);
-      Result := False;
-    end;
+  finally
+    FreeAndNil(Stream);
   end;
   FVersion := $0E;
 end;
 
 procedure TFStructogram.SaveToFile(const FileName: string);
-var
-  JSGFile: TextFile;
-  AList: TStrList;
+var Lines: TStringList; AList: TStrList;
 begin
+  Lines := TStringList.Create;
   try
     try
-      AssignFile(JSGFile, FileName);
-      Rewrite(JSGFile);
-      Writeln(JSGFile, 'JSG: true');
+      Lines.Add('JSG: true');
       if Font.Name = 'Arial' then
         Font.Name := 'Segoe UI';
-      Writeln(JSGFile, 'FontName: ' + Font.Name);
-      Writeln(JSGFile, 'FontSize: ' + IntToStr(PPIUnScale(Font.Size)));
+      Lines.Add('FontName: ' + Font.Name);
+      Lines.Add('FontSize: ' + IntToStr(PPIUnScale(Font.Size)));
       if fsBold in Font.Style then
-        Writeln(JSGFile, 'FontBold: true');
+        Lines.Add('FontBold: true');
       if fsItalic in Font.Style then
-        Writeln(JSGFile, 'FontItalic: true');
-      Writeln(JSGFile, 'FontColor: ' + IntToStr(Font.Color));
+        Lines.Add('FontItalic: true');
+      Lines.Add('FontColor: ' + IntToStr(Font.Color));
       if FPuzzleMode > 0 then
       begin
-        Writeln(JSGFile, 'PuzzleMode: ' + IntToStr(FPuzzleMode));
-        Writeln(JSGFile, 'Solution: ' + HideCrLf(FSolution));
+        Lines.Add('PuzzleMode: ' + IntToStr(FPuzzleMode));
+        Lines.Add('Solution: ' + HideCrLf(FSolution));
       end;
-
       for var I := 0 to ScrollBox.ControlCount - 1 do
       begin
-        AList := (ScrollBox.Controls[I] as TListImage).StrList;
-        Writeln(JSGFile, '- Kind: ' + AList.GetKind);
-        Writeln(JSGFile, '  SwitchWithCaseLine: ' +
+        AList := TListImage(ScrollBox.Controls[I]).StrList;
+        Lines.Add('- Kind: ' + AList.GetKind);
+        Lines.Add('  SwitchWithCaseLine: ' +
           BoolToStr(AList.SwitchWithCaseLine, True));
-        Writeln(JSGFile, '  RectPos' + AList.GetRectPos);
-        Write(JSGFile, AList.GetText('  '));
+        Lines.Add('  RectPos' + AList.GetRectPos);
+        Lines.Add(AList.GetText('  '));
       end;
-    finally
-      CloseFile(JSGFile);
+      Lines.SaveToFile(FileName, TEncoding.UTF8);
+    except
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
-  except
-    on E: Exception do
-      ErrorMsg(E.Message);
+  finally
+    Lines.Free;
   end;
 end;
 
 function TFStructogram.StringFromStream(Stream: TStream): string;
-var
-  Size: LongInt;
+var Size: LongInt;
 begin
   Stream.Read(Size, SizeOf(Size));
   SetLength(Result, Size div SizeOf(Char));
@@ -633,60 +607,69 @@ end;
 
 procedure TFStructogram.ShowShape;
 begin
-  with FOldShape do begin
-    FOldCanvas.Pen.Color:= clRed;
-    if Top = Bottom then begin
-      FOldCanvas.MoveTo(Left+1, Top-2);
-      FOldCanvas.LineTo(Right, Top-2);
-      FOldCanvas.MoveTo(Left+1, Top-1);
-      FOldCanvas.LineTo(Right, Top-1);
-      FOldCanvas.MoveTo(Left+1, Top+1);
-      FOldCanvas.LineTo(Right, Top+1);
-      FOldCanvas.MoveTo(Left+1, Top+2);
-      FOldCanvas.LineTo(Right, Top+2);
-    end else begin
+  with FOldShape do
+  begin
+    FOldCanvas.Pen.Color := clRed;
+    if Top = Bottom then
+    begin
+      FOldCanvas.MoveTo(Left + 1, Top - 2);
+      FOldCanvas.LineTo(Right, Top - 2);
+      FOldCanvas.MoveTo(Left + 1, Top - 1);
+      FOldCanvas.LineTo(Right, Top - 1);
+      FOldCanvas.MoveTo(Left + 1, Top + 1);
+      FOldCanvas.LineTo(Right, Top + 1);
+      FOldCanvas.MoveTo(Left + 1, Top + 2);
+      FOldCanvas.LineTo(Right, Top + 2);
+    end
+    else
+    begin
       FOldCanvas.MoveTo(Left, Top);
       FOldCanvas.LineTo(Right, Top);
       FOldCanvas.LineTo(Right, Bottom);
-      FOldCanvas.LineTo(Left,  Bottom);
+      FOldCanvas.LineTo(Left, Bottom);
       FOldCanvas.LineTo(Left, Top);
-      FOldCanvas.MoveTo(Left+1, Top+1);
-      FOldCanvas.LineTo(Right-1, Top+1);
-      FOldCanvas.LineTo(Right-1, Bottom-1);
-      FOldCanvas.LineTo(Left+1,  Bottom-1);
-      FOldCanvas.LineTo(Left+1, Top+1);
+      FOldCanvas.MoveTo(Left + 1, Top + 1);
+      FOldCanvas.LineTo(Right - 1, Top + 1);
+      FOldCanvas.LineTo(Right - 1, Bottom - 1);
+      FOldCanvas.LineTo(Left + 1, Bottom - 1);
+      FOldCanvas.LineTo(Left + 1, Top + 1);
     end;
   end;
 end;
 
 procedure TFStructogram.HideShape;
 begin
-  if FOldShape.Top > -1 then begin
-    with FOldShape do begin
-      FOldCanvas.Pen.Color:= StyleServices.GetStyleColor(scPanel);
-      if Top = Bottom then begin
-        FOldCanvas.MoveTo(Left+1, Top-2);
-        FOldCanvas.LineTo(Right, Top-2);
-        FOldCanvas.MoveTo(Left+1, Top-1);
-        FOldCanvas.LineTo(Right, Top-1);
-        FOldCanvas.MoveTo(Left+1, Top+1);
-        FOldCanvas.LineTo(Right, Top+1);
-        FOldCanvas.MoveTo(Left+1, Top+2);
-        FOldCanvas.LineTo(Right, Top+2);
-      end else begin
+  if FOldShape.Top > -1 then
+  begin
+    with FOldShape do
+    begin
+      FOldCanvas.Pen.Color := StyleServices.GetStyleColor(scPanel);
+      if Top = Bottom then
+      begin
+        FOldCanvas.MoveTo(Left + 1, Top - 2);
+        FOldCanvas.LineTo(Right, Top - 2);
+        FOldCanvas.MoveTo(Left + 1, Top - 1);
+        FOldCanvas.LineTo(Right, Top - 1);
+        FOldCanvas.MoveTo(Left + 1, Top + 1);
+        FOldCanvas.LineTo(Right, Top + 1);
+        FOldCanvas.MoveTo(Left + 1, Top + 2);
+        FOldCanvas.LineTo(Right, Top + 2);
+      end
+      else
+      begin
         FOldCanvas.MoveTo(Left, Top);
         FOldCanvas.LineTo(Right, Top);
         FOldCanvas.LineTo(Right, Bottom);
-        FOldCanvas.LineTo(Left,  Bottom);
+        FOldCanvas.LineTo(Left, Bottom);
         FOldCanvas.LineTo(Left, Top);
-        FOldCanvas.MoveTo(Left+1, Top+1);
-        FOldCanvas.LineTo(Right-1, Top+1);
-        FOldCanvas.LineTo(Right-1, Bottom-1);
-        FOldCanvas.LineTo(Left+1,  Bottom-1);
-        FOldCanvas.LineTo(Left+1, Top+1);
+        FOldCanvas.MoveTo(Left + 1, Top + 1);
+        FOldCanvas.LineTo(Right - 1, Top + 1);
+        FOldCanvas.LineTo(Right - 1, Bottom - 1);
+        FOldCanvas.LineTo(Left + 1, Bottom - 1);
+        FOldCanvas.LineTo(Left + 1, Top + 1);
       end;
     end;
-    FOldShape:= Rect(-1, -1, -1, -1);
+    FOldShape := Rect(-1, -1, -1, -1);
     PaintAll;
   end;
 end;
@@ -694,10 +677,7 @@ end;
 // used by buttons
 procedure TFStructogram.StrElementMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  StrList: TStrList;
-  Element: TStrElement;
-  PtScreen, PtClient: TPoint;
+var StrList: TStrList; Element: TStrElement; PtScreen, PtClient: TPoint;
 begin
   if Button = mbLeft then
   begin
@@ -730,8 +710,8 @@ begin
       Ord(nsFor):
         begin
           Element := TStrFor.Create(StrList);
-          Element.Text := ReplaceStr(ReplaceStr(FConfiguration._For, '[', ''), ']',
-            '') + ' ';
+          Element.Text := ReplaceStr(ReplaceStr(FConfiguration._For, '[', ''),
+            ']', '') + ' ';
         end;
       Ord(nsSwitch):
         Element := TStrSwitch.Create(StrList);
@@ -743,7 +723,7 @@ begin
     StrList.Insert(StrList, Element);
     StrList.SetFont(Font);
     StrList.ResizeAll;
-    PtScreen := (Sender as TToolButton).ClientToScreen(Point(X, Y));
+    PtScreen := TToolButton(Sender).ClientToScreen(Point(X, Y));
     PtClient := ToolBarStructogram.ScreenToClient(PtScreen);
     StrList.ListImage.SetBounds(PtClient.X - StrList.RctList.Width div 2,
       PtClient.Y - StrList.LineHeight div 2, StrList.RctList.Width,
@@ -762,7 +742,7 @@ end;
 
 procedure TFStructogram.ImageDblClick(Sender: TObject);
 begin
-  FCurList := (Sender as TListImage).StrList;
+  FCurList := TListImage(Sender).StrList;
   FCurElement := FindVisibleElement(FCurList, FMousePos.X, FMousePos.Y);
   DoEdit(FCurElement, '');
   FIgnoreNextMouseDown := True;
@@ -779,7 +759,7 @@ begin
   if FIsMoving then
     Exit;
   var
-  Image := (Sender as TListImage);
+  Image := TListImage(Sender);
   Image.BringToFront;
   FCurList := Image.StrList;
   FMousePos := Point(XPos, YPos);
@@ -798,20 +778,16 @@ end;
 // mouse move over a structogram
 procedure TFStructogram.ImageMouseMove(Sender: TObject; Shift: TShiftState;
   XPos, YPos: Integer);
-var
-  ScrollBoxPt, Image2Pt, ScreenPt: TPoint;
-  DeltaX, DeltaY, DeltaX1, DeltaY1: Integer;
-  Image, Image2: TListImage;
-  StrList: TStrList;
-  StrStatement: TStrStatement;
-  ARect: TRect;
+var ScrollBoxPt, Image2Pt, ScreenPt: TPoint;
+  DeltaX, DeltaY, DeltaX1, DeltaY1: Integer; Image, Image2: TListImage;
+  StrList: TStrList; StrStatement: TStrStatement; ARect: TRect;
 begin
   HideShape;
   if FEditMemo.Visible then
     Exit;
   if ssLeft in Shift then
   begin
-    Image := (Sender as TListImage);
+    Image := TListImage(Sender);
     FCurList := Image.StrList;
     // start moving
     ScreenPt := Image.ClientToScreen(Point(XPos, YPos));
@@ -834,8 +810,8 @@ begin
         if FCurElement.Prev = nil then
           Exit;
         ARect := FCurElement.Rct;
-        if (FCurElement.Prev is TStrListHead) or (FCurElement.Prev is TStrCase) or
-          (FPuzzleMode = 1) then
+        if (FCurElement.Prev is TStrListHead) or (FCurElement.Prev is TStrCase)
+          or (FPuzzleMode = 1) then
         begin
           StrStatement := TStrStatement.Create(FCurList);
           StrStatement.Rct := FCurElement.Rct;
@@ -927,8 +903,8 @@ begin
     Exit;
 
   with FCurElement do
-    if not EqualRect(FOldShape, Rect(Rct.Bottom, Rct.Left, Rct.Bottom, Rct.Right))
-    then
+    if not EqualRect(FOldShape, Rect(Rct.Bottom, Rct.Left, Rct.Bottom,
+      Rct.Right)) then
     begin
       if BeforeOrAfter(FCurElement) then
       begin
@@ -949,7 +925,8 @@ begin
       end
       else
       begin
-        var DeltaY := (FCurElement.Rct.Bottom - FCurElement.Rct.Top) div 4;
+        var
+        DeltaY := (FCurElement.Rct.Bottom - FCurElement.Rct.Top) div 4;
         if YPos < FCurElement.Rct.Top + DeltaY then
         begin
           FOldShape := Rect(Rct.Left, Rct.Top, Rct.Right, Rct.Top);
@@ -978,14 +955,11 @@ end;
 
 procedure TFStructogram.ImageMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; XPos, YPos: Integer);
-var
-  ScreenPt, QPoint, ScrollBoxPt, Image2Pt: TPoint;
-  Image, Image2: TListImage;
-  StrList: TStrList;
-  ARect: TRect;
+var ScreenPt, QPoint, ScrollBoxPt, Image2Pt: TPoint; Image, Image2: TListImage;
+  StrList: TStrList; ARect: TRect;
 begin
   FIsMoving := False;
-  Image := (Sender as TListImage);
+  Image := TListImage(Sender);
   StrList := Image.StrList;
 
   if FIgnoreNextMouseUp then
@@ -1034,8 +1008,7 @@ end;
 // dropped on a structogram, Insert Element
 procedure TFStructogram.InsertElement(DestList, InsertList: TStrList;
   ACurElement: TStrElement);
-var
-  Elems, APrevious: TStrElement;
+var Elems, APrevious: TStrElement;
 
   procedure Inserted;
   begin
@@ -1148,7 +1121,7 @@ begin
   if GetCurListAndCurElement and (FCurElement is TStrSwitch) then
   begin
     var
-    Switch := (FCurElement as TStrSwitch);
+    Switch := TStrSwitch(FCurElement);
     var
     Int := Length(Switch.CaseElems);
     var
@@ -1170,13 +1143,15 @@ begin
   if GetCurListAndCurElement and (FCurElement is TStrSwitch) then
   begin
     var
-    Switch := (FCurElement as TStrSwitch);
-    var Int := 0;
+    Switch := TStrSwitch(FCurElement);
+    var
+    Int := 0;
     while (Int < Length(Switch.CaseElems)) and
       (FMousePos.X > Switch.CaseElems[Int].Rct.Right) do
       Inc(Int);
     FreeAndNil(Switch.CaseElems[Int]);
-    var Num := High(Switch.CaseElems);
+    var
+    Num := High(Switch.CaseElems);
     for var K := Int to Num - 1 do
       Switch.CaseElems[K] := Switch.CaseElems[K + 1];
     var
@@ -1195,7 +1170,8 @@ begin
   if GetCurListAndCurElement then
   begin
     if (FCurElement.Kind = Byte(nsAlgorithm)) or
-      (Assigned(FCurElement.Prev) and (FCurElement.Prev.Kind = Byte(nsList))) then
+      (Assigned(FCurElement.Prev) and (FCurElement.Prev.Kind = Byte(nsList)))
+    then
       FreeAndNil(FCurList)
     else
     begin
@@ -1209,9 +1185,7 @@ begin
 end;
 
 procedure TFStructogram.MICopyClick(Sender: TObject);
-var
-  StrList: TStrList;
-  Stream: TMemoryStream;
+var StrList: TStrList; Stream: TMemoryStream;
 begin
   if GetCurList then
   begin
@@ -1251,9 +1225,7 @@ begin
 end;
 
 procedure TFStructogram.DoEdit(StrElement: TStrElement; const Str: string);
-var
-  Left, Top, Width, Height: Integer;
-  Image: TListImage;
+var Left, Top, Width, Height: Integer; Image: TListImage;
 begin
   if Assigned(StrElement) and not FReadOnly then
   begin
@@ -1275,7 +1247,8 @@ begin
     else if StrElement is TStrSwitch then
     begin
       Left := ToolBarStructogram.Width + Image.Left + StrElement.TextPos.X - 5;
-      Width := Math.Max(100, StrElement.List.GetWidthOfLines(FEditMemo.Text) + 10);
+      Width := Math.Max(100, StrElement.List.GetWidthOfLines
+        (FEditMemo.Text) + 10);
     end
     else if (StrElement is TStrSubprogram) then
     begin
@@ -1288,7 +1261,7 @@ begin
       Width := FEditMemo.Width - LEFT_RIGHT;
     end
     else if (StrElement is TStrDoWhile) then
-      Top := Image.Top + (StrElement as TStrDoWhile).DoElem.Rct.Bottom;
+      Top := Image.Top + TStrDoWhile(StrElement).DoElem.Rct.Bottom;
 
     FEditMemo.SetBounds(Left + 2, Top + 2, Width, Height);
     SetLeftBorderForEditMemo;
@@ -1308,9 +1281,7 @@ begin
 end;
 
 procedure TFStructogram.EditMemoChange(Sender: TObject);
-var
-  Width, Height: Integer;
-  AList: TStrList;
+var Width, Height: Integer; AList: TStrList;
 begin
   AList := GetList;
   if Assigned(AList) then
@@ -1346,8 +1317,7 @@ begin
 end;
 
 procedure TFStructogram.FormKeyPress(Sender: TObject; var Key: Char);
-var
-  Str: string;
+var Str: string;
 begin
   if Key = #08 then
     Str := ''
@@ -1377,16 +1347,13 @@ function TFStructogram.GetName(StrList: TStrList): string;
 begin
   Result := '';
   if StrList is TStrAlgorithm then
-    Result := (StrList as TStrAlgorithm).GetAlgorithmName;
+    Result := TStrAlgorithm(StrList).GetAlgorithmName;
   if Result = '' then
     Result := TPath.GetFileNameWithoutExtension(Pathname);
 end;
 
 procedure TFStructogram.BBGenerateJavaClick(Sender: TObject);
-var
-  FileName, AName: string;
-  ProgList: TStringList;
-  StrList: TStrList;
+var FileName, AName: string; ProgList: TStringList; StrList: TStrList;
 begin
   if not Assigned(FCurList) then
     FCurList := GetAlgorithm;
@@ -1449,8 +1416,7 @@ begin
 end;
 
 procedure TFStructogram.Save(WithBackup: Boolean);
-var
-  BackupName, FileName, APathname, Filepath, Ext: string;
+var BackupName, FileName, APathname, Filepath, Ext: string;
   FStructogram: TFForm;
 begin
   CloseEdit;
@@ -1475,8 +1441,8 @@ begin
       SaveToFile(APathname);
       FJava.Open(APathname);
       FStructogram := FJava.GetTDIWindowType(APathname, '%S%');
-      (FStructogram as TFStructogram).MakeVeryHard;
-      (FStructogram as TFStructogram).Save(False);
+      TFStructogram(FStructogram).MakeVeryHard;
+      TFStructogram(FStructogram).Save(False);
 
       FPuzzleMode := 1;
       Pathname := Filepath + FileName + _('Easy') + '.jsg';
@@ -1517,7 +1483,7 @@ begin
   { debugging
 
     for var i:= 0 to ScrollBox.ControlCount - 1 do begin
-    var AList:= (ScrollBox.Controls[i] as TListImage).StrList;
+    var AList:= TListImage(ScrollBox.Controls[i]).StrList;
     AList.debug;
     AList.Paint;
     end;
@@ -1542,7 +1508,8 @@ end;
 
 procedure TFStructogram.DoExport;
 begin
-  var Bitmap := GetStructogramAsBitmap;
+  var
+  Bitmap := GetStructogramAsBitmap;
   FJava.DoExport(Pathname, Bitmap);
   FreeAndNil(Bitmap);
   if CanFocus then
@@ -1551,7 +1518,8 @@ end;
 
 procedure TFStructogram.Print;
 begin
-  var Bitmap := GetStructogramAsBitmap;
+  var
+  Bitmap := GetStructogramAsBitmap;
   PrintBitmap(Bitmap, PixelsPerInch);
   FreeAndNil(Bitmap);
 end;
@@ -1560,8 +1528,10 @@ procedure TFStructogram.CopyToClipboard;
 begin
   if FEditMemo.Visible then
     FEditMemo.CopyToClipboard
-  else begin
-    var Bitmap:= GetStructogramAsBitmap;
+  else
+  begin
+    var
+    Bitmap := GetStructogramAsBitmap;
     Clipboard.Assign(Bitmap);
     FreeAndNil(Bitmap);
     UpdateState;
@@ -1572,7 +1542,8 @@ procedure TFStructogram.MICopyAsPictureClick(Sender: TObject);
 begin
   if GetCurList then
   begin
-    var Bitmap := TBitmap.Create;
+    var
+    Bitmap := TBitmap.Create;
     try
       Bitmap.Width := FCurList.ListImage.Width +
         FConfiguration.StructogramShadowWidth;
@@ -1612,7 +1583,7 @@ end;
 procedure TFStructogram.MIDatatypeClick(Sender: TObject);
 begin
   var
-  Datatype := (Sender as TSpTBXItem).Caption;
+  Datatype := TSpTBXItem(Sender).Caption;
   FConfiguration.StructoDatatype := ReplaceStr(Datatype, '&', '');
 end;
 
@@ -1633,8 +1604,7 @@ begin
 end;
 
 procedure TFStructogram.StructoPopupMenuPopup(Sender: TObject);
-var
-  Found, AParent: TStrElement;
+var Found, AParent: TStrElement;
 begin
   MISwitchWithCaseLine.Caption := FConfiguration.CBSwitchWithCaseLine.Caption;
   MIGenerateMethod.Caption := Trim(FConfiguration.RGGenerateJavacode.Caption) +
@@ -1647,10 +1617,11 @@ begin
   MIDeleteCase.Visible := False;
   MISwitchWithCaseLine.Visible := False;
 
-  var Datatype := FConfiguration.StructoDatatype;
+  var
+  Datatype := FConfiguration.StructoDatatype;
   for var I := 0 to MIDataType.Count - 1 do
-    MIDataType[I].Checked :=
-      (ReplaceStr(MIDataType[I].Caption, '&', '') = Datatype);
+    MIDataType[I].Checked := (ReplaceStr(MIDataType[I].Caption, '&', '')
+      = Datatype);
 
   if GetCurList then
   begin
@@ -1668,7 +1639,7 @@ begin
     begin
       MIAddCase.Visible := True;
       MIDeleteCase.Visible :=
-        (Length((FCurElement as TStrSwitch).CaseElems) > 2);
+        (Length(TStrSwitch(FCurElement).CaseElems) > 2);
       MISwitchWithCaseLine.Visible := False;
     end
     else
@@ -1723,9 +1694,7 @@ begin
 end;
 
 procedure TFStructogram.AddParameter(List: TStrList; ParamList: TStringList);
-var
-  AText, Token, Param: string;
-  Posi, Typ: Integer;
+var AText, Token, Param: string; Posi, Typ: Integer;
 begin
   Posi := Pos('(', List.Text);
   if Posi > 0 then
@@ -1750,10 +1719,7 @@ begin
 end;
 
 procedure TFStructogram.AddVariable(AText: string; List: TStringList);
-var
-  Typ: Integer;
-  IsArray: Boolean;
-  Token, Variable: string;
+var Typ: Integer; IsArray: Boolean; Token, Variable: string;
 begin
   if Pos('=', AText) > 0 then
   begin
@@ -1832,7 +1798,8 @@ end;
 
 function TFStructogram.GetAlgorithmParameter(ParamList: TStringList): string;
 begin
-  var Param := '';
+  var
+  Param := '';
   for var I := 0 to ParamList.Count - 1 do
     Param := Param + Trim(ParamList[I]) + ', ';
   if Param <> '' then
@@ -1842,9 +1809,7 @@ end;
 
 procedure TFStructogram.JavaProgram(List: TStrList; ProgList: TStringList;
   const AName: string);
-var
-  Int, JPos, Posi: Integer;
-  ParamList, VariablesList: TStringList;
+var Int, JPos, Posi: Integer; ParamList, VariablesList: TStringList;
   Str1, Str2, Str, Indent, Param, Typ: string;
 begin
   FDataType := FConfiguration.StructoDatatype;
@@ -1927,16 +1892,14 @@ end;
 
 procedure TFStructogram.StrElementToJava(Element: TStrElement;
   PList, VariablesList: TStringList; const Indent: string);
-var
-  Int, Posi, QPos, TPos, Int1, Int2: Integer;
+var Int, Posi, QPos, TPos, Int1, Int2: Integer;
   AText, Str, Vari, Start, End_, For_, Step, Part: string;
-  Str1, Str2, Repl: string;
-  StringList: TStringList;
-  SwitchElement: TStrSwitch;
+  Str1, Str2, Repl: string; StringList: TStringList; SwitchElement: TStrSwitch;
 
   function StripLNG(const LNG: string; Str: string): string;
   begin
-    var Posi := Pos(LNG, Str);
+    var
+    Posi := Pos(LNG, Str);
     if Posi > 0 then
       Delete(Str, Posi, Length(LNG));
     Result := Trim(Str);
@@ -1959,8 +1922,10 @@ var
 
   procedure ReplaceInsertMarker(const Repl: string);
   begin
-    var Str := StringList[TPos];
-    var Posi := Pos('|', Str);
+    var
+    Str := StringList[TPos];
+    var
+    Posi := Pos('|', Str);
     if Posi = 0 then
     begin // do while
       Posi := Pos('(', Str);
@@ -1977,7 +1942,8 @@ var
   procedure SkipToInsertLine;
   begin
     Inc(TPos);
-    while (TPos < StringList.Count) and not((Trim(StringList[TPos]) = '') or (Trim(StringList[TPos]) = '|')) do
+    while (TPos < StringList.Count) and
+      not((Trim(StringList[TPos]) = '') or (Trim(StringList[TPos]) = '|')) do
     begin
       PList.Add(Indent + StringList[TPos]);
       Inc(TPos);
@@ -2173,7 +2139,7 @@ begin
       TPos := -1;
       SkipToChar('|');
       ReplaceInsertMarker(withoutCrLf(Element.Text));
-      SwitchElement := Element as TStrSwitch;
+      SwitchElement := TStrSwitch(Element);
       for var I := 0 to High(SwitchElement.CaseElems) - 1 do
       begin
         AText := Indent + FConfiguration.Indent1 + 'case ' +
@@ -2205,10 +2171,7 @@ end;
 
 function TFStructogram.FindElement(Current: TStrElement; X, Y: Integer)
   : TStrElement;
-var
-  IfElement: TStrIf;
-  WhileElement: TStrWhile;
-  DoWhileElement: TStrDoWhile;
+var IfElement: TStrIf; WhileElement: TStrWhile; DoWhileElement: TStrDoWhile;
   SwitchElement: TStrSwitch;
 begin
   while Assigned(Current) and Assigned(Current.Next) and
@@ -2216,7 +2179,7 @@ begin
     Current := Current.Next;
   if Current is TStrIf then
   begin { search recursively inside IF }
-    IfElement := (Current as TStrIf);
+    IfElement := TStrIf(Current);
     if Y > Current.Rct.Top + Current.GetHeadHeight div 2 then
       if X < IfElement.ThenElem.Rct.Right - 5 then { except if ±5 from middle }
         Current := FindElement(IfElement.ThenElem.Next, X, Y)
@@ -2225,20 +2188,20 @@ begin
   end
   else if Current is TStrDoWhile then
   begin { search recursively inside DO-WHILE }
-    DoWhileElement := Current as TStrDoWhile;
+    DoWhileElement := TStrDoWhile(Current);
     if (X > DoWhileElement.DoElem.Rct.Left) and (Y > Current.Rct.Top) then
       Current := FindElement(DoWhileElement.DoElem.Next, X, Y);
   end
   else if Current is TStrWhile then
   begin { search recursively inside WHILE/REPEAT/FOR(!) }
-    WhileElement := Current as TStrWhile;
+    WhileElement := TStrWhile(Current);
     if (X > WhileElement.DoElem.Rct.Left) and
       (Y > Current.Rct.Top + Current.GetHeadHeight div 2) then
       Current := FindElement(WhileElement.DoElem.Next, X, Y);
   end
   else if Current is TStrSwitch then
   begin { search recursively inside SWITCH }
-    SwitchElement := (Current as TStrSwitch);
+    SwitchElement := TStrSwitch(Current);
     if Y > Current.Rct.Top + Current.GetHeadHeight then
       for var I := 0 to High(SwitchElement.CaseElems) do
         if (SwitchElement.CaseElems[I].Rct.Left + 5 < X) and
@@ -2259,8 +2222,7 @@ begin
 end;
 
 function TFStructogram.BeforeOrAfter(Current: TStrElement): Boolean;
-var
-  TestElement: TStrElement;
+var TestElement: TStrElement;
 begin
   if Current is TStrListHead then
     TestElement := Current.Next
@@ -2271,10 +2233,7 @@ end;
 
 function TFStructogram.FindVisibleElement(Current: TStrElement; X, Y: Integer)
   : TStrElement;
-var
-  IfElement: TStrIf;
-  WhileElement: TStrWhile;
-  DoWhileElement: TStrDoWhile;
+var IfElement: TStrIf; WhileElement: TStrWhile; DoWhileElement: TStrDoWhile;
   SwitchElement: TStrSwitch;
 begin
   while Assigned(Current) and Assigned(Current.Next) and
@@ -2283,7 +2242,7 @@ begin
 
   if Current is TStrIf then
   begin { search recursively inside IF }
-    IfElement := (Current as TStrIf);
+    IfElement := TStrIf(Current);
     if Y > Current.Rct.Top + Current.GetHeadHeight then
       if X <= IfElement.ThenElem.Rct.Right then
         Current := FindVisibleElement(IfElement.ThenElem.Next, X, Y)
@@ -2292,27 +2251,26 @@ begin
   end
   else if Current is TStrDoWhile then
   begin { search recursively inside DO-WHILE }
-    DoWhileElement := Current as TStrDoWhile;
+    DoWhileElement := TStrDoWhile(Current);
     if (X > DoWhileElement.DoElem.Rct.Left) and
       (Y < DoWhileElement.DoElem.Rct.Bottom) then
       Current := FindVisibleElement(DoWhileElement.DoElem.Next, X, Y);
   end
   else if Current is TStrWhile then
   begin { search recursively inside WHILE/REPEAT/FOR(!) }
-    WhileElement := Current as TStrWhile;
+    WhileElement := TStrWhile(Current);
     if (X > WhileElement.DoElem.Rct.Left) and (Y > WhileElement.DoElem.Rct.Top)
     then
       Current := FindVisibleElement(WhileElement.DoElem.Next, X, Y);
   end
   else if Current is TStrSwitch then
   begin { search recursively inside SWITCH }
-    SwitchElement := (Current as TStrSwitch);
+    SwitchElement := TStrSwitch(Current);
     if Y > Current.Rct.Top + Current.GetHeadHeight then
       for var I := 0 to High(SwitchElement.CaseElems) do
         if X < SwitchElement.CaseElems[I].Rct.Right then
         begin { except if ±5 from middle }
-          Current := FindVisibleElement(SwitchElement.CaseElems[I]
-            .Next, X, Y);
+          Current := FindVisibleElement(SwitchElement.CaseElems[I].Next, X, Y);
           Break; // not next.next like in FindElement
         end;
   end;
@@ -2336,10 +2294,7 @@ function TFStructogram.GetToken(var Str: string; var Token: string): Integer;
   Return type of token: -1=no token, 0=invalid, 1=name, 2=Char, 3=boolean, 4=integer,
   5=real, 6=Hex number, 7=string, 8=special Char.
 }
-var
-  Chr: Char;
-  Int: Integer;
-  Hex: Boolean;
+var Chr: Char; Int: Integer; Hex: Boolean;
 
   procedure NextChr;
   begin
@@ -2479,7 +2434,7 @@ begin
     var
     AList := TListImage(ScrollBox.Controls[I]).StrList;
     if AList is TStrAlgorithm then
-      Exit(AList as TStrAlgorithm);
+      Exit(TStrAlgorithm(AList));
   end;
 end;
 
@@ -2520,9 +2475,7 @@ begin
 end;
 
 function TFStructogram.GetStructogramAsBitmap: TBitmap;
-var
-  ARect: TRect;
-  Bitmap: TBitmap;
+var ARect: TRect; Bitmap: TBitmap;
 begin
   for var I := 0 to ScrollBox.ControlCount - 1 do
     if ScrollBox.Controls[I] is TListImage then
@@ -2537,9 +2490,12 @@ begin
   Bitmap := TBitmap.Create;
   Bitmap.Width := ARect.Width + FConfiguration.StructogramShadowWidth;
   Bitmap.Height := ARect.Height + FConfiguration.StructogramShadowWidth;
-  for var I := 0 to ScrollBox.ControlCount - 1 do begin
-    var ListImage := TListImage(ScrollBox.Controls[I]);
-    Bitmap.Canvas.Draw(ListImage.Left - ARect.Left, ListImage.Top - ARect.Top, ListImage.Picture.Graphic);
+  for var I := 0 to ScrollBox.ControlCount - 1 do
+  begin
+    var
+    ListImage := TListImage(ScrollBox.Controls[I]);
+    Bitmap.Canvas.Draw(ListImage.Left - ARect.Left, ListImage.Top - ARect.Top,
+      ListImage.Picture.Graphic);
   end;
   Result := Bitmap;
 
@@ -2553,7 +2509,7 @@ begin
   for var I := 0 to ScrollBox.ControlCount - 1 do
   begin
     var
-    AList := (ScrollBox.Controls[I] as TListImage).StrList;
+    AList := TListImage(ScrollBox.Controls[I]).StrList;
     if AList.Dirty then
       AList.Paint;
     AList.Dirty := False;
@@ -2562,8 +2518,7 @@ end;
 
 function TFStructogram.FitsIn(ACurList: TStrList;
   ACurElement: TStrElement): Boolean;
-var
-  Width, Height: Integer;
+var Width, Height: Integer;
 begin
   if FPuzzleMode = 0 then
     Result := True
@@ -2575,7 +2530,8 @@ begin
     Width := ACurElement.Rct.Right - ACurElement.Rct.Left;
     Height := ACurElement.Rct.Bottom - ACurElement.Rct.Top;
     if FPuzzleMode = 1 then
-      Result := (ACurList.RctList.Width = Width) and (ACurList.RctList.Height = Height)
+      Result := (ACurList.RctList.Width = Width) and
+        (ACurList.RctList.Height = Height)
     else if FPuzzleMode = 2 then
       Result := (ACurList.RctList.Width = Width)
     else

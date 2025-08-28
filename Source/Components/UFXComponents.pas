@@ -274,8 +274,8 @@ begin
   FDarkShadow := RGB(122, 138, 153); // border color
   FBlueColor := RGB(99, 130, 191);
   FDefaultBorderColor := $C8C8C8;
-  if (AOwner is TFGUIForm) then
-    FPartner := (AOwner as TFGUIForm).Partner as TFEditForm;
+  if AOwner is TFGUIForm then
+    FPartner := TFEditForm(TFGUIForm(AOwner).Partner);
   Width := 120;
   Height := 80;
   Sizeable := True;

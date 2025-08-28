@@ -209,7 +209,7 @@ begin
   OnMouseActivate := FormMouseActivate;
 
   FJava.ConnectGUIAndJavaWindow(Self);
-  if (Partner as TFEditForm).IsAWT then
+  if TFEditForm(Partner).IsAWT then
     Background := clWhite;
   SetState(State);
   Enter(Self); // must stay!
@@ -220,7 +220,7 @@ begin
     Caption := '';
   if FontSize = 0 then
     GetFontSize;
-  if (Partner as TFEditForm).Editor.ReadOnly then
+  if TFEditForm(Partner).Editor.ReadOnly then
     OnResize:= nil;
 end;
 
@@ -233,6 +233,7 @@ begin
   Save(True);
   CanClose := True;
   FJava.ActiveTool := -1;
+  FObjectInspector.SetSelectedObject(nil);
 end;
 
 procedure TFGUIForm.FormCreate(Sender: TObject);
@@ -383,7 +384,7 @@ var
   Str1, Str2: string;
   EditForm, HTMLPartner: TFEditForm;
 begin
-  EditForm := Partner as TFEditForm;
+  EditForm := TFEditForm(Partner);
   if GetFrameType in [2, 3, 5, 6] then
   begin
     Str1 := 'int frameWidth';
@@ -472,15 +473,15 @@ end;
 
 procedure TFGUIForm.Zooming(InOut: Boolean);
 begin
-  (Partner as TFEditForm).Editor.BeginUpdate;
+  TFEditForm(Partner).Editor.BeginUpdate;
   for var I := 0 to ComponentCount - 1 do
     if Components[I] is TJEComponent then
-      (Components[I] as TJEComponent).Zooming(InOut);
+      TJEComponent(Components[I]).Zooming(InOut);
   if InOut then
     FontSize := FontSize + FConfiguration.ZoomSteps
   else
     FontSize := Max(FontSize - FConfiguration.ZoomSteps, 6);
-  (Partner as TFEditForm).Editor.EndUpdate;
+  TFEditForm(Partner).Editor.EndUpdate;
 end;
 
 procedure TFGUIForm.EnsureOnDesktop;
@@ -543,7 +544,7 @@ begin
   else if Attr = 'Background' then
   begin
     if Value = '(NONE)' then
-      (Partner as TFEditForm).DeleteAttributeValue('cp.setBackground')
+      TFEditForm(Partner).DeleteAttributeValue('cp.setBackground')
     else
     begin
       Str1 := 'cp.setBackground';
@@ -551,7 +552,7 @@ begin
     end;
   end;
   if Str2 <> '' then
-    (Partner as TFEditForm).SetAttributValue(_(LNGStartComponents),
+    TFEditForm(Partner).SetAttributValue(_(LNGStartComponents),
       Str1, Str2, 0);
 end;
 
@@ -595,7 +596,7 @@ end;
 function TFGUIForm.GetFrameType: Integer;
 begin
   if Assigned(Partner) then
-    Result := (Partner as TFEditForm).FrameType
+    Result := TFEditForm(Partner).FrameType
   else
     Result := 0;
 end;
@@ -614,7 +615,7 @@ begin
   for var I := 0 to ComponentCount - 1 do
     if Components[I] is TJEComponent then
     begin
-      CompFontSize := (Components[I] as TJEComponent).Font.Size;
+      CompFontSize := TJEComponent(Components[I]).Font.Size;
       if FontSizeDictionary.TryGetValue(CompFontSize, Value) then
         FontSizeDictionary.AddOrSetValue(CompFontSize, Value + 1)
       else

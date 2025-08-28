@@ -160,7 +160,7 @@ begin
         Comp := Owner.FindComponent(OldName);
         if Assigned(Comp) then
         begin
-          (Comp as TAWTComponent).DeleteComponent;
+          TAWTComponent(Comp).DeleteComponent;
           FreeAndNil(Comp);
         end;
         Inc(Deleted);
@@ -432,7 +432,7 @@ begin
   LVal := MaxTab + 2 * CPaddingH + CPaddingV;
   for var I := 0 to ControlCount - 1 do
   begin
-    APanel := (Controls[I] as TJPanel);
+    APanel := TJPanel(Controls[I]);
     APanel.SetBounds(2, 3, Width - 4, Height - 3);
     case FTabPlacement of
       UJTabbedPane.TOP:
@@ -507,7 +507,7 @@ begin
     for var J := 0 to Tabs.Count - 1 do
       if (J < ControlCount) and (Controls[J] is TJPanel) then
       begin
-        Str := (Controls[J] as TJPanel).Name;
+        Str := TJPanel(Controls[J]).Name;
         if Str = Self.Name + 'TabPanel' + Tabs[Int] then
         begin
           Controls[J].BringToFront;
@@ -524,7 +524,7 @@ var
   Int: Integer;
   StringList: TStringList;
 begin
-  Int := (Control as TJPanel).getIndex;
+  Int := TJPanel(Control).getIndex;
   StringList := TStringList.Create;
   StringList.Text := FTabs.Text;
   if (0 <= Int) and (Int < StringList.Count) then

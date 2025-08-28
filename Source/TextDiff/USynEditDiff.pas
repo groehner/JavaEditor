@@ -169,7 +169,7 @@ begin
   Gutter.Color := FYellowGray;
   EditorStatusChange(Sender, [scAll]);
   if FWithColoredLines then
-    (FMyOwner as TFTextDiff).ShowDiffState;
+    TFTextDiff(FMyOwner).ShowDiffState;
 end;
 
 procedure TSynEditDiff.DoExit1(Sender: TObject);
@@ -180,7 +180,7 @@ end;
 procedure TSynEditDiff.CodeEditKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  with FMyOwner as TFTextDiff do
+  with TFTextDiff(FMyOwner) do
     if FilesCompared and (Key in [VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT]) then
       SyncScroll(Self, sbVertical)
     else if (Key = VK_RETURN) or ([ssCtrl] = Shift) and (Key = Ord('V')) then
@@ -247,7 +247,7 @@ begin
     SetEnabledMI(MICopyRtfNumbered, Selection);
     SetEnabledMI(MIPaste, CanPaste);
   end;
-  with FMyOwner as TFTextDiff do
+  with TFTextDiff(FMyOwner) do
   begin
     SetEnabledMI(MIUndo, CanUndo);
     SetEnabledMI(MIRedo, CanRedo);
@@ -263,12 +263,12 @@ begin
   if not Assigned(FMyOwner) then
     Exit;
 
-  (FMyOwner as TFTextDiff).CodeEditNumber := FNumber;
-  (FMyOwner as TFTextDiff).liLineColumn.Caption :=
+  TFTextDiff(FMyOwner).CodeEditNumber := FNumber;
+  TFTextDiff(FMyOwner).liLineColumn.Caption :=
     Format(' %4d : %3d ', [CaretY, CaretX]);
   if Changes * [scModified] <> [] then
   begin
-    (FMyOwner as TFTextDiff).liModified.Caption := FModifiedStrs[Modified];
+    TFTextDiff(FMyOwner).liModified.Caption := FModifiedStrs[Modified];
     ShowFilename;
     if FEditFormNr = -1 then
     begin
@@ -280,8 +280,8 @@ begin
     if FEditFormNr > -1 then
       FJava.TabModified(FEditFormNr, Modified);
   end;
-  (FMyOwner as TFTextDiff).liInsOvr.Caption := FInsertModeStrs[InsertMode];
-  (FMyOwner as TFTextDiff).liEncoding.Caption := ' ' + FEncoding + '/' +
+  TFTextDiff(FMyOwner).liInsOvr.Caption := FInsertModeStrs[InsertMode];
+  TFTextDiff(FMyOwner).liEncoding.Caption := ' ' + FEncoding + '/' +
     LinebreakAsString + ' ';
   UpdateState;
 end;
@@ -308,21 +308,16 @@ end;
 procedure TSynEditDiff.Load(Lines12: TSynEditStringList;
   const APathname: string);
 begin
-  try
-    Lines12.LoadFromFile(APathname);
-  except
-    on e: Exception do
-      ErrorMsg('TSynEditDiff.Load: ' + APathname);
-  end;
+  if not FileExists(APathname) then
+    Exit;
+  Lines12.LoadFromFile(APathname);
   Lines.BeginUpdate;
   LinesClearAll;
   Lines.Assign(Lines12);
   Lines.EndUpdate;
   Self.FPathname := APathname;
-
   FEncoding := EncodingAsString(Lines12.Encoding.EncodingName);
   FLineBreak := Lines12.LineBreak;
-
   FWithColoredLines := False;
   SetHighlighter;
   SetModified(False);
@@ -353,26 +348,27 @@ begin
     Invalidate;
   end;
 
-  if Modified then
+  if Modified then begin
+    if WithBackup then
+    begin
+      BackupName := FPathname;
+      Ext := ExtractFileExt(FPathname);
+      if Length(Ext) > 1 then
+        Ext[2] := '~';
+      BackupName := ChangeFileExt(BackupName, Ext);
+      if FileExists(BackupName) then
+        SysUtils.DeleteFile(BackupName);
+      if FileExists(FPathname) then
+        RenameFile(FPathname, BackupName);
+    end;
     try
-      if WithBackup then
-      begin
-        BackupName := FPathname;
-        Ext := ExtractFileExt(FPathname);
-        if Length(Ext) > 1 then
-          Ext[2] := '~';
-        BackupName := ChangeFileExt(BackupName, Ext);
-        if FileExists(BackupName) then
-          SysUtils.DeleteFile(BackupName);
-        if FileExists(FPathname) then
-          RenameFile(FPathname, BackupName);
-      end;
       Lines.SaveToFile(FPathname);
       SetModified(False);
     except
       on E: Exception do
         ErrorMsg(Format(_(LNGCanNotWrite), [FPathname]));
     end;
+  end;
 end;
 
 procedure TSynEditDiff.SetHighlighter;
@@ -520,7 +516,7 @@ var
   Str: string;
   ACanvas: TCanvas;
 begin
-  ACanvas := (FMyOwner as TFTextDiff).Canvas;
+  ACanvas := TFTextDiff(FMyOwner).Canvas;
   ACanvas.Font.Assign(FPCaption.Font);
   Str := ' ' + FPathname;
   if Modified then
@@ -568,8 +564,8 @@ begin
     end
     else
       PasteFromClipboard;
-  except on e: Exception do
-    ErrorMsg(e.Message);
+  except on E: Exception do
+    ErrorMsg(E.Message);
   end;
   CreateObjects(From, Till, Num);
   SetModified(True);
@@ -594,7 +590,7 @@ end;
 
 procedure TSynEditDiff.SyncScroll(Sender: TObject; ScrollBar: TScrollBarKind);
 begin
-  (FMyOwner as TFTextDiff).SyncScroll(Self, ScrollBar);
+  TFTextDiff(FMyOwner).SyncScroll(Self, ScrollBar);
 end;
 
 end.

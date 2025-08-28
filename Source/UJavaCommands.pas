@@ -455,7 +455,7 @@ begin
 
   for var I := 0 to FileList.Count - 1 do
   begin
-    FEditForm := FJava.GetTDIWindow(FileList[I]) as TFEditForm;
+    FEditForm := TFEditForm(FJava.GetTDIWindow(FileList[I]));
     if not FEditForm.Visible then
       Continue;
     FEditForm.InitShowCompileErrors;
@@ -1108,7 +1108,7 @@ begin
       PictureNr := 0;
       while Ite.HasNext do
       begin
-        AMethod := Ite.Next as TOperation;
+        AMethod := TOperation(Ite.Next);
         if (AMethod.Annotation <> 'Test') and
           (AMethod.Annotation <> 'ParameterizedTest') then
           Continue;

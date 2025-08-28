@@ -161,7 +161,6 @@ var
   Node, FromNode, ToNode: TNode;
 begin
   FNodes := TNodeList.Create(True);
-
   List := FManagedObjects;
   try
     for var I := 0 to List.Count - 1 do
@@ -174,7 +173,7 @@ begin
       Node.FWidth := Control.Width;
       Node.FControl := Control;
       Node.FId := FNodes.Count;
-      Node.FName := (Control as TRtfdBox).Entity.Name;
+      Node.FName := TRtfdBox(Control).Entity.Name;
       if (Control is TRtfdObject) then
       begin
         Posi := Length(Node.FName);
@@ -193,7 +192,7 @@ begin
       FNodes.Add(Node);
     end;
   finally
-    FreeAndNil(List);
+    List.Free;
   end;
 
   List := FConnections;
@@ -227,7 +226,7 @@ begin
       AddEdge(FromNode, ToNode);
     end;
   finally
-    FreeAndNil(List);
+    List.Free;
   end;
 end;
 
@@ -306,7 +305,7 @@ begin
       FLayers[MinI].Add(ZeroNodes[I]);
     end;
   finally
-    FreeAndNil(ZeroNodes);
+    ZeroNodes.Free;
   end;
   // Now all edges should be pointing down onto the layer directly beneath it.
 end;
@@ -464,8 +463,8 @@ begin
         raise Exception.Create('Layout failed.');
     until CycCount = 0;
   finally
-    FreeAndNil(SuperNode);
-    FreeAndNil(Path);
+    SuperNode.Free;
+    Path.Free;
   end;
 end;
 
@@ -543,7 +542,7 @@ begin
         FNodes[I].FId := I;
     end;
   finally
-    FreeAndNil(Stack);
+    Stack.Free;
   end;
 end;
 
@@ -1114,9 +1113,9 @@ begin
       end;
     end;
   finally
-    FreeAndNil(CNodes);
-    FreeAndNil(UList);
-    FreeAndNil(LList);
+    CNodes.Free;
+    UList.Free;
+    LList.Free;
   end;
 end;
 

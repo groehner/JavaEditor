@@ -411,8 +411,8 @@ const
 
 constructor TStringListReader.Create(const Filename: string);
 begin
-  FStringList := TStringList.Create;
   FNum := 0;
+  FStringList := TStringList.Create;
   try
     FStringList.LoadFromFile(Filename);
   except

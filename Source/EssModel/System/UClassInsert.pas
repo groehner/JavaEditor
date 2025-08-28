@@ -120,10 +120,10 @@ begin
     Exit;
   LVFiles.Clear;
   LVFiles.SortType := stNone;
+  Screen.Cursor := crHourGlass;
   try
-    Screen.Cursor := crHourGlass;
+    KPos := 0;
     try
-      KPos := 0;
       FJavaZipJar.Open(Str, zmRead);
       for var I := 0 to FJavaZipJar.FileCount - 1 do
       { if not FJavaZipJar.Entries.Items[i].IsFolder then } begin
@@ -167,12 +167,12 @@ begin
   if Assigned(FJavaSrcZip) then
   begin
     FJavaSrcZip.Close;
-    FreeAndNil(FJavaSrcZip);
+    FJavaSrcZip.Free;
   end;
   if Assigned(FJavaClassJar) then
   begin
     FJavaClassJar.Close;
-    FreeAndNil(FJavaClassJar);
+    FJavaClassJar.Free;
   end;
 end;
 
@@ -190,7 +190,7 @@ begin
   finally
     MyRegistry.CloseKey;
   end;
-  FreeAndNil(MyRegistry);
+  MyRegistry.Free;
 end;
 
 procedure TFClassInsert.AddComboBox(Int: Integer; const Str: string);
@@ -304,7 +304,7 @@ begin
   else
     FSortDir := 0;
   FLastSorted := FColumnToSort;
-  (Sender as TCustomListView).AlphaSort;
+  TCustomListView(Sender).AlphaSort;
 end;
 
 procedure TFClassInsert.LVFilesCompare(Sender: TObject; Item1, Item2: TListItem;
@@ -410,17 +410,17 @@ end;
 function TFClassInsert.HasSourceInZip(AClassname: string): Integer;
 begin
   AClassname := ReplaceStr(AClassname, '\', '/');
-  if FJavaSrcZip = nil then
+  if not Assigned(FJavaSrcZip) then begin
+    FJavaSrcZip := TZipFile.Create;
     try
-      FJavaSrcZip := TZipFile.Create;
       FJavaSrcZip.Open(FConfiguration.JDKFolder + '\src.zip', zmRead);
     except
-      on E: Exception do
-      begin
+      on E: Exception do begin
         ErrorMsg(E.Message);
-        FJavaSrcZip := nil;
+        FreeAndNil(FJavaSrcZip);
       end;
     end;
+  end;
   if Assigned(FJavaSrcZip) then
     Result := FJavaSrcZip.IndexOf(AClassname)
   else
@@ -430,16 +430,15 @@ end;
 function TFClassInsert.HasClassInJar(AClassname: string): Integer;
 begin
   AClassname := ReplaceStr(AClassname, '\', '/');
-  if FJavaClassJar = nil then
+  if not Assigned(FJavaClassJar) then
+    FJavaClassJar := TZipFile.Create;
     try
-      FJavaClassJar := TZipFile.Create;
-      // FJavaClassJar.OverwriteAction:= oaOverwriteAll;
       FJavaClassJar.Open(FConfiguration.JDKFolder + '\jre\lib\rt.jar', zmRead);
     except
       on E: Exception do
       begin
         ErrorMsg(E.Message);
-        FJavaClassJar := nil;
+        FreeAndNil(FJavaClassJar);
       end;
     end;
   if Assigned(FJavaClassJar) then

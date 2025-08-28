@@ -88,7 +88,7 @@ end;
 procedure TJPanel.SetTab;
 begin
   if Parent is TJTabbedPane then
-    (Parent as TJTabbedPane).SelectedIndex := GetIndex;
+    TJTabbedPane(Parent).SelectedIndex := GetIndex;
 end;
 
 function TJPanel.GetIndex: Integer;
@@ -96,7 +96,7 @@ var
   Int: Integer;
   ATabPane: TJTabbedPane;
 begin
-  ATabPane := (Parent as TJTabbedPane);
+  ATabPane := TJTabbedPane(Parent);
   Int := 0;
   while (Int < ATabPane.Tabs.Count) and
     (ATabPane.Name + 'TabPanel' + ATabPane.Tabs[Int] <> Self.Name) do

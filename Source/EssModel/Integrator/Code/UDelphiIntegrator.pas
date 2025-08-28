@@ -67,8 +67,8 @@ begin
       Parser.NeedPackage := NeedPackageHandler;
       Parser.ParseStreamWithDefines(Str, Model.ModelRoot, Model, GlobalDefines, FileName);
     finally
-      FreeAndNil(Parser);
-      FreeAndNil(GlobalDefines);
+      Parser.Free;
+      GlobalDefines.Free;
     end;
   end;
 end;

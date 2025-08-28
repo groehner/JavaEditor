@@ -52,20 +52,17 @@ function ZzGetControlZOrder(AControl: TObject
 // if not found or not applicable, return -1
 // the order is zero based, so the first control is # 0
 var
-  VControl: TControl;
   VList: TList;
   VParent: TWinControl;
 begin
   Result := -1; // flag for not found or not relevent
   try
     if (AControl is TControl) // some of these might not be needed
-      and ((AControl as TControl).Parent is TComponent) and
-      Assigned((AControl as TControl).Parent) // unlikely but may as well check
+      and (TControl(AControl).Parent is TComponent) and
+      Assigned(TControl(AControl).Parent) // unlikely but may as well check
     then
     begin
-      VControl := AControl as TControl;
-      VParent := VControl.Parent;
-
+      VParent := TControl(AControl).Parent;
       VList := TList.Create;
       // determine current position in z-order
       for var I := 0 to VParent.ControlCount - 1 do // loop through all children
@@ -96,7 +93,6 @@ function ZzSetControlZOrder(AControl: TObject;
 // return TRUE if change was applied
 // return FALSE if not changed, probably because the Z Order can not be set
 var
-  VControl: TControl;
   VZorderList: TList; // list of controls to be raised
   VParent: TWinControl; // form, panel, button etc
   VCurrentZ: Integer;
@@ -105,14 +101,12 @@ begin
   Result := False;
   VCurrentZ := ZzGetControlZOrder(AControl);
   if (AControl is TControl) and (VCurrentZ <> -1) and (VCurrentZ <> ANewZorder)
-    and (ANewZorder >= 0) and Assigned((AControl as TControl).Parent)
+    and (ANewZorder >= 0) and Assigned(TControl(AControl).Parent)
   then
   begin
     VZorderList := TList.Create;
     try
-      VControl := AControl as TControl;
-      VParent := VControl.Parent;
-
+      VParent := TControl(AControl).Parent;
       if ANewZorder > VCurrentZ // if moving higher in Z order
       then
         VFirstZ := ANewZorder + 1
@@ -130,7 +124,7 @@ begin
         TControl(VZorderList[I]).BringToFront;
 
       if VParent is TControl then
-        (VParent as TControl).Repaint;
+        TControl(VParent).Repaint;
 
       Result := True;
 

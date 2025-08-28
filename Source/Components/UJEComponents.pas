@@ -630,13 +630,13 @@ end;
 
 function TJEComponent.PPIScale(ASize: Integer): Integer;
 begin
-  Result := myMulDiv(ASize, (Owner as TForm).CurrentPPI, 96);
+  Result := myMulDiv(ASize, TForm(Owner).CurrentPPI, 96);
   // MulDiv needs Windows, but then we get a strange error with BitmapFromRelativePath
 end;
 
 function TJEComponent.PPIUnScale(ASize: Integer): Integer;
 begin
-  Result := myMulDiv(ASize, 96, (Owner as TForm).CurrentPPI);
+  Result := myMulDiv(ASize, 96, TForm(Owner).CurrentPPI);
 end;
 
 end.

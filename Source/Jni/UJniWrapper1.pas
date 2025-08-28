@@ -304,7 +304,7 @@ begin
   FName := WithoutGeneric(Name);
   FSig := ClassTypToSig(FName);
   var
-  Str := (FComJava as TComJava1).ExecuteCommand('createClass'#4 + FName);
+  Str := TComJava1(FComJava).ExecuteCommand('createClass'#4 + FName);
   FValid := (Left(Str, 4) <> '-ERR');
   FError := Right(Str, 6);
   Init;
@@ -318,7 +318,7 @@ begin
   FName := WithoutGeneric(Name);
   FSig := ClassTypToSig(FName);
   var
-  Str := (FComJava as TComJava1).ExecuteCommand('loadClass'#4 + FName +
+  Str := TComJava1(FComJava).ExecuteCommand('loadClass'#4 + FName +
     #4 + Path);
   FValid := (Left(Str, 4) <> '-ERR');
   FError := Right(Str, 6);
@@ -351,7 +351,7 @@ class function TComJavaClass.IsInterface(const Interfacename: string;
   ComJava: TObject): Boolean;
 begin
   var
-  Str := (ComJava as TComJava1).ExecuteCommand('isInterface'#4 + Interfacename);
+  Str := TComJava1(ComJava).ExecuteCommand('isInterface'#4 + Interfacename);
   Result := (Left(Str, 3) = '+OK');
 end;
 
@@ -363,7 +363,7 @@ begin
   else
   begin
     var
-    Str := (ComJava as TComJava1).ExecuteCommandWithoutDebugger
+    Str := TComJava1(ComJava).ExecuteCommandWithoutDebugger
       ('findClass'#4 + AClassname);
     Result := (Left(Str, 3) = '+OK');
   end;
@@ -407,7 +407,7 @@ function TComJavaClass.GetSuperclassName: string;
 begin
   if not FGetSuperclass then
   begin
-    FSuperclass := (FComJava as TComJava1)
+    FSuperclass := TComJava1(FComJava)
       .ExecuteCommand('getSuperClass'#4 + FName);
     if Pos('+OK ', FSuperclass) = 1 then
       Delete(FSuperclass, 1, 4)
@@ -423,7 +423,7 @@ begin
   if not Assigned(FConstructors) then
   begin
     var
-    Str := (FComJava as TComJava1).ExecuteCommand('getConstructors'#4 + FName);
+    Str := TComJava1(FComJava).ExecuteCommand('getConstructors'#4 + FName);
     if Pos('+OK ', Str) = 1 then
       Delete(Str, 1, 6)
     else
@@ -439,7 +439,7 @@ begin
   if not Assigned(FAttributes) then
   begin
     var
-    Str := (FComJava as TComJava1).ExecuteCommand('getAttributes'#4 + FName);
+    Str := TComJava1(FComJava).ExecuteCommand('getAttributes'#4 + FName);
     if Pos('+OK', Str) = 1 then
       Delete(Str, 1, 5)
     else
@@ -454,7 +454,7 @@ begin
   if not Assigned(FClassAttributeNames) then
   begin
     var
-    Str := (FComJava as TComJava1).ExecuteCommand('getAttributeNames'#4
+    Str := TComJava1(FComJava).ExecuteCommand('getAttributeNames'#4
       + FName);
     if Pos('+OK', Str) = 1 then
       Delete(Str, 1, 5)
@@ -471,7 +471,7 @@ function TComJavaClass.GetRefreshedClassAttributeNames: TStringList;
 begin
   FreeAndNil(FClassAttributeNames);
   var
-  Str := (FComJava as TComJava1).ExecuteCommand
+  Str := TComJava1(FComJava).ExecuteCommand
     ('getRefreshedAttributeNames'#4 + FName);
   if Pos('+OK', Str) = 1 then
     Delete(Str, 1, 5)
@@ -488,7 +488,7 @@ function TComJavaClass.GetMethods(const AStatic: string): TStringList;
   function GetMethods_(const AStatic: string): string;
   begin
     var
-    Str := (FComJava as TComJava1).ExecuteCommand('getMethods'#4 + FName + #4
+    Str := TComJava1(FComJava).ExecuteCommand('getMethods'#4 + FName + #4
       + AStatic);
     if Pos('+OK ', Str) = 1 then
       Delete(Str, 1, 6)
@@ -551,7 +551,7 @@ begin
     Signature := '(' + ComParams.Signature + ')V';
     Params := ComParams.Params;
   end;
-  Str := (FComJava as TComJava1).ExecuteCommand('createObject'#4 + Jcl.Name + #4
+  Str := TComJava1(FComJava).ExecuteCommand('createObject'#4 + Jcl.Name + #4
     + Objectname + #4 + Signature + #4 + Params);
   FValid := (Left(Str, 3) = '+OK');
   if FValid then
@@ -580,7 +580,7 @@ begin
   FComJava := ComJava;
   FName := Objectname;
   FAttributeValues := nil;
-  Str := (FComJava as TComJava1).ExecuteCommand('getClassOf'#4 + Objectname);
+  Str := TComJava1(FComJava).ExecuteCommand('getClassOf'#4 + Objectname);
   FValid := (Left(Str, 3) = '+OK');
   if FValid then
   begin
@@ -611,14 +611,14 @@ end;
 
 procedure TComJavaObject.Delete;
 begin
-  if not(FComJava as TComJava1).Terminated then
-    (FComJava as TComJava1).ExecuteCommand('deleteObject'#4 + FName);
+  if not TComJava1(FComJava).Terminated then
+    TComJava1(FComJava).ExecuteCommand('deleteObject'#4 + FName);
 end;
 
 function TComJavaObject.ToString: string;
 begin
   var
-  Str := (FComJava as TComJava1).ExecuteCommand('toString'#4 + FName);
+  Str := TComJava1(FComJava).ExecuteCommand('toString'#4 + FName);
   Result := Right(Str, 5);
 end;
 
@@ -634,7 +634,7 @@ begin
     else
       Str1 := Str1 + #4;
     if FComJava is TComJava1 then
-      Str := (FComJava as TComJava1).ExecuteCommand(Str1);
+      Str := TComJava1(FComJava).ExecuteCommand(Str1);
     if Pos('+OK ', Str) = 1 then
     begin
       Str := Right(Str, 6);
@@ -664,7 +664,7 @@ function TComJavaObject.DebugGetAttributeValues: string;
 begin
   var
   Str := 'DebugGetAttributeValues'#4 + FName;
-  Result := (FComJava as TComJava1).ExecuteCommand(Str);
+  Result := TComJava1(FComJava).ExecuteCommand(Str);
 end;
 
 function TComJavaObject.GetAttributeNames: TStringList;
@@ -713,7 +713,7 @@ begin
     Str := Str + #4'ArrayList'
   else
     Str := Str + #4;
-  Str := Right((FComJava as TComJava1).ExecuteCommand(Str), 6);
+  Str := Right(TComJava1(FComJava).ExecuteCommand(Str), 6);
   Result := Split(#4, Str);
 end;
 
@@ -721,7 +721,7 @@ function TComJavaObject.GetObjectAttributeNames: TStringList;
 begin
   var
   Str := 'getObjectAttributeNames'#4 + FName;
-  Str := Right((FComJava as TComJava1).ExecuteCommand(Str), 6);
+  Str := Right(TComJava1(FComJava).ExecuteCommand(Str), 6);
   Result := Split(#4, Str);
 end;
 
@@ -833,7 +833,7 @@ begin
           begin
             Str1 := Trim(Copy(Str, 1, Posi - 1));
             Delete(Str, 1, Posi);
-            JavaObject := (FComJava as TComJava1).GetObject(Str1);
+            JavaObject := TComJava1(FComJava).GetObject(Str1);
             if not Assigned(JavaObject) and not IsJavaString(Str1) then
               Str1 := '"' + Str1 + '"';
             StrArr := StrArr + ', ' + Str1;
@@ -844,14 +844,14 @@ begin
       end;
     ntString:
       begin
-        JavaObject := (FComJava as TComJava1).GetObject(Str);
+        JavaObject := TComJava1(FComJava).GetObject(Str);
         if not Assigned(JavaObject) and not IsJavaString(Str) then
           Str := '"' + Str + '"';
         FValueAsString := Str;
       end;
     ntChar:
       begin
-        JavaObject := (FComJava as TComJava1).GetObject(Str);
+        JavaObject := TComJava1(FComJava).GetObject(Str);
         if not Assigned(JavaObject) and not IsJavaChar(Str) then
           Str := '''' + Str + '''';
         FValueAsString := Str;
@@ -868,7 +868,7 @@ end;
 function TComJavaValue.ToString: string;
 begin
   var
-  Str := (FComJava as TComJava1).ExecuteCommand('toString'#4 + FValueAsString);
+  Str := TComJava1(FComJava).ExecuteCommand('toString'#4 + FValueAsString);
   Result := Right(Str, 5);
 end;
 
@@ -1033,7 +1033,7 @@ begin
     Attributename + #4 + TypToSig(Typename) + #4;
   if IsStatic then
     Str := Str + CStatic;
-  Str1 := (FComJava as TComJava1).ExecuteCommand(Str);
+  Str1 := TComJava1(FComJava).ExecuteCommand(Str);
   if (Left(Str1, 3) = '+OK') then
     Result := Copy(Str1, 5, Length(Str1))
   else
@@ -1051,7 +1051,7 @@ begin
     Attributename + #4 + TypToSig(Typename) + #4 + Value + #4;
   if IsStatic then
     Str := Str + 's';
-  Str := (FComJava as TComJava1).ExecuteCommand(Str);
+  Str := TComJava1(FComJava).ExecuteCommand(Str);
 end;
 
 { --- TJavaMethod ------------------------------------------------------------ }
@@ -1076,7 +1076,7 @@ begin
   FRetVal := TypToNumType(FReturnType);
   if FRetVal = ntObject // TODO ntObjectArray?
   then
-    RetClass := (FComJava as TComJava1).GetClass(FReturnType)
+    RetClass := TComJava1(FComJava).GetClass(FReturnType)
   else
     RetClass := nil;
   if Assigned(RetClass) then
@@ -1098,7 +1098,7 @@ begin
   if Assigned(FParams) then
     Str := Str + FParams.FParams;
   Str := Str + #4 + IntToStr(Ord(FMethodType));
-  Str := (FComJava as TComJava1).ExecuteCommand(Str);
+  Str := TComJava1(FComJava).ExecuteCommand(Str);
   FValid := (Left(Str, 3) = '+OK');
   if FValid then
     Result := TComJavaValue.Create(Right(Str, 5),
@@ -1112,7 +1112,7 @@ function TComJavaMethod.GetExpressionValue: TComJavaValue;
 begin
   Result := nil;
   var
-  Str := (FComJava as TComJava1).ExecuteCommand('getExpressionValue'#4 +
+  Str := TComJava1(FComJava).ExecuteCommand('getExpressionValue'#4 +
     FClass.Name);
   FValid := (Left(Str, 3) = '+OK');
   if FValid then
@@ -1132,7 +1132,7 @@ function TComJavaMethod.GetExpressionType: string;
 begin
   Result := '';
   var
-  Str := (FComJava as TComJava1).ExecuteCommand('getExpressionValue'#4 +
+  Str := TComJava1(FComJava).ExecuteCommand('getExpressionValue'#4 +
     FClass.Name);
   FValid := (Left(Str, 3) = '+OK');
   if FValid then

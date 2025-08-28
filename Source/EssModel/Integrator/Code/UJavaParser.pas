@@ -196,17 +196,17 @@ procedure TJavaImporter.ImportOneFile(const FileName: string;
 begin
   var
   Str := CodeProvider.LoadStream(FileName);
-  if Assigned(Str) then
-  begin
-    FParser := TJavaParser.Create(True);
-    try
-      FParser.NeedPackage := NeedPackageHandler;
-      FParser.Thread := nil;
-      FParser.ParseStream(Str, Model.ModelRoot, Model, FileName, False,
-        WithoutNeedSource);
-    finally
-      FreeAndNil(FParser);
-    end;
+  if not Assigned(Str) then
+    Exit;
+
+  FParser := TJavaParser.Create(True);
+  try
+    FParser.NeedPackage := NeedPackageHandler;
+    FParser.Thread := nil;
+    FParser.ParseStream(Str, Model.ModelRoot, Model, FileName, False,
+      WithoutNeedSource);
+  finally
+    FParser.Free;
   end;
 end;
 
@@ -214,16 +214,16 @@ procedure TJavaImporter.ImportOneEditor(const FileName: string; Form: TFForm);
 begin
   var
   Str := CodeProvider.LoadStream(FileName, Form);
-  if Assigned(Str) then
-  begin
-    FParser := TJavaParser.Create(True);
-    try
-      FParser.NeedPackage := NeedPackageHandler;
-      FParser.Thread := nil;
-      FParser.ParseStream(Str, Model.ModelRoot, Model, FileName, False, False);
-    finally
-      FreeAndNil(FParser);
-    end;
+  if not Assigned(Str) then
+    Exit;
+
+  FParser := TJavaParser.Create(True);
+  try
+    FParser.NeedPackage := NeedPackageHandler;
+    FParser.Thread := nil;
+    FParser.ParseStream(Str, Model.ModelRoot, Model, FileName, False, False);
+  finally
+    FreeAndNil(FParser);
   end;
 end;
 
@@ -327,15 +327,15 @@ begin
   FSourcepath := ExtractFilePath(FileName);
   FInner := Inner;
   FWithoutNeedSource := WithoutNeedSource;
-  FUnit := (FModel as TLogicPackage).FindUnitPackage('Default');
+  FUnit := TLogicPackage(FModel).FindUnitPackage('Default');
   if not Assigned(FUnit) then
-    FUnit := (FModel as TLogicPackage).AddUnit('Default');
+    FUnit := TLogicPackage(FModel).AddUnit('Default');
   AClassifier := FUnit.FindClass(FileName);
   if Assigned(AClassifier) and AClassifier.SourceRead then
   begin
     if AClassifier is TClass then
     begin
-      AClass := AClassifier as TClass;
+      AClass := TClass(AClassifier);
       AClass.IsVisible := True;
       FUnit.AddClass(AClass);
     end;
@@ -647,7 +647,7 @@ begin
       AClassifier := NeedClassifier(Ext, TClass);
       if Assigned(AClassifier) and (AClassifier is TClass) then
       begin
-        AClass.Ancestor := AClassifier as TClass;
+        AClass.Ancestor := TClass(AClassifier);
         // we need superclass for e.g. code completion
         if Assigned(AClass.Ancestor) then
           AClass.Ancestor.Importname := GetImportName(AClass.Ancestor.Name);
@@ -675,7 +675,7 @@ begin
       AClassifier := NeedClassifier(Impl, TInterface);
       if Assigned(AClassifier) and (AClassifier is TInterface) then
       begin
-        Intf := AClassifier as TInterface;
+        Intf := TInterface(AClassifier);
         AClass.AddImplements(Intf);
         if ShowView(True) then
           AClass.ViewImplements(Intf);
@@ -988,7 +988,7 @@ begin
       AClassifier := NeedClassifier(Ext, TInterface);
       if Assigned(AClassifier) and (AClassifier is TInterface) then
       begin
-        AInt := AClassifier as TInterface; // toDo
+        AInt := TInterface(AClassifier); // toDo
         if FirstAncestor then
         begin
           Intf.Ancestor := AInt;
@@ -1173,7 +1173,7 @@ begin
       Cent := ClassIte.Next;
       if ExtractClassName(Cent.Name) = CName then
       begin
-        Result := (Cent as TClassifier);
+        Result := TClassifier(Cent);
         Exit;
       end;
     end;
@@ -1749,7 +1749,7 @@ begin
       try
         ParseClassBody(AClass);
       finally
-        FreeAndNil(AClass);
+        AClass.Free;
       end;
       CloseStructureDefault;
     end;
@@ -2020,7 +2020,7 @@ begin
     end;
     if (Operation.Owner is TClassifier) then
     begin
-      Mi2 := (Operation.Owner as TClassifier).GetAttributes;
+      Mi2 := TClassifier(Operation.Owner).GetAttributes;
       while Mi2.HasNext do
       begin
         Attr := Mi2.Next;
@@ -2205,10 +2205,10 @@ begin
     while ClassIte.HasNext do
     begin
       Cent := ClassIte.Next;
-      Ite := (Cent as TClassifier).GetAttributes;
+      Ite := TClassifier(Cent).GetAttributes;
       while Ite.HasNext do
       begin
-        Attr := Ite.Next as TAttribute;
+        Attr := TAttribute(Ite.Next);
         if Attr.Name = Str then
           Result := False;
       end;
@@ -2455,7 +2455,7 @@ var
             E.Message));
       end;
     finally
-      FreeAndNil(JarFile);
+      JarFile.Free;
     end;
   end;
 
@@ -2573,7 +2573,7 @@ begin
     NeedPackage(Str, Packagename, Stream);
     if Assigned(Stream) then
     begin
-      Parser := TJavaParser.Create(False); // war false
+      Parser := TJavaParser.Create(False);
       try
         Parser.NeedPackage := NeedPackage;
         if Str <> SourceName then
@@ -2584,7 +2584,7 @@ begin
         else
           Parser.ParseStream(Stream, FOM.ModelRoot, FOM, FFilename, True, True);
       finally
-        FreeAndNil(Parser);
+        Parser.Free;
       end;
       Result := True;
     end;

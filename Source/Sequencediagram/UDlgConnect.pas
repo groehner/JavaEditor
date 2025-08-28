@@ -82,9 +82,9 @@ procedure TFConnectDialog.LBConnectionsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
   var
-  ACaption := (Control as TListBox).Items[Index];
+  ACaption := TListBox(Control).Items[Index];
   var
-  ACanvas := (Control as TListBox).Canvas;
+  ACanvas := TListBox(Control).Canvas;
   ACanvas.FillRect(Rect);
   FILConnections.SetSize(Rect.Height, Rect.Height);
   FILConnections.Draw(ACanvas, 4, Rect.Top, 12 + Index);

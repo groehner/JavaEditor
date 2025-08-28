@@ -75,15 +75,15 @@ var
   Parser: TJavaClassParser;
 begin
   Str := CodeProvider.LoadStream(Filename);
-  if Assigned(Str) then
-  begin
-    Parser := TJavaClassParser.Create(True);
-    try
-      Parser.NeedPackage := NeedPackageHandler;
-      Parser.ParseStream(Str, Model.ModelRoot, Model, Filename, False);
-    finally
-      FreeAndNil(Parser);
-    end;
+  if not Assigned(Str) then
+    Exit;
+
+  Parser := TJavaClassParser.Create(True);
+  try
+    Parser.NeedPackage := NeedPackageHandler;
+    Parser.ParseStream(Str, Model.ModelRoot, Model, Filename, False);
+  finally
+    Parser.Free;
   end;
 end;
 
@@ -178,7 +178,6 @@ var
 begin
   FModel := AModel;
   FObjectModel := AOM;
-
   ClassFile := TClassFile.Create(AStream);
   try
     if not Assigned(ClassFile.Header) then
@@ -186,7 +185,7 @@ begin
 
     AUnit := FObjectModel.ModelRoot.FindUnitPackage('Default');
     if not Assigned(AUnit) then
-      AUnit := (FModel as TLogicPackage).AddUnit('Default');
+      AUnit := TLogicPackage(FModel).AddUnit('Default');
     if TAccData.IsInterface(ClassFile.ClassDecl.AccessFlags) then
     begin
       // interface
@@ -223,14 +222,13 @@ begin
         Str := TObjNameFormat.ToDotSeparator
           (ClassFile.ClassDecl.SuperClass.GetString);
         if Str <> 'java.lang.Object' then
-          AClass.Ancestor := NeedClassifier(Str, TClass) as TClass;
+          AClass.Ancestor := TClass(NeedClassifier(Str, TClass));
       end;
       // implements
       for var I := 0 to Length(ClassFile.ClassDecl.Interfaces) - 1 do
       begin
-        Intf := NeedClassifier(TObjNameFormat.ToDotSeparator
-          (ClassFile.ClassDecl.Interfaces[I].GetString), TInterface)
-          as TInterface;
+        Intf := TInterface(NeedClassifier(TObjNameFormat.ToDotSeparator
+          (ClassFile.ClassDecl.Interfaces[I].GetString), TInterface));
         AClass.AddImplements(Intf);
       end;
       for var I := 0 to Length(ClassFile.ClassFields.ClassFields) - 1 do
@@ -250,9 +248,8 @@ begin
             ClassFile.ClassMethods.ClassMethods[I]);
       end;
     end;
-
   finally
-    FreeAndNil(ClassFile);
+    ClassFile.Free;
   end;
 end;
 
@@ -325,7 +322,7 @@ begin
           ShortName, True);
         FObjectModel.ModelRoot.Files.Add(ShortName);
       finally
-        FreeAndNil(Parser);
+        Parser.Free;
       end;
       UnitPackage := FObjectModel.ModelRoot.FindUnitPackage(PName);
       if Assigned(UnitPackage) then

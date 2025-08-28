@@ -112,10 +112,10 @@ begin
   else if Typ = 'string' then
     Str2 := FConfiguration.Indent2 + Str1 + '("' + Value + '");'
   else if Attr = 'Background' then
-    (Partner as TFEditForm).SetFXBackgroundAsString('root', 'root',
+    TFEditForm(Partner).SetFXBackgroundAsString('root', 'root',
       ToJavaFXColor(Value));
   if Str2 <> '' then
-    (Partner as TFEditForm).SetAttributValue(_(LNGEndComponents), Str1,
+    TFEditForm(Partner).SetAttributValue(_(LNGEndComponents), Str1,
       Str2, 1);
 end;
 

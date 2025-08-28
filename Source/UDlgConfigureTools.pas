@@ -263,7 +263,7 @@ procedure TFConfigureTools.ToolsMenuClick(Sender: TObject);
 var
   Param, AktDir, Pname: string;
 begin
-  var Int := (Sender as TSpTBXItem).Tag;
+  var Int := TSpTBXItem(Sender).Tag;
   Param := FParameters[Int];
   if Assigned(FJava.EditorForm) then
   begin

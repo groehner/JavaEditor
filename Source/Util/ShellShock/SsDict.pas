@@ -771,13 +771,13 @@ begin
         begin
           StreamedClassName := ReadString;
           StreamedClass := GetClass(StreamedClassName);
-          if (StreamedClass = nil) then
+          if not Assigned(StreamedClass) then
             RaiseContainerErrorFmt(ssscUnknownClass, [StreamedClassName]);
           if (StreamedClass <> Self.ClassType) then
             RaiseContainerError(ssscWrongClass);
           StreamedNodeClassName := ReadString;
           StreamedNodeClass := GetClass(StreamedNodeClassName);
-          if (StreamedNodeClass = nil) then
+          if not Assigned(StreamedNodeClass) then
             RaiseContainerErrorFmt(ssscUnknownNodeClass, [StreamedNodeClassName]);
           if (StreamedNodeClass <> conNodeClass) then
             RaiseContainerError(ssscWrongNodeClass);

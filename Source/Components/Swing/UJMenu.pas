@@ -137,11 +137,11 @@ begin
   XPos := 2;
   if Parent is TFGUIForm then
   begin
-    Form := Parent as TFGUIForm;
+    Form := TFGUIForm(Parent);
     for var I := 0 to Form.ComponentCount - 1 do
       if Form.Components[I] is TJMenu then
       begin
-        Str := (Form.Components[I] as TJMenu).Text;
+        Str := TJMenu(Form.Components[I]).Text;
         Canvas.TextOut(XPos + 8, 3, Str);
         XPos := XPos + 8 + Canvas.TextWidth(Str) + 8;
       end;

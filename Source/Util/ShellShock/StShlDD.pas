@@ -259,7 +259,7 @@ begin
   FillChar(medium, SizeOf(medium), 0);
   medium.tymed := TYMED_HGLOBAL;
   if formatetcIn.cfFormat = PidlFormat then begin
-    if MS1 = nil then begin
+    if not Assigned(MS1) then begin
       MS1 := TMemoryStream.Create;
       MS1.Position := 0;
       { First value in the buffer is the pidl count. }
@@ -293,7 +293,7 @@ begin
   end else if formatetcIn.cfFormat = CF_TEXT then begin
     { Not implemented. }
   end else if formatetcIn.cfFormat = CF_HDROP then begin
-    if MS2 = nil then begin
+    if not Assigned(MS2) then begin
       MS2 := TMemoryStream.Create;
       MS2.Position := 0;
       ZeroMemory(@DF, SizeOf(DF));
@@ -403,7 +403,7 @@ begin
     Inc(Int);
     Inc(FCurrentIndex);
   end;
-  if pceltFetched <> nil then
+  if Assigned(pceltFetched) then
     pceltFetched^ := Int;
   if Int = 0 then begin
     Result := S_FALSE;

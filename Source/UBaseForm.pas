@@ -283,8 +283,8 @@ end;
 procedure TFForm.OpenWindow(Sender: TObject);
   var Animation: Boolean;
 begin
+  LockWindow(Self.Handle);
   try
-    LockWindow(Self.Handle);
     try
       Animation:= GetAnimation;
       if Animation then

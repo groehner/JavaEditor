@@ -350,8 +350,8 @@ function TCodeCompletion.GetStartType(Typ, AObject: string; Line: Integer;
   AsDescription: Boolean): string;
 var
   CIte, It1, It2: IModelIterator;
-  Cent: TModelEntity;
-  MClassifier: TClassifier;
+//  Cent: TModelEntity;
+  Cent, MClassifier: TClassifier;
   Attr: TAttribute;
   Operation: TOperation;
   Param: TParameter;
@@ -430,14 +430,14 @@ begin
         CIte := FJava.EditorForm.Model.ModelRoot.GetAllClassifiers;
         while CIte.HasNext do
         begin
-          Cent := CIte.Next;
-          FCCClassifier := Cent as TClassifier;
+          Cent := TClassifier(CIte.Next);
+          FCCClassifier := Cent;
           if ((Cent.Name = AObject) or EndsWith(Cent.Name, '.' + AObject) or
             EndsWith(Cent.Name, '$' + AObject)) and (Cent.LineS = Line) then
           begin
             if AsDescription then
             begin
-              Str := GetTooltipClass(Cent as TClassifier, Description);
+              Str := GetTooltipClass(Cent, Description);
               Result := Str + '</code>' + Description;
               if Description = '' then
                 if Cent is TInterface then
@@ -451,7 +451,7 @@ begin
           end;
           if (Cent.LineS <= Line) and (Line <= Cent.LineE) then
           begin
-            MClassifier := Cent as TClassifier;
+            MClassifier := Cent;
             if (AObject = 'this') or (AObject = '') then
             begin
               Result := MClassifier.Name;
@@ -469,7 +469,7 @@ begin
             It1 := MClassifier.GetOperations;
             while It1.HasNext do
             begin
-              Operation := It1.Next as TOperation;
+              Operation := TOperation(It1.Next);
               if not((Operation.LineS <= Line) and (Line <= Operation.LineE))
               then
                 Continue;
@@ -482,7 +482,7 @@ begin
                   Typ := 'void';
                 if AsDescription or (Operation.LineS = Line) then
                 begin
-                  Result := GetTooltipClass(Cent as TClassifier, Description);
+                  Result := GetTooltipClass(Cent, Description);
                   if Operation.OperationType = otConstructor then
                     Result := Result + '<img src="' +
                       FConfiguration.EditorFolder + 'img\constructor.png"> ' +
@@ -514,7 +514,7 @@ begin
               It2 := Operation.GetParameters;
               while It2.HasNext do
               begin
-                Param := It2.Next as TParameter;
+                Param := TParameter(It2.Next);
                 if Param.TypeClassifier = nil then
                   Continue;
                 if ArrayCompatibel(Param.Name, AObject,
@@ -538,7 +538,7 @@ begin
               It2 := Operation.GetAttributes;
               while It2.HasNext do
               begin
-                Attr := It2.Next as TAttribute;
+                Attr := TAttribute(It2.Next);
                 if Attr.TypeClassifier = nil then
                   Continue;
                 if ArrayCompatibel(Attr.Name, AObject,
@@ -563,14 +563,14 @@ begin
             It1 := MClassifier.GetAttributes;
             while It1.HasNext do
             begin
-              Attr := It1.Next as TAttribute;
+              Attr := TAttribute(It1.Next);
               if Attr.TypeClassifier = nil then
                 Continue;
               if ArrayCompatibel(Attr.Name, AObject,
                 Attr.TypeClassifier.ShortName) then
               begin
                 if AsDescription then
-                  Result := GetTooltipClass(Cent as TClassifier, Description) +
+                  Result := GetTooltipClass(Cent, Description) +
                     '<img src="' + FConfiguration.EditorFolder + 'img\attribute'
                     + IntToStr(Integer(Attr.Visibility)) + '.png"> ' +
                     ToHtml(Attr.TypeClassifier.ShortName) + ' ' + Attr.Name +
@@ -961,7 +961,7 @@ begin
     FCCParameter := nil;
     if MFeature is TAttribute then
     begin
-      Attr := MFeature as TAttribute;
+      Attr := TAttribute(MFeature);
       if AsDescription then
       begin
         Result := '<code><img src="' + FConfiguration.EditorFolder +
@@ -983,7 +983,7 @@ begin
     end
     else if MFeature is TOperation then
     begin
-      Operation := MFeature as TOperation;
+      Operation := TOperation(MFeature);
       if Assigned(Operation.ReturnValue) then
         Result := Operation.ReturnValue.Name // ExtractClassname
       else
@@ -1076,9 +1076,9 @@ begin
   if Assigned(MFeature) then
   begin
     if MFeature is TAttribute then
-      Result := (MFeature as TAttribute).LineS;
+      Result := TAttribute(MFeature).LineS;
     if MFeature is TOperation then
-      Result := (MFeature as TOperation).LineS;
+      Result := TOperation(MFeature).LineS;
   end
   else
     Result := -1;
@@ -1097,10 +1097,10 @@ var
     while not Assigned(Result) and CIte.HasNext do
     begin
       var
-      Cent := CIte.Next;
+      Cent := TClassifier(CIte.Next);
       if (Cent.Name = SClassifier) or (GetShortType(Cent.Name) = SClassifier)
       then
-        Result := (Cent as TClassifier);
+        Result := Cent;
     end;
   end;
 
@@ -1129,7 +1129,7 @@ begin
     if Assigned(FJava.ActiveTDIChild) and (FJava.ActiveTDIChild.FormTag = 1)
     then
     begin
-      AEditForm := FJava.ActiveTDIChild as TFEditForm;
+      AEditForm := TFEditForm(FJava.ActiveTDIChild);
       Str := ExtractFilePath(AEditForm.Pathname) + ToBackSlash(SClassifier)
         + '.java';
       if (AEditForm.Pathname <> '') and FileExists(Str) then
@@ -1157,7 +1157,7 @@ begin
   while not Assigned(Result) and Ite.HasNext do
   begin
     var
-    Feature := Ite.Next as TFeature;
+    Feature := TFeature(Ite.Next);
     if Feature.Name = SFeature then
       if ((Feature is TAttribute) and not IsMethod) or
         ((Feature is TOperation) and IsMethod) then
@@ -1493,7 +1493,7 @@ var
     It1 := CorI.GetAttributes;
     while It1.HasNext do
     begin
-      Attribute := It1.Next as TAttribute;
+      Attribute := TAttribute(It1.Next);
       if Line = Attribute.LineS then
         Continue;
       if StaticOnly and not Attribute.Static then
@@ -1517,7 +1517,7 @@ var
     It1 := CorI.GetOperations;
     while It1.HasNext do
     begin
-      Method := It1.Next as TOperation;
+      Method := TOperation(It1.Next);
       if Line = Method.LineS then
         Continue;
 
@@ -1526,7 +1526,7 @@ var
         It3 := Method.GetParameters;
         while It3.HasNext do
         begin
-          Parameter := It3.Next as TParameter;
+          Parameter := TParameter(It3.Next);
           if StaticOnly and not Parameter.Static then
             Continue;
           if (StartWith <> '') and not StartsWithInsensitive(Parameter.Name,
@@ -1540,7 +1540,7 @@ var
         It4 := Method.GetAttributes;
         while It4.HasNext do
         begin
-          Attribute := It4.Next as TAttribute;
+          Attribute := TAttribute(It4.Next);
           if StaticOnly and not Attribute.Static then
             Continue;
           if (StartWith <> '') and not StartsWithInsensitive(Attribute.Name,
@@ -1569,7 +1569,7 @@ var
       It2 := Method.GetParameters;
       while It2.HasNext do
       begin
-        Parameter := It2.Next as TParameter;
+        Parameter := TParameter(It2.Next);
         if Assigned(Parameter.TypeClassifier) then
           Str := Str + Parameter.TypeClassifier.GetShortType + ' ' +
             Parameter.Name + ', ';

@@ -613,7 +613,7 @@ begin
     It1 := Cent.GetOperations;
     while It1.HasNext do
     begin
-      Method := It1.Next as TOperation;
+      Method := TOperation(It1.Next);
       if Method.Name = MethodName then
         Exit(True);
     end;
@@ -886,16 +886,16 @@ begin
       CBClassInner.Checked := AClassifier.Inner;
       if FIsClass then
       begin
-        if Assigned((AClassifier as TClass).Ancestor) then
-          Str := GetShortType((AClassifier as TClass).Ancestor.ShortName)
+        if Assigned(TClass(AClassifier).Ancestor) then
+          Str := GetShortType(TClass(AClassifier).Ancestor.ShortName)
         else
           Str := '';
         SetEditText(EExtends, Str);
-        Ite := (AClassifier as TClass).GetImplements;
+        Ite := TClass(AClassifier).GetImplements;
         Str := '';
         while Ite.HasNext do
         begin
-          Str1 := GetShortType((Ite.Next as TInterface).ShortName);
+          Str1 := GetShortType(TInterface(Ite.Next).ShortName);
           Str := Str + ', ';
           if Pos('{', Str1) = 0 then
             Str := Str + Str1;
@@ -905,11 +905,11 @@ begin
       end
       else
       begin
-        Ite := (AClassifier as TInterface).GetExtends;
+        Ite := TInterface(AClassifier).GetExtends;
         Str := '';
         while Ite.HasNext do
         begin
-          Str1 := GetShortType((Ite.Next as TInterface).ShortName);
+          Str1 := GetShortType(TInterface(Ite.Next).ShortName);
           Str := Str + ', ';
           if Pos('{', Str1) = 0 then
             Str := Str + Str1;
@@ -1091,7 +1091,7 @@ begin
   It2 := Method.GetParameters;
   while It2.HasNext do
   begin
-    Parameter := It2.Next as TParameter;
+    Parameter := TParameter(It2.Next);
     if Assigned(Parameter.TypeClassifier) then
       ListBox.Items.Add(Parameter.Name + ': ' +
         Parameter.TypeClassifier.GetShortType);
@@ -1380,7 +1380,7 @@ begin
       FMyEditor.DeleteComponentTotal(GetClassNumber(Node), Attribute.Name,
         Attribute.TypeClassifier.GetShortType);
       if Assigned(FMyEditor.Partner) then
-        (FMyEditor.Partner as TFGUIForm).DeleteGUIComponent(Attribute.Name);
+       TFGUIForm(FMyEditor.Partner).DeleteGUIComponent(Attribute.Name);
       FMyEditor.Modified := True;
       FMyEditor.Editor.EndUpdate;
       Pos1 := TreeView.Selected.AbsoluteIndex;
@@ -1559,7 +1559,7 @@ var
       var
       Cent := TClassifier(ClassIterator.Next);
       if (Cent.Name = FullClassname) and (Cent is TClass) then
-        Exit((Cent as TClass).Ancestor);
+        Exit(TClass(Cent).Ancestor);
     end;
   end;
 
@@ -1573,7 +1573,7 @@ begin
   Ite1 := Method.GetParameters;
   while Ite1.HasNext do
   begin
-    Parameter := Ite1.Next as TParameter;
+    Parameter := TParameter(Ite1.Next);
     Parameter.UsedForAttribute := False;
   end;
   while Assigned(Node) do
@@ -1582,7 +1582,7 @@ begin
     Found := False;
     while Ite1.HasNext and not Found do
     begin // exists a corresponding parameter?
-      Parameter := Ite1.Next as TParameter;
+      Parameter := TParameter(Ite1.Next);
       if Assigned(Parameter.TypeClassifier) then
       begin
         var
@@ -1638,7 +1638,7 @@ begin
       Ite1.Reset;
       while Ite1.HasNext do
       begin
-        Parameter := Ite1.Next as TParameter;
+        Parameter := TParameter(Ite1.Next);
         if not Parameter.UsedForAttribute and Assigned(Parameter.TypeClassifier)
         then
           StringList.Add(Parameter.Name + ': ' +
@@ -1648,7 +1648,7 @@ begin
       Ite1 := SuperClass.GetOperations;
       while Ite1.HasNext do
       begin
-        Operation := Ite1.Next as TOperation;
+        Operation := TOperation(Ite1.Next);
         if Operation.OperationType = otConstructor then
         begin
           var
@@ -1657,7 +1657,7 @@ begin
           Ite2 := Operation.GetParameters;
           while Ite2.HasNext do
           begin
-            Parameter := Ite2.Next as TParameter;
+            Parameter := TParameter(Ite2.Next);
             if Assigned(Parameter.TypeClassifier) and
               (StringList.IndexOf(Parameter.Name + ': ' +
               Parameter.TypeClassifier.GetShortType) >= 0) then
@@ -1990,13 +1990,13 @@ begin
     Ite := Cent.GetAttributes;
     while Ite.HasNext do
     begin
-      Attribute := Ite.Next as TAttribute;
+      Attribute := TAttribute(Ite.Next);
       TVAttribute(Attribute);
     end;
     Ite := Cent.GetOperations;
     while Ite.HasNext do
     begin
-      Method := Ite.Next as TOperation;
+      Method := TOperation(Ite.Next);
       TVMethod(Method);
     end;
   end;
@@ -2035,7 +2035,7 @@ begin
       Vis := not FMyEditor.Editor.ReadOnly
     else
       Vis := True;
-    (AAction as TAction).Enabled := Vis;
+    TAction(AAction).Enabled := Vis;
   end;
   Handled := True;
 end;
@@ -2125,7 +2125,7 @@ var
     Ite := Cent.GetAttributes;
     while Ite.HasNext do
     begin
-      Attribute := Ite.Next as TAttribute;
+      Attribute := TAttribute(Ite.Next);
       var
       Str := Attribute.ToNameType;
       if FConfiguration.AttributesAParametersP and (Copy(Str, 1, 1) = 'a') then
@@ -2142,9 +2142,9 @@ begin
   if Assigned(Cent) then
   begin
     MakeParameterFromAttributes(Cent);
-    while (Cent is TClass) and Assigned((Cent as TClass).Ancestor) do
+    while (Cent is TClass) and Assigned(TClass(Cent).Ancestor) do
     begin
-      Cent := (Cent as TClass).Ancestor;
+      Cent := TClass(Cent).Ancestor;
       MakeParameterFromAttributes(Cent);
       Ancestors.Add(Cent.Name);
     end;
@@ -2173,7 +2173,7 @@ begin
       Ite := Method.GetParameters;
       while Ite.HasNext do
       begin
-        Parameter := Ite.Next as TParameter;
+        Parameter := TParameter(Ite.Next);
         var
         Str := Parameter.Name + ': ' + Parameter.TypeClassifier.GetShortType;
         Posi := CBParameter.Items.IndexOf(Str);
@@ -2203,7 +2203,7 @@ var
 begin
   if Sender is TComboBox then
   begin
-    ComboBox := Sender as TComboBox;
+    ComboBox := TComboBox(Sender);
     Rect := ComboBox.ClientRect;
     Rect.Width := Rect.Width - 20;
     Rect := ComboBox.ClientToScreen(Rect);

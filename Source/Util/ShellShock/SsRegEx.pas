@@ -661,7 +661,7 @@ end;
 
 function TStNodeHeap.AllocNode : PStPatRecord;
 begin
-  if (FFreeList^.NextPattern = nil) then
+  if not Assigned(FFreeList^.NextPattern) then
     New(Result)
   else begin
     Result := FFreeList^.NextPattern;
@@ -680,21 +680,21 @@ begin
   Result^.Token         := aNode^.Token;
   Result^.OneChar       := aNode^.OneChar;
   Result^.NextOK        := aNode^.NextOK;
-  if (aNode^.StrPtr <> nil) then begin
+  if Assigned(aNode^.StrPtr) then begin
     New(Result^.StrPtr);
     Result^.StrPtr^     := aNode^.StrPtr^;
   end else
     Result^.StrPtr      := nil;
 
   {deep clone the nested node}
-  if (aNode^.NestedPattern <> nil) then
+  if Assigned(aNode^.NestedPattern) then
     Result^.NestedPattern := nhDeepCloneNode(aNode^.NestedPattern);
 end;
 
 
 procedure TStNodeHeap.FreeNode(aNode : PStPatRecord);
 begin
-  if (aNode <> nil) then begin
+  if Assigned(aNode) then begin
     aNode^.NextPattern := FFreeList^.NextPattern;
     FFreeList^.NextPattern := aNode;
   end;
@@ -708,7 +708,7 @@ var
 begin
   Walker := FFreeList^.NextPattern;
   FFreeList^.NextPattern := nil;
-  while (Walker <> nil) do begin
+  while Assigned(Walker) do begin
     Temp := Walker;
     Walker := Walker^.NextPattern;
     Dispose(Temp);
@@ -725,16 +725,16 @@ begin
   Result^.Token         := aNode^.Token;
   Result^.OneChar       := aNode^.OneChar;
   Result^.NextOK        := aNode^.NextOK;
-  if (aNode^.StrPtr <> nil) then begin
+  if Assigned(aNode^.StrPtr) then begin
     New(Result^.StrPtr);
     Result^.StrPtr^     := aNode^.StrPtr^;
   end else
     Result^.StrPtr      := nil;
 
   {recursively deepclone the next and nested nodes}
-  if (aNode^.NextPattern <> nil) then
+  if Assigned(aNode^.NextPattern) then
     Result^.NextPattern := nhDeepCloneNode(aNode^.NextPattern);
-  if (aNode^.NestedPattern <> nil) then
+  if Assigned(aNode^.NestedPattern) then
     Result^.NestedPattern := nhDeepCloneNode(aNode^.NestedPattern);
 end;
 
@@ -783,15 +783,15 @@ procedure TStStreamRegEx.DisposeItems(var Data : PStPatRecord);
 var
   Walker, Temp : PStPatRecord;
 begin
-  if (Data <> nil) then begin
+  if Assigned(Data) then begin
     Walker := Data;
-    while (Walker <> nil) do begin
+    while Assigned(Walker) do begin
       Temp := Walker;
 
-      if (Assigned(Walker^.StrPtr)) then
+      if Assigned(Walker^.StrPtr) then
         Dispose(Walker^.StrPtr);
 
-      if (Assigned(Walker^.NestedPattern)) then
+      if Assigned(Walker^.NestedPattern) then
         DisposeItems(Walker^.NestedPattern);
 
       Walker := Walker^.NextPattern;
@@ -991,7 +991,7 @@ begin
     FLinesPerSec   := 0;
 
     REPosition.LineNum := 1;
-    if ((FSelAvoidPatPtr <> nil) or (FMatchPatPtr <> nil)) then
+    if Assigned(FSelAvoidPatPtr) or Assigned(FMatchPatPtr) then
       Result := ProcessLine(Tmp, Int, 1, True, REPosition)
     else begin
       Result := False;
@@ -1025,7 +1025,7 @@ var
         GetMem(ABuf, L * SizeOf(Char));
         try
           StrPCopy(ABuf, Str);
-          if (FSelAvoidPatPtr <> nil) then begin
+          if Assigned(FSelAvoidPatPtr) then begin
             if not Avoid then
               Result := FindMatch(ABuf, FSelAvoidPatPtr, REPosition)
             else
@@ -1036,7 +1036,7 @@ var
           if Result then begin
             {met select criterion, perhaps by default}
             FSelectCount := Succ(FSelectCount);
-            if (FReplacePatPtr <> nil) then begin
+            if Assigned(FReplacePatPtr) then begin
               Result := FindMatch(ABuf, FMatchPatPtr, REPosition);
               if Result then begin
                 TmpBuf[0] := #0;
@@ -1106,7 +1106,7 @@ begin
     GetMem(FOutLineBuf, (MaxLineLength+3) * SizeOf(Char));
     try
       REPosition.LineNum := 1;
-      if ((FSelAvoidPatPtr <> nil) or (FMatchPatPtr <> nil)) and
+      if Assigned(FSelAvoidPatPtr) or Assigned(FMatchPatPtr) and
           (Assigned(FReplacePatPtr))then begin
         Result := ProcessString(Str, Int, 1, REPosition);
       end else begin
@@ -1232,7 +1232,7 @@ begin
   if (not (BuildAllPatterns)) then
     RaiseStError(ESsRegExError, ssscPatternError);
 
-  if (FMatchPatPtr = nil) and (FSelAvoidPatPtr = nil) and (FReplacePatPtr = nil) then
+  if not Assigned(FMatchPatPtr) and not Assigned(FSelAvoidPatPtr) and not Assigned(FReplacePatPtr) then
     RaiseStError(ESsRegExError, ssscNoPatterns);
 
   if (not (Assigned(FInputStream))) or
@@ -1401,7 +1401,7 @@ begin
         RaiseStError(ESsRegExError, ssscExpandingClass);
       AddTokenToPattern(PatRec, LastPatRec, AToken, TmpStr);
     end else if (AChar = Alter) then begin
-      if (NextLastPatRec = nil) or
+      if not Assigned(NextLastPatRec) or
          ((NextLastPatRec^.Token <> tknClosure) and
           (NextLastPatRec^.Token <> tknMaybeOne)) then begin
         {flag the current token as non-critical, i.e., "next is OK"}
@@ -1712,7 +1712,7 @@ var
 begin
   Done := False;
   PatRec    := PatPtr;
-  while not(Done) and (PatRec <> nil) do begin
+  while not(Done) and Assigned(PatRec) do begin
     AToken := PatRec^.Token;
     if (AToken = tknClosure) then begin
       {a closure}
@@ -1755,7 +1755,7 @@ begin
       end;
     end else begin
       {skip over alternates if we matched already}
-      while (PatRec^.NextOK) and (PatRec^.NextPattern <> nil) do
+      while (PatRec^.NextOK) and Assigned(PatRec^.NextPattern) do
         PatRec := PatRec^.NextPattern;
       {move to the next non-alternate}
       PatRec := PatRec^.NextPattern;
@@ -1824,7 +1824,7 @@ var
 begin
   GetMem(Tmp, (MaxLineLength+1) * SizeOf(Char));
   try
-    if (FSelAvoidPatPtr <> nil) then begin
+    if Assigned(FSelAvoidPatPtr) then begin
       if (not Avoid) then
         Result := FindMatch(Buf, FSelAvoidPatPtr, REPosition)
       else if (Avoid) then
@@ -1837,8 +1837,8 @@ begin
     if Result then begin
       {met select criterion, perhaps by default}
       FSelectCount := Succ(FSelectCount);
-      if ((FReplacePatPtr <> nil) and (not CheckOnly)) then begin
-        if (ooModified in FOutputOptions) then begin
+      if Assigned(FReplacePatPtr) and (not CheckOnly) then begin
+        if ooModified in FOutputOptions then begin
           {we only want to replace and output lines that have a match}
           Result := FindMatch(Buf, FMatchPatPtr, REPosition);
         end;
@@ -1855,7 +1855,7 @@ begin
           end;
           {subline keeps a count of matched lines and replaced patterns}
         end;
-      end else if (FMatchPatPtr <> nil) then begin
+      end else if Assigned(FMatchPatPtr) then begin
         Result := FindMatch(Buf, FMatchPatPtr, REPosition);
         {met match criterion}
         if Result then begin
@@ -2051,7 +2051,7 @@ var
 begin
   Done := False;
   PatRec := PatPtr;
-  while not(Done) and (PatRec <> nil) do begin
+  while not(Done) and Assigned(PatRec) do begin
     AToken := PatRec^.Token;
     if (AToken = tknClosure) then begin
       {a closure}
@@ -2105,7 +2105,7 @@ begin
       end;
     end else begin
       {skip over alternates if we matched already}
-      while PatRec^.NextOK and (PatRec^.NextPattern <> nil) do
+      while PatRec^.NextOK and Assigned(PatRec^.NextPattern) do
         PatRec := PatRec^.NextPattern;
       {move to the next non-alternate}
       PatRec := PatRec^.NextPattern;
@@ -2156,7 +2156,7 @@ begin  {writesub}
   {scan the replacement list}
   Str[0] := #0;
   PatRec := RepRec;
-  while (PatRec <> nil) do begin
+  while Assigned(PatRec) do begin
     Token := PatRec^.Token;
     if (Token = tknDitto) then begin
       TagNum := Ord(PatRec^.OneChar)-Ord('0');

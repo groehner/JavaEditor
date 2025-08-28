@@ -1709,7 +1709,7 @@ var
   CM : IContextMenu;
   CI : TCmInvokeCommandInfo;
 begin
-  if Folder <> nil then begin
+  if Assigned(Folder) then begin
     if (Folder.GetUIObjectOf(AHandle, Count, Pidl,
       IID_IContextMenu, nil, Pointer(CM)) = NOERROR)
     then begin
@@ -1869,7 +1869,7 @@ var
 begin
   inherited Create(AOwner);
   {$IFNDEF VERSION2009}
-  if @ILClone = nil then
+  if not Assigned(@ILClone) then
     LoadILFunctions;
   {$ENDIF}
   FShellItems := TStShellItemList.Create;
@@ -1915,7 +1915,7 @@ begin
     PidlFromPath(TempDir, DesktopFolder, ParentPidl);
     DesktopFolder.BindToObject(ParentPidl,
       nil, IID_IShellFolder, Pointer(Folder));
-    if Folder = nil then
+    if not Assigned(Folder) then
       Folder := DesktopFolder;
     Res := Folder.QueryInterface(
       IID_IShellIconOverlay, IconOverlay);
@@ -1990,11 +1990,11 @@ begin
   EnumFlags := SHCONTF_FOLDERS;
   { Try to get a parent folder. }
   GetParentFolder(PidlIn, ParentFolder);
-  if ParentFolder <> nil then
+  if Assigned(ParentFolder) then
     ChildPidl := ILClone(ILFindLastID(PidlIn))
   else begin
     BindToObject(DesktopFolder, PidlIn, ParentFolder);
-    if ParentFolder <> nil then begin
+    if Assigned(ParentFolder) then begin
       ChildPidl := ILClone(PidlIn);
       ParentFolder := DesktopFolder;
     end else begin
@@ -2024,7 +2024,7 @@ begin
   ChildNode := nil;
   ParentHandle := 0;
 
-  if CurrentFolder = nil then
+  if not Assigned(CurrentFolder) then
     BindToObject(ParentFolder, ChildPidl, CurrentFolder);
   CurrentFolder.EnumObjects(
     ParentHandle, EnumFlags, Enum);
@@ -2037,10 +2037,10 @@ begin
         StartAnimation;
     end;
   { Enumerate the items. }
-  if Enum <> nil then begin
+  if Assigned(Enum) then begin
     while Enum.Next(1, Pidl1, Count) <> S_False do begin
 
-      if Animate <> nil then begin
+      if Assigned(Animate) then begin
         Animate.Free;
         Animate := nil;
       end;
@@ -2125,7 +2125,7 @@ begin
         SI := nil;
       end;
 
-      if (EnumType = etTree) and (SI <> nil) then begin
+      if (EnumType = etTree) and Assigned(SI) then begin
         if ((Attr and SFGAO_HASSUBFOLDER) = SFGAO_HASSUBFOLDER) then begin
           { Don't enumerate network drives or removeable media drives. }
           DriveType := GetDriveType(PChar(SI.Path));
@@ -2146,10 +2146,10 @@ begin
           { to see if there are any items in this folder.   }
           if (EnumType = etTree) then begin
             BindToObject(CurrentFolder, Pidl1, Folder2);
-            if Folder2 <> nil then begin
+            if Assigned(Folder2) then begin
               Folder2.EnumObjects(ParentHandle,
                  SHCONTF_FOLDERS, Enum2);
-              if Enum2 <> nil then
+              if Assigned(Enum2) then
                 ChildNode.HasChildren := True;
               Folder2 := nil;
               Enum2 := nil;
@@ -2291,7 +2291,7 @@ var
 begin
   hMenu := 0;
   Result := -1;
-  if Folder <> nil then begin
+  if Assigned(Folder) then begin
     hMenu := CreatePopupMenu;
     if (Folder.GetUIObjectOf(AHandle, Count, Pidl,
       IID_IContextMenu, nil, Pointer(CM)) = NOERROR)
@@ -2347,7 +2347,7 @@ begin
       //StringToWideChar(NewName, NewNameW, MAX_PATH);
       Result := SI.ParentFolder.SetNameOf(Application.MainForm.Handle,
         SI.SimplePidl, PChar(NewName), SHGDN_NORMAL, NewPidl) = NOERROR;
-      if NewPidl <> nil then begin
+      if Assigned(NewPidl) then begin
         { Rename was succesful so copy the new pidl. }
         SI.FSimplePidl := ILClone(NewPidl);
         SI.FPidl := ILCombine(GetParentPidl(SI.FPidl), NewPidl);
@@ -2396,7 +2396,7 @@ end;
 
 destructor TStShellEnumerator.Destroy;
 begin
-  if FFolder <> nil then
+  if Assigned(FFolder) then
     FFolder.Free;
   inherited;
 end;
@@ -2427,15 +2427,15 @@ var
   P             : Integer;
 begin
   if (FSpecialRootFolder = sfNone) and (FRootFolder = '')
-      and (FRootPidl = nil) then
+      and not Assigned(FRootPidl) then
     Exit;
-  if FFolder <> nil then begin
+  if Assigned(FFolder) then begin
     FFolder.Free;
     FFolder := nil;
   end;
   ShellItems.Clear;
   if (FRootFolder = '') then begin
-    if FRootPidl = nil then
+    if not Assigned(FRootPidl) then
       SHGetSpecialFolderLocation(0, ShellFolders[FSpecialRootFolder], FRootPidl);
     FFolder := TStShellFolder.CreateFromPidl(FRootPidl, Self);
   end else begin
@@ -2444,11 +2444,11 @@ begin
     if FRootFolder <> '' then begin
       Attr := SFGAO_FILESYSTEM or SFGAO_FOLDER;
       PidlFromPath(FRootFolder, DesktopFolder, FRootPidl);
-      if FRootPidl = nil then
+      if not Assigned(FRootPidl) then
         RaiseStError(ESsInvalidFolder, ssscInvalidFolder);
       FFolder := TStShellFolder.CreateFromPidl(FRootPidl, Self);
       FFolder.FSimplePidl := ILClone(ILFindLastID(FRootPidl));
-      if FFolder.SimplePidl = nil then
+      if not Assigned(FFolder.SimplePidl) then
         FFolder.FSimplePidl := FRootPidl;
       FFolder.FPath :=
         GetDisplayName(DesktopFolder, FRootPidl, SHGDN_FORPARSING);
@@ -2479,19 +2479,19 @@ begin
     EnumFlags := EnumFlags or SHCONTF_INCLUDEHIDDEN;
 
   { Try to get a parent folder. }
-  if FFolder.FParentFolder <> nil then
+  if Assigned(FFolder.FParentFolder) then
     BindToObject(FFolder.FParentFolder,
       FFolder.FSimplePidl, CurrentFolder)
   else
     BindToObject(DesktopFolder,
       FFolder.FPidl, CurrentFolder);
-  if CurrentFolder = nil then
+  if not Assigned(CurrentFolder) then
     CurrentFolder := DesktopFolder;
   CurrentFolder.EnumObjects(
     Application.Handle, EnumFlags, Enum);
 
   { Enumerate the items. }
-  if Enum <> nil then
+  if Assigned(Enum) then
     while Enum.Next(1, Pidl1, Count) <> S_False do begin
       if Count = 0 then
         Exit;
@@ -2593,7 +2593,7 @@ begin
   { Item index of -1 means that we don't yet have all of the file info. }
   FIconIndex := -1;
   FSize := -1;
-  if AController = nil then begin
+  if not Assigned(AController) then begin
     FController := TStCustomShellController.Create(nil);
     OwnController := True;
   end else
@@ -2616,14 +2616,14 @@ begin
   { Item index of -1 means that we don't yet have all of the file info. }
   FIconIndex := -1;
   FSize := -1;
-  if Pidl = nil then
+  if not Assigned(Pidl) then
     Exit;
   FPidl := ILClone(Pidl);
   FSimplePidl := ILClone(ILFindLastID(Pidl));
   GetParentFolder(FPidl, FParentFolder);
-  if FParentFolder = nil then
+  if not Assigned(FParentFolder) then
     SHGetDesktopFolder(FParentFolder);
-  if AController = nil then begin
+  if not Assigned(AController) then begin
     FController := TStCustomShellController.Create(nil);
     OwnController := True;
   end else
@@ -2671,14 +2671,14 @@ begin
   FSize := -1;
   SHGetDesktopFolder(DesktopFolder);
   PidlFromPath(Path, DesktopFolder, Pidl);
-  if Pidl = nil then
+  if not Assigned(Pidl) then
     RaiseStError(ESsInvalidFolder, ssscInvalidFolder);
   FPidl := ILClone(Pidl);
   FSimplePidl := ILClone(ILFindLastID(Pidl));
   GetParentFolder(FPidl, FParentFolder);
-  if FParentFolder = nil then
+  if not Assigned(FParentFolder) then
     SHGetDesktopFolder(FParentFolder);
-  if AController = nil then begin
+  if not Assigned(AController) then begin
     FController := TStCustomShellController.Create(nil);
     OwnController := True;
   end else
@@ -3093,7 +3093,7 @@ function TStShellItem.GetIsShared : Boolean;
 var
   Attr : DWORD;
 begin
-  if ParentFolder <> nil then begin
+  if Assigned(ParentFolder) then begin
     Attr := SFGAO_SHARE;
     ParentFolder.GetAttributesOf(1, FSimplePidl, Attr);
     Result := (Attr and SFGAO_SHARE) = SFGAO_SHARE;
@@ -3117,7 +3117,7 @@ function TStShellItem.GetIsFolder : Boolean;
 var
   Attr : DWORD;
 begin
-  if ParentFolder <> nil then begin
+  if Assigned(ParentFolder) then begin
     Attr := SFGAO_FOLDER;
     ParentFolder.GetAttributesOf(1, FSimplePidl, Attr);
     Result := (Attr and SFGAO_FOLDER) = SFGAO_FOLDER;
@@ -3156,7 +3156,7 @@ function TStShellItem.GetSmallIcon : TIcon;
 var
   SHFileInfo : TShFileInfo;
 begin
-  if FSmallIcon = nil then begin
+  if not Assigned(FSmallIcon) then begin
     FSmallIcon := TIcon.Create;
     SHGetFileInfo(PChar(Pidl), 0,
       SHFileInfo, SizeOf(TSHFileInfo),
@@ -3170,7 +3170,7 @@ function TStShellItem.GetLargeIcon : TIcon;
 var
   SHFileInfo : TShFileInfo;
 begin
-  if FLargeIcon = nil then begin
+  if not Assigned(FLargeIcon) then begin
     FLargeIcon := TIcon.Create;
     SHGetFileInfo(PChar(Pidl), 0,
       SHFileInfo, SizeOf(TSHFileInfo),
@@ -3184,7 +3184,7 @@ function TStShellItem.GetOpenIcon : TIcon;
 var
   SHFileInfo : TShFileInfo;
 begin
-  if FOpenIcon = nil then begin
+  if not Assigned(FOpenIcon) then begin
     FOpenIcon := TIcon.Create;
     SHGetFileInfo(PChar(Pidl), 0,
       SHFileInfo, SizeOf(TSHFileInfo),
@@ -3198,7 +3198,7 @@ function TStShellItem.GetSmallOpenIcon : TIcon;
 var
   SHFileInfo : TShFileInfo;
 begin
-  if FSmallOpenIcon = nil then begin
+  if not Assigned(FSmallOpenIcon) then begin
     FSmallOpenIcon := TIcon.Create;
     SHGetFileInfo(PChar(Pidl), 0,
       SHFileInfo, SizeOf(TSHFileInfo),
@@ -3214,7 +3214,7 @@ procedure TStShellItemList.Clear;
 var
   I : Integer;
 begin
-  if FList <> nil then begin
+  if Assigned(FList) then begin
     for I := 0 to Pred(FList.Count) do
       TStShellItem(FList[I]).Free;
     if FList.Count > 0 then
@@ -3297,7 +3297,7 @@ begin
   FPidl             := ILClone(AValue.FPidl);
   ParentList        := AValue.ParentList;
   FColText.Assign(AValue.FColText);
-  if AValue.SimplePidl <> nil then
+  if Assigned(AValue.SimplePidl) then
     FSimplePidl   := ILClone(AValue.SimplePidl);
   GetParentFolder(FPidl, FParentFolder);
   { Don't bother with the icon properties as a new icon }
@@ -3314,7 +3314,7 @@ begin
   if FFolderCount = -1 then begin
     FFolderCount := 0;
     { Run through the list and get the count of folders. }
-    if ParentList <> nil then
+    if Assigned(ParentList) then
       for I := 0 to Pred(ParentList.Count) do
         if TStShellItem(ParentList[I]).IsFolder then
           Inc(FFolderCount);
@@ -3329,7 +3329,7 @@ begin
   if FHiddenCount = -1 then begin
     FHiddenCount := 0;
     { Run through the list and get the count of hidden items. }
-    if ParentList <> nil then
+    if Assigned(ParentList) then
       for I := 0 to Pred(ParentList.Count) do
         if TStShellItem(ParentList[I]).IsHidden then
           Inc(FHiddenCount);
@@ -3344,7 +3344,7 @@ begin
  if FItemCount = -1 then begin
     FItemCount := 0;
     { Run through the list and get the count of non-folder items. }
-    if ParentList <> nil then
+    if Assigned(ParentList) then
       for I := 0 to Pred(ParentList.Count) do
         if not TStShellItem(ParentList[I]).IsFolder then
           Inc(FItemCount);
@@ -3396,7 +3396,7 @@ var
 begin
   inherited Create(AOwner);
   {$IFNDEF VERSION2009}
-  if @ILClone = nil then
+  if not Assigned(@ILClone) then
     LoadILFunctions;
   {$ENDIF}
   FOptions           := [toExpandTopNode, toAllowRename,
@@ -3454,7 +3454,7 @@ end;
 
 destructor TStCustomShellTreeView.Destroy;
 begin
-  if (Controller <> nil) and OwnController then begin
+  if Assigned(Controller) and OwnController then begin
     Controller.Free;
     Controller := nil;
   end;
@@ -3476,9 +3476,9 @@ begin
   { has been cleared and we need to reset it. }
   if RecreatingWnd then begin
     Node := Items[0];
-    while Node <> nil do begin
+    while Assigned(Node) do begin
       SI := Folders[Integer(Node.Data)];
-      if SI <> nil then
+      if Assigned(SI) then
         if SI.HasSubFolder then
             Node.HasChildren := True;
       Node := Node.GetNext;
@@ -3487,8 +3487,8 @@ begin
   end;
   { For cases when the component is being created dynamically. }
   if not (csLoading in ComponentState) then begin
-    if (Controller = nil) then
-      if Assigned(FListView) and (FListView.Controller <> nil) then
+    if not Assigned(Controller) then
+      if Assigned(FListView) and Assigned(FListView.Controller) then
         Controller := FListView.Controller
       else begin
         Controller := TStCustomShellController.Create(Self);
@@ -3533,15 +3533,15 @@ begin
   if not (csLoading in ComponentState) then begin
     { Create a controller if necessary. If the list view has already }
     { been created then hook up to its controller. }
-    if (Controller = nil) then
-      if Assigned(FListView) and (FListView.Controller <> nil) then
+    if not Assigned(Controller) then
+      if Assigned(FListView) and Assigned(FListView.Controller) then
         Controller := FListView.Controller
       else begin
         Controller := TStCustomShellController.Create(Self);
         OwnController := True;
       end;
     Controller.TreeView := Self;
-    if Images = nil then
+    if not Assigned(Images) then
       Images := Controller.SmallFolderImages;
     FillTree;
   end;
@@ -3616,7 +3616,7 @@ begin
   if Node.Count = 0 then
     Node.HasChildren := False;
   { If it's not a file system folder then we'll need to resort. }
-  if (SI <> nil) then begin
+  if Assigned(SI) then begin
     Perform(WM_SETREDRAW, 0, 0);
     TopNode := TopItem;
     CustomSort(TreeCompareFunc, {$IFDEF VERSIONXE2}NativeInt{$ELSE}Integer{$ENDIF}(Self));
@@ -3634,7 +3634,7 @@ begin
   inherited Change(Node);
   LastSelectedFolder := Selected;
   SI := Folders[Integer(Node.Data)];
-  if (SI = nil) then
+  if not Assigned(SI) then
     Exit;
   FSelectedFolder := SI;
   if not (csLoading in ComponentState) and
@@ -3778,7 +3778,7 @@ begin
       Exit;
     end;
     if (Msg = WM_TIMER) and (WParam = 55) then begin
-      if DropTargetNode <> nil then
+      if Assigned(DropTargetNode) then
         if DropTargetNode.HasChildren and
             not DropTargetNode.Expanded then begin
           DropTargetNode.Expand(False);
@@ -3798,14 +3798,14 @@ begin
       else if FSpecialStartInFolder <> sfNone then
         SHGetSpecialFolderLocation(Handle,
           ShellFolders[FSpecialStartInFolder], Pidl);
-      if Pidl = nil then begin
+      if not Assigned(Pidl) then begin
         if Assigned(FListView) then
           if FListView.Items.Count = 0 then
             FListView.FillList(Folders[0]);
             Exit;
       end;
       Node := FindNodeByPidl(Pidl);
-      if Node <> nil then begin
+      if Assigned(Node) then begin
         Selected := Node;
         Change(Node);
         Node.MakeVisible;
@@ -3845,12 +3845,12 @@ function TStCustomShellTreeView.DragLeave : HResult;
 begin
   if FExpandInterval <> 0 then
     KillTimer(Handle, 55);
-  if (DataObject <> nil) then
+  if Assigned(DataObject) then
     DataObject := nil;
   Result := NOERROR;
   DoingDragDrop := False;
   ImageList_DragLeave(Handle);
-  if DropTargetNode <> nil then begin
+  if Assigned(DropTargetNode) then begin
     DropTargetNode.DropTarget := False;
     DropTargetNode := nil;
   end;
@@ -3870,14 +3870,14 @@ var
   SP         : Integer;
 begin
   Result := S_OK;
-  if (DataObject = nil) then begin
+  if not Assigned(DataObject) then begin
     dwEffect := DROPEFFECT_NONE;
   end else begin
     OldRect := Rect(0, 0, 0, 0);
     DoingDragDrop := True;
     ClientPt := ScreenToClient(pt);
     Node := GetNodeAt(ClientPt.X, ClientPt.Y);
-    if Node <> nil then begin
+    if Assigned(Node) then begin
       ClientPt := ScreenToClient(pt);
       SP := GetScrollPos(Handle, SB_HORZ);
       if (ClientPt.Y < 10) and (Node <> Items[0]) then begin
@@ -3908,13 +3908,13 @@ begin
         DragScroll := True;
       end;
       SI := Folders[Integer(Node.Data)];
-      if SI.ParentFolder <> nil then
+      if Assigned(SI.ParentFolder) then
         SI.ParentFolder.GetUIObjectOf(Handle, 1, SI.FSimplePidl,
           IDropTarget, nil, Pointer(DropTarget))
       else
         Controller.DesktopFolder.GetUIObjectOf(Handle, 1, SI.FSimplePidl,
           IDropTarget, nil, Pointer(DropTarget));
-      if DropTarget <> nil then begin
+      if Assigned(DropTarget) then begin
         DropTarget.DragEnter(DataObject, grfKeyState, pt, dwEffect);
         Result := DropTarget.DragOver(grfKeyState, pt, dwEffect);
         DropTarget := nil;
@@ -3922,7 +3922,7 @@ begin
 
       if DropTargetNode <> Node then begin
         { User has dragged to a new node. }
-        if DropTargetNode <> nil then begin
+        if Assigned(DropTargetNode) then begin
           DropTargetNode.DropTarget := False;
           OldRect := DropTargetNode.DisplayRect(True);
         end;
@@ -3963,7 +3963,7 @@ begin
   if FExpandInterval <> 0 then
     KillTimer(Handle, 55);
   Result := S_OK;
-  if (DataObject = nil) then begin
+  if not Assigned(DataObject) then begin
     Result := E_FAIL;
     Exit;
   end;
@@ -3972,18 +3972,18 @@ begin
   Node := GetNodeAt(ClientPt.X, ClientPt.Y);
   SI := Folders[Integer(Node.Data)];
   grfKeyState := grfKeyState or MK_LBUTTON;
-  if SI.ParentFolder <> nil then
+  if Assigned(SI.ParentFolder) then
     SI.ParentFolder.GetUIObjectOf(Handle, 1,
       SI.FSimplePidl, IDropTarget, nil, Pointer(DropTarget))
   else
     Controller.DesktopFolder.GetUIObjectOf(Handle, 1,
       SI.FSimplePidl, IDropTarget, nil, Pointer(DropTarget));
-  if DropTarget <> nil then begin
+  if Assigned(DropTarget) then begin
     DropTarget.DragEnter(dataObj, grfKeyState, pt, dwEffect);
     Result := DropTarget.Drop(dataObj, grfKeyState, pt, dwEffect);
     DropTarget := nil;
   end;
-  if DropTargetNode <> nil then begin
+  if Assigned(DropTargetNode) then begin
     DropTargetNode.DropTarget := False;
     DropTargetNode := nil;
   end;
@@ -3993,7 +3993,7 @@ end;
 procedure TStCustomShellTreeView.Click;
 begin
   inherited;
-  if Selected <> nil then begin
+  if Assigned(Selected) then begin
     {$IFDEF VERSION4}
     if HotTrack and not AutoExpand then
       Selected.Expand(False);
@@ -4126,7 +4126,7 @@ begin
         if Folders.Count = 0 then //SZ
           Exit; //SZ
         SI := Folders[Integer(Node.Data)];
-        if SI <> nil then begin
+        if Assigned(SI) then begin
           { Reading the IsCompressed property on Windows 2000 will }
           { will result in a "drive not ready" message for some    }
           { removable media drives (Zip drives, for example. Don't }
@@ -4134,7 +4134,7 @@ begin
           DriveType := GetDriveType(PChar(SI.Path));
           if DriveType = DRIVE_REMOVABLE then
             Exit;
-          if SI.ParentFolder <> nil then
+          if Assigned(SI.ParentFolder) then
             if SI.IsCompressed then
               Canvas.Font.Color := FCompressedColor;
         end;
@@ -4169,11 +4169,11 @@ begin
   { for the list view folder that was just selected.     }
   Node := nil;
   List := TList.Create;
-  while Node = nil do begin
-    if Pidl = nil then
+  while not Assigned(Node) do begin
+    if not Assigned(Pidl) then
       Break;
     Node := FindNodeByPidl(Pidl);
-    if Node <> nil then
+    if Assigned(Node) then
       Break
     else begin
       List.Add(ILClone(Pidl));
@@ -4190,12 +4190,12 @@ begin
     for I := Pred(List.Count) downto 0 do begin
       Pidl := PItemIDList(List.Items[I]);
       Node := FindNodeByPidl(Pidl);
-      if Node <> nil then
+      if Assigned(Node) then
         Node.Expand(False);
       ILFree(Pidl);
     end;
   List.Free;
-  if Node <> nil then
+  if Assigned(Node) then
     Node.MakeVisible
   else begin
     SendMessage(Handle, WM_SETREDRAW, 1, 0);
@@ -4212,7 +4212,7 @@ var
   Pidl  : PItemIDList;
 begin
   PidlFromPath(Path, Controller.DesktopFolder, Pidl);
-  if Pidl = nil then
+  if not Assigned(Pidl) then
     RaiseStError(ESsInvalidFolder, ssscInvalidFolder);
   FindAndSelectNode(Pidl);
   ILFree(Pidl);
@@ -4226,7 +4226,7 @@ var
   Pidl  : PItemIDList;
 begin
   SHGetSpecialFolderLocation(Handle, ShellFolders[Folder], Pidl);
-  if Pidl = nil then
+  if Assigned(Pidl) then
     RaiseStError(ESsShellError, ssscShellVersionError);
   FindAndSelectNode(Pidl);
   ILFree(Pidl);
@@ -4244,7 +4244,7 @@ begin
   if MovingUp then begin
     ListViewChange := True;
     Node := FindNodeByPidl(SI.Pidl);
-    if Node <> nil then
+    if Assigned(Node) then
       Selected := Node
     else
       Result := False;
@@ -4264,10 +4264,10 @@ var
   SF      : TStShellFolder;
 begin
   Node := FindParentNode(SI);
-  if Node <> nil then begin
+  if Assigned(Node) then begin
     SF := TStShellFolder.Create(Controller);
     SF.Assign(TStShellFolder(SI));
-    if SF.FParentFolder = nil then
+    if not Assigned(SF.FParentFolder) then
       SF.FParentFolder := Controller.DesktopFolder;
     NewNode := Items.AddChild(Node, SF.DisplayName);
     SF.ParentList := Folders.FList;
@@ -4283,7 +4283,7 @@ var
   Node : TTreeNode;
 begin
   Node := Items[0];
-  while Node <> nil do begin
+  while Assigned(Node) do begin
     if ILIsEqual(Folders[Integer(Node.Data)].Pidl, Pidl) then begin
       Result := Node;
       Exit;
@@ -4298,7 +4298,7 @@ var
   Node : TTreeNode;
 begin
   Node := Items[0];
-  while Node <> nil do begin
+  while Assigned(Node) do begin
     if Folders[Integer(Node.Data)].Path = Path then begin
       Result := Node;
       Exit;
@@ -4338,7 +4338,7 @@ begin
     InternalEvent := False;
     Exit;
   end;
-  if SI1 = nil then
+  if not Assigned(SI1) then
     Exit;
   { Something happened in the shell. See if it's something we   }
   { need to handle. We could get this event twice. If we do, we }
@@ -4348,20 +4348,20 @@ begin
        and (SI1.Pidl <> LastPidl) then begin
     { A folder was created. See if its parent is one we have in the list. }
     Node := FindParentNode(SI1);
-    if Node <> nil then
+    if Assigned(Node) then
       { If the node doesn't have any subnodes then we don't }
       { need to do anything. }
       if Node.Count <> 0 then begin
         SF := TStShellFolder.Create(Controller);
         SF.Assign(TStShellFolder(SI1));
-        if SF.FParentFolder = nil then
+        if not Assigned(SF.FParentFolder) then
           SF.FParentFolder := Controller.DesktopFolder;
         SF.ParentList := Folders.FList;
         { It could be that a network drive is in the list but was }
         { not connected and has been reconnected. If that is the  }
         { case then we don't want to add the folder again. }
         NewNode := FindNodeByPath(SF.Path);
-        if NewNode = nil then
+        if not Assigned(NewNode) then
           NewNode := Items.AddChild(Node, SF.DisplayName);
         NewNode.Data := Pointer(Folders.FList.Add(SF));
         LastPidl := SF.Pidl;
@@ -4378,11 +4378,11 @@ begin
        or ((neFileDelete in Events) and (toShowFiles in Options))) then begin
     { A folder was deleted. See if it is one we have in the list. }
     Node := FindNodeByPidl(SI1.Pidl);
-    if Node = nil then
+    if not Assigned(Node) then
       Node := FindNodeByPath(SI1.Path);
-    if (Node <> nil) and (Selected = Node) then
+    if Assigned(Node) and (Selected = Node) then
       Selected := Node.GetNext;
-    if Node <> nil then begin
+    if Assigned(Node) then begin
       { Remove it from the underlying list and from the tree view. }
       Folders[Integer(Node.Data)].Free;
       Folders.FList[Integer(Node.Data)] := nil;
@@ -4397,11 +4397,11 @@ begin
     SHGetSpecialFolderLocation(
       Application.Handle, CSIDL_DESKTOP, Pidl);
 
-    if SI2 <> nil then begin
+    if Assigned(SI2) then begin
       if ILIsEqual(Pidl, SI2.Pidl) then begin
         { It's the recycle bin so delete from the tree view. }
         Node := FindNodeByPidl(SI1.Pidl);
-        if Node <> nil then begin
+        if Assigned(Node) then begin
           Folders[Integer(Node.Data)].Free;
           Folders.FList[Integer(Node.Data)] := nil;
           Node.Delete;
@@ -4412,10 +4412,10 @@ begin
         for I := 0 to Pred(Folders.Count) do begin
           if AnsiUpperCase(Folders[I].Path) = AnsiUpperCase(SI1.Path) then begin
             Folders[I].Assign(TStShellFolder(SI2));
-            if Folders[I].FParentFolder = nil then
+            if not Assigned(Folders[I].FParentFolder) then
               Folders[I].FParentFolder := Controller.DesktopFolder;
             Node := FindNodeByPidl(SI2.FPidl);
-            if Node <> nil then begin
+            if Assigned(Node) then begin
               Node.Text := SI2.DisplayName;
               CustomSort(TreeCompareFunc, Integer(Self));
             end;
@@ -4426,7 +4426,7 @@ begin
   end;
   if (neNetShare in Events) or (neNetUnShare in Events) then begin
     Node := FindNodeByPidl(SI1.Pidl);
-    if Node <> nil then
+    if Assigned(Node) then
       Node.OverlayIndex := SI1.OverlayIconIndex;
   end;
   if (neMediaInsert in Events) or (neMediaRemove in Events) then begin
@@ -4434,7 +4434,7 @@ begin
     { cache and update the display or we'll just get a cached }
     { icon and display name. }
     Node := FindNodeByPath(SI1.Path);
-    if Node <> nil then begin
+    if Assigned(Node) then begin
       Node.ImageIndex := SI1.IconIndex;
       Node.Text := SI1.DisplayName;
     end;
@@ -4462,7 +4462,7 @@ begin
     TopItem.Free;
   end;
   RootNode := nil;
-  if (Controller = nil) or not HandleAllocated then begin
+  if not Assigned(Controller) or not HandleAllocated then begin
     StartFolderSet := True;
     Exit;
   end;
@@ -4475,7 +4475,7 @@ begin
   if FSpecialRootFolder <> sfNone then begin
     SHGetSpecialFolderLocation(Handle,
       ShellFolders[FSpecialRootFolder], Pidl);
-    if Pidl = nil then
+    if not Assigned(Pidl) then
       RaiseStError(ESsShellError, ssscShellVersionError);
     RootNode := Items.AddChild(nil, '');
     SetNodeAttributes(RootNode, Pidl, True, 0);
@@ -4493,7 +4493,7 @@ begin
     if FRootFolder <> '' then begin
       Attr := SFGAO_FILESYSTEM or SFGAO_FOLDER;
       PidlFromPath(FRootFolder, Controller.DesktopFolder, Pidl);
-      if Pidl = nil then
+      if not Assigned(Pidl) then
         RaiseStError(ESsInvalidFolder, ssscInvalidFolder);
       RootNode := Items.Add(Selected, '');
       SetNodeAttributes(RootNode, Pidl, True, Attr);
@@ -4507,7 +4507,7 @@ begin
       CustomSort(TreeCompareFunc, Integer(Self));
     end;
   end;
-  if (RootNode <> nil) then
+  if Assigned(RootNode) then
     if (toExpandTopNode in FOptions) then
       RootNode.Expand(False);
 
@@ -4517,7 +4517,7 @@ begin
   else
     SHGetSpecialFolderLocation(Handle,
       ShellFolders[FSpecialStartInFolder], Pidl);
-  if Pidl = nil then begin
+  if not Assigned(Pidl) then begin
     StartFolderSet := True;
     Exit;
   end;
@@ -4535,7 +4535,7 @@ begin
   { Work backwards through the list, expanding nodes as we go. }
   for I := Pred(PidlList.Count) downto 0 do begin
     Node := FindNodeByPidl(PidlList[I]);
-    if Node <> nil then
+    if Assigned(Node) then
       if not Node.Expanded then
         Node.Expand(False);
     ILFree(PidlList[I]);
@@ -4557,17 +4557,17 @@ procedure TStCustomShellTreeView.SetListView(
   const Value : TStCustomShellListView);
 begin
   FListView := Value;
-  if Value = nil then
+  if not Assigned(Value) then
     Exit;
   if (csDesigning in ComponentState) then
     FListView.TreeView := Self;
-  if (Controller = nil) and (FListView.Controller <> nil) then
+  if not Assigned(Controller) and Assigned(FListView.Controller) then
     Controller := FListView.Controller;
 end;
 
 procedure TStCustomShellTreeView.SetMaxNotifications(const Value : Integer);
 begin
-  if ShellMonitor <> nil then
+  if Assigned(ShellMonitor) then
     ShellMonitor.MaxNotifications := FMaxNotifications;
 end;
 
@@ -4634,7 +4634,7 @@ function TStCustomShellTreeView.DeleteFolder(
 var
   FO : TStFileOperation;
 begin
-  if SelectedFolder = nil then
+  if not Assigned(SelectedFolder) then
     Result := False
   else begin
     FO := TStFileOperation.Create(Self);
@@ -4665,20 +4665,20 @@ var
   I             : Integer;
   SF            : TStShellFolder;
 begin
-  if ANode = nil then
+  if not Assigned(ANode) then
     ANode := Items[0];
   {if ANode <> nil then begin}
   ExpandedNodes := TList.Create;
   Node := ANode;
   { Enumerate the selected node's children, saving any }
   { nodes that are expanded in a list. }
-  while Node <> nil do begin
+  while Assigned(Node) do begin
     Node := Node.GetNextVisible;
-    if Node <> nil then
+    if Assigned(Node) then
       if Node.Expanded then begin
         SF := TStShellFolder.Create(Controller);
         SF.Assign(Folders[Integer(Node.Data)]);
-        if SF.FParentFolder = nil then
+        if not Assigned(SF.FParentFolder) then
           SF.FParentFolder := Controller.DesktopFolder;
         { Free the memory for the old folder item, but }
         { don't remove it from the list or the indexes }
@@ -4689,7 +4689,7 @@ begin
       end;
     { If this node's parent is the same as the selected }
     { node's parent then we are done enumerating nodes. }
-    if Node <> nil then
+    if Assigned(Node) then
       if Node.Parent = ANode.Parent then
         Node := nil;
   end;
@@ -4701,7 +4701,7 @@ begin
   for I := 0 to Pred(ExpandedNodes.Count) do begin
     SF := ExpandedNodes[I];
     Node := FindNodeByPidl(SF.FPidl);
-    if Node <> nil then
+    if Assigned(Node) then
       Node.Expand(False);
   end;
   for I := 0 to Pred(ExpandedNodes.Count) do begin
@@ -4718,7 +4718,7 @@ procedure TStCustomShellTreeView.CopyToClipboard;
 var
   SF : TStShellFolder;
 begin
-  if Selected <> nil then begin
+  if Assigned(Selected) then begin
     SF := Folders[Integer(Selected.Data)];
     SF.CopyToClipboard;
   end;
@@ -4728,7 +4728,7 @@ procedure TStCustomShellTreeView.CutToClipboard;
 var
   SF : TStShellFolder;
 begin
-  if Selected <> nil then begin
+  if Assigned(Selected) then begin
     SF := Folders[Integer(Selected.Data)];
     SF.CutToClipboard;
   end;
@@ -4738,7 +4738,7 @@ procedure TStCustomShellTreeView.PasteFromClipboard;
 var
   SF : TStShellFolder;
 begin
-  if Selected <> nil then begin
+  if Assigned(Selected) then begin
     SF := Folders[Integer(Selected.Data)];
     SF.PasteFromClipboard;
   end;
@@ -4759,7 +4759,7 @@ var
 begin
   inherited Create(AOwner);
   {$IFNDEF VERSION2009}
-  if @ILClone = nil then
+  if not Assigned(@ILClone) then
     LoadILFunctions;
   {$ENDIF}
   FOptions         := [loAllowRename, loAllowDrag, loAllowDrop, loShellMenu];
@@ -4897,7 +4897,7 @@ begin
   FilteredList.Free;
   FullList.Free;
   FSelectedItems.Free;
-  if (Controller <> nil) and OwnController and
+  if Assigned(Controller) and OwnController and
       not (csDesigning in ComponentState) then begin
     Controller.Free;
     Controller := nil;
@@ -4920,7 +4920,7 @@ begin
   if RecreatingWnd then
     Exit;
   if not (csLoading in ComponentState) then begin
-    if (Controller = nil) then
+    if not Assigned(Controller) then
       if Assigned(FTreeView) then
         Controller := FTreeView.Controller
       else if Assigned(FComboBox) then
@@ -4930,13 +4930,13 @@ begin
         OwnController := True;
       end;
     Controller.ListView := Self;
-    if SmallImages = nil then begin
+    if not Assigned(SmallImages) then begin
       SmallImages := Controller.SmallFolderImages;
       LargeImages := Controller.LargeFolderImages;
     end;
     if Assigned(FTreeView) and
        Assigned(Controller.FTreeView) and
-       (Controller.FTreeView.Selected = nil) then begin
+       not Assigned(Controller.FTreeView.Selected) then begin
       if FTreeView.Folders.Count <> 0 then
         FillList(FTreeView.Folders[FTreeView.RootFolderIndex])
     end else
@@ -4963,17 +4963,17 @@ begin
   if not (csLoading in ComponentState) then begin
     { Create a controller if necessary. If the tree view has already been }
     { created then hook up to its controller. }
-    if (Controller = nil) then
-      if Assigned(FTreeView) and (FTreeView.Controller <> nil) then
+    if not Assigned(Controller) then
+      if Assigned(FTreeView) and Assigned(FTreeView.Controller) then
         Controller := FTreeView.Controller
-      else if Assigned(FComboBox) and (FComboBox.Controller <> nil) then
+      else if Assigned(FComboBox) and Assigned(FComboBox.Controller) then
         Controller := FComboBox.Controller
       else begin
         Controller := TStCustomShellController.Create(Self);
         OwnController := True;
       end;
     Controller.ListView := Self;
-    if SmallImages = nil then begin
+    if not Assigned(SmallImages) then begin
       SmallImages := Controller.SmallFolderImages;
       LargeImages := Controller.LargeFolderImages;
     end;
@@ -5019,7 +5019,7 @@ begin
       //StringToWideChar(Item.pszText, NewName, MAX_PATH);
       SI.ParentFolder.SetNameOf(
         Handle, SI.FSimplePidl, PChar(Item.pszText), SHGDN_NORMAL, NewPidl);
-      if NewPidl <> nil then begin
+      if Assigned(NewPidl) then begin
         { Rename was succesful so copy the new pidl. }
         SI.FSimplePidl := ILClone(NewPidl);
         SI.FPidl := ILCombine(GetParentPidl(SI.FPidl), NewPidl);
@@ -5048,7 +5048,7 @@ end;
 
 procedure TStCustomShellListView.SetMaxNotifications(const Value : Integer); 
 begin
-  if ShellMonitor <> nil then
+  if Assigned(ShellMonitor) then
     ShellMonitor.MaxNotifications := FMaxNotifications;
 end;
 
@@ -5096,7 +5096,7 @@ begin
   if not (csDesigning in ComponentState) then
     if (loColorCompressed in FOptions) then begin
       SI := ShellItems[Integer(Item.Data)];
-      if SI <> nil then begin
+      if Assigned(SI) then begin
         { Reading the IsCompressed property on Windows 2000 will }
         { will result in a "drive not ready" message for some    }
         { removable media drives (Zip drives, for example. Don't }
@@ -5171,18 +5171,18 @@ var
   DefaultAction : Boolean;
 begin
   inherited;
-  if Selected = nil then
+  if not Assigned(Selected) then
     Exit;
   Item := Selected;
   SI := ShellItems[Integer(Item.Data)];
   DefaultAction := True;
-  if FOpenDialogMode and (SI <> nil) then begin
+  if FOpenDialogMode and Assigned(SI) then begin
     DoItemDblClick(SI, DefaultAction);
     if DefaultAction then begin
       if SI.IsFolder then begin
         SI2 := TStShellItem.Create(Controller);
         SI2.Assign(SI);
-        if SI2.FParentFolder = nil then
+        if not Assigned(SI2.FParentFolder) then
           SI2.FParentFolder := Controller.DesktopFolder;
         if Assigned(FTreeView) then
           FTreeView.ListViewFolderChange(SI, False);
@@ -5204,7 +5204,7 @@ begin
       else begin
         SI2 := TStShellItem.Create(Controller);
         SI2.Assign(SI);
-        if SI2.FParentFolder = nil then
+        if not Assigned(SI2.FParentFolder) then
           SI2.FParentFolder := Controller.DesktopFolder;
         if Assigned(FTreeView) then
           FTreeView.ListViewFolderChange(SI, False);
@@ -5234,14 +5234,14 @@ begin
   { Try to get an IShellDetails object. }
   Controller.BindToObject(Controller.DesktopFolder, SI.Pidl, AFolder);
   Pidl := SI.Pidl;
-  if AFolder = nil then
+  if not Assigned(AFolder) then
     AFolder := Controller.DesktopFolder;
   AFolder.QueryInterface(IID_IShellDetails, Pointer(Details));
   AFolder.CreateViewObject(0, IID_IShellDetails, Pointer(Details));
-  if Details = nil then begin
+  if not Assigned(Details) then begin
     { In some cases you can't get an IShellDetails for the file system }
     { objects. For those cases we have to manually create the col headers. }
-    if SI.IsFileFolder or (SI.ParentFolder = nil) then begin
+    if SI.IsFileFolder or not Assigned(SI.ParentFolder) then begin
       LC := Columns.Add;
       LC.Caption := _(LNGNameCol);
       LC.Width := 175;
@@ -5336,10 +5336,10 @@ var
     I : Integer;
   begin
     SI.ParentFolder.QueryInterface(IID_IShellDetails, Pointer(Details));
-    if Details = nil then
+    if not Assigned(Details) then
       SI.ParentFolder.CreateViewObject(
         0, IID_IShellDetails, Pointer(Details));
-    if Details = nil then begin
+    if not Assigned(Details) then begin
       Result := False;
       Exit;
     end else
@@ -5636,7 +5636,7 @@ begin
         DropSource := TStDropSource.Create;
         HDragImgList := ListView_CreateDragImage(
           Handle, NMList.iItem, Point(0, 0));
-        if BM <> nil then begin
+        if Assigned(BM) then begin
           ImageList_Remove(HDragImgList, -1);
           ImageList_SetIconSize(HDragImgList, BM.Width, BM.Height);
           ImageList_AddMasked(HDragImgList, BM.Handle, $00FF00FF);
@@ -5700,7 +5700,7 @@ begin
       PopupMenu := Popup;
     {$ELSE}
     if (Msg = WM_CONTEXTMENU) and (loShellMenu in FOptions)  then begin
-      if Selected <> nil then begin
+      if Assigned(Selected) then begin
         SI := ShellItems[Integer(Selected.Data)];
         if SelCount > 1 then begin
           GetMem(PidlArray, SizeOf(PItemIDList) * SelCount);
@@ -5758,7 +5758,7 @@ var
   I     : Integer;
   Index : Integer;
 begin
-  if (DataObject <> nil) then
+  if Assigned(DataObject) then
     DataObject := nil;
   ImageList_DragLeave(Handle);
   if Assigned(DropTargetItem) then begin
@@ -5797,7 +5797,7 @@ var
 begin
   Result := S_OK;
   OldRect := Rect(0, 0, 0, 0);
-  if (DataObject = nil) then begin
+  if not Assigned(DataObject) then begin
     dwEffect := DROPEFFECT_NONE;
     Result := NOERROR;
   end else begin
@@ -5805,7 +5805,7 @@ begin
     Item := GetItemAt(ClientPt.X, ClientPt.Y);
     DropTarget := nil;
     NewItem := nil;
-    if Item <> nil then begin
+    if Assigned(Item) then begin
       { See if we need to scroll. }
       DoScroll := False;
       ClientPt := ScreenToClient(pt);
@@ -5816,14 +5816,14 @@ begin
           begin
             if (ClientPt.Y < 30) then begin
               NewItem := GetNextItem(Item, sdAbove, [isNone]);
-              if (NewItem <> nil) then begin
+              if Assigned(NewItem) then begin
                 Delay := 30;
                 DoScroll := True;
               end;
             end;
             if (ClientPt.Y > Height - 30) then begin
               NewItem := GetNextItem(Item, sdBelow, [isNone]);
-              if (NewItem <> nil) then begin
+              if Assigned(NewItem) then begin
                 Delay := 30;
                 DoScroll := True;
               end;
@@ -5833,16 +5833,16 @@ begin
           begin
             if (ClientPt.Y < 30) then begin
               NewItem := GetNextItem(Item, sdAbove, [isNone]);
-              if (NewItem <> nil) then begin
+              if Assigned(NewItem) then begin
                 Delay := 100;
                 DoScroll := True;
               end;
             end;
             if (ClientPt.Y > Height - 30) then begin
               NewItem := GetNextItem(Item, sdBelow, [isNone]);
-              if NewItem = nil then
+              if not Assigned(NewItem) then
                 NewItem := GetNextItem(Item, sdAll, [isNone]);
-              if (NewItem <> nil) then begin
+              if Assigned(NewItem) then begin
                 DoScroll := True;
                 Delay := 100;
               end;
@@ -5852,30 +5852,30 @@ begin
           begin
             if (ClientPt.X < 10) then begin
               NewItem := GetNextItem(Item, sdLeft, [isNone]);
-              if (NewItem <> nil) then begin
+              if Assigned(NewItem) then begin
                 DoScroll := True;
                 Delay := 400;
               end;
             end;
             if (ClientPt.X > Width - 30) then begin
               NewItem := GetNextItem(Item, sdRight, [isNone]);
-              if NewItem = nil then
+              if not Assigned(NewItem) then
                 NewItem := GetNextItem(Item, sdAll, [isNone]);
-              if (NewItem <> nil) then begin
+              if Assigned(NewItem) then begin
                 DoScroll := True;
                 Delay := 400;
               end;
             end;
           end;
       end;
-      if (NewItem <> nil) and DoScroll then begin
+      if Assigned(NewItem) and DoScroll then begin
         ImageList_DragShowNoLock(False);
         NewItem.MakeVisible(False);
         ImageList_DragShowNoLock(True);
         Sleep(Delay);
       end;
       SI := ShellItems[Integer(Item.Data)];
-      if SI.ParentFolder <>  nil then
+      if Assigned(SI.ParentFolder) then
         SI.ParentFolder.GetUIObjectOf(Handle, 1,
           SI.FSimplePidl, IDropTarget, nil, Pointer(DropTarget))
       else
@@ -5891,22 +5891,22 @@ begin
       end;                                                             
       { No item is under the cursor so we need to get the drop }
       { target for the parent folder. }
-      if Folder.ParentFolder <> nil then
+      if Assigned(Folder.ParentFolder) then
         Folder.ParentFolder.GetUIObjectOf(Handle, 1,
           Folder.FSimplePidl, IDropTarget, nil, Pointer(DropTarget))
       else
         Controller.DesktopFolder.GetUIObjectOf(Handle, 1,
           Folder.FSimplePidl, IDropTarget, nil, Pointer(DropTarget))
     end;
-    if DropTarget <> nil then begin
+    if Assigned(DropTarget) then begin
       DropTarget.DragEnter(DataObject, grfKeyState, pt, dwEffect);
       Result := DropTarget.DragOver(grfKeyState, pt, dwEffect);
       DropTarget := nil;
     end;
-    if (Item <> nil) then begin
+    if Assigned(Item) then begin
       SI := ShellItems[Integer(Item.Data)];
       ItemChanged := True;
-      if (DropTargetItem <> nil) then
+      if Assigned(DropTargetItem) then
         ItemChanged := (not ILIsEqual(SI.FPidl, DropTargetItem.FPidl));
       if ItemChanged then begin
         if Assigned(DropTargetItem) then
@@ -5944,7 +5944,7 @@ var
   R          : TRect;
 begin
   Result := S_OK;
-  if (DataObject = nil) then begin
+  if not Assigned(DataObject) then begin
     Result := E_FAIL;
     Exit;
   end;
@@ -5954,23 +5954,23 @@ begin
     dwEffect := DROPEFFECT_COPY;
   ClientPt := ScreenToClient(pt);
   Item := GetItemAt(ClientPt.X, ClientPt.Y);
-  if Item <> nil then begin
+  if Assigned(Item) then begin
     SI := ShellItems[Integer(Item.Data)];
-    if SI.ParentFolder <> nil then
+    if Assigned(SI.ParentFolder) then
       SI.ParentFolder.GetUIObjectOf(Handle, 1,
         SI.FSimplePidl, IDropTarget, nil, Pointer(DropTarget))
     else
       Controller.DesktopFolder.GetUIObjectOf(Handle, 1,
         SI.FSimplePidl, IDropTarget, nil, Pointer(DropTarget));
   end else begin
-    if Folder.ParentFolder <> nil then
+    if Assigned(Folder.ParentFolder) then
       Folder.ParentFolder.GetUIObjectOf(Handle, 1,
         Folder.FSimplePidl, IDropTarget, nil, Pointer(DropTarget))
     else
       Controller.DesktopFolder.GetUIObjectOf(Handle, 1,
         Folder.FSimplePidl, IDropTarget, nil, Pointer(DropTarget));
   end;
-  if DropTarget <> nil then begin
+  if Assigned(DropTarget) then begin
     DropTarget.DragEnter(dataObj, grfKeyState, pt, dwEffect);
     Result := DropTarget.Drop(dataObj, grfKeyState, pt, dwEffect);
     DropTarget := nil;
@@ -6053,7 +6053,7 @@ var
   FocusItemStr  : string;
 begin
   { Save the focused item so we can focus it later. }                  
-  if ItemFocused <> nil then begin                                     
+  if Assigned(ItemFocused) then begin
     SI := ShellItems[Integer(ItemFocused.Data)];                       
     if SI.IsFileSystem then                                            
       FocusItemStr := SI.Path;                                         
@@ -6074,7 +6074,7 @@ begin
     { than by pidl so we'll do it that way when we can. }
     if SelectedItems.Count > 0 then begin                              
       for I := 0 to Pred(Items.Count) do begin                         
-        if FocusItemPidl <> nil then begin                             
+        if Assigned(FocusItemPidl) then begin
           if FocusItemStr <> '' then begin                             
             if FocusItemStr = ShellItems[Integer(Items[I].Data)].Path then 
               ItemFocused := Items[I];                                 
@@ -6161,7 +6161,7 @@ begin
   if SelectedItems.Count >0 then begin                                 
     ItemFocused := nil;                                                
     for I := 0 to Pred(Items.Count) do begin                           
-      if FocusItemPidl <> nil then begin                               
+      if Assigned(FocusItemPidl) then begin
         if FocusItemStr <> '' then begin                               
           if FocusItemStr = ShellItems[Integer(Items[I].Data)].Path then 
             ItemFocused := Items[I];                                   
@@ -6285,7 +6285,7 @@ begin
   inherited ViewStyle := Value;
 {$ENDIF}
   FViewStyle := Value;
-  if not (csDesigning in ComponentState) and (Controller <> nil) then begin
+  if not (csDesigning in ComponentState) and Assigned(Controller) then begin
     if FViewStyle <> vsReport then
       Ascending := True;
     Perform(WM_SETREDRAW, 0, 0);
@@ -6313,7 +6313,7 @@ var
   SI : TStShellItem;
 begin
   inherited;
-  if Selected <> nil then begin
+  if Assigned(Selected) then begin
     SelectedItems.Clear;                                               
     for I := 0 to Pred(Items.Count) do                                 
       if Items[I].Selected then begin                                  
@@ -6353,8 +6353,8 @@ begin
   { SI will be valid if this function is being called as a }
   { result of the associated tree view selection changing. }
   { It will be nil if the list view is being used alone.   }
-  if SI = nil then begin
-    if (Controller = nil) or not HandleAllocated then
+  if not Assigned(SI) then begin
+    if not Assigned(Controller) or not HandleAllocated then
       Exit;
     if (FSpecialRootFolder = sfNone) and (FRootFolder = '') then
       Exit;
@@ -6371,7 +6371,7 @@ begin
       Screen.Cursor := crHourGlass;
       try
         PidlFromPath(FRootFolder, Controller.DesktopFolder, Pidl);
-        if Pidl = nil then begin
+        if not Assigned(Pidl) then begin
           RootFolder := '';
           RaiseStError(ESsInvalidFolder, ssscInvalidFolder);
         end;
@@ -6391,11 +6391,11 @@ begin
   if (ViewStyle = vsReport) then
     GetColHeader(SI, Columns);
   if not FilterChange then begin
-    if FFolder <> nil then
+    if Assigned(FFolder) then
       FFolder.Free;
     FFolder := TStShellFolder.Create(Controller);
     FFolder.Assign(SI);
-    if FFolder.FParentFolder = nil then                                
+    if not Assigned(FFolder.FParentFolder) then
       FFolder.FParentFolder := Controller.DesktopFolder;               
   end;
   if OwnItem then
@@ -6538,7 +6538,7 @@ begin
   with Controller do begin
     Pidl := ILClone(FFolder.Pidl);
     GetParentFolder(Pidl, AFolder);
-    if AFolder = nil then
+    if not Assigned(AFolder) then
       AFolder := DesktopFolder;
     ILRemoveLastID(Pidl);
     SI := TStShellItem.CreateFromPidl(Pidl, Controller);
@@ -6565,7 +6565,7 @@ begin
     { item in the Printers folder changing. Update the   }
     { Details if we are in report view. }
     HaveDetails := False;
-    if SI1 <> nil then
+    if Assigned(SI1) then
       GetItemDetails(SI1);
     Update;
   end;
@@ -6584,7 +6584,7 @@ var
 {$ENDIF}
 begin
   { Save the selected item. }
-  if Selected <> nil then begin
+  if Assigned(Selected) then begin
     Index := Selected.Index;
     SelText := Selected.Caption;
   end else begin
@@ -6625,9 +6625,9 @@ begin
   { Restore the item that was previously selected, if it still exists. }
   if SelText <> '' then begin                                          
     Selected := FindCaption(0, SelText, False, True, True);
-    if Selected = nil then
+    if not Assigned(Selected) then
       Selected := Items[Index];
-    if Selected <> nil then
+    if Assigned(Selected) then
       Selected.MakeVisible(False);
   end;
   SelectedItems.Clear;                                                 
@@ -6643,17 +6643,17 @@ end;
 procedure TStCustomShellListView.SetTreeView(
   const Value : TStCustomShellTreeView);
 begin
-  if (FTreeView <> Value) and (Value <> nil) then begin
+  if (FTreeView <> Value) and Assigned(Value) then begin
     RootFolder := '';
     SpecialRootFolder := sfNone;
     FTreeView := Value;
     if (csDesigning in ComponentState) then
       FTreeView.FListView := Self;
-    if (FTreeView.Controller <> nil) then begin
+    if Assigned(FTreeView.Controller) then begin
       Controller := FTreeView.Controller;
-      if Controller <> nil then begin
+      if Assigned(Controller) then begin
         Controller.ListView := Self;
-        if FTreeView.Selected <> nil then
+        if Assigned(FTreeView.Selected) then
           if not (csDesigning in ComponentState) then
             FillList(FTreeView.Folders[Integer(FTreeView.Selected.Data)])
         else
@@ -6662,7 +6662,7 @@ begin
     end;
   end else begin
     FTreeView := Value;
-    if FTreeView <> nil then
+    if Assigned(FTreeView) then
       if FTreeView.Folders.Count <> 0 then                             
         FillList(FTreeView.Folders[0]);
   end;
@@ -6671,7 +6671,7 @@ end;
 procedure TStCustomShellListView.Change(Item : TListItem; Change : Integer);
 begin
   inherited Change(Item, Change);
-  if Item <> nil then
+  if Assigned(Item) then
     FSelectedItem := ShellItems[Integer(Item.Data)];
 end;
 
@@ -6743,7 +6743,7 @@ begin
   Items.Count := ShellItems.Count;
   { Find the new item and set it into edit mode. }
   Item := FindCaption(0, SI.DisplayName, False, True, True);           
-  if Item <> nil then begin                                            
+  if Assigned(Item) then begin
     Item.MakeVisible(False);                                           
     Item.EditCaption;                                                  
   end;                                                                 
@@ -6778,7 +6778,7 @@ var
   I    : Integer;                                                      
   Item : TListItem;                                                    
 begin
-  if SelectedItem = nil then
+  if not Assigned(SelectedItem) then
     Result := False
   else begin
     FO := TStFileOperation.Create(Self);
@@ -6808,7 +6808,7 @@ var
 begin
   SF := TStShellFolder.Create(Controller);
   SF.Assign(FFolder);
-  if SF.FParentFolder = nil then                                       
+  if not Assigned(SF.FParentFolder) then
     SF.FParentFolder := Controller.DesktopFolder;                      
   FillList(SF);
   SF.Free;
@@ -6841,7 +6841,7 @@ var
   PidlArray : PStPidlArray;
   Item      : TListItem;
 begin
-  if Selected <> nil then begin
+  if Assigned(Selected) then begin
     SI := ShellItems[Integer(Selected.Data)];
     if SI.CanCopy then begin
       if SelCount > 1 then begin
@@ -6871,7 +6871,7 @@ var
   PidlArray : PStPidlArray;
   Item      : TListItem;
 begin
-  if Selected <> nil then begin
+  if Assigned(Selected) then begin
     SI := ShellItems[Integer(Selected.Data)];
     if SI.CanCopy then begin
       if SelCount > 1 then begin
@@ -6897,12 +6897,12 @@ procedure TStCustomShellListView.PasteFromClipboard;
 var
   SI : TStShellItem;
 begin
-  SI := nil;                                                           
-  if Selected <> nil then
+  SI := nil;
+  if Assigned(Selected) then
     SI := ShellItems[Integer(Selected.Data)]
-  else if FFolder <> nil then                                          
-    SI := FFolder;                                                     
-  if SI <> nil then                                                    
+  else if Assigned(FFolder) then
+    SI := FFolder;
+  if Assigned(SI) then
     if SI.CanPaste then
       ShellMenuExecute(Self, SI.ParentFolder,
         SI.FSimplePidl, 1, Handle, caPaste);
@@ -6921,7 +6921,7 @@ var
   PidlArray : PStPidlArray;
   Item      : TListItem;
 begin
-  if Selected <> nil then begin
+  if Assigned(Selected) then begin
     SI := ShellItems[Integer(Selected.Data)];
     Result := SI.HasPropSheet;
     if SI.HasPropSheet then begin
@@ -6996,7 +6996,7 @@ begin
   for I := 0 to Pred(FullList.Count) do begin
     SI := TStShellItem.Create(Controller);
     SI.Assign(FullList[I]);
-    if SI.FParentFolder = nil then
+    if not Assigned(SI.FParentFolder) then
       SI.FParentFolder := Controller.DesktopFolder;
     { Original Code: if not FullList[I].IsFileFolder then begin }
     if not FullList[I].IsFile then begin                               
@@ -7049,15 +7049,15 @@ end;
 procedure TStCustomShellListView.SetComboBox(
   const Value : TStCustomShellComboBox);
 begin
-  if RecreatingWnd then                                                
+  if RecreatingWnd then
     Exit;                                                              
-  if (FComboBox <> Value) and (Value <> nil) then begin
+  if (FComboBox <> Value) and Assigned(Value) then begin
     FComboBox := Value;
     if (csDesigning in ComponentState) then
       FComboBox.ListView := Self;
-    if (FComboBox.Controller <> nil) then begin
+    if Assigned(FComboBox.Controller) then begin
       Controller := FComboBox.Controller;
-      if Controller <> nil then
+      if Assigned(Controller) then
         Controller.ListView := Self;
     end;
   end else
@@ -7068,18 +7068,18 @@ constructor TStNotificationItem.Create(
   var PidlOne, PidlTwo : PItemIDList; Mask : DWORD);
 begin
   inherited Create;
-  if PidlOne <> nil then
+  if Assigned(PidlOne) then
     Pidl1 := ILClone(PidlOne);
-  if PidlTwo <> nil then
+  if Assigned(PidlTwo) then
     Pidl2 := ILClone(PidlTwo);
   EventMask := Mask;
 end;
 
 destructor TStNotificationItem.Destroy;
 begin
-  if Pidl1 <> nil then
+  if Assigned(Pidl1) then
     ILFree(Pidl1);
-  if Pidl2 <> nil then
+  if Assigned(Pidl2) then
     ILFree(Pidl2);
   inherited;
 end;
@@ -7093,7 +7093,7 @@ var
 begin
   inherited Create(AOwner);
   {$IFNDEF VERSION2009}
-  if @ILClone = nil then
+  if not Assigned(@ILClone) then
     LoadILFunctions;
   {$ENDIF}
   FMaxNotifications := 0;
@@ -7166,7 +7166,7 @@ begin
     { special folder. }
     SHGetDesktopFolder(DesktopFolder);
     PidlFromPath(FWatchFolder, DesktopFolder, FWatchPidl);
-    if WatchPidl = nil then
+    if not Assigned(WatchPidl) then
       RaiseStError(ESsInvalidFolder, ssscInvalidFolder);
     DesktopFolder := nil;
     if FActive then
@@ -7334,14 +7334,14 @@ begin
         if EventQueue.Count = 0 then
           Exit;                                                        
         EventQueue.PeekHead(Pointer(NItem));                           
-        while NItem <> nil do begin
+        while Assigned(NItem) do begin
           Events := [];
           EventQueue.PeekHead(Pointer(NItem));                         
-          if NItem.Pidl1 <> nil then                                   
+          if Assigned(NItem.Pidl1) then
             SI1 := TStShellItem.CreateFromPidl(NItem.Pidl1, nil)
-          else                                                         
-            SI1 := nil;                                                
-          if NItem.Pidl2 <> nil then                                   
+          else
+            SI1 := nil;
+          if Assigned(NItem.Pidl2) then
             SI2 := TStShellItem.CreateFromPidl(NItem.Pidl2, nil)
           else                                                         
             SI2 := nil;                                                
@@ -7599,15 +7599,15 @@ var
 begin
   { This component doesn't automatically create a controller but it is }
   { convenient here so we'll create one and use it. }
-  if Pidl = nil then begin
+  if not Assigned(Pidl) then begin
     SI := nil;
     Exit;
   end;
   OwnController := False;
   if (Owner is TStCustomShellListView) then
-    Controller := (Owner as TStCustomShellListView).Controller
+    Controller := TStCustomShellListView(Owner).Controller
   else if (Owner is TStCustomShellTreeView) then
-    Controller := (Owner as TStCustomShellTreeView).Controller
+    Controller := TStCustomShellTreeView(Owner).Controller
   else begin
     Controller := TStCustomShellController.Create(nil);
     OwnController := True;
@@ -7617,13 +7617,13 @@ begin
   GetParentFolder(Pidl, ParentFolder);
   Pidl2 := ILFindLastID(Pidl);
   Path := '';
-  if ParentFolder <> nil then
+  if Assigned(ParentFolder) then
     Path := Controller.GetDisplayName(
       ParentFolder, Pidl2, SHGDN_FORPARSING);
   Pidl2 := nil;
   if Path <> '' then
     PidlFromPath(Path, Controller.DesktopFolder, Pidl2);
-  if Pidl2 <> nil then
+  if Assigned(Pidl2) then
     SI := TStShellItem.CreateFromPidl(ILClone(Pidl2), Controller)
   else
     SI := TStShellItem.CreateFromPidl(ILClone(Pidl), Controller);
@@ -7640,7 +7640,7 @@ var
 begin
   inherited Create(AOwner);
   {$IFNDEF VERSION2009}
-  if @ILClone = nil then
+  if not Assigned(@ILClone) then
     LoadILFunctions;
   {$ENDIF}
   { Base class property defaults }
@@ -7671,7 +7671,7 @@ end;
 destructor TStCustomShellComboBox.Destroy;
 begin
   FreeAndNil(ShellItems);
-  if (Controller <> nil) and OwnController and
+  if Assigned(Controller) and OwnController and
       not (csDesigning in ComponentState) then
     FreeAndNil(Controller);
   FreeAndNil(ShellMonitor);
@@ -7683,7 +7683,7 @@ procedure TStCustomShellComboBox.CreateWnd;
 begin
   inherited;
   if not (csLoading in ComponentState) then begin
-    if (Controller = nil) then
+    if not Assigned(Controller) then
       if Assigned(FListView) then
         if Assigned(FListView.Controller) then
           Controller := FListView.Controller;
@@ -7704,8 +7704,8 @@ procedure TStCustomShellComboBox.Loaded;
 begin
   inherited;
   if not (csLoading in ComponentState) then begin
-    if (Controller = nil) then
-      if Assigned(FListView) and (FListView.Controller <> nil) then
+    if not Assigned(Controller) then
+      if Assigned(FListView) and Assigned(FListView.Controller) then
         Controller := FListView.Controller
       else begin
         Controller := TStCustomShellController.Create(Self);
@@ -7734,7 +7734,7 @@ begin
   if ItemIndex >= 0 then begin
     SF := TStShellFolder.Create(Controller);
     SF.Assign(ShellItems[ItemIndex]);
-    if SF.FParentFolder = nil then
+    if not Assigned(SF.FParentFolder) then
       SF.FParentFolder := Controller.DesktopFolder;
     if Assigned(FListView) then begin
       FListView.ComboBoxSelChange(SF);
@@ -7839,7 +7839,7 @@ begin
     DoFolderChanging(CurrentFolder);
     SF := TStShellFolder.Create(Controller);
     SF.Assign(ShellItems[ItemIndex]);
-    if SF.FParentFolder = nil then
+    if not Assigned(SF.FParentFolder) then
       SF.FParentFolder := Controller.DesktopFolder;
     if Assigned(FListView) then begin
       FListView.ComboBoxSelChange(SF);
@@ -7979,7 +7979,7 @@ var
   NetworkStr  : string;
 begin
   InsertIndex := 0;
-  if SI = nil then                                                     
+  if not Assigned(SI) then
     Exit;                                                              
   { Remove any items that aren't in the base list. }
   for I := Pred(ShellItems.FList.Count) downto 0 do begin
@@ -7997,7 +7997,7 @@ begin
   { Find out how many levels we need to add. }
   Levels := -1;
   Pidl := ILClone(SI.Pidl);
-  while Pidl <> nil do begin
+  while Assigned(Pidl) do begin
     Inc(Levels);
     Pidl := ILGetNext(Pidl);
   end;
@@ -8014,7 +8014,7 @@ begin
     ILRemoveLastID(Pidl);
     { Get an IShellFolder for this folder's parent. }
     GetParentFolder(Pidl, AFolder);
-    if AFolder = nil then
+    if not Assigned(AFolder) then
       AFolder := Controller.DesktopFolder;
     ParentStr := Controller.GetDisplayName(
       AFolder, ILFindLastID(Pidl), SHGDN_NORMAL);
@@ -8042,7 +8042,7 @@ begin
   while not Done do begin
     { Get a pidl for the parent folder. }
     GetParentFolder(Pidl, AFolder);
-    if AFolder = nil then
+    if not Assigned(AFolder) then
       AFolder := Controller.DesktopFolder;
     S := Controller.GetDisplayName(
       AFolder, ILFindLastID(Pidl), SHGDN_NORMAL);
@@ -8074,11 +8074,11 @@ procedure TStCustomShellComboBox.SetListView(
   const Value : TStCustomShellListView);
 begin
   FListView := Value;
-  if Value = nil then
+  if not Assigned(Value) then
     Exit;
   if (csDesigning in ComponentState) then
     FListView.ComboBox := Self;
-  if (FListView.Controller <> nil) then
+  if Assigned(FListView.Controller) then
     Controller := FListView.Controller;
 end;
 

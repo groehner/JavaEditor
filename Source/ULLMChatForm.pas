@@ -961,7 +961,7 @@ procedure TLLMChatForm.HighlightCheckedImg(Sender: TObject; ACanvas: TCanvas; St
     TCustomImageList; var AImageIndex: Integer; var ARect: TRect; var
     PaintDefault: Boolean);
 begin
-  if (PaintStage = pstPrePaint) and (Sender as TSpTBXItem).Checked then
+  if (PaintStage = pstPrePaint) and TSpTBXItem(Sender).Checked then
   begin
     ACanvas.Brush.Color := StyleServices.GetSystemColor(clHighlight);
     ACanvas.FillRect(ARect);
@@ -1043,7 +1043,7 @@ begin
     Scheme := COREWEBVIEW2_PREFERRED_COLOR_SCHEME_DARK
   else
     Scheme := COREWEBVIEW2_PREFERRED_COLOR_SCHEME_LIGHT;
-  (EdgeBrowser.DefaultInterface as ICoreWebView2_13).Get_Profile(Profile);
+  ICoreWebView2_13(EdgeBrowser.DefaultInterface).Get_Profile(Profile);
   Profile.Set_PreferredColorScheme(Scheme);
 end;
 

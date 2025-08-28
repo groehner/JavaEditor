@@ -100,7 +100,7 @@ begin
   FJava.SwitchWindowWithSearch(FPathname);
   if FJava.WindowOpened(FPathname, AForm) then
   begin
-    EditForm := AForm as TFEditForm;
+    EditForm := TFEditForm(AForm);
     FJava.SwitchToWindow(EditForm);
     Line := TInteger(Node.Data).Int;
     IsWrapping := EditForm.Editor.WordWrap;
@@ -124,8 +124,8 @@ procedure TFJUnitTests.TVJUnitTestsMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbRight then
-    PMJUnitTests.Popup(X + (Sender as TTreeView).ClientOrigin.X - 40,
-      Y + (Sender as TTreeView).ClientOrigin.Y - 5);
+    PMJUnitTests.Popup(X + TTreeView(Sender).ClientOrigin.X - 40,
+      Y + TTreeView (Sender).ClientOrigin.Y - 5);
 end;
 
 procedure TFJUnitTests.OpenWindow;

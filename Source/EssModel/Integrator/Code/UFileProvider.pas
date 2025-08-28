@@ -66,65 +66,62 @@ var
   Encoding: TEncoding;
 begin
   Result := nil;
+  if AName = '' then
+    Exit;
   try
-    if AName <> '' then
+    if HasClassExtension(AName) then
     begin
-      if HasClassExtension(AName) then
-      begin
+      FStream := nil;
+      MStream := nil;
+      try
         FStream := TFileStream.Create(AName, fmOpenRead);
+        MStream := TMemoryStream.Create;
+        MStream.CopyFrom(FStream, FStream.Size);
+        MStream.WriteData(#0);
+      finally
+        FStream.Free;
+      end;
+      MStream.Seek(0, soFromBeginning);
+      Result := MStream;
+    end
+    else
+    begin
+      if not Assigned(Form) then
+        EditForm := TFEditForm(FJava.GetTDIWindowType(AName, '%E%'))
+      else
+        EditForm := TFEditForm(Form);
+      if Assigned(EditForm) then
+      begin
+        Source := EditForm.Editor.Text + #0;
+        if Source = #0 then
+          Source := 'null' + #0;
+        Result := TStringStream.Create(Source, TEncoding.Unicode);
+      end
+      else if FileExists(AName) and ValidFilename(AName) then
+      begin
+        // used by ClassInsert
+        Lines:= nil;
+        FStream := nil;
         try
-          MStream := TMemoryStream.Create;
-          MStream.CopyFrom(FStream, FStream.Size);
-          MStream.WriteData(#0);
+          Lines := TStringList.Create;
+          FStream := TFileStream.Create(AName, fmOpenRead or fmShareDenyWrite);
+          Encoding := SynUnicode.GetEncoding(FStream, WithBOM);
+          Lines.LoadFromStream(FStream, Encoding);
+          SStream := TStringStream.Create(Lines.Text + #0,
+            TEncoding.Unicode, True);
+          Result := SStream;
         finally
-          FreeAndNil(FStream);
+          FStream.Free;
+          Lines.Free;
         end;
-        MStream.Seek(0, soFromBeginning);
-        Result := MStream;
       end
       else
-      begin
-        if not Assigned(Form) then
-          EditForm := TFEditForm(FJava.GetTDIWindowType(AName, '%E%'))
-        else
-          EditForm := Form as TFEditForm;
-        if Assigned(EditForm) then
-        begin
-          Source := EditForm.Editor.Text + #0;
-          if Source = #0 then
-            Source := 'null' + #0;
-          Result := TStringStream.Create(Source, TEncoding.Unicode);
-        end
-        else if FileExists(AName) and ValidFilename(AName) then
-        begin
-          // used by ClassInsert
-          Lines := TStringList.Create;
-          FStream := TFileStream.Create(AName, fmOpenRead or
-            fmShareDenyWrite);
-          try
-            try
-              Encoding := SynUnicode.GetEncoding(FStream, WithBOM);
-              Lines.LoadFromStream(FStream, Encoding);
-              SStream := TStringStream.Create(Lines.Text + #0,
-                TEncoding.Unicode, True);
-              Result := SStream;
-            except
-              on E: Exception do
-                ErrorMsg(E.Message);
-            end;
-          finally
-            FreeAndNil(FStream);
-            FreeAndNil(Lines);
-          end;
-        end
-        else
-          // Result:= TStringStream.Create('null' + #0, TEncoding.Unicode)
-          Result := TStringStream.Create('null' + #0);
-      end;
-      Inc(FLoadedCount);
-      AddChangeWatch(AName);
-      AddSearchPath(ExtractFilePath(AName));
+        // Result:= TStringStream.Create('null' + #0, TEncoding.Unicode)
+        Result := TStringStream.Create('null' + #0);
     end;
+    Inc(FLoadedCount);
+    AddChangeWatch(AName);
+    AddSearchPath(ExtractFilePath(AName));
   except
     on E: Exception do
     begin
@@ -148,14 +145,13 @@ begin
         ErrorMsg(E.Message);
     end;
   finally
-    FreeAndNil(FileStream);
+    FileStream.Free;
   end;
 end;
 
 procedure TFileProvider.HookChanges;
 begin
   { TODO : Attach a filesystem listener. }
-
 end;
 
 procedure TFileProvider.UnhookChanges;

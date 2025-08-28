@@ -204,7 +204,7 @@ constructor TAWTComponent.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if AOwner is TFGUIForm then
-    FPartner := (AOwner as TFGUIForm).Partner as TFEditForm;
+    FPartner := TFEditForm(TFGUIForm(AOwner).Partner);
   FDefaultBackground := RGB(238, 238, 238); // EEEEEE  BACKGROUND
   FDefaultForeground := RGB(51, 51, 51); // 333333  FOREGROUND
   FAWTSelectionColor := RGB(51, 153, 255);

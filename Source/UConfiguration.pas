@@ -3311,7 +3311,7 @@ procedure TFConfiguration.MenuAndEditorShortcuts;
     for var I := 0 to FJava.ComponentCount - 1 do
       if FJava.Components[I] is TSpTBXItem then
       begin
-        Menue := (FJava.Components[I] as TSpTBXItem);
+        Menue := TSpTBXItem(FJava.Components[I]);
         if Menue.ShortCut <> 0 then
         begin
           FEditorAndMenuShortcuts.InsertKey(Menue.ShortCut, '', 0, 0, False);
@@ -3350,7 +3350,7 @@ procedure TFConfiguration.MenuAndEditorShortcuts;
       end;
     finally
       if not Assigned(AEditor) then
-        FreeAndNil(Keys);
+        Keys.Free;
     end;
   end;
 
@@ -3751,7 +3751,7 @@ begin
         FTempDir := FTempDirWithUsername;
       end;
     finally
-      FreeAndNil(IniFile);
+      IniFile.Free;
     end;
   end;
 
@@ -4503,12 +4503,13 @@ begin
         FJavaHighlighter.SaveToFile(ExtractFilePath(Str) + '\JEJavaCol.ini');
         FHTMLHighlighter.SaveToFile(ExtractFilePath(Str) + '\JEHTMLCol.ini');
         FUserIniFile := TIniFile.Create(Str);
-        FreeAndNil(AFile);
+        AFile.Free;
       except
         on E: Exception do
           Log('FFirstStartAfterInstallation', E);
       end;
     end;
+
     try
       FUserIniFile := TIniFile.Create(Str);
     except
@@ -7507,7 +7508,9 @@ begin
       TFAbout.GetDate + CrLf;
     Str := Str + '  Java-Version: ' + IntToStr(GetJavaVersion) + CrLf;
     Str := Str + '  Windows-Version: ' + TOSVersion.ToString + CrLf;
+    {$WARN SYMBOL_PLATFORM OFF}
     Str := Str + '  CmdLine: ' + CmdLine + CrLf;
+    {$WARN SYMBOL_PLATFORM ON}
     StringList := TStringList.Create;
     SL1 := TStringList.Create;
     if FUseRegistry then
@@ -8245,7 +8248,7 @@ procedure TFConfiguration.SBOpenClick(Sender: TObject);
 begin
   var
   Str := '';
-  case (Sender as TButton).Tag of
+  case TButton(Sender).Tag of
     4:
       Str := EMindstormsManual.Hint;
     5:
@@ -9695,9 +9698,9 @@ begin
     Wid := WinControl.Width - 16;
   Str1 := GlobalMinimizeName(Str, Canvas, Wid);
   if WinControl is TEdit then
-    (WinControl as TEdit).Text := Str1
+    TEdit(WinControl).Text := Str1
   else
-    (WinControl as TComboBox).Text := Str1;
+    TComboBox(WinControl).Text := Str1;
   Posi := Pos('...', Str1);
   if Posi > 0 then
   begin
@@ -9718,9 +9721,9 @@ var
   Posi: Integer;
 begin
   if WinControl is TEdit then
-    Str := (WinControl as TEdit).Text
+    Str := TEdit(WinControl).Text
   else
-    Str := (WinControl as TComboBox).Text;
+    Str := TComboBox(WinControl).Text;
   Posi := Pos('...', Str);
   if Posi > 0 then
   begin
@@ -9734,17 +9737,13 @@ procedure TFConfiguration.CheckFile(WinControl: TWinControl;
   EmptyAllowed: Boolean);
 var
   Str: string;
-  E: TEdit;
 begin
   Str := ExtendPath(WinControl);
   ShortenPath(WinControl, Str);
   if WinControl is TEdit then
-  begin
-    E := (WinControl as TEdit);
-    E.Color := GetCheckColor(Str, EmptyAllowed);
-  end
+    TEdit(WinControl).Color := GetCheckColor(Str, EmptyAllowed)
   else
-    (WinControl as TComboBox).Color := GetCheckColor(Str, EmptyAllowed);
+    TComboBox(WinControl).Color := GetCheckColor(Str, EmptyAllowed);
   WinControl.Enabled := not FLockedPaths;
 end;
 
@@ -9752,11 +9751,11 @@ procedure TFConfiguration.CheckFileWithoutShortenpath(WinControl: TWinControl;
   EmptyAllowed: Boolean);
 begin
   if WinControl is TEdit then
-    (WinControl as TEdit).Color := GetCheckColor((WinControl as TEdit).Text,
+    TEdit(WinControl).Color := GetCheckColor(TEdit(WinControl).Text,
       EmptyAllowed)
   else
-    (WinControl as TComboBox).Color :=
-      GetCheckColor((WinControl as TComboBox).Text, EmptyAllowed);
+    TComboBox(WinControl).Color :=
+      GetCheckColor(TComboBox(WinControl).Text, EmptyAllowed);
   WinControl.Enabled := not FLockedPaths;
 end;
 
@@ -10288,31 +10287,38 @@ end;
 
 procedure TFConfiguration.Log(const Str: string; E: Exception = nil);
 var
-  AFile: TextFile;
-  DateTime: string;
+  Writer: TStreamWriter;
+  DateTimeStr: string;
+  FS: TFormatSettings;
 begin
-  if FConfiguration.FLogfileExceptionsOK then
-  begin
-    AssignFile(AFile, FConfiguration.FLogfileExceptions);
-    try
-      Append(AFile);
-      DateTimeToString(DateTime, 'ddddd h:n:s.zzz', Now);
-      Writeln(AFile, DateTime + ' ' + GetComputerNetName + ' Version: ' +
-        UDlgAbout.Version);
-      if Assigned(E) then
-      begin
-        Writeln(AFile, '>>> Log silent Exception: ' + Str);
-        Writeln(AFile, 'E.Message: ' + E.Message);
-      end
-      else
-        Writeln(AFile, '>>> Log silent: ' + Str);
-      CloseFile(AFile);
-    except
-      on E: Exception do
-        ErrorMsg(E.Message);
-    end;
+  if not FConfiguration.FLogfileExceptionsOK then
+    Exit;
+
+  FS := TFormatSettings.Create;
+  FS.DecimalSeparator := '.';   // eindeutiges Format
+  FS.TimeSeparator := ':';
+  FS.DateSeparator := '-';
+
+  DateTimeStr := FormatDateTime('yyyy-mm-dd hh:nn:ss.zzz', Now, FS);
+
+  Writer := TStreamWriter.Create(FConfiguration.FLogfileExceptions, True, TEncoding.UTF8);
+  try
+    Writer.WriteLine(DateTimeStr + ' ' + GetComputerNetName +
+      ' Version: ' + UDlgAbout.Version);
+
+    if Assigned(E) then
+    begin
+      Writer.WriteLine('>>> Log silent Exception: ' + Str);
+      Writer.WriteLine('Exception class: ' + E.ClassName);
+      Writer.WriteLine('E.Message: ' + E.Message);
+    end
+    else
+      Writer.WriteLine('>>> Log silent: ' + Str);
+  finally
+    Writer.Free;
   end;
 end;
+
 
 procedure TFConfiguration.SetupLanguages;
 var
@@ -10579,7 +10585,7 @@ begin
   if not TryStrToInt(ELLMTimeout.Text, Value) then
     Value := 20;
   Settings.TimeOut := Value * 1000;
-  Settings.Temperature := StringZuSingle(ELLMTemperature.Text);
+  Settings.Temperature := StringToSingle(ELLMTemperature.Text);
   case CBProvider.ItemIndex of
     0:
       FTempProviders.OpenAI := Settings;
@@ -10670,7 +10676,7 @@ begin
   if not TryStrToInt(EChatTimeout.Text, Value) then
     Value := 20;
   Settings.TimeOut := Value * 1000;
-  Settings.Temperature := StringZuSingle(EChatTemperature.Text);
+  Settings.Temperature := StringToSingle(EChatTemperature.Text);
   case CBChatProvider.ItemIndex of
     0:
       FTempChatProviders.OpenAI := Settings;

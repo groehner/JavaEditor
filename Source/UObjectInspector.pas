@@ -298,7 +298,7 @@ begin
     begin
       Nam := Form.Components[I].Name;
       if Form.Components[I] is TJEComponent then
-        Typ := (Form.Components[I] as TJEComponent).JavaType;
+        Typ := TJEComponent(Form.Components[I]).JavaType;
       if (Nam <> '') and (Typ <> '') then
       begin
         CBObjects.Items.AddObject(Nam + ': ' + Typ, Form.Components[I]);
@@ -331,19 +331,17 @@ end;
 
 procedure TFObjectInspector.SetSelectedObject(Control: TControl);
 begin
-  if not Assigned(Control) then
-  begin
-    CBObjects.ItemIndex := -1;
-    CBObjects.Repaint;
-  end
-  else
+  ELPropertyInspector.Clear;
+  ELEventInspector.Clear;
+  if Assigned(Control) then
   begin
     CBObjects.ItemIndex := CBObjects.Items.IndexOfObject(Control);
-    ELPropertyInspector.Clear;
-    ELEventInspector.Clear;
     ELPropertyInspector.Add(Control);
     ELEventInspector.Add(Control);
-  end;
+  end
+  else
+    CBObjects.ItemIndex := -1;
+  CBObjects.Invalidate;
 end;
 
 procedure TFObjectInspector.CBObjectsChange(Sender: TObject);
@@ -356,7 +354,7 @@ begin
   begin
     Control.BringToFront;
     if Control is TJPanel then
-      (Control as TJPanel).SetTab;
+      TJPanel(Control).SetTab;
     if FGUIDesigner.ELDesigner.Active then
     begin
       FGUIDesigner.ELDesigner.SelectedControls.Clear;
@@ -483,7 +481,7 @@ begin
     Delete(OldName, Pos(':', OldName), Length(OldName));
     Control := Designer.SelectedControls[0];
     NewName := Control.Name;
-    (Control as TJEComponent).Rename(OldName, NewName, AEvents);
+    TJEComponent(Control).Rename(OldName, NewName, AEvents);
     RefreshCB(NewName);
   end
   else
@@ -492,7 +490,7 @@ begin
     begin
       Control := Designer.SelectedControls[I];
       if Control is TJEComponent then
-        JEControl := Control as TJEComponent
+        JEControl := TJEComponent(Control)
       else
         JEControl := nil;
       if ((Caption = 'Width') or (Caption = 'Height') or (Caption = 'X') or
@@ -522,7 +520,7 @@ begin
             OldName := JEControl.Name;
             JEControl.NameFromText;
             NewName := JEControl.Name;
-            (Control as TJEComponent).Rename(OldName, NewName, AEvents);
+            JEControl.Rename(OldName, NewName, AEvents);
             RefreshCB(JEControl.Name);
             UpdatePropertyInspector;
           end;
@@ -661,7 +659,7 @@ var
   Control: TControl;
   JEComponent: TJEComponent;
 
-  procedure setListener(Control: TJEComponent);
+  procedure SetListener(Control: TJEComponent);
   begin
     var
     Event := PropertyItem.Caption;
@@ -706,12 +704,12 @@ begin
   end
   else if Control is TFXNode then
   begin
-    SetListener(Control as TFXNode);
+    SetListener(TFXNode(Control));
     Partner.InsertImport('javafx.scene.input.*');
     Partner.InsertImport('javafx.event.*');
   end
   else if Control is TAWTComponent then
-    SetListener(Control as TAWTComponent);
+    SetListener(TAWTComponent(Control));
   Partner.Editor.EndUpdate;
   ELEventInspector.UpdateItems;
   SetBNewDeleteCaption;
@@ -883,18 +881,18 @@ procedure TFObjectInspector.Add(AObject: TControl);
 begin
   if AObject is TJEComponent then
   begin
-    FEvents := (AObject as TJEComponent).GetEvents(ShowEvents);
-    FAttributes := (AObject as TJEComponent).GetAttributes(ShowAttributes) + '|';
+    FEvents := TJEComponent(AObject).GetEvents(ShowEvents);
+    FAttributes := TJEComponent(AObject).GetAttributes(ShowAttributes) + '|';
   end
   else if AObject is TFXGUIForm then
   begin
-    FEvents := (AObject as TFXGUIForm).GetEvents;
-    FAttributes := (AObject as TFXGUIForm).GetAttributes(ShowAttributes);
+    FEvents := TFXGUIForm(AObject).GetEvents;
+    FAttributes := TFXGUIForm(AObject).GetAttributes(ShowAttributes);
   end
   else if AObject is TFGUIForm then
   begin
-    FEvents := (AObject as TFGUIForm).GetEvents(ShowEvents);
-    FAttributes := (AObject as TFGUIForm).GetAttributes;
+    FEvents := TFGUIForm(AObject).GetEvents(ShowEvents);
+    FAttributes := TFGUIForm(AObject).GetAttributes;
   end;
 end;
 

@@ -1873,7 +1873,7 @@ var Selected, Error: Boolean; WinControl: TWinControl;
 begin
   if not(Sender is TSpTBXPopupMenu) then
     Exit;
-  WinControl := FindVCLWindow((Sender as TSpTBXPopupMenu).PopupPoint);
+  WinControl := FindVCLWindow(TSpTBXPopupMenu(Sender).PopupPoint);
   if Assigned(WinControl) then
     ActiveSubTool := WinControl.Tag
   else
@@ -1964,7 +1964,7 @@ begin
   SGVariables.OnMouseWheelDown := StringGrid1MouseWheelDown;
   SGVariables.OnMouseWheelUp := StringGrid1MouseWheelUp;
   ComJava := TComJava1.Create(UMLForm, FInteractiveEditors.Count);
-  Executer := TInteractiveExecuter.Create(UMLForm as TFUMLForm, IEdit,
+  Executer := TInteractiveExecuter.Create(TFUMLForm(UMLForm), IEdit,
     SGVariables, ComJava);
   Memo := TMemo.Create(Self);
   Memo.Parent := PInteractiveLeft;
@@ -2004,7 +2004,7 @@ procedure TFMessages.LBInteractiveMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   for var I := 0 to FInteractiveEditors.Count - 1 do
-    if GetInteractive(I + 5) = (Sender as TInteractiveEdit) then
+    if GetInteractive(I + 5) = TInteractiveEdit(Sender) then
       ChangeTab(I + 5);
   if CanFocus then
     SetFocus;
@@ -2062,10 +2062,10 @@ begin
   if CanFocus then
     SetFocus;
   if Assigned(FJava.ActiveTDIChild) and (FJava.ActiveTDIChild.FormTag = 2) then
-    UMLForm := FJava.ActiveTDIChild as TFUMLForm
+    UMLForm := TFUMLForm(FJava.ActiveTDIChild)
   else
     UMLForm := FJava.InteractiveUMLForm;
-  (UMLForm.MainModul.Diagram as TRtfdDiagram).CallMain(UnHideBlanks(Classpath),
+  TRtfdDiagram(UMLForm.MainModul.Diagram).CallMain(UnHideBlanks(Classpath),
     Programm, Callparameter);
 end;
 
@@ -2298,7 +2298,7 @@ end;
 procedure TFMessages.StringGrid1MouseWheelDown(Sender: TObject;
   Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
 begin
-  with Sender as TStringGrid do
+  with TStringGrid(Sender) do
   begin
     // top row + displayed rows must not be larger than the total rows
     if TopRow + VisibleRowCount < RowCount then
@@ -2310,7 +2310,7 @@ end;
 procedure TFMessages.StringGrid1MouseWheelUp(Sender: TObject;
   Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
 begin
-  with Sender as TStringGrid do
+  with TStringGrid(Sender) do
     if TopRow > FixedRows then
       TopRow := TopRow - 1;
   Handled := True;

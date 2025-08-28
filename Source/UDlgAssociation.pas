@@ -95,8 +95,8 @@ end;
 procedure TFAssociationDialog.LBAssociationsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
-  var ACaption:=  (Control as TListBox).Items[Index];
-  var ACanvas:= (Control as TListBox).Canvas;
+  var ACaption:=  TListBox(Control).Items[Index];
+  var ACanvas:= TListBox(Control).Canvas;
   ACanvas.FillRect(Rect);
   FILAssociations.Draw(ACanvas, 4, Rect.Top +
                        (Rect.Height - FILAssociations.Height) div 2, Index);

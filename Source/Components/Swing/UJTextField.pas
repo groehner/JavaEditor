@@ -175,9 +175,9 @@ begin
   CanvasFontAssign;
   Canvas.Font.Color := Foreground;
   Str := FText;
-  if (Self is TJPasswordField) then
+  if Self is TJPasswordField then
   begin
-    EchoChar := (Self as TJPasswordField).EchoChar;
+    EchoChar := TJPasswordField(Self).EchoChar;
     if EchoChar <> '' then
       Str := StringOfChar(EchoChar[1], Length(FText));
   end;

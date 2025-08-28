@@ -42,7 +42,7 @@ begin
   FAbortable := Abortable;
   FAbort := False;
   FState := 1;
-  var EditForm := AForm as TFEditForm;
+  var EditForm := TFEditForm(AForm);
   OnTerminate := EditForm.TerminateThread;
   NameThreadForDebugging('ParseThread');
   inherited Create(Not_suspended);
@@ -51,7 +51,7 @@ end;
 procedure TParseThread.Execute;
 begin
   FState := 2;
-  var EditForm := FForm as TFEditForm;
+  var EditForm := TFEditForm(FForm);
   if EditForm.IsJava and EditForm.NeedsParsing then
   begin
     EditForm.Model.Clear;

@@ -450,11 +450,11 @@ begin
         // BeforeChange is triggered when the model will be changed from the root-level.
         mtBeforeChange:
           if Listener.QueryInterface(IBeforeObjectModelListener, Dum) = 0 then
-            (Listener as IBeforeObjectModelListener).Change(nil);
+            IBeforeObjectModelListener(Listener).Change(nil);
           // AfterChange is triggered when the model has been changed from the root-level.
         mtAfterChange:
           if Listener.QueryInterface(IAfterObjectModelListener, Dum) = 0 then
-            (Listener as IAfterObjectModelListener).Change(nil);
+            IAfterObjectModelListener(Listener).Change(nil);
         end;
     end;
 end;
@@ -564,10 +564,10 @@ begin
   Result := nil;
   for var I := 0 to FPackages.Count - 1 do
   begin
-    Package := FPackages[I] as TAbstractPackage;
+    Package := TAbstractPackage(FPackages[I]);
     if Package is TLogicPackage then
     begin
-      Result := (Package as TLogicPackage).FindUnitPackage(PName);
+      Result := TLogicPackage(Package).FindUnitPackage(PName);
       if Assigned(Result) then
         Exit;
     end
@@ -575,7 +575,7 @@ begin
     begin
       if Compare(Package.Name, PName) = 0 then
       begin
-        Result := Package as TUnitPackage;
+        Result := TUnitPackage(Package);
         Exit;
       end;
     end;
@@ -606,7 +606,7 @@ var
       var
       Package := Ite.Next;
       if Package is TLogicPackage then
-        InAddNested(Package as TLogicPackage)
+        InAddNested(TLogicPackage(Package))
       else // Not logicpackage, must be unitpackage.
         if (Package.Name <> UNKNOWNPACKAGE_NAME) then
           List.Add(Package);
@@ -624,7 +624,7 @@ begin
     end;
     Result := TModelIterator.Create(List, True);
   finally
-    FreeAndNil(List);
+    List.Free;
   end;
 end;
 
@@ -639,13 +639,13 @@ begin
     Pmi := GetAllUnitPackages;
     while Pmi.HasNext do
     begin
-      Cmi := (Pmi.Next as TUnitPackage).GetClassifiers;
+      Cmi := TUnitPackage(Pmi.Next).GetClassifiers;
       while Cmi.HasNext do
         List.Add(Cmi.Next);
     end;
     Result := TModelIterator.Create(List, True);
   finally
-    FreeAndNil(List);
+    List.Free;
   end;
 end;
 
@@ -666,7 +666,7 @@ begin
   PIte := GetAllUnitPackages;
   while PIte.HasNext do
   begin
-    StringList.Add((PIte.Next as TUnitPackage).Name);
+    StringList.Add(TUnitPackage(PIte.Next).Name);
   end;
   StringList.Add('');
   StringList.Add('Classes');
@@ -677,20 +677,20 @@ begin
     Inc(Int);
     StringList.Add('#' + IntToStr(Int) + ' ' + Cent.Name + ' - ' + Cent.Importname +
       ' - ' + Cent.FPathname);
-    if (Cent is TClass) and Assigned((Cent as TClass).Ancestor) then
-      StringList.Add('Ancestor: ' + (Cent as TClass).Ancestor.Name);
+    if (Cent is TClass) and Assigned(TClass(Cent).Ancestor) then
+      StringList.Add('Ancestor: ' + TClass(Cent).Ancestor.Name);
     StringList.Add('--- Attributes ---');
     AIte := Cent.GetAllAttributes;
     while AIte.HasNext do
     begin
-      Attribute := AIte.Next as TAttribute;
+      Attribute := TAttribute(AIte.Next);
       StringList.Add(Attribute.ToTypeName);
     end;
     StringList.Add('--- Operations ---');
     OIte := Cent.GetOperations;
     while OIte.HasNext do
     begin
-      Operation := OIte.Next as TOperation;
+      Operation := TOperation(OIte.Next);
       StringList.Add(Operation.ToJava);
     end;
     StringList.Add('-------------------------');
@@ -733,10 +733,10 @@ begin
   begin
     AClass := TClass.Create(Self);
     AClass.Name := NewName; // sets package too
-    AddClass(AClass as TClass);
+    AddClass(TClass(AClass));
   end;
   AClass.FPathname := Filename;
-  Result := (AClass as TClass);
+  Result := TClass(AClass);
 end;
 
 procedure TUnitPackage.AddClass(const AClass: TClass);
@@ -798,8 +798,7 @@ begin
   try
     Result := GetObjekt(NewName, AClass.Name);
   except
-    Result := nil;
-    Exit;
+    Exit(nil);
   end;
   if not Assigned(Result) then
   begin
@@ -828,20 +827,20 @@ begin
   try
     while Ite.HasNext do
     begin
-      AClassifier := Ite.Next as TClassifier;
+      AClassifier := TClassifier(Ite.Next);
       if (AClassifier is TObjekt) then
       begin
-        AObjekt := (AClassifier as TObjekt);
+        AObjekt := TObjekt(AClassifier);
         if (AClassifier.Name = AName) and
           (GetShortType(AObjekt.FClass.Name) = Typ) then
         begin
-          Result := (AClassifier as TObjekt);
+          Result := TObjekt(AClassifier);
           Break;
         end;
       end;
     end;
   finally
-    FreeAndNil(Ite);
+    Ite.Free;
   end;
 end;
 
@@ -854,13 +853,13 @@ begin
     while Ite.HasNext do
     begin
       var
-      AClassifier := Ite.Next as TClassifier;
+      AClassifier := TClassifier(Ite.Next);
       if (AClassifier is TObjekt) and
-        (GetShortType((AClassifier as TObjekt).FClass.Name) = Typ) then
-        Result.AddObject((AClassifier as TObjekt).FName, AClassifier);
+        (GetShortType(TObjekt(AClassifier).FClass.Name) = Typ) then
+        Result.AddObject(TObjekt(AClassifier).FName, AClassifier);
     end;
   finally
-    FreeAndNil(Ite);
+    Ite.Free;
   end;
 end;
 
@@ -874,12 +873,12 @@ begin
       while Ite.HasNext do
       begin
         var
-        AClassifier := Ite.Next as TClassifier;
+        AClassifier := TClassifier(Ite.Next);
         if AClassifier is TObjekt then
-          Result.AddObject((AClassifier as TObjekt).FName, AClassifier);
+          Result.AddObject(TObjekt(AClassifier).FName, AClassifier);
       end;
     finally
-      FreeAndNil(Ite);
+      Ite.Free;
     end;
   except
     on E: Exception do
@@ -952,7 +951,7 @@ var
       Exit;
     while MIte.HasNext do
     begin
-      Classi := MIte.Next as TClassifier;
+      Classi := TClassifier(MIte.Next);
       if Compare(Classi.Name, CName) = 0 then
       begin
         Result := Classi;
@@ -973,7 +972,7 @@ begin
       MIte := GetUnitDependencies;
       while MIte.HasNext do
       begin
-        Package := (MIte.Next as TUnitDependency).MyPackage;
+        Package := TUnitDependency(MIte.Next).MyPackage;
         Result := InFind(Package);
         if Assigned(Result) then
           Break;
@@ -993,7 +992,7 @@ begin
   while MIte.HasNext do
   begin
     var
-    Classi := MIte.Next as TClassifier;
+    Classi := TClassifier(MIte.Next);
     if Classi.FPathname = FPathname then
     begin
       Result := Classi;
@@ -1048,20 +1047,20 @@ begin
     AIte := Cent.GetAllAttributes;
     while AIte.HasNext do
     begin
-      Attribute := AIte.Next as TAttribute;
+      Attribute := TAttribute(AIte.Next);
       StringList.Add(Attribute.ToTypeName);
     end;
     StringList.Add('--- Operations ---');
     OIte := Cent.GetOperations;
     while OIte.HasNext do
     begin
-      Operation := OIte.Next as TOperation;
+      Operation := TOperation(OIte.Next);
       StringList.Add(Operation.ToJava);
     end;
     StringList.Add('-------------------------');
   end;
   Result := StringList.Text;
-  FreeAndNil(StringList);
+  StringList.Free;
 end;
 
 { TClass }
@@ -1080,30 +1079,28 @@ begin
   begin
     Fire(mtBeforeRemove);
   end;
-  FreeAndNil(FImplements);
+  FImplements.Free;
   inherited;
 end;
 
 function TClass.AddAttribute(const NewName: string; TypeClass: TClassifier)
   : TAttribute;
 begin
-  if Assigned(TypeClass) then
-    Result := FindAttribute(NewName, TypeClass.Name)
-  else
-    Result := nil;
-  if not Assigned(Result) then
-  begin
-    Result := TAttribute.Create(Self);
-    Result.FTypeClassifier := TypeClass;
-    Result.FName := NewName;
-    FFeatures.Add(Result);
-    try
-      Fire(mtBeforeAddChild, Result);
-    except
-      FFeatures.Remove(Result);
-    end;
-    Fire(mtAfterAddChild, Result);
+  if Assigned(TypeClass) then begin
+    Result := FindAttribute(NewName, TypeClass.Name);
+    if Assigned(Result) then
+      Exit;
   end;
+  Result := TAttribute.Create(Self);
+  Result.FTypeClassifier := TypeClass;
+  Result.FName := NewName;
+  FFeatures.Add(Result);
+  try
+    Fire(mtBeforeAddChild, Result);
+  except
+    FFeatures.Remove(Result);
+  end;
+  Fire(mtAfterAddChild, Result);
 end;
 
 function TClass.AddProperty(const NewName: string): TProperty;
@@ -1228,7 +1225,7 @@ end;
 // Returns a list of classes that inherits from this class.
 function TClass.GetDescendants: IModelIterator;
 begin
-  Result := TModelIterator.Create((Root as TLogicPackage).GetAllClassifiers,
+  Result := TModelIterator.Create(TLogicPackage(Root).GetAllClassifiers,
     TClassDescendantFilter.Create(Self));
 end;
 
@@ -1245,7 +1242,7 @@ begin
   MIte := GetOperations;
   while MIte.HasNext do
   begin
-    Operation2 := MIte.Next as TOperation;
+    Operation2 := TOperation(MIte.Next);
     // Compare nr of parameters
     if Operation.FParameters.Count <> Operation2.FParameters.Count then
       Continue;
@@ -1257,7 +1254,7 @@ begin
     Omi2 := Operation2.GetParameters;
     var Okay:= True;
     while Okay and Omi1.HasNext do
-      if CompareText((Omi1.Next as TParameter).Name, (Omi2.Next as TParameter).Name) <> 0 then
+      if CompareText(TParameter(Omi1.Next).Name, TParameter(Omi2.Next).Name) <> 0 then
         Okay:= False;
     if not Okay then
       Continue;
@@ -1278,7 +1275,7 @@ begin
   while MIte.HasNext do
   begin
     var
-    Attribute := MIte.Next as TAttribute;
+    Attribute := TAttribute(MIte.Next);
     if (CompareText(Name, Attribute.Name) = 0) and
       (CompareText(AType, Attribute.TypeClassifier.Name) = 0) then
       Exit(Attribute);
@@ -1327,7 +1324,7 @@ begin
   for var I := 0 to FFeatures.Count - 1 do
   begin
     var
-    Attribute := FFeatures[I] as TAttribute;
+    Attribute := TAttribute(FFeatures[I]);
     if Attribute.Name = NewName then
     begin
       Result := Attribute;
@@ -1403,15 +1400,15 @@ end;
 
 destructor TOperation.Destroy;
 begin
-  FreeAndNil(FParameters);
-  FreeAndNil(FAttributes);
+  FParameters.Free;
+  FAttributes.Free;
   // FreeAndNil(FReturnValue); FReturnValues belongs to FUnit.
   inherited;
 end;
 
 procedure TOperation.NewParameters;
 begin
-  FreeAndNil(FParameters);
+  FParameters.Free;
   FParameters := TObjectList.Create(True);
 end;
 
@@ -1507,7 +1504,7 @@ begin
   It2 := GetParameters;
   while It2.HasNext do
   begin
-    Parameter := It2.Next as TParameter;
+    Parameter := TParameter(It2.Next);
     if Assigned(Parameter.TypeClassifier) then
       Str := Str + Parameter.TypeClassifier.GetShortType + ' ' +
         Parameter.Name + ', ';
@@ -1535,7 +1532,7 @@ begin
   It2 := GetParameters;
   while It2.HasNext do
   begin
-    Parameter := It2.Next as TParameter;
+    Parameter := TParameter(It2.Next);
     if Assigned(Parameter.TypeClassifier) then
       Str := Str + Parameter.Name + ': ' +
         Parameter.TypeClassifier.GetShortType + ', ';
@@ -1582,7 +1579,7 @@ begin
   It2 := GetParameters;
   while It2.HasNext do
   begin
-    Parameter := It2.Next as TParameter;
+    Parameter := TParameter(It2.Next);
     if Assigned(Parameter.TypeClassifier) then
       Str := Str + Parameter.TypeClassifier.GetShortType + ', ';
   end;
@@ -1606,7 +1603,7 @@ begin
   while Ite.HasNext do
   begin
     var
-    Attribute := Ite.Next as TAttribute;
+    Attribute := TAttribute(Ite.Next);
     if (Attribute.LineE = 0) and (Attribute.ScopeDepth = ScopeDepth) then
       Attribute.LineE := LineE;
   end;
@@ -1919,7 +1916,7 @@ end;
 // Returns a list of classes that implements this interface.
 function TInterface.GetImplementingClasses: IModelIterator;
 begin
-  Result := TModelIterator.Create((Root as TLogicPackage).GetAllClassifiers,
+  Result := TModelIterator.Create(TLogicPackage(Root).GetAllClassifiers,
     TInterfaceImplementsFilter.Create(Self));
 end;
 
@@ -1934,7 +1931,7 @@ begin
   while MIte.HasNext do
   begin
     var
-    Attribute := MIte.Next as TAttribute;
+    Attribute := TAttribute(MIte.Next);
     if (CompareText(Name, Attribute.Name) = 0) and
       (CompareText(AType, Attribute.TypeClassifier.Name) = 0) then
       Exit(Attribute);
@@ -1950,7 +1947,7 @@ begin
   MIte := GetOperations;
   while MIte.HasNext do
   begin
-    Operation2 := MIte.Next as TOperation;
+    Operation2 := TOperation(MIte.Next);
     // Compare nr of parameters
     if Operation.FParameters.Count <> Operation2.FParameters.Count then
       Continue;
@@ -1962,7 +1959,7 @@ begin
     Omi2 := Operation2.GetParameters;
     var Okay:= True;
     while Okay and Omi1.HasNext do
-      if CompareText((Omi1.Next as TParameter).Name, (Omi2.Next as TParameter).Name) <> 0 then
+      if CompareText(TParameter(Omi1.Next).Name, TParameter(Omi2.Next).Name) <> 0 then
         Okay:= False;
     if not Okay then
       Continue;
@@ -2020,7 +2017,7 @@ function TAbstractPackage.GetConfigFile: string;
 begin
   Result := FConfigFile;
   if (Result = '') and Assigned(FOwner) then
-    Result := (Owner as TAbstractPackage).GetConfigFile;
+    Result := TAbstractPackage(FOwner).GetConfigFile;
 end;
 
 procedure TAbstractPackage.SetConfigFile(const Value: string);
@@ -2040,7 +2037,7 @@ end;
 // Returns true if M inherits from ancestor
 function TClassDescendantFilter.Accept(Model: TModelEntity): Boolean;
 begin
-  Result := (Model is TClass) and ((Model as TClass).FAncestor = FAncestor);
+  Result := (Model is TClass) and (TClass(Model).FAncestor = FAncestor);
 end;
 
 { TInterfaceImplementsFilter }
@@ -2054,7 +2051,7 @@ end;
 // Returns true if M implements interface Int
 function TInterfaceImplementsFilter.Accept(Model: TModelEntity): Boolean;
 begin
-  Result := (Model is TClass) and ((Model as TClass).FImplements.IndexOf(FIntf) <> -1);
+  Result := (Model is TClass) and (TClass(Model).FImplements.IndexOf(FIntf) <> -1);
 end;
 
 var

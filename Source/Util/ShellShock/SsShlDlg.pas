@@ -663,7 +663,7 @@ end;
 destructor TStCustomShellNavigator.Destroy;
 begin
   if Assigned(FListView) and not (csDestroying in ComponentState) then
-    with FListView as TStShellListView do begin
+    with TStShellListView(FListView) do begin
       ComboBox := nil;
       if Length(RootFolder) <> 0 then
         RootFolder := '';
@@ -684,7 +684,7 @@ begin
   Caption := '';
   if not (csLoading in ComponentState) then begin
     Layout;
-    if FShellComboBox.ListView <> nil then
+    if Assigned(FShellComboBox.ListView) then
       FShellComboBox.DoClick;
   end;
 end;
@@ -694,7 +694,7 @@ begin
   inherited;
   if not (csLoading in ComponentState) then begin
     Layout;
-    if FShellComboBox.ListView <> nil then
+    if Assigned(FShellComboBox.ListView) then
       FShellComboBox.DoClick;
   end;
 end;
@@ -721,7 +721,7 @@ begin
     { because we are now assured that all components are created,    }
     { loaded, and hooked up by this point. }
     if Msg = MSG_DOINIT then
-      if FShellComboBox.ListView <> nil then begin
+      if Assigned(FShellComboBox.ListView) then begin
         if FShellComboBox.ItemIndex = -1 then
           FShellComboBox.ItemIndex := 0;
         FShellComboBox.DoClick;
@@ -764,7 +764,7 @@ begin
   if Value = FListView then
     Exit;
   FListView := Value;
-  if (FShellComboBox <> nil) and (Value <> nil) then begin
+  if Assigned(FShellComboBox) and Assigned(Value) then begin
     FShellComboBox.ListView := Value;
     TStShellListView(FListView).ComboBox := FShellComboBox;
     TStShellListView(FListView).OpenDialogMode := True;
@@ -1017,7 +1017,7 @@ var
   SF : TStShellFolder;
 begin
   DefaultAction := True;
-  LV := FShellComboBox.ListView as TStShellListView;
+  LV := TStShellListView(FShellComboBox.ListView);
   if Sender = FBackButton then begin
     if Assigned(FOnButtonClick) then
       FOnButtonClick(Self, nbBack, DefaultAction);
@@ -1025,7 +1025,7 @@ begin
       { Load last folder in list and delete it from list. }
       if RecentFoldersList.Count > 0 then begin
         SF := TStShellFolder(RecentFoldersList[RecentFoldersList.Count - 1]);
-        if (LV <> nil) then
+        if Assigned(LV) then
           LV.LoadFolder(SF)
         else
           FShellComboBox.ItemIndex :=
@@ -1039,10 +1039,10 @@ begin
   if Sender = FMoveUpButton then begin
     if Assigned(FOnButtonClick) then
       FOnButtonClick(Self, nbMoveUp, DefaultAction);
-    if (DefaultAction) then begin
-      if (LV <> nil) then begin
+    if DefaultAction then begin
+      if Assigned(LV) then begin
         LV.MoveUpOneLevel;
-        if (LV.Folder.IsDesktop) then
+        if LV.Folder.IsDesktop then
           FMoveUpButton.Enabled := False;
       end;
     end;
@@ -1050,19 +1050,19 @@ begin
   if Sender = FNewFolderButton then begin
     if Assigned(FOnButtonClick) then
       FOnButtonClick(Self, nbNewFolder, DefaultAction);
-    if (LV <> nil) and (DefaultAction) then
+    if Assigned(LV) and DefaultAction then
       LV.AddFolder('');
   end;
   if Sender = FListButton then begin
     if Assigned(FOnButtonClick) then
       FOnButtonClick(Self, nbList, DefaultAction);
-    if (LV <> nil) and (DefaultAction) then
+    if Assigned(LV) and DefaultAction then
       LV.ViewStyle := vsList;
   end;
   if Sender = FDetailsButton then begin
     if Assigned(FOnButtonClick) then
       FOnButtonClick(Self, nbMoveUp, DefaultAction);
-    if (LV <> nil) and (DefaultAction) then
+    if Assigned(LV) and DefaultAction then
       LV.ViewStyle := vsReport;
   end;
 end;
@@ -1076,9 +1076,9 @@ begin
     if Assigned(FOnViewStyleChanging) then
       FOnViewStyleChanging(Self, vsReport, DefaultAction);
     if DefaultAction then begin
-      with FShellComboBox.ListView as TStShellListView do
+      with TStShellListView(FShellComboBox.ListView) do
         ViewStyle := vsReport;
-      with Sender as TMenuItem do
+      with TMenuItem(Sender) do
         Checked := True;
     end;
   end;
@@ -1094,9 +1094,9 @@ begin
     if Assigned(FOnViewStyleChanging) then
       FOnViewStyleChanging(Self, vsIcon, DefaultAction);
     if DefaultAction then begin
-      with FShellComboBox.ListView as TStShellListView do
+      with TStShellListView(FShellComboBox.ListView) do
         ViewStyle := vsIcon;
-      with Sender as TMenuItem do
+      with TMenuItem(Sender) do
         Checked := True;
     end;
   end;
@@ -1112,9 +1112,9 @@ begin
     if Assigned(FOnViewStyleChanging) then
       FOnViewStyleChanging(Self, vsList, DefaultAction);
     if DefaultAction then begin
-      with FShellComboBox.ListView as TStShellListView do
+      with TStShellListView(FShellComboBox.ListView) do
         ViewStyle := vsList;
-      with Sender as TMenuItem do
+      with TMenuItem(Sender) do
         Checked := True;
     end;
   end;
@@ -1130,9 +1130,9 @@ begin
     if Assigned(FOnViewStyleChanging) then
       FOnViewStyleChanging(Self, vsSmallIcon, DefaultAction);
     if DefaultAction then begin
-      with FShellComboBox.ListView as TStShellListView do
+      with TStShellListView(FShellComboBox.ListView) do
         ViewStyle := vsSmallIcon;
-      with Sender as TMenuItem do
+      with TMenuItem(Sender) do
         Checked := True;
     end;
   end;
@@ -1193,13 +1193,13 @@ end;
 
 procedure TSsMenuButton.Click;
 var
-  Posi : TPoint;
+  APoint : TPoint;
 begin
-  if PopupMenu <> nil then begin
-    Posi := Point(0, Height);
-    Posi := ClientToScreen(Posi);
+  if Assigned(PopupMenu) then begin
+    APoint := Point(0, Height);
+    APoint := ClientToScreen(APoint);
     PopupMenu.PopupComponent := Self;
-    PopupMenu.Popup(Posi.X, Posi.Y);
+    PopupMenu.Popup(APoint.X, APoint.Y);
   end;
   inherited Click;
 end;
@@ -1279,10 +1279,8 @@ begin
           G.AddMasked(B, B.Canvas.Pixels[0,0]);
           X := (Width - G.Width) shr 1;
           Y := (Height - G.Height) shr 1;
-
           if mbState = bsDown then
             Inc(Y);
-
           G.Draw(Canvas, X, Y, 0)
         finally
           G.Free;
@@ -1405,7 +1403,7 @@ begin
   FNavigator.ListView := FListView;
 
   { Create the remaining controls from the bottom up so that they }
-  { maintain their positions when the panel is resized. }
+  { maintain their Pointtions when the panel is resized. }
   with FCancelButton do begin
     Top := Self.Height - 32;
     Left := FListView.Left + FListView.Width - 83;
@@ -1502,7 +1500,7 @@ begin
       if Assigned(FParentForm) then
         FParentForm.ModalResult := mrCancel
       else if Parent is TForm then
-        with Parent as TForm do
+        with TForm(Parent) do
           ModalResult := mrCancel
       else
         Screen.ActiveForm.ModalResult := mrCancel;
@@ -1512,7 +1510,7 @@ end;
 
 procedure TStCustomDialogPanel.DoComboBoxChange;
 begin
-  if (FilterList.Count <> 0) and (FListView <> nil) then begin
+  if (FilterList.Count <> 0) and Assigned(FListView) then begin
     FListView.FileFilter := FilterList.Strings[FFileTypeComboBox.ItemIndex];
     FListView.Filtered := True;
   end;
@@ -1636,7 +1634,7 @@ begin
         FParentForm.ModalResult := mrOk;
         Exit;
       end else if Parent is TForm then
-        with Parent as TForm do begin
+        with TForm(Parent) do begin
           ModalResult := mrOk;
           Exit;
         end
@@ -1696,7 +1694,7 @@ end;
 
 procedure TStCustomDialogPanel.SetFilter(Value : string);
 var
-  Posi : Integer;
+  Point : Integer;
   Str : string;
   FilterStr : string;
 begin
@@ -1711,20 +1709,20 @@ begin
 
   { Parse the string and add to the combo box. }
   FFileTypeComboBox.Items.Clear;
-  Posi := Pos('|', FilterStr);
-  while Posi <> 0 do begin
-    Str := Copy(FilterStr, 1, Posi - 1);
+  Point := Pos('|', FilterStr);
+  while Point <> 0 do begin
+    Str := Copy(FilterStr, 1, Point - 1);
     FFileTypeComboBox.Items.Add(Str);
-    Delete(FilterStr, 1, Posi);
-    Posi := Pos('|', FilterStr);
-    if Posi = 0 then
+    Delete(FilterStr, 1, Point);
+    Point := Pos('|', FilterStr);
+    if Point = 0 then
       FilterList.Add(FilterStr)
     else begin
-      Str := Copy(FilterStr, 1, Posi - 1);
+      Str := Copy(FilterStr, 1, Point - 1);
       FilterList.Add(Str);
-      Delete(FilterStr, 1, Posi);
+      Delete(FilterStr, 1, Point);
     end;
-    Posi := Pos('|', FilterStr);
+    Point := Pos('|', FilterStr);
   end;
   FFileTypeComboBox.ItemIndex := 0;
 
@@ -1782,11 +1780,9 @@ begin
   { Find out which button was clicked. }
   case ButtonType of
     btOpen :
-      with Parent as TStCustomDialogPanel do
-        DoOpenButtonClick;
+      TStCustomDialogPanel(Parent).DoOpenButtonClick;
     btCancel :
-      with Parent as TStCustomDialogPanel do
-        DoCancelButtonClick;
+      TStCustomDialogPanel(Parent).DoCancelButtonClick;
   end;
 end;
 
@@ -1803,8 +1799,7 @@ end;
 procedure TSsComboBox.Change;
 begin
   inherited;
-  with Parent as TStCustomDialogPanel do
-    DoComboBoxChange;
+  TStCustomDialogPanel(Parent).DoComboBoxChange;
 end;
 
 { TSsShellListView }
@@ -1812,14 +1807,12 @@ end;
 procedure TSsShellListView.Click;
 begin
   inherited;
-  with Parent as TStCustomDialogPanel do
-    DoListViewClick;
+  TStCustomDialogPanel(Parent).DoListViewClick;
 end;
 
 procedure TSsShellListView.DblClick;
 begin
-  with Parent as TStCustomDialogPanel do
-    DoListViewDblClick;
+  TStCustomDialogPanel(Parent).DoListViewDblClick;
   inherited;
 end;
 
@@ -1831,10 +1824,10 @@ var
   NV : TStShellNavigator;
 begin
   inherited;
-  LV := ListView as TStShellListView;
-  NV := Parent as TStShellNavigator;
-  if (LV <> nil) and (NV <> nil) then
-    if LV.Folder <> nil then
+  LV := TStShellListView(ListView);
+  NV := TStShellNavigator(Parent);
+  if Assigned(LV) and Assigned(NV) then
+    if Assigned(LV.Folder) then
       NV.MoveUpButton.Enabled := not LV.Folder.IsDesktop;
 end;
 
@@ -1847,17 +1840,17 @@ begin
   inherited;
   if (csDesigning in ComponentState) then
     Exit;
-  NV := Parent as TStShellNavigator;
-  if (NV <> nil) and (SF <> nil) then begin
+  NV := TStShellNavigator(Parent);
+  if Assigned(NV) and Assigned(SF) then begin
     Folder := TStShellFolder.Create(nil);
     Folder.Assign(SF);
     NV.RecentFoldersList.Add(Folder);
   end;
-  LV := ListView as TStShellListView;
-  if (LV <> nil) and (NV <> nil) then
-    if LV.Folder <> nil then
+  LV := TStShellListView(ListView);
+  if Assigned(LV) and Assigned(NV) then
+    if Assigned(LV.Folder) then
       NV.MoveUpButton.Enabled := not LV.Folder.IsDesktop;
-  if NV <> nil then
+  if Assigned(NV) then
     NV.BackButton.Enabled := (NV.RecentFoldersList.Count > 0);
 end;
 

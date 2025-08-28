@@ -336,7 +336,7 @@ end;
 function TModelEntity.GetRoot: TModelEntity;
 begin
   Result := Self;
-  while Result.Owner<>nil do
+  while Assigned(Result.Owner) do
     Result := Result.Owner;
 end;
 

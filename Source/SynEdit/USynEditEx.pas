@@ -160,12 +160,12 @@ end;
 
 procedure TErrorPlugin.LinesInserted(FirstLine, Count: Integer);
 begin
-  (Editor as TSynEditEx).LinesInserted(FirstLine, Count);
+  TSynEditEx(Editor).LinesInserted(FirstLine, Count);
 end;
 
 procedure TErrorPlugin.LinesDeleted(FirstLine, Count: Integer);
 begin
-  (Editor as TSynEditEx).LinesDeleted(FirstLine, Count);
+  TSynEditEx(Editor).LinesDeleted(FirstLine, Count);
 end;
 
 { TSynEditEx }

@@ -954,7 +954,7 @@ begin
                 Str := DragRec.Source;
                 IsDockOp := Str is TDragDockObject;
                 if not IsDockOp then
-                  Str := (Str as TDragControlObject).Control;
+                  Str := TDragControlObject(Str).Control;
                 if Str <> nil then
                   with LTarget.ScreenToClient(DragRec.Pos) do
                     case DragMessage of
@@ -1395,7 +1395,7 @@ begin
           begin
             if (htControl in FDesigner.ShowingHints) and (Sender is TJEComponent) then
             begin
-              LS := Sender.Name + ': ' + (Sender as TJEComponent).JavaType + #13#10;
+              LS := Sender.Name + ': ' + TJEComponent(Sender).JavaType + #13#10;
               LS := LS + _('Position') + ': ' + IntToStr(Sender.PPIUnScale(Sender.Left)) +
                                          ', ' + IntToStr(Sender.PPIUnScale(Sender.Top)) + #13#10;
               LS := LS + _('Size') + ': ' + IntToStr(Sender.PPIUnScale(Sender.Width)) +
@@ -2220,9 +2220,9 @@ begin
         try
           with LInsertingControl do
           begin
-            Name := UniqueName((LInsertingControl as TJEComponent).Tag2JavaType(Tag));
+            Name := UniqueName(TJEComponent(LInsertingControl).Tag2JavaType(Tag));
             if (abs(FCanvas.WinControl.Tag) = 11) and
-              (LInsertingControl as TJEComponent).hasScrollPane then
+              TJEComponent(LInsertingControl).hasScrollPane then
               Parent := FRoot
             else
               Parent := FCanvas.WinControl;

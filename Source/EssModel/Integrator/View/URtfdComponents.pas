@@ -543,9 +543,9 @@ begin
   if IsClassOrInterface then
   begin
     if Self is TRtfdClass then
-      Pathname := (Self as TRtfdClass).FPathname
+      Pathname := TRtfdClass(Self).FPathname
     else
-      Pathname := (Self as TRtfdInterface).FPathname;
+      Pathname := TRtfdInterface(Self).FPathname;
     if HasClassExtension(Pathname) then
     begin
       Str := ChangeFileExt(Pathname, '.java');
@@ -673,7 +673,7 @@ begin
       if (Int < ComponentCount) and (Components[Int] is TRtfdSeparator) then
       begin
         Separator := Separator + TopH - 1 +
-          (Components[Int] as TRtfdSeparator).Height;
+          TRtfdSeparator(Components[Int]).Height;
         MoveTo(Rect1.Left, Separator);
         LineTo(Rect1.Right - Shadow, Separator);
       end;
@@ -741,26 +741,26 @@ begin
   begin
     if Controls[I] is TRtfdCustomLabel then
     begin
-      CustomLabel := Controls[I] as TRtfdCustomLabel;
+      CustomLabel := TRtfdCustomLabel(Controls[I]);
       Str := Str + CustomLabel.GetSVG(ARect); // BoundsRect
     end;
     if Controls[I] is TRtfdSeparator then
     begin
-      Separator := Controls[I] as TRtfdSeparator;
+      Separator := TRtfdSeparator(Controls[I]);
       Str := Str + Separator.GetSVG(ARect);
     end;
   end;
   Result := Str + '</g>'#13#10;
 
   if (Controls[0] is TRtfdClassName) and
-    ((Controls[0] as TRtfdClassName).FTypeAndBinding <> '') then
+    (TRtfdClassName(Controls[0]).FTypeAndBinding <> '') then
   begin
     Str := '<g id="' + ConvertLtGt(FEntity.Name + '1') +
       '" transform="translate(' + IntToStr(Left) + ', ' + IntToStr(Top) +
       ')" font-family="' + Font.Name + '" font-size=' +
       IntToVal(Round(Font.Size * 1.3)) + '>'#13#10;
     Result := Result + Str;
-    Result := Result + (Controls[0] as TRtfdClassName)
+    Result := Result + TRtfdClassName(Controls[0])
       .GetSVGTypeAndBinding(ARect);
     Result := Result + '</g>'#13#10;
   end;
@@ -932,7 +932,7 @@ begin
   begin
     Selected := False;
     FETypeBinding := TEdit.Create(Owner);
-    FETypeBinding.Parent := (Owner as TCustomPanel);
+    FETypeBinding.Parent := TCustomPanel(Owner);
     FETypeBinding.OnKeyUp := OnEditKeyUp;
     FETypeBinding.Visible := True;
     FETypeBinding.Text := FTypeParameter + ': ' + FTypeBinding;
@@ -971,7 +971,7 @@ end;
 function TRtfdBox.IsJUnitTestclass: Boolean;
 begin
   if FEntity is TClass then
-    Result := (FEntity as TClass).IsJUnitTestClass
+    Result := TClass(FEntity).IsJUnitTestClass
   else
     Result := False;
 end;
@@ -1024,7 +1024,7 @@ constructor TRtfdClass.Create(Owner: TComponent; Entity: TModelEntity;
 begin
   inherited Create(Owner, Entity, Frame, MinVisibility);
   FShowStatic := True;
-  FPathname := (Entity as TClass).Pathname;
+  FPathname := TClass(Entity).Pathname;
   PopupMenu := Frame.PopMenuClass;
   Entity.AddListener(IAfterClassListener(Self));
   FShowParameter := FConfiguration.DiShowParameter;
@@ -1071,7 +1071,7 @@ begin
   NeedW := CDefaultWidth;
   NeedH := 2 * BorderWidth + 2;
 
-  if (FEntity is TClass) and (FEntity as TClass).IsJUnitTestClass then
+  if (FEntity is TClass) and TClass(FEntity).IsJUnitTestClass then
   begin
     Stereotype := TRtfdStereotype.Create(Self, nil, 'JUnit Testclass');
     Inc(NeedH, Stereotype.Height);
@@ -1086,7 +1086,7 @@ begin
   Inc(NeedH, AClassname.Height);
 
   // Get names in visibility order
-  AClass := FEntity as TClass;
+  AClass := TClass(FEntity);
   if FMinVisibility > Low(TVisibility) then
   begin
     Ami := TModelIterator.Create(AClass.GetAttributes, TAttribute,
@@ -1193,14 +1193,14 @@ begin
   begin
     if Controls[I] is TRtfdCustomLabel then
     begin
-      CustomLabel := Controls[I] as TRtfdCustomLabel;
+      CustomLabel := TRtfdCustomLabel(Controls[I]);
       ARect := CustomLabel.BoundsRect;
       Str := Str + IntToStr(ARect.Left) + '-' + IntToStr(ARect.Top) + '-' +
         IntToStr(ARect.Width) + '-' + IntToStr(ARect.Height) + #13#10;
     end;
     if Controls[I] is TRtfdSeparator then
     begin
-      Separator := Controls[I] as TRtfdSeparator;
+      Separator := TRtfdSeparator(Controls[I]);
       ARect := Separator.BoundsRect;
       Str := Str + IntToStr(ARect.Left) + '-' + IntToStr(ARect.Top) + '-' +
         IntToStr(ARect.Width) + '-' + IntToStr(ARect.Height) + #13#10;
@@ -1241,7 +1241,7 @@ end;
 
 function TRtfdObject.GetClassname: string;
 begin
-  Result := (FEntity as TObjekt).GetTyp.Name;
+  Result := TObjekt(FEntity).GetTyp.Name;
 end;
 
 procedure TRtfdObject.RefreshEntities;
@@ -1264,7 +1264,7 @@ begin
   Inc(NeedH, TRtfdObjectName.Create(Self, FEntity).Height);
 
   // Get names in visibility order
-  AObjekt := FEntity as TObjekt;
+  AObjekt := TObjekt(FEntity);
   AClass := AObjekt.GetTyp;
   if FMinVisibility > Low(TVisibility) then
   begin
@@ -1584,7 +1584,7 @@ constructor TRtfdUnitPackage.Create(Owner: TComponent; Entity: TModelEntity;
   Frame: TAFrameDiagram; MinVisibility: TVisibility);
 begin
   inherited Create(Owner, Entity, Frame, MinVisibility);
-  FPackage := Entity as TUnitPackage;
+  FPackage := TUnitPackage(Entity);
   RefreshEntities;
 end;
 
@@ -1621,7 +1621,7 @@ begin
   else
     PictureNr := Integer(FEntity.Visibility) + 4;
   if not FConfiguration.ConstructorWithVisibility and (FEntity is TOperation)
-    and ((FEntity as TOperation).OperationType = otConstructor) then
+    and (TOperation(FEntity).OperationType = otConstructor) then
     PictureNr := 8;
   Font.Color := FForegroundColor;
   Canvas.Brush.Color := FBackgroundColor;
@@ -1629,16 +1629,16 @@ begin
   if FEntity.Static then
     Canvas.Font.Style := [fsUnderline];
   if FConfiguration.RelationshipAttributesBold and (FEntity is TAttribute) and
-    (FEntity as TAttribute).Connected then
+    TAttribute(FEntity).Connected then
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
 
-  case (Owner as TRtfdBox).ShowIcons of
+  case TRtfdBox(Owner).ShowIcons of
     0:
       begin
         if StyleServices.IsSystemStyle then
-          Vil := (Owner as TRtfdBox).FFrame.vilUMLRtfdComponentsLight
+          Vil := TRtfdBox(Owner).FFrame.vilUMLRtfdComponentsLight
         else
-          Vil := (Owner as TRtfdBox).FFrame.vilUMLRtfdComponentsDark;
+          Vil := TRtfdBox(Owner).FFrame.vilUMLRtfdComponentsDark;
         Vil.SetSize(ARect.Height, ARect.Height);
         Vil.Draw(Canvas, 4, 0, PictureNr);
         ARect.Left := ARect.Left + PPIScale(Vil.Width + 8);
@@ -1686,7 +1686,7 @@ var
 begin
   Fontstyle := '';
   if FConfiguration.RelationshipAttributesBold and (FEntity is TAttribute) and
-    (FEntity as TAttribute).Connected then
+    TAttribute(FEntity).Connected then
     Fontstyle := Fontstyle + ' font-weight="bold"';
   if FEntity.Static then
     Fontstyle := Fontstyle + ' text-decoration="underline"';
@@ -1698,9 +1698,9 @@ begin
   else
     PictureNr := Integer(FEntity.Visibility) + 4;
   if not FConfiguration.ConstructorWithVisibility and (FEntity is TOperation)
-    and ((FEntity as TOperation).OperationType = otConstructor) then
+    and (TOperation(FEntity).OperationType = otConstructor) then
     PictureNr := 8;
-  case (Owner as TRtfdBox).ShowIcons of
+  case TRtfdBox(Owner).ShowIcons of
     0:
       begin
         if (FEntity is TAttribute) then
@@ -1832,7 +1832,7 @@ begin
   if (FTypeParameter <> '') and FConfiguration.ShowClassparameterSeparately then
   begin
     // parameterized class
-    TypeBinding := (Owner as TRtfdClass).FTypeBinding;
+    TypeBinding := TRtfdClass(Owner).FTypeBinding;
     if TypeBinding = '' then
       FTypeAndBinding := FTypeParameter
     else
@@ -1871,7 +1871,7 @@ procedure TRtfdClassName.EntityChange(Sender: TModelEntity);
 var
   Name: string;
 begin
-  if (Owner as TRtfdBox).FFrame.Diagram.Package <> FEntity.Owner
+  if TRtfdBox(Owner).FFrame.Diagram.Package <> FEntity.Owner
   then
     Name := FEntity.Fullname
   else
@@ -1906,7 +1906,7 @@ begin
     else
       Canvas.Font.Style := [fsBold];
 
-    HeadColor := (Owner as TRtfdBox).Canvas.Brush.Color;
+    HeadColor := TRtfdBox(Owner).Canvas.Brush.Color;
     if isDark(HeadColor) and isDark(FForegroundColor) then
       Canvas.Font.Color := FForegroundColor
     else if not isDark(HeadColor) and not isDark(FForegroundColor) then
@@ -2006,7 +2006,7 @@ procedure TRtfdObjectName.EntityChange(Sender: TModelEntity);
 var
   Obj: TObjekt;
 begin
-  Obj := (FEntity as TObjekt);
+  Obj := TObjekt(FEntity);
   case FConfiguration.ObjectCaption of
     0:
       Caption := FEntity.Name + ': ' + Obj.GenericName;
@@ -2039,7 +2039,7 @@ begin
       Alig := DT_CENTER;
   end;
 
-  HeadColor := (Owner as TRtfdBox).Canvas.Brush.Color;
+  HeadColor := TRtfdBox(Owner).Canvas.Brush.Color;
   if IsColorDark(HeadColor) and IsColorDark(FForegroundColor) then
     Canvas.Font.Color := FForegroundColor
   else if not IsColorDark(HeadColor) and not IsColorDark(FForegroundColor) then
@@ -2083,7 +2083,7 @@ end;
 
 procedure TRtfdInterfaceName.EntityChange(Sender: TModelEntity);
 begin
-  if (Owner as TRtfdBox).FFrame.Diagram.Package <> FEntity.Owner
+  if TRtfdBox(Owner).FFrame.Diagram.Package <> FEntity.Owner
   then
     Caption := FEntity.Fullname
   else
@@ -2109,7 +2109,7 @@ end;
 constructor TRtfdSeparator.Create(Owner: TComponent);
 begin
   inherited Create(Owner);
-  Parent := Owner as TWinControl;
+  Parent := TWinControl(Owner);
   AutoSize := False;
   Height := 7;
 end;
@@ -2130,7 +2130,7 @@ begin
 
   // only appears in the display, not in the copy
 
-  { Box:= (Owner as TRtfdBox)
+  { Box:= TRtfdBox(Owner)
     Box.Canvas.Pen.Color:= clRed  // clBlack
     Box.Canvas.Brush.Color:= clGreen // clWhite
     Box.Canvas.FillRect(Rect(1, Top, Box.Width-4, Top + Height))
@@ -2154,7 +2154,7 @@ begin
   inherited Create(Owner, Entity);
   Font.Style := [fsBold];
   Alignment := taCenter;
-  FPackage := Entity as TUnitPackage;
+  FPackage := TUnitPackage(Entity);
   FPackage.AddListener(IAfterUnitPackageListener(Self));
   EntityChange(nil);
 end;
@@ -2175,7 +2175,7 @@ end;
 constructor TRtfdOperation.Create(Owner: TComponent; Entity: TModelEntity);
 begin
   inherited Create(Owner, Entity);
-  FOperation := Entity as TOperation;
+  FOperation := TOperation(Entity);
   FOperation.AddListener(IAfterOperationListener(Self));
   EntityChange(nil);
 end;
@@ -2202,7 +2202,7 @@ begin
   // Default uml-syntax
   // visibility name ( parameter-list ) : return-type-expression { property-string }
   ParameterCount := 0;
-  ShowParameter := (Owner as TRtfdBox).ShowParameter;
+  ShowParameter := TRtfdBox(Owner).ShowParameter;
   Name := FOperation.Name;
 
   if ShowParameter > 1 then
@@ -2211,7 +2211,7 @@ begin
     Ite := FOperation.GetParameters;
     while Ite.HasNext do
     begin
-      Parameter := Ite.Next as TParameter;
+      Parameter := TParameter(Ite.Next);
       if Assigned(Parameter.TypeClassifier) then
         case ShowParameter of
           2:
@@ -2264,7 +2264,7 @@ end;
 constructor TRtfdAttribute.Create(Owner: TComponent; Entity: TModelEntity);
 begin
   inherited Create(Owner, Entity);
-  FAttribute := Entity as TAttribute;
+  FAttribute := TAttribute(Entity);
   FAttribute.AddListener(IAfterAttributeListener(Self));
   EntityChange(Entity);
 end;
@@ -2283,7 +2283,7 @@ begin
     Caption := FAttribute.Name + ' = ' + FAttribute.Value
   else if Assigned(FAttribute.TypeClassifier) then
   begin
-    if (Owner as TRtfdBox).ShowParameter = 0 then
+    if TRtfdBox(Owner).ShowParameter = 0 then
       Caption := FAttribute.Name
     else
     begin
@@ -2313,7 +2313,7 @@ begin
   Font.Style := [fsBold];
   Font.Size := 12;
   Alignment := taLeftJustify;
-  FPackage := Entity as TUnitPackage;
+  FPackage := TUnitPackage(Entity);
   FPackage.AddListener(IAfterUnitPackageListener(Self));
   EntityChange(nil);
 end;
@@ -2335,7 +2335,7 @@ constructor TRtfdInterface.Create(Owner: TComponent; Entity: TModelEntity;
   Frame: TAFrameDiagram; MinVisibility: TVisibility);
 begin
   inherited Create(Owner, Entity, Frame, MinVisibility);
-  FPathname := (Entity as TInterface).Pathname;
+  FPathname := TInterface(Entity).Pathname;
   Entity.AddListener(IAfterInterfaceListener(Self));
   PopupMenu := Frame.PopMenuClass;
   RefreshEntities;
@@ -2366,7 +2366,7 @@ begin
   Inc(NeedH, TRtfdInterfaceName.Create(Self, FEntity).Height);
 
   // Get names in visibility order
-  Intf := FEntity as TInterface;
+  Intf := TInterface(FEntity);
   if FMinVisibility > Low(TVisibility) then
   begin
     Ami := TModelIterator.Create(Intf.GetAttributes, TAttribute, FMinVisibility,
@@ -2451,9 +2451,9 @@ end;
 constructor TRtfdCustomLabel.Create(Owner: TComponent; Entity: TModelEntity);
 begin
   inherited Create(Owner);
-  Parent := Owner as TWinControl;
+  Parent := TWinControl(Owner);
   var
-  RtfdBox := Owner as TRtfdBox;
+  RtfdBox := TRtfdBox(Owner);
   Font.Assign(RtfdBox.Font);
   Self.FEntity := Entity;
   Height := Abs(Font.Height);
@@ -2541,8 +2541,8 @@ end;
 
 procedure TRtfdCustomLabel.SetColors;
 begin
-  FForegroundColor := (Parent as TRtfdBox).FForegroundColor;
-  FBackgroundColor := (Parent as TRtfdBox).FBackgroundColor;
+  FForegroundColor := TRtfdBox(Parent).FForegroundColor;
+  FBackgroundColor := TRtfdBox(Parent).FBackgroundColor;
   Canvas.Font.Color := FForegroundColor;
 end;
 
@@ -2576,14 +2576,14 @@ begin
     Canvas.Font.Assign(Font);
     if FConfiguration.RelationshipAttributesBold and (FEntity is TAttribute)
     then
-      if (FEntity as TAttribute).Connected then
+      if TAttribute(FEntity).Connected then
         Canvas.Font.Style := Canvas.Font.Style + [fsBold];
     if (FEntity is TOperation) and FEntity.IsAbstract then
       Canvas.Font.Style := Canvas.Font.Style + [fsItalic];
     DrawText(Canvas.Handle, PChar(Caption), Length(Caption), ARect,
       DT_CALCRECT);
     FTextWidth := 8 + ARect.Right + 8;
-    case (Owner as TRtfdBox).ShowIcons of
+    case TRtfdBox(Owner).ShowIcons of
       0:
         FTextWidth := FTextWidth + PPIScale(ARect.Height + 8);
       1:

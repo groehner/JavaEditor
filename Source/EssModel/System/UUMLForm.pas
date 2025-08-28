@@ -205,7 +205,7 @@ begin
     AlreadySavedAs := True;
   end;
   if Assigned(FMainModul) then
-    (FMainModul.Diagram as TRtfdDiagram).JavaReset;
+    TRtfdDiagram(FMainModul.Diagram).JavaReset;
   FFileStructure.Clear;
   CanClose := True;
 end;
@@ -245,7 +245,7 @@ begin
       if Assigned(APanel) and Panel.CanFocus then
         APanel.SetFocus;
       var
-      ComJava := (FMainModul.Diagram as TRtfdDiagram).GetComJava;
+      ComJava := TRtfdDiagram(FMainModul.Diagram).GetComJava;
       ComJava.SetActiveComJava(ComJava);
     end;
   end;
@@ -306,7 +306,7 @@ procedure TFUMLForm.TBJavaResetMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then
-    (FMainModul.Diagram as TRtfdDiagram).JavaReset
+    TRtfdDiagram(FMainModul.Diagram).JavaReset
   else
     FJava.Restart;
 end;
@@ -396,7 +396,7 @@ begin
         ErrorMsg(E.Message);
     end;
   finally
-    FreeAndNil(StringList);
+    StringList.Free;
   end;
   FMainModul.LoadUML(Pathname);
   Modified := True;
@@ -546,24 +546,24 @@ end;
 
 function TFUMLForm.GetFilesAndPackages(Selected: Boolean): TStringList;
 begin
-  Result := (FMainModul.Diagram as TRtfdDiagram).GetFilesAndPackages(Selected);
+  Result := TRtfdDiagram(FMainModul.Diagram).GetFilesAndPackages(Selected);
 end;
 
 function TFUMLForm.GetAllPathnames: TStringList;
 begin
-  Result := (FMainModul.Diagram as TRtfdDiagram).GetAllPathnames;
+  Result := TRtfdDiagram(FMainModul.Diagram).GetAllPathnames;
 end;
 
 function TFUMLForm.GetAllClassnames: TStringList;
 begin
-  Result := (FMainModul.Diagram as TRtfdDiagram).GetAllClassnames;
+  Result := TRtfdDiagram(FMainModul.Diagram).GetAllClassnames;
 end;
 
 function TFUMLForm.GetFileWithMain: string;
 begin
   if Assigned(FMainModul) and Assigned(FMainModul.Diagram) and
     (FMainModul.Diagram is TRtfdDiagram) then
-    Result := (FMainModul.Diagram as TRtfdDiagram).GetFileWithMain
+    Result := TRtfdDiagram(FMainModul.Diagram).GetFileWithMain
   else
     Result := '';
 end;
@@ -576,7 +576,7 @@ end;
 function TFUMLForm.HasClass(const AClassname: string): Boolean;
 begin
   if Assigned(FMainModul) then
-    Result := (FMainModul.Diagram as TRtfdDiagram).HasClass(AClassname)
+    Result := TRtfdDiagram(FMainModul.Diagram).HasClass(AClassname)
   else
     Result := False;
 end;
@@ -650,7 +650,7 @@ end;
 procedure TFUMLForm.DebugJE2Java;
 begin
   if Assigned(FMainModul) and Assigned(FMainModul.Diagram) then
-    (FMainModul.Diagram as TRtfdDiagram).DebugJE2Java;
+    TRtfdDiagram(FMainModul.Diagram).DebugJE2Java;
 end;
 
 procedure TFUMLForm.CreateTVFileStructure;
@@ -721,7 +721,7 @@ begin
     Ite := Cent.GetAttributes;
     while Ite.HasNext do
     begin
-      Attribute := Ite.Next as TAttribute;
+      Attribute := TAttribute(Ite.Next);
       PictureNr := Integer(Attribute.Visibility) + 2;
       Node := TVFileStructure.Items.AddChildObject(ClassNode,
         Attribute.ToTypeName, TInteger.Create(Attribute.LineS));
@@ -732,7 +732,7 @@ begin
     Ite := Cent.GetOperations;
     while Ite.HasNext do
     begin
-      Method := Ite.Next as TOperation;
+      Method := TOperation(Ite.Next);
       if Method.OperationType = otConstructor then
         PictureNr := 6
       else

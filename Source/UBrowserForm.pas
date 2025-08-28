@@ -164,7 +164,7 @@ end;
 procedure TFBrowser.ActivateBrowser;
 begin
   if Assigned(WebBrowser) and Assigned(WebBrowser.Document) then
-    (WebBrowser.Document as IHTMLDocument2).parentWindow.focus;
+    IHTMLDocument2(WebBrowser.Document).parentWindow.focus;
 end;
 
 procedure TFBrowser.OpenWindow(Sender: TObject);
@@ -536,8 +536,8 @@ begin
     URL := ExtractFileNameEx(CBUrls.Text);
     if not IsHTML(URL) then
       URL := ChangeFileExt(URL, '.html');
+    Screen.Cursor := crHourGlass;
     try
-      Screen.Cursor := crHourGlass;
       if DownloadURL(CBUrls.Text, FConfiguration.TempDir + URL) then
         FJava.NewEditor(FConfiguration.TempDir + URL, '')
       else
@@ -660,18 +660,17 @@ begin
         StrData := StrData + 'Content-Type: text/css'#13#10#13#10
       else if (CompareText(ExtractFileExt(StrV), '.HTML') = 0) then
         StrData := StrData + 'Content-Type: text/html'#13#10#13#10;
-      MemoryStream := TMemoryStream.Create;
+      MemoryStream := nil;
+      StringStream := nil;
       try
+        MemoryStream := TMemoryStream.Create;
         MemoryStream.LoadFromFile(StrV);
         StringStream := TStringStream.Create('');
-        try
-          StringStream.CopyFrom(MemoryStream, MemoryStream.Size);
-          StrData := StrData + StringStream.DataString + #13#10;
-        finally
-          FreeAndNil(StringStream);
-        end;
+        StringStream.CopyFrom(MemoryStream, MemoryStream.Size);
+        StrData := StrData + StringStream.DataString + #13#10;
       finally
-        FreeAndNil(MemoryStream);
+        MemoryStream.Free;
+        StringStream.Free;
       end;
     end;
     StrData := StrData + '--' + Boundary + '--'#13#10; // FOOTER

@@ -118,9 +118,11 @@ begin
     Ext := LowerCase(ExtractFileExt(Filenames[0]));
 
   Imp := nil;
-  Ints := Integrators.Get(TImportIntegrator);
-  OtherFiles := TStringList.Create;
+  Ints := nil;
+  OtherFiles := nil;
   try
+    Ints := Integrators.Get(TImportIntegrator);
+    OtherFiles := TStringList.Create;
     for var I := 0 to Ints.Count - 1 do
     begin
       Exts := TImportIntegratorClass(Ints[I]).GetFileExtensions;
@@ -142,19 +144,19 @@ begin
           Break;
         end;
       finally
-        FreeAndNil(Exts);
+        Exts.Free;
       end;
     end;
     if Assigned(Imp) then
       try
         Imp.BuildModelFrom(Filenames);
       finally
-        FreeAndNil(Imp);
+        Imp.Free;
       end;
     AddToProject(OtherFiles);
   finally
-    FreeAndNil(Ints);
-    FreeAndNil(OtherFiles);
+    Ints.Free;
+    OtherFiles.Free;
     Screen.Cursor := SikCursor;
   end;
 end;
@@ -201,7 +203,7 @@ begin
           Imp := TImportIntegratorClass(Ints[I])
             .Create(Model, TFileProvider.Create);
       finally
-        FreeAndNil(Exts);
+        Exts.Free;
       end;
     end;
 
@@ -211,10 +213,10 @@ begin
         FDiagram.ResolveAssociations;
         FDiagram.ResolveObjectAssociations;
       finally
-        FreeAndNil(Imp);
+        Imp.Free;
       end;
   finally
-    FreeAndNil(Ints);
+    Ints.Free;
   end;
 end;
 
@@ -248,11 +250,11 @@ begin
           AnyFilter := AnyFilter + '*' + Exts.Names[J];
         end;
       finally
-        FreeAndNil(Exts);
+        Exts.Free;
       end;
     end;
   finally
-    FreeAndNil(Ints);
+    Ints.Free;
   end;
   AFilter := 'All types (' + AnyFilter + ')|' + AnyFilter + '|' + AFilter;
   with TOpenDialog.Create(Self) do
@@ -384,8 +386,8 @@ begin
     else
       FOpendFolder := '';
   finally
-    FreeAndNil(StringList);
-    FreeAndNil(Ints);
+    StringList.Free;
+    Ints.Free;
     OpenFolderForm.Release;
   end;
 end;
@@ -448,9 +450,9 @@ begin
   FormBitmap.Height := DBY - 1;
   try
     Diagram.PaintTo(FormBitmap.Canvas, 0, 0, False);
-    PrintBitmap(FormBitmap, (Owner as TForm).PixelsPerInch);
+    PrintBitmap(FormBitmap, TForm(Owner).PixelsPerInch);
   finally
-    FreeAndNil(FormBitmap);
+    FormBitmap.Free;
   end;
 end;
 
@@ -459,18 +461,18 @@ var
   Dir, Filename: string;
 begin
   Result := Diagram.GetClasses;
-  if FModel.ModelRoot.Files.Count > 0 then
+  if FModel.ModelRoot.Files.Count = 0 then
+    Exit;
+
+  Dir := ExtractFilePath(FModel.ModelRoot.Files[0]);
+  for var I := 0 to Result.Count - 1 do
   begin
-    Dir := ExtractFilePath(FModel.ModelRoot.Files[0]);
-    for var I := 0 to Result.Count - 1 do
+    Filename := Dir + Result[I] + '.java';
+    if (FModel.ModelRoot.Files.IndexOf(Filename) = -1) and FileExists(Filename)
+    then
     begin
-      Filename := Dir + Result[I] + '.java';
-      if (FModel.ModelRoot.Files.IndexOf(Filename) = -1) and FileExists(Filename)
-      then
-      begin
-        AddToProject(Filename);
-        FModel.ModelRoot.Files.Add(Filename);
-      end;
+      AddToProject(Filename);
+      FModel.ModelRoot.Files.Add(Filename);
     end;
   end;
 end;

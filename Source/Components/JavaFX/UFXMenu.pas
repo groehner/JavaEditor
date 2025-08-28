@@ -193,11 +193,11 @@ begin
   XPos := 8;
   if Parent is TFGUIForm then
   begin
-    Form := Parent as TFGUIForm;
+    Form := TFGUIForm(Parent);
     for var I := 0 to Form.ComponentCount - 1 do
       if Form.Components[I] is TFXMenu then
       begin
-        Str := (Form.Components[I] as TFXMenu).Text;
+        Str := TFXMenu(Form.Components[I]).Text;
         Canvas.TextOut(XPos + 8, 7, Str);
         XPos := XPos + 8 + Canvas.TextWidth(Str) + 8;
       end;

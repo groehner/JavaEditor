@@ -391,7 +391,7 @@ var
   AHorzAlign, AVertAlign: TELDesignerAlignType;
   Tag: NativeInt;
 begin
-  Tag := (Sender as TSpTBXItem).Tag;
+  Tag :=TSpTBXItem (Sender).Tag;
   AHorzAlign := atNoChanges;
   AVertAlign := atNoChanges;
   case Tag of
@@ -434,15 +434,15 @@ var
 begin
   WinControl := nil;
   if ATarget is TForm then
-    WinControl := ATarget as TForm
+    WinControl := TForm(ATarget)
   else if ATarget is TJPanel then
-    WinControl := ATarget as TJPanel
+    WinControl := TJPanel(ATarget)
   else if ATarget is TAPanel then
-    WinControl := ATarget as TAPanel
+    WinControl := TAPanel(ATarget)
   else if ATarget is TFXPane then
-    WinControl := ATarget as TFXPane
+    WinControl := TFXPane(ATarget)
   else if ATarget is TJPlayground then
-    WinControl := ATarget as TJPlayground;
+    WinControl := TJPlayground(ATarget);
   if Assigned(WinControl) then
   begin
     Wid := WinControl.ClientWidth;
@@ -474,13 +474,13 @@ var
   LInsertingControl: TControl;
   LName: string;
 begin
-  if csAcceptsControls in (ATarget as TControl).ControlStyle then
+  if csAcceptsControls in TControl(ATarget).ControlStyle then
   begin
-    LInsertingControl := ASource as TControl;
-    ELDesigner.GetUniqueName((LInsertingControl as TJEComponent)
+    LInsertingControl := TControl(ASource);
+    ELDesigner.GetUniqueName(TJEComponent(LInsertingControl)
       .Tag2JavaType(Integer(LInsertingControl.Tag)), LName);
     LInsertingControl.Name := LName;
-    LInsertingControl.Parent := ATarget as TWinControl;
+    LInsertingControl.Parent := TWinControl(ATarget);
     LInsertingControl.SetBounds(XPos - LInsertingControl.Width,
       YPos - LInsertingControl.Height, LInsertingControl.Width,
       LInsertingControl.Height);
@@ -1074,7 +1074,7 @@ begin
       DesignForm.Partner := JavaForm;
       Reader.ReadRootComponent(DesignForm);
       if JavaForm.FrameType = 8 then
-        (DesignForm as TFXGUIForm).Open(FileName, '')
+        TFXGUIForm(DesignForm).Open(FileName, '')
       else
         DesignForm.Open(FileName, '');
       DesignForm.Name := NewName;
@@ -1197,7 +1197,7 @@ var
   APropertyInspector: TELCustomPropertyInspector;
   Partner: TFEditForm;
 begin
-  Partner := DesignForm.Partner as TFEditForm;
+  Partner := TFEditForm(DesignForm.Partner);
   Partner.EnsureStartEnd;
   Partner.Editor.BeginUpdate;
   NewComp := Control;
@@ -1205,8 +1205,8 @@ begin
   Comp2 := TControlClass(Classes.GetClass(Str)).Create(DesignForm);
   if NewComp is TJEComponent then
   begin
-    AllowedEvents := (NewComp as TJEComponent).GetEvents(3);
-    AllowedAttributes := (NewComp as TJEComponent).GetAttributes(3);
+    AllowedEvents := TJEComponent(NewComp).GetEvents(3);
+    AllowedAttributes := TJEComponent(NewComp).GetAttributes(3);
     ForbiddenAttributes := ULink.DelphiBounds;
   end;
 
@@ -1237,8 +1237,8 @@ begin
                 string(PropEditor1.PropTypeInfo.Name), NewComp)
             else if (PropEditor1.PropTypeInfo.Name = 'TFont') then
             begin
-              Font1 := (PropEditor1 as TELFontPropEditor).getFont;
-              Font2 := (PropEditor2 as TELFontPropEditor).getFont;
+              Font1 := TELFontPropEditor(PropEditor1).getFont;
+              Font2 := TELFontPropEditor(PropEditor2).getFont;
               if (Font1.Name <> Font2.Name) or (Font1.Size <> Font2.Size) or
                 (Font1.Style <> Font2.Style) then
                 SetAttributForComponent(Attr, PropEditor1.Value,
@@ -1246,15 +1246,15 @@ begin
             end
             else if PropEditor1.PropTypeInfo.Name = 'TStrings' then
             begin
-              if (PropEditor1 as TELStringsPropEditor).getText <>
-                (PropEditor2 as TELStringsPropEditor).getText then
+              if TELStringsPropEditor(PropEditor1).getText <>
+                TELStringsPropEditor(PropEditor2).getText then
                 SetAttributForComponent(Attr, PropEditor1.Value,
                   string(PropEditor1.PropTypeInfo.Name), NewComp);
             end
             else if PropEditor1.PropTypeInfo.Name = 'TBorder' then
             begin
-              Border1 := (PropEditor1 as TELBorderPropEditor).getBorder;
-              Border2 := (PropEditor2 as TELBorderPropEditor).getBorder;
+              Border1 := TELBorderPropEditor(PropEditor1).getBorder;
+              Border2 := TELBorderPropEditor(PropEditor2).getBorder;
               if (Border1.BorderType <> Border2.BorderType) or
                 (Border1.LineColor <> Border2.LineColor) or
                 (Border1.LineThickness <> Border2.LineThickness) or
@@ -1299,11 +1299,11 @@ procedure TFGUIDesigner.SetAttributForComponent(const Attr, Value, Typ: string;
 begin
   var AValue := Delphi2JavaValues(Value);
   if Control is TFGUIForm then
-    (Control as TFGUIForm).SetAttribute(Attr, AValue, Typ)
+    TFGUIForm(Control).SetAttribute(Attr, AValue, Typ)
   else if Control is TFXGUIForm then
-    (Control as TFXGUIForm).SetAttribute(Attr, AValue, Typ)
+    TFXGUIForm(Control).SetAttribute(Attr, AValue, Typ)
   else if Control is TJEComponent then
-    (Control as TJEComponent).SetAttribute(Attr, AValue, Typ);
+    TJEComponent(Control).SetAttribute(Attr, AValue, Typ);
 end;
 
 procedure TFGUIDesigner.MISnapToGridClick(Sender: TObject);
@@ -1417,7 +1417,7 @@ begin
   Partner.Editor.LockBuildStructure := True;  // ToDo
   Partner.EnsureStartEnd;
   if Control is TJEComponent then
-    (Control as TJEComponent).NewControl;
+    TJEComponent(Control).NewControl;
   if ELDesigner.SnapToGrid then
     ELDesigner.SelectedControls.AlignToGrid;
   Partner.Editor.LockBuildStructure := False;
@@ -1431,7 +1431,7 @@ begin
   if Control.Parent is TJTabbedPane then
     Exit;
   if Control is TJEComponent then
-    (Control as TJEComponent).SetPositionAndSize;
+    TJEComponent(Control).SetPositionAndSize;
 end;
 
 procedure TFGUIDesigner.DeleteComponent(Control: TControl);
@@ -1440,9 +1440,9 @@ procedure TFGUIDesigner.DeleteComponent(Control: TControl);
   begin
     if Control is TJEComponent then
     begin
-      (Control as TJEComponent).DeleteComponent;
+      TJEComponent(Control).DeleteComponent;
       var
-      Typ := (Control as TJEComponent).JavaType;
+      Typ := TJEComponent(Control).JavaType;
       var
       Idx := FObjectInspector.CBObjects.Items.IndexOf
         (Control.Name + ': ' + Typ);
@@ -1453,8 +1453,8 @@ procedure TFGUIDesigner.DeleteComponent(Control: TControl);
   procedure DeleteAllComponents(Control: TControl);
   begin
     if Control is TWinControl then
-      for var I := 0 to (Control as TWinControl).ControlCount - 1 do
-        DeleteAllComponents((Control as TWinControl).Controls[I]);
+      for var I := 0 to TWinControl(Control).ControlCount - 1 do
+        DeleteAllComponents(TWinControl(Control).Controls[I]);
     DeleteAComponent(Control);
   end;
 
@@ -1547,7 +1547,7 @@ begin
   Bitmap.Width := AControl.Width;
   Bitmap.Height := AControl.Height;
   if AControl is TWinControl then
-    (AControl as TWinControl).PaintTo(Bitmap.Canvas, 0, 0);
+    TWinControl(AControl).PaintTo(Bitmap.Canvas, 0, 0);
   FDragImages.Width := Bitmap.Width;
   FDragImages.Height := Bitmap.Height;
   FDragImages.Add(Bitmap, nil);

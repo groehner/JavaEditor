@@ -935,16 +935,9 @@ var
   AManagedObject: TManagedObject;
 begin
   FConnections.Clear;
-  try
-    for var I := 0 to FManagedObjects.Count - 1 do
-    begin
-      AManagedObject := TManagedObject(FManagedObjects[I]);
-      FreeAndNil(AManagedObject.FControl);
-      FreeAndNil(AManagedObject);
-    end;
-  except
-    on E: Exception do
-      ErrorMsg(E.Message);
+  for AManagedObject in FManagedObjects do begin
+    AManagedObject.FControl.Free;
+    AManagedObject.Free;
   end;
   FManagedObjects.Clear;
   SetBounds(0, 0, 0, 0);
@@ -1012,7 +1005,7 @@ begin
     if not Intersect(Rect, BRect) or not TManagedObject(FManagedObjects[I]).Visible
     then
       // SuspendDrawing
-      SendMessage((TManagedObject(FManagedObjects[I]).FControl as TWinControl)
+      SendMessage(TWinControl(TManagedObject(FManagedObjects[I]).FControl)
         .Handle, WM_SETREDRAW, 0, 0)
     else
       TManagedObject(FManagedObjects[I]).FControl.Invalidate;
@@ -1032,7 +1025,7 @@ begin
       Canvas.Brush.Color := Color;
     Canvas.FillRect(ClientRect);
   finally
-    FreeAndNil(Canvas);
+    Canvas.Free;
   end;
   Message.Result := 1;
 end;
@@ -1093,7 +1086,7 @@ end;
 constructor TSequencePanel.Create(AOwner: TComponent);
 begin
   inherited;
-  FSequenceForm := (AOwner as TScrollBox).Parent as TForm;
+  FSequenceForm := TForm(TScrollBox(AOwner).Parent);
   FManagedObjects := TList.Create;
   FConnections := TObjectList.Create(True);
   FShowConnections := 0;
@@ -1190,10 +1183,10 @@ begin
             Tmp := GetSelectedControls;
             case Tmp.Count of
               1:
-                ConnectObjects(Tmp[0] as TControl, Tmp[0] as TControl,
+                ConnectObjects(TControl(Tmp[0]), TControl(Tmp[0]),
                   Attributes);
               2:
-                ConnectObjects(Tmp[0] as TControl, Tmp[1] as TControl,
+                ConnectObjects(TControl(Tmp[0]), TControl(Tmp[1]),
                   Attributes);
             end;
             FreeAndNil(Tmp);
@@ -1679,8 +1672,8 @@ begin
         MovedRect := Rect(MaxInt, 0, 0, 0);
         MovedRectWithoutConnections := Rect(MaxInt, 0, 0, 0);
         for var I := 0 to FManagedObjects.Count - 1 do // ResumeDrawing
-          SendMessage((TManagedObject(FManagedObjects[I])
-            .FControl as TWinControl).Handle, WM_SETREDRAW, 1, 0);
+          SendMessage(TWinControl(TManagedObject(FManagedObjects[I])
+            .FControl).Handle, WM_SETREDRAW, 1, 0);
         for var I := 0 to FManagedObjects.Count - 1 do
         begin
           MCont := TManagedObject(FManagedObjects[I]);
@@ -1835,7 +1828,7 @@ begin
         else if Assigned(Found) and (Found <> Self) then
         begin
           if (Found is TMemo) then
-            Found := (Found as TMemo).Parent;
+            Found := TMemo(Found).Parent;
           OnLifelineSequencePanel(Found);
           if Assigned(TCrackControl(Found).PopupMenu) and (Button = mbRight)
           then
@@ -1876,7 +1869,7 @@ end;
 procedure TSequencePanel.OnManagedObjectClick(Sender: TObject);
 begin
   var
-  Inst := FindManagedControl(Sender as TControl);
+  Inst := FindManagedControl(TControl(Sender));
   if Assigned(Inst) and Assigned(Inst.FOnClick) then
     Inst.FOnClick(Sender);
 end;
@@ -1884,7 +1877,7 @@ end;
 procedure TSequencePanel.OnManagedObjectDblClick(Sender: TObject);
 begin
   var
-  Inst := FindManagedControl(Sender as TControl);
+  Inst := FindManagedControl(TControl(Sender));
   if Assigned(Inst) and Assigned(Inst.FOnDblClick) then
   begin
     FMouseDownOK := False;
@@ -1911,7 +1904,7 @@ begin
     // Call the essConnectpanel MouseDown instead.
     Point.X := X;
     Point.Y := Y;
-    Point := (Sender as TControl).ClientToScreen(Point);
+    Point := TControl(Sender).ClientToScreen(Point);
     Point := ScreenToClient(Point);
     MouseDown(Button, Shift, Point.X, Point.Y);
   end;
@@ -1921,7 +1914,7 @@ procedure TSequencePanel.OnManagedObjectMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 begin
   var
-  Inst := FindManagedControl(Sender as TControl);
+  Inst := FindManagedControl(TControl(Sender));
   if Assigned(Inst) and Assigned(Inst.FOnMouseMove) then
     Inst.FOnMouseMove(Sender, Shift, X, Y);
 end;
@@ -1930,7 +1923,7 @@ procedure TSequencePanel.OnManagedObjectMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   var
-  Inst := FindManagedControl(Sender as TControl);
+  Inst := FindManagedControl(TControl(Sender));
   if Assigned(Inst) and Assigned(Inst.FOnMouseUp) then
     Inst.FOnMouseUp(Sender, Button, Shift, X, Y);
 end;
@@ -1954,7 +1947,7 @@ begin
   for var I := 0 to FConnections.Count - 1 do
   begin
     var
-    Conn := (FConnections[I] as TConnection);
+    Conn := TConnection(FConnections[I]);
     if Conn.StartControl.Visible and Conn.EndControl.Visible then
       Conn.Draw(Canvas);
   end;
@@ -2044,11 +2037,11 @@ begin
   if CanFocus and Assigned(Form) and Form.Active then
   begin
     // To avoid having the scrollbox resetting its positions after a setfocus call.
-    XPos := (Parent as TScrollBox).HorzScrollBar.Position;
-    YPos := (Parent as TScrollBox).VertScrollBar.Position;
+    XPos := TScrollBox(Parent).HorzScrollBar.Position;
+    YPos := TScrollBox(Parent).VertScrollBar.Position;
     inherited;
-    (Parent as TScrollBox).HorzScrollBar.Position := XPos;
-    (Parent as TScrollBox).VertScrollBar.Position := YPos;
+    TScrollBox(Parent).HorzScrollBar.Position := XPos;
+    TScrollBox(Parent).VertScrollBar.Position := YPos;
   end;
 end;
 
@@ -2137,7 +2130,7 @@ begin
   for var I := 0 to FConnections.Count - 1 do
     TConnection(FConnections[I]).ChangeStyle(BlackAndWhite);
   for var I := 0 to FManagedObjects.Count - 1 do
-    (TManagedObject(FManagedObjects[I]).FControl as TLifeline)
+    TLifeline(TManagedObject(FManagedObjects[I]).FControl)
       .ChangeStyle(BlackAndWhite);
 end;
 

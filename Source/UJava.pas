@@ -1196,7 +1196,7 @@ begin
   if (Sender is TToolButton) or (Sender is TSpeedButton) then
     Str := '.java'
   else
-    case (Sender as TSpTBXItem).Tag of
+    case TSpTBXItem(Sender).Tag of
       1:
         Str := '.java';
       2:
@@ -1210,7 +1210,7 @@ end;
 procedure TFJava.MINewCommentClick(Sender: TObject);
 begin
   if FActiveTDIChild.FormTag = 2 then
-    (FActiveTDIChild as TFUMLForm).TBCommentClick(Self);
+    TFUMLForm(FActiveTDIChild).TBCommentClick(Self);
 end;
 
 procedure TFJava.SBNewClick(Sender: TObject);
@@ -1280,9 +1280,9 @@ begin
       FConfiguration.Sourcepath := ExtractFilePath(FileName);
       if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 4) then
         if Files.Count >= 2 then
-          (FActiveTDIChild as TFTextDiff).Open(Files[0], Files[1])
+          TFTextDiff(FActiveTDIChild).Open(Files[0], Files[1])
         else
-          (FActiveTDIChild as TFTextDiff).Open(FileName)
+          TFTextDiff(FActiveTDIChild).Open(FileName)
         else
           try
             Screen.Cursor := crHourGlass;
@@ -1303,7 +1303,7 @@ procedure TFJava.MIMenuOpenClick(Sender: TObject);
 begin
   DisableUpdateMenuItems;
   var
-  Str := (Sender as TSpTBXItem).Caption;
+  Str := TSpTBXItem(Sender).Caption;
   try
     Screen.Cursor := crHourGlass;
     LockWindow(FJava.Handle);
@@ -1422,11 +1422,11 @@ begin
     (AForm.Pathname <> AForm.GetSaveAsName)) then
     EditorSaveAs(AForm, False)
   else if (AForm.FormTag = 2) and AForm.IsDefaultFilename then
-    UMLSaveAs(AForm as TFUMLForm)
+    UMLSaveAs(TFUMLForm(AForm))
   else if (AForm.FormTag = 11) and AForm.IsDefaultFilename then
-    StructogramSaveAs(AForm as TFStructogram)
+    StructogramSaveAs(TFStructogram(AForm))
   else if (AForm.FormTag = 14) and AForm.IsDefaultFilename then
-    SequenceSaveAs(AForm as TFSequenceForm)
+    SequenceSaveAs(TFSequenceForm(AForm))
   else
     AForm.Save(WithBackup);
 end;
@@ -1439,11 +1439,11 @@ begin
       1:
         EditorSaveAs(FActiveTDIChild, False);
       2:
-        UMLSaveAs(FActiveTDIChild as TFUMLForm);
+        UMLSaveAs(TFUMLForm(FActiveTDIChild));
       11:
-        StructogramSaveAs(FActiveTDIChild as TFStructogram);
+        StructogramSaveAs(TFStructogram(FActiveTDIChild));
       14:
-        SequenceSaveAs(FActiveTDIChild as TFSequenceForm);
+        SequenceSaveAs(TFSequenceForm(FActiveTDIChild));
     end;
   EnableUpdateMenuItems;
 end;
@@ -1457,7 +1457,7 @@ var
   SaveDialog: TExtSaveDialog;
   OpenGuiForm: Boolean;
 begin
-  Editform := AForm as TFEditForm;
+  Editform := TFEditForm(AForm);
   if Editform.AlreadySavedAs then
     Exit;
   if Hidden then
@@ -1777,7 +1777,7 @@ end;
 procedure TFJava.MIRecognizeAssociationsClick(Sender: TObject);
 begin
   if Assigned(FActiveTDIChild) and (FActiveTDIChild is TFUMLForm) then
-    (FActiveTDIChild as TFUMLForm).TBRecognizeAssociationsClick(Self);
+    TFUMLForm(FActiveTDIChild).TBRecognizeAssociationsClick(Self);
 end;
 
 procedure TFJava.MIRedoClick(Sender: TObject);
@@ -2187,7 +2187,7 @@ begin
   if Assigned(Editform) then
   begin
     FileName := ChangeFileExt(Editform.Pathname, '.jsd');
-    SequenceForm := GetTDIWindowType(FileName, '%Q%') as TFSequenceForm;
+    SequenceForm := TFSequenceForm(GetTDIWindowType(FileName, '%Q%'));
     if Assigned(SequenceForm) then
       MyDebugger.SequenceForm := SequenceForm
     else if not FileExists(FileName) or FileExists(FileName) and
@@ -2217,7 +2217,7 @@ begin
   if Assigned(UMLForm) then
   begin
     FileName := ChangeFileExt(UMLForm.Pathname, '.jsd');
-    SequenceForm := GetTDIWindowType(FileName, '%Q%') as TFSequenceForm;
+    SequenceForm := TFSequenceForm(GetTDIWindowType(FileName, '%Q%'));
     if not Assigned(SequenceForm) and
       (not FileExists(FileName) or FileExists(FileName) and
       (MessageDlg(Format(_(LNGFileAlreadyExists), [FileName]), mtConfirmation,
@@ -2229,7 +2229,7 @@ begin
       UMLForm.Enter(Self);
     end;
     SequenceForm.AddLifeline('Actor');
-    ARtfdDiagram := (UMLForm.MainModul.Diagram as TRtfdDiagram);
+    ARtfdDiagram := TRtfdDiagram(UMLForm.MainModul.Diagram);
     ARtfdDiagram.SequenceForm := SequenceForm;
     SequenceForm.OnCloseNotify := ARtfdDiagram.CloseNotify;
   end;
@@ -2303,7 +2303,7 @@ var
     begin
       case Form.FormTag of
         1:
-          if (Form as TFEditForm).IsJava then
+          if TFEditForm(Form).IsJava then
           begin
             FEditorForm := TFEditForm(Form);
             Result := True;
@@ -2409,7 +2409,7 @@ begin
     3:
       begin
         IsGUIForm := True;
-        FEditorForm := TFEditForm((FActiveTDIChild as TFGUIForm).Partner);
+        FEditorForm := TFEditForm(TFGUIForm(FActiveTDIChild).Partner);
       end;
     4:
       IsTextDiff := True;
@@ -2643,7 +2643,7 @@ begin
     begin
       Application.ProcessMessages;
       if FFixedWindows[I].FormTag = 1 then
-        (FFixedWindows[I] as TFEditForm).PrintAll(True)
+        TFEditForm(FFixedWindows[I]).PrintAll(True)
       else
         FFixedWindows[I].Print;
     end;
@@ -2922,7 +2922,7 @@ begin
     try
       if FileExists(Pathname) then
       begin
-        Result := GetTDIWindowType(Pathname, '%E%') as TFEditForm;
+        Result := TFEditForm(GetTDIWindowType(Pathname, '%E%'));
         if Assigned(Result) then
         begin
           if not Hidden then
@@ -2937,7 +2937,7 @@ begin
           begin
             Result.Hide;
             if AActive.FormTag = 1 then
-              scpSetEditor((AActive as TFEditForm).Editor);
+              scpSetEditor(TFEditForm(AActive).Editor);
           end;
           UnlockFormUpdate(Self);
         end;
@@ -3011,7 +3011,7 @@ begin
       DoOpenInUMLWindow(FileName)
     else if ((Ext = '.HTM') or (Ext = '.HTML')) and Assigned(FActiveTDIChild)
       and (FActiveTDIChild.FormTag = 5) then
-      (FActiveTDIChild as TFBrowser).WebBrowser.Navigate(FileName)
+      TFBrowser(FActiveTDIChild).WebBrowser.Navigate(FileName)
     else if (Ext = '.JSG') or (Ext = '.NSD') then
       Result := OpenStructogram(FileName, '')
     else if (Ext = '.JSD') then
@@ -3259,7 +3259,7 @@ begin
   // workaround: simulate a click on the EditForm
   if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 1) then
   begin
-    Editform := FActiveTDIChild as TFEditForm;
+    Editform := TFEditForm(FActiveTDIChild);
     GetCursorPos(Mouse);
     Posi := Editform.ClientToScreen(Point(0, 0));
     Rect := Editform.ClientRect;
@@ -3323,7 +3323,7 @@ begin
     if FFixedWindows[I].FormTag = 1 then
     begin
       var
-      Editform := (FFixedWindows[I] as TFEditForm);
+      Editform := TFEditForm(FFixedWindows[I]);
       if Editform.Modified or not FileExists(Editform.Pathname) then
         DoSave(Editform, False);
     end;
@@ -3460,7 +3460,7 @@ begin
   if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 2) then
   begin
     var
-    StringList := (FActiveTDIChild as TFUMLForm).GetFilesAndPackages(False);
+    StringList := TFUMLForm(FActiveTDIChild).GetFilesAndPackages(False);
     CompileList(StringList);
     FreeAndNil(StringList);
   end
@@ -3807,7 +3807,7 @@ begin
 
   for var I := FTDIFormsList.Count - 1 downto 0 do
     if (FTDIFormsList[I] is TFEditForm) and FTDIFormsList[I].Modified then
-      PreCompile(FTDIFormsList[I] as TFEditForm, '');
+      PreCompile(TFEditForm(FTDIFormsList[I]), '');
 
   Editform := GetActiveEditor;
   if Assigned(Editform) and Editform.IsHTML then
@@ -3835,7 +3835,7 @@ begin
     end;
     MyJavaCommands.SetManyCompiling(False);
     JavaProgramm := UMLForm.GetFileWithMain;
-    Editform := GetTDIWindowType(JavaProgramm, '%E%') as TFEditForm;
+    Editform := TFEditForm(GetTDIWindowType(JavaProgramm, '%E%'));
     FreeAndNil(StringList);
     if not Okay then
       Exit;
@@ -3882,7 +3882,7 @@ begin
     Exit; // prevents doubled execution
   if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 2) then
   begin
-    StringList := (FActiveTDIChild as TFUMLForm).GetAllPathnames;
+    StringList := TFUMLForm(FActiveTDIChild).GetAllPathnames;
     Okay := True;
     for var I := 0 to StringList.Count - 1 do
     begin
@@ -3898,7 +3898,7 @@ end;
 procedure TFJava.MIDebugClick(Sender: TObject);
 begin
   if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 2) then
-    (FActiveTDIChild as TFUMLForm).DebugJE2Java;
+    TFUMLForm(FActiveTDIChild).DebugJE2Java;
 end;
 
 procedure TFJava.MIDebuggerClick(Sender: TObject);
@@ -4358,7 +4358,7 @@ begin
   end
   else if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 2) then
   begin
-    FileName := (FActiveTDIChild as TFUMLForm).GetFileWithMain;
+    FileName := TFUMLForm(FActiveTDIChild).GetFileWithMain;
     Package := '';
   end;
   if FileName <> '' then
@@ -4544,7 +4544,7 @@ procedure TFJava.MIJarClick(Sender: TObject);
 begin
   DisableUpdateMenuItems;
   var
-  I := (Sender as TSpTBXItem).Tag;
+  I := TSpTBXItem(Sender).Tag;
   with ODOpen do
   begin
     if Assigned(ActiveTDIChild) then
@@ -4671,7 +4671,7 @@ begin
     Address := HttpToWeb(Address);
   if FConfiguration.OnlyOneBrowserWindow then
   begin
-    Result := (GetTDIType('%B%') as TFBrowser);
+    Result := TFBrowser(GetTDIType('%B%'));
     if Assigned(Result) then
     begin
       Result.WebBrowser.Navigate(Address);
@@ -5035,7 +5035,7 @@ begin
   Result := True;
   FActiveTDIChild := GetActiveForm;
   if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 1) and
-    Assigned((FActiveTDIChild as TFEditForm).Partner) then
+    Assigned(TFEditForm(FActiveTDIChild).Partner) then
     Exit;
 
   FEditorForm := GetActiveEditor;
@@ -5086,7 +5086,7 @@ procedure TFJava.ToolbuttonMouseDown(Sender: TObject; Button: TMouseButton;
 Shift: TShiftState; X, Y: Integer);
 begin
   if Assigned(FGUIDesigner.DesignForm) and (Button = mbLeft) then
-    (Sender as TToolButton).BeginDrag(False, 10);
+    TToolButton(Sender).BeginDrag(False, 10);
 end;
 
 type
@@ -5099,7 +5099,7 @@ procedure TFJava.ToolbuttonStartDrag(Sender: TObject;
 var DragObject: TDragObject);
 begin
   var
-  ControlClass := FGUIDesigner.Tag2Class((Sender as TToolButton).Tag);
+  ControlClass := FGUIDesigner.Tag2Class(TToolButton(Sender).Tag);
   var
   DragRectangle := ControlClass.Create(FGUIDesigner.DesignForm);
   DragRectangle.Parent := FGUIDesigner;
@@ -5358,8 +5358,8 @@ begin
     FConfiguration.RightDockPanelWidth := RightDockPanel.Width;
     // OnUnDock gets called BEFORE the client is undocked, in order to optionally
     // disallow the undock. DockClientCount is never 0 when called from this event.
-    if (Sender as TPanel).DockClientCount = 1 then
-      ShowDockPanel(Sender as TPanel, False, nil);
+    if TPanel(Sender).DockClientCount = 1 then
+      ShowDockPanel(TPanel(Sender), False, nil);
   end;
 end;
 
@@ -5377,8 +5377,8 @@ begin
   FConfiguration.BottomDockPanelHeight := BottomDockPanel.Height;
   // OnUnDock gets called BEFORE the client is undocked, in order to optionally
   // disallow the undock. DockClientCount is never 0 when called from this event.
-  if (Sender as TPanel).DockClientCount = 1 then
-    ShowDockPanel(Sender as TPanel, False, nil);
+  if TPanel(Sender).DockClientCount = 1 then
+    ShowDockPanel(TPanel(Sender), False, nil);
 end;
 
 { --- preview DockPanel dock area ---------------------------------------------- }
@@ -5456,11 +5456,11 @@ X, Y: Integer);
 begin
   // OnDockDrop gets called AFTER the client has actually docked,
   // so we check for DockClientCount = 1 before making the dock panel visible.
-  if (Sender as TPanel).DockClientCount = 1 then
+  if TPanel(Sender).DockClientCount = 1 then
   begin
-    ShowDockPanel(Sender as TPanel, True, nil);
+    ShowDockPanel(TPanel(Sender), True, nil);
     // Make DockManager repaints it's clients.
-    (Sender as TPanel).DockManager.ResetBounds(True);
+    TPanel(Sender).DockManager.ResetBounds(True);
   end;
 end;
 
@@ -5540,7 +5540,7 @@ begin
       if (DockWindow.HostDockSite is TPanel) and
         ((DockWindow.HostDockSite.Height = 0) or
         (DockWindow.HostDockSite.Width = 0)) then
-        ShowDockPanel(DockWindow.HostDockSite as TPanel, True, DockWindow)
+        ShowDockPanel(TPanel(DockWindow.HostDockSite), True, DockWindow)
       else
         // if the window isn't docked at all, simply show it.
         DockWindow.Show;
@@ -5650,8 +5650,8 @@ begin
       AForm := GetTabForm(I);
       if not AForm.Visible then
         Continue;
-      if (AForm.FormTag = 2) and Assigned((AForm as TFUMLForm).MainModul) then
-        (AForm as TFUMLForm).MainModul.Diagram.RecalcPanelSize;
+      if (AForm.FormTag = 2) and Assigned(TFUMLForm(AForm).MainModul) then
+        TFUMLForm(AForm).MainModul.Diagram.RecalcPanelSize;
     end;
   UpdateLayoutRightDockPanel;
 end;
@@ -5835,7 +5835,7 @@ begin
   if Assigned(AForm) then
   begin
     AForm.OpenWindow(Self);
-    UMLForm := (AForm as TFUMLForm);
+    UMLForm := TFUMLForm(AForm);
   end
   else
   begin
@@ -5913,7 +5913,7 @@ end;
 procedure TFJava.MISaveAsPictureClick(Sender: TObject);
 begin
   if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 2) then
-    (FActiveTDIChild as TFUMLForm).MainModul.SaveDiagramActionExecute(Self);
+    TFUMLForm(FActiveTDIChild).MainModul.SaveDiagramActionExecute(Self);
 end;
 
 procedure TFJava.MIOpenFolderClick(Sender: TObject);
@@ -5924,7 +5924,7 @@ end;
 procedure TFJava.MINewLayoutClick(Sender: TObject);
 begin
   if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 2) then
-    (FActiveTDIChild as TFUMLForm).MainModul.DoLayout;
+    TFUMLForm(FActiveTDIChild).MainModul.DoLayout;
 end;
 
 procedure TFJava.MINewSequencediagramClick(Sender: TObject);
@@ -6299,12 +6299,12 @@ begin
   DisableUpdateMenuItems;
   if Assigned(FActiveTDIChild) then
   begin
-    if (FActiveTDIChild.FormTag = 1) and (FActiveTDIChild as TFEditForm).IsJava
+    if (FActiveTDIChild.FormTag = 1) and TFEditForm(FActiveTDIChild).IsJava
     then
       PrepareClassEdit(FActiveTDIChild.Pathname, 'Edit', nil)
     else if (FActiveTDIChild.FormTag = 2) then
     begin
-      FAUMLForm := FActiveTDIChild as TFUMLForm;
+      FAUMLForm := TFUMLForm(FActiveTDIChild);
       FAUMLForm.TBClassEditorClick(Self);
     end;
   end;
@@ -6323,7 +6323,7 @@ end;
 procedure TFJava.MIRefreshClick(Sender: TObject);
 begin
   if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 2) then
-    (FActiveTDIChild as TFUMLForm).TBRefreshClick(Self);
+    TFUMLForm(FActiveTDIChild).TBRefreshClick(Self);
 end;
 
 procedure TFJava.MINewClassClick(Sender: TObject);
@@ -6397,7 +6397,7 @@ begin
   UMLWindow := nil;
   if Assigned(FActiveTDIChild) and (FActiveTDIChild.FormTag = 2) then
   begin
-    UMLWindow := FActiveTDIChild as TFUMLForm;
+    UMLWindow := TFUMLForm(FActiveTDIChild);
     UMLWindow.MainModul.UnSelectAllElements;
   end;
   if Assigned(UMLWindow) then
@@ -6422,7 +6422,7 @@ begin
       AForm := nil;
     if Assigned(AForm) then
     begin
-      UMLWindow := (AForm as TFUMLForm);
+      UMLWindow := TFUMLForm(AForm);
       UMLWindow.MainModul.AddToProject(Pathname);
     end
     else
@@ -6697,10 +6697,7 @@ begin
     var
     AForm := GetTabForm(I);
     if AForm.FormTag = 2 then
-    begin
-      Result := (AForm as TFUMLForm);
-      Break;
-    end;
+      Exit(TFUMLForm(AForm));
   end;
 end;
 
@@ -6744,7 +6741,7 @@ begin
   LockWindow(FMessages.Handle);
   if Assigned(FActiveTDIChild) then
   begin
-    if (FActiveTDIChild.FormTag = 1) and (FActiveTDIChild as TFEditForm).Modified
+    if (FActiveTDIChild.FormTag = 1) and TFEditForm(FActiveTDIChild).Modified
     then
       DoSave(FActiveTDIChild, WithoutBackup);
 
@@ -6811,7 +6808,7 @@ begin
   LockWindow(FMessages.Handle);
   if Assigned(FActiveTDIChild) then
   begin
-    AActive := FActiveTDIChild as TFEditForm;
+    AActive := TFEditForm(FActiveTDIChild);
     Str := AActive.Pathname;
     Posi := ExtractFilePath(Str);
     FSubversion.ForFile(Str);
@@ -7167,7 +7164,7 @@ begin
   var
   Editform := GetTDIWindowType(Pathname, '%E%');
   var
-  Modified := Assigned(Editform) and (Editform as TFEditForm).Modified and
+  Modified := Assigned(Editform) and TFEditForm(Editform).Modified and
     Editform.Visible;
   Result := (Pathname = '') or (Pos(FConfiguration.JavaCache, Pathname) = 1) or
     (FConfiguration.HasAgeClass(Pathname) and not Modified);
@@ -7183,7 +7180,7 @@ begin
   begin
     AForm := GetTabForm(I);
     if AForm.FormTag = 2 then
-      (AForm as TFUMLForm).Refresh;
+      TFUMLForm(AForm).Refresh;
   end;
   if Assigned(Form) and Form.CanFocus then
     Form.SetFocus;
@@ -7232,7 +7229,7 @@ begin
     end
     else if AForm.FormTag = 2 then
     begin
-      Str := (AForm as TFUMLForm).MainModul.Diagram.GetSourcePath;
+      Str := TFUMLForm(AForm).MainModul.Diagram.GetSourcePath;
       if Pos(Str, Classpath) = 0 then
         Classpath := Str + ';' + Classpath;
     end;
@@ -7248,9 +7245,8 @@ begin
   begin
     var
     StringList := FTDIFormsList[I].GetAllPathnames;
-    if StringList.Count > 0 then
-      Result.AddStrings(StringList);
-    FreeAndNil(StringList);
+    Result.AddStrings(StringList);
+    StringList.Free;
   end;
 end;
 
@@ -7504,10 +7500,10 @@ begin
   if Assigned(Form) then
     case Form.FormTag of
       1:
-        Result := Form as TFEditForm;
+        Result := TFEditForm(Form);
       2:
         if Assigned(Form.Partner) then
-          Result := (Form.Partner as TFEditForm);
+          Result := TFEditForm(Form.Partner);
     end;
 end;
 
@@ -7517,7 +7513,7 @@ begin
   var
   Form := GetActiveForm;
   if Assigned(Form) and (Form.FormTag = 2) then
-    Result := Form as TFUMLForm;
+    Result := TFUMLForm(Form);
 end;
 
 function TFJava.GetActiveForm: TFForm;
@@ -7580,7 +7576,7 @@ procedure TFJava.HideGuiForms;
 begin
   for var I := 0 to FTDIFormsList.Count - 1 do
     if FTDIFormsList[I] is TFGUIForm then
-      (FTDIFormsList[I] as TFGUIForm).Hide;
+      TFGUIForm(FTDIFormsList[I]).Hide;
 end;
 
 procedure TFJava.ShowGuiForms;
@@ -7592,7 +7588,7 @@ begin
     if FTDIFormsList[I] is TFGUIForm then
     begin
       StringList.Add(FTDIFormsList[I].Pathname);
-      (FTDIFormsList[I] as TFGUIForm).Close;
+      TFGUIForm(FTDIFormsList[I]).Close;
     end;
   for var Path in StringList do
     FJava.Open(Path);
@@ -7870,7 +7866,7 @@ begin
     RetranslateComponent(Self);
     for var I := 0 to FTDIFormsList.Count - 1 do
       if FTDIFormsList[I] is TFUMLForm then
-        (FTDIFormsList[I] as TFUMLForm).Retranslate
+        TFUMLForm(FTDIFormsList[I]).Retranslate
       else
         RetranslateComponent(FTDIFormsList[I]);
     RetranslateComponent(FConfiguration);
@@ -8132,7 +8128,7 @@ begin
     else s:= s + '  not canFocus ';
 
     if (FActiveTDIChild.FormTag = 2) then
-    with (FActiveTDIChild as TFUMLForm) do begin
+    with TFUMLForm(FActiveTDIChild) do begin
     // s:= '';
     if MainModul.Diagram.GetPanel.FisMoving then s:= s + ' isMoving';
     if MainModul.Diagram.GetPanel.FIsRectSelecting then s:= s + ' IsRectSelecting';

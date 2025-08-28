@@ -1821,14 +1821,12 @@ end;
 function TConnection.GetBoundsRect(Control: TControl): TRect;
 var
   Rect: TRect;
-  Box: TRtfdBox;
 begin
   Rect := Control.BoundsRect;
   if Control is TRtfdBox then
   begin
-    Box := Control as TRtfdBox;
-    Rect.Width := Rect.Width - Box.ExtentX;
-    Rect.Top := Rect.Top + Box.ExtentY;
+    Rect.Width := Rect.Width - TRtfdBox(Control).ExtentX;
+    Rect.Top := Rect.Top + TRtfdBox(Control).ExtentY;
   end;
   Result := Rect;
 end;

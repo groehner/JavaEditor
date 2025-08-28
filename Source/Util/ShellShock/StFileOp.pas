@@ -271,9 +271,9 @@ begin
 
   { Get a handle to the owning window. }
   if Owner is TWinControl then
-    ParentHandle := (Owner as TWinControl).Handle
+    ParentHandle := TWinControl(Owner).Handle
   else if Owner is TApplication then
-    ParentHandle := (Owner as TApplication).Handle
+    ParentHandle := TApplication(Owner).Handle
   else
     ParentHandle := 0;
 

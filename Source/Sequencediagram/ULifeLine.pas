@@ -82,7 +82,7 @@ constructor TLifeline.CreateLL(AOwner: TComponent; const Participant: string;
   AFont: TFont);
 begin
   inherited Create(AOwner);
-  FSequencePanel := AOwner as TSequencePanel;
+  FSequencePanel := TSequencePanel(AOwner);
   Parent := FSequencePanel;
   if Pos('@', Participant) > 0 then
     FInternalName := Participant

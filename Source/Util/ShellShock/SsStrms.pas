@@ -299,7 +299,7 @@ begin
   GetMem(FBuffer, FBufSize);
 
   {save the stream}
-  if (aStream = nil) then
+  if not Assigned(aStream) then
     RaiseStError(ESsBufStreamError, ssscNilStream);
   FStream := aStream;
 
@@ -323,8 +323,8 @@ end;
 
 destructor TStBufferedStream.Destroy;
 begin
-  if (FBuffer <> nil) then begin
-    if FDirty and (FStream <> nil) then
+  if Assigned(FBuffer) then begin
+    if FDirty and Assigned(FStream) then
       bsWriteToStream;
     FreeMem(FBuffer, FBufSize);
   end;
@@ -336,7 +336,7 @@ end;
 
 procedure TStBufferedStream.bsInitForNewStream;
 begin
-  if (FStream <> nil) then
+  if Assigned(FStream) then
     FSize := FStream.Size
   else
     FSize := 0;
@@ -422,7 +422,7 @@ procedure TStBufferedStream.bsSetStream(aValue : TStream);
 begin
   if (aValue <> FStream) then begin
     {if the buffer is dirty, flush it to the current stream}
-    if FDirty and (FStream <> nil) then
+    if FDirty and Assigned(FStream) then
       bsWriteToStream;
     {remember the stream and initialize all fields}
     FStream := aValue;
@@ -459,7 +459,7 @@ var
   BufAsBytes  : TByteArray absolute Buffer;
   DestPos     : longint;
 begin
-  if (FStream = nil) then
+  if not Assigned(FStream) then
     RaiseStError(ESsBufStreamError, ssscNilStream);
   {calculate the number of bytes we could read if possible}
   BytesToGo := MinLong(Count, FSize - (FBufOfs + FBufPos));
@@ -508,7 +508,7 @@ var
   NewPos : longint;
   NewOfs : longint;
 begin
-  if (FStream = nil) then
+  if not Assigned(FStream) then
     RaiseStError(ESsBufStreamError, ssscNilStream);
   {optimization: to help code that just wants the current stream
    position (ie, reading the Position property), check for this as a
@@ -592,7 +592,7 @@ var
   BufAsBytes  : TByteArray absolute Buffer;
   DestPos     : longint;
 begin
-  if (FStream = nil) then
+  if not Assigned(FStream) then
     RaiseStError(ESsBufStreamError, ssscNilStream);
   {calculate the number of bytes we should be able to write}
   BytesToGo := Count;
@@ -663,7 +663,7 @@ end;
 destructor TStAnsiTextStream.Destroy;
 begin
   {if needed, free the fixed line buffer}
-  if (FFixedLine <> nil) then
+  if Assigned(FFixedLine) then
     FreeMem(FFixedLine, FixedLineLength);
   {free the line index}
   FLineIndex.Free;
@@ -752,7 +752,7 @@ end;
 procedure TStAnsiTextStream.atsResetLineIndex;
 begin
   {make sure we have a line index}
-  if (FLineIndex = nil) then begin
+  if not Assigned(FLineIndex) then begin
     FLineIndex := TList.Create;  {create the index: even elements are}
     FLineIndex.Count := LineIndexCount * 2; {linenums, odd are offsets}
 
@@ -1182,7 +1182,7 @@ procedure TStAnsiTextStream.WriteLineArray(aCharArray : PAnsiChar;
 var
   C : AnsiChar;
 begin
-  if (aCharArray = nil) then
+  if not Assigned(aCharArray) then
     aLen := 0;
   if (LineTerminator = ltNone) then begin
     if (aLen >= FixedLineLength) then
@@ -1218,7 +1218,7 @@ procedure TStAnsiTextStream.WriteLineZ(aSt : PAnsiChar);
 var
   LenSt : TStMemSize;
 begin
-  if (aSt = nil) then
+  if not Assigned(aSt) then
     LenSt := 0
   else
     LenSt := AnsiStrings.StrLen(aSt);
@@ -1550,7 +1550,7 @@ end;
 procedure TStTextStream.atsResetLineIndex;
 begin
   {make sure we have a line index}
-  if (FLineIndex = nil) then begin
+  if not Assigned(FLineIndex) then begin
     FLineIndex := TList<Int64>.Create;  {create the index: even elements are}
 
     {if we didn't have a line index, set up some reasonable defaults}
@@ -1656,7 +1656,7 @@ end;
 destructor TStTextStream.Destroy;
 begin
   {if needed, free the fixed line buffer}
-  if (FFixedLine <> nil) then
+  if Assigned(FFixedLine) then
     FreeMem(FFixedLine);
   {free the line index}
   FLineIndex.Free;

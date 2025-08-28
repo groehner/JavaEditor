@@ -707,11 +707,11 @@ begin
   Sleep(20);
   if Assigned(FUMLForm) and (FUMLForm is TFUMLForm) then
   begin
-    RealUMLForm := FUMLForm as TFUMLForm;
+    RealUMLForm := TFUMLForm(FUMLForm);
     MModul := RealUMLForm.MainModul;
     if Assigned(MModul) then
     begin
-      RtfDiagram := MModul.Diagram as TRtfdDiagram;
+      RtfDiagram := TRtfdDiagram(MModul.Diagram);
       RtfDiagram.DeleteObjects;
     end;
   end;

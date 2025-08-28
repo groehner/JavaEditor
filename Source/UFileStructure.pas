@@ -305,9 +305,9 @@ begin
   if not Assigned(MyForm) then
     Exit;
 
-  if (MyForm.FormTag = 1) and Assigned((MyForm as TFEditForm).Editor) then
+  if (MyForm.FormTag = 1) and Assigned(TFEditForm(MyForm).Editor) then
   begin
-    Line := (MyForm as TFEditForm).Editor.CaretY;
+    Line := TFEditForm(MyForm).Editor.CaretY;
     Num := GetNum(Line);
     if (Num > -1) and not TVFileStructure.Items[Num].Selected then
       TVFileStructure.Items[Num].Selected := True;
@@ -325,17 +325,17 @@ var
   Files: TStringList;
   CNode: TTreeNode;
 
-function GetEditForm(AClassname: string): TFEditForm;
-begin
-  for var I := 0 to Files.Count - 1 do
-    if Pos(AClassname, Files[I]) > 0 then
-    begin
-      FJava.SwitchWindowWithSearch(Files[I]);
-      if FJava.WindowOpened(Files[I], AForm) then
-        Exit(AForm as TFEditForm);
-    end;
-  Result := nil;
-end;
+  function GetEditForm(AClassname: string): TFEditForm;
+  begin
+    for var I := 0 to Files.Count - 1 do
+      if Pos(AClassname, Files[I]) > 0 then
+      begin
+        FJava.SwitchWindowWithSearch(Files[I]);
+        if FJava.WindowOpened(Files[I], AForm) then
+          Exit(TFEditForm(AForm));
+      end;
+    Result := nil;
+  end;
 
 begin
   if not Assigned(Node) then
@@ -344,14 +344,14 @@ begin
   ANodeLine := TInteger(Node.Data).Int;
   ANodeText := Node.Text;
   if MyForm.FormTag = 1 then
-    EditForm := MyForm as TFEditForm
+    EditForm := TFEditForm(MyForm)
   else
     EditForm := nil;
 
   if MyForm.FormTag = 2 then  // UML window
   begin
     FLocked := True;
-    Files := (MyForm as TFUMLForm).MainModul.Model.ModelRoot.Files;
+    Files := TFUMLForm(MyForm).MainModul.Model.ModelRoot.Files;
     CNode := Node;
     while CNode.Parent <> nil do
       CNode := CNode.Parent;
@@ -381,8 +381,8 @@ procedure TFFileStructure.TVFileStructureMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbRight then
-    PMFileStructure.Popup(X + (Sender as TTreeView).ClientOrigin.X - 40,
-      Y + (Sender as TTreeView).ClientOrigin.Y - 5);
+    PMFileStructure.Popup(X + (TTreeView(Sender)).ClientOrigin.X - 40,
+      Y + TTreeView(Sender).ClientOrigin.Y - 5);
 end;
 
 procedure TFFileStructure.ShowIt;

@@ -167,19 +167,14 @@ begin
   try
     MyEditor.Parent := FConfiguration;
     MyEditor.SearchEngine := FJava.SynEditSearch;
-    try
-      MyEditor.Lines.LoadFromFile(Pathname);
-    except
-      on E: Exception do
-        ErrorMsg(Format(_(LNGCanNotOpen), [Pathname]));
-    end;
+    MyEditor.Lines.LoadFromFile(Pathname);
     if MySearchOptions.ExcludeCommentsAndStrings then
       MyEditor.Highlighter := FConfiguration.GetHighlighter(Pathname);
     DoSearch(MyEditor, Pathname);
     if MySearchOptions.Replace and MyEditor.Modified then
       MyEditor.Lines.SaveToFile(Pathname, MyEditor.Lines.Encoding);
   finally
-    FreeAndNil(MyEditor);
+    MyEditor.Free;
   end;
 end;
 
@@ -280,8 +275,8 @@ begin
     Exit;
   end;
   Screen.Cursor := crHourGlass;
+  FSearching := True;
   try
-    FSearching := True;
     FFileCount := 0;
     if MySearchOptions.RegEx and not Assigned(MyRegExSearch) then
       MyRegExSearch := TRegExSearch.Create;
@@ -395,7 +390,7 @@ begin
   var
   Pos1 := ScanPos;
   var
-  Pos2 := ScanPos + Len;
+  Pos2 := ScanPos + Len - 1;
   Result := (((Pos1 - 1 = 0) or IsWordBreakChar(Line[Pos1 - 1])) and
     ((Pos2 + 1 > Length(Line)) or IsWordBreakChar(Line[Pos2 + 1])));
 end;
@@ -436,11 +431,14 @@ var
       ScanPos := Pos(UsedSearchText, UsedSearchLine, ScanPos);
       if ScanPos > 0 then
       begin
-        if not(MySearchOptions.WholeWords and not IsWholeWord(UsedSearchLine,
-          ScanPos, Length(SearchText)) and
-          not(MySearchOptions.ExcludeCommentsAndStrings and
-          IsCommentOrString(ScanPos, LineNo))) then
-        begin
+        if (MySearchOptions.WholeWords and
+            IsWholeWord(UsedSearchLine, ScanPos, Length(SearchText)) or
+            not MySearchOptions.WholeWords)
+        and
+           (MySearchOptions.ExcludeCommentsAndStrings and
+            not IsCommentOrString(ScanPos, LineNo) or
+            not MySearchOptions.ExcludeCommentsAndStrings)
+        then begin
           FoundIt(Self, SearchText, ReplaceText, LineNo + 1, ScanPos, Action);
           if MySearchOptions.Replace then
           begin

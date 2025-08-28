@@ -263,7 +263,7 @@ begin
     PaintDefault := False;
     var
     AColor := clBtnFace;
-    case (Sender as TSpTBXLabelItem).Tag of
+    case TSpTBXLabelItem(Sender).Tag of
       1:
         AColor := FAddClr;
       2:
@@ -1060,7 +1060,7 @@ end;
 
 procedure TFTextDiff.SynEditEnter(Sender: TObject);
 begin
-  FCodeEditNumber := (Sender as TSynEditDiff).Number;
+  FCodeEditNumber := TSynEditDiff(Sender).Number;
 end;
 
 procedure TFTextDiff.DPIChanged;

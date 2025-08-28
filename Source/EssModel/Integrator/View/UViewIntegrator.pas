@@ -182,7 +182,8 @@ procedure SetCurrentEntity(Value: TModelEntity);
 implementation
 
 uses
-  SysUtils,
+  System.SysUtils,
+  System.IOUtils,
   Contnrs,
   Vcl.Imaging.pngimage,
   JvGnugettext,
@@ -289,24 +290,15 @@ var
           ErrorMsg(Format(_(LNGCanNotCreateFile), [FileName, E.Message]));
       end;
     finally
-      FreeAndNil(Bitmap);
-      FreeAndNil(Png);
+      Bitmap.Free;
+      Png.Free;
     end;
-  end;
-
-  procedure InToSVG;
-  begin
-    var
-    StringList := TStringList.Create;
-    StringList.Text := GetSVG;
-    StringList.SaveToFile(FileName, TEncoding.UTF8);
-    FreeAndNil(StringList);
   end;
 
 begin
   GetDiagramSize(Width, Height);
   if LowerCase(ExtractFileExt(FileName)) = '.svg' then
-    InToSVG
+    TFile.WriteAllText(FileName, GetSVG, TEncoding.UTF8)
   else
     InToPng;
 end;
@@ -350,7 +342,7 @@ begin
   begin
     GCurrentEntity := Value;
     for var I := 0 to GViewIntegrators.Count - 1 do
-      (GViewIntegrators[I] as TViewIntegrator).CurrentEntityChanged;
+      TViewIntegrator(GViewIntegrators[I]).CurrentEntityChanged;
   end;
 end;
 

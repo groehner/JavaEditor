@@ -578,14 +578,14 @@ begin
         begin
           StreamedClassName := ReadString;
           StreamedClass := GetClass(StreamedClassName);
-          if (StreamedClass = nil) then
+          if not Assigned(StreamedClass) then
             RaiseContainerErrorFmt(ssscUnknownClass, [StreamedClassName]);
           if (not IsOrInheritsFrom(StreamedClass, Self.ClassType)) or
               (not IsOrInheritsFrom(TStList, StreamedClass)) then
             RaiseContainerError(ssscWrongClass);
           StreamedNodeClassName := ReadString;
           StreamedNodeClass := GetClass(StreamedNodeClassName);
-          if (StreamedNodeClass = nil) then
+          if not Assigned(StreamedNodeClass) then
             RaiseContainerErrorFmt(ssscUnknownNodeClass, [StreamedNodeClassName]);
           if (not IsOrInheritsFrom(StreamedNodeClass, conNodeClass)) or
               (not IsOrInheritsFrom(TStListNode, StreamedNodeClass)) then

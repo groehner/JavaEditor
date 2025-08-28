@@ -2518,7 +2518,7 @@ function TJavaValue.GetAsString: string;
             else begin
               try
                 for j:= 0 to SL.Count - 1 do begin
-                  aJavaObject:= SL.Objects[j] as TJavaObject;
+                  aJavaObject:= TJavaObject(SL.Objects[j]);
                   if FPEnv^.IsSameObject(FPEnv, obj, aJavaObject.Handle) then begin
                     Str:= ', ' + SL.Strings[j];
                     Break;
@@ -2527,7 +2527,7 @@ function TJavaValue.GetAsString: string;
               except
                 Str:= aJavaObject.ToString;
                 for j:= 0 to SL.Count - 1 do begin
-                  aJavaObject:= SL.Objects[j] as TJavaObject;
+                  aJavaObject:= TJavaObject(SL.Objects[j]);
                   if aJavaObject.ToString = Str then begin
                     Str:= ', ' + SL.Strings[j];
                     Break;
@@ -2590,7 +2590,7 @@ begin
             Str:= '';
             SL:= myComJava2.ObjectList;
             for Int:= 0 to SL.Count - 1 do begin
-              aJavaObject:= SL.Objects[Int] as TJavaObject;
+              aJavaObject:= TJavaObject(SL.Objects[Int]);
               if FPEnv^.IsSameObject(FPEnv, Value.Str, aJavaObject.Handle) then begin
                 Str:= SL.Strings[Int];
                 Break;

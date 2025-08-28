@@ -1320,7 +1320,7 @@ begin
       Partner.Save(WithBackup);
     Form := FJava.GetTDIWindowType(Pathname, '%Q%');
     if Assigned(Form) then
-      (Form as TFSequenceForm).RefreshFromFile;
+      TFSequenceForm(Form).RefreshFromFile;
   except
     on e: Exception do
       ShowMessage(e.Message);
@@ -2549,7 +2549,7 @@ begin
         Continue;
 
       if (Cent is TClass) then
-        FIsJUnitTestClass := (Cent as TClass).IsJUnitTestClass
+        FIsJUnitTestClass := TClass(Cent).IsJUnitTestClass
       else
         FIsJUnitTestClass := False;
 
@@ -2591,7 +2591,7 @@ begin
       Ite := Cent.GetAttributes;
       while Ite.HasNext do
       begin
-        Attribute := Ite.Next as TAttribute;
+        Attribute := TAttribute(Ite.Next);
         ImageNr := Integer(Attribute.Visibility) + 2;
         Node := TVFileStructure.Items.AddChildObject(ClassNode,
           Attribute.ToTypeName, TInteger.Create(Attribute.Lines));
@@ -2602,7 +2602,7 @@ begin
       Ite := Cent.GetOperations;
       while Ite.HasNext do
       begin
-        Method := Ite.Next as TOperation;
+        Method := TOperation(Ite.Next);
         if Method.OperationType = otConstructor then
           ImageNr := 6
         else
@@ -2631,8 +2631,8 @@ begin
   begin
     var
     Cent := TClassifier(ClassIt.Next);
-    if (Cent is TClass) and (Cent as TClass).IsJUnitTestClass then
-      MyJavaCommands.RunTests(Cent as TClass, 'Class');
+    if (Cent is TClass) and TClass(Cent).IsJUnitTestClass then
+      MyJavaCommands.RunTests(TClass(Cent), 'Class');
   end;
 end;
 
@@ -2808,11 +2808,11 @@ begin
     Ite := Cent.GetOperations;
     if Ite.HasNext then
     begin
-      Method := Ite.Next as TOperation;
+      Method := TOperation(Ite.Next);
       CheckConstructorAndComponentsPosition;
       while Ite.HasNext do
       begin
-        Method := Ite.Next as TOperation;
+        Method := TOperation(Ite.Next);
         CheckConstructorAndComponentsPosition;
       end;
     end;
@@ -2820,12 +2820,12 @@ begin
     Ite := Cent.GetAttributes;
     if Ite.HasNext then
     begin
-      Attribute := Ite.Next as TAttribute;
+      Attribute := TAttribute(Ite.Next);
       Lines[1] := Attribute.Lines - 1;
       Lines[2] := Attribute.LineE;
       while Ite.HasNext do
       begin
-        Attribute := Ite.Next as TAttribute;
+        Attribute := TAttribute(Ite.Next);
         Lines[2] := Attribute.LineE;
       end;
     end;
@@ -2885,9 +2885,9 @@ begin
       Cent := ClassIt.Next;
       if (Cent is TClass) then
       begin
-        Ite := (Cent as TClass).GetOperations;
+        Ite := TClass(Cent).GetOperations;
         while Ite.HasNext do
-          if (Ite.Next as TOperation).HasMain then
+          if TOperation(Ite.Next).HasMain then
             Exit;
       end;
     end;
@@ -2944,7 +2944,7 @@ begin
         Ite := Cent.GetOperations;
         while Ite.HasNext and not Found do
         begin
-          Method := Ite.Next as TOperation;
+          Method := TOperation(Ite.Next);
           if Method.Lines = Line then
           begin
             AMethodname := Method.Name;
@@ -3290,7 +3290,7 @@ end;
 
 procedure TFEditForm.SBStatementClick(Sender: TObject);
 begin
-  FTemplates.SBControlStructures(Self, (Sender as TToolButton).Tag);
+  FTemplates.SBControlStructures(Self, TToolButton(Sender).Tag);
 end;
 
 procedure TFEditForm.SBIndentClick(Sender: TObject);
@@ -3439,13 +3439,13 @@ begin
       Ite := Cent.GetAttributes;
       while Ite.HasNext do
       begin
-        Attribute := Ite.Next as TAttribute;
+        Attribute := TAttribute(Ite.Next);
         IndentLine(Attribute.Lines);
       end;
       Ite := Cent.GetOperations;
       while Ite.HasNext do
       begin
-        Method := Ite.Next as TOperation;
+        Method := TOperation(Ite.Next);
         for var I := Method.Lines to Method.LineE do
           IndentLine(I);
       end;
@@ -4561,7 +4561,7 @@ var
 begin
   if Control is TJEComponent then
   begin
-    Container := (Control as TJEComponent).GetContainerAdd;
+    Container := TJEComponent(Control).GetContainerAdd;
     Start := GetLNGStartComponents;
     From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
     Till := GetLineNumberWithFrom(Start, Container);
@@ -4580,7 +4580,7 @@ var
 begin
   if Control is TJEComponent then
   begin
-    Container := (Control as TJEComponent).GetContainerAdd;
+    Container := TJEComponent(Control).GetContainerAdd;
     Start := GetLineNumberWith(_(LNGStartComponents));
     From := GetLineNumberWithStartsWordFrom(Start, Control.Name);
     Till := GetLineNumberWithFrom(Start, Container);
@@ -4746,7 +4746,7 @@ var
   Typ: string;
 begin
   FEditor.BeginUpdate;
-  Typ := (Control as TJEComponent).JavaType;
+  Typ := TJEComponent(Control).JavaType;
   DeleteAttribute('private ' + Typ + ' ' + Control.Name);
 
   Stop := GetLNGEndComponents;
@@ -4812,12 +4812,12 @@ begin
   while ClassIt.HasNext and not Result do
   begin
     Cent := ClassIt.Next;
-    if (Cent is TClass) then
+    if Cent is TClass then
     begin
-      Ite := (Cent as TClass).GetOperations;
+      Ite := TClass(Cent).GetOperations;
       while Ite.HasNext and not Result do
       begin
-        Method := Ite.Next as TOperation;
+        Method := TOperation(Ite.Next);
         if Method.Name = AMethodname then
           Result := True;
       end;
@@ -4882,10 +4882,10 @@ begin
     Cent := ClassIt.Next;
     if Cent is TClass then
     begin
-      Ite := (Cent as TClass).GetOperations;
+      Ite := TClass(Cent).GetOperations;
       while Ite.HasNext and not Found do
       begin
-        Operation := Ite.Next as TOperation;
+        Operation := TOperation(Ite.Next);
         if Operation.Name = Method then
         begin
           From := Operation.Lines - 1;
@@ -5077,13 +5077,13 @@ begin
     Cent := ClassIt.Next;
     if Cent is TClass then
     begin
-      Ite := (Cent as TClass).GetOperations;
+      Ite := TClass(Cent).GetOperations;
       while Ite.HasNext do
       begin
         Inc(Index);
         if Length(MethodArray) = Index then
           SetLength(MethodArray, Length(MethodArray) + 20);
-        Method := Ite.Next as TOperation;
+        Method := TOperation(Ite.Next);
         MethodArray[Index].Name := Method.Name;
         MethodArray[Index].From := Method.Lines - 1;
         MethodArray[Index].Till := Method.LineE - 1;
@@ -5181,13 +5181,13 @@ begin
     Cent := ClassIt.Next;
     if Cent is TClass then
     begin
-      Ite := (Cent as TClass).GetOperations;
+      Ite := TClass(Cent).GetOperations;
       while Ite.HasNext do
       begin
         Inc(Index);
         if Length(MethodArray) = Index then
           SetLength(MethodArray, Length(MethodArray) + 20);
-        Method := Ite.Next as TOperation;
+        Method := TOperation(Ite.Next);
         MethodArray[Index].Name := Method.Name;
         MethodArray[Index].From := Method.Lines - 1;
         MethodArray[Index].Till := Method.LineE - 1;

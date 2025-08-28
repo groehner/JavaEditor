@@ -33,8 +33,7 @@ uses
   SpTBXItem,
   RegularExpressions;
 
-const
-  CecLeft = 1; // Move cursor left one char
+const CecLeft = 1; // Move cursor left one char
   CecRight = 2; // Move cursor right one char
   CecUp = 3; // Move cursor up one line
   CecDown = 4; // Move cursor down one line
@@ -115,8 +114,8 @@ function ExtractFileNameEx(Str: string): string;
 function ExtractFilePathEx(const Str: string): string;
 function StripHttpParams(const Str: string): string;
 function IsWriteProtected(const Filename: string): Boolean;
-function RemoveReadOnlyAttribute(const FileName: string): Boolean;
-function SetReadOnlyAttribute(const FileName: string): Boolean;
+function RemoveReadOnlyAttribute(const Filename: string): Boolean;
+function SetReadOnlyAttribute(const Filename: string): Boolean;
 function HasWriteAccess(const Directory: string): Boolean;
 function AddFileExt(const Filename, AFilter, Ext: string;
   Filterindex: Integer): string;
@@ -268,13 +267,13 @@ function XYToVal(XPos, YPos: Integer): string;
 function CanActuallyFocus(WinControl: TWinControl): Boolean;
 procedure SetDefaultUIFont(const AFont: TFont);
 procedure Log(const Str: string);
-function CompiledRegEx(const Expr: string; Options: TRegExOptions = [roNotEmpty];
-  UCP: Boolean = True): TRegEx;
+function CompiledRegEx(const Expr: string;
+  Options: TRegExOptions = [roNotEmpty]; UCP: Boolean = True): TRegEx;
 function MyMulDiv(NNumber, NNumerator, NDenominator: Integer): Integer;
 function StringTimesN(const Str: string; Num: Integer): string;
 function GetUsersWindowsLanguage: string;
 function Obfuscate(const Str: string): string;
-function StringZuSingle(Str: string): Single;
+function StringToSingle(Str: string): Single;
 { Styled MessageDlg (do not use TaskDialog) }
 function StyledMessageDlg(const Msg: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; HelpCtx: LongInt): Integer; overload;
@@ -317,10 +316,8 @@ begin
 end;
 
 function ANSI2ASCII(const AText: string): string;
-const
-  MaxLength = 1024;
-var
-  PText: PChar;
+const MaxLength = 1024;
+var PText: PChar;
 begin
   PText := StrAlloc(MaxLength);
   StrPCopy(PText, AText);
@@ -385,9 +382,7 @@ begin
 end;
 
 function GetClass(const Classpath, Pathname: string): string;
-var
-  Str, AClasspath, DStr, AClassname: string;
-  Posi, Int: Integer;
+var Str, AClasspath, DStr, AClassname: string; Posi, Int: Integer;
 begin
   Result := '';
   AClassname := ChangeFileExt(Pathname, '.class');
@@ -437,8 +432,7 @@ begin
 end;
 
 function ExtractFileNameEx(Str: string): string;
-var
-  Int: Integer;
+var Int: Integer;
 begin
   if Pos('file:///', Str) > 0 then
   begin
@@ -469,9 +463,7 @@ begin
 end;
 
 function StripHttpParams(const Str: string): string;
-var
-  Int: Integer;
-  FName: string;
+var Int: Integer; FName: string;
 begin
   FName := ExtractFileName(Str);
   Int := Pos('?', FName);
@@ -499,9 +491,9 @@ begin
 end;
 
 {$WARNINGS OFF}
+
 function IsWriteProtected(const Filename: string): Boolean;
-var
-  Attributes: TFileAttributes;
+var Attributes: TFileAttributes;
 begin
   if not TFile.Exists(Filename) then
     Exit(False);
@@ -509,27 +501,25 @@ begin
   Result := TFileAttribute.faReadOnly in Attributes;
 end;
 
-function RemoveReadOnlyAttribute(const FileName: string): Boolean;
-var
-  Attr: Integer;
+function RemoveReadOnlyAttribute(const Filename: string): Boolean;
+var Attr: Integer;
 begin
   Result := False;
-  Attr := FileGetAttr(FileName);
+  Attr := FileGetAttr(Filename);
   if Attr <> -1 then // -1 bedeutet, dass die Datei nicht existiert
   begin
-    Result := FileSetAttr(FileName, Attr and not faReadOnly) = 0;
+    Result := FileSetAttr(Filename, Attr and not faReadOnly) = 0;
   end;
 end;
 
-function SetReadOnlyAttribute(const FileName: string): Boolean;
-var
-  Attr: Integer;
+function SetReadOnlyAttribute(const Filename: string): Boolean;
+var Attr: Integer;
 begin
   Result := False;
-  Attr := FileGetAttr(FileName);
+  Attr := FileGetAttr(Filename);
   if Attr <> -1 then
   begin
-    Result := FileSetAttr(FileName, Attr or faReadOnly) = 0;
+    Result := FileSetAttr(Filename, Attr or faReadOnly) = 0;
   end;
 end;
 {$WARNINGS ON}
@@ -537,22 +527,20 @@ end;
 function HasWriteAccess(const Directory: string): Boolean;
 begin
   var
-  Str := WithTrailingSlash(Directory) + 'wa_test.$$$';
+  TestFile := TPath.Combine(Directory, '.__writetest.tmp');
   try
-    var
-    FileStream := TFileStream.Create(Str, fmCreate or fmShareExclusive);
-    FreeAndNil(FileStream);
-    Result := DeleteFile(PChar(Str));
+    TFile.WriteAllText(TestFile, 'test');
+    Result := True;
   except
     Result := False;
   end;
+  if Result and TFile.Exists(TestFile) then
+    TFile.Delete(TestFile);
 end;
 
 function AddFileExt(const Filename, AFilter, Ext: string;
   Filterindex: Integer): string;
-var
-  Int, Posi, Count: Integer;
-  Filter: string;
+var Int, Posi, Count: Integer; Filter: string;
 begin
   Filter := AFilter;
   if ExtractFileExt(Filename) = '' then
@@ -614,12 +602,7 @@ end;
 
 procedure RotateBitmap(Bmp: TBitmap; Rads: Single; AdjustSize: Boolean;
   BkColor: TColor = clNone);
-var
-  CoSin: Single;
-  Str: Single;
-  Tmp: TBitmap;
-  OffsetX: Single;
-  OffsetY: Single;
+var CoSin: Single; Str: Single; Tmp: TBitmap; OffsetX: Single; OffsetY: Single;
   Points: array [0 .. 2] of TPoint;
 begin
   CoSin := Cos(Rads);
@@ -654,14 +637,12 @@ begin
       Bmp.Height, 0, 0, 0);
     Bmp.Assign(Tmp);
   finally
-    FreeAndNil(Tmp);
+    Tmp.FreeImage;
   end;
 end;
 
 procedure TidyPath(const Dir: string);
-var
-  Str, Path: string;
-  StringList: TStringList;
+var Str, Path: string; StringList: TStringList;
 begin
   Path := GetEnvironmentVariable('Path');
   StringList := Split(';', Path);
@@ -675,7 +656,7 @@ begin
     Path := Dir + ReplaceStr(StringList.Text, #13#10, ';');
     SetEnvironmentVariable('Path', PChar(Path));
   finally
-    FreeAndNil(StringList);
+    StringList.Free;
   end;
 end;
 
@@ -693,68 +674,68 @@ begin
 end;
 
 function GetExeForExtension(const Ext: string): string;
-var
-  Reg: TRegistry;
-  Str: string;
-  Posi: Integer;
+var Reg: TRegistry; Str: string; Posi: Integer;
 begin
   Str := '';
   Reg := TRegistry.Create;
-  Reg.RootKey := HKEY_LOCAL_MACHINE;
-  Reg.Access := KEY_READ;
   try
-    if Reg.OpenKey('SOFTWARE\Classes\' + Ext + '\shell\open\command', False)
-    then
-    begin
-      { The open command has been found }
-      Str := Reg.ReadString('');
-      Reg.CloseKey;
-    end
-    else
-    begin
-      { perhaps there is a system file pointer }
-      if Reg.OpenKey('SOFTWARE\Classes\' + Ext, False) then
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    Reg.Access := KEY_READ;
+    try
+      if Reg.OpenKey('SOFTWARE\Classes\' + Ext + '\shell\open\command', False)
+      then
       begin
-        try
-          Str := Reg.ReadString('');
-        except
-          Str := '';
-        end;
+        { The open command has been found }
+        Str := Reg.ReadString('');
         Reg.CloseKey;
-        if Str <> '' then
+      end
+      else
+      begin
+        { perhaps there is a system file pointer }
+        if Reg.OpenKey('SOFTWARE\Classes\' + Ext, False) then
         begin
-          { A system file pointer was found }
-          if Reg.OpenKey('SOFTWARE\Classes\' + Str + '\Shell\Open\command',
-            False) then
-            { The open command has been found }
+          try
             Str := Reg.ReadString('');
+          except
+            Str := '';
+          end;
           Reg.CloseKey;
+          if Str <> '' then
+          begin
+            { A system file pointer was found }
+            if Reg.OpenKey('SOFTWARE\Classes\' + Str + '\Shell\Open\command',
+              False) then
+              { The open command has been found }
+              Str := Reg.ReadString('');
+            Reg.CloseKey;
+          end;
         end;
       end;
+    except
+      Str := '';
     end;
-  except
-    Str := '';
-  end;
-  { Delete any command line, quotes and spaces }
-  if Pos('%', Str) > 0 then
-    Delete(Str, Pos('%', Str), Length(Str));
-  Str := Trim(Str);
-  Posi := Pos('.EXE', UpperCase(Str));
-  if Posi > 0 then
-    Delete(Str, Posi + 4, Length(Str));
-  Posi := Pos('"', Str);
-  if Posi = 1 then
-  begin
-    Delete(Str, 1, 1);
-    Posi := Pos('"', Str);
+    { Delete any command line, quotes and spaces }
+    if Pos('%', Str) > 0 then
+      Delete(Str, Pos('%', Str), Length(Str));
+    Str := Trim(Str);
+    Posi := Pos('.EXE', UpperCase(Str));
     if Posi > 0 then
-      Delete(Str, Posi, Length(Str));
+      Delete(Str, Posi + 4, Length(Str));
+    Posi := Pos('"', Str);
+    if Posi = 1 then
+    begin
+      Delete(Str, 1, 1);
+      Posi := Pos('"', Str);
+      if Posi > 0 then
+        Delete(Str, Posi, Length(Str));
+    end;
+    if FileExists(Str) then
+      Result := Str
+    else
+      Result := '';
+  finally
+    Reg.Free;
   end;
-  if FileExists(Str) then
-    Result := Str
-  else
-    Result := '';
-  FreeAndNil(Reg);
 end;
 
 function HasAssociationWithJavaeditor(const Extension: string): Boolean;
@@ -775,8 +756,7 @@ begin
 end;
 
 procedure SendKeysGlobal(const Str: string);
-var
-  AWord: Word;
+var AWord: Word;
 begin
   for var I := 1 to Length(Str) do
   begin
@@ -806,8 +786,7 @@ end;
 
 procedure SendCtrlKeyGlobal(Chr: Char);
 // SendCtrlKeyGlobal('C') sends Ctrl-C
-var
-  AWord: Word;
+var AWord: Word;
 begin
   AWord := VkKeyScan(Chr);
   keybd_event(VK_CONTROL, 0, 0, 0);
@@ -818,8 +797,7 @@ end;
 
 procedure SendAltKeyGlobal(Chr: Char);
 // SendAltKeyGlobal('C') sends Alt-C
-var
-  AWord: Word;
+var AWord: Word;
 begin
   AWord := VkKeyScan(Chr);
   keybd_event(VK_MENU, 0, 0, 0);
@@ -830,8 +808,7 @@ end;
 
 procedure SendKeyGlobal(Chr: Char);
 // SendKeyGlobal('C') sends 'C'
-var
-  AWord: Word;
+var AWord: Word;
 begin
   AWord := VkKeyScan(Chr);
   keybd_event(AWord, 0, 0, 0);
@@ -840,15 +817,10 @@ end;
 
 // z. B. '<Ctrl+Shift+C>ABC123'
 procedure SendShortCutStringGlobal(Str: string);
-var
-  Str1: string;
-  Posi: Integer;
+var Str1: string; Posi: Integer;
 
   procedure SendOneShortCutGlobal(const Str: string);
-  var
-    Chr: Char;
-    AWord: Word;
-    Ctrl, Shift, Alt: Boolean;
+  var Chr: Char; AWord: Word; Ctrl, Shift, Alt: Boolean;
   begin
     Ctrl := Pos('Ctrl', Str) + Pos('Strg', Str) > 0;
     Shift := Pos('Shift', Str) + Pos('Umsch', Str) > 0;
@@ -872,8 +844,7 @@ var
   end;
 
   procedure SendOneCharGlobal(Chr: Char);
-  var
-    AWord: Word;
+  var AWord: Word;
   begin
     AWord := VkKeyScan(Chr);
     keybd_event(AWord, 0, 0, 0);
@@ -927,12 +898,12 @@ end;
 
 function HasDefaultPrinter: Boolean;
 begin
-  Result:= (-1 < Printer.PrinterIndex) and (Printer.PrinterIndex < Printer.Printers.Count);
+  Result := (-1 < Printer.PrinterIndex) and
+    (Printer.PrinterIndex < Printer.Printers.Count);
 end;
 
 procedure ScrollEndListBox(ListBox: TListBox);
-var
-  MaxVisible, MaxLength, Width: Integer;
+var MaxVisible, MaxLength, Width: Integer;
 begin
   MaxVisible := ListBox.Height div ListBox.ItemHeight;
   if ListBox.Items.Count > MaxVisible then
@@ -949,8 +920,7 @@ begin
   SendMessage(ListBox.Handle, LB_SETHORIZONTALEXTENT, MaxLength, 0);
 end;
 
-var
-  FLockFormUpdatePile: Integer;
+var FLockFormUpdatePile: Integer;
 
 procedure LockFormUpdate(Form: TForm);
 begin
@@ -987,8 +957,7 @@ begin
 end;
 
 function GetLocalUserName: string;
-var
-  Count: DWORD;
+var Count: DWORD;
 begin
   Count := 256 + 1; // UNLEN + 1
   // set buffer size to 256 + 2 characters
@@ -1000,8 +969,7 @@ begin
 end;
 
 procedure SetAnimation(Value: Boolean);
-var
-  Info: TAnimationInfo;
+var Info: TAnimationInfo;
 begin
   Info.cbSize := SizeOf(TAnimationInfo);
   BOOL(Info.iMinAnimate) := Value;
@@ -1009,8 +977,7 @@ begin
 end;
 
 function GetAnimation: Boolean;
-var
-  Info: TAnimationInfo;
+var Info: TAnimationInfo;
 begin
   Info.cbSize := SizeOf(TAnimationInfo);
   if SystemParametersInfo(SPI_GETANIMATION, SizeOf(Info), @Info, 0) then
@@ -1019,20 +986,14 @@ begin
     Result := False;
 end;
 
-const
-  SECURITY_NT_AUTHORITY: TSIDIdentifierAuthority = (Value: (0, 0, 0, 0, 0, 5));
-  SECURITY_BUILTIN_DOMAIN_RID = $00000020;
+const SECURITY_NT_AUTHORITY: TSIDIdentifierAuthority =
+    (Value: (0, 0, 0, 0, 0, 5)); SECURITY_BUILTIN_DOMAIN_RID = $00000020;
   DOMAIN_ALIAS_RID_ADMINS = $00000220;
 
 function IsGroupMember(RelativeGroupID: DWORD): Boolean;
-var
-  PsidAdmin: Pointer;
-  Token: THandle;
-  Count: DWORD;
-  TokenInfo: PTokenGroups;
+var PsidAdmin: Pointer; Token: THandle; Count: DWORD; TokenInfo: PTokenGroups;
   HaveToken: Boolean;
-const
-  SE_GROUP_USE_FOR_DENY_ONLY = $00000010;
+const SE_GROUP_USE_FOR_DENY_ONLY = $00000010;
 begin
   Result := not(Win32Platform = VER_PLATFORM_WIN32_NT);
   if Result then // Win9x and ME don't have user groups
@@ -1095,10 +1056,7 @@ begin
 end;
 
 procedure SetPrinterIndex(Int: Integer);
-var
-  Device, Driver, Port: string;
-  Dest: PChar;
-  DeviceMode: THandle;
+var Device, Driver, Port: string; Dest: PChar; DeviceMode: THandle;
 begin
   try
     Printer.PrinterIndex := Int;
@@ -1114,21 +1072,18 @@ begin
       Device := Dest;
       GlobalUnlock(DeviceMode);
     end;
-  except on E: Exception do
-      OutputDebugString(PChar('Exception: ' + E.ClassName + ' - ' + E.Message));
+  except
+    on E: Exception do
+      ErrorMsg('Exception in SetPrinterIndex: ' + E.ClassName + ' - ' +
+        E.Message);
   end;
 end;
 
 procedure PrintBitmap(FormBitmap: TBitmap; PixelsPerInch: Integer;
   PrintScale: TPrintScale = poProportional);
-var
-  InfoSize: DWORD;
-  ImageSize: DWORD;
-  Bits: HBITMAP;
-  DIBWidth, DIBHeight: LongInt;
-  PrintWidth, PrintHeight: LongInt;
-  Info: PBitmapInfo;
-  Image: Pointer;
+var InfoSize: DWORD; ImageSize: DWORD; Bits: HBITMAP;
+  DIBWidth, DIBHeight: LongInt; PrintWidth, PrintHeight: LongInt;
+  Info: PBitmapInfo; Image: Pointer;
 begin
   // analogous to TCustomForm.Print
   Printer.BeginDoc;
@@ -1195,10 +1150,8 @@ end;
 
 // from System.SysUtils
 function GetDocumentsPath: string;
-const
-  CSIDL_PERSONAL = $0005;
-var
-  LStr: array [0 .. MAX_PATH] of Char;
+const CSIDL_PERSONAL = $0005;
+var LStr: array [0 .. MAX_PATH] of Char;
 begin
   Result := '';
   SetLastError(ERROR_SUCCESS);
@@ -1207,9 +1160,7 @@ begin
 end;
 
 function DissolveUsername(const Str: string): string;
-var
-  Posi: Integer;
-  Username: string;
+var Posi: Integer; Username: string;
 begin
   Result := Str;
   Posi := Pos('%USERNAME%', UpperCase(Result));
@@ -1260,9 +1211,7 @@ begin
 end;
 
 function ToWeb(const Browser: string; Str: string): string;
-var
-  Posi: Integer;
-  IsUNC, IsDrive: Boolean;
+var Posi: Integer; IsUNC, IsDrive: Boolean;
 begin
   IsUNC := (Copy(Str, 1, 2) = '\\');
   IsDrive := (Copy(Str, 2, 1) = ':');
@@ -1340,9 +1289,7 @@ end;
 
 function GlobalMinimizeName(Filename: string; Canvas: TCanvas;
   MaxLen: Integer): string;
-var
-  Width, Posi: Integer;
-  Server, Test: string;
+var Width, Posi: Integer; Server, Test: string;
 begin
   if IsHTTP(Filename) then
   begin
@@ -1495,8 +1442,7 @@ procedure StreamWritelnANSI(FileStream: TFileStream; const Str: string);
 // Windows Codepage = 1252
 type
   DOSString = type AnsiString(850);
-var
-  DStr: DOSString;
+var DStr: DOSString;
 begin
   if Assigned(FileStream) then
   begin
@@ -1518,19 +1464,18 @@ end;
 
 // needs WinInet
 function DownloadURL(const AUrl, AFile: string): Boolean;
-var
-  HSession: HINTERNET;
-  HService: HINTERNET;
-  LpBuffer: array [0 .. 1024 + 1] of Char;
-  DwBytesRead: DWORD;
+var HSession: HINTERNET; HService: HINTERNET;
+  LpBuffer: array [0 .. 1024 + 1] of Char; DwBytesRead: DWORD;
   FStream: TFileStream;
 begin
   Result := False;
   try
-    FStream := TFileStream.Create(AFile, fmCreate or fmShareExclusive);
-    HSession := InternetOpen('Java-Editor', INTERNET_OPEN_TYPE_PRECONFIG,
-      nil, nil, 0);
+    FStream := nil;
+    HSession := nil;
     try
+      FStream := TFileStream.Create(AFile, fmCreate or fmShareExclusive);
+      HSession := InternetOpen('Java-Editor', INTERNET_OPEN_TYPE_PRECONFIG,
+        nil, nil, 0);
       if Assigned(HSession) then
       begin // no chache usage
         HService := InternetOpenUrl(HSession, PChar(AUrl), nil, 0,
@@ -1556,8 +1501,8 @@ begin
       FreeAndNil(FStream);
     end;
   except
-    on e: Exception do
-      ErrorMsg(e.Message);
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
 end;
 
@@ -1627,9 +1572,7 @@ begin
 end;
 
 function GetShortMethod(Str: string): string;
-var
-  Posi: Integer;
-  Str1: string;
+var Posi: Integer; Str1: string;
 begin
   Posi := Pos('throws ', Str);
   if Posi > 0 then
@@ -1657,9 +1600,8 @@ begin
   Result := Str;
 end;
 
-const
-  SimpleTypePascal: array [1 .. 8] of string = ('integer', 'double', 'boolean',
-    'char', 'Real', 'word', 'byte', 'shortint');
+const SimpleTypePascal: array [1 .. 8] of string = ('integer', 'double',
+    'boolean', 'char', 'Real', 'word', 'byte', 'shortint');
 
   SimpleTypeJava: array [1 .. 8] of string = ('int', 'double', 'boolean',
     'char', 'float', 'long', 'byte', 'short');
@@ -1683,8 +1625,7 @@ begin // pascal
 end;
 
 function WithoutGeneric(Str: string): string;
-var
-  Posi1, Posi2: Integer;
+var Posi1, Posi2: Integer;
 begin
   Posi1 := Pos('<', Str);
   if Posi1 > 0 then
@@ -1834,8 +1775,7 @@ begin
 end;
 
 function ChangeColor(Color: TColor; Percent: Real): TColor;
-var
-  Red, Green, Blue: Integer;
+var Red, Green, Blue: Integer;
 begin
   Red := 0;
   Green := 0;
@@ -1871,8 +1811,7 @@ begin
 end;
 
 function IsWordInLine(const Word, Line: string): Boolean;
-var
-  Posi, QPos: Integer;
+var Posi, QPos: Integer;
 begin
   Result := False;
   Posi := Pos(Word, Line);
@@ -1900,8 +1839,7 @@ begin
 end;
 
 function GetNextPart(var Str: string; Chr: Char): string;
-var
-  QPos, Posi, Bracket: Integer;
+var QPos, Posi, Bracket: Integer;
 begin
   Posi := Pos(Chr, Str);
   if Posi = 0 then
@@ -1962,11 +1900,8 @@ begin
 end;
 
 function FileIs32Bit(const Filename: string): Boolean;
-const
-  IMAGE_FILE_32BIT_MACHINE = $0100;
-var
-  FileStream: TFileStream;
-  PEOffset, PESignature, Characteristics: Integer;
+const IMAGE_FILE_32BIT_MACHINE = $0100;
+var FileStream: TFileStream; PEOffset, PESignature, Characteristics: Integer;
 begin
   Result := False;
   PEOffset := 0;
@@ -1989,7 +1924,7 @@ begin
       end;
     end;
   finally
-    FreeAndNil(FileStream);
+    FileStream.Free;
   end;
 end;
 
@@ -2000,30 +1935,18 @@ end;
 
 procedure CreateMyFile(const Path: string);
 begin
-  if (Path <> '') and not FileExists(Path) then
-  begin
-    var
-    StringList := TStringList.Create;
+  if (Path <> '') and ForceDirectories(ExtractFilePath(Path)) then
     try
-      try
-        SysUtils.ForceDirectories(ExtractFilePath(Path));
-        StringList.SaveToFile(Path);
-      except
-        on e: Exception do
-          ErrorMsg(e.Message);
-      end;
-    finally
-      FreeAndNil(StringList);
+      TFile.WriteAllText(Path, '');
+    except
+      on E: Exception do
+        ErrorMsg(E.Message);
     end;
-  end;
 end;
 
 function ChangeVowels(const Str: string): string;
-const
-  Vowels = 'ƒ÷‹‰ˆ¸ﬂ';
-  Nowels = 'AOUaous';
-var
-  Posi: Integer;
+const Vowels = 'ƒ÷‹‰ˆ¸ﬂ'; Nowels = 'AOUaous';
+var Posi: Integer;
 begin
   Result := Str;
   for var I := 1 to Length(Vowels) do
@@ -2105,8 +2028,7 @@ begin
 end;
 
 function IsVisibility(const Str: string): Boolean;
-const
-  Visibilities: array [1 .. 4] of string = ('private', 'protected',
+const Visibilities: array [1 .. 4] of string = ('private', 'protected',
     'public', '');
 begin
   Result := False;
@@ -2116,8 +2038,7 @@ begin
 end;
 
 function IsModifier(const Str: string): Boolean;
-const
-  Modifiers: array [1 .. 8] of string = ('static', 'abstract', 'final',
+const Modifiers: array [1 .. 8] of string = ('static', 'abstract', 'final',
     'native', 'synchronized', 'transient', 'volatile', 'strictfp');
 begin
   Result := False;
@@ -2130,9 +2051,7 @@ begin
 end;
 
 function GetFilterIndex(Filter: string; const Filename: string): Integer;
-var
-  Ext: string;
-  Posi: Integer;
+var Ext: string; Posi: Integer;
 begin
   Result := 0;
   Ext := LowerCase(ExtractFileExt(Filename));
@@ -2180,18 +2099,20 @@ function FileExistsCaseSensitive(const Filepath: string): Boolean;
 begin
   if not FileExists(Filepath) then
     Exit(False);
-  var Filename := ExtractFileName(Filepath);
-  if DirectoryExists(ExtractFilePath(Filepath)) then begin
-    var FileNames := TDirectory.GetFiles(ExtractFilePath(Filepath), Filename);
-    Result := (ExtractFilename(FileNames[0]) = Filename);
-  end else
+  var
+  Filename := ExtractFileName(Filepath);
+  if DirectoryExists(ExtractFilePath(Filepath)) then
+  begin
+    var
+    FileNames := TDirectory.GetFiles(ExtractFilePath(Filepath), Filename);
+    Result := (ExtractFileName(FileNames[0]) = Filename);
+  end
+  else
     Result := False;
 end;
 
 function IsMouseOverControl(const Control: TControl): Boolean;
-var
-  ARect: TRect;
-  Posi1, Posi2: TPoint;
+var ARect: TRect; Posi1, Posi2: TPoint;
 begin
   Posi1 := Control.ClientToScreen(Point(0, 0));
   Posi2 := Control.ClientToScreen(Point(Control.Width, Control.Height));
@@ -2249,18 +2170,12 @@ end;
 
 function _KillTask(const APID: Cardinal;
 const AKillStructure: Boolean = False): Boolean;
-var
-  ProcessEntry: TProcessEntry32;
-  AHandle: THandle;
-  AWord: DWORD;
-  TokenPriv: TTokenPrivileges;
-  HToken: THandle;
-  HProcess: Cardinal;
+var ProcessEntry: TProcessEntry32; AHandle: THandle; AWord: DWORD;
+  TokenPriv: TTokenPrivileges; HToken: THandle; HProcess: Cardinal;
   Goon: Boolean;
 
   function IsWinNT: Boolean;
-  var
-    VersionInf: TOSVersionInfo;
+  var VersionInf: TOSVersionInfo;
   begin
     VersionInf.dwOSVersionInfoSize := SizeOf(VersionInf);
     Result := False;
@@ -2295,7 +2210,8 @@ begin
               CloseHandle(HToken);
             end;
           end;
-          HProcess := OpenProcess(PROCESS_TERMINATE, False, ProcessEntry.th32ProcessID);
+          HProcess := OpenProcess(PROCESS_TERMINATE, False,
+            ProcessEntry.th32ProcessID);
           Goon := False;
           if HProcess <> 0 then
             try
@@ -2306,7 +2222,8 @@ begin
               CloseHandle(HProcess);
             end;
         end
-        else if AKillStructure and (ProcessEntry.th32ParentProcessID = APID) then
+        else if AKillStructure and (ProcessEntry.th32ParentProcessID = APID)
+        then
           Result := _KillTask(ProcessEntry.th32ProcessID, True) and Result;
       until (not Process32Next(AHandle, ProcessEntry)) or
         ((not Goon) and (not AKillStructure));
@@ -2317,8 +2234,7 @@ begin
 end;
 
 function IsRunning(Process: THandle): Boolean;
-var
-  LWord: LongWord;
+var LWord: LongWord;
 begin
   Result := (Process <> 0) and GetExitCodeProcess(Process, LWord) and
     (LWord = STILL_ACTIVE);
@@ -2327,8 +2243,8 @@ end;
 procedure CloseProcessinformationHandle(var ProcessInformation
   : TProcessInformation);
 begin
-  if ProcessInformation.hProcess <> 0 then
-    CloseHandle(ProcessInformation.hProcess);
+  if ProcessInformation.HProcess <> 0 then
+    CloseHandle(ProcessInformation.HProcess);
   if ProcessInformation.hThread <> 0 then
     CloseHandle(ProcessInformation.hThread);
   FillChar(ProcessInformation, SizeOf(ProcessInformation), #0);
@@ -2336,7 +2252,7 @@ end;
 
 procedure TerminateTask(var ProcessInformation: TProcessInformation);
 begin
-  if IsRunning(ProcessInformation.hProcess) then
+  if IsRunning(ProcessInformation.HProcess) then
     _KillTask(ProcessInformation.dwProcessId, True);
   CloseProcessinformationHandle(ProcessInformation);
 end;
@@ -2394,8 +2310,7 @@ begin
 end;
 
 function MyColorToRGB(Color: TColor): string;
-var
-  ColorInt, Red, Green, Blue: Integer;
+var ColorInt, Red, Green, Blue: Integer;
 begin
   ColorInt := ColorToRGB(Color);
   Red := GetRValue(ColorInt);
@@ -2416,8 +2331,7 @@ begin
 end;
 
 function CanActuallyFocus(WinControl: TWinControl): Boolean;
-var
-  Form: TCustomForm;
+var Form: TCustomForm;
 begin
   Result := False;
   if Assigned(WinControl) and not WinControl.Focused then
@@ -2429,8 +2343,7 @@ begin
 end;
 
 procedure SetDefaultUIFont(const AFont: TFont);
-const
-  UIFont = 'Segoe UI';
+const UIFont = 'Segoe UI';
 begin
   if CheckWin32Version(6) and not SameText(AFont.Name, UIFont) and
     (Screen.Fonts.IndexOf(UIFont) >= 0) then
@@ -2450,18 +2363,18 @@ begin
   FreeAndNil(StringList);
 end;
 
-function CompiledRegEx(const Expr: string; Options: TRegExOptions = [roNotEmpty];
-UCP: Boolean = True): TRegEx;
+function CompiledRegEx(const Expr: string;
+Options: TRegExOptions = [roNotEmpty]; UCP: Boolean = True): TRegEx;
 begin
   try
-    Result:= TRegEx.Create(Expr, Options);
+    Result := TRegEx.Create(Expr, Options);
     if UCP then
       Result.AddRawOptions(PCRE_UCP);
     Result.Study([preJIT]);
   except
-    on e: ERegularExpressionError do
+    on E: ERegularExpressionError do
     begin
-      MessageDlg(Format('Invalid Regular Expression: %s', [e.Message]), mtError,
+      MessageDlg(Format('Invalid Regular Expression: %s', [E.Message]), mtError,
         [mbOK], 0);
       Abort;
     end;
@@ -2483,8 +2396,7 @@ begin
 end;
 
 function GetUsersWindowsLanguage: string;
-var
-  WinLanguage: array [0 .. 50] of Char;
+var WinLanguage: array [0 .. 50] of Char;
 begin
   VerLanguageName(GetUserDefaultUILanguage, WinLanguage, 50);
   Result := WinLanguage;
@@ -2507,25 +2419,14 @@ begin
     end;
 end;
 
-function StringZuSingle(Str: string): Single;
-var
-  FormatSetting: TFormatSettings;
+function StringToSingle(Str: string): Single;
+var FormatSetting: TFormatSettings;
 begin
-  // Feste FormatSettings definieren
   FormatSetting := TFormatSettings.Create;
   FormatSetting.DecimalSeparator := '.';
-  // Dezimaltrennzeichen explizit auf Punkt setzen
-
-  // Ersetze alle Kommata durch einen Punkt
   Str := StringReplace(Str, ',', '.', [rfReplaceAll]);
-
-  // Versuche die Konvertierung
-  try
-    Result := StrToFloat(Str, FormatSetting);
-  except
-    on e: EConvertError do
-      Result := 0.0;
-  end;
+  if not TryStrToFloat(Str, Result, FormatSetting) then
+    Result := 0.0;
 end;
 
 function StyledMessageDlg(const Msg: string; DlgType: TMsgDlgType;
@@ -2545,9 +2446,7 @@ begin
 end;
 
 function HTMLEncode(const Str: string): string;
-var
-  Chr: Char;
-  StringBuild: TStringBuilder;
+var Chr: Char; StringBuild: TStringBuilder;
 begin
   if Str = '' then
     Exit('');
@@ -2577,8 +2476,7 @@ begin
 end;
 
 function ColorToHTML(Color: TColor): string;
-var
-  ColorR: TColorRef;
+var ColorR: TColorRef;
 begin
   ColorR := ColorToRGB(Color);
   Result := Format('#%.2x%.2x%.2x', [GetRValue(ColorR), GetGValue(ColorR),
@@ -2586,8 +2484,7 @@ begin
 end;
 
 function IsColorDark(AColor: TColor): Boolean;
-var
-  ACol: LongInt;
+var ACol: LongInt;
 begin
   ACol := ColorToRGB(AColor) and $00FFFFFF;
   Result := ((2.99 * GetRValue(ACol) + 5.87 * GetGValue(ACol) + 1.14 *
@@ -2608,15 +2505,15 @@ end;
 
 function DefaultCodeFontName: string;
 begin
-    if CheckWin32Version(6) then
-    begin
-      if Screen.Fonts.IndexOf('Cascadia Code') >= 0 then
-        Result := 'Cascadia Code'
-      else
-        Result := 'Consolas';
-    end
+  if CheckWin32Version(6) then
+  begin
+    if Screen.Fonts.IndexOf('Cascadia Code') >= 0 then
+      Result := 'Cascadia Code'
     else
-      Result := 'Courier New';
+      Result := 'Consolas';
+  end
+  else
+    Result := 'Courier New';
 end;
 
 { TInteger }

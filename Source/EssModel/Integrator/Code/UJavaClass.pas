@@ -380,11 +380,11 @@ begin
 
   Obj := ConstPoolSec.ConstPoolElem(NameIndex);
   if Assigned(Obj) and (Obj is TConstUtf8) then
-    FName := Obj as TConstUtf8;
+    FName := TConstUtf8(Obj);
 
   Obj := ConstPoolSec.ConstPoolElem(DescIndex);
   if Assigned(Obj) and (Obj is TConstUtf8) then
-    FDescriptor := Obj as TConstUtf8;
+    FDescriptor := TConstUtf8(Obj);
 
   if AttrCnt > 0 then
   begin
@@ -422,11 +422,11 @@ begin
 
   Obj := ConstPoolSec.ConstPoolElem(NameIndex);
   if Assigned(Obj) and (Obj is TConstUtf8) then
-    FName := Obj as TConstUtf8;
+    FName := TConstUtf8(Obj);
 
   Obj := ConstPoolSec.ConstPoolElem(DescIndex);
   if Assigned(Obj) and (Obj is TConstUtf8) then
-    FDescriptor := Obj as TConstUtf8;
+    FDescriptor := TConstUtf8(Obj);
 
   if AttrCnt > 0 then
   begin
@@ -492,9 +492,9 @@ begin
       FClassAttrs := TClassAttrsec.Create(Input);
     end
     else
-      FreeAndNil(FHeader);
+      FHeader.Free;
   finally
-    FreeAndNil(Input);
+    Input.Free;
   end;
 end;
 
@@ -664,7 +664,7 @@ var
 begin
   Tmp := ObjAry[FIndex];
   if Tmp is TConstUtf8 then
-    FUtf8 := Tmp as TConstUtf8;
+    FUtf8 := TConstUtf8(Tmp);
 end;
 
 { TConstLongConvert }
@@ -737,7 +737,7 @@ begin
   inherited SetRef(ObjAry);
   Tmp := ObjAry[FDescriptorIndex];
   if Tmp is TConstUtf8 then
-    FDescriptorUtf8 := Tmp as TConstUtf8;
+    FDescriptorUtf8 := TConstUtf8(Tmp);
 end;
 
 { TConstRef }
@@ -754,11 +754,11 @@ var
 begin
   Tmp := ObjAry[FIndex];
   if Tmp is TConstClassOrString then
-    FClassRef := Tmp as TConstClassOrString;
+    FClassRef := TConstClassOrString(Tmp);
 
   Tmp := ObjAry[FNameAndTypeIndex];
   if Tmp is TConstNameAndTypeInfo then
-    FNameRef := Tmp as TConstNameAndTypeInfo;
+    FNameRef := TConstNameAndTypeInfo(Tmp);
 end;
 
 { TConstUtf8 }

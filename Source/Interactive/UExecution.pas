@@ -13,12 +13,12 @@ uses
 type
 
   TExecutionType = (None, ObjectCreation, // Type aObject = new Type();
-    VariableCreation,    // int  i = 7;
-    ObjectDeclaration,   // Type aObject;
+    VariableCreation, // int  i = 7;
+    ObjectDeclaration, // Type aObject;
     VariableDeclaration, // int i;
-    MethodCall, Statement, Assignment,   // i = 7 und aObject = new Type
-    Expression,          // 7+3*4;
-    ArrayDeclaration);   // int[] p = {1,2,3,4,4+5};
+    MethodCall, Statement, Assignment, // i = 7 und aObject = new Type
+    Expression, // 7+3*4;
+    ArrayDeclaration); // int[] p = {1,2,3,4,4+5};
 
   TExecutionLine = class
   private
@@ -160,13 +160,12 @@ end;
 
 function TExecutionList.Get(Int: Integer): TExecutionLine;
 begin
-  Result := Items[Int] as TExecutionLine;
+  Result := TExecutionLine(Items[Int]);
 end;
 
 { --- TVariable ---------------------------------------------------------------- }
 
-const
-  Prim: array [1 .. 9] of string = ('byte', 'short', 'int', 'long',
+const Prim: array [1 .. 9] of string = ('byte', 'short', 'int', 'long',
     'double', 'float', 'boolean', 'char', 'String');
 
   Obje: array [1 .. 9] of string = ('Byte', 'Short', 'Integer', 'Long',
@@ -223,7 +222,7 @@ end;
 
 function TVariableList.Get(Int: Integer): TVariable;
 begin
-  Result := Items[Int] as TVariable;
+  Result := TVariable(Items[Int]);
 end;
 
 function TVariableList.Get(const Name: string): TVariable;
@@ -305,7 +304,8 @@ begin
   if not DirectoryExists(Pathname) then
     Exit;
 
-  var Filenames := TDirectory.GetFiles(ExtractFilePath(Pathname), 'Class*.*');
+  var
+  Filenames := TDirectory.GetFiles(ExtractFilePath(Pathname), 'Class*.*');
   for var Filename in Filenames do
     DeleteFile(Filename);
 end;
@@ -318,9 +318,7 @@ begin
 end;
 
 function TInteractiveExecuter.StripFile(Str: string): string;
-var
-  Int, JPos, Posi: Integer;
-  StringList: TStringList;
+var Int, JPos, Posi: Integer; StringList: TStringList;
 begin
   Posi := Pos('.java:', Str); // VisibleStack.java:12:
   if Posi > 0 then
@@ -363,8 +361,7 @@ begin
 end;
 
 function TInteractiveExecuter.StripGetOb(const Str: string): string;
-var
-  Int, Posi: Integer;
+var Int, Posi: Integer;
 begin
   var
   StringList := TStringList.Create;
@@ -392,22 +389,19 @@ begin
 end;
 
 procedure TInteractiveExecuter.LogExecute(const Str: string);
-var
-  TeFile: TextFile;
+var Line: string;
 begin
-  if FConfiguration.LogfileInteractiveOK then
-  begin
-    AssignFile(TeFile, FConfiguration.LogfileInteractive);
-    try
-      Append(TeFile);
-      Writeln(TeFile, DateTimeToStr(Now()) + ' ' + GetComputerNetName + ' Version: '
-        + UDlgAbout.Version);
-      Writeln(TeFile, Str);
-      CloseFile(TeFile);
-    except
-      on E: Exception do
-        ErrorMsg(E.Message);
-    end;
+  if not FConfiguration.LogfileInteractiveOK then
+    Exit;
+
+  Line := DateTimeToStr(Now()) + ' ' + GetComputerNetName + ' Version: ' +
+    UDlgAbout.Version;
+
+  try
+    TFile.AppendAllText(FConfiguration.LogfileInteractive, Line + sLineBreak);
+  except
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
 end;
 
@@ -459,9 +453,7 @@ begin
 end;
 
 function TInteractiveExecuter.DoCompile: string;
-var
-  Str1, Str2, Compiled: string;
-  Int, JPos: Integer;
+var Str1, Str2, Compiled: string; Int, JPos: Integer;
   SLCompiled, SLSplitSpace: TStringList;
 begin
   repeat
@@ -482,7 +474,8 @@ begin
           begin
             Inc(JPos);
             Str2 := SLCompiled[JPos];
-            var Posi := FStringList.IndexOf(Str2);
+            var
+            Posi := FStringList.IndexOf(Str2);
             if Posi > -1 then
               FStringList.Delete(Posi);
             SLSplitSpace := Split(' ', Str1);
@@ -530,9 +523,7 @@ begin
 end;
 
 function TInteractiveExecuter.Run(Execution: TExecutionLine): Boolean;
-var
-  JavaClass: TComJavaClass;
-  JavaMethod: TComJavaMethod;
+var JavaClass: TComJavaClass; JavaMethod: TComJavaMethod;
   JavaValue: TComJavaValue;
 begin
   Result := False;
@@ -542,15 +533,15 @@ begin
     if FComJava.NewClass(FClassname, FPathname) then
     begin
       JavaClass := FComJava.GetClass(FClassname);
-      JavaMethod := TComJavaMethod.Create(JavaClass, 'run', jni.static,
-        'void', nil, FComJava);
+      JavaMethod := TComJavaMethod.Create(JavaClass, 'run', jni.static, 'void',
+        nil, FComJava);
       try
         JavaValue := JavaMethod.Call(nil);
         FreeAndNil(JavaValue);
         if not JavaMethod.IsValid then
           FMessages.OutputToTerminal(JavaMethod.Error);
       finally
-        FreeAndNil(JavaMethod);
+        JavaMethod.Free;
       end;
       UpdateVariables;
     end;
@@ -558,11 +549,8 @@ begin
 end;
 
 procedure TInteractiveExecuter.GetExpression(Execution: TExecutionLine);
-var
-  JavaClass: TComJavaClass;
-  JavaMethod: TComJavaMethod;
-  ComJavaValue: TComJavaValue;
-  Compiled, Value: string;
+var JavaClass: TComJavaClass; JavaMethod: TComJavaMethod;
+  ComJavaValue: TComJavaValue; Compiled, Value: string;
 begin
   // try method-call as an expression
   Compiled := Compile(Execution, False);
@@ -574,9 +562,11 @@ begin
     if FComJava.NewClass(FClassname, FPathname) then
     begin
       JavaClass := FComJava.GetClass(FClassname);
-      JavaMethod := TComJavaMethod.Create(JavaClass, 'run', jni.static,
-        'java.lang.Object', nil, FComJava);
+      JavaMethod := nil;
+      ComJavaValue := nil;
       try
+        JavaMethod := TComJavaMethod.Create(JavaClass, 'run', jni.static,
+          'java.lang.Object', nil, FComJava);
         ComJavaValue := JavaMethod.GetExpressionValue;
         Value := Execution.Value;
         if Assigned(ComJavaValue) then
@@ -600,12 +590,8 @@ begin
 end;
 
 procedure TInteractiveExecuter.AssignWithoutType(Execution: TExecutionLine);
-var
-  JavaClass: TComJavaClass;
-  JavaMethod: TComJavaMethod;
-  Compiled, Str, VarName: string;
-  Posi: Integer;
-  Variable: TVariable;
+var JavaClass: TComJavaClass; JavaMethod: TComJavaMethod;
+  Compiled, Str, VarName: string; Posi: Integer; Variable: TVariable;
 begin
   // do we know the variable?
   VarName := Execution.Name;
@@ -664,9 +650,7 @@ begin
 end;
 
 procedure TInteractiveExecuter.DeclareVariable(Execution: TExecutionLine);
-var
-  Compiled: Boolean;
-  Variable: TVariable;
+var Compiled: Boolean; Variable: TVariable;
 begin
   // Type Var;
   if IsKnownType(Execution.Typename) then
@@ -684,8 +668,8 @@ begin
   end;
 end;
 
-function TInteractiveExecuter.CreateVariable(Execution
-  : TExecutionLine): Boolean;
+function TInteractiveExecuter.CreateVariable(Execution: TExecutionLine)
+  : Boolean;
 begin
   // create variable:  Type Var = Expression;
   Result := False;
@@ -715,7 +699,7 @@ procedure TInteractiveExecuter.CreateObject(Execution: TExecutionLine);
 begin
   // create object  Type obj = new Type(...);
   var
-  Diagram := FUMLForm.MainModul.Diagram as TRtfdDiagram;
+  Diagram := TRtfdDiagram(FUMLForm.MainModul.Diagram);
   var
   Variable := FVariableList.Get(Execution.Name);
   if Assigned(Variable) then
@@ -733,9 +717,7 @@ begin
 end;
 
 procedure TInteractiveExecuter.CreateArray(Execution: TExecutionLine);
-var
-  Value: string;
-  Variable: TVariable;
+var Value: string; Variable: TVariable;
 begin
   // create variable:  Type[] Var = {1, 2, 3}; literal array
   Variable := FVariableList.Get(Execution.Name);
@@ -754,7 +736,8 @@ begin
     AddVarToGrid(Execution.Name, Execution.Typename, '');
   end;
   Value := Execution.Value;
-  var Posi := Pos(' ' + Execution.Name + ' ', Value);
+  var
+  Posi := Pos(' ' + Execution.Name + ' ', Value);
   Insert('_', Value, Posi + 1);
   Insert('_', Value, Posi + 3);
   Value := Value + #13#10 + '    ' + Execution.Name + ' = _' +
@@ -765,34 +748,21 @@ begin
 end;
 
 procedure TInteractiveExecuter.Execute(const Command: string);
-var
-  AFile: string;
-  IsOk, Update: Boolean;
-  SLFiles: TStringList;
-  ExecutionParser: TExecutionParser;
-  Execution: TExecutionLine;
+var AFile: string; Update: Boolean; SLFiles: TStringList;
+  ExecutionParser: TExecutionParser; Execution: TExecutionLine;
   Diagram: TRtfdDiagram;
 begin
   if Command = '' then
     Exit;
 
   SLFiles := FJava.GetAllPathnames;
-  IsOk := True;
-  for var I := 0 to SLFiles.Count - 1 do
-  begin
-    AFile := SLFiles[I];
-    if HasJavaExtension(AFile) then
-    begin
-      if not FJava.PreCompile(nil, AFile) then
-      begin
-        IsOk := False;
-        Break;
-      end;
-    end;
+  try
+    for AFile in SLFiles do
+      if HasJavaExtension(AFile) and not FJava.PreCompile(nil, AFile) then
+        Exit;
+  finally
+    SLFiles.Free;
   end;
-  FreeAndNil(SLFiles);
-  if not IsOk then
-    Exit;
 
   FStringList.Text := Command;
   if FComJava = FComJava.GetFirstComJava then
@@ -805,10 +775,12 @@ begin
   FMessages.TBExecute.Enabled := False;
 
   SLFiles := FJava.GetAllClassnames;
-  for var I := 0 to SLFiles.Count - 1 do
-    FComJava.NewClass(ChangeFileExt(ExtractFileName(SLFiles[I]), ''),
-      SLFiles[I]);
-  FreeAndNil(SLFiles);
+  try
+    for AFile in SLFiles do
+      FComJava.NewClass(ChangeFileExt(ExtractFileName(AFile), ''), AFile);
+  finally
+    SLFiles.Free;
+  end;
 
   if Assigned(FUMLForm) then
     LockWindow(FUMLForm.Handle);
@@ -856,7 +828,7 @@ begin
     if Assigned(FUMLForm) and (FUMLForm.Pathname <> '') and
       Assigned(FUMLForm.MainModul) and Assigned(FUMLForm.MainModul.Diagram) then
     begin
-      Diagram := FUMLForm.MainModul.Diagram as TRtfdDiagram;
+      Diagram := TRtfdDiagram(FUMLForm.MainModul.Diagram);
       if FConfiguration.ShowAllNewObjects then
         Diagram.ShowAllNewObjects(Self);
       Diagram.UpdateAllObjects;
@@ -867,17 +839,14 @@ begin
     FStringList.Clear;
     if Assigned(FUMLForm) then
       UnlockWindow;
-    FreeAndNil(ExecutionParser);
+    ExecutionParser.Free;
     // debug je2java
     DeleteFiles(FPathname);
- // Application.ProcessMessages;  //TODO RR
   end;
 end;
 
 function TInteractiveExecuter.NeedsSemicolon(const Str: string): Boolean;
-var
-  ExecutionParser: TExecutionParser;
-  Kind: TExecutionType;
+var ExecutionParser: TExecutionParser; Kind: TExecutionType;
 begin
   FStringList.Text := Str;
   ExecutionParser := TExecutionParser.Create(True);
@@ -891,16 +860,13 @@ begin
       VariableDeclaration, ObjectDeclaration, MethodCall]);
     // not None, Statement, Expression
   finally
-    FreeAndNil(ExecutionParser);
+    ExecutionParser.Free;
     FStringList.Clear;
   end;
 end;
 
 function TInteractiveExecuter.UpdateVariables: Boolean;
-var
-  Variables: string;
-  StringList: TStringList;
-  AClass: TComJavaClass;
+var Variables: string; StringList: TStringList; AClass: TComJavaClass;
 begin
   FVariableList.SetNotExisting;
   Variables := FComJava.ExecuteCommand('getVariables');
@@ -910,7 +876,8 @@ begin
     for var I := 0 to StringList.Count - 1 do
     begin
       Variables := StringList.Names[I];
-      var Posi := Pos('|', Variables);
+      var
+      Posi := Pos('|', Variables);
       if Posi > 0 then
       begin // new object detected
         FClassname := Copy(Variables, 1, Posi - 1);
@@ -928,12 +895,13 @@ begin
       end;
       DeclaredToExisting(Variables);
       Posi := 1;
-      while (Posi < FSGVariables.RowCount) and (FSGVariables.Cells[0, Posi] <> Variables) do
+      while (Posi < FSGVariables.RowCount) and
+        (FSGVariables.Cells[0, Posi] <> Variables) do
         Inc(Posi);
       if Posi < FSGVariables.RowCount then
         FSGVariables.Cells[2, Posi] := StringList.ValueFromIndex[I];
     end;
-    FreeAndNil(StringList);
+    StringList.Free;
     Result := True;
   end
   else
@@ -941,9 +909,7 @@ begin
 end;
 
 function TInteractiveExecuter.GetVariables: string;
-var
-  Str: string;
-  Variable: TVariable;
+var Str: string; Variable: TVariable;
 begin
   Str := '';
   for var I := 0 to FVariableList.Count - 1 do
@@ -974,9 +940,7 @@ begin
 end;
 
 function TInteractiveExecuter.PutVariables: string;
-var
-  Str: string;
-  Variable: TVariable;
+var Str: string; Variable: TVariable;
 begin
   Str := '';
   for var I := 0 to FVariableList.Count - 1 do

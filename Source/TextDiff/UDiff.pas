@@ -85,9 +85,9 @@ type
     OldIndex1, OldIndex2: Integer;
     case Boolean of
       False:
-        (chr1, chr2: Char);
+        (Chr1, Chr2: Char);
       True:
-        (int1, int2: Integer);
+        (Int1, Int2: Integer);
   end;
 
   PDiffVars = ^TDiffVars;
@@ -169,9 +169,8 @@ function TDiff.Execute(Pints1, Pints2: TArrOfInteger;
 var
   Len1Minus1: Integer;
 begin
-  Result := not FExecuting;
-  if not Result then
-    Exit;
+  if FExecuting then
+    Exit(False);
   FCancelled := False;
   FExecuting := True;
   try
@@ -195,15 +194,14 @@ begin
 
     if FCancelled then
     begin
-      Result := False;
       Clear;
-      Exit;
+      Exit(False);
     end;
 
     // correct the occasional missed match ...
     for var I := 1 to Count - 1 do
       with PCompareRec(FCompareList[I])^ do
-        if (Kind = ckModify) and (int1 = int2) then
+        if (Kind = ckModify) and (Int1 = Int2) then
         begin
           Kind := ckNone;
           Dec(FDiffStats.modifies);
@@ -215,6 +213,7 @@ begin
       AddChangeInt(oldIndex1, Len1Minus1 - oldIndex1, ckNone);
   finally
     FExecuting := False;
+    Result := True;
   end;
 end;
 
@@ -428,8 +427,8 @@ begin
       Kind := ckNone;
       Inc(oldIndex1);
       Inc(oldIndex2);
-      int1 := FInts1[oldIndex1];
-      int2 := FInts2[oldIndex2];
+      Int1 := FInts1[oldIndex1];
+      Int2 := FInts2[oldIndex2];
     end;
     New(CompareRec);
     CompareRec^ := FLastCompareRec;
@@ -446,8 +445,8 @@ begin
           Kind := ckNone;
           Inc(oldIndex1);
           Inc(oldIndex2);
-          int1 := FInts1[oldIndex1];
-          int2 := FInts2[oldIndex2];
+          Int1 := FInts1[oldIndex1];
+          Int2 := FInts2[oldIndex2];
         end;
         New(CompareRec);
         CompareRec^ := FLastCompareRec;
@@ -475,16 +474,16 @@ begin
               Inc(FLastCompareRec.oldIndex2);
               PCompareRec(FCompareList[IntJ]).oldIndex2 :=
                 FLastCompareRec.oldIndex2;
-              PCompareRec(FCompareList[IntJ]).int2 := FInts2[oldIndex2];
+              PCompareRec(FCompareList[IntJ]).Int2 := FInts2[oldIndex2];
               if IntJ = FCompareList.Count - 1 then
                 FLastCompareRec.Kind := ckModify;
               Continue;
             end;
 
             Kind := ckAdd;
-            int1 := $0;
+            Int1 := $0;
             Inc(oldIndex2);
-            int2 := FInts2[oldIndex2]; // ie what we added
+            Int2 := FInts2[oldIndex2]; // ie what we added
           end;
           New(CompareRec);
           CompareRec^ := FLastCompareRec;
@@ -513,16 +512,16 @@ begin
               Inc(FLastCompareRec.oldIndex1);
               PCompareRec(FCompareList[IntJ]).oldIndex1 :=
                 FLastCompareRec.oldIndex1;
-              PCompareRec(FCompareList[IntJ]).int1 := FInts1[oldIndex1];
+              PCompareRec(FCompareList[IntJ]).Int1 := FInts1[oldIndex1];
               if IntJ = FCompareList.Count - 1 then
                 FLastCompareRec.Kind := ckModify;
               Continue;
             end;
 
             Kind := ckDelete;
-            int2 := $0;
+            Int2 := $0;
             Inc(oldIndex1);
-            int1 := FInts1[oldIndex1]; // ie what we deleted
+            Int1 := FInts1[oldIndex1]; // ie what we deleted
           end;
           New(CompareRec);
           CompareRec^ := FLastCompareRec;

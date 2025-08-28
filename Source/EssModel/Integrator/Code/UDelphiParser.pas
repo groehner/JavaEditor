@@ -304,8 +304,8 @@ var
           FStream.Position := 0;
           FCurrPos := PChar(Integer(FStream.Memory) + Offset);
         finally
-          FreeAndNil(IncStr);
-          FreeAndNil(Buf);
+          IncStr.Free;
+          Buf.Free;
         end;
       end;
     end;
@@ -692,7 +692,7 @@ procedure TDelphiParser.ParseLibrary;
 begin
   if GetNextToken then
   begin
-    FUnit := (FModel as TLogicPackage).AddUnit(Token);
+    FUnit := TLogicPackage(FModel).AddUnit(Token);
     FUnit.Documentation.Description := FComment;
     FComment := '';
     SkipToken(';');
@@ -705,7 +705,7 @@ procedure TDelphiParser.ParseProgram;
 begin
   if GetNextToken then
   begin
-    FUnit := (FModel as TLogicPackage).AddUnit(Token);
+    FUnit := TLogicPackage(FModel).AddUnit(Token);
     FUnit.Documentation.Description := FComment;
     FComment := '';
     SkipToken(';');
@@ -760,7 +760,7 @@ begin
   if GetNextToken then
   begin
     UName := Token;
-    FUnit := (FModel as TLogicPackage).AddUnit(UName);
+    FUnit := TLogicPackage(FModel).AddUnit(UName);
     FUnit.Documentation.Description := FComment;
     FComment := '';
     SkipToken(';');
@@ -885,7 +885,7 @@ begin
             { TODO : Keep the parsed list somewhere to be able to implement
               a twoway integrator }
           finally
-            FreeAndNil(Parser);
+            Parser.Free;
           end;
         end;
       end;
@@ -964,7 +964,7 @@ begin
           FUnit.AddClass(TClass(Classifier));
         end;
         Classifier.Visibility := Visibility;
-        ParseClass(Classifier as TClass);
+        ParseClass(TClass(Classifier));
       end
       else
       begin
@@ -983,7 +983,7 @@ begin
         FUnit.AddInterface(TInterface(Classifier));
       end;
       Classifier.Visibility := Visibility;
-      ParseInterface(Classifier as TInterface);
+      ParseInterface(TInterface(Classifier));
     end
     else if Token = '(' then // Enum
     begin
@@ -999,7 +999,7 @@ begin
       Classifier := FUnit.FindClassifier(TName);
       if not Assigned(Classifier) then
         Classifier := FUnit.AddDatatype(TName);
-      ParseRecord(Classifier as TDataType);
+      ParseRecord(TDataType(Classifier));
     end
     else if lToken = 'set' then
     begin
@@ -1089,12 +1089,12 @@ begin // Token is class
     if Token = '(' then
     begin
       GetNextToken; // Should be Ancestor
-      Ancestor := FUnit.FindClassifier(Token, TClass) as TClass;
+      Ancestor := TClass(FUnit.FindClassifier(Token, TClass));
       if not Assigned(Ancestor) then
       begin
         Classif := FOM.UnknownPackage.FindClassifier(Token, TClass);
         if Assigned(Classif) and (Classif is TClass) then
-          Ancestor := Classif as TClass;
+          Ancestor := TClass(Classif);
       end;
       if Assigned(Ancestor) then
         AClass.Ancestor := Ancestor
@@ -1111,12 +1111,12 @@ begin // Token is class
       begin
         GetNextToken;
         // Should be an implemented interface
-        Interf := FUnit.FindClassifier(Token, TInterface) as TInterface;
+        Interf := TInterface(FUnit.FindClassifier(Token, TInterface));
         if not Assigned(Interf) then
         begin
           Classif := FOM.UnknownPackage.FindClassifier(Token, TInterface);
           if Assigned(Classif) then
-            Interf := Classif as TInterface;
+            Interf := TInterface(Classif);
         end;
         if not Assigned(Interf) then
           Interf := FOM.UnknownPackage.MakeInterface(Token, '');
@@ -1198,12 +1198,12 @@ begin
     begin
       // This interface inherits from...
       GetNextToken; // Should be Ancestor
-      Interf := FUnit.FindClassifier(Token, TInterface) as TInterface;
+      Interf := TInterface(FUnit.FindClassifier(Token, TInterface));
       if not Assigned(Interf) then
       begin
         Classif := FOM.UnknownPackage.FindClassifier(Token, TInterface);
         if Assigned(Classif) and (Classif is TInterface) then
-          Interf := Classif as TInterface;
+          Interf := TInterface(Classif);
       end;
       if Assigned(Interf) then
         AClass.Ancestor := Interf
@@ -1347,7 +1347,7 @@ begin
   GetNextToken;
   if NextToken = '.' then
   begin
-    IsClass := FUnit.FindClassifier(Token, TClass) as TClass;
+    IsClass := TClass(FUnit.FindClassifier(Token, TClass));
     IsOperation := TOperation.Create(nil);
     try
       // Parse to a temporary TOperation to be able to locate a matching operation in a class.
@@ -1378,7 +1378,7 @@ begin
         end;
       end;
     finally
-      FreeAndNil(IsOperation);
+      IsOperation.Free;
     end;
   end
   else
@@ -1445,7 +1445,7 @@ begin // Token = Attributename
     begin
       GetNextToken;
       GetNextToken;
-      Attribs.Add((AAttribute.Owner as TClass).AddAttribute(Token, nil));
+      Attribs.Add(TClass(AAttribute.Owner).AddAttribute(Token, nil));
     end;
     if NextToken = ':' then
     begin
@@ -1463,7 +1463,7 @@ begin // Token = Attributename
     if Token = ';' then
       GetNextToken;
   finally
-    FreeAndNil(Attribs);
+    Attribs.Free;
   end;
 end;
 
@@ -1505,7 +1505,7 @@ begin
 
     GetNextToken;
   finally
-    FreeAndNil(Params);
+    Params.Free;
   end;
 end;
 

@@ -138,8 +138,8 @@ begin
     FCloseManually) then
   begin
     Show;
-    if (FEditForm as TFEditForm).Editor.CanFocus then
-      (FEditForm as TFEditForm).Editor.SetFocus;
+    if TFEditForm(FEditForm).Editor.CanFocus then
+      TFEditForm(FEditForm).Editor.SetFocus;
     FindAdress(FConfiguration.TempDir + 'Tooltip.html');
     CloseTooltipTimer.Enabled := not FCloseManually;
   end
@@ -153,7 +153,7 @@ begin
     PtInRect(FTokenRect, Mouse.CursorPos)) then
   begin
     Hide;
-    (FEditForm as TFEditForm).LastToken := '';
+    TFEditForm(FEditForm).LastToken := '';
   end;
 end;
 

@@ -404,11 +404,11 @@ end;
 
 procedure TEssConnectPanel.ClearMarkerAndConnections(AControl: TControl);
 begin
-  DrawMarkers((AControl as TRtfdBox).GetBoundsRect, False);
+  DrawMarkers(TRtfdBox(AControl).GetBoundsRect, False);
   for var I := 0 to FConnections.Count - 1 do
   begin
     var
-    Conn := (FConnections[I] as TConnection);
+    Conn := TConnection(FConnections[I]);
     if Conn.Visible and ((Conn.FromControl = AControl) or
       (Conn.ToControl = AControl)) then
       Conn.Draw(Canvas, False);
@@ -435,7 +435,7 @@ begin
         .FControl);
       if (TManagedObject(FManagedObjects[I]).FControl is TRtfdBox) then
       begin
-        Box := TManagedObject(FManagedObjects[I]).FControl as TRtfdBox;
+        Box := TRtfdBox(TManagedObject(FManagedObjects[I]).FControl);
         ZNameArr[I] := Box.Entity.Name + '-' + IntToStr(ZOrderArr[I]);
       end;
     end;
@@ -454,7 +454,7 @@ begin
       if (Pos <= Count - 1) and TManagedObject(FManagedObjects[Pos]).FControl.Visible
       then
       begin
-        Box := TManagedObject(FManagedObjects[Pos]).FControl as TRtfdBox;
+        Box := TRtfdBox(TManagedObject(FManagedObjects[Pos]).FControl);
         Box.Paint;
       end;
       Inc(NextZ);
@@ -469,7 +469,7 @@ begin
     for var I := 0 to FManagedObjects.Count - 1 do
     begin
       var
-      ABox := TManagedObject(FManagedObjects[I]).FControl as TRtfdBox;
+      ABox := TRtfdBox(TManagedObject(FManagedObjects[I]).FControl);
       ABox.CloseEdit;
     end;
   end;
@@ -554,7 +554,7 @@ begin
       Canvas.Brush.Color := Color;
     Canvas.FillRect(ClientRect);
   finally
-    FreeAndNil(Canvas);
+    Canvas.Free;
   end;
   Message.Result := 1;
 end;
@@ -640,10 +640,9 @@ begin
         ((FShowConnections = 1) and (Src.ClassType = Dst.ClassType));
       if Arrow = asComment then
         Attributes.IsEdited := True;
-
       ConnectObjects(Src, Dst, Attributes);
     finally
-      FreeAndNil(Attributes);
+      Attributes.Free;
     end;
     ClearSelection(False);
   end;
@@ -681,7 +680,7 @@ constructor TEssConnectPanel.Create(AOwner: TComponent);
 begin
   inherited;
   // Name := 'TessConnectPanel';
-  FMyForm := AOwner as TForm;
+  FMyForm := TForm(AOwner);
   FManagedObjects := TList.Create;
   FConnections := TObjectList.Create(True);
   FShowConnections := 0;
@@ -809,10 +808,10 @@ begin
             Tmp := GetSelectedControls;
             case Tmp.Count of
               1:
-                ConnectObjects(Tmp[0] as TControl, Tmp[0] as TControl,
+                ConnectObjects(TControl(Tmp[0]), TControl(Tmp[0]),
                   Attributes);
               2:
-                ConnectObjects(Tmp[0] as TControl, Tmp[1] as TControl,
+                ConnectObjects(TControl(Tmp[0]), TControl(Tmp[1]),
                   Attributes);
             end;
             FreeAndNil(Tmp);
@@ -1254,7 +1253,6 @@ var
   MCont: TManagedObject;
   CConn: TConnection;
   AChanged: Boolean;
-  ABox: TRtfdBox;
 begin
   if not FMouseDownOK then
   begin
@@ -1266,7 +1264,7 @@ begin
   // repaint TrMemo
   if Assigned(Application.MainForm.ActiveControl) and
     (Application.MainForm.ActiveControl is TMemo) then
-    (Application.MainForm.ActiveControl as TMemo).Parent.Invalidate;
+    TMemo(Application.MainForm.ActiveControl).Parent.Invalidate;
   if not Focused and Assigned(FOnFormMouseDown) then
     FOnFormMouseDown(Self);
   SetFocus; // a TPanel can have the Focus
@@ -1293,10 +1291,7 @@ begin
         if not MCont.Selected then
         begin
           if MCont.FControl is TRtfdBox then
-          begin
-            ABox := MCont.FControl as TRtfdBox;
-            ABox.BringToFront;
-          end;
+            TRtfdBox(MCont.FControl).BringToFront;
           if not CtrlPressed then
             SelectionChangedOnClear;
           if MCont.Control.Visible then
@@ -1443,7 +1438,7 @@ var
           AControl := TManagedObject(FManagedObjects[I]).Control;
           if AControl.Visible and Connect.Square.intersects(AControl.BoundsRect)
           then
-            (AControl as TRtfdBox).Paint; // invalidate
+            TRtfdBox(AControl).Paint; // invalidate
         end;
 
         // mark Cutted connections
@@ -1468,7 +1463,7 @@ var
       if AControl.Visible and (AControl <> Src) and
         Intersect(TManagedObject(FManagedObjects[I]).SelectedBoundsRect, SrcRect)
       then
-        (AControl as TRtfdBox).Paint;
+        TRtfdBox(AControl).Paint;
     end;
 
     if Show then
@@ -1484,7 +1479,7 @@ var
       end;
 
     if not(MCont.FControl is TRtfdCommentBox) then
-      DrawMarkers((MCont.FControl as TRtfdBox).GetBoundsRect, Show);
+      DrawMarkers(TRtfdBox(MCont.FControl).GetBoundsRect, Show);
   end;
 
 begin // of MouseMove
@@ -1543,7 +1538,7 @@ begin // of MouseMove
               MRectDxDy.BottomRight.Offset(HandleShadow, HandleShadow);
 
               if (MCont.FControl is TRtfdCommentBox) and (SelControls = 1) then
-                (MCont.FControl as TRtfdCommentBox)
+                TRtfdCommentBox(MCont.FControl)
                   .CommentMouseMove(ClientToScreen(FMemMousePos),
                   ClientToScreen(Point))
               else
@@ -1669,7 +1664,7 @@ begin
       if Assigned(Found) and (Found <> Self) and Found.Visible then
       begin
         if (Found is TMemo) then
-          Found := (Found as TMemo).Parent;
+          Found := TMemo(Found).Parent;
 
         if Assigned(TCrackControl(Found).PopupMenu) and (Button = mbRight) then
           TCrackControl(Found).PopupMenu.Popup(Mouse.CursorPos.X,
@@ -1708,7 +1703,7 @@ end;
 procedure TEssConnectPanel.OnManagedObjectClick(Sender: TObject);
 begin
   var
-  Inst := FindManagedControl(Sender as TControl);
+  Inst := FindManagedControl(TControl(Sender));
   if Assigned(Inst) and Assigned(Inst.FOnClick) then
     Inst.FOnClick(Sender);
 end;
@@ -1716,7 +1711,7 @@ end;
 procedure TEssConnectPanel.OnManagedObjectDblClick(Sender: TObject);
 begin
   var
-  Inst := FindManagedControl(Sender as TControl);
+  Inst := FindManagedControl(TControl(Sender));
   if Assigned(Inst) and Assigned(Inst.FOnDblClick) then
   begin
     FMouseDownOK := False;
@@ -1735,7 +1730,7 @@ begin
     // Call the essConnectpanel MouseDown instead.
     Point.X := X;
     Point.Y := Y;
-    Point := (Sender as TControl).ClientToScreen(Point);
+    Point := TControl(Sender).ClientToScreen(Point);
     Point := ScreenToClient(Point);
     MouseDown(Button, Shift, Point.X, Point.Y);
   end;
@@ -1745,7 +1740,7 @@ procedure TEssConnectPanel.OnManagedObjectMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 begin
   var
-  Inst := FindManagedControl(Sender as TControl);
+  Inst := FindManagedControl(TControl(Sender));
   if Assigned(Inst) and Assigned(Inst.FOnMouseMove) then
     Inst.FOnMouseMove(Sender, Shift, X, Y);
 end;
@@ -1754,7 +1749,7 @@ procedure TEssConnectPanel.OnManagedObjectMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   var
-  Inst := FindManagedControl(Sender as TControl);
+  Inst := FindManagedControl(TControl(Sender));
   if Assigned(Inst) and Assigned(Inst.FOnMouseUp) then
     Inst.FOnMouseUp(Sender, Button, Shift, X, Y);
 end;
@@ -1791,7 +1786,7 @@ begin
   for var I := 0 to FConnections.Count - 1 do
   begin
     var
-    Conn := (FConnections[I] as TConnection);
+    Conn := TConnection(FConnections[I]);
     if Conn.FromControl.Visible and Conn.ToControl.Visible then
       Conn.Draw(Canvas, True);
   end;
@@ -1800,7 +1795,7 @@ end;
 procedure TEssConnectPanel.HideConnections;
 begin
   for var I := 0 to FConnections.Count - 1 do
-    (FConnections[I] as TConnection).Draw(Canvas, False);
+    TConnection(FConnections[I]).Draw(Canvas, False);
 end;
 
 procedure TEssConnectPanel.ShowCuttedConnections;
@@ -1810,7 +1805,7 @@ var
 begin
   for var I := 0 to FConnections.Count - 1 do
   begin
-    Conn := (FConnections[I] as TConnection);
+    Conn := TConnection(FConnections[I]);
     if Conn.Cutted and Conn.FromControl.Visible and Conn.ToControl.Visible then
     begin
       Conn.Draw(Canvas, True);
@@ -1958,11 +1953,11 @@ begin
   begin
     // To avoid having the scrollbox resetting its positions after a setfocus call.
     var
-    X := (Parent as TScrollBox).HorzScrollBar.Position;
+    X := TScrollBox(Parent).HorzScrollBar.Position;
     var
-    Y := (Parent as TScrollBox).VertScrollBar.Position;
-    (Parent as TScrollBox).HorzScrollBar.Position := X;
-    (Parent as TScrollBox).VertScrollBar.Position := Y;
+    Y := TScrollBox(Parent).VertScrollBar.Position;
+    TScrollBox(Parent).HorzScrollBar.Position := X;
+    TScrollBox(Parent).VertScrollBar.Position := Y;
     inherited;
   end;
 end;
@@ -2071,7 +2066,7 @@ begin
       AManagedObject := TManagedObject(FManagedObjects[I]);
       if (AManagedObject.FControl is TRtfdCommentBox) then
       begin
-        CommentBox := (AManagedObject.FControl as TRtfdCommentBox);
+        CommentBox := TRtfdCommentBox(AManagedObject.FControl);
         Canvas.Font := CommentBox.TrMemo.Font;
         Canvas.Brush.Color := FConfiguration.CommentColor;
         CommentBox.TrMemo.Perform(EM_GETRECT, 0, LPARAM(@Rect));
@@ -2128,7 +2123,7 @@ begin
   for var I := 0 to FConnections.Count - 1 do
     TConnection(FConnections[I]).ChangeStyle(BlackAndWhite);
   for var I := 0 to FManagedObjects.Count - 1 do
-    (TManagedObject(FManagedObjects[I]).FControl as TRtfdBox)
+    TRtfdBox(TManagedObject(FManagedObjects[I]).FControl)
       .ChangeStyle(BlackAndWhite);
 end;
 
@@ -2139,7 +2134,7 @@ begin
   for var I := 0 to FConnections.Count - 1 do
   begin
     var
-    Conn := (FConnections[I] as TConnection);
+    Conn := TConnection(FConnections[I]);
     if Conn.FromControl.Visible and Conn.ToControl.Visible then
       Str := Str + Conn.SVG;
   end;
@@ -2157,11 +2152,11 @@ begin
   if Conn.ToControl is TRtfdClass then
   begin
     HiddenChanged := False;
-    AClass := (Conn.ToControl as TRtfdClass).Entity as TClass;
+    AClass := TClass(TRtfdClass(Conn.ToControl).Entity);
     Ite := AClass.GetAllAttributes;
     while Ite.HasNext do
     begin
-      Attribute := Ite.Next as TAttribute;
+      Attribute := TAttribute(Ite.Next);
       if not Attribute.Hidden and ((Attribute.Name = Attributes.RoleA) or
         (Attribute.Name + '[]' = Attributes.RoleA)) then
       begin
@@ -2176,16 +2171,16 @@ begin
       end;
     end;
     if HiddenChanged then
-      (Conn.ToControl as TRtfdClass).RefreshEntities;
+      TRtfdClass(Conn.ToControl).RefreshEntities;
   end;
   if Conn.FromControl is TRtfdClass then
   begin
     HiddenChanged := False;
-    AClass := (Conn.FromControl as TRtfdClass).Entity as TClass;
+    AClass := TClass(TRtfdClass(Conn.FromControl).Entity);
     Ite := AClass.GetAllAttributes;
     while Ite.HasNext do
     begin
-      Attribute := Ite.Next as TAttribute;
+      Attribute := TAttribute(Ite.Next);
       if not Attribute.Hidden and ((Attribute.Name = Attributes.RoleB) or
         (Attribute.Name + '[]' = Attributes.RoleB)) then
       begin
@@ -2200,7 +2195,7 @@ begin
       end;
     end;
     if HiddenChanged then
-      (Conn.FromControl as TRtfdClass).RefreshEntities;
+     TRtfdClass(Conn.FromControl).RefreshEntities;
   end;
 end;
 
@@ -2224,7 +2219,7 @@ begin
   if FControl.Visible and (FSelected <> Value) then
   begin
     FSelected := Value;
-    (FControl as TRtfdBox).Selected := Value;
+    TRtfdBox(FControl).Selected := Value;
   end;
 end;
 

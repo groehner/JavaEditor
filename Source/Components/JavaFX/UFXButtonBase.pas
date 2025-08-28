@@ -778,7 +778,7 @@ begin
   begin
     for var I := 0 to Owner.ComponentCount - 1 do
       if Owner.Components[I] is TFXRadioButton then
-        (Owner.Components[I] as TFXRadioButton).ToggleGroup := '';
+        TFXRadioButton(Owner.Components[I]).ToggleGroup := '';
   end;
 end;
 
