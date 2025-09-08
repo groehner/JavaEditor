@@ -450,11 +450,13 @@ begin
         // BeforeChange is triggered when the model will be changed from the root-level.
         mtBeforeChange:
           if Listener.QueryInterface(IBeforeObjectModelListener, Dum) = 0 then
-            IBeforeObjectModelListener(Listener).Change(nil);
+          // don't switch from as to type cast with interface
+          // uml diagram will no longer be build
+            (Listener as IBeforeObjectModelListener).Change(nil);
           // AfterChange is triggered when the model has been changed from the root-level.
         mtAfterChange:
           if Listener.QueryInterface(IAfterObjectModelListener, Dum) = 0 then
-            IAfterObjectModelListener(Listener).Change(nil);
+            (Listener as IAfterObjectModelListener).Change(nil);
         end;
     end;
 end;
@@ -828,7 +830,7 @@ begin
     while Ite.HasNext do
     begin
       AClassifier := TClassifier(Ite.Next);
-      if (AClassifier is TObjekt) then
+      if AClassifier is TObjekt then
       begin
         AObjekt := TObjekt(AClassifier);
         if (AClassifier.Name = AName) and
@@ -1086,21 +1088,23 @@ end;
 function TClass.AddAttribute(const NewName: string; TypeClass: TClassifier)
   : TAttribute;
 begin
-  if Assigned(TypeClass) then begin
-    Result := FindAttribute(NewName, TypeClass.Name);
-    if Assigned(Result) then
-      Exit;
+  if Assigned(TypeClass) then
+    Result := FindAttribute(NewName, TypeClass.Name)
+  else
+    Result := nil;
+  if not Assigned(Result) then
+  begin
+    Result := TAttribute.Create(Self);
+    Result.FTypeClassifier := TypeClass;
+    Result.FName := NewName;
+    FFeatures.Add(Result);
+    try
+      Fire(mtBeforeAddChild, Result);
+    except
+      FFeatures.Remove(Result);
+    end;
+    Fire(mtAfterAddChild, Result);
   end;
-  Result := TAttribute.Create(Self);
-  Result.FTypeClassifier := TypeClass;
-  Result.FName := NewName;
-  FFeatures.Add(Result);
-  try
-    Fire(mtBeforeAddChild, Result);
-  except
-    FFeatures.Remove(Result);
-  end;
-  Fire(mtAfterAddChild, Result);
 end;
 
 function TClass.AddProperty(const NewName: string): TProperty;
