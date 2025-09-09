@@ -71,17 +71,17 @@ type
 procedure TJavaClassImporter.ImportOneFile(const Filename: string;
   WithoutNeedSource: Boolean);
 var
-  Str: TStream;
+  AStream: TStream;
   Parser: TJavaClassParser;
 begin
-  Str := CodeProvider.LoadStream(Filename);
-  if not Assigned(Str) then
+  AStream := CodeProvider.LoadStream(Filename);
+  if not Assigned(AStream) then
     Exit;
 
   Parser := TJavaClassParser.Create(True);
   try
     Parser.NeedPackage := NeedPackageHandler;
-    Parser.ParseStream(Str, Model.ModelRoot, Model, Filename, False);
+    Parser.ParseStream(AStream, Model.ModelRoot, Model, Filename, False);
   finally
     Parser.Free;
   end;

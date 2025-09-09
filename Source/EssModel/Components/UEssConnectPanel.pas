@@ -158,14 +158,14 @@ type
     // The list should be freed by the caller.
     function GetConnections: TList;
     procedure SetConnection(Num: Integer;
-      Arrow: TessConnectionArrowStyle); overload;
+      Arrow: TEssConnectionArrowStyle); overload;
     procedure SetConnection(Num: Integer;
       Attributes: TConnectionAttributes); overload;
     procedure SetSelectedConnection(Attributes: TConnectionAttributes);
     function GetConnection(Num: Integer): TConnection;
     function HaveConnection(Src, Dest: TControl): Integer; overload;
     function HaveConnection(Src, Dest: TControl;
-      ArrowStyle: TessConnectionArrowStyle): Integer; overload;
+      ArrowStyle: TEssConnectionArrowStyle): Integer; overload;
     function CountConnections(Src, Dest: TControl): Integer;
     function GetRecursivConnection(Src: TControl): TConnection;
     function GetRecursivXEnlarge(Control: TControl): Integer;
@@ -185,7 +185,7 @@ type
     procedure ConnectObjects(Src, Dst: TControl;
       Attributes: TConnectionAttributes); overload;
     procedure ConnectObjects(Src, Dst: TControl;
-      Arrow: TessConnectionArrowStyle); overload;
+      Arrow: TEssConnectionArrowStyle); overload;
     procedure EditParallelConnections;
     procedure DoConnection(Item: Integer);
     procedure DoAlign(Item: Integer);
@@ -300,9 +300,19 @@ type
 
 implementation
 
-uses Math, Types, UITypes, StdCtrls, Themes, SysUtils,
-  UDlgAssociation, UConfiguration, URtfdComponents,
-  UModel, UModelEntity, UZOrderControl;
+uses
+  Math,
+  Types,
+  UITypes,
+  StdCtrls,
+  Themes,
+  SysUtils,
+  UDlgAssociation,
+  UConfiguration,
+  URtfdComponents,
+  UModel,
+  UModelEntity,
+  UZOrderControl;
 
 { --- TessConnectPanel --------------------------------------------------------- }
 
@@ -418,48 +428,26 @@ end;
 procedure TEssConnectPanel.ShowAll;
 var
   ZOrderArr: array of Integer;
-  ZNameArr: array of string;
-  NextZ, Count: Integer;
-  Box: TRtfdBox;
+  Count: NativeInt;
 begin
+  if not Assigned(FManagedObjects) or (FUpdateCounter > 0)  then
+    Exit;
   HideConnections;
+  Count := FManagedObjects.Count;
+  SetLength(ZOrderArr, Count);
+  for var I := 0 to Count - 1 do
+    ZOrderArr[I] := ZzGetControlZOrder(TManagedObject(FManagedObjects[I])
+      .FControl);
+  ShowConnections;
 
-  if Assigned(FManagedObjects) and (UpdateCounter = 0) then
-  begin
-    Count := FManagedObjects.Count;
-    SetLength(ZOrderArr, Count);
-    SetLength(ZNameArr, Count);
-    for var I := 0 to Count - 1 do
-    begin
-      ZOrderArr[I] := zzGetControlZOrder(TManagedObject(FManagedObjects[I])
-        .FControl);
-      if (TManagedObject(FManagedObjects[I]).FControl is TRtfdBox) then
+  for var NextZ := 0 to Count - 1 do
+    for var J := 0 to Count - 1 do
+      if ZOrderArr[J] = NextZ then
       begin
-        Box := TRtfdBox(TManagedObject(FManagedObjects[I]).FControl);
-        ZNameArr[I] := Box.Entity.Name + '-' + IntToStr(ZOrderArr[I]);
+        if TManagedObject(FManagedObjects[J]).FControl.Visible then
+          TRtfdBox(TManagedObject(FManagedObjects[J]).FControl).Paint;
+        Break;
       end;
-    end;
-    ShowConnections;
-
-    NextZ := 0;
-    for var I := 0 to Count - 1 do
-    begin
-      var Pos := MaxInt;
-      for var J := 0 to Count - 1 do
-        if ZOrderArr[J] = NextZ then
-        begin
-          Pos := J;
-          Break;
-        end;
-      if (Pos <= Count - 1) and TManagedObject(FManagedObjects[Pos]).FControl.Visible
-      then
-      begin
-        Box := TRtfdBox(TManagedObject(FManagedObjects[Pos]).FControl);
-        Box.Paint;
-      end;
-      Inc(NextZ);
-    end;
-  end;
 end;
 
 procedure TEssConnectPanel.CloseEdit;
@@ -607,7 +595,7 @@ begin
     end;
   end;
   for var I := 0 to FConnections.Count - 1 do
-    TConnection(FConnections[I]).parallelCorrection;
+    TConnection(FConnections[I]).ParallelCorrection;
 end;
 
 procedure TEssConnectPanel.ConnectObjects(Src, Dst: TControl;
@@ -625,7 +613,7 @@ begin
 end;
 
 procedure TEssConnectPanel.ConnectObjects(Src, Dst: TControl;
-  Arrow: TessConnectionArrowStyle);
+  Arrow: TEssConnectionArrowStyle);
 begin
   if (FindManagedControl(Src) <> nil) and (FindManagedControl(Dst) <> nil) and
     (HaveConnection(Src, Dst, Arrow) = -1) then
@@ -679,7 +667,6 @@ end;
 constructor TEssConnectPanel.Create(AOwner: TComponent);
 begin
   inherited;
-  // Name := 'TessConnectPanel';
   FMyForm := TForm(AOwner);
   FManagedObjects := TList.Create;
   FConnections := TObjectList.Create(True);
@@ -770,7 +757,7 @@ begin
   end;
   if Num < FConnections.Count then
   begin
-    TConnection(FConnections[Num]).setRecursivPosition(Pos);
+    TConnection(FConnections[Num]).SetRecursivPosition(Pos);
     Invalidate;
   end;
 end;
@@ -887,7 +874,7 @@ begin
   begin
     case Item of
       0 .. 9:
-        SetConnection(Num, TessConnectionArrowStyle(Item));
+        SetConnection(Num, TEssConnectionArrowStyle(Item));
       10:
         SelectAssociation;
       11:
@@ -994,7 +981,7 @@ begin
 end;
 
 procedure TEssConnectPanel.SetConnection(Num: Integer;
-  Arrow: TessConnectionArrowStyle);
+  Arrow: TEssConnectionArrowStyle);
 begin
   if (0 <= Num) and (Num < FConnections.Count) then
     TConnection(FConnections[Num]).SetArrow(Arrow);
@@ -1078,7 +1065,7 @@ begin
 end;
 
 function TEssConnectPanel.HaveConnection(Src, Dest: TControl;
-  ArrowStyle: TessConnectionArrowStyle): Integer;
+  ArrowStyle: TEssConnectionArrowStyle): Integer;
 begin
   for var I := 0 to FConnections.Count - 1 do
   begin
@@ -1114,7 +1101,7 @@ begin
   for var I := 0 to FConnections.Count - 1 do
   begin
     Conn := TConnection(FConnections[I]);
-    if Conn.isRecursiv and ((Conn.FromControl = Control) or
+    if Conn.IsRecursiv and ((Conn.FromControl = Control) or
       (Conn.ToControl = Control)) then
     begin
       DLeft := Max(DLeft, Conn.XDecrease);
@@ -1134,7 +1121,7 @@ begin
   for var I := 0 to FConnections.Count - 1 do
   begin
     Conn := TConnection(FConnections[I]);
-    if Conn.isRecursiv and ((Conn.FromControl = Control) or
+    if Conn.IsRecursiv and ((Conn.FromControl = Control) or
       (Conn.ToControl = Control)) then
     begin
       DTop := Max(DTop, Conn.YDecrease);
@@ -1436,7 +1423,7 @@ var
         for var I := 0 to FManagedObjects.Count - 1 do
         begin
           AControl := TManagedObject(FManagedObjects[I]).Control;
-          if AControl.Visible and Connect.Square.intersects(AControl.BoundsRect)
+          if AControl.Visible and Connect.Square.Intersects(AControl.BoundsRect)
           then
             TRtfdBox(AControl).Paint; // invalidate
         end;
@@ -1447,7 +1434,7 @@ var
           begin
             AConnection := TConnection(FConnections[I]);
             if (I <> K) and AConnection.Visible and
-              AConnection.Square.intersects(Connect.Square) then
+              AConnection.Square.Intersects(Connect.Square) then
               AConnection.Cutted := True;
           end;
       end;
@@ -1473,7 +1460,7 @@ var
         if AConnection.Visible and AConnection.ToControl.Visible and
           AConnection.FromControl.Visible and
           not((AConnection.FromControl = Src) or (AConnection.ToControl = Src))
-          and AConnection.Square.intersects(SrcRect) then
+          and AConnection.Square.Intersects(SrcRect) then
           // mark Cutted connections of moved control
           AConnection.Cutted := True;
       end;
@@ -1813,7 +1800,7 @@ begin
       for var K := 0 to FManagedObjects.Count - 1 do
       begin
         AControl := TManagedObject(FManagedObjects[K]).Control;
-        if AControl.Visible and Conn.Square.intersects(AControl.BoundsRect) then
+        if AControl.Visible and Conn.Square.Intersects(AControl.BoundsRect) then
           AControl.Invalidate;
       end;
       Conn.Cutted := False;
@@ -1887,7 +1874,7 @@ begin
         for var J := 0 to FConnections.Count - 1 do
         begin
           Conn := TConnection(FConnections[J]);
-          if Conn.isRecursiv and ((Conn.FromControl = Control) or
+          if Conn.IsRecursiv and ((Conn.FromControl = Control) or
             (Conn.ToControl = Control)) then
           begin
             DeltaL := Max(DeltaL, Conn.XDecrease);

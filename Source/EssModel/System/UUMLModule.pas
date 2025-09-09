@@ -93,34 +93,23 @@ end;
 
 procedure TDMUMLModule.DataModuleDestroy(Sender: TObject);
 begin
-  FreeAndNil(FDiagram);
-  FreeAndNil(FModel);
+  FDiagram.Free;
+  FModel.Free;
 end;
 
 procedure TDMUMLModule.LoadProject(Filenames: TStrings);
 var
   Ext: string;
   Imp: TImportIntegrator;
-  Ints: TClassList;
   Exts: TStringList;
   JPos: Integer;
   SikCursor: TCursor;
   OtherFiles: TStringList;
-begin
-  // Examine fileextension and call the correct integrator
-  SikCursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
-  Ext := '';
-  for var I := 0 to Filenames.Count - 1 do
-    if LowerCase(ExtractFileExt(Filenames[I])) = '.java' then
-      Ext := '.java';
-  if (Ext = '') and (Filenames.Count > 0) then
-    Ext := LowerCase(ExtractFileExt(Filenames[0]));
 
-  Imp := nil;
-  Ints := nil;
-  OtherFiles := nil;
-  try
+  function SeparateFiles(Ext: string): TImportIntegrator;
+  var Ints: TClassList;
+  begin
+    Result := nil;
     Ints := Integrators.Get(TImportIntegrator);
     OtherFiles := TStringList.Create;
     for var I := 0 to Ints.Count - 1 do
@@ -129,7 +118,7 @@ begin
       try
         if Exts.IndexOfName(Ext) > -1 then
         begin
-          Imp := TImportIntegratorClass(Ints[I])
+          Result := TImportIntegratorClass(Ints[I])
             .Create(Model, TFileProvider.Create);
           JPos := 0;
           while JPos < Filenames.Count do
@@ -145,17 +134,31 @@ begin
         end;
       finally
         Exts.Free;
+        Ints.Free;
       end;
     end;
+  end;
+
+begin
+  // Examine fileextension and call the correct integrator
+  SikCursor := Screen.Cursor;
+  Screen.Cursor := crHourGlass;
+  Ext := '';
+  for var Path in Filenames do
+    if LowerCase(ExtractFileExt(Path)) = '.java' then
+      Ext := '.java';
+  if (Ext = '') and (Filenames.Count > 0) then
+    Ext := LowerCase(ExtractFileExt(Filenames[0]));
+
+  Imp := nil;
+  OtherFiles := nil;
+  try
+    Imp:= SeparateFiles(Ext);
     if Assigned(Imp) then
-      try
-        Imp.BuildModelFrom(Filenames);
-      finally
-        Imp.Free;
-      end;
+      Imp.BuildModelFrom(Filenames);
     AddToProject(OtherFiles);
   finally
-    Ints.Free;
+    Imp.Free;
     OtherFiles.Free;
     Screen.Cursor := SikCursor;
   end;
@@ -167,7 +170,7 @@ begin
   StringList := TStringList.Create;
   StringList.Add(Filename);
   LoadProject(StringList);
-  FreeAndNil(StringList);
+  StringList.Free;
 end;
 
 procedure TDMUMLModule.AddToProject(const Filename: string);
@@ -222,8 +225,8 @@ end;
 
 procedure TDMUMLModule.AddToProject(Filenames: TStrings);
 begin
-  for var I := 0 to Filenames.Count - 1 do
-    AddToProject(Filenames[I]);
+  for var Path in Filenames do
+    AddToProject(Path);
 end;
 
 procedure TDMUMLModule.FileOpenActionExecute(Sender: TObject);
@@ -276,14 +279,14 @@ begin
     Options := Options + [ofOverwritePrompt];
     if Execute then
     begin
-      if ExtractFileExt(Filename) = '' then
+      if ExtractFileExt(FileName) = '' then
       begin
         if FilterIndex = 2 then
-          Filename := ChangeFileExt(Filename, '.png')
+          FileName := ChangeFileExt(FileName, '.png')
         else
-          Filename := ChangeFileExt(Filename, '.svg');
+          FileName := ChangeFileExt(FileName, '.svg');
       end;
-      Diagram.SaveAsPicture(Filename);
+      Diagram.SaveAsPicture(FileName);
     end;
     Free;
   end;
@@ -292,18 +295,17 @@ end;
 procedure TDMUMLModule.ShowAllOpenedFiles;
 var
   Files: TStringList;
-  Str: string;
+  AFile: string;
 begin
   Files := TStringList.Create;
-  with FJava do
-    for var I := 0 to FJava.TDIEditFormCount - 1 do
-    begin
-      Str := TDIEditFormGet(I).Pathname;
-      if HasJavaExtension(Str) or HasPascalExtension(Str) then
-        Files.Add(Str);
-    end;
+  for var I := 0 to FJava.TDIEditFormCount - 1 do
+  begin
+    AFile := FJava.TDIEditFormGet(I).Pathname;
+    if HasJavaExtension(AFile) or HasPascalExtension(AFile) then
+      Files.Add(AFile);
+  end;
   LoadProject(Files);
-  FreeAndNil(Files);
+  Files.Free;
 end;
 
 procedure TDMUMLModule.SaveUML(const Pathname: string);
@@ -366,7 +368,7 @@ begin
       try
         OpenFolderForm.CBFiletype.Items.Add('*' + Exts.Names[0]);
       finally
-        FreeAndNil(Exts);
+        Exts.Free;
       end;
     end;
     OpenFolderForm.CBFiletype.ItemIndex := 0;
@@ -418,25 +420,11 @@ begin
 end;
 
 function TDMUMLModule.HasEditableClass: Boolean;
-var
-  Str: string;
 begin
-  Result := False;
-  try
-    if Assigned(Diagram) then
-      Result := Diagram.HasEditableClass
-    else
-      Result := False;
-  except
-    on e: Exception do
-    begin
-      if Assigned(Diagram) then
-        Str := 'TDMUMLModule.hasEditableClass Diagram assigned'
-      else
-        Str := 'TDMUMLModule.hasEditableClass Diagram = nil';
-      FConfiguration.Log(Str, e);
-    end;
-  end;
+  if Assigned(Diagram) then
+    Result := Diagram.HasEditableClass
+  else
+    Result := False;
 end;
 
 procedure TDMUMLModule.Print;

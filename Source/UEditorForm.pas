@@ -5970,20 +5970,20 @@ begin
         (UnHideBlanks(FConfiguration.GetClassPathJarExpanded(Pathname,
         GetPackage)), Pathname);
       var
-      Str := Importer.CodeProvider.LoadStream(Pathname, Self);
-      if Assigned(Str) then
+      Stream := Importer.CodeProvider.LoadStream(Pathname, Self);
+      if Assigned(Stream) then
       begin
-        FreeAndNil(FParser);
+        FParser.Free;
         FParser := TJavaParser.Create(True);
         FParser.NeedPackage := Importer.NeedPackageHandler;
-        FParser.ParseStream(Str, FModel.ModelRoot, FModel, Pathname,
+        FParser.ParseStream(Stream, FModel.ModelRoot, FModel, Pathname,
           False, False);
         FEditor.Structures := FParser.Structures.Clone;
       end;
     finally
-      FreeAndNil(Importer);
+      Importer.Free;
     end;
-    // FreeAndNil(Str); handeld by Scanner
+    // FreeAndNil(Stream); handeld by Scanner
     if FConfiguration.FixImports then
     begin
       AutomatedCompleteImports;

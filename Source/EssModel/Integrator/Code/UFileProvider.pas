@@ -55,97 +55,88 @@ uses
 
 function TFileProvider.LoadStream(const AName: string;
   Form: TFForm = nil): TStream;
-var
-  FStream: TFileStream;
-  MStream: TMemoryStream;
-  SStream: TStringStream;
-  Lines: TStringList;
-  Source: string;
-  EditForm: TFEditForm;
-  WithBOM: Boolean;
-  Encoding: TEncoding;
-begin
-  Result := nil;
-  if AName = '' then
-    Exit;
-  try
-    if HasClassExtension(AName) then
-    begin
-      FStream := nil;
-      MStream := nil;
+var FStream: TFileStream; Source: string; EditForm: TFEditForm;
+  WithBOM: Boolean; Encoding: TEncoding;
+
+  function GetStreamFromClass(const AName: string): TMemoryStream;
+  begin
+    Result := nil;
+    FStream := nil;
+    try
+      FStream := TFileStream.Create(AName, fmOpenRead);
       try
-        FStream := TFileStream.Create(AName, fmOpenRead);
-        MStream := TMemoryStream.Create;
-        MStream.CopyFrom(FStream, FStream.Size);
-        MStream.WriteData(#0);
+        Result := TMemoryStream.Create;
+        Result.CopyFrom(FStream, FStream.Size);
+        Result.WriteData(#0);
+        Result.Seek(0, soFromBeginning);
       finally
         FStream.Free;
       end;
-      MStream.Seek(0, soFromBeginning);
-      Result := MStream;
-    end
-    else
-    begin
-      if not Assigned(Form) then
-        EditForm := TFEditForm(FJava.GetTDIWindowType(AName, '%E%'))
-      else
-        EditForm := TFEditForm(Form);
-      if Assigned(EditForm) then
-      begin
-        Source := EditForm.Editor.Text + #0;
-        if Source = #0 then
-          Source := 'null' + #0;
-        Result := TStringStream.Create(Source, TEncoding.Unicode);
-      end
-      else if FileExists(AName) and ValidFilename(AName) then
-      begin
-        // used by ClassInsert
-        Lines:= nil;
-        FStream := nil;
-        try
-          Lines := TStringList.Create;
-          FStream := TFileStream.Create(AName, fmOpenRead or fmShareDenyWrite);
-          Encoding := SynUnicode.GetEncoding(FStream, WithBOM);
-          Lines.LoadFromStream(FStream, Encoding);
-          SStream := TStringStream.Create(Lines.Text + #0,
-            TEncoding.Unicode, True);
-          Result := SStream;
-        finally
-          FStream.Free;
-          Lines.Free;
-        end;
-      end
-      else
-        // Result:= TStringStream.Create('null' + #0, TEncoding.Unicode)
-        Result := TStringStream.Create('null' + #0);
-    end;
-    Inc(FLoadedCount);
-    AddChangeWatch(AName);
-    AddSearchPath(ExtractFilePath(AName));
-  except
-    on E: Exception do
-    begin
-      ErrorMsg(E.Message);
-      Result := nil;
-    end;
-  end;
-end;
-
-procedure TFileProvider.SaveStream(const AName: string; AStream: TStream);
-var
-  FileStream: TFileStream;
-begin
-  { TODO : Make a backup before we save the file. }
-  FileStream := TFileStream.Create(AName, fmOpenWrite + fmShareExclusive);
-  try
-    try
-      FileStream.CopyFrom(AStream, 0);
     except
       on E: Exception do
         ErrorMsg(E.Message);
     end;
-  finally
-    FileStream.Free;
+  end;
+
+  function GetStreamFromJava(const AName: string): TStringStream;
+  var Lines: TStringList;
+  begin
+    Result := nil;
+    FStream := nil;
+    try
+      Lines := TStringList.Create;
+      FStream := TFileStream.Create(AName, fmOpenRead or fmShareDenyWrite);
+      try
+        Encoding := SynUnicode.GetEncoding(FStream, WithBOM);
+        Lines.LoadFromStream(FStream, Encoding);
+        Result := TStringStream.Create(Lines.Text + #0,
+          TEncoding.Unicode, True);
+      finally
+        FStream.Free;
+        Lines.Free;
+      end;
+    except
+      on E: Exception do
+        ErrorMsg(E.Message);
+    end;
+  end;
+
+begin
+  Result := nil;
+  if Assigned(Form) then
+    EditForm := TFEditForm(Form)
+  else
+    EditForm := TFEditForm(FJava.GetTDIWindowType(AName, '%E%'));
+  if Assigned(EditForm) then
+  begin
+    Source := EditForm.Editor.Text + #0;
+    if Source = #0 then
+      Source := 'null' + #0;
+    Result := TStringStream.Create(Source, TEncoding.Unicode);
+  end
+  else if FileExists(AName) then
+    if HasClassExtension(AName) then
+      Result := GetStreamFromClass(AName)
+    else
+      Result := GetStreamFromJava(AName); // used by ClassInsert
+  Inc(FLoadedCount);
+  AddChangeWatch(AName);
+  AddSearchPath(ExtractFilePath(AName));
+end;
+
+procedure TFileProvider.SaveStream(const AName: string; AStream: TStream);
+var FileStream: TFileStream;
+begin
+  try
+    FileStream := TFileStream.Create(AName, fmOpenWrite + fmShareExclusive);
+    try
+      FileStream.CopyFrom(AStream, 0);
+    finally
+      FileStream.Free;
+    end;
+  except
+    on E: Exception do
+      ErrorMsg(E.Message);
   end;
 end;
 
@@ -160,8 +151,7 @@ begin
 end;
 
 function TFileProvider.LocateFile(const AName: string): string;
-var
-  Posi: string;
+var Posi: string;
 begin
   Result := '';
   if (Pos(Copy(AName, 1, 1), '\/') > 0) or (Copy(AName, 2, 1) = ':') then

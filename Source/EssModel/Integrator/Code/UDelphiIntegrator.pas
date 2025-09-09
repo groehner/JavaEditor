@@ -49,12 +49,12 @@ uses
 
 procedure TDelphiImporter.ImportOneFile(const FileName : string; WithoutNeedSouce: Boolean);
 var
-  Str: TStream;
+  AStream: TStream;
   Parser: TDelphiParser;
   GlobalDefines : TStringList;
 begin
-  Str := CodeProvider.LoadStream(FileName);
-  if Assigned(Str) then
+  AStream := CodeProvider.LoadStream(FileName);
+  if Assigned(AStream) then
   begin
     GlobalDefines := TStringList.Create;
     {$ifdef WIN32}
@@ -65,14 +65,13 @@ begin
     Parser := TDelphiParser.Create;
     try
       Parser.NeedPackage := NeedPackageHandler;
-      Parser.ParseStreamWithDefines(Str, Model.ModelRoot, Model, GlobalDefines, FileName);
+      Parser.ParseStreamWithDefines(AStream, Model.ModelRoot, Model, GlobalDefines, FileName);
     finally
       Parser.Free;
       GlobalDefines.Free;
     end;
   end;
 end;
-
 
 class function TDelphiImporter.GetFileExtensions: TStringList;
 begin

@@ -25,11 +25,11 @@ unit UJavaParser;
 // http://java.sun.com/docs/books/jls/second_edition/html/syntax.doc.html
 
 // The syntax {x} on the right-hand side of a production denotes zero or more
-//   occurrences of x.
+// occurrences of x.
 // The syntax [x] on the right-hand side of a production denotes zero or one
-//   occurrences of x. That is, x is an optional symbol.
+// occurrences of x. That is, x is an optional symbol.
 // The phrase (one of) on the right-hand side of a production signifies that
-//   each of the symbols on the following Line or lines is an alternative definition.
+// each of the symbols on the following Line or lines is an alternative definition.
 
 interface
 
@@ -152,9 +152,9 @@ type
     procedure ParseLocalClassModifiers;
     function GetTypeName: string;
     function IsStatementBegin(const Token: string): Boolean;
-    function IsIdentifier(Str: string): Boolean;
-    function IsReservedWord(const Str: string): Boolean;
-    function IsTypename(const Str: string): Boolean;
+    function IsIdentifier(Ident: string): Boolean;
+    function IsReservedWord(const RWord: string): Boolean;
+    function IsTypename(const AType: string): Boolean;
     function IsExpressionStatementOperator(const Operator: string): Boolean;
     function IsAssignmentOperator(const Operator: string): Boolean;
     function IsOperator(const Operator: string): Boolean;
@@ -195,15 +195,15 @@ procedure TJavaImporter.ImportOneFile(const FileName: string;
   WithoutNeedSource: Boolean);
 begin
   var
-  Str := CodeProvider.LoadStream(FileName);
-  if not Assigned(Str) then
+  AStream := CodeProvider.LoadStream(FileName);
+  if not Assigned(AStream) then
     Exit;
 
   FParser := TJavaParser.Create(True);
   try
     FParser.NeedPackage := NeedPackageHandler;
     FParser.Thread := nil;
-    FParser.ParseStream(Str, Model.ModelRoot, Model, FileName, False,
+    FParser.ParseStream(AStream, Model.ModelRoot, Model, FileName, False,
       WithoutNeedSource);
   finally
     FParser.Free;
@@ -213,15 +213,16 @@ end;
 procedure TJavaImporter.ImportOneEditor(const FileName: string; Form: TFForm);
 begin
   var
-  Str := CodeProvider.LoadStream(FileName, Form);
-  if not Assigned(Str) then
+  AStream := CodeProvider.LoadStream(FileName, Form);
+  if not Assigned(AStream) then
     Exit;
 
   FParser := TJavaParser.Create(True);
   try
     FParser.NeedPackage := NeedPackageHandler;
     FParser.Thread := nil;
-    FParser.ParseStream(Str, Model.ModelRoot, Model, FileName, False, False);
+    FParser.ParseStream(AStream, Model.ModelRoot, Model, FileName,
+      False, False);
   finally
     FreeAndNil(FParser);
   end;
@@ -241,8 +242,8 @@ begin
 
   FileName := CodeProvider.LocateFile(FileName);
   // Dont read same file twice
-  if (not OnlyLookUp) and (FileName <> '') and (FFilesRead.IndexOf(FileName) = -1)
-  then
+  if (not OnlyLookUp) and (FileName <> '') and
+    (FFilesRead.IndexOf(FileName) = -1) then
   begin
     AStream := CodeProvider.LoadStream(FileName);
     FFilesRead.Add(FileName);
@@ -258,11 +259,10 @@ end;
 
 { TJavaParser }
 
-const
-  ReservedWords: array [0 .. 53] of string = ('abstract', 'assert', 'boolean',
-    'break', 'byte', 'case', 'catch', 'char', 'class', 'cons', 'continue',
-    'default', 'double', 'do', 'else', 'enum', 'extends', 'false', 'final',
-    'finally', 'float', 'for', 'goto', 'if', 'implements', 'import',
+const ReservedWords: array [0 .. 53] of string = ('abstract', 'assert',
+    'boolean', 'break', 'byte', 'case', 'catch', 'char', 'class', 'cons',
+    'continue', 'default', 'double', 'do', 'else', 'enum', 'extends', 'false',
+    'final', 'finally', 'float', 'for', 'goto', 'if', 'implements', 'import',
     'instanceof', 'int', 'interface', 'long', 'native', 'new', 'null',
     'package', 'private', 'protected', 'public', 'return', 'short', 'static',
     'strictfp', 'super', 'switch', 'synchronized', 'this', 'throw', 'throws',
@@ -316,9 +316,7 @@ end;
 procedure TJavaParser.ParseStream(AStream: TStream; AModel: TAbstractPackage;
   AOM: TObjectModel; FileName: string; Inner: Boolean;
   WithoutNeedSource: Boolean);
-var
-  AClassifier: TClassifier;
-  AClass: TClass;
+var AClassifier: TClassifier; AClass: TClass;
 begin
   FScanner.Init(AStream);
   FModel := AModel;
@@ -564,12 +562,8 @@ procedure TJavaParser.ParseClassDeclaration(Line: Integer;
   RecordHeader [SuperInterfaces] RecordBody
 
 *)
-var
-  AClass: TClass;
-  Intf: TInterface;
-  AClassifier: TClassifier;
-  Impl, Ext, AClassname, AGeneric: string;
-  Anonym, IsRecord: Boolean;
+var AClass: TClass; Intf: TInterface; AClassifier: TClassifier;
+  Impl, Ext, AClassname, AGeneric: string; Anonym, IsRecord: Boolean;
 
 begin
   // enum is not supported
@@ -721,11 +715,8 @@ procedure TJavaParser.ParseClassBody(AClass: TClass);
   ;
 
 *)
-var
-  Operation, OpTemp: TOperation;
-  Attribute: TAttribute;
-  Typename, Ident, Generic, Annotation, Modifiers: string;
-  LineS, Line: Integer;
+var Operation, OpTemp: TOperation; Attribute: TAttribute;
+  Typename, Ident, Generic, Annotation, Modifiers: string; LineS, Line: Integer;
   TypeClass: TClassifier;
 begin
   GetNextToken;
@@ -938,14 +929,9 @@ procedure TJavaParser.ParseInterfaceDeclaration(Line: Integer;
   VoidInterfaceMethodDeclaratorRest:
   FormalParameters [throws QualifiedIdentifierList]
 *)
-var
-  Intf, AInt: TInterface;
-  AClassifier: TClassifier;
-  Typename, Ident, Ext, Str, AGeneric: string;
-  Operation, OpTemp: TOperation;
-  Attribute: TAttribute;
-  LineS: Integer;
-  FirstAncestor: Boolean;
+var Intf, AInt: TInterface; AClassifier: TClassifier;
+  Typename, Ident, Ext, Str, AGeneric: string; Operation, OpTemp: TOperation;
+  Attribute: TAttribute; LineS: Integer; FirstAncestor: Boolean;
   TypeClass: TClassifier;
 begin
   Inc(FCountClasses);
@@ -1116,16 +1102,10 @@ end;
 
 function TJavaParser.NeedClassifier(const CName: string;
   TheClass: TModelEntityClass = nil): TClassifier;
-var
-  PName, ShortName: string;
-  ClassIte: IModelIterator;
-  Cent: TModelEntity;
+var PName, ShortName: string; ClassIte: IModelIterator; Cent: TModelEntity;
 
   function AddAClass(const CName: string): TClassifier;
-  var
-    AClass: TClass;
-    Int: TInterface;
-    Classpathname: string;
+  var AClass: TClass; Int: TInterface; Classpathname: string;
   begin
     Result := nil;
     if TheClass = TInterface then
@@ -1212,9 +1192,7 @@ end;
 
 procedure TJavaParser.DoOperation(Operation: TOperation;
   const Parentname, Typename: string);
-var
-  ParType, Ident: string;
-  Param: TParameter;
+var ParType, Ident: string; Param: TParameter;
 begin
   Operation.Documentation.Description := FScanner.Comment;
   Operation.Documentation.LineS := FScanner.CommentLineS;
@@ -1400,9 +1378,7 @@ procedure TJavaParser.ParseTryStatement(Operation: TOperation);
 // Catches     : CatchClause | Catches CatchClause
 // CatchClause : catch ( FormalParameter ) Block
 // Finally     : finally Block
-var
-  Typename, Ident: string;
-  Line: Integer;
+var Typename, Ident: string; Line: Integer;
 begin
   Line := FScanner.Line;
   GetNextToken;
@@ -1455,9 +1431,7 @@ procedure TJavaParser.ParseSwitchStatement(Operation: TOperation);
   SwitchLabel: case ConstantExpreson | case EnumConstantName : | default:
 *)
 
-var
-  Line: Integer;
-  LToken: string;
+var Line: Integer; LToken: string;
 
   procedure TraditionelSwitch;
   begin
@@ -1586,11 +1560,8 @@ begin
 end;
 
 procedure TJavaParser.ParseForStatement(Operation: TOperation);
-var
-  Typename, Ident, Importname: string;
-  SingleStatement: Boolean;
-  Line: Integer;
-  Attr: TAttribute;
+var Typename, Ident, Importname: string; SingleStatement: Boolean;
+  Line: Integer; Attr: TAttribute;
   // ForStatement: for (type variable = ; Expressionopt ; ForUpdateopt ) Statement
   // ForStatement: for (Type Object : Collection) Statement
 begin
@@ -1606,7 +1577,7 @@ begin
     begin
       Ident := GetNextToken;
       if Ident = '(' then
-      // for (match (Token.Colon); ; match (Token.Comma)) {..}
+        // for (match (Token.Colon); ; match (Token.Comma)) {..}
         SkipPair('(', ')')
       else
       begin
@@ -1710,9 +1681,7 @@ begin
 end;
 
 procedure TJavaParser.ParseNew(Operation: TOperation);
-var
-  Typename: string;
-  AClass: TClass;
+var Typename: string; AClass: TClass;
   (*
     ClassInstanceCreationExpression:
     UnqualifiedClassInstanceCreationExpression
@@ -1779,12 +1748,10 @@ end;
 
 function TJavaParser.IsStatementBegin(const Token: string): Boolean;
 begin
-  var
-  Str := Token;
-  Result := (Str = 'if') or (Str = 'do') or (Str = 'while') or (Str = 'for') or
-    (Str = 'try') or (Str = 'switch') or (Str = 'synchronized') or
-    (Str = 'return') or (Str = 'throw') or (Str = 'break') or (Str = 'continue')
-    or (Str = 'assert');
+  Result := (Token = 'if') or (Token = 'do') or (Token = 'while') or
+    (Token = 'for') or (Token = 'try') or (Token = 'switch') or
+    (Token = 'synchronized') or (Token = 'return') or (Token = 'throw') or
+    (Token = 'break') or (Token = 'continue') or (Token = 'assert');
 end;
 
 procedure TJavaParser.ParseBlockStatement(Operation: TOperation;
@@ -1921,10 +1888,7 @@ procedure TJavaParser.ParseLocalVariableDeclaration(Typename: string;
   VariableDeclaratorId: Identifier [Dims]
   VariableInitializer: Expression | ArrayInitializer
 *)
-var
-  Ident, Generic: string;
-  Attribute: TAttribute;
-  Col: Integer;
+var Ident, Generic: string; Attribute: TAttribute; Col: Integer;
   TypeClass: TClassifier;
 begin
   Col := FScanner.LastTokenColumn;
@@ -1999,15 +1963,10 @@ end;
 
 procedure TJavaParser.ParseMethodInvocation(const Typename: string;
   Operation: TOperation);
-var
-  Mi1, Mi2: IModelIterator;
-  Attr: TModelEntity;
-  Posi: Integer;
-  AObject: string;
-  IsClass: Boolean;
+var Mi1, Mi2: IModelIterator; Attr: TModelEntity;
+  AObject: string; IsClass: Boolean;
 begin
-  Posi := Pos('.', Typename);
-  AObject := Copy(Typename, 1, Posi - 1);
+  AObject := Copy(Typename, 1, Pos('.', Typename) - 1);
   if AObject <> '' then
   begin
     IsClass := True;
@@ -2045,10 +2004,7 @@ begin
 end;
 
 procedure TJavaParser.ParseArgumentList(Operation: TOperation);
-var
-  Bracket: Integer;
-  AClassname: string;
-  MyFree: Boolean;
+var Bracket: Integer; AClassname: string; MyFree: Boolean;
 begin
   MyFree := False;
   if not Assigned(Operation) then
@@ -2149,9 +2105,8 @@ begin
     (Operator = '++') or (Operator = '--');
 end;
 
-function TJavaParser.IsReservedWord(const Str: string): Boolean;
-var
-  Left, Mid, Right: Integer;
+function TJavaParser.IsReservedWord(const RWord: string): Boolean;
+var Left, Mid, Right: Integer;
 begin
   Result := True;
   Left := 0;
@@ -2160,9 +2115,9 @@ begin
   while Left <= Right do
   begin
     Mid := (Left + Right) div 2;
-    if ReservedWords[Mid] = Str then
+    if ReservedWords[Mid] = RWord then
       Exit;
-    if ReservedWords[Mid] > Str then
+    if ReservedWords[Mid] > RWord then
       Right := Mid - 1
     else
       Left := Mid + 1;
@@ -2170,35 +2125,32 @@ begin
   Result := False;
 end;
 
-function TJavaParser.IsIdentifier(Str: string): Boolean;
+function TJavaParser.IsIdentifier(Ident: string): Boolean;
 begin
   Result := False;
   var
-  Int := Pos('<', Str);
+  Int := Pos('<', Ident);
   if Int > 0 then
-    Delete(Str, Int, Length(Str));
-  if Length(Str) = 0 then
+    Delete(Ident, Int, Length(Ident));
+  if Length(Ident) = 0 then
     Exit;
-  if not(Str[1].IsLetter or (Pos(Str[1], '_$') > 0)) then
+  if not(Ident[1].IsLetter or (Pos(Ident[1], '_$') > 0)) then
     Exit;
-  for var I := 2 to Length(Str) do
-    if not(Str[I].IsLetterOrDigit or (Pos(Str[I], '_.[]<>') > 0)) then
+  for var I := 2 to Length(Ident) do
+    if not(Ident[I].IsLetterOrDigit or (Pos(Ident[I], '_.[]<>') > 0)) then
       Exit;
-  if Str[Length(Str)] = '.' then
+  if Ident[Length(Ident)] = '.' then
     Exit;
-  Result := not IsReservedWord(Str);
+  Result := not IsReservedWord(Ident);
 end;
 
-function TJavaParser.IsTypename(const Str: string): Boolean;
-var
-  ClassIte, Ite: IModelIterator;
-  Attr: TAttribute;
-  Cent: TModelEntity;
+function TJavaParser.IsTypename(const AType: string): Boolean;
+var ClassIte, Ite: IModelIterator; Attr: TAttribute; Cent: TModelEntity;
 begin
   Result := True;
-  if IsSimpleType(Str) then
+  if IsSimpleType(AType) then
     Exit;
-  Result := not IsReservedWord(Str);
+  Result := not IsReservedWord(AType);
   if Result and Assigned(FUnit) then
   begin
     ClassIte := FUnit.GetClassifiers;
@@ -2209,7 +2161,7 @@ begin
       while Ite.HasNext do
       begin
         Attr := TAttribute(Ite.Next);
-        if Attr.Name = Str then
+        if Attr.Name = AType then
           Result := False;
       end;
     end;
@@ -2219,10 +2171,7 @@ end;
 procedure TJavaParser.DoAttribute(Attribute: TAttribute; const AGeneric: string;
   Operation: TOperation = nil);
 
-var
-  Pos: PChar;
-  Posi: Integer;
-  AToken, Str: string;
+var Pos: PChar; Posi: Integer; AToken, Str: string;
 
   function GetValue: string;
   begin
@@ -2319,9 +2268,7 @@ begin
 end;
 
 function TJavaParser.GetImportName(const Typ: string): string;
-var
-  Posi: Integer;
-  StringList: TStringList;
+var Posi: Integer; StringList: TStringList;
   WithoutArray, WithoutGeneric, Gen, InnerGen, Arr, Complete: string;
 begin
   Result := Typ;
@@ -2420,15 +2367,10 @@ end;
 { $WARNINGS OFF }
 procedure TJavaParser.CollectClassesForImport(const Import, Sourcepath,
   Package: string; UserImports: TStringList);
-var
-  PackageDir, Cp1, Cp2, Classnam: string;
-  Posi: Integer;
-  Found: Boolean;
+var PackageDir, Cp1, Cp2, Classnam: string; Posi: Integer; Found: Boolean;
 
   procedure CollectInJarFile(const JarFilename, Importname: string);
-  var
-    JarFile: TZipFile;
-    Str: string;
+  var JarFile: TZipFile; Str: string;
   begin
     JarFile := TZipFile.Create;
     try
@@ -2460,19 +2402,20 @@ var
   end;
 
   procedure CollectInDirectory(const Cp2, Ext: string);
-  var
-    Filename, Filepath, PackageFilename: string;
+  var FileName, Filepath, PackageFilename: string;
   begin
     if not DirectoryExists(Cp2) then
       Exit;
 
-    var FileNames := TDirectory.GetFiles(Cp2, Ext);
-    Found:= (Length(FileNames) > 0);
-    for Filepath in FileNames do begin
-      Filename := ChangeFileExt(ExtractFileName(Filepath), '');
-      PackageFilename := Package + '.' + Filename;
+    var
+    FileNames := TDirectory.GetFiles(Cp2, Ext);
+    Found := (Length(FileNames) > 0);
+    for Filepath in FileNames do
+    begin
+      FileName := ChangeFileExt(ExtractFileName(Filepath), '');
+      PackageFilename := Package + '.' + FileName;
       if Pos('$', PackageFilename) = 0 then
-        UserImports.Add(Filename + '=' + PackageFilename);
+        UserImports.Add(FileName + '=' + PackageFilename);
     end;
   end;
 
@@ -2502,25 +2445,23 @@ end;
 
 procedure TJavaParser.CollectDirClassesForImport(const Import, Sourcepath,
   Package: string; UserImports: TStringList);
-var
-  PackageDir, Cp1, Cp2: string;
-  Posi: Integer;
-  Found: Boolean;
+var PackageDir, Cp1, Cp2: string; Posi: Integer; Found: Boolean;
 
   procedure CollectInDirectory(const Cp2, Ext: string);
-  var
-    Filename, Filepath, PackageFilename: string;
+  var FileName, Filepath, PackageFilename: string;
   begin
     if not DirectoryExists(Cp2) then
       Exit;
 
-    var FileNames := TDirectory.GetFiles(Cp2, Ext);
-    Found:= (Length(FileNames) > 0);
-    for Filepath in FileNames do begin
-      Filename := ChangeFileExt(ExtractFileName(Filepath), '');
-      PackageFilename := Package + '.' + Filename;
+    var
+    FileNames := TDirectory.GetFiles(Cp2, Ext);
+    Found := (Length(FileNames) > 0);
+    for Filepath in FileNames do
+    begin
+      FileName := ChangeFileExt(ExtractFileName(Filepath), '');
+      PackageFilename := Package + '.' + FileName;
       if Pos('$', PackageFilename) = 0 then
-        UserImports.Add(Filename + '=' + PackageFilename);
+        UserImports.Add(FileName + '=' + PackageFilename);
     end;
   end;
 
@@ -2561,10 +2502,7 @@ begin
 end;
 
 function TJavaParser.NeedSource(const SourceName, Packagename: string): Boolean;
-var
-  Stream: TStream;
-  Parser: TJavaParser;
-  Str: string;
+var Stream: TStream; Parser: TJavaParser; Str: string;
 begin
   Result := False;
   if Assigned(NeedPackage) then
