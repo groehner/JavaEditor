@@ -65,8 +65,7 @@ type
     property Aborting: Boolean read FAborting write FAborting;
   end;
 
-var
-  MyGrepResults: TFGrepResults;
+var MyGrepResults: TFGrepResults;
 
 implementation
 
@@ -122,9 +121,7 @@ end;
 procedure TFGrepResults.FoundIt(Sender: TObject;
   const ASearch, AReplace: string; Line, Column: Integer;
   var Action: TSynReplaceAction);
-var
-  AResult: TSearchResult;
-  Str: string;
+var AResult: TSearchResult; Str: string;
 begin
   Application.ProcessMessages;
   if not Assigned(FResults) or (FResults.FFileName <> FFileName) then
@@ -226,8 +223,7 @@ procedure TFGrepResults.Execute;
   end;
 
   procedure OpenFilesGrep;
-  var
-    Form: TFEditForm;
+  var Form: TFEditForm;
   begin
     FResults := nil;
     for var I := 0 to FJava.TDIEditFormCount - 1 do
@@ -248,23 +244,29 @@ procedure TFGrepResults.Execute;
   end;
 
   procedure DirGrep(const Dir, Mask: string);
-  var
-    EditForm: TFEditForm;
+  var EditForm: TFEditForm;
   begin
     var
-    Filenames := TDirectory.GetFiles(Dir, Mask, TSearchOption.soAllDirectories);
-    for var Pathname in Filenames do
+    Masks := Mask.Split([';', ',', ' '], MaxInt,
+      TStringSplitOptions.ExcludeEmpty);
+    for var AMask in Masks do
     begin
-      FResults := nil;
-      EditForm := FJava.GetEditForm(Pathname);
-      if Assigned(EditForm) then
-        DoSearch(EditForm.Editor, Pathname)
-      else
-        DoSearchInFile(Pathname);
-      Inc(FFileCount);
-      Application.ProcessMessages;
-      if Aborting then
-        Break;
+      var
+      Filenames := TDirectory.GetFiles(Dir, AMask,
+        TSearchOption.soAllDirectories);
+      for var Pathname in Filenames do
+      begin
+        FResults := nil;
+        EditForm := FJava.GetEditForm(Pathname);
+        if Assigned(EditForm) then
+          DoSearch(EditForm.Editor, Pathname)
+        else
+          DoSearchInFile(Pathname);
+        Inc(FFileCount);
+        Application.ProcessMessages;
+        if Aborting then
+          Break;
+      end;
     end;
   end;
 
@@ -328,9 +330,7 @@ begin
 end;
 
 procedure TFGrepResults.Statistic;
-var
-  Counts, Files: Integer;
-  Node: TTreeNode;
+var Counts, Files: Integer; Node: TTreeNode;
 begin
   FTvResults.Items.BeginUpdate;
   Files := 0;
@@ -354,11 +354,8 @@ begin
 end;
 
 procedure TFGrepResults.OpenSource(Node: TTreeNode);
-var
-  Result: TSearchResult;
-  CurrentFileName, Str: string;
-  BufferCoord: TBufferCoord;
-  SearchResult: TSearchResults;
+var Result: TSearchResult; CurrentFileName, Str: string;
+  BufferCoord: TBufferCoord; SearchResult: TSearchResults;
 begin
   if not Assigned(Node) then
     Exit;
@@ -384,8 +381,8 @@ begin
   FJava.EditorForm.Editor.BlockEnd := BufferCoord;
 end;
 
-function TFGrepResults.IsWholeWord(const Line: string; ScanPos, Len: Integer)
-  : Boolean;
+function TFGrepResults.IsWholeWord(const Line: string;
+  ScanPos, Len: Integer): Boolean;
 begin
   var
   Pos1 := ScanPos;
@@ -396,9 +393,7 @@ begin
 end;
 
 function TFGrepResults.IsCommentOrString(ScanPos, LineNo: Integer): Boolean;
-var
-  Token: string;
-  Attr: TSynHighlighterAttributes;
+var Token: string; Attr: TSynHighlighterAttributes;
 begin
   FEditor.GetHighlighterAttriAtRowCol(BufferCoord(ScanPos, LineNo + 1),
     Token, Attr);
@@ -408,14 +403,10 @@ begin
 end;
 
 procedure TFGrepResults.DoSearchReplace(const SearchText, ReplaceText: string);
-var
-  Positions: array of Integer;
-  StackPos: Integer;
+var Positions: array of Integer; StackPos: Integer;
 
   procedure Search(LineNo: Integer);
-  var
-    UsedSearchLine, UsedSearchText: string;
-    Action: TSynReplaceAction;
+  var UsedSearchLine, UsedSearchText: string; Action: TSynReplaceAction;
   begin
     StackPos := 0;
     UsedSearchLine := FEditor.Lines[LineNo];
@@ -431,14 +422,12 @@ var
       ScanPos := Pos(UsedSearchText, UsedSearchLine, ScanPos);
       if ScanPos > 0 then
       begin
-        if (MySearchOptions.WholeWords and
-            IsWholeWord(UsedSearchLine, ScanPos, Length(SearchText)) or
-            not MySearchOptions.WholeWords)
-        and
-           (MySearchOptions.ExcludeCommentsAndStrings and
-            not IsCommentOrString(ScanPos, LineNo) or
-            not MySearchOptions.ExcludeCommentsAndStrings)
-        then begin
+        if (MySearchOptions.WholeWords and IsWholeWord(UsedSearchLine, ScanPos,
+          Length(SearchText)) or not MySearchOptions.WholeWords) and
+          (MySearchOptions.ExcludeCommentsAndStrings and
+          not IsCommentOrString(ScanPos, LineNo) or
+          not MySearchOptions.ExcludeCommentsAndStrings) then
+        begin
           FoundIt(Self, SearchText, ReplaceText, LineNo + 1, ScanPos, Action);
           if MySearchOptions.Replace then
           begin

@@ -36,7 +36,7 @@ end;
 procedure TFConfirmReplace.PrepareShow(AEditorRect: TRect;
   XPos, Y1Pos, Y2Pos: Integer; const AReplaceText: string);
 var
-  NewWidth, NewHeight: integer;
+  NewWidth, NewHeight: Integer;
 begin
   LConfirmation.Caption := Format(_('"%s" replace?'), [AReplaceText]);
   NewWidth := AEditorRect.Right - AEditorRect.Left;
@@ -44,10 +44,9 @@ begin
 
   if NewWidth <= Width then
     XPos := AEditorRect.Left - (Width - NewWidth) div 2
-  else begin
+  else
     if XPos + Width > AEditorRect.Right then
       XPos := AEditorRect.Right - Width;
-  end;
   if Y2Pos > AEditorRect.Top + MulDiv(NewHeight, 2, 3) then
     Y2Pos := Y1Pos - Height - 4
   else

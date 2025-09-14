@@ -898,6 +898,8 @@ end;
 
 function HasDefaultPrinter: Boolean;
 begin
+  if Printer.PrinterIndex = -1 then
+    Exit(False);
   Result := (-1 < Printer.PrinterIndex) and
     (Printer.PrinterIndex < Printer.Printers.Count);
 end;

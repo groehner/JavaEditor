@@ -304,8 +304,8 @@ var
 begin
   if not Assigned(MyForm) then
     Exit;
-
-  if (MyForm.FormTag = 1) and Assigned(TFEditForm(MyForm).Editor) then
+  // (MyForm.FormTag = 1) was with Exception
+  if (MyForm is TFEditForm) and Assigned(TFEditForm(MyForm).Editor) then
   begin
     Line := TFEditForm(MyForm).Editor.CaretY;
     Num := GetNum(Line);

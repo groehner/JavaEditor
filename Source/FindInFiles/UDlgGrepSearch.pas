@@ -64,8 +64,8 @@ uses
 procedure TFGrepSearch.FormCreate(Sender: TObject);
 begin
   TranslateComponent(Self);
-  if not Assigned(myGrepResults) then
-    myGrepResults:= TFGrepResults.Create(FMessages.TVSearch);
+  if not Assigned(MyGrepResults) then
+    MyGrepResults:= TFGrepResults.Create(FMessages.TVSearch);
 end;
 
 procedure TFGrepSearch.DirEnable(New: Boolean);
@@ -139,7 +139,7 @@ begin
     FMessages.SetMinHeight(200);
     FMessages.ShowTab(3);
     if MySearchOptions.SearchText <> '' then
-      myGrepResults.Execute;
+      MyGrepResults.Execute;
   end;
 end;
 

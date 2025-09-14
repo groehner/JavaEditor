@@ -134,43 +134,46 @@ begin
   end;
 end;
 
+
 procedure TSearchOptions.SaveFromForm(Form: TForm);
-  var Component: TComponent;
-begin
-  with Form do
-    for var I:= 0 to ComponentCount - 1 do begin
-      Component:= Components[I];
-      case Component.Tag of
-        1: begin
-             FSearchText:= TComboBox(Component).Text;
-             FSearchTextHistory:= TComboBox(Component).Items.Text;
-           end;
-        2: begin
-             FReplaceText:= TComboBox(Component).Text;
-             FReplaceTextHistory:= TComboBox(Component).Items.Text;
-           end;
-        3: FReplace:= TCheckBox(Component).Checked;
-        4: FCaseSensitive:= TCheckBox(Component).Checked;
-        5: FWholeWords:= TCheckBox(Component).Checked;
-        6: FFromCursor:= TCheckBox(Component).Checked;
-        7: FSelectionOnly:= TCheckBox(Component).Checked;
-       16: FExcludeCommentsAndStrings:= TCheckBox(Component).Checked;
-        8: FRegEx:= TCheckBox(Component).Checked;
-        9: FBackwards:= (TRadioGroup(Component).ItemIndex = 1);
-       10: if TRadioButton(Component).Checked then FGrepAction:= 1;
-       11: if TRadioButton(Component).Checked then FGrepAction:= 2;
-       12: if TRadioButton(Component).Checked then FGrepAction:= 3;
-       13: begin
-             FDirectory:= FConfiguration.ExtendPath(TComboBox(Component));
-             FDirectoryHistory:= TComboBox(Component).Items.Text;
-           end;
-       14: begin
-             FFilemask:= TComboBox(Component).Text;
-             FFilemaskHistory:= TComboBox(Component).Items.Text;
-           end;
-       15: FIncludeSubdirs:= TCheckBox(Component).Checked;
+
+  procedure DoComponent(Component: TComponent);
+  begin
+    case Component.Tag of
+      1: begin
+           FSearchText := TComboBox(Component).Text;
+           FSearchTextHistory := TComboBox(Component).Items.Text;
+         end;
+      2:  begin
+            FReplaceText := TComboBox(Component).Text;
+            FReplaceTextHistory := TComboBox(Component).Items.Text;
+          end;
+      3: FReplace:= TCheckBox(Component).Checked;
+      4: FCaseSensitive:= TCheckBox(Component).Checked;
+      5: FWholeWords:= TCheckBox(Component).Checked;
+      6: FFromCursor:= TCheckBox(Component).Checked;
+      7: FSelectionOnly:= TCheckBox(Component).Checked;
+      8: FRegEx:= TCheckBox(Component).Checked;
+      9: FBackwards:= (TRadioGroup(Component).ItemIndex = 1);
+     10: if TRadioButton(Component).Checked then FGrepAction:= 1;
+     11: if TRadioButton(Component).Checked then FGrepAction:= 2;
+     12: if TRadioButton(Component).Checked then FGrepAction:= 3;
+     13: begin
+           FDirectory:= FConfiguration.ExtendPath(TComboBox(Component));
+           FDirectoryHistory:= TComboBox(Component).Items.Text;
+         end;
+     14: begin
+           FFilemask:= TComboBox(Component).Text;
+           FFilemaskHistory:= TComboBox(Component).Items.Text;
+         end;
+     15: FIncludeSubdirs:= TCheckBox(Component).Checked;
+     16: FExcludeCommentsAndStrings:= TCheckBox(Component).Checked;
     end;
   end;
+
+begin
+  for var I:= 0 to Form.ComponentCount - 1 do
+    DoComponent(Form.Components[I]);
   if FSelectionOnly and FFromCursor then FFromCursor:= False;
   FSystemFromCursor:= FFromCursor;
 end;
