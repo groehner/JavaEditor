@@ -4452,7 +4452,7 @@ end;
 
 procedure TFConfiguration.RegistryForUser;
 var
-  Str: string;
+  Path, Filename: string;
   AFile: TFileStream;
 begin
   FFirstStartAfterInstallation := False;
@@ -4470,17 +4470,17 @@ begin
         FHTMLHighlighter.SaveToRegistry(HKEY_CURRENT_USER,
           GetRegPath + '\HTML');
       end;
-      Str := TPath.GetHomePath + '\JavaEditor\';
-      if not SysUtils.DirectoryExists(Str) then
-        SysUtils.ForceDirectories(Str);
-      FHomeDir := Str;
+      Path := TPath.GetHomePath + '\JavaEditor\';
+      if not SysUtils.DirectoryExists(Path) then
+        SysUtils.ForceDirectories(Path);
+      FHomeDir := Path;
     end;
     FUserIniFile := nil;
   end
   else
   begin
-    Str := FMachineIniFile.ReadString('User', 'HomeDir', '<nix>');
-    if Str = '<nix>' then
+    Path := FMachineIniFile.ReadString('User', 'HomeDir', '<nix>');
+    if Path = '<nix>' then
     begin
       ErrorMsg(Format
         (_('In section [user] of the configuration file "%s" the value'),
@@ -4490,37 +4490,42 @@ begin
       FUserIniFile := nil;
       Exit;
     end;
-    Str := WithTrailingSlash(AddPortableDrive(DissolveUsername(Str)));
-    if not SysUtils.DirectoryExists(Str) then
-      SysUtils.ForceDirectories(Str);
-    FHomeDir := Str;
-    Str := Str + 'JEUser.ini';
-    if not FileExists(Str) then
+    Path := WithTrailingSlash(AddPortableDrive(DissolveUsername(Path)));
+    if not SysUtils.DirectoryExists(Path) then
+      if not SysUtils.ForceDirectories(Path) then begin
+        ErrorMsg(Format(_('Could not create folder %s!'), [Path]));
+        FUserIniFile := nil;
+        Exit;
+      end;
+    FHomeDir := Path;
+    Filename := TPath.Combine(Path, 'JEUser.ini');
+    if not FileExists(Filename) then
     begin
       FFirstStartAfterInstallation := True;
       try
-        AFile := TFileStream.Create(Str, fmCreate or fmOpenWrite);
-        FJavaHighlighter.SaveToFile(ExtractFilePath(Str) + '\JEJavaCol.ini');
-        FHTMLHighlighter.SaveToFile(ExtractFilePath(Str) + '\JEHTMLCol.ini');
-        FUserIniFile := TIniFile.Create(Str);
+        AFile := TFileStream.Create(Filename, fmCreate or fmOpenWrite);
         AFile.Free;
+        FJavaHighlighter.SaveToFile(TPath.Combine(Path, 'JEJavaCol.ini'));
+        FHTMLHighlighter.SaveToFile(TPath.Combine(Path, 'JEHTMLCol.ini'));
       except
-        on E: Exception do
-          Log('FFirstStartAfterInstallation', E);
+        on E: Exception do begin
+          ErrorMsg(Format(_('Could not create path %s!'), [Filename]));
+          FUserIniFile := nil;
+          Exit;
+        end;
       end;
     end;
 
     try
-      FUserIniFile := TIniFile.Create(Str);
+      FUserIniFile := TIniFile.Create(Filename);
     except
       on E: Exception do
       begin
-        ErrorMsg(Format(_('Could not open the preferencesfile %s!'), [Str]) +
+        ErrorMsg(Format(_('Could not open the preferencesfile %s!'), [Filename]) +
           ' ' + E.Message);
         FUserIniFile := nil;
       end;
     end;
-
   end;
 end;
 
@@ -9518,9 +9523,9 @@ begin
   if Str <> '' then
   begin
     var
-    Int := Printer.Printers.IndexOf(Str);
-    if (-1 < Int) and (Int < Printer.Printers.Count) then
-      SetPrinterIndex(Int);
+    Index := Printer.Printers.IndexOf(Str);
+    if (-1 < Index) and (Index < Printer.Printers.Count) then
+      SetPrinterIndex(Index);
   end;
 end;
 

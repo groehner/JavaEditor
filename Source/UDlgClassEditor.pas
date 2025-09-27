@@ -182,9 +182,11 @@ type
     procedure TVMethod(Method: TOperation);
     function HasMethod(const GetSet: string; Attribute: TAttribute;
       var Method: TOperation): Boolean;
-    procedure ChangeAttribute(var Attribute: TAttribute);
-    procedure ChangeGetSet(Attribute: TAttribute; ClassNumber: Integer);
+    procedure ChangeAttributeValues(var Attribute: TAttribute);
+    procedure ChangeGetSetAttribute(Attribute: TAttribute; ClassNumber: Integer);
     procedure NewClass;
+    function NewAttribute(ClassNumber: Integer; Node: TTreeNode): Integer;
+    function ChangeAttribute(ClassNumber: Integer; Node: TTreeNode): Integer;
     function MakeAttribute: TAttribute;
     function MakeType(ComboBox: TComboBox): TClassifier; overload;
     function MakeType(const Classname: string): TClassifier; overload;
@@ -1196,7 +1198,7 @@ begin
   FMyEditor.Editor.EndUpdate;
 end;
 
-procedure TFClassEditor.ChangeGetSet(Attribute: TAttribute;
+procedure TFClassEditor.ChangeGetSetAttribute(Attribute: TAttribute;
   ClassNumber: Integer);
 var
   NewGet, NewSet: string;
@@ -1233,7 +1235,7 @@ begin
   if Assigned(Method1) and Assigned(Method2) and (Method1.LineS > Method2.LineS)
   then
     GetIsFirst := False;
-  ChangeAttribute(Attribute);
+  ChangeAttributeValues(Attribute);
   FMyEditor.Editor.BeginUpdate;
   if FIsClass then
   begin
@@ -1286,11 +1288,46 @@ begin
     Result := False;
 end;
 
+function TFClassEditor.NewAttribute(ClassNumber: Integer;
+  Node: TTreeNode): Integer;
+begin
+  var Attribute := MakeAttribute;
+  Attribute.ScopeDepth := GetLevel(Node) + 1;
+  if AttributeAlreadyExists(Attribute.Name) then begin
+    ErrorMsg(Format(_(LNGAlreadyExists), [Attribute.Name]));
+    Result := Node.AbsoluteIndex;
+  end
+  else begin
+    AttributeToJava(Attribute, ClassNumber);
+    Result := Node.AbsoluteIndex + Node.Count + 1;
+  end;
+  Attribute.Free;
+end;
+
+function TFClassEditor.ChangeAttribute(ClassNumber: Integer;
+  Node: TTreeNode): Integer;
+var OldName, NewName: string;
+begin
+  Result := Node.AbsoluteIndex;
+  var Attribute := GetAttribute(Node);
+  if not Assigned(Attribute) then
+    Exit;
+
+  OldName := Attribute.Name;
+  NewName := EAttributeName.Text;
+  if (NewName <> OldName) and AttributeAlreadyExists(NewName) then
+    ErrorMsg(Format(_(LNGAlreadyExists), [NewName]))
+  else
+  begin
+    ChangeGetSetAttribute(Attribute, ClassNumber);
+    FMyEditor.ReplaceLineWith(Attribute.LineS - 1, Attribute.ToJava);
+    FMyEditor.ReplaceWord(OldName, Attribute.Name, True);
+  end;
+end;
+
 procedure TFClassEditor.BAttributeChangeClick(Sender: TObject);
 var
-  OldName, NewName: string;
   ClassNumber, NodeIndex, TopItemIndex: Integer;
-  Attribute: TAttribute;
   Node: TTreeNode;
 begin
   Node := TreeView.Selected;
@@ -1299,40 +1336,13 @@ begin
     (CBAttributeType.Text = '') or not Assigned(Node) or
     (not PartOfClass(Node) and (EAttributeValue.Text = '')) then
     Exit;
+
   ClassNumber := GetClassNumber(Node);
   TopItemIndex := TreeView.TopItem.AbsoluteIndex;
-  NodeIndex := Node.AbsoluteIndex;
-
-  FMyEditor.Editor.BeginUpdate;
   if IsAttributesNode(Node) then
-  begin
-    NodeIndex := NodeIndex + Node.Count + 1;
-    Attribute := MakeAttribute;
-    Attribute.ScopeDepth := GetLevel(Node) + 1;
-    if AttributeAlreadyExists(Attribute.Name) then
-      ErrorMsg(Format(_(LNGAlreadyExists), [Attribute.Name]))
-    else
-      AttributeToJava(Attribute, ClassNumber);
-    FreeAndNil(Attribute);
-  end
+    NodeIndex := NewAttribute(ClassNumber, Node)
   else
-  begin
-    Attribute := GetAttribute(Node);
-    if Assigned(Attribute) then
-    begin
-      OldName := Attribute.Name;
-      NewName := EAttributeName.Text;
-      if (NewName <> OldName) and AttributeAlreadyExists(NewName) then
-        ErrorMsg(Format(_(LNGAlreadyExists), [NewName]))
-      else
-      begin
-        ChangeGetSet(Attribute, ClassNumber);
-        FMyEditor.ReplaceLineWith(Attribute.LineS - 1, Attribute.ToJava);
-        FMyEditor.ReplaceWord(OldName, Attribute.Name, True);
-      end;
-    end;
-  end;
-  FMyEditor.Editor.EndUpdate;
+    NodeIndex := ChangeAttribute(ClassNumber, Node);
   UpdateTreeView;
   if (0 <= TopItemIndex) and (TopItemIndex < TreeView.Items.Count) then
     TreeView.TopItem := TreeView.Items[TopItemIndex];
@@ -1809,7 +1819,7 @@ begin
     Edit.SelStart := Length(Str);
 end;
 
-procedure TFClassEditor.ChangeAttribute(var Attribute: TAttribute);
+procedure TFClassEditor.ChangeAttributeValues(var Attribute: TAttribute);
 begin
   Attribute.Name := EAttributeName.Text;
   Attribute.TypeClassifier := MakeType(CBAttributeType);
@@ -1827,7 +1837,7 @@ end;
 function TFClassEditor.MakeAttribute: TAttribute;
 begin
   Result := TAttribute.Create(nil);
-  ChangeAttribute(Result);
+  ChangeAttributeValues(Result);
 end;
 
 function TFClassEditor.MakeType(ComboBox: TComboBox): TClassifier;

@@ -896,9 +896,19 @@ begin
   SetEnvironmentVariable(PChar(VarName), PChar(VarValue));
 end;
 
+function GetSafePrinterIndex: Integer;
+begin
+  try
+    Result := Printer.PrinterIndex;
+  except
+    on E: EPrinter do
+      Result := -1;
+  end;
+end;
+
 function HasDefaultPrinter: Boolean;
 begin
-  if Printer.PrinterIndex = -1 then
+  if GetSafePrinterIndex = -1 then
     Exit(False);
   Result := (-1 < Printer.PrinterIndex) and
     (Printer.PrinterIndex < Printer.Printers.Count);

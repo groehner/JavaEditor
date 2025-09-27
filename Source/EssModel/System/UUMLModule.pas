@@ -147,8 +147,11 @@ begin
   for var Path in Filenames do
     if LowerCase(ExtractFileExt(Path)) = '.java' then
       Ext := '.java';
-  if (Ext = '') and (Filenames.Count > 0) then
-    Ext := LowerCase(ExtractFileExt(Filenames[0]));
+  if Ext = '' then
+    if Filenames.Count > 0 then
+      Ext := LowerCase(ExtractFileExt(Filenames[0]))
+    else
+      Ext := '.java';
 
   Imp := nil;
   OtherFiles := nil;

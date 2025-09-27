@@ -388,7 +388,7 @@ begin
       ShowErrors;
     LogCompile;
   finally
-    FreeAndNil(FCompileList);
+    FCompileList.Free;
     Screen.Cursor := crDefault;
   end;
 end;
