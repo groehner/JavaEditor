@@ -2526,6 +2526,82 @@ var
         Inc(Result);
   end;
 
+  procedure AddAttributesAndOperations(ClassNode: TTreeNode);
+  begin
+    Ite := Cent.GetAttributes;
+    while Ite.HasNext do
+    begin
+      Attribute := TAttribute(Ite.Next);
+      ImageNr := Integer(Attribute.Visibility) + 2;
+      if Assigned(ClassNode) then
+        Node := TVFileStructure.Items.AddChildObject(ClassNode,
+          Attribute.ToTypeName, TInteger.Create(Attribute.Lines))
+      else
+        Node := TVFileStructure.Items.AddObject(nil,
+          Attribute.ToTypeName, TInteger.Create(Attribute.Lines));
+      Node.ImageIndex := ImageNr;
+      Node.SelectedIndex := ImageNr;
+      Node.HasChildren := False;
+    end;
+    Ite := Cent.GetOperations;
+    while Ite.HasNext do
+    begin
+      Method := TOperation(Ite.Next);
+      if Method.OperationType = otConstructor then
+        ImageNr := 6
+      else
+        ImageNr := Integer(Method.Visibility) + 7;
+      if Assigned(ClassNode) then
+        Node := TVFileStructure.Items.AddChildObject(ClassNode,
+          Method.ToTypeName, TInteger.Create(Method.Lines))
+      else
+        Node := TVFileStructure.Items.AddObject(nil,
+          Method.ToTypeName, TInteger.Create(Method.Lines));
+      Node.ImageIndex := ImageNr;
+      Node.SelectedIndex := ImageNr;
+      Node.HasChildren := False;
+    end;
+  end;
+
+  procedure NormalClass;
+  begin
+    IndentedOld := Indented;
+    Indented := CalculateIndented(CName);
+    while Pos('$', CName) + Pos('.', CName) > 0 do
+    begin
+      Delete(CName, 1, Pos('$', CName));
+      Delete(CName, 1, Pos('.', CName));
+    end;
+
+    if Cent is TClass then
+      ImageNr := 1
+    else
+      ImageNr := 11;
+
+    if Indented = 0 then
+      ClassNode := TVFileStructure.Items.AddObject(nil, CName,
+        TInteger.Create(Cent.Lines))
+    else if Indented > IndentedOld then
+      ClassNode := TVFileStructure.Items.AddChildObject(ClassNode, CName,
+        TInteger.Create(Cent.Lines))
+    else
+    begin
+      while Indented <= IndentedOld do
+      begin
+        Dec(IndentedOld);
+        ClassNode := ClassNode.Parent;
+      end;
+      ClassNode := TVFileStructure.Items.AddChildObject(ClassNode, CName,
+        TInteger.Create(Cent.Lines));
+    end;
+
+    ClassNode.ImageIndex := ImageNr;
+    ClassNode.SelectedIndex := ImageNr;
+    ClassNode.HasChildren := True;
+
+    AddAttributesAndOperations(ClassNode);
+  end;
+
 begin
   Indented := 0;
   ClassNode := nil;
@@ -2548,71 +2624,16 @@ begin
       if EndsWith(Cent.Name, '[]') then
         Continue;
 
-      if (Cent is TClass) then
+      if Cent is TClass then
         FIsJUnitTestClass := TClass(Cent).IsJUnitTestClass
       else
         FIsJUnitTestClass := False;
 
       CName := Cent.ShortName;
-      IndentedOld := Indented;
-      Indented := CalculateIndented(CName);
-      while Pos('$', CName) + Pos('.', CName) > 0 do
-      begin
-        Delete(CName, 1, Pos('$', CName));
-        Delete(CName, 1, Pos('.', CName));
-      end;
-
-      if (Cent is TClass) then
-        ImageNr := 1
+      if CName = 'Compact_Class' then
+        AddAttributesAndOperations(nil)
       else
-        ImageNr := 11;
-
-      if Indented = 0 then
-        ClassNode := TVFileStructure.Items.AddObject(nil, CName,
-          TInteger.Create(Cent.Lines))
-      else if Indented > IndentedOld then
-        ClassNode := TVFileStructure.Items.AddChildObject(ClassNode, CName,
-          TInteger.Create(Cent.Lines))
-      else
-      begin
-        while Indented <= IndentedOld do
-        begin
-          Dec(IndentedOld);
-          ClassNode := ClassNode.Parent;
-        end;
-        ClassNode := TVFileStructure.Items.AddChildObject(ClassNode, CName,
-          TInteger.Create(Cent.Lines));
-      end;
-
-      ClassNode.ImageIndex := ImageNr;
-      ClassNode.SelectedIndex := ImageNr;
-      ClassNode.HasChildren := True;
-
-      Ite := Cent.GetAttributes;
-      while Ite.HasNext do
-      begin
-        Attribute := TAttribute(Ite.Next);
-        ImageNr := Integer(Attribute.Visibility) + 2;
-        Node := TVFileStructure.Items.AddChildObject(ClassNode,
-          Attribute.ToTypeName, TInteger.Create(Attribute.Lines));
-        Node.ImageIndex := ImageNr;
-        Node.SelectedIndex := ImageNr;
-        Node.HasChildren := False;
-      end;
-      Ite := Cent.GetOperations;
-      while Ite.HasNext do
-      begin
-        Method := TOperation(Ite.Next);
-        if Method.OperationType = otConstructor then
-          ImageNr := 6
-        else
-          ImageNr := Integer(Method.Visibility) + 7;
-        Node := TVFileStructure.Items.AddChildObject(ClassNode,
-          Method.ToTypeName, TInteger.Create(Method.Lines));
-        Node.ImageIndex := ImageNr;
-        Node.SelectedIndex := ImageNr;
-        Node.HasChildren := False;
-      end;
+        NormalClass;
     end;
   finally
     TVFileStructure.Items.EndUpdate;

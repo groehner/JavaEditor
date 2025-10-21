@@ -205,7 +205,6 @@ type
     FTransparent: Boolean;
     FEntity: TModelEntity;
     FTextWidth: Integer;
-    FAbstractWidth: Integer;
     FForegroundColor: TColor;
     FBackgroundColor: TColor;
     FSingleLineHeight: Integer;
@@ -228,7 +227,6 @@ type
       default taLeftJustify;
     property Transparent: Boolean read FTransparent write SetTransparent;
     property TextWidth: Integer read FTextWidth;
-    property AbstractWidth: Integer read FAbstractWidth;
   end;
 
   TRtfdClassName = class(TRtfdCustomLabel, IAfterClassListener)
@@ -345,8 +343,7 @@ uses
   UIterators,
   UConfiguration;
 
-const
-  CDefaultWidth = 150;
+const CDefaultWidth = 150;
 
 function GetSVGRect(X, Y, Width, Height: Real; const Color: string;
   const Attribute: string = ''): string;
@@ -363,10 +360,7 @@ begin
 end;
 
 function GetSVGText(X, Y: Real; const Attribut, Text: string): string;
-var
-  StringList: TStringList;
-  Dyr: Real;
-  Dys: string;
+var StringList: TStringList; Dyr: Real; Dys: string;
 
   function getPreserve(Str: string): string;
   begin
@@ -395,8 +389,7 @@ begin
         Dys := FloatToVal(Dyr);
         Insert('em', Dys, Length(Dys));
         Result := Result + '    <tspan' + getPreserve(StringList[I]) + ' x=' +
-          FloatToVal(X) + ' dy=' + Dys + '>' + StringList[I] +
-          '</tspan>'#13#10;
+          FloatToVal(X) + ' dy=' + Dys + '>' + StringList[I] + '</tspan>'#13#10;
         Dyr := 1.3;
       end;
     end;
@@ -481,12 +474,10 @@ end;
 
 procedure TRtfdBox.PaintShadow(Rounded: Boolean; Shadow: Integer;
   Canvas: TCanvas; ARect: TRect);
-var
-  Intensity, SCol, StartR, StartG, StartB, EndR, EndG, EndB: Integer;
+var Intensity, SCol, StartR, StartG, StartB, EndR, EndG, EndB: Integer;
 
   function ColorGradient(I: Integer): TColor;
-  var
-    Red, Green, Blue: Integer;
+  var Red, Green, Blue: Integer;
   begin
     Red := StartR + Round(((EndR - StartR) * I) / Shadow);
     Green := StartG + Round(((EndG - StartG) * I) / Shadow);
@@ -523,9 +514,7 @@ begin
 end;
 
 procedure TRtfdBox.Paint;
-var
-  Rect1, Rect2: TRect;
-  Shadow, TopH, Int, Separator: Integer;
+var Rect1, Rect2: TRect; Shadow, TopH, Int, Separator: Integer;
   IsObject, IsClassOrInterface, IsValid: Boolean;
   Pathname, Str, SVGColor: string;
 begin
@@ -688,13 +677,9 @@ begin
 end;
 
 function TRtfdBox.GetSVG: string;
-var
-  ARect: TRect;
-  TopH, Shadow: Integer;
-  IsObject, IsClassOrInterface, IsComment: Boolean;
-  Str, ShadowFilter: string;
-  CustomLabel: TRtfdCustomLabel;
-  Separator: TRtfdSeparator;
+var ARect: TRect; TopH, Shadow: Integer;
+  IsObject, IsClassOrInterface, IsComment: Boolean; Str, ShadowFilter: string;
+  CustomLabel: TRtfdCustomLabel; Separator: TRtfdSeparator;
 begin
   ARect := MyGetClientRect;
   Shadow := ShadowWidth;
@@ -760,8 +745,7 @@ begin
       ')" font-family="' + Font.Name + '" font-size=' +
       IntToVal(Round(Font.Size * 1.3)) + '>'#13#10;
     Result := Result + Str;
-    Result := Result + TRtfdClassName(Controls[0])
-      .GetSVGTypeAndBinding(ARect);
+    Result := Result + TRtfdClassName(Controls[0]).GetSVGTypeAndBinding(ARect);
     Result := Result + '</g>'#13#10;
   end;
   Result := ReplaceStr(Result, '[]', '[ ]');
@@ -912,8 +896,7 @@ end;
 
 procedure TRtfdBox.OnChildMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-var
-  Point: TPoint;
+var Point: TPoint;
 begin
   Point.X := X;
   Point.Y := Y;
@@ -923,8 +906,7 @@ begin
 end;
 
 procedure TRtfdBox.OnChildMouseDblClick(Sender: TObject);
-var
-  Point: TPoint;
+var Point: TPoint;
 begin
   Point := ScreenToClient(Mouse.CursorPos);
   if FConfiguration.ShowClassparameterSeparately and (FTypeParameter <> '') and
@@ -971,7 +953,7 @@ end;
 function TRtfdBox.IsJUnitTestclass: Boolean;
 begin
   if FEntity is TClass then
-    Result := TClass(FEntity).IsJUnitTestClass
+    Result := TClass(FEntity).IsJUnitTestclass
   else
     Result := False;
 end;
@@ -1051,17 +1033,10 @@ begin
 end;
 
 procedure TRtfdClass.RefreshEntities;
-var
-  NeedH, NeedW, ATop: Integer;
-  AClass: TClass;
-  Omi, Ami: IModelIterator;
-  AClassname: TRtfdClassName;
-  CustomLabel: TRtfdCustomLabel;
-  Attribut: TRtfdAttribute;
-  Operation: TRtfdOperation;
-  Separator: TRtfdSeparator;
-  Stereotype: TRtfdStereotype;
-  AbstractWidth: Integer;
+var NeedH, NeedW, ATop: Integer; AClass: TClass; Omi, Ami: IModelIterator;
+  AClassname: TRtfdClassName; CustomLabel: TRtfdCustomLabel;
+  Attribut: TRtfdAttribute; Operation: TRtfdOperation;
+  Separator: TRtfdSeparator; Stereotype: TRtfdStereotype;
 
 begin
   if not Visible then
@@ -1071,7 +1046,7 @@ begin
   NeedW := CDefaultWidth;
   NeedH := 2 * BorderWidth + 2;
 
-  if (FEntity is TClass) and TClass(FEntity).IsJUnitTestClass then
+  if (FEntity is TClass) and TClass(FEntity).IsJUnitTestclass then
   begin
     Stereotype := TRtfdStereotype.Create(Self, nil, 'JUnit Testclass');
     Inc(NeedH, Stereotype.Height);
@@ -1124,12 +1099,9 @@ begin
   end;
 
   // Operations
-  AbstractWidth := 0;
   while Omi.HasNext do
   begin
     Operation := TRtfdOperation.Create(Self, Omi.Next);
-    if FConfiguration.UseAbstract and Operation.FEntity.IsAbstract then
-      AbstractWidth := Operation.AbstractWidth;
     Inc(NeedH, Operation.Height);
   end;
   Height := NeedH + ShadowWidth;
@@ -1138,7 +1110,7 @@ begin
     if Controls[I] is TRtfdCustomLabel then
     begin
       CustomLabel := TRtfdCustomLabel(Controls[I]);
-      NeedW := Max(CustomLabel.TextWidth + AbstractWidth, NeedW);
+      NeedW := Max(CustomLabel.TextWidth, NeedW);
     end;
   Width := NeedW;
 
@@ -1182,10 +1154,7 @@ begin
 end;
 
 function TRtfdClass.Debug: string;
-var
-  Str: string;
-  CustomLabel: TRtfdCustomLabel;
-  Separator: TRtfdSeparator;
+var Str: string; CustomLabel: TRtfdCustomLabel; Separator: TRtfdSeparator;
   ARect: TRect;
 begin
   Str := '';
@@ -1245,14 +1214,9 @@ begin
 end;
 
 procedure TRtfdObject.RefreshEntities;
-var
-  NeedH, NeedW, ATop: Integer;
-  AObjekt: TObjekt;
-  AClass: TClass;
-  Ami, Omi: IModelIterator;
-  ModelEntity: TModelEntity;
-  CustomLabel: TRtfdCustomLabel;
-  Attribut: TRtfdAttribute;
+var NeedH, NeedW, ATop: Integer; AObjekt: TObjekt; AClass: TClass;
+  Ami, Omi: IModelIterator; ModelEntity: TModelEntity;
+  CustomLabel: TRtfdCustomLabel; Attribut: TRtfdAttribute;
   Separator: TRtfdSeparator;
 begin
   if not Visible then
@@ -1340,8 +1304,7 @@ type
 
 constructor TRtfdCommentBox.Create(Owner: TComponent; const Name: string;
   Frame: TAFrameDiagram; MinVisibility: TVisibility; HandleSize: Integer);
-var
-  ModelEntity: TModelEntity;
+var ModelEntity: TModelEntity;
 begin
   ModelEntity := TModelEntity.Create(nil);
   ModelEntity.Name := Name;
@@ -1387,12 +1350,8 @@ begin
 end;
 
 procedure TRtfdCommentBox.Paint;
-const
-  CCorner = 12;
-var
-  Rect1, Rect2: TRect;
-  Shadow: Integer;
-  Points: array [0 .. 4] of TPoint;
+const CCorner = 12;
+var Rect1, Rect2: TRect; Shadow: Integer; Points: array [0 .. 4] of TPoint;
 begin
   ResizeMemo; // relevant
   Shadow := ShadowWidth;
@@ -1456,8 +1415,7 @@ begin
 end;
 
 procedure TRtfdCommentBox.CommentMouseMove(PFrom, PTo: TPoint);
-var
-  Num, DeltaX, DeltaY, ALeft, ATop, AWidth, AHeight: Integer;
+var Num, DeltaX, DeltaY, ALeft, ATop, AWidth, AHeight: Integer;
   Posi1, Posi2: TPoint;
 begin
   Posi1 := ScreenToClient(PFrom);
@@ -1518,10 +1476,7 @@ begin
 end;
 
 procedure TRtfdCommentBox.ResizeMemo;
-var
-  Width2, Height2: Integer;
-  Rect: TRect;
-  HandleSizeH: Integer;
+var Width2, Height2: Integer; Rect: TRect; HandleSizeH: Integer;
 begin
   HandleSizeH := FHandleSize;
   FTrMemo.Left := 2 * HandleSizeH;
@@ -1597,16 +1552,9 @@ end;
 
 { TVisibilityLabel }
 
-const
-  AbstractText = ' {abstract}';
-
 procedure TVisibilityLabel.Paint;
-var
-  ARect: TRect;
-  Visibi: string;
-  PictureNr, Distance: Integer;
-  Style: TFontStyles;
-  Vil: TVirtualImageList;
+var ARect: TRect; Visibi, ALabel: string; PictureNr, Distance: Integer;
+  Style: TFontStyles; Vil: TVirtualImageList;
 begin
   // for debugging
   // Canvas.Brush.Color:= clRed
@@ -1628,10 +1576,9 @@ begin
   Canvas.Font.Assign(Font);
   if FEntity.Static then
     Canvas.Font.Style := [fsUnderline];
-  if FConfiguration.RelationshipAttributesBold and (FEntity is TAttribute) and
-    TAttribute(FEntity).Connected then
+  if (FEntity is TAttribute) and TAttribute(FEntity).Connected and
+    FConfiguration.RelationshipAttributesBold then
     Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-
   case TRtfdBox(Owner).ShowIcons of
     0:
       begin
@@ -1669,20 +1616,12 @@ begin
     2:
       Canvas.TextOut(ARect.Left + 4, ARect.Top, Caption);
   end;
-  if FConfiguration.UseAbstract and FEntity.IsAbstract then
-  begin
-    ARect.Right := ARect.Right - 8;
-    DrawText(Canvas.Handle, PChar(AbstractText), Length(AbstractText), ARect,
-      DT_RIGHT);
-  end;
 end;
 
 function TVisibilityLabel.GetSVG(OwnerRect: TRect): string;
-var
-  PictureNr: Integer;
+var PictureNr: Integer;
   Visibi, Fontstyle, Icon, Attribut, Span: string;
-  Chr: Char;
-  BaseX, BaseY: Real;
+  Chr: Char; BaseX, BaseY: Real;
 begin
   Fontstyle := '';
   if FConfiguration.RelationshipAttributesBold and (FEntity is TAttribute) and
@@ -1703,7 +1642,7 @@ begin
   case TRtfdBox(Owner).ShowIcons of
     0:
       begin
-        if (FEntity is TAttribute) then
+        if FEntity is TAttribute then
           Icon := GetSVGRect(Left, Top + (Height - Font.Size) / 2, Font.Size,
             Font.Size, 'none')
         else
@@ -1790,31 +1729,25 @@ begin
         Result := GetSVGText(BaseX, BaseY, '', Visibi);
         Span := '<tspan x=' + IntToVal(Left + Font.Size + 4) + Fontstyle + '>' +
           ConvertLtGt(Text) + '</tspan>';
-        Insert(span, Result, Pos('>' + Visibi, Result) + 2);
+        Insert(Span, Result, Pos('>' + Visibi, Result) + 2);
       end;
     2:
       Result := GetSVGText(Left, Top + Round(0.65 * Height) + 1,
         Fontstyle, Text);
   end;
-  if FConfiguration.UseAbstract and FEntity.IsAbstract then
-    Result := Result + GetSVGText(OwnerRect.Width - 8 -
-      FConfiguration.ShadowWidth, Top + Round(0.65 * Height) + 1,
-      ' font-style="italic" text-anchor="end"', '{abstract}');
 end;
 
 function TVisibilityLabel.IntegerInsteadOfInt(const Str: string): string;
 begin
   Result := Str;
-  if FConfiguration.IntegerInsteadofInt and (Str = 'int') then
+  if FConfiguration.IntegerInsteadOfInt and (Str = 'int') then
     Result := 'Integer';
 end;
 
 { TRtfdClassName }
 
 constructor TRtfdClassName.Create(Owner: TComponent; Entity: TModelEntity);
-var
-  DeviceContext: THandle;
-  Name, TypeBinding: string;
+var DeviceContext: THandle; Name, TypeBinding: string;
 begin
   inherited Create(Owner, Entity);
 
@@ -1856,7 +1789,7 @@ begin
     FExtentY := 0;
     EntityChange(nil);
   end;
-  if Entity.IsAbstract then
+  if FConfiguration.UseAbstractForClass and Entity.IsAbstract then
     Caption := Caption + #13#10'{abstract}';
   Height := Height + 2 * FExtentY;
 end;
@@ -1868,11 +1801,9 @@ begin
 end;
 
 procedure TRtfdClassName.EntityChange(Sender: TModelEntity);
-var
-  Name: string;
+var Name: string;
 begin
-  if TRtfdBox(Owner).FFrame.Diagram.Package <> FEntity.Owner
-  then
+  if TRtfdBox(Owner).FFrame.Diagram.Package <> FEntity.Owner then
     Name := FEntity.Fullname
   else
     Name := FEntity.Name;
@@ -1880,11 +1811,7 @@ begin
 end;
 
 procedure TRtfdClassName.Paint;
-var
-  ARect: TRect;
-  Name: string;
-  Posi: Integer;
-  HeadColor: TColor;
+var ARect: TRect; Name: string; Posi: Integer; HeadColor: TColor;
 
   function isDark(Color: TColor): Boolean;
   begin
@@ -1948,9 +1875,7 @@ begin
 end;
 
 function TRtfdClassName.GetSVG(OwnerRect: TRect): string;
-var
-  XPos, YPos, Posi: Integer;
-  Name, Attribut: string;
+var XPos, YPos, Posi: Integer; Name, Attribut: string;
 begin
   Attribut := ' font-weight="bold" text-anchor="middle"';
   if FEntity.IsAbstract then
@@ -2003,8 +1928,7 @@ begin
 end;
 
 procedure TRtfdObjectName.EntityChange(Sender: TModelEntity);
-var
-  Obj: TObjekt;
+var Obj: TObjekt;
 begin
   Obj := TObjekt(FEntity);
   case FConfiguration.ObjectCaption of
@@ -2019,10 +1943,7 @@ begin
 end;
 
 procedure TRtfdObjectName.Paint;
-var
-  Alig: Integer;
-  ARect: TRect;
-  HeadColor: TColor;
+var Alig: Integer; ARect: TRect; HeadColor: TColor;
 begin
   SetColors;
   if FTransparent then
@@ -2051,9 +1972,7 @@ begin
 end;
 
 function TRtfdObjectName.GetSVG(OwnerRect: TRect): string;
-var
-  XPos: Integer;
-  Attribut: string;
+var XPos: Integer; Attribut: string;
 begin
   Attribut := ' font-weight="bold" text-anchor="middle"';
   if fsUnderline in Font.Style then
@@ -2083,17 +2002,14 @@ end;
 
 procedure TRtfdInterfaceName.EntityChange(Sender: TModelEntity);
 begin
-  if TRtfdBox(Owner).FFrame.Diagram.Package <> FEntity.Owner
-  then
+  if TRtfdBox(Owner).FFrame.Diagram.Package <> FEntity.Owner then
     Caption := FEntity.Fullname
   else
     Caption := FEntity.Name;
 end;
 
 function TRtfdInterfaceName.GetSVG(OwnerRect: TRect): string;
-var
-  XPos, YPos: Integer;
-  Attribut: string;
+var XPos, YPos: Integer; Attribut: string;
 begin
   Attribut := ' text-anchor="middle"';
   XPos := OwnerRect.Width div 2;
@@ -2188,16 +2104,11 @@ end;
 
 // show operation, show method
 procedure TRtfdOperation.EntityChange(Sender: TModelEntity);
-const
-  ColorMap: array [TOperationType] of TColor = (clGreen, clBlack,
+const ColorMap: array [TOperationType] of TColor = (clGreen, clBlack,
     clGray, clRed);
-  // otConstructor, otProcedure, otFunction, otDestructor,);
-var
-  Name: string;
-  Ite: IModelIterator;
-  Parameter: TParameter;
-  ParameterCount: Integer;
-  ShowParameter: Integer;
+  // otConstructor, otProcedure, otFunction, otDestructor
+var Name: string; Ite: IModelIterator; Parameter: TParameter;
+  ParameterCount: Integer; ShowParameter: Integer;
 begin
   // Default uml-syntax
   // visibility name ( parameter-list ) : return-type-expression { property-string }
@@ -2225,7 +2136,8 @@ begin
                 (Parameter.TypeClassifier.GetShortType) + ' ' +
                 Parameter.Name + ', '
             else
-              Name := Name + Parameter.Name + ': ' + IntegerInsteadOfInt
+              Name := Name + Parameter.Name + ': ' +
+                IntegerInsteadOfInt
                 (Parameter.TypeClassifier.GetShortType) + ', ';
         end;
     end;
@@ -2252,6 +2164,9 @@ begin
       else
         Name := Name + ': void';
   end;
+  if FEntity.IsAbstract and FConfiguration.UseAbstractForMethods then
+    Name:= Name + ' {abstract}';
+
   Caption := Name;
   Font.Style := [];
   Font.Color := FForegroundColor;
@@ -2348,12 +2263,8 @@ begin
 end;
 
 procedure TRtfdInterface.RefreshEntities;
-var
-  NeedW, NeedH, ATop: Integer;
-  Omi, Ami: IModelIterator;
-  CustomLabel: TRtfdCustomLabel;
-  Separator: TRtfdSeparator;
-  Intf: TInterface;
+var NeedW, NeedH, ATop: Integer; Omi, Ami: IModelIterator;
+  CustomLabel: TRtfdCustomLabel; Separator: TRtfdSeparator; Intf: TInterface;
 begin
   if not Visible then
     Exit;
@@ -2496,10 +2407,7 @@ begin
 end;
 
 procedure TRtfdCustomLabel.Paint;
-var
-  Alig, Posi: Integer;
-  ARect: TRect;
-  Str: string;
+var Alig, Posi: Integer; ARect: TRect; Str: string;
 begin
   SetColors;
   if FTransparent then
@@ -2562,11 +2470,7 @@ begin
 end;
 
 procedure TRtfdCustomLabel.AdjustBounds;
-var
-  DeviceContext: HDC;
-  X: Integer;
-  ARect: TRect;
-  AAlignment: TAlignment;
+var DeviceContext: HDC; X: Integer; ARect: TRect; AAlignment: TAlignment;
 begin
   if not(csReading in ComponentState) then
   begin
@@ -2574,14 +2478,10 @@ begin
     DeviceContext := GetDC(0);
     Canvas.Handle := DeviceContext;
     Canvas.Font.Assign(Font);
-    if FConfiguration.RelationshipAttributesBold and (FEntity is TAttribute)
-    then
-      if TAttribute(FEntity).Connected then
-        Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-    if (FEntity is TOperation) and FEntity.IsAbstract then
-      Canvas.Font.Style := Canvas.Font.Style + [fsItalic];
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), ARect,
-      DT_CALCRECT);
+    if (FEntity is TAttribute) and TAttribute(FEntity).Connected and
+      FConfiguration.RelationshipAttributesBold then
+      Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), ARect, DT_CALCRECT);
     FTextWidth := 8 + ARect.Right + 8;
     case TRtfdBox(Owner).ShowIcons of
       0:
@@ -2591,7 +2491,6 @@ begin
       2:
         FTextWidth := FTextWidth + 0;
     end;
-    FAbstractWidth := Canvas.TextWidth(AbstractText);
     Canvas.Handle := 0;
     ReleaseDC(0, DeviceContext);
     X := Left;

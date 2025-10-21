@@ -363,10 +363,14 @@ begin
     TBDiffsOnlyClick(Self);
   SetFilesCompared(False);
   LinkScroll(False);
-  if Num = 1 then
-    FCodeEdit1.Load(FLines1, FileName)
-  else
+  if Num = 1 then begin
+    FCodeEdit1.Load(FLines1, FileName);
+    FCodeEdit1.Highlighter := FConfiguration.GetHighlighter(FileName);
+  end
+  else begin
     FCodeEdit2.Load(FLines2, FileName);
+    FCodeEdit2.Highlighter := FConfiguration.GetHighlighter(FileName);
+  end;
 end;
 
 procedure TFTextDiff.Open(const Filename1, Filename2: string);
@@ -377,7 +381,8 @@ begin
   LinkScroll(False);
   FCodeEdit1.Load(FLines1, Filename1);
   FCodeEdit2.Load(FLines2, Filename2);
-  DoCompare;
+  FCodeEdit1.Highlighter := FConfiguration.GetHighlighter(FileName1);
+  FCodeEdit2.Highlighter := FConfiguration.GetHighlighter(FileName2);
 end;
 
 procedure TFTextDiff.HorzSplitClick(Sender: TObject);
@@ -450,7 +455,7 @@ begin
     if not FDiff.Execute(HashArray1, HashArray2, FLines1.Count, FLines2.Count)
     then
       Exit;
-    SetFilesCompared(True);
+    FFilesCompared := True;
     DisplayDiffs;
     LinkScroll(True);
     CodeEdit.CaretXY := Caret;
@@ -468,13 +473,13 @@ procedure TFTextDiff.DisplayDiffs;
     Color: TColor; Num: LongInt);
   begin
     var
-    Int := CodeEdit.Lines.Count;
+    Count := CodeEdit.Lines.Count;
     var
     LineObject := TLineObj.Create;
     LineObject.Spezial := Color <> FDefaultClr;
     LineObject.BackClr := Color;
     LineObject.Tag := Num;
-    CodeEdit.InsertItem(Int, Text, LineObject);
+    CodeEdit.InsertItem(Count, Text, LineObject);
   end;
 
 begin
@@ -531,6 +536,10 @@ begin
       FCodeEdit1.WithColoredLines := True;
       FCodeEdit2.WithColoredLines := True;
     end;
+  FCodeEdit1.ClearUndo;
+  FCodeEdit2.ClearUndo;
+  FCodeEdit1.Invalidate;
+  FCodeEdit2.Invalidate;
   ShowDiffState;
 end;
 

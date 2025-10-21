@@ -22,7 +22,6 @@ type
   private
     FReload: Boolean;
     FErrFile: string;
-    FTVJUnitTests: TTreeView;
     FOutputLines: TStringList;
     FConsoleMode: Integer;
     FSuccessfullCompiled: Boolean;
@@ -125,7 +124,6 @@ uses
 constructor TJavaCommands.Create;
 begin
   FOutputLines := TStringList.Create;
-  FTVJUnitTests := nil;
   FProcessRunning := False;
   FProcessRunningComJava := nil;
 end;
@@ -134,7 +132,6 @@ destructor TJavaCommands.Destroy;
 begin
   inherited;
   FreeAndNil(FOutputLines);
-  FreeAndNil(FTVJUnitTests);
 end;
 
 procedure TJavaCommands.OutputCompileInfos(CompilerNr: Integer);
@@ -1101,7 +1098,7 @@ begin
 
     with FJUnitTests do
     begin
-      FTVJUnitTests.Items.BeginUpdate;
+      TVJUnitTests.Items.BeginUpdate;
       DeleteData;
       Ite := AClass.GetOperations;
       PJUnit.Color := clGreen;
@@ -1134,13 +1131,13 @@ begin
           end;
           Output := Copy(StringList[Idx], Posi + 3, 255);
         end;
-        Node := FTVJUnitTests.Items.AddObject(nil, Output,
+        Node := TVJUnitTests.Items.AddObject(nil, Output,
           TInteger.Create(AMethod.Lines));
         Node.ImageIndex := PictureNr;
         Node.SelectedIndex := PictureNr;
         Node.HasChildren := False;
       end;
-      FTVJUnitTests.Items.EndUpdate;
+      TVJUnitTests.Items.EndUpdate;
     end;
     FreeAndNil(StringList);
   end;

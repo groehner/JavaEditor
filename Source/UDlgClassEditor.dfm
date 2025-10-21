@@ -52,7 +52,7 @@ object FClassEditor: TFClassEditor
     Top = 8
     Width = 368
     Height = 425
-    ActivePage = TSAttributes
+    ActivePage = TSClass
     TabOrder = 0
     OnChange = PageControlChange
     object TSClass: TTabSheet

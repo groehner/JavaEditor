@@ -1,3 +1,9 @@
+23.16, 2025.10.25
+enhancement for compact source files, https://openjdk.org/jeps/512
+improvement for abstract classes and methods
+bugfix JUnit tests
+bugfix changing jdk folder
+
 23.15, 2025.09.27
 bugfix for missing default printer
 

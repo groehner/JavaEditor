@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-07-16 13:18\n"
-"PO-Revision-Date: 2025-07-16 19:19+0200\n"
+"POT-Creation-Date: 2025-10-21 13:17\n"
+"PO-Revision-Date: 2025-10-21 13:22+0200\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 #. FBrowser..PBrowser..PTop..PLeft..CBUrls..Hint
 #: UBrowserForm.dfm:82
@@ -52,7 +52,7 @@ msgstr "Gehe zu"
 #. FTextDiff..TBTextDiff..TBClose..Hint
 #. FTextDiff..PopupEditor..MIClose..Caption
 #: UBrowserForm.dfm:116 UConfiguration.dfm:2670 UConfiguration.dfm:2701
-#: UDlgConfigureTools.dfm:148 UDlgEvaluate.dfm:73 UDlgHelp.dfm:225
+#: UDlgConfigureTools.dfm:148 UDlgEvaluate.dfm:73 UDlgHelp.dfm:186
 #: UDlgMindstorms.dfm:64 UDlgMindstormsEV3.dfm:31 UDlgUpdate.dfm:47
 #: UEditorForm.dfm:91 UEditorForm.dfm:2558 UExplorerForm.dfm:58
 #: UFileStructure.dfm:60 UGUIDesigner.dfm:24 UJava.dfm:2584 UJUnitTest.dfm:61
@@ -107,7 +107,7 @@ msgstr "Aktualisieren"
 
 #. FBrowser..PBrowser..ToolBar..TBFavoritesAdd..Hint
 #. FHelpDialog..BAddFavorit..Caption
-#: UBrowserForm.dfm:176 UDlgHelp.dfm:243
+#: UBrowserForm.dfm:176 UDlgHelp.dfm:204
 msgid "Add to favorites"
 msgstr "zu Favoriten hinzufügen"
 
@@ -125,7 +125,7 @@ msgstr "Favorit löschen"
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupConfiguration..Caption
 #. FSequenceForm..PopupMenuLifeLineAndSequencePanel..MIPopupConfiguration..Caption
 #. FStructogram..StructoPopupMenu..MIConfiguration..Caption
-#: UConfiguration.dfm:6 UConfiguration.dfm:5679 UConfiguration.dfm:5800
+#: UConfiguration.dfm:6 UConfiguration.dfm:5687 UConfiguration.dfm:5808
 #: UEditorForm.dfm:2552 UGUIDesigner.dfm:177 UJava.dfm:3716
 #: EssModel/Integrator/View/UDiagramFrame.dfm:603
 #: Sequencediagram/USequenceForm.dfm:181 Structogram/UStructogramform.dfm:931
@@ -231,12 +231,12 @@ msgstr "Titel"
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupParameter..Caption
 #: UConfiguration.dfm:235 UConfiguration.dfm:551 UConfiguration.dfm:654
 #: UConfiguration.dfm:801 UConfiguration.dfm:916 UConfiguration.dfm:3448
-#: UConfiguration.dfm:4702 UConfiguration.dfm:5571 UConfiguration.dfm:5686
-#: UConfiguration.dfm:5793 UDlgConfigureTools.dfm:44
+#: UConfiguration.dfm:4702 UConfiguration.dfm:5579 UConfiguration.dfm:5694
+#: UConfiguration.dfm:5801 UDlgConfigureTools.dfm:44
 #: EssModel/Integrator/View/UDiagramFrame.dfm:135
 #: EssModel/Integrator/View/UDiagramFrame.dfm:547
-#: EssModel/Integrator/View/URtfdDiagram.pas:2423
-#: EssModel/Integrator/View/URtfdDiagram.pas:2701
+#: EssModel/Integrator/View/URtfdDiagram.pas:2330
+#: EssModel/Integrator/View/URtfdDiagram.pas:2591
 msgid "Parameter"
 msgstr "Parameter"
 
@@ -274,8 +274,8 @@ msgstr "Hier können benutzerspezifische Jar-Dateien angegeben werden"
 #. FSetup..BInstall..Caption
 #: UConfiguration.dfm:365 UConfiguration.dfm:872 UConfiguration.dfm:3180
 #: UConfiguration.dfm:3196 UConfiguration.dfm:3213 UConfiguration.dfm:3249
-#: UConfiguration.dfm:3840 UConfiguration.dfm:3939 UConfiguration.dfm:5633
-#: UConfiguration.dfm:5770 UConfiguration.dfm:5885 Setup/USetup.dfm:115
+#: UConfiguration.dfm:3840 UConfiguration.dfm:3939 UConfiguration.dfm:5641
+#: UConfiguration.dfm:5778 UConfiguration.dfm:5893 Setup/USetup.dfm:115
 msgid "Install"
 msgstr "Installieren"
 
@@ -304,8 +304,8 @@ msgstr "Installieren"
 #: UConfiguration.dfm:970 UConfiguration.dfm:994 UConfiguration.dfm:1038
 #: UConfiguration.dfm:1584 UConfiguration.dfm:1710 UConfiguration.dfm:2354
 #: UConfiguration.dfm:2813 UConfiguration.dfm:3161 UConfiguration.dfm:3764
-#: UConfiguration.dfm:4116 UConfiguration.dfm:5069 UConfiguration.dfm:5208
-#: UConfiguration.dfm:5314 UDlgConfigureTools.dfm:121 UObjectInspector.pas:610
+#: UConfiguration.dfm:4116 UConfiguration.dfm:5077 UConfiguration.dfm:5216
+#: UConfiguration.dfm:5322 UDlgConfigureTools.dfm:121 UObjectInspector.pas:608
 msgid "Default"
 msgstr "Standard"
 
@@ -347,10 +347,10 @@ msgstr "Standard"
 #: UConfiguration.dfm:1928 UConfiguration.dfm:1945 UConfiguration.dfm:1962
 #: UConfiguration.dfm:1979 UConfiguration.dfm:2010 UConfiguration.dfm:2020
 #: UConfiguration.dfm:2037 UConfiguration.dfm:2054 UConfiguration.dfm:2070
-#: UConfiguration.dfm:2788 UConfiguration.dfm:5368 UConfiguration.dfm:5377
-#: UConfiguration.dfm:5386 UConfiguration.dfm:5466 UConfiguration.dfm:5475
-#: UConfiguration.dfm:5747 UConfiguration.dfm:5869 UConfiguration.dfm:5938
-#: UConfiguration.dfm:5947 UDlgAssociation.dfm:24 UDlgParameter.dfm:79
+#: UConfiguration.dfm:2788 UConfiguration.dfm:5376 UConfiguration.dfm:5385
+#: UConfiguration.dfm:5394 UConfiguration.dfm:5474 UConfiguration.dfm:5483
+#: UConfiguration.dfm:5755 UConfiguration.dfm:5877 UConfiguration.dfm:5946
+#: UConfiguration.dfm:5955 UDlgAssociation.dfm:24 UDlgParameter.dfm:79
 #: Formdesigner/ELDlgImage.dfm:21 Sequencediagram/UDlgConnect.dfm:24
 msgid "Select"
 msgstr "Wählen"
@@ -410,7 +410,7 @@ msgid "Show compiler call"
 msgstr "Zeige Compileraufruf"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrograms..Caption
-#: UConfiguration.dfm:648 UConfiguration.pas:10385
+#: UConfiguration.dfm:648 UConfiguration.pas:10375
 msgid "Programs"
 msgstr "Programme"
 
@@ -470,7 +470,7 @@ msgstr "Alle geöffneten Dateien"
 #. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..RGKeyboard....Items.Strings
 #. FAbout..GBComponents..LEditor..Caption
 #: UConfiguration.dfm:1044 UConfiguration.dfm:2186 UDlgAbout.dfm:41
-#: UConfiguration.pas:10389
+#: UConfiguration.pas:10379
 msgid "Editor"
 msgstr "Editor"
 
@@ -604,7 +604,7 @@ msgid "Compact line numbers"
 msgstr "Kompakte Zeilennummern"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PCode..Caption
-#: UConfiguration.dfm:1294 UConfiguration.pas:10391
+#: UConfiguration.dfm:1294 UConfiguration.pas:10381
 msgid "Code"
 msgstr "Code"
 
@@ -681,7 +681,7 @@ msgstr "Automatisch nach"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..LColor..Caption
-#: UConfiguration.dfm:1527 UConfiguration.dfm:1540 UConfiguration.pas:10392
+#: UConfiguration.dfm:1527 UConfiguration.dfm:1540 UConfiguration.pas:10382
 msgid "Colors"
 msgstr "Farben"
 
@@ -733,7 +733,7 @@ msgstr "Farben für"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..rgcolors....Items.Strings
 #. Workaround: "Brackets" is always shown as "Klammern"
-#: UConfiguration.dfm:1643 UJava.pas:7876
+#: UConfiguration.dfm:1643 UJava.pas:7894
 msgid "Brackets"
 msgstr "Klammern"
 
@@ -756,7 +756,7 @@ msgstr "Keine Syntaxhervorhebung"
 #. FAssociationDialog..LBAssociations....Items.Strings
 #. FUMLForm..Panel..PUMLPanel..TBUMLToolbar..TBComment..Hint
 #: UConfiguration.dfm:1716 UDlgAssociation.dfm:79
-#: EssModel/System/UUMLForm.dfm:150 UConfiguration.pas:10393
+#: EssModel/System/UUMLForm.dfm:150 UConfiguration.pas:10383
 msgid "Comment"
 msgstr "Kommentar"
 
@@ -796,7 +796,7 @@ msgid "Free"
 msgstr "Frei"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..Caption
-#: UConfiguration.dfm:1789 UConfiguration.pas:10394
+#: UConfiguration.dfm:1789 UConfiguration.pas:10384
 msgid "Templates"
 msgstr "Vorlagen"
 
@@ -848,7 +848,7 @@ msgid "JUnit test"
 msgstr "JUnit Test"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..Caption
-#: UConfiguration.dfm:2076 UConfiguration.pas:10395
+#: UConfiguration.dfm:2076 UConfiguration.pas:10385
 msgid "Keyboard"
 msgstr "Tastatur"
 
@@ -888,13 +888,13 @@ msgstr "Tastenkürzel für"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PKeyboard..RGKeyboard....Items.Strings
 #. FHelpDialog..PCJDKHelp..TSSearch..RGSearchOptions....Items.Strings
-#: UConfiguration.dfm:2188 UDlgHelp.dfm:158
+#: UConfiguration.dfm:2188 UDlgHelp.dfm:155
 msgid "All"
 msgstr "Alle"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGUIDesigner..Caption
 #. FGUIDesigner..Caption
-#: UConfiguration.dfm:2203 UGUIDesigner.dfm:4 UConfiguration.pas:10396
+#: UConfiguration.dfm:2203 UGUIDesigner.dfm:4 UConfiguration.pas:10386
 msgid "GUI designer"
 msgstr "GUI-Designer"
 
@@ -975,14 +975,14 @@ msgstr "Ausgabe"
 #. FStructogram..PanelLeft..ToolBarStructogram..TBAlgorithm..Hint
 #. tab structogramS after reading language
 #: UConfiguration.dfm:2399 UConfiguration.dfm:2509
-#: Structogram/UStructogramform.dfm:183 UConfiguration.pas:4230
+#: Structogram/UStructogramform.dfm:183 UConfiguration.pas:4239
 msgid "Algorithm"
 msgstr "Algorithmus"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..LYes..Caption
 #. FConfirmReplace..BYes..Caption
 #: UConfiguration.dfm:2427 FindInFiles/UDlgConfirmReplace.dfm:37
-#: UConfiguration.pas:4237
+#: UConfiguration.pas:4246
 msgid "Yes"
 msgstr "Ja"
 
@@ -990,7 +990,7 @@ msgstr "Ja"
 #. FConfirmReplace..BNo..Caption
 #. FBorder..PCBorder..TSNo..Caption
 #: UConfiguration.dfm:2434 FindInFiles/UDlgConfirmReplace.dfm:47
-#: Formdesigner/ELDlgBorder.dfm:26 UConfiguration.pas:4238
+#: Formdesigner/ELDlgBorder.dfm:26 UConfiguration.pas:4247
 msgid "No"
 msgstr "Nein"
 
@@ -1031,24 +1031,24 @@ msgid "[i]=count variable, [1]=start value, [n]=end value, [s]=increment"
 msgstr "[i]=Zählvariable, [1]=Startwert, [n]=Endwert, [s]=Schrittweite"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EInput..Text
-#: UConfiguration.dfm:2493 UConfiguration.pas:4231
+#: UConfiguration.dfm:2493 UConfiguration.pas:4240
 msgid "Input:"
 msgstr "Eingabe:"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EOutput..Text
-#: UConfiguration.dfm:2501 UConfiguration.pas:4232
+#: UConfiguration.dfm:2501 UConfiguration.pas:4241
 msgid "Output:"
 msgstr "Ausgabe:"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EWhile..Text
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EDoWhile..Text
-#: UConfiguration.dfm:2517 UConfiguration.dfm:2525 UConfiguration.pas:4233
-#: UConfiguration.pas:4234
+#: UConfiguration.dfm:2517 UConfiguration.dfm:2525 UConfiguration.pas:4242
+#: UConfiguration.pas:4243
 msgid "repeat while"
 msgstr "wiederhole solange"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..EFor..Text
-#: UConfiguration.dfm:2533 UConfiguration.pas:4235
+#: UConfiguration.dfm:2533 UConfiguration.pas:4244
 msgid "repeat for [i] = [1] to [n]"
 msgstr "wiederhole für [i] = [1] to [n]"
 
@@ -1100,7 +1100,7 @@ msgstr "Sequenzdiagramm"
 #. FConfiguration..PMain..PPanelRight..PageList..PUML..RGObjectCaption....Items.Strings
 #. tab sequence diagram
 #: UConfiguration.dfm:2656 UConfiguration.dfm:2685 UConfiguration.dfm:4574
-#: UConfiguration.pas:4254
+#: UConfiguration.pas:4263
 msgid "Object"
 msgstr "Objekt"
 
@@ -1114,7 +1114,7 @@ msgstr "Objekt"
 #. FJava..TBXDockTop..MainMenu..MIUML..MINewUML..Caption
 #: UConfiguration.dfm:2663 UConfiguration.dfm:2693 UDlgClassEditor.dfm:543
 #: UDlgConfigureTools.dfm:166 UDlgHelp.dfm:96 UJava.dfm:2244 UJava.dfm:2456
-#: UJava.dfm:2954 UDlgClassEditor.pas:1282 UObjectInspector.pas:619
+#: UJava.dfm:2954 UDlgClassEditor.pas:1503 UObjectInspector.pas:617
 msgid "New"
 msgstr "Neu"
 
@@ -1181,10 +1181,7 @@ msgid "Use proxy"
 msgstr "Proxy benutzen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..Caption
-#. FHelpDialog..PCJDKHelp..TSSearch..RGSearchOptions....Items.Strings
-#. FHelpDialog..PCJDKHelp..TSDocu..Caption
-#: UConfiguration.dfm:2870 UDlgHelp.dfm:157 UDlgHelp.dfm:184
-#: UConfiguration.pas:10400
+#: UConfiguration.dfm:2870 UConfiguration.pas:10390
 msgid "Documentation"
 msgstr "Dokumentation"
 
@@ -1201,8 +1198,7 @@ msgstr "Dateien"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LSearchAgain..Caption
 #. FJava..TBXDockTop..MainMenu..MIEdit..MISearchAgain..Caption
-#. API search
-#: UConfiguration.dfm:2899 UJava.dfm:2703 UDlgHelp.pas:444 UDlgHelp.pas:575
+#: UConfiguration.dfm:2899 UJava.dfm:2703 UDlgHelp.pas:379 UDlgHelp.pas:516
 msgid "Search again"
 msgstr "&Weitersuchen"
 
@@ -1222,7 +1218,7 @@ msgstr "Tutorial"
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LManual..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PMindstorms..LLejosManual..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..LJUnitManual..Caption
-#: UConfiguration.dfm:2938 UConfiguration.dfm:3462 UConfiguration.dfm:5578
+#: UConfiguration.dfm:2938 UConfiguration.dfm:3462 UConfiguration.dfm:5586
 msgid "Manual"
 msgstr "Manual"
 
@@ -1250,7 +1246,7 @@ msgid "The tutorial file - %java%\\tutorial\\tutorial.chm"
 msgstr "Die Tutorial-Datei - %java%\tutorial\tutorial.chm"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrinter..Caption
-#: UConfiguration.dfm:3255 UConfiguration.pas:10401
+#: UConfiguration.dfm:3255 UConfiguration.pas:10391
 msgid "Printer"
 msgstr "Drucker"
 
@@ -1300,7 +1296,7 @@ msgstr "Oben"
 #. FBorder..PCBorder..TSMatte..LMatteRight..Caption
 #: UConfiguration.dfm:3303 UConfiguration.dfm:3375 UGUIDesigner.dfm:67
 #: EssModel/Integrator/View/UDiagramFrame.dfm:449
-#: Formdesigner/ELDlgBorder.dfm:191 UJava.pas:7892
+#: Formdesigner/ELDlgBorder.dfm:191 UJava.pas:7910
 msgid "Right"
 msgstr "Rechts"
 
@@ -1311,7 +1307,7 @@ msgstr "Rechts"
 #. FBorder..PCBorder..TSMatte..LMatteLeft..Caption
 #: UConfiguration.dfm:3310 UConfiguration.dfm:3373 UGUIDesigner.dfm:53
 #: EssModel/Integrator/View/UDiagramFrame.dfm:435
-#: Formdesigner/ELDlgBorder.dfm:177 UJava.pas:7890
+#: Formdesigner/ELDlgBorder.dfm:177 UJava.pas:7908
 msgid "Left"
 msgstr "Links"
 
@@ -1476,7 +1472,7 @@ msgid "Translate compiler errors"
 msgstr "Übersetze Compilerfehler"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStyles..Caption
-#: UConfiguration.dfm:4216 UConfiguration.pas:10406
+#: UConfiguration.dfm:4216 UConfiguration.pas:10396
 msgid "Styles"
 msgstr "Stile"
 
@@ -1496,7 +1492,7 @@ msgid "Current style"
 msgstr "Aktueller Stil"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PRestrictions..Caption
-#: UConfiguration.dfm:4264 UConfiguration.pas:10407
+#: UConfiguration.dfm:4264 UConfiguration.pas:10397
 msgid "Restrictions"
 msgstr "Restriktionen"
 
@@ -1526,7 +1522,7 @@ msgid "Lock conversion structogram <-> program"
 msgstr "Konvertierung Struktogramm <-> Programm sperren"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PAssociations..Caption
-#: UConfiguration.dfm:4312 UConfiguration.pas:10408
+#: UConfiguration.dfm:4312 UConfiguration.pas:10398
 msgid "Associations"
 msgstr "Verknüpfungen"
 
@@ -1677,11 +1673,11 @@ msgstr "Sourcecode"
 #. AFrameDiagram..PopMenuClass..MIClassPopupVisibility..Caption
 #. AFrameDiagram..PopMenuObject..MIObjectPopupVisibility..Caption
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupVisibility..Caption
-#: UConfiguration.dfm:4693 UConfiguration.dfm:4716 UConfiguration.dfm:5214
+#: UConfiguration.dfm:4693 UConfiguration.dfm:4716 UConfiguration.dfm:5222
 #: UDlgClassEditor.dfm:192 UDlgClassEditor.dfm:378
 #: EssModel/Integrator/View/UDiagramFrame.dfm:164
 #: EssModel/Integrator/View/UDiagramFrame.dfm:275
-#: EssModel/Integrator/View/UDiagramFrame.dfm:574 UConfiguration.pas:10413
+#: EssModel/Integrator/View/UDiagramFrame.dfm:574 UConfiguration.pas:10403
 msgid "Visibility"
 msgstr "Sichtbarkeit"
 
@@ -1728,7 +1724,7 @@ msgid "Icons"
 msgstr "Icons"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..Caption
-#: UConfiguration.dfm:4725 UConfiguration.pas:10410
+#: UConfiguration.dfm:4725 UConfiguration.pas:10400
 msgid "UML options"
 msgstr "UML-Optionen"
 
@@ -1777,220 +1773,223 @@ msgstr "Konstruktor mit Sichtbarkeit zeigen"
 msgid "Relationship attributes in bold"
 msgstr "Beziehungsattribute fett"
 
-#. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBClassPresentation..CBUseAbstract..Caption
+#. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBClassPresentation..CBUseAbstractForClass..Caption
 #: UConfiguration.dfm:4804
-msgid "Use {abstract}"
-msgstr "{abstract} verwenden"
+msgid "Use {abstract} for class"
+msgstr "Verwende {abstract} für Klassen"
+
+#. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBClassPresentation..CBUseAbstractForMethods..Caption
+#: UConfiguration.dfm:4812
+msgid "Use {abstract} for methods"
+msgstr "Verwende {abstract} für Methoden"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectPresentation..Caption
-#: UConfiguration.dfm:4813
+#: UConfiguration.dfm:4821
 msgid "Object representation"
 msgstr "Objektdarstellung"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectPresentation..CBShowObjectsWithMethods..Caption
-#: UConfiguration.dfm:4820
+#: UConfiguration.dfm:4828
 msgid "Show with methods"
 msgstr "Mit Methoden zeigen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectPresentation..CBShowObjectsWithInheritedPrivateAttributes..Caption
-#: UConfiguration.dfm:4828
+#: UConfiguration.dfm:4836
 msgid "Show with inherited private attributes"
 msgstr "Mit geerbten privaten Attribute zeigen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectPresentation..CBShowAllNewObjects..Caption
 #. AFrameDiagram..PopMenuObject..MIObjectPopupShowAllNewObjects..Caption
-#: UConfiguration.dfm:4836 EssModel/Integrator/View/UDiagramFrame.dfm:224
+#: UConfiguration.dfm:4844 EssModel/Integrator/View/UDiagramFrame.dfm:224
 msgid "Show all new objects"
 msgstr "Zeige alle neuen Objekte"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectPresentation..CBLowerCaseLetter..Caption
-#: UConfiguration.dfm:4844
+#: UConfiguration.dfm:4852
 msgid "Start names with a lower case letter"
 msgstr "Namen mit Kleinbuchstaben beginnen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectPresentation..CBObjectsWithoutVisibility..Caption
-#: UConfiguration.dfm:4852
+#: UConfiguration.dfm:4860
 msgid "Without visibility"
 msgstr "Ohne Sichtbarkeit"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectPresentation..CBArrayListAsIntegratedList..Caption
-#: UConfiguration.dfm:4860
+#: UConfiguration.dfm:4868
 msgid "ArrayList as integrated list"
 msgstr "ArrayList als integrierte Liste"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBClassEditing..Caption
-#: UConfiguration.dfm:4869
+#: UConfiguration.dfm:4877
 msgid "Class editing"
 msgstr "Klassenbearbeitung"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBClassEditing..CBOpenPublicClasses..Caption
-#: UConfiguration.dfm:4876
+#: UConfiguration.dfm:4884
 msgid "Only open public classes"
 msgstr "Nur public Klassen öffnen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBClassEditing..CBDefaultModifiers..Caption
-#: UConfiguration.dfm:4884
+#: UConfiguration.dfm:4892
 msgid "Default modifiers for attributes and methods"
 msgstr "Standardmodifier für Attribute und Methoden"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBClassEditing..CBSetterWithoutThis..Caption
-#: UConfiguration.dfm:4894
+#: UConfiguration.dfm:4902
 msgid "Setter without this"
 msgstr "Setter ohne this"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBClassEditing..CBAttributesAParametersP..Caption
-#: UConfiguration.dfm:4902
+#: UConfiguration.dfm:4910
 msgid "Attributes start with a, parameters with p"
 msgstr "Attribute beginnen mit a, Parameter mit p"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectEditing..Caption
-#: UConfiguration.dfm:4911
+#: UConfiguration.dfm:4919
 msgid "Object editing"
 msgstr "Objectbearbeitung"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectEditing..CBUMLEdit..Caption
-#: UConfiguration.dfm:4918
+#: UConfiguration.dfm:4926
 msgid "Private attributes editable"
 msgstr "Private Attribute editierbar"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PUMLOptions..GBObjectEditing..CBShowFunctionvalues..Caption
-#: UConfiguration.dfm:4928
+#: UConfiguration.dfm:4936
 msgid "Output function values in the interpreter window"
 msgstr "Funktionswerte im Interpreterfenster ausgeben"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..Caption
-#: UConfiguration.dfm:4936 UConfiguration.pas:10411
+#: UConfiguration.dfm:4944 UConfiguration.pas:10401
 msgid "LLM Assistant"
 msgstr "LLM Assistent"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LProvider..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatProvider..Caption
-#: UConfiguration.dfm:4943 UConfiguration.dfm:5082
+#: UConfiguration.dfm:4951 UConfiguration.dfm:5090
 msgid "Provider"
 msgstr "Provider"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LEndpoint..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatEndPoint..Caption
-#: UConfiguration.dfm:4950 UConfiguration.dfm:5089
+#: UConfiguration.dfm:4958 UConfiguration.dfm:5097
 msgid "Endpoint"
 msgstr "Endpunkt"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LModel..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatModel..Caption
-#: UConfiguration.dfm:4957 UConfiguration.dfm:5096
+#: UConfiguration.dfm:4965 UConfiguration.dfm:5104
 msgid "Model"
 msgstr "Modell"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LAPIKey..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatApiKey..Caption
-#: UConfiguration.dfm:4964 UConfiguration.dfm:5103
+#: UConfiguration.dfm:4972 UConfiguration.dfm:5111
 msgid "API key"
 msgstr "API-Schlüssel"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LSystemPrompt..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatSystemPrompt..Caption
-#: UConfiguration.dfm:4971 UConfiguration.dfm:5110
+#: UConfiguration.dfm:4979 UConfiguration.dfm:5118
 msgid "System prompt"
 msgstr "Systemprompt"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LMaxTokens..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatMaxTokens..Caption
-#: UConfiguration.dfm:4978 UConfiguration.dfm:5117
+#: UConfiguration.dfm:4986 UConfiguration.dfm:5125
 msgid "Max response tokens"
 msgstr "Maxzahl Antworttoken"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LLLMTimeout..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatTimeout..Caption
-#: UConfiguration.dfm:4985 UConfiguration.dfm:5124
+#: UConfiguration.dfm:4993 UConfiguration.dfm:5132
 msgid "Timeout in seconds"
 msgstr "Timeout in Sekunden"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..LLLMTemperature..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..LChatTemperature..Caption
-#: UConfiguration.dfm:4992 UConfiguration.dfm:5131
+#: UConfiguration.dfm:5000 UConfiguration.dfm:5139
 msgid "Temperature"
 msgstr "Temperatur"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMAssistant..ESystemPrompt..Text
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..EChatSystemPrompt..Text
-#: UConfiguration.dfm:5038 UConfiguration.dfm:5177
+#: UConfiguration.dfm:5046 UConfiguration.dfm:5185
 msgid "You are my expert java coding assistant"
 msgstr "Du bist mein erfahrener Java-Code-Assistent"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLLMChat..Caption
-#: UConfiguration.dfm:5075 UConfiguration.pas:10412
+#: UConfiguration.dfm:5083 UConfiguration.pas:10402
 msgid "LLM Chat"
 msgstr "LLM Chat"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PVisibility..LVisTabs..Caption
-#: UConfiguration.dfm:5220
+#: UConfiguration.dfm:5228
 msgid "Tabs"
 msgstr "Registerkarten"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PVisibility..LVisItems..Caption
-#: UConfiguration.dfm:5227
+#: UConfiguration.dfm:5235
 msgid "Elements"
 msgstr "Elemente"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PVisibility..LVisToolbars..Caption
-#: UConfiguration.dfm:5234
+#: UConfiguration.dfm:5242
 msgid "Toolbars"
 msgstr "Symbolleisten"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PVisibility..LVisMenus..Caption
-#: UConfiguration.dfm:5241
+#: UConfiguration.dfm:5249
 msgid "Menus"
 msgstr "Menüs"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..Caption
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfilenames..Caption
-#: UConfiguration.dfm:5320 UConfiguration.dfm:5326 UConfiguration.pas:10414
+#: UConfiguration.dfm:5328 UConfiguration.dfm:5334 UConfiguration.pas:10404
 msgid "Log files"
 msgstr "Protokolldateien"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfileExceptions..Caption
-#: UConfiguration.dfm:5340
+#: UConfiguration.dfm:5348
 msgid "Exceptions"
 msgstr "Ausnahmen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PLogfiles..LLogfileInteractive..Caption
-#: UConfiguration.dfm:5347
+#: UConfiguration.dfm:5355
 msgid "Interactive"
 msgstr "Interaktiv"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTools..Caption
 #. FConfigureTools..LTools..Caption
-#. FHelpDialog..PCJDKHelp..TSSearch..RGSearchOptions....Items.Strings
-#. FHelpDialog..PCJDKHelp..TSTools..Caption
 #. FJava..TBXDockTop..MainMenu..MITools..Caption
-#: UConfiguration.dfm:5399 UDlgConfigureTools.dfm:23 UDlgHelp.dfm:159
-#: UDlgHelp.dfm:202 UJava.dfm:3027 UConfiguration.pas:10415
+#: UConfiguration.dfm:5407 UDlgConfigureTools.dfm:23 UJava.dfm:3027
+#: UConfiguration.pas:10405
 msgid "Tools"
 msgstr "Tools"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PGit..LGitFolder..Caption
-#: UConfiguration.dfm:5408
+#: UConfiguration.dfm:5416
 msgid "Git folder"
 msgstr "Git-Ordner"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJUnit..EJUnitJarFile..Hint
-#: UConfiguration.dfm:5623
+#: UConfiguration.dfm:5631
 msgid "JUnit jar file"
 msgstr "JUnit-jar-Datei"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PCheckStyle..ECheckstyle..Hint
 #. FConfiguration..PMain..PPanelRight..PageList..PJalopy..EJalopy..Hint
-#: UConfiguration.dfm:5779 UConfiguration.dfm:5894
+#: UConfiguration.dfm:5787 UConfiguration.dfm:5902
 msgid "Checkstyle jar file"
 msgstr "Checkstyle-Jar-Datei"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PSubversion..LRepository..Caption
-#: UConfiguration.dfm:5908
+#: UConfiguration.dfm:5916
 msgid "Repository"
 msgstr "Repository"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PSubversion..LSVN..Caption
-#: UConfiguration.dfm:5915
+#: UConfiguration.dfm:5923
 msgid "SVN folder"
 msgstr "SVN-folder"
 
@@ -2169,7 +2168,7 @@ msgstr "Umdrehen"
 #: EssModel/Integrator/View/UDiagramFrame.dfm:613
 #: Formdesigner/ELDlgImage.dfm:30 Sequencediagram/UDlgConnect.dfm:75
 #: Sequencediagram/USequenceForm.dfm:244 Structogram/UStructogramform.dfm:61
-#: Structogram/UStructogramform.dfm:842 UObjectInspector.pas:621
+#: Structogram/UStructogramform.dfm:842 UObjectInspector.pas:619
 #: Setup/USetup.pas:382
 msgid "Delete"
 msgstr "&Löschen"
@@ -2223,7 +2222,7 @@ msgstr "Klasse"
 #. FClassEditor..PageControl..TSMethods..LMethodName..Caption
 #. FClassEditor..PageControl..TSMethods..GRFormalParameters..LParameterName..Caption
 #: UDlgClassEditor.dfm:65 UDlgClassEditor.dfm:171 UDlgClassEditor.dfm:341
-#: UDlgClassEditor.dfm:455 UMessages.pas:1989
+#: UDlgClassEditor.dfm:455 UMessages.pas:1954
 msgid "Name"
 msgstr "Name"
 
@@ -2236,7 +2235,7 @@ msgstr "Attribute"
 #. FClassEditor..PageControl..TSMethods..LMethodType..Caption
 #. FClassEditor..PageControl..TSMethods..GRFormalParameters..LParameterType..Caption
 #: UDlgClassEditor.dfm:178 UDlgClassEditor.dfm:348 UDlgClassEditor.dfm:462
-#: UMessages.pas:1990
+#: UMessages.pas:1955
 msgid "Type"
 msgstr "Typ"
 
@@ -2257,8 +2256,8 @@ msgstr "Wert"
 #: UDlgClassEditor.dfm:249 UDlgClassEditor.dfm:392 UDlgHelp.dfm:151
 #: UDlgMindstorms.dfm:22 EssModel/System/UClassInsert.dfm:101
 #: FindInFiles/UDlgGrepSearch.dfm:110 FindInFiles/UDlgReplace.dfm:79
-#: FindInFiles/UDlgSearch.dfm:72 UConfiguration.pas:10390
-#: UConfiguration.pas:10405
+#: FindInFiles/UDlgSearch.dfm:72 UConfiguration.pas:10380
+#: UConfiguration.pas:10395
 msgid "Options"
 msgstr "Optionen"
 
@@ -2324,7 +2323,7 @@ msgid "&Apply"
 msgstr "&Übernehmen"
 
 #. FClasspath..Caption
-#: UDlgClasspath.dfm:6 UConfiguration.pas:2454
+#: UDlgClasspath.dfm:6 UConfiguration.pas:2459
 msgid "Edit classpath"
 msgstr "Classpath bearbeiten"
 
@@ -2409,7 +2408,7 @@ msgid "Edit favorites"
 msgstr "Favoriten bearbeiten"
 
 #. FFavoritenDialog..LDescription..Caption
-#: UDlgFavorites.dfm:23 UConfiguration.pas:7852
+#: UDlgFavorites.dfm:23 UConfiguration.pas:7867
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -2441,8 +2440,8 @@ msgstr "Favoriten"
 #. use ProcessMessages to wait
 #: UDlgHelp.dfm:102 UDlgHelp.dfm:132 UJava.dfm:2696
 #: FindInFiles/UDlgSearch.dfm:6 UBrowserForm.pas:582 UBrowserForm.pas:586
-#: UDlgHelp.pas:139 UDlgHelp.pas:442 UDlgHelp.pas:549 UDlgHelp.pas:609
-#: UDlgHelp.pas:630 UDlgHelp.pas:643
+#: UDlgHelp.pas:134 UDlgHelp.pas:377 UDlgHelp.pas:505 UDlgHelp.pas:550
+#: UDlgHelp.pas:571 UDlgHelp.pas:584
 msgid "Search"
 msgstr "Suchen"
 
@@ -2453,7 +2452,7 @@ msgstr "Suchbegriff"
 
 #. FHelpDialog..BShow..Caption
 #. FJava..TBXDockTop..MainMenu..MIStart..MIJar..MIJarShow..Caption
-#: UDlgHelp.dfm:234 UJava.dfm:2864
+#: UDlgHelp.dfm:195 UJava.dfm:2864
 msgid "Show"
 msgstr "Zeigen"
 
@@ -2517,8 +2516,8 @@ msgstr "Nach dem Hochladen starten (-r)"
 #. FJava..TBXDockTop..MainMenu..MIStart..MIRun..Caption
 #. AFrameDiagram..PopMenuClass..MIClassPopupRun..Caption
 #: UDlgMindstorms.dfm:54 UDlgMindstormsEV3.dfm:21 UJava.dfm:176 UJava.dfm:2794
-#: EssModel/Integrator/View/UDiagramFrame.dfm:47 UConfiguration.pas:4404
-#: UJava.pas:2507 UJava.pas:5297
+#: EssModel/Integrator/View/UDiagramFrame.dfm:47 UConfiguration.pas:4412
+#: UJava.pas:2526 UJava.pas:5322
 msgid "Run"
 msgstr "Starten"
 
@@ -2921,7 +2920,7 @@ msgstr "  mit Konsole"
 msgid "Add"
 msgstr "Add"
 
-#. FEditForm..PopUpEditor..MIGit..MICommit..Caption
+#. FEditForm..PopUpEditor..MIGit..MIGitCommit..Caption
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..MISVNCommit..Caption
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitCommit..Caption
 #: UEditorForm.dfm:2433 UJava.dfm:3051 UJava.dfm:3097
@@ -3161,7 +3160,7 @@ msgstr "Compilieren"
 
 #. FJava..TBXDockTop..ControlBar..DebugToolbar..TBCompileAll..Hint
 #. FJava..TBXDockTop..MainMenu..MIStart..MICompileAll..Caption
-#: UJava.dfm:168 UJava.dfm:2788 UConfiguration.pas:4403
+#: UJava.dfm:168 UJava.dfm:2788 UConfiguration.pas:4411
 msgid "Compile all"
 msgstr "Alle compilieren"
 
@@ -3793,7 +3792,7 @@ msgstr "Meldungen"
 
 #. FMessages..PMain..PDebugger..PDebuggerLeft..PAttribute..Caption
 #. FObjectInspector..TCAttributesEvents....Tabs.Strings
-#: UMessages.dfm:83 UObjectInspector.dfm:36 UDlgClassEditor.pas:311
+#: UMessages.dfm:83 UObjectInspector.dfm:36 UDlgClassEditor.pas:330
 msgid "Attributes"
 msgstr "Attribute"
 
@@ -3904,8 +3903,8 @@ msgid "Object generator"
 msgstr "Objekterzeuger"
 
 #. FObjectGenerator..ValueListEditor....TitleCaptions.Strings
-#: UObjectGenerator.dfm:70 EssModel/Integrator/View/URtfdDiagram.pas:2418
-#: EssModel/Integrator/View/URtfdDiagram.pas:3158
+#: UObjectGenerator.dfm:70 EssModel/Integrator/View/URtfdDiagram.pas:2325
+#: EssModel/Integrator/View/URtfdDiagram.pas:3029
 msgid "Attribute"
 msgstr "Attribut"
 
@@ -3915,7 +3914,7 @@ msgid "Events"
 msgstr "Ereignisse"
 
 #. FObjectInspector..PNewDel..BMore..Caption
-#: UObjectInspector.dfm:87 UObjectInspector.pas:606
+#: UObjectInspector.dfm:87 UObjectInspector.pas:604
 msgid "More"
 msgstr "&Mehr"
 
@@ -4520,234 +4519,242 @@ msgstr "Informationen"
 msgid "Overwrite"
 msgstr "Überschreiben"
 
-#: UCodeCompletion.pas:1796
+#: UCodeCompletion.pas:1797
 msgid "Open documentation"
 msgstr "Öffne Dokumentation"
 
-#: UConfiguration.pas:2341
+#: UConfiguration.pas:2345
 msgid "Java interpreter %s not found!"
 msgstr "Java-Interpreter %s nicht gefunden!"
 
-#: UConfiguration.pas:2474
+#: UConfiguration.pas:2479
 msgid "Edit JavaDoc User"
 msgstr "JavaDoc-User bearbeiten"
 
-#: UConfiguration.pas:3148 UJava.pas:7898 Util/ULanguageControl.pas:245
+#: UConfiguration.pas:3158 UJava.pas:7916 Util/ULanguageControl.pas:245
 msgid "Ctrl+"
 msgstr "Strg+"
 
-#: UConfiguration.pas:3149 UJava.pas:7897 Util/ULanguageControl.pas:244
+#: UConfiguration.pas:3159 UJava.pas:7915 Util/ULanguageControl.pas:244
 msgid "Shift+"
 msgstr "Umsch+"
 
-#: UConfiguration.pas:3150 UJava.pas:7899 Util/ULanguageControl.pas:246
+#: UConfiguration.pas:3160 UJava.pas:7917 Util/ULanguageControl.pas:246
 msgid "Alt+"
 msgstr "Alt+"
 
-#: UConfiguration.pas:4239
+#: UConfiguration.pas:4248
 msgid "Other"
 msgstr "Sonst"
 
-#: UConfiguration.pas:4255
+#: UConfiguration.pas:4264
 msgid "new"
 msgstr "Neu"
 
-#: UConfiguration.pas:4256
+#: UConfiguration.pas:4265
 msgid "close"
 msgstr "&Schließen"
 
-#: UConfiguration.pas:4282
+#: UConfiguration.pas:4290
 msgid "';' expected"
 msgstr "es fehlt ein Semikolon"
 
-#: UConfiguration.pas:4284
+#: UConfiguration.pas:4292
 msgid "'(' expected"
 msgstr "es fehlt eine Klammer auf '('"
 
-#: UConfiguration.pas:4286
+#: UConfiguration.pas:4294
 msgid "')' expected"
 msgstr "es fehlt eine Klammer zu ')'"
 
-#: UConfiguration.pas:4288
+#: UConfiguration.pas:4296
 msgid "']' expected"
 msgstr "es fehlt eine eckige Klammer zu ']'"
 
-#: UConfiguration.pas:4290
+#: UConfiguration.pas:4298
 msgid "'}' expected"
 msgstr "es fehlt eine geschweifte Klammer zu '}'"
 
-#: UConfiguration.pas:4292
+#: UConfiguration.pas:4300
 msgid "> expected"
 msgstr "es fehlt ein '>'"
 
-#: UConfiguration.pas:4294
+#: UConfiguration.pas:4302
 msgid "<identifier> expected"
 msgstr "einen Bezeichner angeben"
 
-#: UConfiguration.pas:4296
+#: UConfiguration.pas:4304
 msgid "not a statement"
 msgstr "keine Anweisung"
 
-#: UConfiguration.pas:4298
+#: UConfiguration.pas:4306
 msgid "unclosed string literal"
 msgstr "den String mit \" schließen"
 
-#: UConfiguration.pas:4300
+#: UConfiguration.pas:4308
 msgid "illegal start of expression"
 msgstr "ungültiger Beginn eines Ausdrucks"
 
-#: UConfiguration.pas:4302
+#: UConfiguration.pas:4310
 msgid "illegal start of type"
 msgstr "ungültiger Beginn eines Datentyps"
 
-#: UConfiguration.pas:4304
+#: UConfiguration.pas:4312
 msgid "cannot find symbol"
 msgstr "kann Symbol nicht finden"
 
-#: UConfiguration.pas:4306
+#: UConfiguration.pas:4314
 msgid "class, interface, or enum expected"
 msgstr "Beginn einer Klasse erwartet"
 
-#: UConfiguration.pas:4308
+#: UConfiguration.pas:4316
 msgid "class expected"
 msgstr "Klasse erwartet"
 
-#: UConfiguration.pas:4310
+#: UConfiguration.pas:4318
 msgid "reached end of file while parsing"
 msgstr "es fehlt eine geschweifte Klammer zu '}'"
 
-#: UConfiguration.pas:4312
+#: UConfiguration.pas:4320
 msgid "might not have been initialized"
 msgstr "ist nicht initialisiert"
 
-#: UConfiguration.pas:4314
+#: UConfiguration.pas:4322
 msgid "is already defined in"
 msgstr "ist schon definiert in"
 
-#: UConfiguration.pas:4316
+#: UConfiguration.pas:4324
 msgid "array required, but found"
 msgstr "array erforderlich, aber %s gefunden"
 
-#: UConfiguration.pas:4318
+#: UConfiguration.pas:4326
 msgid "incompatible types"
 msgstr ""
 "Datentypen passen nicht zueinander: %s kann nicht in %s konvertiert werden"
 
-#: UConfiguration.pas:4320
+#: UConfiguration.pas:4328
 msgid "incompatible types: missing return value"
 msgstr "Der Wert für return fehlt"
 
-#: UConfiguration.pas:4322
+#: UConfiguration.pas:4330
 msgid "incompatible types: unexpected return value"
 msgstr "void Methoden können keinen Wert zurückgeben"
 
-#: UConfiguration.pas:4324
+#: UConfiguration.pas:4332
 msgid "incompatible types: possible lossy"
 msgstr "kann Datentyp nicht von% s nach% s konvertieren"
 
-#: UConfiguration.pas:4326
+#: UConfiguration.pas:4334
 msgid "invalid method declaration; return type required"
 msgstr "Rückgabetyp für die Methode fehlt"
 
-#: UConfiguration.pas:4328
+#: UConfiguration.pas:4336
 msgid "non-static cannot be referenced"
 msgstr "Kann nicht statisch auf das nicht-statische %s verweisen"
 
-#: UConfiguration.pas:4330
+#: UConfiguration.pas:4338
 msgid "unreachable statement"
 msgstr "Unerreichbare Anweisung"
 
-#: UConfiguration.pas:4332
+#: UConfiguration.pas:4340
 msgid "bad operand types for binary operator"
 msgstr "ungültige Datentypen für Operator"
 
-#: UConfiguration.pas:4380
+#: UConfiguration.pas:4388
 msgid "NXT options"
 msgstr "NXT Optionen"
 
-#: UConfiguration.pas:4484
+#: UConfiguration.pas:4492
 msgid "In section [user] of the configuration file \"%s\" the value"
 msgstr "In der Konfigurationsdatei %s ist im Abschnitt [user] der Wert"
 
-#: UConfiguration.pas:4486
+#: UConfiguration.pas:4494
 msgid "of the key \"HomeDir\" for the home directory of the user is not set."
 msgstr ""
 "des Schlüssels \"HomeDir\" für das Home-Verzeichnis des Benutzers nicht "
 "gesetzt."
 
-#: UConfiguration.pas:4514
+#: UConfiguration.pas:4502
+msgid "Could not create folder %s!"
+msgstr "Konnte Ordner %s nicht erzeugen!"
+
+#: UConfiguration.pas:4518
+msgid "Could not create path %s!"
+msgstr "Konnte Pfad %s nicht erzeugen!"
+
+#: UConfiguration.pas:4530
 msgid "Could not open the preferencesfile %s!"
 msgstr "Die Konfigurationsdatei %s konnte nicht geöffnet werden!"
 
-#: UConfiguration.pas:7015
+#: UConfiguration.pas:7034
 msgid "Internet Explorer is not installed."
 msgstr "Der Internet-Explorer ist nicht installiert."
 
-#: UConfiguration.pas:7203
+#: UConfiguration.pas:7216
 msgid "Jar create files"
 msgstr "Jar create Dateien"
 
-#: UConfiguration.pas:7791
+#: UConfiguration.pas:7806
 msgid "Can not execute file "
 msgstr "Kann Datei nicht ausführen "
 
-#: UConfiguration.pas:7853
+#: UConfiguration.pas:7868
 msgid "from"
 msgstr "vom"
 
-#: UConfiguration.pas:8601
+#: UConfiguration.pas:8605
 msgid "Form"
 msgstr "Formular"
 
-#: UConfiguration.pas:8607
+#: UConfiguration.pas:8611
 msgid "Backup"
 msgstr "Backup"
 
-#: UConfiguration.pas:8607
+#: UConfiguration.pas:8611
 msgid "All files"
 msgstr "Alle Dateien"
 
-#: UConfiguration.pas:10397
+#: UConfiguration.pas:10387
 msgid "Structograms"
 msgstr "Struktogramme"
 
-#: UConfiguration.pas:10398
+#: UConfiguration.pas:10388
 msgid "Sequencediagrams"
 msgstr "Sequenzdiagramme"
 
-#: UDebugger.pas:702
+#: UDebugger.pas:703
 msgid "Starting debugger, please wait..."
 msgstr "Starte Debugger, bitte warten..."
 
-#: UDebugger.pas:747
+#: UDebugger.pas:748
 msgid "Debugger finished."
 msgstr "Debugger beendet."
 
-#: UDebugger.pas:852
+#: UDebugger.pas:853
 msgid "main() method missing!"
 msgstr "main()-Methode fehlt!"
 
-#: UDebugger.pas:880
+#: UDebugger.pas:881
 msgid "Debugger started."
 msgstr "Debugger gestarted."
 
-#: UDebugger.pas:1610
+#: UDebugger.pas:1611
 msgid "Breakpoint hit"
 msgstr "Haltepunkt erreicht"
 
-#: UDebugger.pas:1612
+#: UDebugger.pas:1613
 msgid "Use program to hit a breakpoint."
 msgstr "Verwende das Programm, um einen Haltepunkt zu erreichen."
 
-#: UDlgClassEditor.pas:315
+#: UDlgClassEditor.pas:334
 msgid "Methods"
 msgstr "Methoden"
 
-#: UDlgClassEditor.pas:1230
+#: UDlgClassEditor.pas:1444
 msgid "Delete method with sourcecode?"
 msgstr "Methode samt Quellcode löschen?"
 
-#: UDlgHelp.pas:427 UDlgHelp.pas:539 FindInFiles/UDlgSearchAbort.pas:41
+#: UDlgHelp.pas:367 UDlgHelp.pas:495 FindInFiles/UDlgSearchAbort.pas:41
 msgid "Cancel search for \"%s\""
 msgstr "Suche nach \"%s\" abbrechen"
 
@@ -4763,160 +4770,184 @@ msgstr "Fehler beim Entpacken"
 msgid "The Java-Editor is up to date."
 msgstr "Der Java-Editor ist aktuell."
 
-#: UEditorForm.pas:1041
+#: UEditorForm.pas:1039
 msgid "Font size is %3d pt. Print anyhow?"
 msgstr "Die Schriftgröße beträgt %3d pt. Soll dennoch gedruckt werden?"
 
-#: UEditorForm.pas:1150
+#: UEditorForm.pas:1148
 msgid "File from Java-Editor"
 msgstr "Dokument vom Java-Editor"
 
-#: UEditorForm.pas:5490
+#: UEditorForm.pas:5511
 msgid "File %s externally modified. Open new?"
 msgstr "Datei %s wurde extern geändert. Neu laden?"
 
-#: UJava.pas:1499 UJava.pas:1502
+#: UGUIDesigner.pas:896
+msgid ""
+"File %s contains invalid \"PixelsPerInch = 0\", but cannot delete due to "
+"write protection."
+msgstr ""
+"Datei %s enthält ungültige Zeile \"PixelsPerInch = 0\". Diese kann wegen "
+"Schreibschutz nicht entfernt werden."
+
+#: UGUIDesigner.pas:933
+msgid ""
+"File %s contains invalid \"FormStyle = fsMDIChild\", but cannot delete due "
+"to write protection."
+msgstr ""
+"Datei %s enthält ungültige Zeile \"FormStyle = fsMDIChild\". Diese kann "
+"wegen Schreibschutz nicht entfernt werden."
+
+#: UGUIDesigner.pas:969
+msgid ""
+"File %s contains invalid \"FrameType =\", but cannot delete due to write "
+"protection."
+msgstr ""
+"Datei %s enthält ungültige Zeile \"FrameType =\". Diese kann wegen "
+"Schreibschutz nicht entfernt werden."
+
+#: UJava.pas:1502 UJava.pas:1505
 msgid "Invalid class name"
 msgstr "Ungültiger Klassenname"
 
-#: UJava.pas:2501
+#: UJava.pas:2520
 msgid "Start Applet"
 msgstr "Applet starten"
 
-#: UJava.pas:3307
+#: UJava.pas:3337
 msgid "Files in the cache folder are not compiled."
 msgstr "Dateien im Cache-Verzeichnis werden nicht compiliert."
 
-#: UJava.pas:4143
+#: UJava.pas:4168
 msgid "disassembled"
 msgstr "disassembliert"
 
-#: UJava.pas:4148
+#: UJava.pas:4173
 msgid "Error during disassembling of %s"
 msgstr "Fehler beim Disassemblieren von %s"
 
-#: UJava.pas:4218
+#: UJava.pas:4243
 msgid "Error during creation of documentation."
 msgstr "Fehler beim Erzeugen der Dokumentation."
 
-#: UJava.pas:4261
+#: UJava.pas:4286
 msgid "The JUnit manual is not installed."
 msgstr "Das JUnit-Handbuch ist nicht installiert."
 
-#: UJava.pas:4276
+#: UJava.pas:4301
 msgid "Jar call"
 msgstr "Jar-Aufruf"
 
 #. extracted:
-#: UJava.pas:4312
+#: UJava.pas:4337
 msgid "Too much files to open."
 msgstr "Zuviele Dateien zum Öffnen."
 
-#: UJava.pas:4493
+#: UJava.pas:4518
 msgid "Overwrite with jar files?"
 msgstr "Mit Jar-Dateien überschreiben?"
 
-#: UJava.pas:4531
+#: UJava.pas:4556
 msgid "Show content of jar file"
 msgstr "Inhalt einer Jar-Datei anzeigen"
 
-#: UJava.pas:4533
+#: UJava.pas:4558
 msgid "Unpack jar file"
 msgstr "Jar-Datei entpacken"
 
-#: UJava.pas:4535
+#: UJava.pas:4560
 msgid "Open jar file"
 msgstr "Jar-Datei öffnen"
 
-#: UJava.pas:4819
+#: UJava.pas:4844
 msgid "No browser configured"
 msgstr "Kein Browser konfiguriert"
 
-#: UJava.pas:4905
+#: UJava.pas:4930
 msgid "The tutorial %s is not installed."
 msgstr "Das Tutorial %s ist nicht installiert."
 
-#: UJava.pas:4916
+#: UJava.pas:4941
 msgid "The Java book from www.javabuch.de is not installed."
 msgstr "Das Javabuch von www.javabuch.de ist nicht installiert."
 
-#: UJava.pas:4927
+#: UJava.pas:4952
 msgid ""
 "The mindstorms manual from https://lejos.sourceforge.net/ is not installed."
 msgstr ""
 "Das Mindstorms-Manual von http://lejos.sourceforge.net/ ist nicht "
 "installiert."
 
-#: UJava.pas:4981
+#: UJava.pas:5006
 msgid "JavaFX needs Java JDK 8 or higher"
 msgstr "JavaFX benötigt Java JDK 8 oder höher"
 
-#: UJava.pas:6493
+#: UJava.pas:6516
 msgid "Sourcecode has errors. Open anyway?"
 msgstr "Quelltext enthält Fehler. Dennoch öffnen?"
 
-#: UJava.pas:7881 UJava.pas:7896
+#: UJava.pas:7899 UJava.pas:7914
 msgid "BkSp"
 msgstr "Rück"
 
-#: UJava.pas:7882
+#: UJava.pas:7900
 msgid "Tab"
 msgstr "Tab"
 
-#: UJava.pas:7883
+#: UJava.pas:7901
 msgid "Esc"
 msgstr "Esc"
 
-#: UJava.pas:7884
+#: UJava.pas:7902
 msgid "Enter"
 msgstr "Eingabe"
 
-#: UJava.pas:7885
+#: UJava.pas:7903
 msgid "Space"
 msgstr "Leerraum"
 
-#: UJava.pas:7886
+#: UJava.pas:7904
 msgid "PgUp"
 msgstr "BildAuf"
 
-#: UJava.pas:7887
+#: UJava.pas:7905
 msgid "PgDn"
 msgstr "BildAb"
 
-#: UJava.pas:7888
+#: UJava.pas:7906
 msgid "End"
 msgstr "Ende"
 
-#: UJava.pas:7889
+#: UJava.pas:7907
 msgid "Home"
 msgstr "Pos1"
 
-#: UJava.pas:7891
+#: UJava.pas:7909
 msgid "Up"
 msgstr "Auf"
 
-#: UJava.pas:7893
+#: UJava.pas:7911
 msgid "Down"
 msgstr "Ab"
 
-#: UJava.pas:7894
+#: UJava.pas:7912
 msgid "Ins"
 msgstr "Einf"
 
-#: UJava.pas:7895
+#: UJava.pas:7913
 msgid "Del"
 msgstr "Entf"
 
-#: UJavaCommands.pas:327
+#: UJavaCommands.pas:315
 msgid "contains errors."
 msgstr "enthält Fehler."
 
 #. TODO check
-#: UJavaCommands.pas:374
+#: UJavaCommands.pas:362
 msgid "Intern compiler"
 msgstr "Interner Compiler"
 
-#: UJavaCommands.pas:571
+#: UJavaCommands.pas:552
 msgid "Starting"
 msgstr "Starten"
 
@@ -4988,66 +5019,66 @@ msgstr "Unerwartete Antwort vom LLM-Server."
 msgid "Assistant is busy. Click to cancel."
 msgstr "Assistent ist beschäftigt. Zum Abbrechen klicken."
 
-#: UObjectInspector.pas:608
+#: UObjectInspector.pas:606
 msgid "Full"
 msgstr "&Alles"
 
-#: Components/UJEComponents.pas:413 Components/AWT/UACheckboxRadio.pas:329
+#: Components/UJEComponents.pas:413 Components/AWT/UACheckboxRadio.pas:300
 #: Components/JavaFX/UFXButtonBase.pas:795
-#: Components/Swing/UJCheckboxRadio.pas:348
+#: Components/Swing/UJCheckboxRadio.pas:323
 msgid "America"
 msgstr "Amerika"
 
-#: Components/UJEComponents.pas:413 Components/AWT/UACheckboxRadio.pas:329
+#: Components/UJEComponents.pas:413 Components/AWT/UACheckboxRadio.pas:300
 #: Components/JavaFX/UFXButtonBase.pas:795
-#: Components/Swing/UJCheckboxRadio.pas:348
+#: Components/Swing/UJCheckboxRadio.pas:323
 msgid "Europe"
 msgstr "Europa"
 
-#: Components/UJEComponents.pas:413 Components/AWT/UACheckboxRadio.pas:330
+#: Components/UJEComponents.pas:413 Components/AWT/UACheckboxRadio.pas:301
 #: Components/JavaFX/UFXButtonBase.pas:796
-#: Components/Swing/UJCheckboxRadio.pas:349
+#: Components/Swing/UJCheckboxRadio.pas:324
 msgid "Asia"
 msgstr "Asien"
 
-#: Components/AWT/UACheckboxRadio.pas:329
-#: Components/AWT/UACheckboxRadio.pas:452
-#: Components/AWT/UACheckboxRadio.pas:524
-#: Components/AWT/UACheckboxRadio.pas:635
+#: Components/AWT/UACheckboxRadio.pas:300
+#: Components/AWT/UACheckboxRadio.pas:423
+#: Components/AWT/UACheckboxRadio.pas:495
+#: Components/AWT/UACheckboxRadio.pas:606
 #: Components/JavaFX/UFXButtonBase.pas:795
 #: Components/JavaFX/UFXButtonBase.pas:929
 #: Components/JavaFX/UFXButtonBase.pas:1077
 #: Components/JavaFX/UFXButtonBase.pas:1222
-#: Components/Swing/UJCheckboxRadio.pas:348
-#: Components/Swing/UJCheckboxRadio.pas:483
-#: Components/Swing/UJCheckboxRadio.pas:591
-#: Components/Swing/UJCheckboxRadio.pas:674
+#: Components/Swing/UJCheckboxRadio.pas:323
+#: Components/Swing/UJCheckboxRadio.pas:458
+#: Components/Swing/UJCheckboxRadio.pas:566
+#: Components/Swing/UJCheckboxRadio.pas:649
 msgid "selected"
 msgstr "ausgewählt"
 
 #: Components/JavaFX/UFXButtonBase.pas:798
-#: Components/Swing/UJCheckboxRadio.pas:351
+#: Components/Swing/UJCheckboxRadio.pas:326
 msgid "Continent"
 msgstr "Kontinent"
 
-#: EssModel/Integrator/View/URtfdDiagram.pas:2424
+#: EssModel/Integrator/View/URtfdDiagram.pas:2331
 msgid "Parameter for constructor"
 msgstr "Parameter für Konstruktor"
 
-#: EssModel/Integrator/View/URtfdDiagram.pas:2700
+#: EssModel/Integrator/View/URtfdDiagram.pas:2589
 msgid "Parameter for method call"
 msgstr "Parameter für Aufruf der Methode"
 
-#: EssModel/Integrator/View/URtfdDiagram.pas:3157
+#: EssModel/Integrator/View/URtfdDiagram.pas:3028
 msgid "Edit object"
 msgstr "Bearbeite Objekt"
 
 #. in Arbeit
-#: EssModel/Integrator/View/URtfdDiagram.pas:3935
+#: EssModel/Integrator/View/URtfdDiagram.pas:3760
 msgid "Delete class"
 msgstr "Lösche Klasse"
 
-#: EssModel/Integrator/View/URtfdDiagram.pas:3937
+#: EssModel/Integrator/View/URtfdDiagram.pas:3762
 msgid "Delete interface"
 msgstr "Lösche Interface"
 
@@ -5055,15 +5086,15 @@ msgstr "Lösche Interface"
 msgid "\"%s\" replace?"
 msgstr "\"%s\" ersetzen?"
 
-#: FindInFiles/UGrepResults.pas:162
+#: FindInFiles/UGrepResults.pas:191
 msgid "Search for"
 msgstr "Suche nach"
 
-#: FindInFiles/UGrepResults.pas:291
+#: FindInFiles/UGrepResults.pas:276
 msgid "Still searching!"
 msgstr "Die Suche läuft noch!"
 
-#: FindInFiles/UGrepResults.pas:369
+#: FindInFiles/UGrepResults.pas:352
 msgid "%d occurrences of \"%s\" in %d of total %d files"
 msgstr "%d Fundstellen von \"%s\" in %d von insgesamt %d Dateien"
 
@@ -5189,11 +5220,11 @@ msgstr "Registryeinträge löschen"
 msgid "Delete INI files"
 msgstr "INI-Dateien löschen"
 
-#: Structogram/UStructogramform.pas:494
+#: Structogram/UStructogramform.pas:473
 msgid "Invalid file format!"
 msgstr "Ungültiges Dateiformat!"
 
-#: Structogram/UStructogramform.pas:1122
+#: Structogram/UStructogramform.pas:1084
 msgid ""
 "Switch from a single algorithm structogram as the final solution to puzzle "
 "mode."
@@ -5201,51 +5232,51 @@ msgstr ""
 "Wechseln Sie in den Puzzlemodus mit der fertigen Lösung aus einem einzigen "
 "Algorithmus-Struktogramm."
 
-#: Structogram/UStructogramform.pas:1443
+#: Structogram/UStructogramform.pas:1400
 msgid "Great, solved!"
 msgstr "Prima, gelöst!"
 
-#: Structogram/UStructogramform.pas:1445
+#: Structogram/UStructogramform.pas:1402
 msgid "Try again!"
 msgstr "Versuche es nochmal!"
 
-#: Structogram/UStructogramform.pas:1468 Structogram/UStructogramform.pas:1492
+#: Structogram/UStructogramform.pas:1424 Structogram/UStructogramform.pas:1448
 msgid "Easy"
 msgstr "Leicht"
 
-#: Structogram/UStructogramform.pas:1474
+#: Structogram/UStructogramform.pas:1430
 msgid "Medium"
 msgstr "Mittel"
 
-#: Structogram/UStructogramform.pas:1479
+#: Structogram/UStructogramform.pas:1435
 msgid "Hard"
 msgstr "Schwer"
 
-#: Structogram/UStructogramform.pas:1484
+#: Structogram/UStructogramform.pas:1440
 msgid "VeryHard"
 msgstr "SehrSchwer"
 
-#: TextDiff/UTextDiffForm.pas:389
+#: TextDiff/UTextDiffForm.pas:397
 msgid "Copy block up"
 msgstr "Kopiere Block nach oben"
 
-#: TextDiff/UTextDiffForm.pas:391
+#: TextDiff/UTextDiffForm.pas:399
 msgid "Copy block down"
 msgstr "Kopiere Block nach unten"
 
-#: TextDiff/UTextDiffForm.pas:537
+#: TextDiff/UTextDiffForm.pas:548
 msgid "%d lines added"
 msgstr "%d Zeilen hinzugefügt"
 
-#: TextDiff/UTextDiffForm.pas:539
+#: TextDiff/UTextDiffForm.pas:550
 msgid "%d lines modified"
 msgstr "%d Zeilen geändert"
 
-#: TextDiff/UTextDiffForm.pas:541
+#: TextDiff/UTextDiffForm.pas:552
 msgid "%d lines deleted"
 msgstr "%d Zeilen gelöscht"
 
-#: TextDiff/UTextDiffForm.pas:545
+#: TextDiff/UTextDiffForm.pas:556
 msgid "No differences."
 msgstr "Keine Unterschiede."
 
@@ -5259,9 +5290,6 @@ msgstr "Keine Unterschiede."
 
 #~ msgid "Could not create the preferences file %s!"
 #~ msgstr "Die Konfigurationsdatei %s konnte nicht erzeugt werden!"
-
-#~ msgid "Could not create preferences."
-#~ msgstr "Die Konfiguration konnte nicht erzeugt werden."
 
 #~ msgid "// TODO add your code here"
 #~ msgstr "// TODO hier Quelltext einfügen"

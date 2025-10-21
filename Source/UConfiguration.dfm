@@ -202,7 +202,7 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 629
         Height = 424
-        ActivePage = PEditorOptions
+        ActivePage = PUMLOptions
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
@@ -4727,7 +4727,7 @@ object FConfiguration: TFConfiguration
             Left = 16
             Top = 20
             Width = 300
-            Height = 213
+            Height = 229
             Caption = 'Class representation'
             TabOrder = 0
             object CBShowEmptyRects: TCheckBox
@@ -4796,20 +4796,28 @@ object FConfiguration: TFConfiguration
               Caption = 'Relationship attributes in bold'
               TabOrder = 7
             end
-            object CBUseAbstract: TCheckBox
+            object CBUseAbstractForClass: TCheckBox
               Left = 12
               Top = 184
               Width = 261
               Height = 17
-              Caption = 'Use {abstract}'
+              Caption = 'Use {abstract} for class'
               TabOrder = 8
+            end
+            object CBUseAbstractForMethods: TCheckBox
+              Left = 12
+              Top = 207
+              Width = 261
+              Height = 17
+              Caption = 'Use {abstract} for methods'
+              TabOrder = 9
             end
           end
           object GBObjectPresentation: TGroupBox
             Left = 334
             Top = 20
             Width = 300
-            Height = 213
+            Height = 229
             Caption = 'Object representation'
             TabOrder = 1
             object CBShowObjectsWithMethods: TCheckBox
@@ -4863,7 +4871,7 @@ object FConfiguration: TFConfiguration
           end
           object GBClassEditing: TGroupBox
             Left = 16
-            Top = 250
+            Top = 263
             Width = 300
             Height = 112
             Caption = 'Class editing'
@@ -4905,7 +4913,7 @@ object FConfiguration: TFConfiguration
           end
           object GBObjectEditing: TGroupBox
             Left = 334
-            Top = 250
+            Top = 263
             Width = 300
             Height = 112
             Caption = 'Object editing'

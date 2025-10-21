@@ -88,10 +88,12 @@ type
     procedure ParseTypeDeclaration;
     procedure ParseClassDeclaration(Line: Integer; IsInner: Boolean = False;
       const Parentname: string = '');
-    procedure ParseClassBody(AClass: TClass);
+    procedure ParseClassBody(AClass: TClass; Compact: Boolean = False);
     procedure ParseInterfaceDeclaration(Line: Integer; IsInner: Boolean = False;
       const Parentname: string = '');
     procedure ParseEnumDeclaration;
+    procedure ParseModuleDeclaration(Line: Integer);
+    procedure ParseCompactDeclaration(Line: Integer);
     procedure ParseBlock(Operation: TOperation);
     procedure ParseIfStatement(Operation: TOperation);
     procedure ParseElseIfStatement(Operation: TOperation);
@@ -259,14 +261,14 @@ end;
 
 { TJavaParser }
 
-const ReservedWords: array [0 .. 53] of string = ('abstract', 'assert',
-    'boolean', 'break', 'byte', 'case', 'catch', 'char', 'class', 'cons',
-    'continue', 'default', 'double', 'do', 'else', 'enum', 'extends', 'false',
+const ReservedWords: array [0 .. 49] of string = ('abstract', 'assert',
+    'boolean', 'break', 'byte', 'case', 'catch', 'char', 'class', 'const',
+    'continue', 'default', 'double', 'do', 'else', 'enum', 'extends',
     'final', 'finally', 'float', 'for', 'goto', 'if', 'implements', 'import',
-    'instanceof', 'int', 'interface', 'long', 'native', 'new', 'null',
+    'instanceof', 'int', 'interface', 'long', 'native', 'new',
     'package', 'private', 'protected', 'public', 'return', 'short', 'static',
     'strictfp', 'super', 'switch', 'synchronized', 'this', 'throw', 'throws',
-    'transient', 'true', 'try', 'void', 'volatile', 'while', 'yield');
+    'transient', 'try', 'void', 'volatile', 'while');
 
 constructor TJavaParser.Create(WithView: Boolean);
 begin
@@ -465,7 +467,7 @@ begin
     *)
     var
     Str := GetNextToken;
-    if Str = 'static' then
+    if (Str = 'static') or (Str = 'module') then
       Str := GetNextToken;
 
     if not FInner then
@@ -517,10 +519,10 @@ procedure TJavaParser.ParseTypeDeclaration;
 begin
   FStructures.Clear;
   FStructures.MaxDepth := 0;
+
   while Token <> '' do
   begin
-    var
-    Line := FScanner.TokenLine;
+    var Line := FScanner.TokenLine;
     ParseAnnotations;
     ParseModifiers;
     if (Token = 'class') or (Token = 'record') then
@@ -529,8 +531,10 @@ begin
       ParseEnumDeclaration
     else if (Token = 'interface') or (Token = '@interface') then
       ParseInterfaceDeclaration(Line)
-    else // if token = 'void' Method declaration From the structogram area
-      GetNextToken;
+    else if (Token = 'module') then
+      ParseModuleDeclaration(Line)
+    else
+      ParseCompactDeclaration(Line);
   end;
   while FFilo.Count > 0 do
   begin
@@ -696,7 +700,7 @@ begin
   AClass.SourceRead := True;
 end;
 
-procedure TJavaParser.ParseClassBody(AClass: TClass);
+procedure TJavaParser.ParseClassBody(AClass: TClass; Compact: Boolean = False);
 (*
   ClassBody:
   { {ClassBodyDeclaration} }
@@ -719,7 +723,8 @@ var Operation, OpTemp: TOperation; Attribute: TAttribute;
   Typename, Ident, Generic, Annotation, Modifiers: string; LineS, Line: Integer;
   TypeClass: TClassifier;
 begin
-  GetNextToken;
+  if not Compact then
+    GetNextToken;
   while True and not ThreadAbort do
   begin
     Line := FScanner.TokenLine;
@@ -882,8 +887,8 @@ begin
           while (Token <> '') and (Token <> ';') do
             GetNextToken;
         end;
-      FScanner.Comment := '';
-    end;
+        FScanner.Comment := '';
+      end;
   end;
 end;
 
@@ -1098,6 +1103,24 @@ begin
 
   if Token = '{' then
     SkipPair('{', '}');
+end;
+
+procedure TJavaParser.ParseModuleDeclaration(Line: Integer);
+begin
+  GetNextToken;
+  GetNextToken;
+  if Token = '{' then
+    SkipPair('{', '}');
+end;
+
+procedure TJavaParser.ParseCompactDeclaration(Line: Integer);
+  var AClass: TClass;
+begin
+  Inc(FScopeDepth);
+  AClass := FUnit.MakeClass('Compact_Class', FFilename);
+  ParseClassBody(AClass, True);
+  GetNextToken;
+  Dec(FScopeDepth);
 end;
 
 function TJavaParser.NeedClassifier(const CName: string;
@@ -2367,7 +2390,7 @@ end;
 { $WARNINGS OFF }
 procedure TJavaParser.CollectClassesForImport(const Import, Sourcepath,
   Package: string; UserImports: TStringList);
-var PackageDir, Cp1, Cp2, Classnam: string; Posi: Integer; Found: Boolean;
+var Cp1, Cp2, Classnam: string; Posi: Integer; Found: Boolean;
 
   procedure CollectInJarFile(const JarFilename, Importname: string);
   var JarFile: TZipFile; Str: string;
@@ -2421,8 +2444,8 @@ var PackageDir, Cp1, Cp2, Classnam: string; Posi: Integer; Found: Boolean;
 
 begin
   Found := False;
-  PackageDir := IncludeTrailingPathDelimiter
-    (FConfiguration.GetPackageDirectoryRelativ(Sourcepath, Package));
+  //PackageDir := IncludeTrailingPathDelimiter
+  //  (FConfiguration.GetPackageDirectoryRelativ(Sourcepath, Package));
   Cp1 := UnHideBlanks(FConfiguration.GetClassPathJarExpanded(Sourcepath,
     Package)) + ';';
   Posi := Pos(';', Cp1);
@@ -2445,7 +2468,7 @@ end;
 
 procedure TJavaParser.CollectDirClassesForImport(const Import, Sourcepath,
   Package: string; UserImports: TStringList);
-var PackageDir, Cp1, Cp2: string; Posi: Integer; Found: Boolean;
+var Cp1, Cp2: string; Posi: Integer; Found: Boolean;
 
   procedure CollectInDirectory(const Cp2, Ext: string);
   var FileName, Filepath, PackageFilename: string;
@@ -2467,8 +2490,6 @@ var PackageDir, Cp1, Cp2: string; Posi: Integer; Found: Boolean;
 
 begin
   Found := False;
-  PackageDir := IncludeTrailingPathDelimiter
-    (FConfiguration.GetPackageDirectorySecure(Sourcepath, Package));
   Cp1 := UnHideBlanks(FConfiguration.GetClassPath(Sourcepath, Package)) + ';';
   Posi := Pos(';', Cp1);
   while (Posi > 0) and not Found do

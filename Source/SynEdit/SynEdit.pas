@@ -10888,7 +10888,7 @@ begin
       FStructures[I].FGraphicRect := GRect;
     end;
 
-  if FStructureColoring then
+  if FStructureColoring then begin
     for var I := FStructures.Count - 1 downto 0 do
     begin
       if not Assigned(FStructures[I]) or FStructures[I].Hidden then
@@ -10946,7 +10946,13 @@ begin
         ShowRect(Rect2);
       end;
     end;
-  BGColor := clRed;
+  end;
+  if Lines.Count < LinesInWindow then begin
+    BGColor := Color;
+    Rect2 := Rect(fGutterWidth, fTextHeight * Lines.Count,
+                  ClientWidth, fTextHeight * LinesInWindow);
+    ShowRect(Rect2);
+  end;
 end;
 
 procedure TCustomSynEdit.SetStructure(Structures: TStructures);

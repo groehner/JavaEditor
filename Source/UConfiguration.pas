@@ -6,10 +6,11 @@
   b) in variables (Model)
   c) in form (View)
 
-  RegistryToModel               ModelToView
+  #           RegistryToModel               ModelToView
   registry  ----------------->  model      -------------> view
+
   INI-files <-----------------  variables  <------------- gui-elements
-  ModelToRegistry               ViewToModel
+  #            ModelToRegistry               ViewToModel
 
 }
 
@@ -620,7 +621,7 @@ type
     CBEditorStyles: TComboBox;
     BEditorStyleDefault: TButton;
     CBAttributesAParametersP: TCheckBox;
-    CBUseAbstract: TCheckBox;
+    CBUseAbstractForClass: TCheckBox;
     PStyles: TTabSheet;
     LNewStyle: TLabel;
     LBStyleNames: TListBox;
@@ -699,6 +700,7 @@ type
     CBShowControlFlowSymbols: TCheckBox;
     CBShowLigatures: TCheckBox;
     CBCompactLineNumbers: TCheckBox;
+    CBUseAbstractForMethods: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BJDKFolderSelectClick(Sender: TObject);
@@ -1066,7 +1068,8 @@ type
     FShowEmptyRects: Boolean;
     FShowFunctionValues: Boolean;
     FStartWithDatatype: Boolean;
-    FUseAbstract: Boolean;
+    FUseAbstractForClass: Boolean;
+    FUseAbstractForMethods: Boolean;
     FUseVoid: Boolean;
 
     // tab editor
@@ -1250,7 +1253,7 @@ type
     procedure CheckUserFolders(Edit: TEdit);
     procedure CheckCBManual;
     procedure CheckCBManualFX;
-    procedure SetJDKFolder(const Dir: string);
+    procedure SetJDKFolder(Dir: string);
     function JavaDevelopmentKit: string;
     procedure SetStartDir(const Dir, AFile, Filter: string);
     procedure RegisterJavaeditor;
@@ -1656,7 +1659,8 @@ type
     property ShowEmptyRects: Boolean read FShowEmptyRects;
     property ShowFunctionValues: Boolean read FShowFunctionValues;
     property StartWithDatatype: Boolean read FStartWithDatatype;
-    property UseAbstract: Boolean read FUseAbstract;
+    property UseAbstractForClass: Boolean read FUseAbstractForClass;
+    property UseAbstractForMethods: Boolean read FUseAbstractForMethods;
     property UseVoid: Boolean read FUseVoid;
 
     // tab editor
@@ -2144,11 +2148,11 @@ begin
   BRepository.Enabled := not FLockedPaths;
 end;
 
-procedure TFConfiguration.SetJDKFolder(const Dir: string);
+procedure TFConfiguration.SetJDKFolder(Dir: string);
 begin
   ShortenPath(CBJDKFolder, Dir);
   ComboBoxAdd(CBJDKFolder);
-  TidyPath(Dir + '\bin;');
+  TidyPath(Dir +  '\bin;'); // Exception, if Dir is declared as const!
   ShortenPath(EJavaCompiler, CBJDKFolder.Hint + '\bin\javac.exe');
   ShortenPath(EInterpreter, CBJDKFolder.Hint + '\bin\java.exe');
   ShortenPath(EAppletviewer, CBJDKFolder.Hint + '\bin\appletviewer.exe');
@@ -2344,6 +2348,7 @@ begin
     ViewToModel;
     ModelToRegistry;
     RegistryToModel;
+    FJava.SetOptions;
   finally
     Screen.Cursor := crDefault;
   end;
@@ -3617,6 +3622,7 @@ procedure TFConfiguration.Init;
 begin
   StyleSelectorShow;
   RegistryToModel;
+  FJava.SetOptions;
   CreateBrowserShortCuts;
   if FFirstStartAfterInstallation then
   begin
@@ -4138,7 +4144,8 @@ begin
   FShowClassparameterSeparately :=
     ReadBoolU('UML', 'ShowClassparameterSeparately', False);
   FRoleHidesAttribute := ReadBoolU('UML', 'RoleHidesAttribute', False);
-  FUseAbstract := ReadBoolU('UML', 'UseAbstract', False);
+  FUseAbstractForClass := ReadBoolU('UML', 'UseAbstractForClass', False);
+  FUseAbstractForMethods := ReadBoolU('UML', 'UseAbstractForMethods', False);
 
   // tab SVN
   FSVNFolder := ReadStringDirectory('SVN', 'SVNFolder');
@@ -4268,7 +4275,6 @@ begin
 
   FJava.FormResize(Self);
   ApplyKeyboardShortcuts;
-  FJava.SetOptions;
   // if JEClasses.jar changes it must be updated
   FileAge(FJavaCache + '\classes\classpathclasses.txt', Dt1);
   FileAge(FEditorFolder + 'JEClasses.jar', Dt2);
@@ -4876,7 +4882,8 @@ begin
     CBSetterWithoutThis.Checked := FSetterWithoutThis;
     CBShowClassparameterSeparately.Checked := FShowClassparameterSeparately;
     CBRoleHidesAttribute.Checked := FRoleHidesAttribute;
-    CBUseAbstract.Checked := FUseAbstract;
+    CBUseAbstractForClass.Checked := FUseAbstractForClass;
+    CBUseAbstractForMethods.Checked := FUseAbstractForMethods;
 
     // tab visibility
     VisibilityModelToView;
@@ -5233,7 +5240,8 @@ begin
   WriteBoolU('UML', 'ShowClassparameterSeparately',
     FShowClassparameterSeparately);
   WriteBoolU('UML', 'RoleHidesAttribute', FRoleHidesAttribute);
-  WriteBoolU('UML', 'UseAbstract', FUseAbstract);
+  WriteBoolU('UML', 'UseAbstractForClass', FUseAbstractForClass);
+  WriteBoolU('UML', 'UseAbstractForMethods', FUseAbstractForMethods);
 
   // tab checkstyle
   WriteStringFile('Checkstyle', 'Checkstyle', FCheckstyle);
@@ -5320,8 +5328,6 @@ begin
 end; // ModelToRegistry
 
 procedure TFConfiguration.ViewToModel;
-var
-  Str: string;
 begin
   with FJava do
   begin
@@ -5352,7 +5358,7 @@ begin
     FJavaDocParameter := EDocParameter.Text;
 
     // tab disassembler
-    Str := ReadStringU('Program', 'DisassemblerItems', '');
+    var Str := ReadStringU('Program', 'DisassemblerItems', '');
     if Str <> '' then
     begin
       Str := AddPortableDrives(LoadComboBoxItems(Str));
@@ -5615,7 +5621,8 @@ begin
     FSetterWithoutThis := CBSetterWithoutThis.Checked;
     FShowClassparameterSeparately := CBShowClassparameterSeparately.Checked;
     FRoleHidesAttribute := CBRoleHidesAttribute.Checked;
-    FUseAbstract := CBUseAbstract.Checked;
+    FUseAbstractForClass := CBUseAbstractForClass.Checked;
+    FUseAbstractForMethods := CBUseAbstractForMethods.Checked;
 
     // tab color
     FNoActiveLineColor := CBNoActiveLineColor.Checked;
@@ -8286,53 +8293,42 @@ end;
 
 function TFConfiguration.GetJavaVersion: Integer;
 var
-  Str: string;
-  Int, Posi: Integer;
+  Version: string;
+  Lines: TArray<String>;
 begin
   if FJavaVersion = 0 then
   begin
     FJavaVersion := 6;
-    var
-    StringList := TStringList.Create;
     try
-      try
-        if FileExists(FJDKFolder + '\release') then
-        begin // since 1.7.0
-          StringList.LoadFromFile(FJDKFolder + '\release');
-          Int := 0;
-          Posi := Pos('JAVA_VERSION', StringList[Int]);
-          while (Posi = 0) and (Int < StringList.Count) do
-          begin
-            Inc(Int);
-            Posi := Pos('JAVA_VERSION', StringList[Int]);
+      if FileExists(FJDKFolder + '\release') then
+      begin // since 1.7.0
+        // Format: JAVA_VERSION="9.0.1"
+        Lines:= TFile.ReadAllLines(FJDKFolder + '\release', TEncoding.UTF8);
+        for var Line in Lines do
+          if Line.StartsWith('JAVA_VERSION=') then begin
+            Version := Copy(Line, Length('JAVA_VERSION=') + 1, MaxInt);
+            Break;
           end;
-          Str := StringList[Int]; // JAVA_VERSION="1.7.0"
-        end
-        else if MyJavaCommands.ExecAndWait(FJavaInterpreter, '-version', '.',
-          FTempDir + 'version.txt', SW_HIDE, False) then
-        begin
-          StringList.LoadFromFile(FTempDir + 'version.txt');
-          Str := StringList[0]; // java version "1.5.4-rc"
-        end;
-        Delete(Str, 1, Length('JAVA_VERSION="'));
-        Posi := Pos('"', Str);
-        Delete(Str, Posi, 1);
-        Posi := Pos('.', Str);
-        if (Posi = 2) and (Str[1] = '1') then
-        begin
-          Delete(Str, 1, Pos('.', Str));
-          Delete(Str, 2, Length(Str));
-        end
-        else if Posi > 1 then
-          Str := Copy(Str, 1, Posi - 1);
-        if not TryStrToInt(Str, FJavaVersion) then
-          FJavaVersion := 6;
-      except
-        on E: Exception do
-          Log('Get java version', E);
+      end
+      else if MyJavaCommands.ExecAndWait(FJavaInterpreter, '-version', '.',
+        FTempDir + 'version.txt', SW_HIDE, False) then
+      begin
+        // Format: java version "1.5.4-rc"
+        Lines:= TFile.ReadAllLines(FTempDir + 'version.txt', TEncoding.UTF8);
+        Version := Copy(Lines[0], Length('java version ') + 1,  MaxInt);
       end;
-    finally
-      FreeAndNil(StringList);
+      // Format: "1.5.4-rc", "1.7.0", "1.8.0", "9.0.1", "11.0.1", "21.0.1", "25"
+      Version:= Version.Trim(['"']);
+      var Posi := Pos('.', Version);
+      if (Posi = 2) and (Version[1] = '1') then
+        Version := Copy(Version, 3, 1)
+      else if Posi > 0 then
+        Version := Copy(Version, 1, Posi - 1);
+      if not TryStrToInt(Version, FJavaVersion) then
+        FJavaVersion := 6;
+    except
+      on E: Exception do
+        Log('Get java version', E);
     end;
   end;
   Result := FJavaVersion;

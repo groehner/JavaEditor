@@ -381,7 +381,7 @@ procedure TFFileStructure.TVFileStructureMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbRight then
-    PMFileStructure.Popup(X + (TTreeView(Sender)).ClientOrigin.X - 40,
+    PMFileStructure.Popup(X + TTreeView(Sender).ClientOrigin.X - 40,
       Y + TTreeView(Sender).ClientOrigin.Y - 5);
 end;
 

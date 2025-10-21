@@ -540,7 +540,7 @@ end;
 
 procedure TFUMLForm.SetOptions;
 begin
-  Refresh;
+  SaveAndReload;
   PUMLPanel.Visible := FConfiguration.VisToolbars[3];
 end;
 

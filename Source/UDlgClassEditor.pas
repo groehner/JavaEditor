@@ -157,7 +157,6 @@ type
     procedure EAttributeNameKeyPress(Sender: TObject; var Key: Char);
     procedure CBClassAbstractMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure CBClassAbstractClick(Sender: TObject);
     procedure CBComboBoxEnter(Sender: TObject);
     procedure FormAfterMonitorDpiChanged(Sender: TObject;
       OldDPI, NewDPI: Integer);
@@ -427,8 +426,8 @@ begin
     NodeIndex := Node.AbsoluteIndex;
     FIsClass := PartOfClass(Node);
 
-    AClassifier := GetClassifier(Node);
-    Abstrakt := AClassifier.IsAbstract;
+    //AClassifier := GetClassifier(Node);
+    Abstrakt := GetClassifier(Node).IsAbstract;
     OldClassname := Node.Text;
     NewClassname := Trim(EClass.Text);
 
@@ -459,7 +458,7 @@ begin
       begin
         Posi := Pos(SearchText, Str);
         if Posi > 0 then
-          insert('abstract ', Str, Posi);
+          Insert('abstract ', Str, Posi);
       end;
 
       Posi := Pos('{', Str);
@@ -2257,11 +2256,6 @@ begin
     if NameTypeValueChanged then
       BAttributeChangeClick(Self);
   end;
-end;
-
-procedure TFClassEditor.CBClassAbstractClick(Sender: TObject);
-begin
-  BClassChangeClick(Self);
 end;
 
 procedure TFClassEditor.CBClassAbstractMouseUp(Sender: TObject;

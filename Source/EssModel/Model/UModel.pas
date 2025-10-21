@@ -1574,30 +1574,8 @@ begin
 end;
 
 function TOperation.HasMain: Boolean;
-var
-  Str: string;
-  It2: IModelIterator;
-  Parameter: TParameter;
 begin
-  Str := '(';
-  It2 := GetParameters;
-  while It2.HasNext do
-  begin
-    Parameter := TParameter(It2.Next);
-    if Assigned(Parameter.TypeClassifier) then
-      Str := Str + Parameter.TypeClassifier.GetShortType + ', ';
-  end;
-  if Copy(Str, Length(Str) - 1, 2) = ', ' then
-    Delete(Str, Length(Str) - 1, 2); // delete last comma
-  Str := Str + ')';
-  if OperationType = otProcedure then
-  begin
-    Str := 'void ' + Name + Str;
-    if Static then
-      Str := 'static ' + Str;
-    Str := VisibilityAsString(Visibility) + ' ' + Str;
-  end;
-  Result := (Str = 'public static void main(String[])');
+  Result:= (OperationType = otProcedure) and (Name = 'main');
 end;
 
 procedure TOperation.SetAttributeScope(ScopeDepth, LineE: Integer);
