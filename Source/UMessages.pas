@@ -342,6 +342,7 @@ uses
   System.Types,
   Vcl.Clipbrd,
   Vcl.Themes,
+  SynEditTypes,
   JvGnugettext,
   UStringRessources,
   UUtils,

@@ -1040,7 +1040,7 @@ begin
       Connections.Free;
 
       // FInteractive
-      Section := 'FInteractive';
+      Section := 'Interactive';
       for var I := 0 to FInteractive.InteractiveEditor.Lines.Count - 1 do
         Ini.WriteString(Section, 'I' + IntToStr(I),
           FInteractive.InteractiveEditor.Lines[I]);

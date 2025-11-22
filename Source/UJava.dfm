@@ -5,8 +5,8 @@ object FJava: TFJava
   HelpType = htKeyword
   VertScrollBar.Visible = False
   Caption = 'Java-Editor'
-  ClientHeight = 490
-  ClientWidth = 795
+  ClientHeight = 577
+  ClientWidth = 892
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -26,8 +26,8 @@ object FJava: TFJava
   TextHeight = 15
   object HSplitter: TSplitter
     Left = 0
-    Top = 486
-    Width = 795
+    Top = 573
+    Width = 892
     Height = 3
     Cursor = crVSplit
     Align = alBottom
@@ -40,9 +40,9 @@ object FJava: TFJava
     ExplicitWidth = 858
   end
   object VSplitter: TSplitter
-    Left = 792
+    Left = 889
     Top = 78
-    Height = 408
+    Height = 495
     Align = alRight
     Color = clActiveCaption
     ParentColor = False
@@ -53,8 +53,8 @@ object FJava: TFJava
   end
   object BottomDockPanel: TPanel
     Left = 0
-    Top = 489
-    Width = 795
+    Top = 576
+    Width = 892
     Height = 1
     Align = alBottom
     DockSite = True
@@ -65,12 +65,14 @@ object FJava: TFJava
     OnGetSiteInfo = BottomDockPanelGetSiteInfo
     OnStartDock = BottomDockPanelStartDock
     OnUnDock = BottomDockPanelUnDock
+    ExplicitTop = 489
+    ExplicitWidth = 795
   end
   object RightDockPanel: TPanel
-    Left = 795
+    Left = 892
     Top = 78
     Width = 0
-    Height = 408
+    Height = 495
     Align = alRight
     DockSite = True
     DragKind = dkDock
@@ -79,19 +81,23 @@ object FJava: TFJava
     OnDockOver = RightDockPanelDockOver
     OnGetSiteInfo = RightDockPanelGetSiteInfo
     OnUnDock = RightDockPanelUnDock
+    ExplicitLeft = 795
+    ExplicitHeight = 408
   end
   object MainPanel: TPanel
     Left = 0
     Top = 78
-    Width = 792
-    Height = 408
+    Width = 889
+    Height = 495
     Align = alClient
     TabOrder = 2
+    ExplicitWidth = 792
+    ExplicitHeight = 408
   end
   object TBXDockTop: TSpTBXDockablePanel
     Left = 0
     Top = 0
-    Width = 795
+    Width = 892
     Height = 78
     Align = alTop
     DockMode = dmCannotFloatOrChangeDocks
@@ -103,15 +109,16 @@ object FJava: TFJava
     Options.TitleBarMaxSize = 0
     ShowCaption = False
     ShowCaptionWhenDocked = False
+    ExplicitWidth = 795
     object ControlBar: TSpTBXPanel
       Left = 0
       Top = 21
-      Width = 795
+      Width = 892
       Height = 57
       Align = alClient
       Constraints.MaxHeight = 59
       TabOrder = 1
-      ExplicitWidth = 624
+      ExplicitWidth = 795
       object DebugToolbar: TSpTBXToolbar
         Left = 3
         Top = 28
@@ -2441,7 +2448,7 @@ object FJava: TFJava
     object MainMenu: TSpTBXToolbar
       Left = 0
       Top = 0
-      Width = 795
+      Width = 892
       Height = 21
       Align = alTop
       Images = vilMenuLight
@@ -2450,6 +2457,7 @@ object FJava: TFJava
       TabOrder = 2
       Customizable = False
       MenuBar = True
+      ExplicitWidth = 795
       object MIFile: TSpTBXSubmenuItem
         Caption = '&File'
         object MINew: TSpTBXSubmenuItem
@@ -5913,8 +5921,8 @@ object FJava: TFJava
         Name = 'Chat'
       end>
     ImageCollection = DMImages.icMenuLight
-    Left = 424
-    Top = 152
+    Left = 312
+    Top = 256
   end
   object vilMenuDark: TVirtualImageList
     Images = <
@@ -6399,8 +6407,8 @@ object FJava: TFJava
         Name = 'Chat'
       end>
     ImageCollection = DMImages.icMenuDark
-    Left = 536
-    Top = 152
+    Left = 408
+    Top = 256
   end
   object vilLayoutDark: TVirtualImageList
     Images = <

@@ -173,6 +173,7 @@ uses
   SynEdit,
   JvGnugettext,
   SynEditScrollBars,
+  SynEditTypes,
   UStringRessources,
   UJava,
   UConfiguration,

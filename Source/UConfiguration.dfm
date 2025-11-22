@@ -202,7 +202,7 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 629
         Height = 424
-        ActivePage = PUMLOptions
+        ActivePage = PGeneralOptions
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
@@ -3991,14 +3991,14 @@ object FConfiguration: TFConfiguration
           Caption = 'General options'
           object LFontsize: TLabel
             Left = 59
-            Top = 162
+            Top = 186
             Width = 144
             Height = 15
             Caption = 'Font size in component bar'
           end
           object LTempFolder: TLabel
             Left = 16
-            Top = 190
+            Top = 214
             Width = 133
             Height = 15
             Caption = 'Folder for temporary files'
@@ -4006,7 +4006,7 @@ object FConfiguration: TFConfiguration
           object SBTempSelect: TSpeedButton
             Tag = 7
             Left = 445
-            Top = 214
+            Top = 238
             Width = 21
             Height = 19
             Flat = True
@@ -4044,21 +4044,21 @@ object FConfiguration: TFConfiguration
           end
           object LFileFilter: TLabel
             Left = 320
-            Top = 130
+            Top = 154
             Width = 106
             Height = 15
             Caption = 'Additional file filters'
           end
           object LFileFilterExample: TLabel
             Left = 461
-            Top = 151
+            Top = 175
             Width = 56
             Height = 15
             Caption = '*.php;*.css'
           end
           object LFileHistory: TLabel
             Left = 59
-            Top = 132
+            Top = 156
             Width = 192
             Height = 15
             Caption = 'Maximum number of files to reopen'
@@ -4083,7 +4083,7 @@ object FConfiguration: TFConfiguration
           end
           object CBUseInterpreterWindowAsConsole: TCheckBox
             Left = 16
-            Top = 17
+            Top = 20
             Width = 545
             Height = 17
             Caption = 'Use the interpreter window as a console for console programs'
@@ -4103,14 +4103,14 @@ object FConfiguration: TFConfiguration
           end
           object ETempFolder: TEdit
             Left = 33
-            Top = 214
+            Top = 238
             Width = 412
             Height = 23
             TabOrder = 5
           end
           object BTempFolder: TButton
             Left = 472
-            Top = 213
+            Top = 237
             Width = 85
             Height = 23
             Caption = 'Default'
@@ -4119,7 +4119,7 @@ object FConfiguration: TFConfiguration
           end
           object UDFontSize: TUpDown
             Left = 37
-            Top = 159
+            Top = 183
             Width = 15
             Height = 23
             Associate = EFontSize
@@ -4130,7 +4130,7 @@ object FConfiguration: TFConfiguration
           end
           object EFontSize: TEdit
             Left = 16
-            Top = 159
+            Top = 183
             Width = 21
             Height = 23
             TabOrder = 8
@@ -4138,7 +4138,7 @@ object FConfiguration: TFConfiguration
           end
           object EFileFilter: TEdit
             Left = 320
-            Top = 148
+            Top = 172
             Width = 121
             Height = 23
             Hint = '*.php;*.css'
@@ -4156,7 +4156,7 @@ object FConfiguration: TFConfiguration
           end
           object EFileHistory: TEdit
             Left = 16
-            Top = 127
+            Top = 151
             Width = 21
             Height = 23
             TabOrder = 11
@@ -4164,7 +4164,7 @@ object FConfiguration: TFConfiguration
           end
           object UDFileHistory: TUpDown
             Left = 37
-            Top = 127
+            Top = 151
             Width = 16
             Height = 23
             Associate = EFileHistory
@@ -4210,6 +4210,14 @@ object FConfiguration: TFConfiguration
             Height = 17
             Caption = 'Translate compiler errors'
             TabOrder = 15
+          end
+          object CBRunsUnderWine: TCheckBox
+            Left = 16
+            Top = 120
+            Width = 258
+            Height = 17
+            Caption = 'Runs under Wine'
+            TabOrder = 16
           end
         end
         object PStyles: TTabSheet

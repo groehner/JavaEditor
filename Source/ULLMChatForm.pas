@@ -153,6 +153,7 @@ uses
   Vcl.Clipbrd,
   MarkdownUtils,
   SynEditKeyCmds,
+  SynEditTypes,
   JvGnugettext,
   UJava,
   UEditorForm,

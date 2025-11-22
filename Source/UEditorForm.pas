@@ -689,6 +689,7 @@ begin
     OnReplaceText := SynEditorReplaceText;
     OnMouseOverToken := DoOnMouseOverToken;
     OnMouseDown := DoOnMouseDown;
+    OnDropFiles := FJava.DropFiles;
     if FConfiguration.EightyColumnLine then
       RightEdge := 80
     else

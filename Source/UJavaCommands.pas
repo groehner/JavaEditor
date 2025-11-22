@@ -103,6 +103,7 @@ var MyJavaCommands: TJavaCommands;
 implementation
 
 uses
+  Winapi.Messages,
   SysUtils,
   Forms,
   Controls,
@@ -260,7 +261,7 @@ begin
         ErrorMsg(E.Message);
     end;
   finally
-    FreeAndNil(CompileJava);
+    CompileJava.Free;
   end;
 end;
 
@@ -343,7 +344,8 @@ begin
       Dec(CountSlashes);
     end;
   end;
-  Screen.Cursor := crHourGlass;
+
+  //Screen.Cursor := crHourGlass;
   FCompileList := TStringList.Create;
   try
     var
@@ -386,7 +388,7 @@ begin
     LogCompile;
   finally
     FCompileList.Free;
-    Screen.Cursor := crDefault;
+    //Screen.Cursor := crDefault;
   end;
 end;
 
@@ -745,7 +747,8 @@ end;
 
 // calls a program, waits until ready and collects the output to a file
 function TJavaCommands.ExecAndWait(const ApplicationName, CommandLine, Dir,
-  Output: string; WindowState: Word; ProcessMessage: Boolean = True): Boolean;
+      Output: string; WindowState: Word;
+      ProcessMessage: Boolean = True): Boolean;
 var StartupInfo: TStartupInfo; SecAttr: TSecurityAttributes;
   ErrorHandle: THandle; Cmd, CurrentDir: string; WaitObject: Word;
 begin
@@ -814,10 +817,17 @@ begin
     FProcessRunning := False;
     FJava.RunButtonToStop(False);
   end;
-  if ProcessMessage then
+  if FConfiguration.RunsUnderWine and ProcessMessage then
     Application.ProcessMessages; // else wine produces IO-Error
   // during TFJava.FormCreate/TFConfiguration.Init/getJavaVersion
-  // a ProcessMessags starts SystemExecuteMacro/TFJava.Open to early
+  // a ProcessMessages starts SystemExecuteMacro/TFJava.Open to early
+
+  TThread.ForceQueue(nil, procedure   // prevent MyTabBar movement
+  begin
+    mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+  end);
+
 end;
 
 // runs an external program, no need to wait for or close external program

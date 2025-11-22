@@ -385,7 +385,7 @@ var StrList: TStrList; SwitchWithCaseLine: Boolean; Reader: TStringListReader;
   end;
 
 begin
-  Result := False;
+  Result := True;
   Reader := TStringListReader.Create(FileName);
   try
     try

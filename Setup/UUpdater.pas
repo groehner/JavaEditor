@@ -316,7 +316,7 @@ begin
   end else if ParamStr(1) = '-Update' then begin
     FixUpdate;
 
-    Dest   := trim(UnHideBlanks(ParamStr(2)));
+    Dest   := Trim(UnHideBlanks(ParamStr(2)));
     Source := UnHideBlanks(ParamStr(3));
     Source2:= UnHideBlanks(Paramstr(4));
 

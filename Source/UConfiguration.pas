@@ -701,6 +701,7 @@ type
     CBShowLigatures: TCheckBox;
     CBCompactLineNumbers: TCheckBox;
     CBUseAbstractForMethods: TCheckBox;
+    CBRunsUnderWine: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BJDKFolderSelectClick(Sender: TObject);
@@ -1077,6 +1078,7 @@ type
     FAutomaticIndent: Boolean;
     FCommentClosingBrackets: Boolean;
     FCreateBAKFiles: Boolean;
+    FRunsUnderWine: Boolean;
     FCursorBehindLine: Boolean;
     FEightyColumnLine: Boolean;
     FGUICodeFolding: Boolean;
@@ -1668,6 +1670,7 @@ type
     property AutomaticIndent: Boolean read FAutomaticIndent;
     property CommentClosingBrackets: Boolean read FCommentClosingBrackets;
     property CreateBAKFiles: Boolean read FCreateBAKFiles;
+    property RunsUnderWine: Boolean read FRunsUnderWine;
     property CursorBehindLine: Boolean read FCursorBehindLine;
     property EightyColumnLine: Boolean read FEightyColumnLine;
     property GUICodeFolding: Boolean read FGUICodeFolding;
@@ -4070,6 +4073,7 @@ begin
 
   // tab options
   FCreateBAKFiles := ReadBoolU('Options', 'BAKFiles', True);
+  FRunsUnderWine := ReadBoolU('Options', 'RunsUnderWine', False);
   FLoadFiles := ReadBoolU('Options', 'LoadFiles', True);
   FUseInterpreterWindowAsConsole := ReadBoolU('Options',
     'UseInterpreterWindowAsConsole', False);
@@ -4799,6 +4803,7 @@ begin
 
     // tab options
     CBBAKFiles.Checked := FCreateBAKFiles;
+    CBRunsUnderWine.Checked := FRunsUnderWine;
     CBLoadFiles.Checked := FLoadFiles;
     CBUseInterpreterWindowAsConsole.Checked := FUseInterpreterWindowAsConsole;
     CBAcceptdefaultname.Checked := FAcceptDefaultname;
@@ -5175,6 +5180,7 @@ begin
 
   // tab options
   WriteBoolU('Options', 'BAKFiles', FCreateBAKFiles);
+  WriteBoolU('Options', 'RunsUnderWine', FRunsUnderWine);
   WriteBoolU('Options', 'LoadFiles', FLoadFiles);
   WriteBoolU('Options', 'UseInterpreterWindowAsConsole',
     FUseInterpreterWindowAsConsole);
@@ -5555,6 +5561,7 @@ begin
 
     // tab options
     FCreateBAKFiles := CBBAKFiles.Checked;
+    FRunsUnderWine := CBRunsUnderWine.Checked;
     FLoadFiles := CBLoadFiles.Checked;
     FUseInterpreterWindowAsConsole := CBUseInterpreterWindowAsConsole.Checked;
     FAcceptDefaultname := CBAcceptdefaultname.Checked;

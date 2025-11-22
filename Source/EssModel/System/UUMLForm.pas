@@ -252,8 +252,10 @@ begin
   UpdateState;
   SaveAndReload;
   if not FMainModul.Diagram.HasObjects and FMainModul.Diagram.HasAInvalidClass
-  then
+  then begin
     FJava.MICompileAllClick(Self);
+    MainModul.Diagram.RefreshDiagram;
+  end;
   LockEnter := False;
 end;
 

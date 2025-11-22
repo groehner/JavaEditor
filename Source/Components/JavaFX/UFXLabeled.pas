@@ -205,21 +205,21 @@ begin
     // with graphic
     Ext := UpperCase(ExtractFileExt(Graphic));
     Bmp := Graphics.TBitmap.Create;
-    if Ext = '.Png' then
+    if Ext = '.PNG' then
     begin
       Png := TPngImage.Create;
       Png.LoadFromFile(Pathname);
       Bmp.Assign(Png);
       FreeAndNil(Png);
     end
-    else if Ext = '.Gif' then
+    else if Ext = '.GIF' then
     begin
       Gif := TGIFImage.Create;
       Gif.LoadFromFile(Pathname);
       Bmp.Assign(Gif.Bitmap);
       FreeAndNil(Gif);
     end
-    else if (Ext = '.Jpg') or (Ext = 'JPEG') then
+    else if (Ext = '.JPG') or (Ext = 'JPEG') then
     begin
       Jpg := TJPEGImage.Create;
       Jpg.LoadFromFile(Pathname);
