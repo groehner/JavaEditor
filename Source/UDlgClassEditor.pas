@@ -406,7 +406,6 @@ procedure TFClassEditor.BClassChangeClick(Sender: TObject);
 var
   Str, AClassname, OldFile, NewFile, SearchText, ReplacText, Tail, OldClassname,
     NewClassname: string;
-  AClassifier: TClassifier;
   Abstrakt, SkipUpdate: Boolean;
   Posi, NodeIndex: Integer;
   Node: TTreeNode;
@@ -426,7 +425,6 @@ begin
     NodeIndex := Node.AbsoluteIndex;
     FIsClass := PartOfClass(Node);
 
-    //AClassifier := GetClassifier(Node);
     Abstrakt := GetClassifier(Node).IsAbstract;
     OldClassname := Node.Text;
     NewClassname := Trim(EClass.Text);

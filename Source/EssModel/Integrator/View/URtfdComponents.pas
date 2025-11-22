@@ -1553,7 +1553,7 @@ end;
 { TVisibilityLabel }
 
 procedure TVisibilityLabel.Paint;
-var ARect: TRect; Visibi, ALabel: string; PictureNr, Distance: Integer;
+var ARect: TRect; Visibi: string; PictureNr, Distance: Integer;
   Style: TFontStyles; Vil: TVirtualImageList;
 begin
   // for debugging

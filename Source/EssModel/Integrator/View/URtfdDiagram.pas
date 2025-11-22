@@ -1969,8 +1969,8 @@ end;
 function TRtfdDiagram.GetDebug: TStringList;
 var List: TList; ABox: TRtfdBox;
 begin
+  List := FPanel.GetManagedObjects;
   try
-    List := FPanel.GetManagedObjects;
     Result := TStringList.Create;
     for var I := 0 to List.Count - 1 do
     begin

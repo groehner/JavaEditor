@@ -1947,7 +1947,7 @@ end;
 
 procedure CreateMyFile(const Path: string);
 begin
-  if (Path <> '') and ForceDirectories(ExtractFilePath(Path)) then
+  if (Path <> '') and SysUtils.ForceDirectories(ExtractFilePath(Path)) then
     try
       TFile.WriteAllText(Path, '');
     except
@@ -2113,7 +2113,7 @@ begin
     Exit(False);
   var
   Filename := ExtractFileName(Filepath);
-  if DirectoryExists(ExtractFilePath(Filepath)) then
+  if SysUtils.DirectoryExists(ExtractFilePath(Filepath)) then
   begin
     var
     FileNames := TDirectory.GetFiles(ExtractFilePath(Filepath), Filename);

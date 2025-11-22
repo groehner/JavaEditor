@@ -36,6 +36,7 @@ begin
     FWait.Show;
     FWait.Invalidate;
     Application.ProcessMessages;
+    Sleep(300);
     Screen.Cursor:= crHourGlass;
     FUpdater.MakeUpdate;
     FWait.Hide;

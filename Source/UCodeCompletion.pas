@@ -47,7 +47,6 @@ type
     FHtmlParser: THtmlParser;
     FIndexScpJava: Integer;
     FInformed: Boolean;
-
     FWithTable: Boolean;
     function SearchMFeature(MClassifier: TClassifier; SFeature: string;
       IsMethod: Boolean): TFeature;
@@ -762,109 +761,111 @@ end;
 function TCodeCompletion.FieldsFound: Boolean;
 begin
   Result := False;
-  with FHtmlParser do
+  var Posi := Pos('Field Summary</B>', FHtmlParser.Text);   // till JDK 6
+  if Posi = 0 then begin
+    Posi := Pos('Field Summary</h3>', FHtmlParser.Text);    // till JDK 12
+    if Posi = 0 then
+      Posi := Pos('Field Summary</h2>', FHtmlParser.Text);
+  end;
+
+  if Posi > 0 then
   begin
-    var
-    Posi := Pos('Field Summary', Text);
-    if Posi > 0 then
+    FHtmlParser.GotoPos(Posi);
+    Posi := 0;
+    repeat
+      Inc(Posi);
+      GetNextTag;
+    until (FHtmlParser.TextBetween = 'Fields') or
+      (FHtmlParser.Tag.Name = 'CODE') or (Posi = 15);
+    if (FHtmlParser.TextBetween = 'Fields') and (Posi < 15) then
     begin
-      GotoPos(Posi);
       Posi := 0;
       repeat
         Inc(Posi);
         GetNextTag;
-      until (TextBetween = 'Fields') or (Tag.Name = 'CODE') or (Posi = 15);
-      if (TextBetween = 'Fields') and (Posi < 15) then
-      begin
-        Posi := 0;
-        repeat
-          Inc(Posi);
-          GetNextTag;
-        until (Tag.Name = 'CODE') or (Posi = 40);
-      end;
-      Result := (Tag.Name = 'CODE');
+      until (FHtmlParser.Tag.Name = 'CODE') or (Posi = 40);
     end;
+    Result := (FHtmlParser.Tag.Name = 'CODE');
   end;
 end;
 
 function TCodeCompletion.ConstructorsFound: Boolean;
 begin
   Result := False;
-  with FHtmlParser do
+  var Posi := Pos('Constructor Summary</B>', FHtmlParser.Text);   // till JDK 6
+  if Posi = 0 then begin
+    Posi := Pos('Constructor Summary</h3>', FHtmlParser.Text);    // till JDK 12
+    if Posi = 0 then
+      Posi := Pos('Constructor Summary</h2>', FHtmlParser.Text);
+  end;
+
+  if Posi > 0 then
   begin
-    var
-    Posi := Pos('Constructor Summary', Text);
-    if Posi > 0 then
+    FHtmlParser.GotoPos(Posi);
+    Posi := 0;
+    repeat
+      Inc(Posi);
+      GetNextTag;
+    until (FHtmlParser.TextBetween = 'Constructors') or
+      (FHtmlParser.Tag.Name = 'CODE') or (Posi = 15);
+    if (FHtmlParser.TextBetween = 'Constructors') and (Posi < 15) then
     begin
-      GotoPos(Posi);
       Posi := 0;
       repeat
         Inc(Posi);
         GetNextTag;
-      until (TextBetween = 'Constructors') or (Tag.Name = 'CODE') or
-        (Posi = 15);
-      if (TextBetween = 'Constructors') and (Posi < 15) then
-      begin
-        Posi := 0;
-        repeat
-          Inc(Posi);
-          GetNextTag;
-        until (Tag.Name = 'CODE') or (Posi = 40);
-      end;
-      Result := (Tag.Name = 'CODE');
+      until (FHtmlParser.Tag.Name = 'CODE') or (Posi = 40);
     end;
+    Result := (FHtmlParser.Tag.Name = 'CODE');
   end;
 end;
 
 function TCodeCompletion.MethodsFound: Boolean;
 begin
   Result := False;
-  with FHtmlParser do
+  var Posi := Pos('Method Summary</B>', FHtmlParser.Text);   // till JDK 6
+  if Posi = 0 then begin
+    Posi := Pos('Method Summary</h3>', FHtmlParser.Text);    // till JDK 12
+    if Posi = 0 then
+      Posi := Pos('Method Summary</h2>', FHtmlParser.Text);
+  end;
+
+  if Posi > 0 then
   begin
-    var
-    Posi := Pos('Method Summary', Text);
-    if Posi > 0 then
+    FHtmlParser.GotoPos(Posi);
+    Posi := 0;
+    repeat
+      Inc(Posi);
+      GetNextTag;
+    until (FHtmlParser.TextBetween = 'All Methods') or
+      (FHtmlParser.TextBetween = 'Methods') or
+      (FHtmlParser.Tag.Name = 'CODE') or (Posi = 15);
+    if ((FHtmlParser.TextBetween = 'All Methods') or
+        (FHtmlParser.TextBetween = 'Methods')) and (Posi < 15) then
     begin
-      GotoPos(Posi);
       Posi := 0;
       repeat
         Inc(Posi);
         GetNextTag;
-      until (TextBetween = 'All Methods') or (TextBetween = 'Methods') or
-        (Tag.Name = 'CODE') or (Posi = 15);
-      if ((TextBetween = 'All Methods') or (TextBetween = 'Methods')) and
-        (Posi < 15) then
-      begin
-        Posi := 0;
-        repeat
-          Inc(Posi);
-          GetNextTag;
-        until (Tag.Name = 'CODE') or (Posi = 60);
-      end;
-      Result := (Tag.Name = 'CODE');
+      until (FHtmlParser.Tag.Name = 'CODE') or (Posi = 60);
     end;
+    Result := (FHtmlParser.Tag.Name = 'CODE');
   end;
 end;
 
 function TCodeCompletion.GetTagName: string;
 begin
-  with FHtmlParser do
-  begin
-    NextTag;
-    NextTag;
-    Result := Tag.Name;
-    NextTag;
-  end;
+  FHtmlParser.NextTag;
+  FHtmlParser.NextTag;
+  Result := FHtmlParser.Tag.Name;
+  FHtmlParser.NextTag;
 end;
 
 procedure TCodeCompletion.GetNextTag;
 begin
-  with FHtmlParser do
-  begin
-    NextTag;
-    if (Tag.Name = 'TR') or (Tag.Name = 'TABLE') then
-      FWithTable := True;
-  end;
+  FHtmlParser.NextTag;
+  if (FHtmlParser.Tag.Name = 'TR') or (FHtmlParser.Tag.Name = 'TABLE') then
+    FWithTable := True;
 end;
 
 function TCodeCompletion.GetAPIReference(const WhereOf: string): string;
@@ -886,28 +887,27 @@ var
 
 begin
   if FConfiguration.GlobalFileExists(FHTMLFileofJavaClass) then
-    with FHtmlParser do
+  begin
+    repeat
+      Link := FHtmlParser.getNextLink;
+    until (Link = '') or Found(Link);
+    if Link = '' then
+      Result := FHTMLFileofJavaClass
+    else
     begin
-      repeat
-        Link := getNextLink;
-      until (Link = '') or Found(Link);
-      if Link = '' then
-        Result := FHTMLFileofJavaClass
-      else
+      Path := ExtractFilePath(FHTMLFileofJavaClass);
+      Posi := Pos('#' + WhereOf, Link);
+      AFile := Copy(Link, 1, Posi - 1);
+      Delete(Link, 1, Posi - 1);
+      Posi := Pos('/', AFile);
+      while Posi > 0 do
       begin
-        Path := ExtractFilePath(FHTMLFileofJavaClass);
-        Posi := Pos('#' + WhereOf, Link);
-        AFile := Copy(Link, 1, Posi - 1);
-        Delete(Link, 1, Posi - 1);
+        Delete(AFile, 1, Posi);
         Posi := Pos('/', AFile);
-        while Posi > 0 do
-        begin
-          Delete(AFile, 1, Posi);
-          Posi := Pos('/', AFile);
-        end;
-        Result := Path + AFile + Link;
       end;
-    end
+      Result := Path + AFile + Link;
+    end;
+  end
   else
     Result := '';
 end;
@@ -1682,7 +1682,7 @@ begin
       end;
     end;
   finally
-    FreeAndNil(StringList);
+    StringList.Free;
   end;
   Result := False;
 end;
@@ -1724,7 +1724,7 @@ begin
       end;
     end;
   finally
-    FreeAndNil(StringList);
+    StringList.Free;
   end;
   Result := False;
 end;

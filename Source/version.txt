@@ -1,3 +1,7 @@
+23.18, 2025.11.22
+Support for JDK documentation from jdk version 23 onwards
+code completion for IO from jdk version 25 onwards
+
 23.17, 2025.11.21
 bugfix uml interactive windows
 bugfix opening a structogram
