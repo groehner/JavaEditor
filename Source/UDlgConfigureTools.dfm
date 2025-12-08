@@ -3,8 +3,8 @@ object FConfigureTools: TFConfigureTools
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Configure tools'
-  ClientHeight = 247
-  ClientWidth = 527
+  ClientHeight = 277
+  ClientWidth = 540
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -45,7 +45,7 @@ object FConfigureTools: TFConfigureTools
   end
   object SPUp: TSpeedButton
     Left = 112
-    Top = 216
+    Top = 240
     Width = 25
     Height = 25
     Glyph.Data = {
@@ -60,7 +60,7 @@ object FConfigureTools: TFConfigureTools
   end
   object SPDown: TSpeedButton
     Left = 143
-    Top = 216
+    Top = 240
     Width = 25
     Height = 25
     Glyph.Data = {
@@ -77,7 +77,7 @@ object FConfigureTools: TFConfigureTools
     Left = 16
     Top = 35
     Width = 152
-    Height = 167
+    Height = 190
     ItemHeight = 15
     TabOrder = 3
     OnClick = LBToolsClick
@@ -124,7 +124,7 @@ object FConfigureTools: TFConfigureTools
   end
   object BDelete: TButton
     Left = 16
-    Top = 216
+    Top = 240
     Width = 75
     Height = 25
     Caption = 'Delete'
@@ -133,7 +133,7 @@ object FConfigureTools: TFConfigureTools
   end
   object BSave: TButton
     Left = 285
-    Top = 216
+    Top = 240
     Width = 75
     Height = 25
     Caption = 'Save'
@@ -142,7 +142,7 @@ object FConfigureTools: TFConfigureTools
   end
   object BClose: TButton
     Left = 374
-    Top = 216
+    Top = 240
     Width = 75
     Height = 25
     Caption = 'Close'
@@ -152,7 +152,7 @@ object FConfigureTools: TFConfigureTools
   end
   object CBWait: TCheckBox
     Left = 192
-    Top = 185
+    Top = 184
     Width = 201
     Height = 17
     Caption = 'Wait for execution'
@@ -160,12 +160,20 @@ object FConfigureTools: TFConfigureTools
   end
   object BNew: TButton
     Left = 192
-    Top = 216
+    Top = 240
     Width = 75
     Height = 25
     Caption = 'New'
     TabOrder = 10
     OnClick = BNewClick
+  end
+  object CBHideConsole: TCheckBox
+    Left = 192
+    Top = 208
+    Width = 201
+    Height = 17
+    Caption = 'Hide console'
+    TabOrder = 11
   end
   object OpenDialog: TOpenDialog
     FileName = '*.exe'

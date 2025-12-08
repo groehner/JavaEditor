@@ -125,15 +125,11 @@ begin
 
       if VParent is TControl then
         TControl(VParent).Repaint;
-
       Result := True;
-
     finally
       VZorderList.Free;
     end;
   end;
 end;
-
-// =============================================================================
 
 end.

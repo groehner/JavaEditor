@@ -137,7 +137,9 @@ type
 
 implementation
 
-uses SysUtils, StrUtils;
+uses
+  SysUtils,
+  StrUtils;
 
 { TParams }
 

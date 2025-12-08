@@ -1056,6 +1056,7 @@ begin
   FEvaluate := TFEvaluate.Create(Self);
   FTooltip := TFTooltip.Create(Self);
   FLLMChatForm := TLLMChatForm.Create(Self);
+  FConfigureTools := TFConfigureTools.Create(Self);
   MyJavaCommands := TJavaCommands.Create;
   MyDebugger := TDebugger.Create;
   MySearchOptions := TSearchOptions.Create;
@@ -4647,11 +4648,8 @@ end;
 
 procedure TFJava.MIConfigureToolsClick(Sender: TObject);
 begin
-  with TFConfigureTools.Create(Self) do
-  begin
-    ShowModal;
-    Free;
-  end;
+  FConfigureTools.SelectTool(0);
+  FConfigureTools.ShowModal;
 end;
 
 procedure TFJava.MIAboutClick(Sender: TObject);
@@ -7859,6 +7857,7 @@ begin
     RetranslateComponent(FWatches);
     RetranslateComponent(FMessages);
     RetranslateComponent(FTooltip);
+    RetranslateComponent(FConfigureTools);
 
     if Assigned(FFileStructure) then
       RetranslateComponent(FFileStructure);

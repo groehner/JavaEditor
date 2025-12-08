@@ -12,8 +12,10 @@ type
   end;
 
   TQueue = class
+  private
     First: TNode;
     Last: TNode;
+  public
     constructor Create;
     destructor Destroy; override;
     function ToString: string; override;
@@ -43,26 +45,26 @@ end;
 
 function TQueue.ToString: string;
 begin
-  var Str:= '';
-  var Cursor:= First;
+  var Str := '';
+  var Cursor := First;
   while Assigned(Cursor) do begin
-    Str:= Str + SysUtils.IntToStr(Cursor.Status) + '|' + Cursor.Command + '  ';
-    Cursor:= Cursor.Next;
+    Str := Str + SysUtils.IntToStr(Cursor.Status) + '|' + Cursor.Command + '  ';
+    Cursor := Cursor.Next;
   end;
-  Result:= Str;
+  Result := Str;
 end;
 
 procedure TQueue.Enter(Status: Integer; const Command: string);
 begin
-  var Node:= TNode.Create;
+  var Node := TNode.Create;
   if not Empty then
-    Last.Next:= Node;
-  Node.Status:= Status;
-  Node.Command:= Command;
-  Node.Next:= nil;
-  Last:= Node;
+    Last.Next := Node;
+  Node.Status := Status;
+  Node.Command := Command;
+  Node.Next := nil;
+  Last := Node;
   if not Assigned(First) then
-    First:= Last;
+    First := Last;
 end;
 
 procedure TQueue.Remove;
@@ -70,24 +72,25 @@ begin
   if Empty then
     ErrorMsg('Fatal Error: Queue is empty!')
   else begin
-    var Node:= First;
+    var Node := First;
     First := First.Next;
     FreeAndNil(Node);
-    if not Assigned(First) then Last:= nil;
+    if not Assigned(First) then
+      Last := nil;
   end;
 end;
 
 function TQueue.Front: TNode;
 begin
-  Result:= nil;
+  Result := nil;
   if Empty
     then ErrorMsg('Fatal Error: Queue is empty.')
-    else Result:= First;
+    else Result := First;
 end;
 
 function TQueue.Empty: Boolean;
 begin
-  Result:= not Assigned(First);
+  Result := not Assigned(First);
 end;
 
 procedure TQueue.Clear;

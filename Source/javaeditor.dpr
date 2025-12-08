@@ -254,7 +254,7 @@ begin
   {$WARNINGS ON}
   Application.ShowHint:= true;
   TStyleManager.SystemHooks := TStyleManager.SystemHooks - [shMenus, shDialogs];
-  TFConfiguration.setGUIStyle;
+  TFConfiguration.SetGUIStyle;
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   SetDefaultUIFont(Application.DefaultFont);

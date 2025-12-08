@@ -9,7 +9,9 @@ unit UWindow;
 interface
 
 uses
-  Windows, Messages, Forms;
+  Windows,
+  Messages,
+  Forms;
 
 type
   TFWindow = class(TForm)
@@ -35,7 +37,7 @@ uses SysUtils;
 
 function RegisterMessage: Cardinal;
 begin
-  Result:= RegisterWindowMessage('Enumerate this Window');
+  Result := RegisterWindowMessage('Enumerate this Window');
 end;
 
 // this is the callbackfunction. Don't miss stdcall
@@ -43,10 +45,10 @@ end;
 function EnumWinProc(Wnd: HWND; Param: LParam): Boolean; stdcall;
   var IMsgID: Cardinal;
 begin
-  IMsgID:= RegisterMessage;
+  IMsgID := RegisterMessage;
   SendMessage(Param, IMsgID, 0, Wnd);
   // give data to main form
-  Result:=True;
+  Result := True;
 end;
 
 procedure TFWindow.WndProc(var Message: TMessage);
@@ -62,25 +64,25 @@ procedure TFWindow.WriteText(Wnd: HWND);
   var PcWinText: PChar;
 begin
   if IsWindowVisible(Wnd) then begin
-    PcWinText:= StrAlloc(202);
+    PcWinText := StrAlloc(202);
     GetWindowText(Wnd, PcWinText, 200);
     if Pos(FWindowCaption, PcWinText) > 0 then
-      FWindowHandle:= Wnd;
+      FWindowHandle := Wnd;
     StrDispose(PcWinText);
   end;
 end;
 
 procedure TFWindow.FormCreate(Sender: TObject);
 begin
-  FWM_ENUMERATE_ID:= RegisterMessage;  // get our msgID
+  FWM_ENUMERATE_ID := RegisterMessage;  // get our msgID
 end;
 
 function TFWindow.GetWindowHandle(const ACaption: string): HWND;
 begin
-  FWindowHandle:= 0;
-  FWindowCaption:= ACaption;
+  FWindowHandle := 0;
+  FWindowCaption := ACaption;
   EnumWindows(@EnumWinProc, Self.Handle);
-  Result:= FWindowHandle;
+  Result := FWindowHandle;
 end;
 
 end.

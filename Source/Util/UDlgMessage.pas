@@ -40,13 +40,13 @@ end;
 
 procedure TDlgMessage.SetMessage(const Filename: string);
 var
-  WMsg, w: Integer;
+  WMsg, AWidth: Integer;
   Msg: string;
 begin
   Msg := ExtractFileName(Filename) + #13#10 + format(_(LNGAlreadyExists), ['']);
   WMsg := Canvas.TextWidth(Msg);
-  w := ClientWidth - LMessage.Left - 10;
-  if WMsg > w then
+  AWidth := ClientWidth - LMessage.Left - 10;
+  if WMsg > AWidth then
     Width := LMessage.Left + WMsg + 10;
   LMessage.Caption := Msg;
 end;

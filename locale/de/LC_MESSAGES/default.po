@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-11-21 16:42\n"
-"PO-Revision-Date: 2025-11-21 16:43+0100\n"
+"POT-Creation-Date: 2025-12-08 12:43\n"
+"PO-Revision-Date: 2025-12-08 12:44+0100\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -55,7 +55,7 @@ msgstr "Gehe zu"
 #: UDlgConfigureTools.dfm:148 UDlgEvaluate.dfm:73 UDlgHelp.dfm:186
 #: UDlgMindstorms.dfm:64 UDlgMindstormsEV3.dfm:31 UDlgUpdate.dfm:47
 #: UEditorForm.dfm:91 UEditorForm.dfm:2558 UExplorerForm.dfm:58
-#: UFileStructure.dfm:60 UGUIDesigner.dfm:24 UJava.dfm:2592 UJUnitTest.dfm:61
+#: UFileStructure.dfm:60 UGUIDesigner.dfm:24 UJava.dfm:2583 UJUnitTest.dfm:61
 #: UMessages.dfm:606 UObjectInspector.dfm:129 UScpHint.dfm:52 UTooltip.dfm:50
 #: UTooltip.dfm:51 UWatches.dfm:94 EssModel/System/UUMLForm.dfm:78
 #: Sequencediagram/UDlgConnect.dfm:45 Sequencediagram/USequenceForm.dfm:50
@@ -98,7 +98,7 @@ msgstr "Laden abbrechen"
 #. FUMLForm..Panel..PUMLPanel..TBUMLToolbar..TBRefresh..Hint
 #. FSequenceForm..TBSequence..TBRefresh..Hint
 #. FSequenceForm..PopupMenuLifeLineAndSequencePanel..MIPopupRefresh..Caption
-#: UBrowserForm.dfm:166 UExplorerForm.dfm:70 UJava.dfm:2998
+#: UBrowserForm.dfm:166 UExplorerForm.dfm:70 UJava.dfm:2989
 #: EssModel/Integrator/View/UDiagramFrame.dfm:514
 #: EssModel/System/UUMLForm.dfm:166 Sequencediagram/USequenceForm.dfm:110
 #: Sequencediagram/USequenceForm.dfm:157
@@ -126,7 +126,7 @@ msgstr "Favorit löschen"
 #. FSequenceForm..PopupMenuLifeLineAndSequencePanel..MIPopupConfiguration..Caption
 #. FStructogram..StructoPopupMenu..MIConfiguration..Caption
 #: UConfiguration.dfm:6 UConfiguration.dfm:5695 UConfiguration.dfm:5816
-#: UEditorForm.dfm:2552 UGUIDesigner.dfm:177 UJava.dfm:3724
+#: UEditorForm.dfm:2552 UGUIDesigner.dfm:177 UJava.dfm:3715
 #: EssModel/Integrator/View/UDiagramFrame.dfm:603
 #: Sequencediagram/USequenceForm.dfm:181 Structogram/UStructogramform.dfm:931
 msgid "Configuration"
@@ -146,8 +146,8 @@ msgstr "Speichert die aktuellen Einstellungen"
 #. FJava..TBXDockTop..ControlBar..MainToolBar..TBSave..Hint
 #. FJava..TBXDockTop..MainMenu..MIFile..MISave..Caption
 #: UConfiguration.dfm:129 UDlgClasspath.dfm:41 UDlgConfigureTools.dfm:139
-#: UDlgFavorites.dfm:52 UDlgJarCreate.dfm:32 UJava.dfm:2399 UJava.dfm:2400
-#: UJava.dfm:2559
+#: UDlgFavorites.dfm:52 UDlgJarCreate.dfm:32 UJava.dfm:2391 UJava.dfm:2392
+#: UJava.dfm:2550
 msgid "Save"
 msgstr "Speichern"
 
@@ -390,7 +390,7 @@ msgstr "Öffnet die letzte Batch-Datei für den Interpreter-Aufruf"
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitConsole..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIConsole..Caption
 #: UConfiguration.dfm:490 UConfiguration.dfm:1851 UEditorForm.dfm:2479
-#: UJava.dfm:2292 UJava.dfm:2507 UJava.dfm:3161 UJava.dfm:3193
+#: UJava.dfm:2284 UJava.dfm:2498 UJava.dfm:3152 UJava.dfm:3184
 msgid "Console"
 msgstr "Console"
 
@@ -416,7 +416,7 @@ msgstr "Programme"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PPrograms..LDebugger..Caption
 #. FJava..TBXDockTop..MainMenu..MIStart..MIDebugger..Caption
-#: UConfiguration.dfm:677 UJava.dfm:2846
+#: UConfiguration.dfm:677 UJava.dfm:2837
 msgid "Debugger"
 msgstr "Debugger"
 
@@ -449,14 +449,14 @@ msgstr "Zeige automatisch erzeugte HTML-Datei für ein Applet"
 #. FJava..TBXDockTop..MainMenu..MIStart..MIJar..MIJarCreate..Caption
 #. FConnectDialog..LBConnections....Items.Strings
 #. FSequenceForm..PopupMenuConnection..MICreate..Caption
-#: UConfiguration.dfm:902 UJava.dfm:2862 Sequencediagram/UDlgConnect.dfm:44
+#: UConfiguration.dfm:902 UJava.dfm:2853 Sequencediagram/UDlgConnect.dfm:44
 #: Sequencediagram/USequenceForm.dfm:214
 msgid "Create"
 msgstr "Erzeugen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PJar..LJarPack..Caption
 #. FJava..TBXDockTop..MainMenu..MIStart..MIJar..MIJarPack..Caption
-#: UConfiguration.dfm:939 UJava.dfm:2867
+#: UConfiguration.dfm:939 UJava.dfm:2858
 msgid "Pack"
 msgstr "Packen"
 
@@ -581,7 +581,7 @@ msgstr "80 Zeichen Linie anzeigen"
 #. FSequenceForm..PopupMenuLifeLineAndSequencePanel..MIPopupFont..Caption
 #. FStructogram..StructoPopupMenu..MIFont..Caption
 #: UConfiguration.dfm:1264 UConfiguration.dfm:1397 UConfiguration.dfm:2345
-#: UEditorForm.dfm:2546 UFileStructure.dfm:54 UJava.dfm:3718 UJUnitTest.dfm:49
+#: UEditorForm.dfm:2546 UFileStructure.dfm:54 UJava.dfm:3709 UJUnitTest.dfm:49
 #: UMessages.dfm:588 UObjectGenerator.dfm:45 UObjectInspector.dfm:123
 #: UScpHint.dfm:46 EssModel/Integrator/View/UDiagramFrame.dfm:591
 #: Sequencediagram/USequenceForm.dfm:175 Structogram/UStructogramform.dfm:925
@@ -733,7 +733,7 @@ msgstr "Farben für"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PColors..rgcolors....Items.Strings
 #. Workaround: "Brackets" is always shown as "Klammern"
-#: UConfiguration.dfm:1643 UJava.pas:7878
+#: UConfiguration.dfm:1643 UJava.pas:7877
 msgid "Brackets"
 msgstr "Klammern"
 
@@ -802,7 +802,7 @@ msgstr "Vorlagen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PTemplates..LTemplateControlstructure..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIKontrollstrukturen..Caption
-#: UConfiguration.dfm:1802 UJava.dfm:3236
+#: UConfiguration.dfm:1802 UJava.dfm:3227
 msgid "Control structures"
 msgstr "Kontrollstrukturen"
 
@@ -825,7 +825,7 @@ msgstr "Hinweis"
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBFrame..Hint
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewFrame..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIFrame..Caption
-#: UConfiguration.dfm:1844 UJava.dfm:2303 UJava.dfm:2512 UJava.dfm:3198
+#: UConfiguration.dfm:1844 UJava.dfm:2295 UJava.dfm:2503 UJava.dfm:3189
 msgid "Frame"
 msgstr "Frame"
 
@@ -833,7 +833,7 @@ msgstr "Frame"
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBDialog..Hint
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewDialog..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIDialog..Caption
-#: UConfiguration.dfm:1858 UJava.dfm:2314 UJava.dfm:2517 UJava.dfm:3203
+#: UConfiguration.dfm:1858 UJava.dfm:2306 UJava.dfm:2508 UJava.dfm:3194
 msgid "Dialog"
 msgstr "Dialog"
 
@@ -876,7 +876,7 @@ msgstr "Tastenkürzel für Quelltext"
 #. FTooltip..ToolbarTooltip..TBOpenUrl..Hint
 #. DlgMessage..Panel1..BOpen..Caption
 #: UConfiguration.dfm:2152 UConfiguration.dfm:3783 UConfiguration.dfm:3800
-#: UJava.dfm:2392 UJava.dfm:2393 UJava.dfm:2882 UTooltip.dfm:66
+#: UJava.dfm:2384 UJava.dfm:2385 UJava.dfm:2873 UTooltip.dfm:66
 #: Util/UDlgMessage.dfm:168
 msgid "Open"
 msgstr "Öffnen"
@@ -956,7 +956,7 @@ msgstr "Am Raster ausrichten"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PStructogram..Caption
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewStructogram..Caption
-#: UConfiguration.dfm:2379 UJava.dfm:2492
+#: UConfiguration.dfm:2379 UJava.dfm:2483
 msgid "Structogram"
 msgstr "Struktogramm"
 
@@ -1091,7 +1091,7 @@ msgstr "sonst"
 #. FConfiguration..PMain..PPanelRight..PageList..PSequencediagram..Caption
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MINewSequencediagram..Caption
 #. FSequenceForm..Caption
-#: UConfiguration.dfm:2650 UJava.dfm:2498 Sequencediagram/USequenceForm.dfm:6
+#: UConfiguration.dfm:2650 UJava.dfm:2489 Sequencediagram/USequenceForm.dfm:6
 msgid "Sequence diagram"
 msgstr "Sequenzdiagramm"
 
@@ -1113,8 +1113,8 @@ msgstr "Objekt"
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..Caption
 #. FJava..TBXDockTop..MainMenu..MIUML..MINewUML..Caption
 #: UConfiguration.dfm:2663 UConfiguration.dfm:2693 UDlgClassEditor.dfm:543
-#: UDlgConfigureTools.dfm:166 UDlgHelp.dfm:96 UJava.dfm:2251 UJava.dfm:2464
-#: UJava.dfm:2962 UDlgClassEditor.pas:1503 UObjectInspector.pas:617
+#: UDlgConfigureTools.dfm:166 UDlgHelp.dfm:96 UJava.dfm:2243 UJava.dfm:2455
+#: UJava.dfm:2953 UDlgClassEditor.pas:1501 UObjectInspector.pas:617
 msgid "New"
 msgstr "Neu"
 
@@ -1198,20 +1198,20 @@ msgstr "Dateien"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LSearchAgain..Caption
 #. FJava..TBXDockTop..MainMenu..MIEdit..MISearchAgain..Caption
-#: UConfiguration.dfm:2899 UJava.dfm:2711 UDlgHelp.pas:379 UDlgHelp.pas:516
+#: UConfiguration.dfm:2899 UJava.dfm:2702 UDlgHelp.pas:379 UDlgHelp.pas:516
 msgid "Search again"
 msgstr "&Weitersuchen"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LJavabook..Caption
 #. FHelpDialog..PCJDKHelp..TSSearch..RGSearchOptions....Items.Strings
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIJavabook..Caption
-#: UConfiguration.dfm:2906 UDlgHelp.dfm:156 UJava.dfm:3794
+#: UConfiguration.dfm:2906 UDlgHelp.dfm:156 UJava.dfm:3785
 msgid "Java book"
 msgstr "Javabuch"
 
 #. FConfiguration..PMain..PPanelRight..PageList..PDocumentation..LTutorial..Caption
 #. FJava..TBXDockTop..MainMenu..MIHelp..MITutorial..Caption
-#: UConfiguration.dfm:2922 UJava.dfm:3788
+#: UConfiguration.dfm:2922 UJava.dfm:3779
 msgid "Tutorial"
 msgstr "Tutorial"
 
@@ -1296,7 +1296,7 @@ msgstr "Oben"
 #. FBorder..PCBorder..TSMatte..LMatteRight..Caption
 #: UConfiguration.dfm:3303 UConfiguration.dfm:3375 UGUIDesigner.dfm:67
 #: EssModel/Integrator/View/UDiagramFrame.dfm:449
-#: Formdesigner/ELDlgBorder.dfm:191 UJava.pas:7894
+#: Formdesigner/ELDlgBorder.dfm:191 UJava.pas:7893
 msgid "Right"
 msgstr "Rechts"
 
@@ -1307,7 +1307,7 @@ msgstr "Rechts"
 #. FBorder..PCBorder..TSMatte..LMatteLeft..Caption
 #: UConfiguration.dfm:3310 UConfiguration.dfm:3373 UGUIDesigner.dfm:53
 #: EssModel/Integrator/View/UDiagramFrame.dfm:435
-#: Formdesigner/ELDlgBorder.dfm:177 UJava.pas:7892
+#: Formdesigner/ELDlgBorder.dfm:177 UJava.pas:7891
 msgid "Left"
 msgstr "Links"
 
@@ -1967,7 +1967,7 @@ msgstr "Interaktiv"
 #. FConfiguration..PMain..PPanelRight..PageList..PTools..Caption
 #. FConfigureTools..LTools..Caption
 #. FJava..TBXDockTop..MainMenu..MITools..Caption
-#: UConfiguration.dfm:5415 UDlgConfigureTools.dfm:23 UJava.dfm:3035
+#: UConfiguration.dfm:5415 UDlgConfigureTools.dfm:23 UJava.dfm:3026
 #: UConfiguration.pas:10412
 msgid "Tools"
 msgstr "Tools"
@@ -2000,7 +2000,7 @@ msgstr "SVN-folder"
 
 #. FAbout..Caption
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIAbout..Caption
-#: UDlgAbout.dfm:6 UJava.dfm:3816
+#: UDlgAbout.dfm:6 UJava.dfm:3807
 msgid "Info"
 msgstr "Info"
 
@@ -2212,7 +2212,7 @@ msgstr "UML-Klassen-Editor"
 #. FJava..TBXDockTop..MainMenu..MIFile..MINew..MIFileNewClass..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..MIclass..Caption
 #. FClassInsert..PListView..LVFiles......Caption
-#: UDlgClassEditor.dfm:27 UJava.dfm:2486 UJava.dfm:3232
+#: UDlgClassEditor.dfm:27 UJava.dfm:2477 UJava.dfm:3223
 #: EssModel/System/UClassInsert.dfm:35
 msgid "Class"
 msgstr "Klasse"
@@ -2350,7 +2350,7 @@ msgstr "Alle jar-Dateien"
 
 #. FConfigureTools..Caption
 #. FJava..TBXDockTop..MainMenu..MITools..MIConfigureTools..Caption
-#: UDlgConfigureTools.dfm:5 UJava.dfm:3181
+#: UDlgConfigureTools.dfm:5 UJava.dfm:3172
 msgid "Configure tools"
 msgstr "Tools konfigurieren"
 
@@ -2359,8 +2359,8 @@ msgstr "Tools konfigurieren"
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabProgram..Caption
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIProgramm..Caption
-#: UDlgConfigureTools.dfm:37 UDlgConfigureTools.dfm:112 UJava.dfm:282
-#: UJava.dfm:2232 UJava.dfm:3190
+#: UDlgConfigureTools.dfm:37 UDlgConfigureTools.dfm:112 UJava.dfm:274
+#: UJava.dfm:2224 UJava.dfm:3181
 msgid "Program"
 msgstr "Programm"
 
@@ -2368,6 +2368,11 @@ msgstr "Programm"
 #: UDlgConfigureTools.dfm:158
 msgid "Wait for execution"
 msgstr "Ausführung abwarten"
+
+#. FConfigureTools..CBHideConsole..Caption
+#: UDlgConfigureTools.dfm:175
+msgid "Hide console"
+msgstr "Verstecke Konsole"
 
 #. FDownload..Caption
 #. FDownload..BDownload..Caption
@@ -2398,7 +2403,7 @@ msgstr "Ergebnis"
 
 #. FEvaluate..BEvaluate..Caption
 #. FJava..TBXDockTop..MainMenu..MITest..MIExpression..Caption
-#: UDlgEvaluate.dfm:54 UJava.dfm:2941
+#: UDlgEvaluate.dfm:54 UJava.dfm:2932
 msgid "Evaluate"
 msgstr "Auswerten"
 
@@ -2424,7 +2429,7 @@ msgstr "Zeilennummer"
 
 #. FGotoLineDialog..LGoto..Caption
 #. FJava..TBXDockTop..MainMenu..MIEdit..MIGotoLine..Caption
-#: UDlgGotoLine.dfm:24 UJava.dfm:2761
+#: UDlgGotoLine.dfm:24 UJava.dfm:2752
 msgid "Go to line"
 msgstr "&Gehe zur Zeile"
 
@@ -2443,7 +2448,7 @@ msgstr "Favoriten"
 #. FJava..TBXDockTop..MainMenu..MIEdit..MISearch..Caption
 #. FSearch..Caption
 #. use ProcessMessages to wait
-#: UDlgHelp.dfm:102 UDlgHelp.dfm:132 UJava.dfm:2704
+#: UDlgHelp.dfm:102 UDlgHelp.dfm:132 UJava.dfm:2695
 #: FindInFiles/UDlgSearch.dfm:6 UBrowserForm.pas:582 UBrowserForm.pas:586
 #: UDlgHelp.pas:134 UDlgHelp.pas:377 UDlgHelp.pas:505 UDlgHelp.pas:550
 #: UDlgHelp.pas:571 UDlgHelp.pas:584
@@ -2457,7 +2462,7 @@ msgstr "Suchbegriff"
 
 #. FHelpDialog..BShow..Caption
 #. FJava..TBXDockTop..MainMenu..MIStart..MIJar..MIJarShow..Caption
-#: UDlgHelp.dfm:195 UJava.dfm:2872
+#: UDlgHelp.dfm:195 UJava.dfm:2863
 msgid "Show"
 msgstr "Zeigen"
 
@@ -2520,9 +2525,9 @@ msgstr "Nach dem Hochladen starten (-r)"
 #. FJava..TBXDockTop..ControlBar..DebugToolbar..TBRun..Hint
 #. FJava..TBXDockTop..MainMenu..MIStart..MIRun..Caption
 #. AFrameDiagram..PopMenuClass..MIClassPopupRun..Caption
-#: UDlgMindstorms.dfm:54 UDlgMindstormsEV3.dfm:21 UJava.dfm:183 UJava.dfm:2802
+#: UDlgMindstorms.dfm:54 UDlgMindstormsEV3.dfm:21 UJava.dfm:175 UJava.dfm:2793
 #: EssModel/Integrator/View/UDiagramFrame.dfm:47 UConfiguration.pas:4416
-#: UJava.pas:2526 UJava.pas:5306
+#: UJava.pas:2527 UJava.pas:5304
 msgid "Run"
 msgstr "Starten"
 
@@ -2548,7 +2553,7 @@ msgstr "Hochladen"
 
 #. FOpenFolderDialog..Caption
 #. FJava..TBXDockTop..MainMenu..MIUML..MIOpenFolder..Caption
-#: UDlgOpenFolder.dfm:6 UJava.dfm:3016
+#: UDlgOpenFolder.dfm:6 UJava.dfm:3007
 msgid "Open folder"
 msgstr "Ordner öffnen"
 
@@ -2585,7 +2590,7 @@ msgstr "String-Editor"
 #. FUpdateDialog..Caption
 #. FUpdateDialog..BUpdate..Caption
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIUpdate..Caption
-#: UDlgUpdate.dfm:6 UDlgUpdate.dfm:71 UJava.dfm:3812
+#: UDlgUpdate.dfm:6 UDlgUpdate.dfm:71 UJava.dfm:3803
 msgid "Update"
 msgstr "Update"
 
@@ -2652,7 +2657,7 @@ msgstr "Spalte"
 #. FEditForm..EditformToolbar..TBExplorer..Hint
 #. FExplorer..Caption
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIExplorer..Caption
-#: UEditorForm.dfm:99 UExplorerForm.dfm:5 UJava.dfm:3703
+#: UEditorForm.dfm:99 UExplorerForm.dfm:5 UJava.dfm:3694
 msgid "Explorer"
 msgstr "Explorer"
 
@@ -2683,13 +2688,13 @@ msgstr "Zur zugehörigen Klammer gehen"
 
 #. FEditForm..EditformToolbar..TBSystemOutPrintln..Hint
 #. FJava..TBXDockTop..MainMenu..MIEdit..MISystemOutPrintln..Caption
-#: UEditorForm.dfm:150 UJava.dfm:2768
+#: UEditorForm.dfm:150 UJava.dfm:2759
 msgid "System.out.println"
 msgstr "System.out.println"
 
 #. FEditForm..EditformToolbar..TBStructureIndent..Hint
 #. FJava..TBXDockTop..MainMenu..MIEdit..MIStructuredIndent..Caption
-#: UEditorForm.dfm:159 UJava.dfm:2745
+#: UEditorForm.dfm:159 UJava.dfm:2736
 msgid "Structured indentation"
 msgstr "Strukuriert einrücken"
 
@@ -2735,21 +2740,21 @@ msgstr "Block-Anweisung"
 
 #. FEditForm..EditformToolbar..TBComment..Hint
 #. FJava..TBXDockTop..MainMenu..MIEdit..MICommentOnOff..Caption
-#: UEditorForm.dfm:243 UJava.dfm:2752
+#: UEditorForm.dfm:243 UJava.dfm:2743
 msgid "Comment/Uncomment"
 msgstr "Ein-/Auskommentieren"
 
 #. FEditForm..EditformToolbar..TBIndent..Hint
 #. FEditForm..PopUpEditor..MIIndent..Caption
 #. FJava..TBXDockTop..MainMenu..MIEdit..MIIndent..Caption
-#: UEditorForm.dfm:252 UEditorForm.dfm:2532 UJava.dfm:2739
+#: UEditorForm.dfm:252 UEditorForm.dfm:2532 UJava.dfm:2730
 msgid "Indent"
 msgstr "Einrücken"
 
 #. FEditForm..EditformToolbar..TBUnindent..Hint
 #. FEditForm..PopUpEditor..MIUnindent..Caption
 #. FJava..TBXDockTop..MainMenu..MIEdit..MIUnindent..Caption
-#: UEditorForm.dfm:260 UEditorForm.dfm:2538 UJava.dfm:2733
+#: UEditorForm.dfm:260 UEditorForm.dfm:2538 UJava.dfm:2724
 msgid "Unindent"
 msgstr "Ausrücken"
 
@@ -2760,7 +2765,7 @@ msgstr "Zeilenumbruch"
 
 #. FEditForm..EditformToolbar..TBBreakpoint..Hint
 #. FJava..TBXDockTop..MainMenu..MITest..MIBreakpoint..Caption
-#: UEditorForm.dfm:277 UJava.dfm:2926
+#: UEditorForm.dfm:277 UJava.dfm:2917
 msgid "Breakpoint on/off"
 msgstr "Haltepunkt ein/aus"
 
@@ -2835,7 +2840,7 @@ msgstr "API-Hilfe"
 #. AFrameDiagram..PopMenuObject..MIObjectPopupOpenClass..Caption
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupOpenClass..Caption
 #. FUMLForm..Panel..PUMLPanel..TBUMLToolbar..TBClassOpen..Hint
-#: UEditorForm.dfm:2350 UJava.dfm:2974
+#: UEditorForm.dfm:2350 UJava.dfm:2965
 #: EssModel/Integrator/View/UDiagramFrame.dfm:81
 #: EssModel/Integrator/View/UDiagramFrame.dfm:217
 #: EssModel/Integrator/View/UDiagramFrame.dfm:490
@@ -2928,7 +2933,7 @@ msgstr "Add"
 #. FEditForm..PopUpEditor..MIGit..MIGitCommit..Caption
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..MISVNCommit..Caption
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitCommit..Caption
-#: UEditorForm.dfm:2433 UJava.dfm:3059 UJava.dfm:3105
+#: UEditorForm.dfm:2433 UJava.dfm:3050 UJava.dfm:3096
 msgid "Commit"
 msgstr "Commit"
 
@@ -2946,7 +2951,7 @@ msgstr "Kopiere Pfadname"
 #. FJava..TBXDockTop..ControlBar..DebugToolbar..TBUndo..Hint
 #. FJava..TBXDockTop..MainMenu..MIEdit..MIUndo..Caption
 #. FTextDiff..PopupEditor..MIUndo..Caption
-#: UEditorForm.dfm:2494 UJava.dfm:142 UJava.dfm:2640
+#: UEditorForm.dfm:2494 UJava.dfm:134 UJava.dfm:2631
 #: TextDiff/UTextDiffForm.dfm:838
 msgid "Undo"
 msgstr "&Rückgängig"
@@ -2955,7 +2960,7 @@ msgstr "&Rückgängig"
 #. FJava..TBXDockTop..ControlBar..DebugToolbar..TBRedo..Hint
 #. FJava..TBXDockTop..MainMenu..MIEdit..MIRedo..Caption
 #. FTextDiff..PopupEditor..MIRedo..Caption
-#: UEditorForm.dfm:2501 UJava.dfm:135 UJava.dfm:2647
+#: UEditorForm.dfm:2501 UJava.dfm:127 UJava.dfm:2638
 #: TextDiff/UTextDiffForm.dfm:843
 msgid "Redo"
 msgstr "&Widerrufen"
@@ -2965,7 +2970,7 @@ msgstr "&Widerrufen"
 #. FJava..TBXDockTop..MainMenu..MIEdit..MICut..Caption
 #. FObjectInspector..PMObjectInspector..MICut..Caption
 #. FTextDiff..PopupEditor..MICut..Caption
-#: UEditorForm.dfm:2509 UGUIDesigner.dfm:140 UJava.dfm:2655
+#: UEditorForm.dfm:2509 UGUIDesigner.dfm:140 UJava.dfm:2646
 #: UObjectInspector.dfm:98 TextDiff/UTextDiffForm.dfm:849
 msgid "Cut"
 msgstr "&Ausschneiden"
@@ -2978,7 +2983,7 @@ msgstr "&Ausschneiden"
 #. FScpHint..PopupMenuHint..MICopy..Caption
 #. FStructogram..StructoPopupMenu..MICopy..Caption
 #. FTextDiff..PopupEditor..MICopy..Caption
-#: UEditorForm.dfm:2516 UGUIDesigner.dfm:147 UJava.dfm:2662 UMessages.dfm:538
+#: UEditorForm.dfm:2516 UGUIDesigner.dfm:147 UJava.dfm:2653 UMessages.dfm:538
 #: UObjectInspector.dfm:104 UScpHint.dfm:40
 #: Structogram/UStructogramform.dfm:848 TextDiff/UTextDiffForm.dfm:854
 msgid "Copy"
@@ -2990,7 +2995,7 @@ msgstr "&Kopieren"
 #. FMessages..PMMessages..MIPaste..Caption
 #. FObjectInspector..PMObjectInspector..MIPaste..Caption
 #. FTextDiff..PopupEditor..MIPaste..Caption
-#: UEditorForm.dfm:2523 UGUIDesigner.dfm:154 UJava.dfm:2695 UMessages.dfm:531
+#: UEditorForm.dfm:2523 UGUIDesigner.dfm:154 UJava.dfm:2686 UMessages.dfm:531
 #: UObjectInspector.dfm:110 TextDiff/UTextDiffForm.dfm:859
 msgid "Paste"
 msgstr "&Einfügen"
@@ -3064,7 +3069,7 @@ msgstr "Struktur"
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIDefaultLayout..Caption
 #. FJUnitTests..PMJUnitTests..MIDefaulLayout..Caption
 #. FObjectInspector..PMObjectInspector..MIDefaultLayout..Caption
-#: UFileStructure.dfm:48 UJava.dfm:2415 UJava.dfm:2416 UJava.dfm:3685
+#: UFileStructure.dfm:48 UJava.dfm:2407 UJava.dfm:2408 UJava.dfm:3676
 #: UJUnitTest.dfm:55 UObjectInspector.dfm:118
 msgid "Default layout"
 msgstr "Standardlayout"
@@ -3147,90 +3152,90 @@ msgstr "Schrift vergrößern"
 #. FJava..TBXDockTop..ControlBar..DebugToolbar..TBStep..Hint
 #. FJava..TBXDockTop..MainMenu..MITest..MIStep..Caption
 #. FMessages..PMain..PDebugger..ToolbarDock..DebuggerToolbar..TBStep..Hint
-#: UJava.dfm:151 UJava.dfm:2890 UMessages.dfm:236
+#: UJava.dfm:143 UJava.dfm:2881 UMessages.dfm:236
 msgid "Step"
 msgstr "Einzelne Anweisung"
 
 #. FJava..TBXDockTop..ControlBar..DebugToolbar..TBNext..Hint
-#: UJava.dfm:159
+#: UJava.dfm:151
 msgid "Step over"
 msgstr "Gesamte Routine"
 
 #. FJava..TBXDockTop..ControlBar..DebugToolbar..TBCompileJava..Hint
 #. FJava..TBXDockTop..MainMenu..MIStart..MICompile..Caption
 #. AFrameDiagram..PopMenuClass..MIClassPopupCompileJava..Caption
-#: UJava.dfm:167 UJava.dfm:2784 EssModel/Integrator/View/UDiagramFrame.dfm:40
+#: UJava.dfm:159 UJava.dfm:2775 EssModel/Integrator/View/UDiagramFrame.dfm:40
 msgid "Compile"
 msgstr "Compilieren"
 
 #. FJava..TBXDockTop..ControlBar..DebugToolbar..TBCompileAll..Hint
 #. FJava..TBXDockTop..MainMenu..MIStart..MICompileAll..Caption
-#: UJava.dfm:175 UJava.dfm:2796 UConfiguration.pas:4415
+#: UJava.dfm:167 UJava.dfm:2787 UConfiguration.pas:4415
 msgid "Compile all"
 msgstr "Alle compilieren"
 
 #. FJava..TBXDockTop..ControlBar..PBorder..SBNorth..Caption
-#: UJava.dfm:207
+#: UJava.dfm:199
 msgid "North"
 msgstr "North"
 
 #. FJava..TBXDockTop..ControlBar..PBorder..SBSouth..Caption
-#: UJava.dfm:221
+#: UJava.dfm:213
 msgid "South"
 msgstr "South"
 
 #. FJava..TBXDockTop..ControlBar..PBorder..SBWest..Hint
-#: UJava.dfm:231
+#: UJava.dfm:223
 msgid "West"
 msgstr "West"
 
 #. FJava..TBXDockTop..ControlBar..PBorder..SBEast..Hint
-#: UJava.dfm:246
+#: UJava.dfm:238
 msgid "East"
 msgstr "East"
 
 #. FJava..TBXDockTop..ControlBar..PBorder..SBCenter..Hint
-#: UJava.dfm:261
+#: UJava.dfm:253
 msgid "Center"
 msgstr "Center"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TabLayout..Caption
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSLayout..Caption
 #. FJava..TBXDockTop..MainMenu..MIComponents..MILayout..Caption
-#: UJava.dfm:299 UJava.dfm:1806 UJava.dfm:3617
+#: UJava.dfm:291 UJava.dfm:1798 UJava.dfm:3608
 msgid "Layout"
 msgstr "Layout"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBPanel..Hint
-#: UJava.dfm:509
+#: UJava.dfm:501
 msgid "Panel - right-click for a subclass of Panel"
 msgstr "Panel - Rechtsklick für eine Unterklasse von Panel"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSAWT..ToolbarAWT..TBCanvas..Hint
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJCanvas..Hint
-#: UJava.dfm:525 UJava.dfm:1727
+#: UJava.dfm:517 UJava.dfm:1719
 msgid "Canvas - right-click for a subclass of Canvas"
 msgstr "Canvas - Rechtsklick für eine Unterklasse von Canvas"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXShapes..ToolBarFXShapes..TBFXLine..Hint
 #. FBorder..PCBorder..TSLine..Caption
-#: UJava.dfm:714 Formdesigner/ELDlgBorder.dfm:30 UEditorForm.pas:1402
+#: UJava.dfm:706 Formdesigner/ELDlgBorder.dfm:30 UEditorForm.pas:1402
 #: UEditorForm.pas:1776
 msgid "Line"
 msgstr "Zeile"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXControls..ToolBarFXControls..TBFXPagination..Hint
-#: UJava.dfm:1076
+#: UJava.dfm:1068
 msgid "Pagination"
 msgstr "Paginierung"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSFXBase..ToolBarFXBase..TBFXCanvas..Hint
-#: UJava.dfm:1401
+#: UJava.dfm:1393
 msgid "Canvas - right click for a sub class of  Canvas"
 msgstr "Canvas - Rechtsklick für eine Unterklasse von Canvas"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSSwing1..ToolBarSwing1..TBJPanel..Hint
-#: UJava.dfm:1711
+#: UJava.dfm:1703
 msgid "JPanel - right-click for a subclass of JPanel"
 msgstr "JPanel - Rechtsklick für eine Unterklasse von JPanel"
 
@@ -3238,240 +3243,240 @@ msgstr "JPanel - Rechtsklick für eine Unterklasse von JPanel"
 #. FJava..TBXDockTop..MainMenu..MIUML..MINewClass..Caption
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupNewClass..Caption
 #. FUMLForm..Panel..PUMLPanel..TBUMLToolbar..TBClassNew..Hint
-#: UJava.dfm:2261 UJava.dfm:2968 EssModel/Integrator/View/UDiagramFrame.dfm:484
+#: UJava.dfm:2253 UJava.dfm:2959 EssModel/Integrator/View/UDiagramFrame.dfm:484
 #: EssModel/System/UUMLForm.dfm:86
 msgid "New class"
 msgstr "Neue Klasse"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBStructogram..Hint
-#: UJava.dfm:2271
+#: UJava.dfm:2263
 msgid "New structogram"
 msgstr "Neues Struktogramm"
 
 #. FJava..TBXDockTop..ControlBar..TabsControl..TSProgram..ToolbarProgram..TBSequence..Hint
-#: UJava.dfm:2281
+#: UJava.dfm:2273
 msgid "New sequence diagram"
 msgstr "Neues Sequenzdiagramm"
 
 #. FJava..TBXDockTop..ControlBar..MainToolBar..TBSaveAll..Caption
 #. FJava..TBXDockTop..ControlBar..MainToolBar..TBSaveAll..Hint
 #. FJava..TBXDockTop..MainMenu..MIFile..MISaveAll..Caption
-#: UJava.dfm:2407 UJava.dfm:2408 UJava.dfm:2572
+#: UJava.dfm:2399 UJava.dfm:2400 UJava.dfm:2563
 msgid "Save all"
 msgstr "Alle speichern"
 
 #. FJava..TBXDockTop..ControlBar..MainToolBar..TBPropertyInspector..Caption
 #. FObjectInspector..Caption
-#: UJava.dfm:2423 UObjectInspector.dfm:6
+#: UJava.dfm:2415 UObjectInspector.dfm:6
 msgid "Object inspector"
 msgstr "Objekt-Inspektor"
 
 #. FJava..TBXDockTop..ControlBar..MainToolBar..TBPropertyInspector..Hint
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIObjectInspector..Caption
-#: UJava.dfm:2424 UJava.dfm:3652
+#: UJava.dfm:2416 UJava.dfm:3643
 msgid "Object inspector on/off"
 msgstr "Objekt-Inspektor ein/aus"
 
 #. FJava..TBXDockTop..ControlBar..MainToolBar..TBDiagramFromOpenFiles..Caption
 #. FJava..TBXDockTop..ControlBar..MainToolBar..TBDiagramFromOpenFiles..Hint
 #. FJava..TBXDockTop..MainMenu..MIUML..MIDiagramFromOpenFiles..Caption
-#: UJava.dfm:2431 UJava.dfm:2432 UJava.dfm:3010
+#: UJava.dfm:2423 UJava.dfm:2424 UJava.dfm:3001
 msgid "Diagram from open files"
 msgstr "Diagramm aus Dateien"
 
 #. FJava..TBXDockTop..ControlBar..MainToolBar..TBMessages..Caption
 #. FJava..TBXDockTop..ControlBar..MainToolBar..TBMessages..Hint
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIMessages..Caption
-#: UJava.dfm:2439 UJava.dfm:2440 UJava.dfm:3666
+#: UJava.dfm:2431 UJava.dfm:2432 UJava.dfm:3657
 msgid "Messages on/off"
 msgstr "Meldungen ein/aus"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..Caption
-#: UJava.dfm:2462
+#: UJava.dfm:2453
 msgid "&File"
 msgstr "&Datei"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MIOpen..Caption
-#: UJava.dfm:2547
+#: UJava.dfm:2538
 msgid "Open..."
 msgstr "Öffnen..."
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MIReopen..Caption
-#: UJava.dfm:2554
+#: UJava.dfm:2545
 msgid "Reopen"
 msgstr "Neu öffnen"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MISaveAs..Caption
-#: UJava.dfm:2566
+#: UJava.dfm:2557
 msgid "Save as..."
 msgstr "Speichern &unter..."
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MISaveAllIn..Caption
-#: UJava.dfm:2578
+#: UJava.dfm:2569
 msgid "Save all in..."
 msgstr "Alle speichern in..."
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MISaveAsProject..Caption
-#: UJava.dfm:2582
+#: UJava.dfm:2573
 msgid "Save as project"
 msgstr "Als Projekt speichern"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MICloseProject..Caption
-#: UJava.dfm:2588
+#: UJava.dfm:2579
 msgid "Close project"
 msgstr "Projekt schließen"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MICloseAllFiles..Caption
-#: UJava.dfm:2599
+#: UJava.dfm:2590
 msgid "Close all"
 msgstr "&Alle schließen"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MIExport..Caption
-#: UJava.dfm:2605
+#: UJava.dfm:2596
 msgid "Export"
 msgstr "Exportieren"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MIPrint..Caption
 #. LLMChatForm..ChatActionList..actPrint..Caption
-#: UJava.dfm:2611 ULLMChatForm.dfm:218
+#: UJava.dfm:2602 ULLMChatForm.dfm:218
 msgid "Print"
 msgstr "&Drucken"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MIPrintAll..Caption
-#: UJava.dfm:2618
+#: UJava.dfm:2609
 msgid "Print all"
 msgstr "Alle drucken"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MIPrintSetup..Caption
-#: UJava.dfm:2622
+#: UJava.dfm:2613
 msgid "Printer setup"
 msgstr "Drucker&einrichtung"
 
 #. FJava..TBXDockTop..MainMenu..MIFile..MIExit..Caption
-#: UJava.dfm:2630
+#: UJava.dfm:2621
 msgid "Exit"
 msgstr "&Beenden"
 
 #. FJava..TBXDockTop..MainMenu..MIEdit..Caption
-#: UJava.dfm:2638
+#: UJava.dfm:2629
 msgid "&Edit"
 msgstr "B&earbeiten"
 
 #. FJava..TBXDockTop..MainMenu..MIEdit..MICopy..MICopyNormal..Caption
-#: UJava.dfm:2666
+#: UJava.dfm:2657
 msgid "Normal"
 msgstr "&Normal"
 
 #. FJava..TBXDockTop..MainMenu..MIEdit..MICopy..MICopyRtfNumbered..Caption
-#: UJava.dfm:2678
+#: UJava.dfm:2669
 msgid "RTF numbered"
 msgstr "RTF nummeriert"
 
 #. FJava..TBXDockTop..MainMenu..MIEdit..MICopy..MICopyHTMLAsText..Caption
-#: UJava.dfm:2686
+#: UJava.dfm:2677
 msgid "HTML as Text"
 msgstr "HTML als &Text"
 
 #. FJava..TBXDockTop..MainMenu..MIEdit..MICopy..MICopyNumbered..Caption
-#: UJava.dfm:2690
+#: UJava.dfm:2681
 msgid "Numbered"
 msgstr "N&ummeriert"
 
 #. FJava..TBXDockTop..MainMenu..MIEdit..MIReplace..Caption
 #. FGrepSearch..GBSearchOptions..CBReplace..Caption
 #. FReplace..Caption
-#: UJava.dfm:2718 FindInFiles/UDlgGrepSearch.dfm:154
+#: UJava.dfm:2709 FindInFiles/UDlgGrepSearch.dfm:154
 #: FindInFiles/UDlgReplace.dfm:6
 msgid "Replace"
 msgstr "&Ersetzen"
 
 #. FJava..TBXDockTop..MainMenu..MIEdit..MISearchInFiles..Caption
 #. FGrepSearch..Caption
-#: UJava.dfm:2725 FindInFiles/UDlgGrepSearch.dfm:7
+#: UJava.dfm:2716 FindInFiles/UDlgGrepSearch.dfm:7
 msgid "In files..."
 msgstr "In Dateien suchen..."
 
 #. FJava..TBXDockTop..MainMenu..MIEdit..MIUnicode..Caption
-#: UJava.dfm:2775
+#: UJava.dfm:2766
 msgid "Insert Unicode"
 msgstr "Unicode einfügen"
 
 #. FJava..TBXDockTop..MainMenu..MIStart..Caption
-#: UJava.dfm:2782
+#: UJava.dfm:2773
 msgid "&Start"
 msgstr "&Start"
 
 #. FJava..TBXDockTop..MainMenu..MIStart..MIMindstorms..Caption
-#: UJava.dfm:2791
+#: UJava.dfm:2782
 msgid "Upload Lejos firmware"
 msgstr "Firmware Download"
 
 #. FJava..TBXDockTop..MainMenu..MIStart..MIProgramReset..Caption
-#: UJava.dfm:2809
+#: UJava.dfm:2800
 msgid "Program reset"
 msgstr "Programm zurücksetzen"
 
 #. FJava..TBXDockTop..MainMenu..MIStart..MIJavaReset..Caption
-#: UJava.dfm:2816
+#: UJava.dfm:2807
 msgid "Java reset"
 msgstr "Java zurücksetzen"
 
 #. FJava..TBXDockTop..MainMenu..MIStart..MIParameter..Caption
-#: UJava.dfm:2822
+#: UJava.dfm:2813
 msgid "Parameter..."
 msgstr "Parameter..."
 
 #. FJava..TBXDockTop..MainMenu..MIStart..MIHTMLforApplet..Caption
-#: UJava.dfm:2830
+#: UJava.dfm:2821
 msgid "HTML for applet"
 msgstr "HTML für Applet"
 
 #. FJava..TBXDockTop..MainMenu..MIStart..MIHTMLforJavaPlugIn..Caption
-#: UJava.dfm:2834
+#: UJava.dfm:2825
 msgid "HTML for java plugin"
 msgstr "HTML für Java-PlugIn"
 
 #. FJava..TBXDockTop..MainMenu..MIStart..MIJar..Caption
-#: UJava.dfm:2860
+#: UJava.dfm:2851
 msgid "Jar file"
 msgstr "Jar-Datei"
 
 #. FJava..TBXDockTop..MainMenu..MIStart..MIJar..MIJarUnpack..Caption
-#: UJava.dfm:2877
+#: UJava.dfm:2868
 msgid "Unpack"
 msgstr "Entpacken"
 
 #. FJava..TBXDockTop..MainMenu..MITest..Caption
-#: UJava.dfm:2888
+#: UJava.dfm:2879
 msgid "&Test"
 msgstr "&Test"
 
 #. FJava..TBXDockTop..MainMenu..MITest..MINext..Caption
 #. FMessages..PMain..PDebugger..ToolbarDock..DebuggerToolbar..TBNext..Hint
-#: UJava.dfm:2897 UMessages.dfm:242
+#: UJava.dfm:2888 UMessages.dfm:242
 msgid "Next"
 msgstr "Gesamte Routine"
 
 #. FJava..TBXDockTop..MainMenu..MITest..MIStepUp..Caption
 #. FMessages..PMain..PDebugger..ToolbarDock..DebuggerToolbar..TBStepUp..Hint
-#: UJava.dfm:2904 UMessages.dfm:249
+#: UJava.dfm:2895 UMessages.dfm:249
 msgid "Step up"
 msgstr "Routine beenden"
 
 #. FJava..TBXDockTop..MainMenu..MITest..MIRunToCursor..Caption
 #. FMessages..PMain..PDebugger..ToolbarDock..DebuggerToolbar..TBRunToCursor..Hint
-#: UJava.dfm:2911 UMessages.dfm:256
+#: UJava.dfm:2902 UMessages.dfm:256
 msgid "Run to cursor"
 msgstr "Bis zum Cursor ausführen"
 
 #. FJava..TBXDockTop..MainMenu..MITest..MIShowExecutionPoint..Caption
 #. FMessages..PMain..PDebugger..ToolbarDock..DebuggerToolbar..TBShowExecutionPoint..Hint
-#: UJava.dfm:2918 UMessages.dfm:270
+#: UJava.dfm:2909 UMessages.dfm:270
 msgid "Show execution line"
 msgstr "Zeige Ausführungszeile"
 
 #. FJava..TBXDockTop..MainMenu..MITest..MIBreakpointsClear..Caption
-#: UJava.dfm:2933
+#: UJava.dfm:2924
 msgid "Delete breakpoints"
 msgstr "Haltepunkte löschen"
 
@@ -3480,27 +3485,27 @@ msgstr "Haltepunkte löschen"
 #. FMessages..PMain..PDebugger..ToolbarDock..DebuggerToolbar..TBWatches..Hint
 #. FWatches..Caption
 #. FWatches..LWatches..Caption
-#: UJava.dfm:2947 UMessages.dfm:202 UMessages.dfm:263 UWatches.dfm:6
+#: UJava.dfm:2938 UMessages.dfm:202 UMessages.dfm:263 UWatches.dfm:6
 #: UWatches.dfm:33
 msgid "Watches"
 msgstr "Überwachte Ausdrücke"
 
 #. FJava..TBXDockTop..MainMenu..MITest..MITestCreateSequencediagram..Caption
 #. FJava..TBXDockTop..MainMenu..MIUML..MIUMLCreateSequencediagram..Caption
-#: UJava.dfm:2953 UJava.dfm:3028
+#: UJava.dfm:2944 UJava.dfm:3019
 msgid "Create sequence diagram"
 msgstr "Erzeuge Sequenzdiagramm"
 
 #. FJava..TBXDockTop..MainMenu..MIUML..MIClassEditor..Caption
 #. AFrameDiagram..PopMenuClass..MIClassPopupClassEdit..Caption
-#: UJava.dfm:2980 EssModel/Integrator/View/UDiagramFrame.dfm:33
+#: UJava.dfm:2971 EssModel/Integrator/View/UDiagramFrame.dfm:33
 msgid "Edit class"
 msgstr "Klasse bearbeiten"
 
 #. FJava..TBXDockTop..MainMenu..MIUML..MINewComment..Caption
 #. AFrameDiagram..PopMenuClass..MIClassPopupNewComment..Caption
 #. AFrameDiagram..PopupMenuWindow..MIWindowPopupNewComment..Caption
-#: UJava.dfm:2986 EssModel/Integrator/View/UDiagramFrame.dfm:87
+#: UJava.dfm:2977 EssModel/Integrator/View/UDiagramFrame.dfm:87
 #: EssModel/Integrator/View/UDiagramFrame.dfm:502
 msgid "New comment"
 msgstr "Neuer Kommentar"
@@ -3510,158 +3515,158 @@ msgstr "Neuer Kommentar"
 #. FUMLForm..Panel..PUMLPanel..TBUMLToolbar..TBNewLayout..Hint
 #. FSequenceForm..TBSequence..TBNewLayout..Hint
 #. FSequenceForm..PopupMenuLifeLineAndSequencePanel..MIPopupNewLayout..Caption
-#: UJava.dfm:2992 EssModel/Integrator/View/UDiagramFrame.dfm:508
+#: UJava.dfm:2983 EssModel/Integrator/View/UDiagramFrame.dfm:508
 #: EssModel/System/UUMLForm.dfm:158 Sequencediagram/USequenceForm.dfm:100
 #: Sequencediagram/USequenceForm.dfm:151
 msgid "New layout"
 msgstr "Neu layouten"
 
 #. FJava..TBXDockTop..MainMenu..MIUML..MIRecognizeAssociations..Caption
-#: UJava.dfm:3004
+#: UJava.dfm:2995
 msgid "Recognize assoziations"
 msgstr "Erkenne Assoziationen"
 
 #. FJava..TBXDockTop..MainMenu..MIUML..MISaveAsPicture..Caption
-#: UJava.dfm:3022
+#: UJava.dfm:3013
 msgid "Save as picture..."
 msgstr "Als Bild speichern..."
 
 #. FJava..TBXDockTop..MainMenu..MITools..MICompare..Caption
 #. FTextDiff..Caption
-#: UJava.dfm:3049 TextDiff/UTextDiffForm.dfm:5
+#: UJava.dfm:3040 TextDiff/UTextDiffForm.dfm:5
 msgid "Compare text"
 msgstr "Textvergleich"
 
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..MISVNAdd..Caption
-#: UJava.dfm:3063
+#: UJava.dfm:3054
 msgid "Add file"
 msgstr "Datei versionieren"
 
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..MISVNLog..Caption
-#: UJava.dfm:3067
+#: UJava.dfm:3058
 msgid "Log of file"
 msgstr "Protokoll der Datei"
 
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..MISVNCompare..Caption
-#: UJava.dfm:3071
+#: UJava.dfm:3062
 msgid "Compare files"
 msgstr "Datei vergleichen"
 
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..MISVNStatus..Caption
-#: UJava.dfm:3077
+#: UJava.dfm:3068
 msgid "Status of folder"
 msgstr "Status des Ordners"
 
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..MISVNTree..Caption
-#: UJava.dfm:3081
+#: UJava.dfm:3072
 msgid "Tree of repository"
 msgstr "Baum des Repository"
 
 #. FJava..TBXDockTop..MainMenu..MITools..MISubversion..MISVNUpdate..Caption
-#: UJava.dfm:3085
+#: UJava.dfm:3076
 msgid "Update from repository"
 msgstr "Update vom Repository"
 
 #. FJava..TBXDockTop..MainMenu..MITools..MIGit..MIGitAdd..Caption
-#: UJava.dfm:3100
+#: UJava.dfm:3091
 msgid "Add "
 msgstr "Add "
 
 #. FJava..TBXDockTop..MainMenu..MITools..MIJUnit..MIJUnitRunAllTests..Caption
 #. AFrameDiagram..PopMenuClass..MIClassPopupRunAllTests..Caption
-#: UJava.dfm:3170 EssModel/Integrator/View/UDiagramFrame.dfm:17
+#: UJava.dfm:3161 EssModel/Integrator/View/UDiagramFrame.dfm:17
 msgid "Execute all tests"
 msgstr "Alle Tests ausführen"
 
 #. FJava..TBXDockTop..MainMenu..MITools..MIJUnit..MIJUnitCreateTestclass..Caption
 #. AFrameDiagram..PopMenuClass..MIClassPopupCreateTestClass..Caption
-#: UJava.dfm:3174 EssModel/Integrator/View/UDiagramFrame.dfm:196
+#: UJava.dfm:3165 EssModel/Integrator/View/UDiagramFrame.dfm:196
 msgid "Create test class"
 msgstr "Erzeuge Testklasse"
 
 #. FJava..TBXDockTop..MainMenu..MIComponents..Caption
-#: UJava.dfm:3188
+#: UJava.dfm:3179
 msgid "&Components"
 msgstr "&Komponenten"
 
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIDatentypen..Caption
-#: UJava.dfm:3274
+#: UJava.dfm:3265
 msgid "Data types"
 msgstr "Datentyp"
 
 #. FJava..TBXDockTop..MainMenu..MIComponents..MIAWT..MIPanel..Caption
-#: UJava.dfm:3375
+#: UJava.dfm:3366
 msgid "Panel"
 msgstr "Panel"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..Caption
-#: UJava.dfm:3650
+#: UJava.dfm:3641
 msgid "&Window"
 msgstr "&Fenster"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIToolbar..Caption
-#: UJava.dfm:3659
+#: UJava.dfm:3650
 msgid "Toolbar on/off"
 msgstr "Symbolleiste ein/aus"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIMessagesDocked..Caption
-#: UJava.dfm:3673
+#: UJava.dfm:3664
 msgid "Messages docked/undocked"
 msgstr "Meldungen angedockt/frei"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIFileStructure..Caption
-#: UJava.dfm:3678
+#: UJava.dfm:3669
 msgid "Structure on/off"
 msgstr "Struktur ein/aus"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIChat..Caption
 #. LLMChatForm..Caption
-#: UJava.dfm:3691 ULLMChatForm.dfm:5 ULLMChatForm.pas:707 ULLMChatForm.pas:709
+#: UJava.dfm:3682 ULLMChatForm.dfm:5 ULLMChatForm.pas:707 ULLMChatForm.pas:709
 msgid "Chat"
 msgstr "Chat"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIMsDos..Caption
-#: UJava.dfm:3697
+#: UJava.dfm:3688
 msgid "DOS window"
 msgstr "DOS-Fenster"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MIMaximized..Caption
-#: UJava.dfm:3732
+#: UJava.dfm:3723
 msgid "Maximize"
 msgstr "&Maximieren"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MICascade..Caption
-#: UJava.dfm:3738
+#: UJava.dfm:3729
 msgid "Cascade"
 msgstr "Ü&berlappend"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MITileVertical..Caption
-#: UJava.dfm:3744
+#: UJava.dfm:3735
 msgid "Tile vertically"
 msgstr "&Nebeneinander"
 
 #. FJava..TBXDockTop..MainMenu..MIWindow..MITileHorizontal..Caption
-#: UJava.dfm:3750
+#: UJava.dfm:3741
 msgid "Tile horizontally"
 msgstr "&Untereinander"
 
 #. FJava..TBXDockTop..MainMenu..MIHelp..Caption
-#: UJava.dfm:3759
+#: UJava.dfm:3750
 msgid "&Help"
 msgstr "Hilfe"
 
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIHelpHelp..Caption
-#: UJava.dfm:3761
+#: UJava.dfm:3752
 msgid "Index"
 msgstr "Index"
 
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIDemos..Caption
-#: UJava.dfm:3784
+#: UJava.dfm:3775
 msgid "Demos"
 msgstr "Demos"
 
 #. FJava..TBXDockTop..MainMenu..MIHelp..MIWebsite..Caption
-#: UJava.dfm:3806
+#: UJava.dfm:3797
 msgid "Website"
 msgstr "Website"
 
@@ -4536,15 +4541,15 @@ msgstr "Java-Interpreter %s nicht gefunden!"
 msgid "Edit JavaDoc User"
 msgstr "JavaDoc-User bearbeiten"
 
-#: UConfiguration.pas:3161 UJava.pas:7900 Util/ULanguageControl.pas:245
+#: UConfiguration.pas:3161 UJava.pas:7899 Util/ULanguageControl.pas:245
 msgid "Ctrl+"
 msgstr "Strg+"
 
-#: UConfiguration.pas:3162 UJava.pas:7899 Util/ULanguageControl.pas:244
+#: UConfiguration.pas:3162 UJava.pas:7898 Util/ULanguageControl.pas:244
 msgid "Shift+"
 msgstr "Umsch+"
 
-#: UConfiguration.pas:3163 UJava.pas:7901 Util/ULanguageControl.pas:246
+#: UConfiguration.pas:3163 UJava.pas:7900 Util/ULanguageControl.pas:246
 msgid "Alt+"
 msgstr "Alt+"
 
@@ -4755,7 +4760,7 @@ msgstr "Verwende das Programm, um einen Haltepunkt zu erreichen."
 msgid "Methods"
 msgstr "Methoden"
 
-#: UDlgClassEditor.pas:1444
+#: UDlgClassEditor.pas:1442
 msgid "Delete method with sourcecode?"
 msgstr "Methode samt Quellcode löschen?"
 
@@ -4811,135 +4816,135 @@ msgstr ""
 "Datei %s enthält ungültige Zeile \"FrameType =\". Diese kann wegen "
 "Schreibschutz nicht entfernt werden."
 
-#: UJava.pas:1502 UJava.pas:1505
+#: UJava.pas:1503 UJava.pas:1506
 msgid "Invalid class name"
 msgstr "Ungültiger Klassenname"
 
-#: UJava.pas:2520
+#: UJava.pas:2521
 msgid "Start Applet"
 msgstr "Applet starten"
 
-#: UJava.pas:3337
+#: UJava.pas:3338
 msgid "Files in the cache folder are not compiled."
 msgstr "Dateien im Cache-Verzeichnis werden nicht compiliert."
 
-#: UJava.pas:4168
+#: UJava.pas:4169
 msgid "disassembled"
 msgstr "disassembliert"
 
-#: UJava.pas:4173
+#: UJava.pas:4174
 msgid "Error during disassembling of %s"
 msgstr "Fehler beim Disassemblieren von %s"
 
-#: UJava.pas:4243
+#: UJava.pas:4244
 msgid "Error during creation of documentation."
 msgstr "Fehler beim Erzeugen der Dokumentation."
 
-#: UJava.pas:4286
+#: UJava.pas:4287
 msgid "The JUnit manual is not installed."
 msgstr "Das JUnit-Handbuch ist nicht installiert."
 
-#: UJava.pas:4301
+#: UJava.pas:4302
 msgid "Jar call"
 msgstr "Jar-Aufruf"
 
 #. extracted:
-#: UJava.pas:4337
+#: UJava.pas:4338
 msgid "Too much files to open."
 msgstr "Zuviele Dateien zum Öffnen."
 
-#: UJava.pas:4518
+#: UJava.pas:4519
 msgid "Overwrite with jar files?"
 msgstr "Mit Jar-Dateien überschreiben?"
 
-#: UJava.pas:4556
+#: UJava.pas:4557
 msgid "Show content of jar file"
 msgstr "Inhalt einer Jar-Datei anzeigen"
 
-#: UJava.pas:4558
+#: UJava.pas:4559
 msgid "Unpack jar file"
 msgstr "Jar-Datei entpacken"
 
-#: UJava.pas:4560
+#: UJava.pas:4561
 msgid "Open jar file"
 msgstr "Jar-Datei öffnen"
 
-#: UJava.pas:4844
+#: UJava.pas:4842
 msgid "No browser configured"
 msgstr "Kein Browser konfiguriert"
 
-#: UJava.pas:4930
+#: UJava.pas:4928
 msgid "The tutorial %s is not installed."
 msgstr "Das Tutorial %s ist nicht installiert."
 
-#: UJava.pas:4941
+#: UJava.pas:4939
 msgid "The Java book from www.javabuch.de is not installed."
 msgstr "Das Javabuch von www.javabuch.de ist nicht installiert."
 
-#: UJava.pas:4952
+#: UJava.pas:4950
 msgid ""
 "The mindstorms manual from https://lejos.sourceforge.net/ is not installed."
 msgstr ""
 "Das Mindstorms-Manual von http://lejos.sourceforge.net/ ist nicht "
 "installiert."
 
-#: UJava.pas:5006
+#: UJava.pas:5004
 msgid "JavaFX needs Java JDK 8 or higher"
 msgstr "JavaFX benötigt Java JDK 8 oder höher"
 
-#: UJava.pas:6500
+#: UJava.pas:6498
 msgid "Sourcecode has errors. Open anyway?"
 msgstr "Quelltext enthält Fehler. Dennoch öffnen?"
 
-#: UJava.pas:7883 UJava.pas:7898
+#: UJava.pas:7882 UJava.pas:7897
 msgid "BkSp"
 msgstr "Rück"
 
-#: UJava.pas:7884
+#: UJava.pas:7883
 msgid "Tab"
 msgstr "Tab"
 
-#: UJava.pas:7885
+#: UJava.pas:7884
 msgid "Esc"
 msgstr "Esc"
 
-#: UJava.pas:7886
+#: UJava.pas:7885
 msgid "Enter"
 msgstr "Eingabe"
 
-#: UJava.pas:7887
+#: UJava.pas:7886
 msgid "Space"
 msgstr "Leerraum"
 
-#: UJava.pas:7888
+#: UJava.pas:7887
 msgid "PgUp"
 msgstr "BildAuf"
 
-#: UJava.pas:7889
+#: UJava.pas:7888
 msgid "PgDn"
 msgstr "BildAb"
 
-#: UJava.pas:7890
+#: UJava.pas:7889
 msgid "End"
 msgstr "Ende"
 
-#: UJava.pas:7891
+#: UJava.pas:7890
 msgid "Home"
 msgstr "Pos1"
 
-#: UJava.pas:7893
+#: UJava.pas:7892
 msgid "Up"
 msgstr "Auf"
 
-#: UJava.pas:7895
+#: UJava.pas:7894
 msgid "Down"
 msgstr "Ab"
 
-#: UJava.pas:7896
+#: UJava.pas:7895
 msgid "Ins"
 msgstr "Einf"
 
-#: UJava.pas:7897
+#: UJava.pas:7896
 msgid "Del"
 msgstr "Entf"
 
