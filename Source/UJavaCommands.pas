@@ -822,12 +822,15 @@ begin
   // during TFJava.FormCreate/TFConfiguration.Init/getJavaVersion
   // a ProcessMessages starts SystemExecuteMacro/TFJava.Open to early
 
-  TThread.ForceQueue(nil, procedure   // prevent MyTabBar movement
+
+  { Restarts Compile as long as mouse is over compile icon
+  // prevent MyTabBar movement
+  TThread.ForceQueue(nil, procedure
   begin
     mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
     mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
   end);
-
+  }
 end;
 
 // runs an external program, no need to wait for or close external program

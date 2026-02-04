@@ -39,7 +39,7 @@ object FMessages: TFMessages
       BevelOuter = bvNone
       TabOrder = 0
       object SplitterLeft: TSplitter
-        Left = 187
+        Left = 188
         Top = 0
         Width = 4
         Height = 349
@@ -47,7 +47,7 @@ object FMessages: TFMessages
         ExplicitHeight = 194
       end
       object SplitterCenter: TSplitter
-        Left = 351
+        Left = 352
         Top = 0
         Width = 4
         Height = 349
@@ -55,7 +55,7 @@ object FMessages: TFMessages
         ExplicitHeight = 194
       end
       object SplitterRight: TSplitter
-        Left = 515
+        Left = 516
         Top = 0
         Width = 4
         Height = 349
@@ -63,7 +63,7 @@ object FMessages: TFMessages
         ExplicitHeight = 194
       end
       object PDebuggerLeft: TPanel
-        Left = 27
+        Left = 28
         Top = 0
         Width = 160
         Height = 349
@@ -73,7 +73,6 @@ object FMessages: TFMessages
         Constraints.MinWidth = 30
         TabOrder = 0
         OnEnter = PDebuggerLeftEnter
-        ExplicitLeft = 28
         object PAttribute: TPanel
           Left = 0
           Top = 0
@@ -103,9 +102,9 @@ object FMessages: TFMessages
         end
       end
       object PDebuggerRight: TPanel
-        Left = 519
+        Left = 520
         Top = 0
-        Width = 328
+        Width = 327
         Height = 349
         Align = alClient
         BevelOuter = bvNone
@@ -113,8 +112,6 @@ object FMessages: TFMessages
         Constraints.MinWidth = 30
         TabOrder = 1
         OnEnter = PDebuggerRightEnter
-        ExplicitLeft = 520
-        ExplicitWidth = 327
         object PStack: TPanel
           Left = 0
           Top = 0
@@ -141,7 +138,7 @@ object FMessages: TFMessages
         end
       end
       object PDebuggerCenterLeft: TPanel
-        Left = 191
+        Left = 192
         Top = 0
         Width = 160
         Height = 349
@@ -151,7 +148,6 @@ object FMessages: TFMessages
         Constraints.MinWidth = 30
         TabOrder = 2
         OnEnter = PDebuggerCenterLeftEnter
-        ExplicitLeft = 192
         object PLocalVariables: TPanel
           Left = 0
           Top = 0
@@ -181,7 +177,7 @@ object FMessages: TFMessages
         end
       end
       object PDebuggerCenterRight: TPanel
-        Left = 355
+        Left = 356
         Top = 0
         Width = 160
         Height = 349
@@ -191,7 +187,6 @@ object FMessages: TFMessages
         Constraints.MinWidth = 30
         TabOrder = 3
         OnEnter = PDebuggerCenterRightEnter
-        ExplicitLeft = 356
         object PWatches: TPanel
           Left = 0
           Top = 0
@@ -223,7 +218,7 @@ object FMessages: TFMessages
       object ToolbarDock: TSpTBXDock
         Left = 0
         Top = 0
-        Width = 27
+        Width = 28
         Height = 349
         Position = dpLeft
         object DebuggerToolbar: TSpTBXToolbar

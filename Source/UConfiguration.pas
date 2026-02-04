@@ -1283,6 +1283,7 @@ type
     procedure LLMChatViewToModel;
     function LLMAssistantSettings: TLLMSettings;
     function LLMChatSettings: TLLMSettings;
+    procedure SetupLanguages;
   public
     class var GUIStyle: string;
     procedure Init;
@@ -1457,7 +1458,6 @@ type
     function ExplorerTest: Boolean;
     procedure OpenAndShowPage(const Page: string);
     procedure Log(const Str: string; E: Exception = nil);
-    procedure SetupLanguages;
     procedure InitTreeView;
     function GlobalFileExists(var Filename: string;
       WithoutChange: Boolean = True): Boolean;
@@ -3662,7 +3662,7 @@ begin
 
   // Font
   FEditFont.Name := ReadStringU('Font', 'Name', DefaultCodeFontName);
-  FEditFont.Size := Max(ReadIntegerU('Font', 'Size', 12), 4);
+  FEditFont.Size := PPIScale(Max(ReadIntegerU('Font', 'Size', 12), 4));
   FUMLFont.Name := ReadStringU('UML', 'Name', 'Segoe UI');
   FUMLFont.Size := Max(ReadIntegerU('UML', 'Size', 12), 4);
   FStructogramFont.Name := ReadStringU('Structogram', 'Name', 'Segoe UI');

@@ -43,13 +43,13 @@ var MyRegExSearch: TRegExSearch = nil;
 implementation
 
 uses
-  Windows,
-  Controls,
+  Winapi.Windows,
+  Vcl.Controls,
   SynEditTypes,
-  UJava,
   UDlgConfirmReplace,
   USearchOptions,
-  UGrepResults;
+  UGrepResults,
+  UJava;
 
 function PointToDisplay(Posi: TPoint): TDisplayCoord;
 begin

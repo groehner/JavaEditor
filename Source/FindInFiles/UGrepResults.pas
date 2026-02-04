@@ -72,7 +72,8 @@ implementation
 uses
   System.IOUtils,
   System.SysUtils,
-  Forms,
+  System.UITypes,
+  Vcl.Forms,
   JvGnugettext,
   SynEditTypes,
   SynEditHighlighter,
@@ -85,8 +86,8 @@ uses
   UMessages,
   USearchOptions,
   URegExSearch,
-  UDlgSearchAbort,
-  UITypes;
+  UDlgSearchAbort;
+
 
 { --- TSearchResults ----------------------------------------------------------- }
 

@@ -1,12 +1,12 @@
 { -------------------------------------------------------------------------------
-  Unit:     UStructogramform
+  Unit:     UStructogramForm
   Author:   Gerhard Röhner
   Based on: NSD-Editor by Marcel Kalt
   Date:     August 2013
   Purpose:  structogram editor
   ------------------------------------------------------------------------------- }
 
-unit UStructogramform;
+unit UStructogramForm;
 
 interface
 

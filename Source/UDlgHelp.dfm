@@ -1,7 +1,7 @@
 object FHelpDialog: TFHelpDialog
   Left = 541
   Top = 42
-  ActiveControl = TVAPITree
+  ActiveControl = LBFavorites
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'JDK help'
@@ -25,7 +25,7 @@ object FHelpDialog: TFHelpDialog
     Top = 0
     Width = 377
     Height = 417
-    ActivePage = TSAPI
+    ActivePage = TSFavorites
     TabOrder = 0
     OnChange = PCJDKHelpChange
     object TSFavorites: TTabSheet

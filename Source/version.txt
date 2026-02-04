@@ -1,3 +1,9 @@
+23.20, 2026.02.04
+bugfix horizontalAlignment
+bugfix JNumberField view
+bugfix scaling of editor font size
+bugfix compiling source code
+
 23.19, 2025.12.08
 bugfix for tools menu
 

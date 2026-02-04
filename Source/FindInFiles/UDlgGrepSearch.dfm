@@ -112,9 +112,9 @@ object FGrepSearch: TFGrepSearch
     object LSearchRegSearch: TLabel
       Left = 33
       Top = 107
-      Width = 104
+      Width = 99
       Height = 15
-      Caption = 'Regular expressions'
+      Caption = 'Regular expression'
       OnClick = LSearchRegSearchClick
       OnMouseEnter = LSearchRegSearchMouseEnter
       OnMouseLeave = LSearchRegSearchMouseLeave

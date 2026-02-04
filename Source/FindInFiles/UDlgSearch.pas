@@ -3,11 +3,11 @@ unit UDlgSearch;
 interface
 
 uses
-  StdCtrls,
-  ExtCtrls,
-  Forms,
-  Controls,
   System.Classes,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  Vcl.Controls,
+  Vcl.Forms,
   SynEdit;
 
 type
@@ -36,10 +36,10 @@ implementation
 
 uses
   JvGnugettext,
-  UJava,
   UUtils,
   URegExSearch,
-  USearchOptions;
+  USearchOptions,
+  UJava;
 
 {$R *.DFM}
 

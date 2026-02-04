@@ -207,7 +207,7 @@ end;
 procedure TFForm.SetState(var State: string);
   var Posi: Integer;
 begin
-  if State = '' then Exit;
+
   if Copy(State, 1, 1) = 'W' then begin
     Posi:= Pos(')', State); Delete(State, 1, Posi);
     Posi:= Pos(')', State); Delete(State, 1, Posi);
@@ -337,10 +337,8 @@ end;
 
 procedure TFForm.SetModified(Modified: Boolean);
 begin
-  if FModified <> Modified then begin
-    FModified:= Modified;
-    FJava.TabModified(Number, Modified);
-  end;
+  FModified:= Modified;
+  FJava.TabModified(Number, Modified);
 end;
 
 function TFForm.GetModified: Boolean;

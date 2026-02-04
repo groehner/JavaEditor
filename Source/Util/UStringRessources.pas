@@ -47,6 +47,11 @@ const
   LNGTypeCol = 'Type';
   LNGModifiedCol = 'Modified';
   LNGFile = 'File';
+  LNGAttributes = 'Attributes';
+  LNGOriginalLocation = 'Original location';
+  LNGDateDeleted = 'Date deleted';
+  LNGFileFolder = 'File folder';
+  LNGSystemFolder = 'System folder';
 
   // Editor
   LNGModified = 'Modified';

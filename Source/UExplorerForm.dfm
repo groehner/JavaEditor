@@ -160,7 +160,7 @@ object FExplorer: TFExplorer
         Left = 305
         Top = 0
         Width = 287
-        Height = 21
+        Height = 23
         Hint = 'Select favorite'
         Align = alClient
         ParentShowHint = False

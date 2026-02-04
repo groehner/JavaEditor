@@ -82,10 +82,11 @@ type
 implementation
 
 uses
-  SysUtils,
-  TypInfo,
-  Math,
-  Forms,
+  System.Math,
+  System.StrUtils,
+  System.SysUtils,
+  System.TypInfo,
+  Vcl.Forms,
   JvGnugettext,
   UObjectInspector,
   UConfiguration,
@@ -560,9 +561,12 @@ end;
 
 function TJEComponent.IsNumeric(const Str: string): Boolean;
 var
+  FS: TFormatSettings;
   ADouble: Double;
 begin
-  Result := TryStrToFloat(Str, ADouble);
+  FS := TFormatSettings.Create;
+  FS.DecimalSeparator := '.';
+  Result := TryStrToFloat(Str, ADouble, FS);
   if not Result and ((Str = '-') or (Str = '.') or (Str = '')) then
     Result := True;
 end;

@@ -79,11 +79,12 @@ object FReplace: TFReplace
     Caption = 'Options'
     TabOrder = 2
     object LSearchRegSearch: TLabel
+      Tag = 8
       Left = 26
       Top = 105
-      Width = 104
+      Width = 99
       Height = 15
-      Caption = 'Regular expressions'
+      Caption = 'Regular expression'
       OnClick = LSearchRegSearchClick
       OnMouseEnter = LSearchRegSearchMouseEnter
       OnMouseLeave = LSearchRegSearchMouseLeave

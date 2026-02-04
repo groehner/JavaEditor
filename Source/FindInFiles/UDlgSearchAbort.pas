@@ -3,10 +3,10 @@ unit UDlgSearchAbort;
 interface
 
 uses
-  Forms,
-  StdCtrls,
   System.Classes,
-  Vcl.Controls;
+  Vcl.StdCtrls,
+  Vcl.Controls,
+  Vcl.Forms;
 
 type
   TFSearchAbort = class(TForm)

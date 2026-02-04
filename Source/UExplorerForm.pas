@@ -3,11 +3,11 @@ unit UExplorerForm;
 interface
 
 uses
-  Classes,
-  StdCtrls,
-  ExtCtrls,
-  Menus,
+  System.Classes,
   System.ImageList,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  Vcl.Menus,
   Vcl.Controls,
   Vcl.ImgList,
   Vcl.VirtualImageList,
@@ -16,9 +16,9 @@ uses
   StShlCtl,
   SsShlDlg,
   TB2Dock,
+  TB2Item,
   TB2Toolbar,
   SpTBXItem,
-  TB2Item,
   UBaseForm;
 
 type
@@ -93,7 +93,6 @@ type
     procedure TreeViewVerstecken;
     procedure TreeViewZeigen;
   public
-
     constructor Create(AOwner: TComponent); override;
     procedure New(const FileName: string; State: string);
     procedure UpdateState; override;
@@ -110,18 +109,18 @@ type
 implementation
 
 uses
-  Windows,
-  SysUtils,
-  Forms,
-  Math,
-  Clipbrd,
-  ComCtrls,
+  Winapi.Windows,
+  System.Math,
+  System.SysUtils,
+  Vcl.Forms,
+  Vcl.Clipbrd,
+  Vcl.ComCtrls,
   JvGnugettext,
   StFileOp,
   UUtils,
-  UJava,
   UConfiguration,
-  UJavaCommands;
+  UJavaCommands,
+  UJava;
 
 {$R *.DFM}
 
@@ -165,8 +164,9 @@ begin
   FStShellTreeView.ListView := FStShellListView;
   FStShellTreeView.OnFolderSelected := OnFolderSelectedTreeView;
   FStShellTreeView.OnKeyUp := OnListKeyUpEvent;
-  FTreeInitialisiert := False;
   FStShellListView.OpenDialogMode := False;
+
+  FTreeInitialisiert := False;
   CBFilter.Text := 'Java-Editor';
   CBFilterSelect(Self);
   OnClose := FormClose;

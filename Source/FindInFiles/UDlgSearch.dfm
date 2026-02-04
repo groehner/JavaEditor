@@ -72,11 +72,11 @@ object FSearch: TFSearch
     Caption = 'Options'
     TabOrder = 1
     object LSearchRegSearch: TLabel
-      Left = 24
+      Left = 28
       Top = 105
-      Width = 104
+      Width = 99
       Height = 15
-      Caption = 'Regular expressions'
+      Caption = 'Regular expression'
       OnClick = LSearchRegSearchClick
       OnMouseEnter = LSearchRegSearchMouseEnter
       OnMouseLeave = LSearchRegSearchMouseLeave

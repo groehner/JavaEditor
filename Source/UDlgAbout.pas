@@ -3,21 +3,22 @@ unit UDlgAbout;
 interface
 
 uses
-  Forms,
-  StdCtrls,
-  ExtCtrls,
+  System.Classes,
   Vcl.Controls,
-  System.Classes, Vcl.Graphics;
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  Vcl.Graphics,
+  Vcl.Forms;
 
 const
 {$IFDEF WIN32}
-  Version = '23.19, 32 Bit';
+  Version = '23.20, 32 Bit';
 {$ELSE}
-  Version = '23.19, 64 Bit';
+  Version = '23.20, 64 Bit';
 {$ENDIF}
-  Day = 8;
-  Month = 12;
-  Year = 2025;
+  Day = 4;
+  Month = 2;
+  Year = 2026;
 
 type
   TFAbout = class(TForm)

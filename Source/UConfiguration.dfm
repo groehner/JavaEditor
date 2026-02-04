@@ -4,8 +4,8 @@ object FConfiguration: TFConfiguration
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Configuration'
-  ClientHeight = 487
-  ClientWidth = 776
+  ClientHeight = 495
+  ClientWidth = 778
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,16 +22,18 @@ object FConfiguration: TFConfiguration
   object PMain: TPanel
     Left = 0
     Top = 0
-    Width = 776
-    Height = 487
+    Width = 778
+    Height = 495
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 776
+    ExplicitHeight = 487
     object TVConfiguration: TTreeView
       Left = 0
       Top = 0
       Width = 145
-      Height = 487
+      Height = 495
       Align = alLeft
       AutoExpand = True
       HideSelection = False
@@ -109,17 +111,21 @@ object FConfiguration: TFConfiguration
     object PPanelRight: TPanel
       Left = 145
       Top = 0
-      Width = 631
-      Height = 487
+      Width = 633
+      Height = 495
       Align = alClient
       TabOrder = 1
+      ExplicitWidth = 631
+      ExplicitHeight = 487
       object PButtons: TPanel
         Left = 1
-        Top = 445
-        Width = 629
+        Top = 453
+        Width = 631
         Height = 41
         Align = alBottom
         TabOrder = 0
+        ExplicitTop = 445
+        ExplicitWidth = 629
         object BSave: TButton
           Left = 549
           Top = 9
@@ -178,11 +184,12 @@ object FConfiguration: TFConfiguration
       object PTitle: TPanel
         Left = 1
         Top = 1
-        Width = 629
+        Width = 631
         Height = 20
         Align = alTop
         BevelOuter = bvSpace
         TabOrder = 1
+        ExplicitWidth = 629
         object LTitle: TLabel
           Left = 8
           Top = 4
@@ -200,12 +207,14 @@ object FConfiguration: TFConfiguration
       object PageList: TPageControl
         Left = 1
         Top = 21
-        Width = 629
-        Height = 424
-        ActivePage = PGeneralOptions
+        Width = 631
+        Height = 432
+        ActivePage = PEditorOptions
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
+        ExplicitWidth = 629
+        ExplicitHeight = 424
         object PJava: TTabSheet
           Caption = 'Java'
         end

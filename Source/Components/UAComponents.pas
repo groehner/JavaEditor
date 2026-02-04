@@ -37,7 +37,7 @@ const
 
 type
 
-  THorizontalAlignment = (Left, Center, Right { , LEADING, TRAILING } );
+  THorizontalAlignment = (LEFT, CENTER, RIGHT { , LEADING, TRAILING } );
 
   TAWTComponent = class(TJEComponent)
   private

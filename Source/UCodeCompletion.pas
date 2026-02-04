@@ -3,8 +3,8 @@ unit UCodeCompletion;
 interface
 
 uses
-  Classes,
-  Controls,
+  System.Classes,
+  Vcl.Controls,
   UHTMLParser,
   UScpHint,
   UModel,

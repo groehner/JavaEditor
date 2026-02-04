@@ -145,8 +145,7 @@ begin
                 Progress.StepBy(SizeOf(Buffer));
               Application.ProcessMessages;
             until FCancel or (BufferLen = 0);
-            FreeAndNil(AFile);
-
+            AFile.Free;
             Result := not FCancel;
           except
             on E: Exception do
@@ -186,7 +185,7 @@ begin
   finally
     Screen.Cursor := crDefault;
   end;
-  if DownloadIsOK then
+  if FDownloadIsOK then
     BCancel.Caption := _('&OK');
   BDownload.Enabled := True;
 end;

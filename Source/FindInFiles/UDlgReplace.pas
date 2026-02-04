@@ -3,11 +3,11 @@ unit UDlgReplace;
 interface
 
 uses
-  StdCtrls,
-  ExtCtrls,
-  Forms,
-  Vcl.Controls,
   System.Classes,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  Vcl.Controls,
+  Vcl.Forms,
   SynEdit;
 
 type

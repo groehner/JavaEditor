@@ -85,7 +85,7 @@ type
     procedure BrowserCopy;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Open(const Adresse: string; State: string);
+    procedure Open(const Address: string; State: string);
     procedure OpenWindow(Sender: TObject); override;
     procedure UpdateState; override;
     procedure Search; override;
@@ -143,15 +143,15 @@ begin
   ChangeStyle;
 end;
 
-procedure TFBrowser.Open(const Adresse: string; State: string);
+procedure TFBrowser.Open(const Address: string; State: string);
 begin
-  Pathname := GetProtocolAndDomain(Adresse);
+  Pathname := GetProtocolAndDomain(Address);
   Caption := Pathname;
   FJava.AddToWindowMenuAndTabBar(Number, OpenWindow, Self);
   Enter(Self);
   FNewWindow := True;
   WebBrowser.OnCommandStateChange := WebBrowserOnCommandStateChange;
-  WebBrowser.Navigate(Adresse);
+  WebBrowser.Navigate(Address);
   SetState(State);
 end;
 
@@ -177,7 +177,7 @@ end;
 procedure TFBrowser.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   inherited;
-  FreeAndNil(FHistoryList);
+  FHistoryList.Free;
   Action := caFree;
 end;
 

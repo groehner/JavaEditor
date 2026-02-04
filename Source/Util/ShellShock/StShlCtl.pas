@@ -1614,7 +1614,10 @@ var
 implementation
 
 uses
-  Forms, JvGnugettext, UStringRessources, SsConst, StFileOp, SsRegEx, SsList,
+  Forms,
+  JvGnugettext,
+  UStringRessources,
+  SsConst, StFileOp, SsRegEx, SsList,
   StShlDD, System.UITypes, System.Types;
 
 const
@@ -4370,7 +4373,8 @@ begin
         NewNode.OverlayIndex := SF.OverlayIconIndex;
         if (neDriveAdd in Events) then
           NewNode.HasChildren := True;
-        CustomSort(TreeCompareFunc, Integer(Self));
+        //CustomSort(TreeCompareFunc, Integer(Self));
+        Self.CustomSort(@TreeCompareFunc, 0);
         Exit;
       end;
   end;
@@ -5256,7 +5260,7 @@ begin
       LC.Caption := _(LNGModifiedCol);
       LC.Width := 125;
       LC := Columns.Add;
-      LC.Caption := _('Attributes');
+      LC.Caption := _(LNGAttributes);
       LC.Width := 60;
     end else begin
       { Is it the Recycle Bin? }
@@ -5266,10 +5270,10 @@ begin
         LC.Caption := _(LNGNameCol);
         LC.Width := 125;
         LC := Columns.Add;
-        LC.Caption := _('Original location');
+        LC.Caption := _(LNGOriginalLocation);
         LC.Width := 125;
         LC := Columns.Add;
-        LC.Caption := _('Date deleted');
+        LC.Caption := _(LNGDateDeleted);
         LC.Width := 100;
         LC := Columns.Add;
         LC.Caption := _(LNGTypeCol);
@@ -5407,7 +5411,7 @@ begin
       if (FD.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then begin
         SI.FIsFileFolder := True;
         SI.ColText.Add('');
-        SI.ColText.Add(_('File folder'));
+        SI.ColText.Add(_(LNGFileFolder));
         SI.FSize := -1;
       end else begin
         { File size }
@@ -5476,11 +5480,11 @@ begin
       if SI.TypeName = '' then begin
         S := ExtractFileExt(SI.Path);
         if S = '' then
-          ColText := _('LNGFile')
+          ColText := _(LNGFile)
         else if AnsiUpperCase(S) = '.LNK' then
           ColText := 'Shortcut'
         else
-          ColText := AnsiUpperCase(Copy(S, 2, Length(S) - 1)) + ' ' + _('LNGFile');
+          ColText := AnsiUpperCase(Copy(S, 2, Length(S) - 1)) + ' ' + _(LNGFile);
       end else
         ColText := SI.TypeName;
       SI.ColText.Add(ColText);
@@ -5518,7 +5522,7 @@ begin
       SI.ColText.Add(S);
     end else begin
       SI.ColText.Add('');
-      SI.ColText.Add(_('System folder'));
+      SI.ColText.Add(_(LNGSystemFolder));
       SI.FSize := -1;
     end;
     SI.HaveDetails := True;

@@ -2157,7 +2157,7 @@ begin
   Result := Min(Int1, Min(Int2, Int3));
 end;
 
-function getProtocol(const Url: string): string;
+function GetProtocol(const Url: string): string;
 begin
   var
   Posi := Pos('://', Url);

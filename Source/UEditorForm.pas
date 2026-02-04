@@ -1334,8 +1334,8 @@ end;
 
 procedure TFEditForm.SetModified(AModified: Boolean);
 begin
-  FEditor.Modified := AModified;
   inherited SetModified(AModified);
+  FEditor.Modified := AModified;
 end;
 
 function TFEditForm.GetModified: Boolean;
@@ -1383,6 +1383,7 @@ begin
   FEditor.ReadOnly := False;
   Save(WithoutBackup);
   FEditor.Lines.LoadFromFile(FileName);
+  FEditor.Modified := False;
   // due to possible change of FEncoding or FLineBreak
   try
     Caption := FileName;
