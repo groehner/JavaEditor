@@ -694,7 +694,7 @@ begin
 end;
 
 procedure TFMessages.TabControlChange(NewTab: Integer);
-var IEdit: TInteractiveEdit;
+var IEdit: TInteractiveEdit; AMemo: TMemo;
 begin
   PInterpreter.Visible := False;
   PCompiler.Visible := False;
@@ -746,7 +746,9 @@ begin
           .SetActiveComJava(TComJava1(FInteractiveComJavas[NewTab - 5]));
         IEdit.Enter(Self);
       end;
-      GetMemo(NewTab).Visible := True;
+      AMemo := GetMemo(NewTab);
+      if assigned(AMemo) then
+        AMemo.Visible := True;
     end;
   end;
   TabControlMessages.TabIndex := NewTab;

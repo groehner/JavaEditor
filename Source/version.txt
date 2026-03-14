@@ -1,3 +1,9 @@
+23.21, 2026.03.14
+bugfix editor font size
+bugfix replace window
+bugfix GuiDesigner
+bugfix Drag&Drop
+
 23.20, 2026.02.04
 bugfix horizontalAlignment
 bugfix JNumberField view

@@ -240,6 +240,7 @@ type
     procedure mnAssistantFixBugsClick(Sender: TObject);
     procedure mnAssistantOptimizeClick(Sender: TObject);
     procedure mnAssistantCancelClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FBookmark: Integer;
     FBreakPointCount: Integer;
@@ -1273,7 +1274,6 @@ begin
   FEditor.Gutter.Font.Height := FEditor.Font.Height + 2;
   FCheckAgeEnabled := FConfiguration.CheckAge;
   SetHighlighter;
-  MICreateStructogram.Visible := not FConfiguration.LockedStructogram;
   EditShortCuts;
   FConfiguration.RemoveShortcutsFrom(PopUpEditor);
 end;
@@ -6238,6 +6238,11 @@ type
 procedure TFEditForm.FormResize(Sender: TObject);
 begin
   FEditor.Invalidate;
+end;
+
+procedure TFEditForm.FormShow(Sender: TObject);
+begin
+  MICreateStructogram.Visible := not FConfiguration.LockedStructogram;
 end;
 
 procedure TFEditForm.SetActivityIndicator(TurnOn: Boolean; const Hint: string;

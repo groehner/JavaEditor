@@ -238,15 +238,14 @@ uses
   ULLMChatForm in 'ULLMChatForm.pas' {LLMChatForm},
   ULifeline in 'Sequencediagram\ULifeline.pas',
   Vcl.Menus in 'VclSystem\Vcl.Menus.pas',
-  USynEditDiff in 'TextDiff\USynEditDiff.pas';
+  USynEditDiff in 'TextDiff\USynEditDiff.pas',
+  Pipes in 'Jni\Pipes.pas';
 
 {$R *.RES}
 
 // These flags remove errors of the formdesigner when using 64 bit and Delphi 11.3
-{$SetPEFlags IMAGE_FILE_RELOCS_STRIPPED
-  or IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP
-  or IMAGE_FILE_NET_RUN_FROM_SWAP}
-
+{$SetPEFlags IMAGE_FILE_RELOCS_STRIPPED IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP IMAGE_FILE_NET_RUN_FROM_SWAP }
+  
 begin
   CoInitialize(nil);// due to TFBrowser
   {$WARNINGS OFF}

@@ -1512,6 +1512,9 @@ end;
 
 procedure TFGUIDesigner.ScaleImages;
 begin
+  if not Assigned(DesignForm) then
+    Exit;
+
   vilControls1315.SetSize(DesignForm.PPIScale(13), DesignForm.PPIScale(15));
   vilControls1616.SetSize(DesignForm.PPIScale(16), DesignForm.PPIScale(16));
   vilControls1618.SetSize(DesignForm.PPIScale(16), DesignForm.PPIScale(18));

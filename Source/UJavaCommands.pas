@@ -125,6 +125,7 @@ uses
 constructor TJavaCommands.Create;
 begin
   FOutputLines := TStringList.Create;
+  FCompileList := TStringList.Create;
   FProcessRunning := False;
   FProcessRunningComJava := nil;
 end;
@@ -346,50 +347,44 @@ begin
   end;
 
   //Screen.Cursor := crHourGlass;
-  FCompileList := TStringList.Create;
-  try
-    var
-    ComJava := GetComJava;
-    if Assigned(ComJava) and Assigned(ComJava.ClassList) and
-      (ComJava.ClassList.IndexOf(ChangeFileExt(FCompileFilename, '')) > -1) then
-      // TODO check
-      FReload := True;
-    var
-    CompilerNum := GetCompilerNumber;
-    if CompilerNum = 3 then
-    begin
-      OutputCompileInfos(3);
-      CompileInternally;
-      if FSuccessfullCompiled then
-        FCompiler := _('Intern compiler')
-      else
-      begin
-        OutputCompileInfos(1);
-        CompileWithProcess;
-      end;
-    end
+  FCompileList.Clear;
+  var ComJava := GetComJava;
+  if Assigned(ComJava) and Assigned(ComJava.ClassList) and
+    (ComJava.ClassList.IndexOf(ChangeFileExt(FCompileFilename, '')) > -1) then
+    // TODO check
+    FReload := True;
+  var
+  CompilerNum := GetCompilerNumber;
+  if CompilerNum = 3 then
+  begin
+    OutputCompileInfos(3);
+    CompileInternally;
+    if FSuccessfullCompiled then
+      FCompiler := _('Intern compiler')
     else
     begin
-      if CompilerNum = 2 then
-      begin
-        FCompiler := FConfiguration.LejosCompiler;
-        FCompileParameter := ''; // parameters are for Uploader only
-        OutputCompileInfos(2);
-      end
-      else
-        OutputCompileInfos(1);
+      OutputCompileInfos(1);
       CompileWithProcess;
     end;
-    FCompileList.Add('');
-    if FSuccessfullCompiled then
-      ShowSuccessfull
+  end
+  else
+  begin
+    if CompilerNum = 2 then
+    begin
+      FCompiler := FConfiguration.LejosCompiler;
+      FCompileParameter := ''; // parameters are for Uploader only
+      OutputCompileInfos(2);
+    end
     else
-      ShowErrors;
-    LogCompile;
-  finally
-    FCompileList.Free;
-    //Screen.Cursor := crDefault;
+      OutputCompileInfos(1);
+    CompileWithProcess;
   end;
+  FCompileList.Add('');
+  if FSuccessfullCompiled then
+    ShowSuccessfull
+  else
+    ShowErrors;
+  LogCompile;
 end;
 
 procedure TJavaCommands.CompileInternally;

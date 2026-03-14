@@ -19,6 +19,7 @@ object FEditForm: TFEditForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
+  OnShow = FormShow
   DesignSize = (
     687
     546)
@@ -1210,8 +1211,8 @@ object FEditForm: TFEditForm
         Name = 'Validate'
       end>
     ImageCollection = icEditor
-    Left = 104
-    Top = 39
+    Left = 72
+    Top = 47
   end
   object vilEditorToolbarDark: TVirtualImageList
     Images = <
@@ -2215,8 +2216,8 @@ object FEditForm: TFEditForm
         Name = 'SuggestCancel'
       end>
     ImageCollection = icContextMenu
-    Left = 96
-    Top = 151
+    Left = 72
+    Top = 159
   end
   object vilContextMenuDark: TVirtualImageList
     Images = <
@@ -2640,8 +2641,8 @@ object FEditForm: TFEditForm
         Name = 'BreakpointsDelete'
       end>
     ImageCollection = icBookmarks
-    Left = 104
-    Top = 279
+    Left = 72
+    Top = 287
   end
   object vilBookmarksDark: TVirtualImageList
     Images = <

@@ -3662,7 +3662,7 @@ begin
 
   // Font
   FEditFont.Name := ReadStringU('Font', 'Name', DefaultCodeFontName);
-  FEditFont.Size := PPIScale(Max(ReadIntegerU('Font', 'Size', 12), 4));
+  FEditFont.Size := Max(ReadIntegerU('Font', 'Size', 12), 4);
   FUMLFont.Name := ReadStringU('UML', 'Name', 'Segoe UI');
   FUMLFont.Size := Max(ReadIntegerU('UML', 'Size', 12), 4);
   FStructogramFont.Name := ReadStringU('Structogram', 'Name', 'Segoe UI');
@@ -4088,7 +4088,7 @@ begin
   FFileFilter := ReadStringU('Options', 'FileFilter', '');
   FRenameWhenSave := ReadBoolU('Options', 'Rename', True);
   FFontSize := ReadIntegerU('Options', 'FontSize', 9);
-  FJava.Font.Size := PPIScale(FFontSize);
+  FJava.Font.Size := FFontSize;
   FMaxFileHistory := ReadIntegerU('Options', 'MaxFileHistory', 10);
   FJava.TabsControl.Visible := FComponentsToolbar;
   FJava.PBorder.Visible := FBorderLayout;
@@ -10509,8 +10509,9 @@ var Providers: TLLMProviders);
   end;
 
 begin
-  Providers.Provider := TLLMProvider(ReadIntegerU(Name, 'Provider',
-    Integer(Providers.Provider)));
+  var Nr := ReadIntegerU(Name, 'Provider', Integer(Providers.Provider));
+  if InRange(Nr, Ord(Low(TLLMProvider)), Ord(High(TLLMProvider))) then
+    Providers.Provider := TLLMProvider(Nr);
   ReadProvider('OpenAI', Providers.OpenAI);
   ReadProvider('Gemini', Providers.Gemini);
   ReadProvider('Ollama', Providers.Ollama);

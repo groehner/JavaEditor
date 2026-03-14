@@ -30,9 +30,9 @@ uses
   JvTabBar,
   VirtualTrees,
   TB2Item,
-  SpTBXItem,
   TB2Dock,
   TB2Toolbar,
+  SpTBXItem,
   SpTBXTabs,
   SpTBXDkPanels,
   SpTBXControls,
@@ -609,6 +609,7 @@ type
     procedure TBLayoutClick(Sender: TObject);
     procedure MIRedoClick(Sender: TObject);
     procedure MIExportClick(Sender: TObject);
+    procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     procedure SystemExecuteMacro(Sender: TObject; Msg: TStrings);
     procedure MIMSDosClick(Sender: TObject);
     procedure MICopyHTMLClick(Sender: TObject);
@@ -985,7 +986,6 @@ uses
   Menus,
   IOUtils,
   UITypes,
-  MadExcept,
   SynEditTypes,
   JvGnugettext,
   UStringRessources,
@@ -5202,6 +5202,38 @@ begin
     else
       TBLayout(TSpTBXItem(Sender).Tag);
 end;
+
+procedure TFJava.WMDropFiles(var Msg: TWMDropFiles);
+var
+  DropH: HDROP;
+  DroppedFileCount: Integer;
+  FileNameLength: Integer;
+  FileName: string;
+begin
+  inherited;
+  LockFormUpdate(Self);
+  // Store drop handle from the message
+  DropH := Msg.Drop;
+  try
+    DroppedFileCount := DragQueryFile(DropH, $FFFFFFFF, nil, 0);
+    for var I := 0 to Pred(DroppedFileCount) do
+    begin
+      FileNameLength := DragQueryFile(DropH, I, nil, 0);
+      SetLength(FileName, FileNameLength);
+      DragQueryFile(DropH, I, PChar(FileName), FileNameLength + 1);
+      if Open(FileName) then
+      begin
+        RearrangeFileHistory(FileName);
+        FConfiguration.Sourcepath := ExtractFilePath(FileName);
+      end;
+    end;
+  finally
+    DragFinish(DropH);
+  end;
+  Msg.Result := 0;
+  UnlockFormUpdate(Self);
+end;
+
 
 procedure TFJava.DropFiles(Sender: TObject; X, Y: Integer; AFiles: TStrings);
 var
