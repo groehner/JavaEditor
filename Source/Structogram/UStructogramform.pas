@@ -1687,7 +1687,7 @@ procedure TFStructogram.SetOptions;
 begin
   var
   NotLocked := not FConfiguration.LockedStructogram;
-  TBGenerateJava.Enabled := NotLocked;
+  TBGenerateJava.Visible := NotLocked;
   MIGenerateMethod.Visible := NotLocked;
   MIGenerateProgram.Visible := NotLocked;
   MIDataType.Visible := NotLocked;

@@ -12,11 +12,11 @@ uses
 
 const
 {$IFDEF WIN32}
-  Version = '23.21, 32 Bit';
+  Version = '23.22, 32 Bit';
 {$ELSE}
-  Version = '23.21, 64 Bit';
+  Version = '23.22, 64 Bit';
 {$ENDIF}
-  Day = 14;
+  Day = 30;
   Month = 3;
   Year = 2026;
 

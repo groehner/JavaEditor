@@ -2261,7 +2261,7 @@ begin
   MIAPIHelp.Visible := IsJava;
   MIClassOpen.Visible := IsJava;
   MIClassEditor.Visible := IsJava;
-  MICreateStructogram.Visible := IsJava;
+  MICreateStructogram.Visible := IsJava and not FConfiguration.LockedStructogram;
   MIExecute.Visible := IsJava;
   MIExecuteWithoutConsole.Visible := IsJava;
   MIExecuteWithConsole.Visible := IsJava;

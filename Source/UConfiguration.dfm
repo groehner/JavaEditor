@@ -202,7 +202,7 @@ object FConfiguration: TFConfiguration
         Top = 21
         Width = 631
         Height = 432
-        ActivePage = PEditorOptions
+        ActivePage = PRestrictions
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 2
